@@ -538,6 +538,8 @@
       finishGame(player === HUMAN ? "win" : "lose", winningMask);
     } else if (Engine.playerWinsByBlockingAi(game.board, game.rules)) {
       finishGame("win", null, "blocked");
+    } else if (Engine.playerHasNoWinningPath(game.board, game.rules)) {
+      finishGame("win", null, "settled");
     } else if (Engine.boardIsFull(game.board)) {
       finishGame("draw", null);
     } else if (player === HUMAN) {
@@ -638,6 +640,10 @@
         dom.resultKicker.textContent = "封锁";
         dom.resultTitle.textContent = "对手无路可走";
         dom.resultText.textContent = "已没有可完成的五连";
+      } else if (game.winReason === "settled") {
+        dom.resultKicker.textContent = "定局";
+        dom.resultTitle.textContent = "不必再等";
+        dom.resultText.textContent = "你的五连路径已全部封闭";
       } else {
         dom.resultKicker.textContent = currentIndex === LEVELS.length - 1 ? "全数通关" : "通关";
         dom.resultTitle.textContent = currentIndex === LEVELS.length - 1 ? "走遍所有边界" : "边界被你打通";

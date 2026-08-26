@@ -151,6 +151,27 @@ test("AI 优先取胜，其次阻挡玩家单杀", () => {
   assert.ok([Game.toCell(rules, 0, 2), Game.toCell(rules, 5, 2)].includes(Game.chooseMove(blockingBoard, rules, "normal", () => 0)));
 });
 
+test("悠闲 AI 会错过必胜点和玩家的单杀点", () => {
+  const rules = Game.createRules({ type: "plane", width: 7, height: 7, target: 5 });
+  const winningBoard = Game.createBoard(rules);
+  put(winningBoard, rules, [[1, 3], [2, 3], [3, 3], [4, 3]], Game.AI);
+  const winningCells = [Game.toCell(rules, 0, 3), Game.toCell(rules, 5, 3)];
+  assert.equal(winningCells.includes(Game.chooseMove(winningBoard, rules, "easy", () => 0.99)), false);
+
+  const blockingBoard = Game.createBoard(rules);
+  put(blockingBoard, rules, [[1, 2], [2, 2], [3, 2], [4, 2]], Game.HUMAN);
+  const blockingCells = [Game.toCell(rules, 0, 2), Game.toCell(rules, 5, 2)];
+  assert.equal(blockingCells.includes(Game.chooseMove(blockingBoard, rules, "easy", () => 0.99)), false);
+});
+
+test("敏捷 AI 偶尔会漏掉玩家的单杀点", () => {
+  const rules = Game.createRules({ type: "plane", width: 7, height: 7, target: 5 });
+  const board = Game.createBoard(rules);
+  put(board, rules, [[1, 2], [2, 2], [3, 2], [4, 2]], Game.HUMAN);
+  const blockingCells = [Game.toCell(rules, 0, 2), Game.toCell(rules, 5, 2)];
+  assert.equal(blockingCells.includes(Game.chooseMove(board, rules, "normal", () => 0.99)), false);
+});
+
 test("困难 AI 在复杂拓扑上按预算返回合法着法且不污染棋盘", () => {
   const rules = Game.createRules({ type: "projective", width: 8, height: 8, target: 5 });
   const board = Game.createBoard(rules);
@@ -185,4 +206,18 @@ test("仍有至少一条未被玩家占据的五连路径时，不触发封锁�
   put(board, rules, [[3, 3], [1, 5]], Game.HUMAN);
   assert.equal(Game.hasLiveLine(board, rules, Game.AI), true);
   assert.equal(Game.playerWinsByBlockingAi(board, rules), false);
+});
+
+test("玩家自己已无五连路径时也立即通关", () => {
+  const rules = Game.createRules({ type: "plane", width: 5, height: 5, target: 5 });
+  const board = Game.createBoard(rules);
+  const closingPattern = [[0, 0], [1, 2], [2, 4], [3, 1], [4, 3]];
+  put(board, rules, closingPattern, Game.AI);
+
+  assert.equal(Game.hasLiveLine(board, rules, Game.HUMAN), false);
+  assert.equal(Game.playerHasNoWinningPath(board, rules), true);
+  assert.equal(Game.playerWinsBySettledPosition(board, rules), true);
+  closingPattern.forEach(([x, y]) => {
+    assert.equal(Game.checkWin(board, rules, Game.toCell(rules, x, y), Game.AI), null);
+  });
 });

@@ -394,6 +394,14 @@
     return !hasLiveLine(board, rules, AI);
   }
 
+  function playerHasNoWinningPath(board, rules) {
+    return !hasLiveLine(board, rules, HUMAN);
+  }
+
+  function playerWinsBySettledPosition(board, rules) {
+    return playerWinsByBlockingAi(board, rules) || playerHasNoWinningPath(board, rules);
+  }
+
   function immediateMoves(board, rules, player) {
     var found = Object.create(null);
     var moves = [];
@@ -539,6 +547,18 @@
     return usable[0].cell;
   }
 
+  function pickEasyMove(ranked, random, excluded) {
+    var candidates = ranked.filter(function keepNonCritical(move) {
+      return !excluded[move.cell];
+    });
+    if (!candidates.length) {
+      candidates = ranked;
+    }
+    var weakerStart = Math.floor(candidates.length * 0.42);
+    var weakerMoves = candidates.slice(weakerStart);
+    return weakerMoves[Math.floor(random() * weakerMoves.length)].cell;
+  }
+
   function minimax(board, rules, depth, player, alpha, beta, lastCell, lastPlayer, context) {
     context.nodes += 1;
     if ((context.nodes & 63) === 0 && Date.now() > context.deadline) {
@@ -553,7 +573,7 @@
       }
     }
 
-    if (playerWinsByBlockingAi(board, rules)) {
+    if (playerWinsBySettledPosition(board, rules)) {
       return -WIN_SCORE / 2 - depth;
     }
 
@@ -602,12 +622,14 @@
   function chooseMove(board, rules, difficulty, random) {
     var rng = random || Math.random;
     var winning = immediateMoves(board, rules, AI);
-    if (winning.length) {
+    var takeWinChance = difficulty === "normal" ? 0.9 : 0.18;
+    if (winning.length && (difficulty === "hard" || rng() < takeWinChance)) {
       return winning[Math.floor(rng() * winning.length)];
     }
 
     var mustBlock = immediateMoves(board, rules, HUMAN);
-    if (mustBlock.length && (difficulty !== "easy" || rng() < 0.82)) {
+    var blockChance = difficulty === "normal" ? 0.78 : 0.16;
+    if (mustBlock.length && (difficulty === "hard" || rng() < blockChance)) {
       var blockRanking = rankMoves(board, rules, AI);
       var blockSet = Object.create(null);
       mustBlock.forEach(function rememberBlock(cell) { blockSet[cell] = true; });
@@ -627,21 +649,33 @@
     }
 
     var ranked = rankMoves(board, rules, AI);
+    var skippedCritical = Object.create(null);
+    winning.forEach(function skipWinningCell(cell) { skippedCritical[cell] = true; });
+    mustBlock.forEach(function skipBlockingCell(cell) { skippedCritical[cell] = true; });
     if (difficulty === "easy") {
-      return pickWeighted(ranked, rng);
+      return pickEasyMove(ranked, rng, skippedCritical);
+    }
+
+    var searchMoves = ranked;
+    if (difficulty === "normal") {
+      var normalMoves = ranked.filter(function keepNonCritical(move) {
+        return !skippedCritical[move.cell];
+      });
+      searchMoves = normalMoves.length ? normalMoves : ranked;
     }
 
     var depth = difficulty === "hard" ? 3 : 2;
-    var rootLimit = difficulty === "hard" ? 11 : 9;
-    var budget = difficulty === "hard" ? 220 : 70;
+    var rootLimit = difficulty === "hard" ? 11 : 7;
+    var budget = difficulty === "hard" ? 220 : 42;
     var context = {
       deadline: Date.now() + budget,
       nodes: 0,
       timedOut: false
     };
-    var rootMoves = ranked.slice(0, rootLimit);
+    var rootMoves = searchMoves.slice(0, rootLimit);
     var bestCell = rootMoves[0].cell;
     var bestValue = -Infinity;
+    var evaluatedMoves = [];
 
     for (index = 0; index < rootMoves.length; index += 1) {
       var cell = rootMoves[index].cell;
@@ -649,9 +683,7 @@
       var value = minimax(board, rules, depth - 1, HUMAN, -Infinity, Infinity, cell, AI, context);
       board[cell] = EMPTY;
       value += rootMoves[index].score * 0.015;
-      if (difficulty === "normal") {
-        value += rng() * 4;
-      }
+      evaluatedMoves.push({ cell: cell, score: value });
       if (value > bestValue) {
         bestValue = value;
         bestCell = cell;
@@ -659,6 +691,13 @@
       if (context.timedOut) {
         break;
       }
+    }
+
+    if (difficulty === "normal") {
+      evaluatedMoves.sort(function sortEvaluated(a, b) {
+        return b.score - a.score;
+      });
+      return pickWeighted(evaluatedMoves, rng);
     }
 
     return bestCell;
@@ -685,6 +724,8 @@
     boardIsDraw: boardIsDraw,
     hasLiveLine: hasLiveLine,
     playerWinsByBlockingAi: playerWinsByBlockingAi,
+    playerHasNoWinningPath: playerHasNoWinningPath,
+    playerWinsBySettledPosition: playerWinsBySettledPosition,
     immediateMoves: immediateMoves,
     scoreMove: scoreMove,
     rankMoves: rankMoves,
