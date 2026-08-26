@@ -106,3 +106,25 @@ test("困难 AI 在复杂拓扑上按预算返回合法着法且不污染棋盘"
   assert.deepEqual(Array.from(board), before);
   assert.ok(elapsed < 700, `AI 用时 ${elapsed}ms`);
 });
+
+test("对手已不存在任何五连路径时，玩家无需连五也获胜", () => {
+  const rules = Game.createRules({ type: "plane", width: 5, height: 5, target: 5 });
+  const board = Game.createBoard(rules);
+  const blockingPattern = [[0, 0], [1, 2], [2, 4], [3, 1], [4, 3]];
+  put(board, rules, blockingPattern, Game.HUMAN);
+
+  assert.equal(Game.hasLiveLine(board, rules, Game.AI), false);
+  assert.equal(Game.playerWinsByBlockingAi(board, rules), true);
+  assert.equal(Game.boardIsDraw(board, rules), false);
+  blockingPattern.forEach(([x, y]) => {
+    assert.equal(Game.checkWin(board, rules, Game.toCell(rules, x, y), Game.HUMAN), null);
+  });
+});
+
+test("仍有至少一条未被玩家占据的五连路径时，不触发封锁胜利", () => {
+  const rules = Game.createRules({ type: "plane", width: 7, height: 7, target: 5 });
+  const board = Game.createBoard(rules);
+  put(board, rules, [[3, 3], [1, 5]], Game.HUMAN);
+  assert.equal(Game.hasLiveLine(board, rules, Game.AI), true);
+  assert.equal(Game.playerWinsByBlockingAi(board, rules), false);
+});

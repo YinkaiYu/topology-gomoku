@@ -312,7 +312,11 @@
   }
 
   function boardIsDraw(board, rules) {
-    return boardIsFull(board) || (!hasLiveLine(board, rules, HUMAN) && !hasLiveLine(board, rules, AI));
+    return boardIsFull(board) && hasLiveLine(board, rules, HUMAN) && hasLiveLine(board, rules, AI);
+  }
+
+  function playerWinsByBlockingAi(board, rules) {
+    return !hasLiveLine(board, rules, AI);
   }
 
   function immediateMoves(board, rules, player) {
@@ -474,7 +478,11 @@
       }
     }
 
-    if (depth === 0 || boardIsDraw(board, rules)) {
+    if (playerWinsByBlockingAi(board, rules)) {
+      return -WIN_SCORE / 2 - depth;
+    }
+
+    if (depth === 0 || boardIsFull(board)) {
       return evaluateBoard(board, rules);
     }
 
@@ -598,6 +606,8 @@
     checkWin: checkWin,
     boardIsFull: boardIsFull,
     boardIsDraw: boardIsDraw,
+    hasLiveLine: hasLiveLine,
+    playerWinsByBlockingAi: playerWinsByBlockingAi,
     immediateMoves: immediateMoves,
     scoreMove: scoreMove,
     rankMoves: rankMoves,

@@ -179,6 +179,8 @@
 
     <div class="scrim" id="scrim" hidden></div>
 
+    <button class="developer-fab" id="developerButton" type="button" aria-label="开发者工具" hidden>DEV</button>
+
     <section class="sheet settings-sheet" id="settingsSheet" aria-modal="true" role="dialog" aria-labelledby="settingsTitle" hidden>
       <div class="sheet-handle" aria-hidden="true"></div>
       <div class="sheet-head">
@@ -209,6 +211,57 @@
         <button class="secondary-button" id="resultRetryButton" type="button">再来一局</button>
         <button class="primary-button" id="resultNextButton" type="button">下一关</button>
       </div>
+    </section>
+
+    <section class="sheet developer-sheet" id="developerSheet" aria-modal="true" role="dialog" aria-labelledby="developerTitle" hidden>
+      <div class="sheet-handle" aria-hidden="true"></div>
+      <div class="sheet-head">
+        <div>
+          <p class="developer-kicker">DEVELOPER MODE</p>
+          <h2 id="developerTitle">测试控制台</h2>
+        </div>
+        <button class="close-button" id="closeDeveloperButton" type="button" aria-label="关闭开发者工具">×</button>
+      </div>
+
+      <div class="developer-section" id="developerGameControls">
+        <div class="developer-section-head">
+          <span>当前对局</span>
+          <small id="developerGameStatus">未进入棋局</small>
+        </div>
+        <div class="setting-row developer-toggle-row">
+          <span>暂停 AI 落子</span>
+          <button class="switch" id="developerPauseSwitch" type="button" role="switch" aria-checked="false"><i></i></button>
+        </div>
+        <div class="developer-control-row">
+          <span>点棋盘时落下</span>
+          <div class="segmented developer-piece-control" role="group" aria-label="开发者落子身份">
+            <button class="is-active" type="button" data-developer-player="1">玩家 · 黑</button>
+            <button type="button" data-developer-player="-1">对手 · 白</button>
+          </div>
+        </div>
+        <div class="developer-action-grid">
+          <button type="button" id="developerPlayerWin">玩家胜利</button>
+          <button type="button" id="developerAiWin">对手胜利</button>
+          <button type="button" id="developerClearBoard">清空棋盘</button>
+        </div>
+      </div>
+
+      <div class="developer-section developer-unlock-section">
+        <div class="developer-section-head">
+          <span>解锁至</span>
+          <button class="developer-reset" id="developerResetProgress" type="button">重置</button>
+        </div>
+        <div class="developer-unlock-grid" role="group" aria-label="手动解锁关卡">
+          <button type="button" data-developer-unlock="0">01</button>
+          <button type="button" data-developer-unlock="1">02</button>
+          <button type="button" data-developer-unlock="2">03</button>
+          <button type="button" data-developer-unlock="3">04</button>
+          <button type="button" data-developer-unlock="4">05</button>
+          <button type="button" data-developer-unlock="5">06</button>
+        </div>
+      </div>
+
+      <button class="sheet-done" id="developerDoneButton" type="button">完成</button>
     </section>
 
     <div class="toast" id="toast" role="status" aria-live="polite"></div>

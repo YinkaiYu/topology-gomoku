@@ -5,6 +5,7 @@
   var STORAGE_KEY = "topology-gomoku:v1";
   var HUMAN = Engine.HUMAN;
   var AI = Engine.AI;
+  var DEV_MODE = isDeveloperLaunch();
 
   var LEVELS = [
     {
@@ -127,6 +128,19 @@
     resultText: document.getElementById("resultText"),
     resultRetryButton: document.getElementById("resultRetryButton"),
     resultNextButton: document.getElementById("resultNextButton"),
+    developerButton: document.getElementById("developerButton"),
+    developerSheet: document.getElementById("developerSheet"),
+    closeDeveloperButton: document.getElementById("closeDeveloperButton"),
+    developerDoneButton: document.getElementById("developerDoneButton"),
+    developerGameControls: document.getElementById("developerGameControls"),
+    developerGameStatus: document.getElementById("developerGameStatus"),
+    developerPauseSwitch: document.getElementById("developerPauseSwitch"),
+    developerPlayerButtons: Array.prototype.slice.call(document.querySelectorAll("[data-developer-player]")),
+    developerUnlockButtons: Array.prototype.slice.call(document.querySelectorAll("[data-developer-unlock]")),
+    developerPlayerWin: document.getElementById("developerPlayerWin"),
+    developerAiWin: document.getElementById("developerAiWin"),
+    developerClearBoard: document.getElementById("developerClearBoard"),
+    developerResetProgress: document.getElementById("developerResetProgress"),
     toast: document.getElementById("toast")
   };
 
@@ -138,6 +152,10 @@
   var toastTimer = 0;
   var resultSecondaryAction = null;
   var resultPrimaryAction = null;
+  var developer = {
+    aiPaused: false,
+    placementPlayer: HUMAN
+  };
 
   var renderState = {
     context: dom.boardCanvas.getContext("2d"),
@@ -154,6 +172,12 @@
     seamPulseBits: 0,
     winAt: 0
   };
+
+  function isDeveloperLaunch() {
+    var search = window.location.search || "";
+    var hash = window.location.hash || "";
+    return /(?:^|[?&])dev=1(?:&|$)/.test(search) || hash === "#dev";
+  }
 
   function defaultPreferences() {
     return {
@@ -343,6 +367,7 @@
       turn: HUMAN,
       status: "playing",
       winningMask: null,
+      winReason: null,
       lastMove: -1
     };
     game.board = Engine.createBoard(game.rules);
@@ -414,17 +439,23 @@
     }
     var humanTurn = game.status === "playing" && game.turn === HUMAN;
     var aiTurn = game.status === "playing" && game.turn === AI;
+    var aiActuallyThinking = aiTurn && !(DEV_MODE && developer.aiPaused);
     dom.humanChip.classList.toggle("is-active", humanTurn);
     dom.aiChip.classList.toggle("is-active", aiTurn);
     dom.difficultyLabel.textContent = DIFFICULTIES[prefs.difficulty].label;
-    dom.thinkingIndicator.classList.toggle("is-visible", aiTurn);
+    dom.thinkingIndicator.classList.toggle("is-visible", aiActuallyThinking);
     dom.undoButton.disabled = game.moves.length === 0 || game.status !== "playing";
     if (game.status === "ended") {
       dom.turnStatus.textContent = "本局结束";
+    } else if (aiTurn && DEV_MODE && developer.aiPaused) {
+      dom.turnStatus.textContent = "AI 已暂停";
     } else if (aiTurn) {
       dom.turnStatus.textContent = "思考中";
     } else {
       dom.turnStatus.textContent = "你的回合";
+    }
+    if (DEV_MODE && activeSheet === dom.developerSheet) {
+      syncDeveloperUI();
     }
   }
 
@@ -465,7 +496,9 @@
     var winningMask = Engine.checkWin(game.board, game.rules, cell, player);
     if (winningMask) {
       finishGame(player === HUMAN ? "win" : "lose", winningMask);
-    } else if (Engine.boardIsDraw(game.board, game.rules)) {
+    } else if (Engine.playerWinsByBlockingAi(game.board, game.rules)) {
+      finishGame("win", null, "blocked");
+    } else if (Engine.boardIsFull(game.board)) {
       finishGame("draw", null);
     } else if (player === HUMAN) {
       game.turn = AI;
@@ -480,6 +513,11 @@
   }
 
   function scheduleAiMove() {
+    if (DEV_MODE && developer.aiPaused) {
+      turnToken += 1;
+      updateTurnUI();
+      return;
+    }
     var scheduledToken = ++turnToken;
     var wait = DIFFICULTIES[prefs.difficulty].wait;
     window.setTimeout(function makeAiMove() {
@@ -493,11 +531,12 @@
     }, wait);
   }
 
-  function finishGame(outcome, winningMask) {
+  function finishGame(outcome, winningMask, reason) {
     turnToken += 1;
     game.status = "ended";
     game.turn = 0;
     game.winningMask = winningMask;
+    game.winReason = reason || null;
     renderState.winAt = performance.now();
     if (winningMask && winningMask.seam) {
       renderState.seamPulseAt = performance.now();
@@ -555,9 +594,15 @@
     var currentIndex = game.levelIndex;
     dom.boardStage.classList.add("is-settled");
     if (outcome === "win") {
-      dom.resultKicker.textContent = currentIndex === LEVELS.length - 1 ? "全数通关" : "通关";
-      dom.resultTitle.textContent = currentIndex === LEVELS.length - 1 ? "走遍所有边界" : "边界被你打通";
-      dom.resultText.textContent = currentIndex === LEVELS.length - 1 ? "再换一种走法" : "下一片棋盘已解锁";
+      if (game.winReason === "blocked") {
+        dom.resultKicker.textContent = "封锁";
+        dom.resultTitle.textContent = "对手无路可走";
+        dom.resultText.textContent = "已没有可完成的五连";
+      } else {
+        dom.resultKicker.textContent = currentIndex === LEVELS.length - 1 ? "全数通关" : "通关";
+        dom.resultTitle.textContent = currentIndex === LEVELS.length - 1 ? "走遍所有边界" : "边界被你打通";
+        dom.resultText.textContent = currentIndex === LEVELS.length - 1 ? "再换一种走法" : "下一片棋盘已解锁";
+      }
       dom.resultRetryButton.textContent = "再来一局";
       dom.resultNextButton.textContent = currentIndex === LEVELS.length - 1 ? "回到旅程" : "下一关";
       resultSecondaryAction = restartGame;
@@ -618,6 +663,148 @@
     if (prefs.sound) {
       sound.play("ui");
     }
+  }
+
+  function openDeveloperTools() {
+    if (!DEV_MODE) {
+      return;
+    }
+    syncDeveloperUI();
+    openSheet(dom.developerSheet);
+    sound.play("ui");
+  }
+
+  function syncDeveloperUI() {
+    if (!DEV_MODE) {
+      return;
+    }
+    var activeGame = Boolean(game && game.status === "playing");
+    dom.developerGameControls.classList.toggle("is-disabled", !activeGame);
+    dom.developerPauseSwitch.disabled = !activeGame;
+    dom.developerPlayerWin.disabled = !activeGame;
+    dom.developerAiWin.disabled = !activeGame;
+    dom.developerClearBoard.disabled = !activeGame;
+    dom.developerPlayerButtons.forEach(function updateDeveloperPlayer(button) {
+      button.disabled = !activeGame;
+      button.classList.toggle("is-active", Number(button.dataset.developerPlayer) === developer.placementPlayer);
+    });
+    dom.developerPauseSwitch.classList.toggle("is-on", developer.aiPaused);
+    dom.developerPauseSwitch.setAttribute("aria-checked", developer.aiPaused ? "true" : "false");
+    if (game) {
+      var turnLabel = game.status === "ended" ? "已结束" : (game.turn === AI ? "对手回合" : "玩家回合");
+      dom.developerGameStatus.textContent = padLevelNumber(game.levelIndex) + " " + game.level.name + " · " + turnLabel;
+    } else {
+      dom.developerGameStatus.textContent = "未进入棋局";
+    }
+    dom.developerUnlockButtons.forEach(function updateUnlockButton(button) {
+      button.classList.toggle("is-active", Number(button.dataset.developerUnlock) <= prefs.unlocked);
+    });
+  }
+
+  function toggleDeveloperPause() {
+    if (!DEV_MODE || !game || game.status !== "playing") {
+      return;
+    }
+    developer.aiPaused = !developer.aiPaused;
+    turnToken += 1;
+    updateTurnUI();
+    syncDeveloperUI();
+    showToast(developer.aiPaused ? "AI 已暂停" : "AI 已恢复");
+    sound.play("ui");
+    if (!developer.aiPaused && game.turn === AI) {
+      scheduleAiMove();
+    }
+  }
+
+  function setDeveloperPlayer(player) {
+    if (!DEV_MODE || (player !== HUMAN && player !== AI)) {
+      return;
+    }
+    developer.placementPlayer = player;
+    syncDeveloperUI();
+    requestRender();
+    showToast(player === HUMAN ? "棋盘落黑子" : "棋盘落白子");
+  }
+
+  function developerForceOutcome(player) {
+    if (!DEV_MODE || !game || game.status !== "playing") {
+      showToast("请先进入棋局");
+      return;
+    }
+    turnToken += 1;
+    var masks = game.rules.winMasks.slice().sort(function sortForceMasks(a, b) {
+      var aBlocked = 0;
+      var bBlocked = 0;
+      Array.prototype.forEach.call(a.cells, function countA(cell) { if (game.board[cell] === -player) { aBlocked += 1; } });
+      Array.prototype.forEach.call(b.cells, function countB(cell) { if (game.board[cell] === -player) { bBlocked += 1; } });
+      return aBlocked - bBlocked;
+    });
+    var mask = masks[0];
+    Array.prototype.forEach.call(mask.cells, function fillWinningMask(cell) {
+      game.board[cell] = player;
+    });
+    game.moves = [];
+    for (var cell = 0; cell < game.board.length; cell += 1) {
+      if (game.board[cell] !== Engine.EMPTY) {
+        game.moves.push({ cell: cell, player: game.board[cell] });
+      }
+    }
+    game.lastMove = mask.cells[mask.cells.length - 1];
+    renderState.lastMoveAt = performance.now();
+    closeActiveSheet(true);
+    finishGame(player === HUMAN ? "win" : "lose", mask, "developer");
+    requestRender();
+  }
+
+  function developerClearCurrentBoard() {
+    if (!DEV_MODE || !game) {
+      showToast("请先进入棋局");
+      return;
+    }
+    turnToken += 1;
+    game.board.fill(Engine.EMPTY);
+    game.moves = [];
+    game.turn = HUMAN;
+    game.status = "playing";
+    game.winningMask = null;
+    game.winReason = null;
+    game.lastMove = -1;
+    renderState.lastMoveAt = 0;
+    renderState.seamPulseAt = 0;
+    renderState.winAt = 0;
+    dom.boardStage.classList.remove("is-settled");
+    updateTurnUI();
+    syncDeveloperUI();
+    closeActiveSheet(false);
+    requestRender();
+    showToast("棋盘已清空");
+  }
+
+  function developerUnlockTo(index) {
+    if (!DEV_MODE) {
+      return;
+    }
+    prefs.unlocked = Math.max(prefs.unlocked, Math.max(0, Math.min(LEVELS.length - 1, index)));
+    selectedLevel = Math.min(prefs.unlocked, LEVELS.length - 1);
+    savePreferences();
+    updateHome();
+    syncDeveloperUI();
+    showToast("已解锁至 " + padLevelNumber(prefs.unlocked));
+  }
+
+  function developerResetProgress() {
+    if (!DEV_MODE) {
+      return;
+    }
+    prefs.unlocked = 0;
+    prefs.completed = [];
+    prefs.bestDifficulty = [];
+    prefs.seenCoach = {};
+    selectedLevel = 0;
+    savePreferences();
+    updateHome();
+    syncDeveloperUI();
+    showToast("关卡进度已重置");
   }
 
   function openSheet(sheet) {
@@ -932,17 +1119,23 @@
 
   function drawMovePreview(ctx) {
     var cell = renderState.pressedCell >= 0 ? renderState.pressedCell : renderState.hoverCell;
-    if (cell < 0 || !game || game.status !== "playing" || game.turn !== HUMAN || game.board[cell] !== Engine.EMPTY || !dom.coachCard.hidden) {
+    if (cell < 0 || !canPlaceOnBoard() || game.board[cell] !== Engine.EMPTY) {
       return;
     }
+    var previewPlayer = DEV_MODE ? developer.placementPlayer : HUMAN;
     var center = cellCenter(cell);
     var radius = renderState.layout.cell * 0.34;
     ctx.save();
     ctx.globalAlpha = renderState.pressedCell >= 0 ? 0.42 : 0.16;
-    ctx.fillStyle = "#21302c";
+    ctx.fillStyle = previewPlayer === HUMAN ? "#21302c" : "#f8f4e9";
     ctx.beginPath();
     ctx.arc(center.x, center.y, radius, 0, Math.PI * 2);
     ctx.fill();
+    if (previewPlayer === AI) {
+      ctx.strokeStyle = "rgba(94, 88, 78, 0.6)";
+      ctx.lineWidth = 1;
+      ctx.stroke();
+    }
     ctx.restore();
   }
 
@@ -1069,13 +1262,16 @@
     return Engine.toCell(game.rules, gridX, gridY);
   }
 
-  function canPlaceHuman() {
-    return game && game.status === "playing" && game.turn === HUMAN && dom.coachCard.hidden && !activeSheet;
+  function canPlaceOnBoard() {
+    if (!game || game.status !== "playing" || !dom.coachCard.hidden || activeSheet) {
+      return false;
+    }
+    return DEV_MODE || game.turn === HUMAN;
   }
 
   function onBoardPointerDown(event) {
     sound.unlock();
-    if (!canPlaceHuman()) {
+    if (!canPlaceOnBoard()) {
       return;
     }
     event.preventDefault();
@@ -1109,8 +1305,8 @@
     var cell = eventToCell(event);
     renderState.pointerId = null;
     renderState.pressedCell = -1;
-    if (canPlaceHuman() && cell >= 0 && game.board[cell] === Engine.EMPTY) {
-      performMove(cell, HUMAN);
+    if (canPlaceOnBoard() && cell >= 0 && game.board[cell] === Engine.EMPTY) {
+      performMove(cell, DEV_MODE ? developer.placementPlayer : HUMAN);
     } else {
       requestRender();
     }
@@ -1152,6 +1348,24 @@
       });
     });
     dom.soundSwitch.addEventListener("click", toggleSound);
+    dom.developerButton.addEventListener("click", openDeveloperTools);
+    dom.closeDeveloperButton.addEventListener("click", function closeDeveloperTools() { closeActiveSheet(false); });
+    dom.developerDoneButton.addEventListener("click", function finishDeveloperTools() { closeActiveSheet(false); });
+    dom.developerPauseSwitch.addEventListener("click", toggleDeveloperPause);
+    dom.developerPlayerButtons.forEach(function bindDeveloperPlayer(button) {
+      button.addEventListener("click", function chooseDeveloperPlayer() {
+        setDeveloperPlayer(Number(button.dataset.developerPlayer));
+      });
+    });
+    dom.developerUnlockButtons.forEach(function bindDeveloperUnlock(button) {
+      button.addEventListener("click", function chooseDeveloperUnlock() {
+        developerUnlockTo(Number(button.dataset.developerUnlock));
+      });
+    });
+    dom.developerPlayerWin.addEventListener("click", function forcePlayerWin() { developerForceOutcome(HUMAN); });
+    dom.developerAiWin.addEventListener("click", function forceAiWin() { developerForceOutcome(AI); });
+    dom.developerClearBoard.addEventListener("click", developerClearCurrentBoard);
+    dom.developerResetProgress.addEventListener("click", developerResetProgress);
     dom.resultRetryButton.addEventListener("click", function runSecondaryResultAction() {
       var action = resultSecondaryAction;
       closeActiveSheet(true);
@@ -1167,7 +1381,7 @@
       }
     });
     dom.scrim.addEventListener("click", function onScrimClick() {
-      if (activeSheet === dom.settingsSheet) {
+      if (activeSheet === dom.settingsSheet || activeSheet === dom.developerSheet) {
         closeActiveSheet(false);
       }
     });
@@ -1198,6 +1412,12 @@
     bindEvents();
     updateHome();
     syncSettingsUI();
+    dom.developerButton.hidden = !DEV_MODE;
+    if (DEV_MODE) {
+      document.body.classList.add("is-developer-mode");
+      syncDeveloperUI();
+      window.setTimeout(function announceDeveloperMode() { showToast("开发者模式"); }, 260);
+    }
   }
 
   initialize();
