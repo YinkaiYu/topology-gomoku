@@ -331,7 +331,7 @@ button,
 }
 
 .level-card.is-locked:not(.is-revealed) .level-glyph {
-  opacity: 0;
+  opacity: 0.62;
 }
 
 .level-card.is-locked .level-mystery {
@@ -387,17 +387,7 @@ button,
 }
 
 .level-mystery::before {
-  position: absolute;
-  width: 72px;
-  height: 52px;
-  border-radius: 47% 53% 43% 57% / 56% 45% 55% 44%;
-  background: linear-gradient(145deg, #4e5d58 0%, #25332f 52%, #17231f 100%);
-  box-shadow:
-    inset 9px 7px 14px rgba(255, 255, 255, 0.09),
-    inset -8px -7px 12px rgba(5, 12, 10, 0.18),
-    0 8px 13px rgba(28, 40, 36, 0.16);
-  content: "";
-  transform: rotate(-6deg);
+  content: none;
 }
 
 .level-mystery::after {
@@ -424,8 +414,9 @@ button,
 }
 
 .level-card:not(.is-revealed) .level-glyph {
-  opacity: 0;
-  transform: scale(0.82) rotate(-4deg);
+  filter: brightness(0) saturate(100%);
+  opacity: 0.78;
+  transform: scale(0.94);
 }
 
 .level-card.is-revealed .level-mystery {
@@ -436,16 +427,6 @@ button,
 
 .level-card.is-revealed .level-glyph {
   animation: collectible-reveal 620ms cubic-bezier(0.22, 1, 0.36, 1) both;
-}
-
-.level-card:nth-child(3n) .level-mystery::before {
-  border-radius: 54% 46% 58% 42% / 45% 58% 42% 55%;
-  transform: rotate(5deg) scale(0.96, 1.03);
-}
-
-.level-card:nth-child(3n + 2) .level-mystery::before {
-  border-radius: 43% 57% 48% 52% / 60% 42% 58% 40%;
-  transform: rotate(-9deg) scale(1.02, 0.95);
 }
 
 @keyframes collectible-reveal {

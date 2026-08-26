@@ -138,11 +138,15 @@
     var offsetY = 0;
     var offsetZ = 0;
     var scaleFactor = 1;
+    var wobbleX = 0;
+    var wobbleY = 0;
     if (orientation && typeof orientation === "object") {
       offsetX = Number(orientation.x) || 0;
       offsetY = Number(orientation.y) || 0;
       offsetZ = Number(orientation.z) || 0;
       scaleFactor = Number(orientation.scale) || 1;
+      wobbleX = Number(orientation.wobbleX) || 0;
+      wobbleY = Number(orientation.wobbleY) || 0;
     } else {
       offsetY = Number(orientation) || 0;
     }
@@ -151,7 +155,11 @@
       camera.rotation[1] + offsetY,
       camera.rotation[2] + offsetZ
     ];
-    var point = rotate(surfacePoint(type, u, v), angles);
+    var surface = surfacePoint(type, u, v);
+    var softX = surface[0] * (1 + wobbleY * 0.78) + surface[1] * wobbleX * 0.34;
+    var softY = surface[1] * (1 - wobbleY * 0.28) + surface[2] * wobbleX * 0.22;
+    var softZ = surface[2] * (1 - wobbleY * 0.32) - surface[0] * wobbleX * 0.16;
+    var point = rotate([softX, softY, softZ], angles);
     var scale = Math.min(width, height) * camera.scale * scaleFactor;
     return {
       x: width * 0.5 + point[0] * scale,

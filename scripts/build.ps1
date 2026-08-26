@@ -5,6 +5,7 @@ $appRoot = Join-Path $projectRoot 'app'
 $releaseRoot = Join-Path $projectRoot 'release'
 $zipPath = Join-Path $releaseRoot 'topology-gomoku.zip'
 $validateScript = Join-Path $PSScriptRoot 'validate.ps1'
+$appRootPrefix = $appRoot + [System.IO.Path]::DirectorySeparatorChar
 
 & $validateScript
 
@@ -13,17 +14,41 @@ if (Test-Path -LiteralPath $zipPath) {
   Remove-Item -Force -LiteralPath $zipPath
 }
 
+Add-Type -AssemblyName System.IO.Compression
 Add-Type -AssemblyName System.IO.Compression.FileSystem
-[System.IO.Compression.ZipFile]::CreateFromDirectory(
-  $appRoot,
-  $zipPath,
-  [System.IO.Compression.CompressionLevel]::Optimal,
+$zipStream = [System.IO.File]::Open($zipPath, [System.IO.FileMode]::CreateNew)
+$zipArchive = [System.IO.Compression.ZipArchive]::new(
+  $zipStream,
+  [System.IO.Compression.ZipArchiveMode]::Create,
   $false
 )
+try {
+  Get-ChildItem -LiteralPath $appRoot -Recurse -File | ForEach-Object {
+    $relativePath = $_.FullName.Substring($appRootPrefix.Length).Replace('\', '/')
+    if ($relativePath.Contains('..') -or $relativePath.StartsWith('/') -or $relativePath.Contains('\')) {
+      throw "Unsafe package path: $relativePath"
+    }
+    [System.IO.Compression.ZipFileExtensions]::CreateEntryFromFile(
+      $zipArchive,
+      $_.FullName,
+      $relativePath,
+      [System.IO.Compression.CompressionLevel]::Optimal
+    ) | Out-Null
+  }
+} finally {
+  $zipArchive.Dispose()
+  $zipStream.Dispose()
+}
 
 $archive = [System.IO.Compression.ZipFile]::OpenRead($zipPath)
 try {
-  $entryNames = @($archive.Entries | ForEach-Object { $_.FullName.Replace('\', '/') })
+  $entryNames = @($archive.Entries | ForEach-Object { $_.FullName })
+  $unsafeEntries = @($entryNames | Where-Object {
+    $_.Contains('..') -or $_.StartsWith('/') -or $_.Contains('\')
+  })
+  if ($unsafeEntries.Count -gt 0) {
+    throw "The package contains unsafe paths: $($unsafeEntries -join ', ')"
+  }
   if ($entryNames -notcontains 'index.html') {
     throw 'The package root is missing index.html.'
   }

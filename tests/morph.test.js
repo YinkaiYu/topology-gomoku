@@ -81,6 +81,13 @@ test("三维投影支持玩家控制的多轴观察角", () => {
   assert.notDeepEqual(moved, base);
 });
 
+test("拖动时的柔性形变保持拓扑接缝重合", () => {
+  const orientation = { x: 0.18, y: -0.24, wobbleX: 0.08, wobbleY: -0.09 };
+  const left = Morph.project("mobius", 0, 0.23, 420, 420, orientation);
+  const right = Morph.project("mobius", 1, 0.77, 420, 420, orientation);
+  assert.ok(Math.hypot(left.x - right.x, left.y - right.y) < 1e-6);
+});
+
 test("通关曲面使用高密度采样，棋盘线沿曲面分段插值", () => {
   const game = fs.readFileSync(path.join(ROOT, "app", "assets", "game.js"), "utf8");
   assert.match(game, /var columns = 44;/);
@@ -99,4 +106,15 @@ test("胜利曲面常驻旋转且支持拖动，不再自动弹出结算卡片",
   assert.match(game, /completion\.rotation\.y \+= yawDelta;/);
   assert.match(game, /if \(outcome !== "win"\)/);
   assert.match(game, /chooseCompletionView\(winningMask\)/);
+  assert.match(game, /elastic:\s*\{ x: 0, y: 0, velocityX: 0, velocityY: 0 \}/);
+  assert.match(game, /wobbleX: game\.completion\.elastic\.x/);
+});
+
+test("开发者玩家胜利沿本关演示路径逐颗跨界落子", () => {
+  const game = fs.readFileSync(path.join(ROOT, "app", "assets", "game.js"), "utf8");
+  assert.match(game, /player === HUMAN && game\.levelIndex > 0/);
+  assert.match(game, /Engine\.tracePath\(game\.rules, boundaryStart, game\.level\.demoDirection/);
+  assert.match(game, /boundaryPath \? boundaryPath\.cells/);
+  assert.match(game, /index \* 220/);
+  assert.match(game, /boundaryPath\.seams\[index - 1\]/);
 });

@@ -587,6 +587,8 @@
       dom.turnStatus.textContent = "边界演示";
     } else if (game.status === "ended") {
       dom.turnStatus.textContent = game.outcome === "win" ? "通关" : "本局结束";
+    } else if (game.status === "forcing") {
+      dom.turnStatus.textContent = "跨界连线";
     } else if (aiTurn && DEV_MODE && developer.aiPaused) {
       dom.turnStatus.textContent = "AI 已暂停";
     } else if (aiTurn) {
@@ -754,6 +756,7 @@
       view: chooseCompletionView(winningMask),
       rotation: { x: 0, y: 0, z: 0 },
       velocity: { x: 0, y: 0 },
+      elastic: { x: 0, y: 0, velocityX: 0, velocityY: 0 },
       dragging: false,
       pointerId: null,
       lastX: 0,
@@ -980,6 +983,13 @@
     }
     finishBoundaryDemo();
     turnToken += 1;
+    var forceToken = turnToken;
+    var forcedGame = game;
+    var boundaryPath = null;
+    if (player === HUMAN && game.levelIndex > 0) {
+      var boundaryStart = Engine.toCell(game.rules, game.level.demoStart[0], game.level.demoStart[1]);
+      boundaryPath = Engine.tracePath(game.rules, boundaryStart, game.level.demoDirection, game.rules.target);
+    }
     var masks = game.rules.winMasks.slice().sort(function sortForceMasks(a, b) {
       var aBlocked = 0;
       var bBlocked = 0;
@@ -988,20 +998,47 @@
       return aBlocked - bBlocked;
     });
     var mask = masks[0];
-    Array.prototype.forEach.call(mask.cells, function fillWinningMask(cell) {
-      game.board[cell] = player;
-    });
-    game.moves = [];
-    for (var cell = 0; cell < game.board.length; cell += 1) {
-      if (game.board[cell] !== Engine.EMPTY) {
-        game.moves.push({ cell: cell, player: game.board[cell] });
-      }
+    if (boundaryPath) {
+      var boundaryKey = boundaryPath.cells.slice().sort(function numericSort(a, b) { return a - b; }).join(",");
+      mask = masks.find(function findBoundaryMask(candidate) {
+        return Array.prototype.slice.call(candidate.cells).sort(function numericSort(a, b) { return a - b; }).join(",") === boundaryKey;
+      }) || mask;
     }
-    game.lastMove = mask.cells[mask.cells.length - 1];
-    renderState.lastMoveAt = performance.now();
+    var forcedCells = boundaryPath ? boundaryPath.cells : Array.prototype.slice.call(mask.cells);
+    game.board.fill(Engine.EMPTY);
+    game.moves = [];
+    game.status = "forcing";
+    game.turn = 0;
+    game.lastMove = -1;
+    game.winningMask = null;
+    game.outcome = null;
+    renderState.seamPulseAt = 0;
+    renderState.winAt = 0;
     closeActiveSheet(true);
-    finishGame(player === HUMAN ? "win" : "lose", mask, "developer");
+    updateTurnUI();
     requestRender();
+    forcedCells.forEach(function scheduleForcedStone(cell, index) {
+      window.setTimeout(function placeForcedStone() {
+        if (game !== forcedGame || turnToken !== forceToken || game.status !== "forcing") {
+          return;
+        }
+        game.board[cell] = player;
+        game.moves.push({ cell: cell, player: player });
+        game.lastMove = cell;
+        renderState.lastMoveAt = performance.now();
+        sound.play(player === HUMAN ? "move-human" : "move-ai");
+        if (boundaryPath && index > 0 && boundaryPath.seams[index - 1]) {
+          renderState.seamPulseAt = performance.now();
+          renderState.seamPulseBits = boundaryPath.seams[index - 1];
+          sound.play("seam");
+        }
+        requestRender();
+        if (index === forcedCells.length - 1) {
+          var verifiedMask = Engine.checkWin(game.board, game.rules, cell, player) || mask;
+          finishGame(player === HUMAN ? "win" : "lose", verifiedMask, "developer");
+        }
+      }, index * 220);
+    });
   }
 
   function developerClearCurrentBoard() {
@@ -1206,16 +1243,17 @@
       completion.settled = true;
       updateTurnUI();
     }
-    if (completion.dragging) {
-      return;
-    }
-
     var frameScale = Math.max(0.25, Math.min(2, delta / 16.67));
-    completion.rotation.x += completion.velocity.x * delta;
-    completion.rotation.y += completion.velocity.y * delta;
     var friction = Math.pow(0.91, frameScale);
-    completion.velocity.x *= friction;
-    completion.velocity.y *= friction;
+    if (!completion.dragging) {
+      completion.rotation.x += completion.velocity.x * delta;
+      completion.rotation.y += completion.velocity.y * delta;
+      completion.velocity.x *= friction;
+      completion.velocity.y *= friction;
+    } else if (time - completion.lastPointerAt > 72) {
+      completion.velocity.x *= friction;
+      completion.velocity.y *= friction;
+    }
     if (Math.abs(completion.velocity.x) < 0.00001) {
       completion.velocity.x = 0;
     }
@@ -1227,7 +1265,17 @@
       completion.rotation.x = Math.max(-1.12, Math.min(1.12, totalPitch)) - completion.view.x;
       completion.velocity.x *= -0.18;
     }
-    if (elapsed > completion.duration * 0.55 && time >= completion.autoResumeAt) {
+    var elastic = completion.elastic;
+    var targetElasticX = Math.max(-0.09, Math.min(0.09, completion.velocity.x * 16));
+    var targetElasticY = Math.max(-0.1, Math.min(0.1, completion.velocity.y * 15));
+    elastic.velocityX += (targetElasticX - elastic.x) * 0.13 * frameScale;
+    elastic.velocityY += (targetElasticY - elastic.y) * 0.13 * frameScale;
+    var elasticDamping = Math.pow(0.72, frameScale);
+    elastic.velocityX *= elasticDamping;
+    elastic.velocityY *= elasticDamping;
+    elastic.x += elastic.velocityX * frameScale;
+    elastic.y += elastic.velocityY * frameScale;
+    if (!completion.dragging && elapsed > completion.duration * 0.55 && time >= completion.autoResumeAt) {
       completion.rotation.y += 0.00016 * delta;
     }
   }
@@ -1670,7 +1718,9 @@
       x: game.completion.view.x * viewBlend + game.completion.rotation.x,
       y: game.completion.view.y * viewBlend + game.completion.rotation.y,
       z: game.completion.view.z * viewBlend + game.completion.rotation.z,
-      scale: jellyScale
+      scale: jellyScale,
+      wobbleX: game.completion.elastic.x,
+      wobbleY: game.completion.elastic.y
     };
 
     drawCompletionSurface(ctx, morph, orientation);

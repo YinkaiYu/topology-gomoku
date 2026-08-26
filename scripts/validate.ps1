@@ -3,6 +3,7 @@ $ErrorActionPreference = 'Stop'
 $projectRoot = Split-Path -Parent $PSScriptRoot
 $appRoot = Join-Path $projectRoot 'app'
 $indexPath = Join-Path $appRoot 'index.html'
+$projectRootPrefix = $projectRoot + [System.IO.Path]::DirectorySeparatorChar
 $errors = [System.Collections.Generic.List[string]]::new()
 $allowedExtensions = @('.html', '.css', '.js', '.png', '.jpg', '.jpeg', '.gif', '.webp', '.svg', '.woff', '.woff2', '.json')
 
@@ -77,7 +78,7 @@ foreach ($file in $scanFiles) {
   $content = Get-Content -LiteralPath $file.FullName -Raw
   foreach ($entry in $forbiddenPatterns.GetEnumerator()) {
     if ($content -match $entry.Value) {
-      $relative = [System.IO.Path]::GetRelativePath($projectRoot, $file.FullName)
+      $relative = $file.FullName.Substring($projectRootPrefix.Length)
       $errors.Add("Forbidden capability '$($entry.Key)' detected in $relative")
     }
   }

@@ -73,4 +73,6 @@ test("目录中的高阶拓扑必须通关后才揭示图鉴", () => {
   assert.match(game, /classList\.toggle\("is-revealed", revealed\)/);
   assert.match(style, /\.level-card:not\(\.is-revealed\) \.level-glyph/);
   assert.match(style, /\.level-card\.is-revealed \.level-mystery/);
+  assert.match(style, /\.level-card:not\(\.is-revealed\) \.level-glyph\s*\{[^}]*filter:\s*brightness\(0\)/s);
+  assert.doesNotMatch(style, /\.level-mystery::before\s*\{[^}]*border-radius:/s);
 });
