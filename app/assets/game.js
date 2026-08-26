@@ -483,6 +483,17 @@
     requestRender();
   }
 
+  function tutorialMoveCount() {
+    return game.moves.filter(function countTutorialStones(move) {
+      return move.player === HUMAN;
+    }).length;
+  }
+
+  function tutorialPromptText() {
+    var count = tutorialMoveCount();
+    return count ? "继续落子 · " + count + " / 5" : "落下第一颗";
+  }
+
   function updateTurnUI() {
     if (!game) {
       return;
@@ -510,12 +521,7 @@
       dom.turnStatus.textContent = "思考中";
     } else {
       if (game.level.tutorial) {
-        var tutorialCount = game.moves.filter(function countTutorialStones(move) {
-          return move.player === HUMAN;
-        }).length;
-        dom.turnStatus.textContent = tutorialCount
-          ? "继续落子 · " + tutorialCount + " / 5"
-          : "落下第一颗";
+        dom.turnStatus.textContent = tutorialPromptText();
       } else {
         dom.turnStatus.textContent = "你的回合";
       }
@@ -1134,8 +1140,12 @@
       return;
     }
     var center = cellCenter(hintCell);
-    var pulse = Math.sin(time * 0.006) * 0.5 + 0.5;
+    var breath = Math.sin(time * 0.006);
+    var pulse = breath * 0.5 + 0.5;
     var radius = renderState.layout.cell * 0.25 + pulse * 2.2;
+    var guideText = tutorialPromptText();
+    var fontSize = Math.max(12, Math.min(14, renderState.layout.cell * 0.195));
+    var floatY = -breath * 1.25;
     ctx.save();
     ctx.globalAlpha = 0.52 + pulse * 0.24;
     ctx.strokeStyle = "#3f8c87";
@@ -1152,6 +1162,26 @@
     ctx.beginPath();
     ctx.arc(center.x, center.y, 1.7 + pulse * 0.65, 0, Math.PI * 2);
     ctx.fill();
+
+    ctx.font = "700 " + fontSize + "px -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', sans-serif";
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+    var textWidth = ctx.measureText(guideText).width;
+    var textX = Math.max(
+      renderState.layout.left + textWidth * 0.5 + 7,
+      Math.min(renderState.layout.right - textWidth * 0.5 - 7, center.x)
+    );
+    var textY = center.y - radius - fontSize * 1.15 + floatY;
+    if (textY - fontSize * 0.6 < renderState.layout.top) {
+      textY = center.y + radius + fontSize * 1.2 - floatY;
+    }
+    ctx.globalAlpha = 0.74 + pulse * 0.22;
+    ctx.lineWidth = 4.1;
+    ctx.lineJoin = "round";
+    ctx.strokeStyle = "rgba(251, 250, 246, 0.92)";
+    ctx.fillStyle = "#315f5b";
+    ctx.strokeText(guideText, textX, textY);
+    ctx.fillText(guideText, textX, textY);
     ctx.restore();
   }
 
