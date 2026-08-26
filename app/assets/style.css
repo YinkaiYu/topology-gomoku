@@ -326,8 +326,8 @@ button,
 }
 
 .level-card.is-locked .level-glyph {
-  opacity: 0.76;
-  filter: saturate(0.32);
+  opacity: 0.88;
+  filter: none;
 }
 
 .level-card.is-locked.is-shaking {
@@ -351,8 +351,8 @@ button,
 }
 
 .level-glyph {
-  width: 84px;
-  height: 68px;
+  width: 88px;
+  height: 70px;
   grid-column: 1 / -1;
   grid-row: 2;
   align-self: center;
@@ -1139,7 +1139,7 @@ button,
   .home-scroll { padding-right: 14px; padding-left: 14px; }
   .home-actions { padding-right: 14px; padding-left: 14px; }
   .level-card { min-height: 142px; padding: 12px; }
-  .level-glyph { width: 62px; }
+  .level-glyph { width: 72px; height: 60px; }
   .hero::after { width: 54px; height: 54px; }
 }
 

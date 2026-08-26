@@ -9,8 +9,7 @@ from typing import Callable, Iterable
 
 
 TAU = math.tau
-INK = "#21302c"
-TEAL = "#3f8c87"
+INK = "#282522"
 OUTPUT_DIR = Path(__file__).resolve().parents[1] / "app" / "assets" / "topologies"
 
 
@@ -129,20 +128,20 @@ def plane_glyph() -> Glyph:
 def cylinder_glyph() -> Glyph:
     curves = [sampled_curve(lambda angle, axial=axial: cylinder(angle, axial), 0, TAU, 121,
                             closed=True, width=2.8, opacity=0.96) for axial in (-1.0, 1.0)]
-    patches = sampled_surface(cylinder, 0, TAU, 32, -1, 1, 5)
+    patches = sampled_surface(cylinder, 0, TAU, 40, -1, 1, 7)
     return Glyph("cylinder", "shaded-periodic-cylinder", "C(u,v)=(1.35v,cos u,sin u), u mod 2π",
                  curves, (0.38, -0.28, -0.18), patches)
 
 
 def torus_glyph() -> Glyph:
-    patches = sampled_surface(torus, 0, TAU, 32, 0, TAU, 12)
+    patches = sampled_surface(torus, 0, TAU, 40, 0, TAU, 16)
     return Glyph("torus", "shaded-doubly-periodic-torus",
                  "T(u,v)=((R+r cos v)cos u,(R+r cos v)sin u,r sin v)", [], (0.78, -0.12, -0.2), patches)
 
 
 def mobius_glyph() -> Glyph:
     strip_width = 0.48
-    patches = sampled_surface(mobius, 0, TAU, 36, -strip_width, strip_width, 6)
+    patches = sampled_surface(mobius, 0, TAU, 48, -strip_width, strip_width, 10)
     return Glyph("mobius", "shaded-mobius-embedding",
                  "standard Möbius embedding with M(0,s)=M(2π,−s)", [], (0.92, 0.04, -0.30), patches)
 
@@ -150,7 +149,7 @@ def mobius_glyph() -> Glyph:
 def klein_glyph() -> Glyph:
     curves = [sampled_curve(lambda v: klein(0, v), 0, TAU, 121,
                             accent=True, width=3.2, opacity=0.98, closed=True)]
-    patches = sampled_surface(klein, 0, TAU, 32, 0, TAU, 12)
+    patches = sampled_surface(klein, 0, TAU, 40, 0, TAU, 16)
     return Glyph("klein", "shaded-figure-eight-klein-immersion",
                  "figure-eight immersion with K(2π,v)=K(0,−v)", curves, (0.84, -0.18, -0.26), patches)
 
@@ -158,7 +157,7 @@ def klein_glyph() -> Glyph:
 def projective_glyph() -> Glyph:
     curves = [sampled_curve(lambda phi: roman(math.pi / 4, phi), 0, TAU, 145,
                             accent=True, width=3.0, opacity=0.94, closed=True)]
-    patches = sampled_surface(roman, 0.05, math.pi / 2, 10, 0, TAU, 30)
+    patches = sampled_surface(roman, 0.05, math.pi / 2, 14, 0, TAU, 40)
     return Glyph("projective", "shaded-roman-surface-rp2-immersion",
                  "Roman-surface immersion H(x,y,z)=(yz,zx,xy), invariant under p↦−p",
                  curves, (0.66, -0.52, 0.12), patches)
@@ -236,36 +235,42 @@ def render(glyph: Glyph) -> str:
         depth_span = max(depths) - min(depths) or 1.0
         for points, depth in projected_patches:
             relative_depth = (depth - min(depths)) / depth_span
-            color = mix_color((226, 235, 231), (104, 151, 141), 0.28 + relative_depth * 0.60)
+            shade = 0.08 if len(projected_patches) == 1 else 0.48 if relative_depth < 0.34 else 0.23 if relative_depth < 0.67 else 0.06
+            color = mix_color((251, 249, 242), (164, 159, 147), shade)
             surface_paths.append(
                 f'<path d="{path_data(points, True)}" fill="{color}" stroke="{color}" '
                 'stroke-width="0.85" stroke-linejoin="round" vector-effect="non-scaling-stroke"/>'
             )
     curve_paths: list[str] = []
     for curve, points, _depth in transformed:
-        color = TEAL if curve.accent else INK
         curve_paths.append(
-            f'<path d="{path_data(points, curve.closed)}" fill="none" stroke="{color}" '
+            f'<path d="{path_data(points, curve.closed)}" fill="none" stroke="{INK}" '
             f'stroke-width="{curve.width:.2f}" stroke-opacity="{curve.opacity:.2f}" '
             'stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke"/>'
         )
 
     return "\n".join([
         '<?xml version="1.0" encoding="UTF-8"?>',
-        f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" role="img" data-model="{glyph.model}">',
+        f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" role="img" data-model="{glyph.model}" data-style="hand-drawn-cel-silhouette">',
         f'  <desc>{glyph.description}</desc>',
         '  <defs>',
-        '    <filter id="silhouette" x="-12%" y="-12%" width="124%" height="124%" color-interpolation-filters="sRGB">',
-        '      <feMorphology in="SourceAlpha" operator="dilate" radius="3.2" result="expanded"/>',
+        '    <filter id="handSurface" x="-14%" y="-14%" width="128%" height="128%" color-interpolation-filters="sRGB">',
+        '      <feTurbulence type="fractalNoise" baseFrequency="0.018 0.026" numOctaves="2" seed="19" result="paperNoise"/>',
+        '      <feDisplacementMap in="SourceGraphic" in2="paperNoise" scale="1.35" xChannelSelector="R" yChannelSelector="G" result="drawn"/>',
+        '      <feMorphology in="drawn" operator="dilate" radius="4.4" result="expanded"/>',
         f'      <feFlood flood-color="{INK}" result="ink"/>',
         '      <feComposite in="ink" in2="expanded" operator="in" result="outline"/>',
-        '      <feMerge><feMergeNode in="outline"/><feMergeNode in="SourceGraphic"/></feMerge>',
+        '      <feMerge><feMergeNode in="outline"/><feMergeNode in="drawn"/></feMerge>',
+        '    </filter>',
+        '    <filter id="handLine" x="-8%" y="-8%" width="116%" height="116%">',
+        '      <feTurbulence type="fractalNoise" baseFrequency="0.024" numOctaves="2" seed="31" result="lineNoise"/>',
+        '      <feDisplacementMap in="SourceGraphic" in2="lineNoise" scale="1.05" xChannelSelector="R" yChannelSelector="G"/>',
         '    </filter>',
         '  </defs>',
-        '  <g filter="url(#silhouette)">',
+        '  <g filter="url(#handSurface)">',
         *[f"    {path}" for path in surface_paths],
         '  </g>',
-        '  <g>',
+        '  <g filter="url(#handLine)">',
         *[f"    {path}" for path in curve_paths],
         '  </g>',
         '</svg>',

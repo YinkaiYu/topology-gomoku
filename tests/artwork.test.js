@@ -32,9 +32,12 @@ test("六关均使用不透明曲面与统一投影轮廓", () => {
     const svg = fs.readFileSync(path.join(TOPOLOGY_DIR, `${name}.svg`), "utf8");
     const pathCount = (svg.match(/<path\b/g) || []).length;
     assert.ok(pathCount >= 1, `${name}: ${pathCount} paths`);
-    assert.match(svg, /<filter id="silhouette"/);
+    assert.match(svg, /data-style="hand-drawn-cel-silhouette"/);
+    assert.match(svg, /<filter id="handSurface"/);
+    assert.match(svg, /<feTurbulence\b/);
     assert.match(svg, /fill="#[0-9a-f]{6}"/);
     assert.doesNotMatch(svg, /<rect[^>]+fill=/);
+    assert.doesNotMatch(svg, /<text\b|<foreignObject\b/i);
     assert.doesNotMatch(svg, /stroke-opacity="0\.[0-7]/);
   });
 });
