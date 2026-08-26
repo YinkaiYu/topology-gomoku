@@ -30,6 +30,19 @@
     return t * t * (3 - 2 * t);
   }
 
+  function spring(value) {
+    var t = clamp01(value);
+    if (t === 0 || t === 1) {
+      return t;
+    }
+    var damping = 0.62;
+    var frequency = 8.5;
+    var dampedFrequency = frequency * Math.sqrt(1 - damping * damping);
+    var phase = damping / Math.sqrt(1 - damping * damping);
+    return 1 - Math.exp(-damping * frequency * t) *
+      (Math.cos(dampedFrequency * t) + phase * Math.sin(dampedFrequency * t));
+  }
+
   function cylinder(u, v) {
     var angle = TAU * u;
     return [1.05 * Math.cos(angle), (v - 0.5) * 2.15, 1.05 * Math.sin(angle)];
@@ -119,11 +132,27 @@
     return [nextX, nextY, z];
   }
 
-  function project(type, u, v, width, height, spin) {
+  function project(type, u, v, width, height, orientation) {
     var camera = CAMERAS[type] || CAMERAS.cylinder;
-    var angles = [camera.rotation[0], camera.rotation[1] + (spin || 0), camera.rotation[2]];
+    var offsetX = 0;
+    var offsetY = 0;
+    var offsetZ = 0;
+    var scaleFactor = 1;
+    if (orientation && typeof orientation === "object") {
+      offsetX = Number(orientation.x) || 0;
+      offsetY = Number(orientation.y) || 0;
+      offsetZ = Number(orientation.z) || 0;
+      scaleFactor = Number(orientation.scale) || 1;
+    } else {
+      offsetY = Number(orientation) || 0;
+    }
+    var angles = [
+      camera.rotation[0] + offsetX,
+      camera.rotation[1] + offsetY,
+      camera.rotation[2] + offsetZ
+    ];
     var point = rotate(surfacePoint(type, u, v), angles);
-    var scale = Math.min(width, height) * camera.scale;
+    var scale = Math.min(width, height) * camera.scale * scaleFactor;
     return {
       x: width * 0.5 + point[0] * scale,
       y: height * 0.5 - point[1] * scale,
@@ -158,6 +187,7 @@
   return {
     clamp01: clamp01,
     smooth: smooth,
+    spring: spring,
     surfacePoint: surfacePoint,
     project: project,
     stoneUV: stoneUV,

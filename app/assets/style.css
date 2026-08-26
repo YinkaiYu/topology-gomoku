@@ -685,6 +685,20 @@ button,
   touch-action: none;
 }
 
+.board-stage.is-exploring #boardCanvas {
+  cursor: grab;
+}
+
+.board-stage.is-dragging #boardCanvas {
+  cursor: grabbing;
+}
+
+.board-stage.is-exploring {
+  box-shadow:
+    inset 0 0 0 1px rgba(63, 140, 135, 0.12),
+    0 18px 48px rgba(47, 78, 70, 0.12);
+}
+
 .thinking {
   position: absolute;
   top: 17px;

@@ -68,6 +68,19 @@ test("所有关卡的三维投影均返回有限屏幕坐标", () => {
   });
 });
 
+test("弹性形变首尾精确且中段具有轻微回弹", () => {
+  assert.equal(Morph.spring(0), 0);
+  assert.equal(Morph.spring(1), 1);
+  assert.ok(Array.from({ length: 19 }, (_, index) => Morph.spring((index + 1) / 20)).some((value) => value > 1));
+});
+
+test("三维投影支持玩家控制的多轴观察角", () => {
+  const base = Morph.project("mobius", 0.23, 0.68, 420, 420, 0);
+  const moved = Morph.project("mobius", 0.23, 0.68, 420, 420, { x: 0.2, y: -0.35, z: 0.08, scale: 1.02 });
+  assert.ok(Number.isFinite(moved.x) && Number.isFinite(moved.y) && Number.isFinite(moved.depth));
+  assert.notDeepEqual(moved, base);
+});
+
 test("通关曲面使用高密度采样，棋盘线沿曲面分段插值", () => {
   const game = fs.readFileSync(path.join(ROOT, "app", "assets", "game.js"), "utf8");
   assert.match(game, /var columns = 44;/);
@@ -77,4 +90,13 @@ test("通关曲面使用高密度采样，棋盘线沿曲面分段插值", () =>
   assert.match(game, /completionGridEdgePoints\(cells\[index\], step, direction/);
   assert.doesNotMatch(game, /var columns = 18;/);
   assert.doesNotMatch(game, /appendCompletionSegment\(points, sourceBoundary, targetBoundary/);
+});
+
+test("胜利曲面常驻旋转且支持拖动，不再自动弹出结算卡片", () => {
+  const game = fs.readFileSync(path.join(ROOT, "app", "assets", "game.js"), "utf8");
+  assert.match(game, /if \(game\.completion\) \{\s*animate = true;/);
+  assert.match(game, /function canExploreCompletion\(\)/);
+  assert.match(game, /completion\.rotation\.y \+= yawDelta;/);
+  assert.match(game, /if \(outcome !== "win"\)/);
+  assert.match(game, /chooseCompletionView\(winningMask\)/);
 });

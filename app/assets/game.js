@@ -127,7 +127,11 @@
     ruleCaptionTitle: document.getElementById("ruleCaptionTitle"),
     ruleCaptionText: document.getElementById("ruleCaptionText"),
     undoButton: document.getElementById("undoButton"),
+    undoButtonText: document.getElementById("undoButtonText"),
+    undoIconPath: document.getElementById("undoIconPath"),
     restartButton: document.getElementById("restartButton"),
+    restartButtonText: document.getElementById("restartButtonText"),
+    restartIconPath: document.getElementById("restartIconPath"),
     scrim: document.getElementById("scrim"),
     settingsSheet: document.getElementById("settingsSheet"),
     closeSettingsButton: document.getElementById("closeSettingsButton"),
@@ -182,6 +186,7 @@
     hoverCell: -1,
     pressedCell: -1,
     pointerId: null,
+    lastFrameAt: 0,
     lastMoveAt: 0,
     seamPulseAt: 0,
     seamPulseBits: 0,
@@ -390,6 +395,7 @@
       moves: [],
       turn: HUMAN,
       status: "playing",
+      outcome: null,
       winningMask: null,
       winReason: null,
       lastMove: -1,
@@ -402,12 +408,13 @@
     renderState.lastMoveAt = 0;
     renderState.seamPulseAt = 0;
     renderState.winAt = 0;
+    renderState.lastFrameAt = 0;
     dom.gameLevelNumber.textContent = padLevelNumber(index);
     dom.gameLevelName.textContent = level.name;
     dom.ruleCaptionTitle.textContent = level.ruleTitle;
     dom.ruleCaptionText.textContent = level.ruleText;
     dom.ruleCaption.classList.remove("is-demonstrating");
-    dom.boardStage.classList.remove("is-settled");
+    dom.boardStage.classList.remove("is-settled", "is-exploring", "is-dragging");
     showScreen("game");
     updateTurnUI();
     window.setTimeout(function afterScreenTransition() {
@@ -436,6 +443,27 @@
     var levelIndex = game.levelIndex;
     sound.play("ui");
     startLevel(levelIndex, { skipDemo: true });
+  }
+
+  function handleLeftTool() {
+    if (isVictoryView()) {
+      leaveGame();
+      return;
+    }
+    undoMove();
+  }
+
+  function handleRightTool() {
+    if (isVictoryView()) {
+      if (game.levelIndex < LEVELS.length - 1) {
+        sound.play("ui");
+        startLevel(game.levelIndex + 1);
+      } else {
+        restartGame();
+      }
+      return;
+    }
+    restartGame();
   }
 
   function startBoundaryDemo() {
@@ -494,6 +522,50 @@
     return count ? "继续落子 · " + count + " / 5" : "落下第一颗";
   }
 
+  function isVictoryView() {
+    return Boolean(game && game.status === "ended" && game.outcome === "win");
+  }
+
+  function syncGameTools() {
+    if (!game) {
+      return;
+    }
+    if (isVictoryView()) {
+      var canExplore = Boolean(game.completion);
+      dom.undoButton.disabled = false;
+      dom.undoButton.setAttribute("aria-label", "返回旅程");
+      dom.undoButtonText.textContent = "旅程";
+      dom.undoIconPath.setAttribute("d", "M15 5 8 12l7 7");
+      dom.restartButton.setAttribute(
+        "aria-label",
+        game.levelIndex === LEVELS.length - 1 ? "再来一局" : "进入下一关"
+      );
+      dom.restartButtonText.textContent = game.levelIndex === LEVELS.length - 1 ? "再来" : "下一关";
+      dom.restartIconPath.setAttribute(
+        "d",
+        game.levelIndex === LEVELS.length - 1
+          ? "M20 7v5h-5M19 12a7 7 0 1 0-2 5"
+          : "m9 6 6 6-6 6"
+      );
+      dom.ruleCaptionTitle.textContent = canExplore
+        ? (game.completion.settled ? "拖动旋转" : "边界合拢")
+        : "已经连成五颗";
+      dom.ruleCaptionText.textContent = canExplore ? "轻轻拖动，自由欣赏" : "从这里，走向新的边界";
+      dom.boardStage.classList.toggle("is-exploring", canExplore);
+      return;
+    }
+
+    dom.undoButton.setAttribute("aria-label", "悔棋");
+    dom.undoButtonText.textContent = "悔棋";
+    dom.undoIconPath.setAttribute("d", "M9 8H5v-4M5 8c2-3 5-4 8-4 5 0 8 4 8 8s-3 8-8 8c-3 0-6-2-7-4");
+    dom.restartButton.setAttribute("aria-label", "重新开始");
+    dom.restartButtonText.textContent = "重来";
+    dom.restartIconPath.setAttribute("d", "M20 7v5h-5M19 12a7 7 0 1 0-2 5");
+    dom.ruleCaptionTitle.textContent = game.level.ruleTitle;
+    dom.ruleCaptionText.textContent = game.level.ruleText;
+    dom.boardStage.classList.remove("is-exploring", "is-dragging");
+  }
+
   function updateTurnUI() {
     if (!game) {
       return;
@@ -510,11 +582,11 @@
     dom.thinkingIndicator.classList.toggle("is-visible", aiActuallyThinking);
     dom.undoButton.disabled = game.moves.length === 0 || game.status !== "playing";
     if (completionActive) {
-      dom.turnStatus.textContent = "边界合拢";
+      dom.turnStatus.textContent = game.completion.settled ? "拖动欣赏" : "边界合拢";
     } else if (demoActive) {
       dom.turnStatus.textContent = "边界演示";
     } else if (game.status === "ended") {
-      dom.turnStatus.textContent = "本局结束";
+      dom.turnStatus.textContent = game.outcome === "win" ? "通关" : "本局结束";
     } else if (aiTurn && DEV_MODE && developer.aiPaused) {
       dom.turnStatus.textContent = "AI 已暂停";
     } else if (aiTurn) {
@@ -529,6 +601,7 @@
     if (DEV_MODE && activeSheet === dom.developerSheet) {
       syncDeveloperUI();
     }
+    syncGameTools();
   }
 
   function connectedSeamAtCell(cell) {
@@ -608,10 +681,66 @@
     }, wait);
   }
 
+  function chooseCompletionView(winningMask) {
+    if (!winningMask || !winningMask.cells || !winningMask.cells.length || !Morph) {
+      return { x: 0, y: 0, z: 0 };
+    }
+    var cells = Array.prototype.slice.call(winningMask.cells);
+    var size = Math.max(1, Math.min(renderState.width, renderState.height));
+    var targetLength = size * 0.42;
+    var best = { x: 0, y: 0, z: 0 };
+    var bestScore = -Infinity;
+    var pitchSteps = [-0.3, -0.15, 0, 0.15, 0.3];
+    pitchSteps.forEach(function testPitch(pitch) {
+      for (var yawIndex = 0; yawIndex < 25; yawIndex += 1) {
+        var yaw = -0.9 + yawIndex / 24 * 1.8;
+        var points = cells.map(function projectWinningCell(cell) {
+          var uv = Morph.stoneUV(game.rules, cell);
+          return Morph.project(game.level.topology, uv.u, uv.v, renderState.width, renderState.height, {
+            x: pitch,
+            y: yaw,
+            z: 0
+          });
+        });
+        var pathLength = 0;
+        var depthTotal = 0;
+        var minDepth = Infinity;
+        var maxDepth = -Infinity;
+        var centerX = 0;
+        var centerY = 0;
+        points.forEach(function scorePoint(point, index) {
+          depthTotal += point.depth;
+          minDepth = Math.min(minDepth, point.depth);
+          maxDepth = Math.max(maxDepth, point.depth);
+          centerX += point.x;
+          centerY += point.y;
+          if (index > 0) {
+            pathLength += Math.hypot(point.x - points[index - 1].x, point.y - points[index - 1].y);
+          }
+        });
+        centerX /= points.length;
+        centerY /= points.length;
+        var averageDepth = depthTotal / points.length;
+        var centerDistance = Math.hypot(centerX - renderState.width * 0.5, centerY - renderState.height * 0.5);
+        var score = averageDepth * 4.2 + minDepth * 1.4;
+        score -= Math.abs(pathLength - targetLength) / size * 2.8;
+        score -= (maxDepth - minDepth) * 0.5;
+        score -= centerDistance / size * 0.32;
+        score -= Math.abs(yaw) * 0.24 + Math.abs(pitch) * 0.18;
+        if (score > bestScore) {
+          bestScore = score;
+          best = { x: pitch, y: yaw, z: 0 };
+        }
+      }
+    });
+    return best;
+  }
+
   function finishGame(outcome, winningMask, reason) {
     turnToken += 1;
     var finishedGame = game;
     game.status = "ended";
+    game.outcome = outcome;
     game.turn = 0;
     game.winningMask = winningMask;
     game.winReason = reason || null;
@@ -620,7 +749,17 @@
     game.completion = shouldMorph ? {
       active: true,
       startedAt: renderState.winAt,
-      duration: 3100
+      duration: 2750,
+      settled: false,
+      view: chooseCompletionView(winningMask),
+      rotation: { x: 0, y: 0, z: 0 },
+      velocity: { x: 0, y: 0 },
+      dragging: false,
+      pointerId: null,
+      lastX: 0,
+      lastY: 0,
+      lastPointerAt: 0,
+      autoResumeAt: renderState.winAt + 2450
     } : null;
     if (winningMask && winningMask.seam) {
       renderState.seamPulseAt = performance.now();
@@ -652,15 +791,13 @@
       sound.play("draw");
     }
 
-    window.setTimeout(function revealResult() {
-      if (game === finishedGame && game.status === "ended") {
-        if (game.completion) {
-          game.completion.active = false;
-          updateTurnUI();
+    if (outcome !== "win") {
+      window.setTimeout(function revealResult() {
+        if (game === finishedGame && game.status === "ended") {
+          showResult(outcome);
         }
-        showResult(outcome);
-      }
-    }, shouldMorph ? game.completion.duration + 120 : 820);
+      }, 820);
+    }
   }
 
   function undoMove() {
@@ -879,6 +1016,7 @@
     game.turn = HUMAN;
     game.status = "playing";
     game.winningMask = null;
+    game.outcome = null;
     game.winReason = null;
     game.completion = null;
     game.lastMove = -1;
@@ -1058,6 +1196,42 @@
     }
   }
 
+  function updateCompletionMotion(time, delta) {
+    if (!game || !game.completion) {
+      return;
+    }
+    var completion = game.completion;
+    var elapsed = time - completion.startedAt;
+    if (!completion.settled && elapsed >= completion.duration) {
+      completion.settled = true;
+      updateTurnUI();
+    }
+    if (completion.dragging) {
+      return;
+    }
+
+    var frameScale = Math.max(0.25, Math.min(2, delta / 16.67));
+    completion.rotation.x += completion.velocity.x * delta;
+    completion.rotation.y += completion.velocity.y * delta;
+    var friction = Math.pow(0.91, frameScale);
+    completion.velocity.x *= friction;
+    completion.velocity.y *= friction;
+    if (Math.abs(completion.velocity.x) < 0.00001) {
+      completion.velocity.x = 0;
+    }
+    if (Math.abs(completion.velocity.y) < 0.00001) {
+      completion.velocity.y = 0;
+    }
+    var totalPitch = completion.view.x + completion.rotation.x;
+    if (totalPitch < -1.12 || totalPitch > 1.12) {
+      completion.rotation.x = Math.max(-1.12, Math.min(1.12, totalPitch)) - completion.view.x;
+      completion.velocity.x *= -0.18;
+    }
+    if (elapsed > completion.duration * 0.55 && time >= completion.autoResumeAt) {
+      completion.rotation.y += 0.00016 * delta;
+    }
+  }
+
   function renderFrame(time) {
     renderState.frame = 0;
     if (!game || !renderState.layout) {
@@ -1066,6 +1240,9 @@
     if (game.demo && game.demo.active && time - game.demo.startedAt >= game.demo.duration) {
       finishBoundaryDemo();
     }
+    var delta = renderState.lastFrameAt ? Math.min(34, time - renderState.lastFrameAt) : 16.67;
+    renderState.lastFrameAt = time;
+    updateCompletionMotion(time, delta);
     drawBoard(time);
     var animate = false;
     if (renderState.lastMoveAt && time - renderState.lastMoveAt < 260) {
@@ -1077,7 +1254,7 @@
     if (renderState.winAt && time - renderState.winAt < 1450) {
       animate = true;
     }
-    if (game.completion && time - game.completion.startedAt < game.completion.duration) {
+    if (game.completion) {
       animate = true;
     }
     if (game.demo && game.demo.active) {
@@ -1382,7 +1559,7 @@
       return;
     }
     var cells = Array.prototype.slice.call(game.winningMask.cells);
-    var reveal = Morph.smooth((time - game.completion.startedAt - 1250) / 760);
+    var reveal = Morph.smooth((time - game.completion.startedAt - 1080) / 820);
     var pulse = 0.78 + Math.sin(time * 0.009) * 0.16;
     ctx.save();
     ctx.lineCap = "round";
@@ -1485,20 +1662,27 @@
 
   function drawCompletionMorph(ctx, time) {
     var elapsed = time - game.completion.startedAt;
-    var morph = Morph.smooth((elapsed - 180) / 2050);
-    var hold = Morph.smooth((elapsed - 2050) / 900);
-    var spin = morph * 0.08 + hold * 0.14;
+    var progress = clamp01((elapsed - 100) / 2300);
+    var morph = Morph.spring(progress);
+    var viewBlend = Morph.smooth((elapsed - 120) / 1650);
+    var jellyScale = 1 + Math.sin(progress * Math.PI * 2.2) * Math.pow(1 - progress, 2.2) * 0.026;
+    var orientation = {
+      x: game.completion.view.x * viewBlend + game.completion.rotation.x,
+      y: game.completion.view.y * viewBlend + game.completion.rotation.y,
+      z: game.completion.view.z * viewBlend + game.completion.rotation.z,
+      scale: jellyScale
+    };
 
-    drawCompletionSurface(ctx, morph, spin);
-    drawCompletionGrid(ctx, morph, spin);
+    drawCompletionSurface(ctx, morph, orientation);
+    drawCompletionGrid(ctx, morph, orientation);
     if (game.level.xConnection) {
-      drawCompletionBoundary(ctx, "x", morph, spin, "#3f8c87");
+      drawCompletionBoundary(ctx, "x", morph, orientation, "#3f8c87");
     }
     if (game.level.yConnection) {
-      drawCompletionBoundary(ctx, "y", morph, spin, "#c79244");
+      drawCompletionBoundary(ctx, "y", morph, orientation, "#c79244");
     }
-    drawCompletionWinningLine(ctx, time, morph, spin);
-    drawCompletionStones(ctx, morph, spin);
+    drawCompletionWinningLine(ctx, time, morph, orientation);
+    drawCompletionStones(ctx, morph, orientation);
   }
 
   function drawPaperTexture(ctx) {
@@ -1944,8 +2128,30 @@
     return DEV_MODE || game.turn === HUMAN;
   }
 
+  function canExploreCompletion() {
+    return Boolean(game && game.completion && game.status === "ended" && !activeSheet);
+  }
+
   function onBoardPointerDown(event) {
     sound.unlock();
+    if (canExploreCompletion()) {
+      event.preventDefault();
+      var completion = game.completion;
+      completion.dragging = true;
+      completion.pointerId = event.pointerId;
+      completion.lastX = event.clientX;
+      completion.lastY = event.clientY;
+      completion.lastPointerAt = event.timeStamp || performance.now();
+      completion.velocity.x = 0;
+      completion.velocity.y = 0;
+      completion.autoResumeAt = Infinity;
+      dom.boardStage.classList.add("is-dragging");
+      if (dom.boardCanvas.setPointerCapture) {
+        dom.boardCanvas.setPointerCapture(event.pointerId);
+      }
+      requestRender();
+      return;
+    }
     if (game && game.demo && game.demo.active && !activeSheet) {
       event.preventDefault();
       finishBoundaryDemo();
@@ -1967,6 +2173,27 @@
     if (!game) {
       return;
     }
+    if (game.completion && game.completion.dragging && game.completion.pointerId === event.pointerId) {
+      event.preventDefault();
+      var completion = game.completion;
+      var now = event.timeStamp || performance.now();
+      var deltaTime = Math.max(8, Math.min(40, now - completion.lastPointerAt));
+      var deltaX = event.clientX - completion.lastX;
+      var deltaY = event.clientY - completion.lastY;
+      var yawDelta = deltaX * 0.009;
+      var pitchDelta = deltaY * 0.0072;
+      completion.rotation.y += yawDelta;
+      completion.rotation.x += pitchDelta;
+      var totalPitch = completion.view.x + completion.rotation.x;
+      completion.rotation.x = Math.max(-1.12, Math.min(1.12, totalPitch)) - completion.view.x;
+      completion.velocity.y = yawDelta / deltaTime;
+      completion.velocity.x = pitchDelta / deltaTime;
+      completion.lastX = event.clientX;
+      completion.lastY = event.clientY;
+      completion.lastPointerAt = now;
+      requestRender();
+      return;
+    }
     var cell = eventToCell(event);
     if (renderState.pointerId === event.pointerId) {
       event.preventDefault();
@@ -1978,6 +2205,15 @@
   }
 
   function onBoardPointerUp(event) {
+    if (game && game.completion && game.completion.pointerId === event.pointerId) {
+      event.preventDefault();
+      game.completion.dragging = false;
+      game.completion.pointerId = null;
+      game.completion.autoResumeAt = (event.timeStamp || performance.now()) + 1500;
+      dom.boardStage.classList.remove("is-dragging");
+      requestRender();
+      return;
+    }
     if (renderState.pointerId !== event.pointerId) {
       return;
     }
@@ -1993,6 +2229,14 @@
   }
 
   function onBoardPointerCancel(event) {
+    if (game && game.completion && game.completion.pointerId === event.pointerId) {
+      game.completion.dragging = false;
+      game.completion.pointerId = null;
+      game.completion.autoResumeAt = performance.now() + 900;
+      dom.boardStage.classList.remove("is-dragging");
+      requestRender();
+      return;
+    }
     if (renderState.pointerId === event.pointerId) {
       renderState.pointerId = null;
       renderState.pressedCell = -1;
@@ -2014,8 +2258,8 @@
     dom.homeSettingsButton.addEventListener("click", openSettings);
     dom.gameSettingsButton.addEventListener("click", openSettings);
     dom.backButton.addEventListener("click", leaveGame);
-    dom.restartButton.addEventListener("click", restartGame);
-    dom.undoButton.addEventListener("click", undoMove);
+    dom.restartButton.addEventListener("click", handleRightTool);
+    dom.undoButton.addEventListener("click", handleLeftTool);
     dom.closeSettingsButton.addEventListener("click", function closeSettings() { closeActiveSheet(false); });
     dom.settingsDoneButton.addEventListener("click", function finishSettings() {
       sound.play("ui");
