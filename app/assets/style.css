@@ -315,8 +315,19 @@ button,
 }
 
 .level-card.is-locked {
-  opacity: 0.46;
-  filter: saturate(0.18);
+  background: rgba(250, 249, 245, 0.58);
+}
+
+.level-card.is-locked .level-number,
+.level-card.is-locked .level-name,
+.level-card.is-locked .level-type,
+.level-card.is-locked .level-state {
+  opacity: 0.48;
+}
+
+.level-card.is-locked .level-glyph {
+  opacity: 0.76;
+  filter: saturate(0.32);
 }
 
 .level-card.is-locked.is-shaking {
@@ -340,8 +351,8 @@ button,
 }
 
 .level-glyph {
-  width: 76px;
-  height: 64px;
+  width: 84px;
+  height: 68px;
   grid-column: 1 / -1;
   grid-row: 2;
   align-self: center;
