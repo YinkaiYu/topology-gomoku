@@ -131,6 +131,7 @@
     closeSettingsButton: document.getElementById("closeSettingsButton"),
     settingsDoneButton: document.getElementById("settingsDoneButton"),
     difficultyButtons: Array.prototype.slice.call(document.querySelectorAll("[data-difficulty]")),
+    hintSwitch: document.getElementById("hintSwitch"),
     soundSwitch: document.getElementById("soundSwitch"),
     resultSheet: document.getElementById("resultSheet"),
     resultKicker: document.getElementById("resultKicker"),
@@ -150,6 +151,8 @@
     developerPlayerWin: document.getElementById("developerPlayerWin"),
     developerAiWin: document.getElementById("developerAiWin"),
     developerClearBoard: document.getElementById("developerClearBoard"),
+    developerHintThree: document.getElementById("developerHintThree"),
+    developerHintFour: document.getElementById("developerHintFour"),
     developerResetProgress: document.getElementById("developerResetProgress"),
     toast: document.getElementById("toast")
   };
@@ -195,6 +198,7 @@
       completed: [],
       bestDifficulty: [],
       difficulty: "normal",
+      hints: true,
       sound: true
     };
   }
@@ -210,6 +214,7 @@
       defaults.completed = Array.isArray(stored.completed) ? stored.completed.slice(0, LEVELS.length) : [];
       defaults.bestDifficulty = Array.isArray(stored.bestDifficulty) ? stored.bestDifficulty.slice(0, LEVELS.length) : [];
       defaults.difficulty = DIFFICULTIES[stored.difficulty] ? stored.difficulty : "normal";
+      defaults.hints = stored.hints !== false;
       defaults.sound = stored.sound !== false;
       return defaults;
     } catch (error) {
@@ -674,6 +679,8 @@
     dom.difficultyButtons.forEach(function updateDifficultyButton(button) {
       button.classList.toggle("is-active", button.dataset.difficulty === prefs.difficulty);
     });
+    dom.hintSwitch.classList.toggle("is-on", prefs.hints);
+    dom.hintSwitch.setAttribute("aria-checked", prefs.hints ? "true" : "false");
     dom.soundSwitch.classList.toggle("is-on", prefs.sound);
     dom.soundSwitch.setAttribute("aria-checked", prefs.sound ? "true" : "false");
     dom.difficultyLabel.textContent = DIFFICULTIES[prefs.difficulty].label;
@@ -698,6 +705,15 @@
     if (prefs.sound) {
       sound.play("ui");
     }
+  }
+
+  function toggleHints() {
+    prefs.hints = !prefs.hints;
+    savePreferences();
+    syncSettingsUI();
+    requestRender();
+    showToast(prefs.hints ? "落点提示已开启" : "落点提示已关闭");
+    sound.play("ui");
   }
 
   function openDeveloperTools() {
@@ -815,6 +831,49 @@
     closeActiveSheet(false);
     requestRender();
     showToast("棋盘已清空");
+  }
+
+  function developerSeedHint(kind) {
+    if (!DEV_MODE || !game || game.status !== "playing") {
+      showToast("请先进入棋局");
+      return;
+    }
+    finishBoundaryDemo();
+    turnToken += 1;
+    var startCell = Engine.toCell(game.rules, game.level.demoStart[0], game.level.demoStart[1]);
+    var path = Engine.tracePath(game.rules, startCell, game.level.demoDirection, game.rules.target);
+    if (!path) {
+      showToast("当前棋盘无法生成提示局面");
+      return;
+    }
+    game.board.fill(Engine.EMPTY);
+    var startIndex = kind === "three" ? 1 : 0;
+    var endIndex = kind === "three" ? 3 : 3;
+    game.moves = [];
+    if (kind === "four") {
+      var previous = Engine.step(game.rules, path.cells[0], (game.level.demoDirection + 4) % 8);
+      if (previous && path.cells.indexOf(previous.cell) < 0) {
+        game.board[previous.cell] = AI;
+        game.moves.push({ cell: previous.cell, player: AI });
+      }
+    }
+    for (var index = startIndex; index <= endIndex; index += 1) {
+      game.board[path.cells[index]] = HUMAN;
+      game.moves.push({ cell: path.cells[index], player: HUMAN });
+    }
+    game.turn = HUMAN;
+    game.winningMask = null;
+    game.winReason = null;
+    game.lastMove = path.cells[endIndex];
+    developer.aiPaused = true;
+    renderState.lastMoveAt = performance.now();
+    renderState.seamPulseAt = 0;
+    renderState.winAt = 0;
+    dom.boardStage.classList.remove("is-settled");
+    updateTurnUI();
+    closeActiveSheet(false);
+    requestRender();
+    showToast(kind === "three" ? "已生成活三提示" : "已生成四子提示");
   }
 
   function developerUnlockTo(index) {
@@ -995,6 +1054,7 @@
     drawDemoStones(ctx, time);
     drawWinningConnections(ctx, time);
     drawMappedGhost(ctx);
+    drawPlayerHints(ctx);
     drawMovePreview(ctx);
     drawStones(ctx, time);
   }
@@ -1283,6 +1343,35 @@
     ctx.restore();
   }
 
+  function drawPlayerHints(ctx) {
+    if (!prefs.hints || !game || game.levelIndex === 0 || game.status !== "playing" || (game.demo && game.demo.active)) {
+      return;
+    }
+    var hints = Engine.findLineHints(game.board, game.rules, HUMAN);
+    if (!hints.length) {
+      return;
+    }
+    var cellSize = renderState.layout.cell;
+    hints.forEach(function drawHint(hint) {
+      if (game.board[hint.cell] !== Engine.EMPTY) {
+        return;
+      }
+      var center = cellCenter(hint.cell);
+      var urgent = hint.kind === "four";
+      ctx.save();
+      ctx.strokeStyle = urgent ? "#c79244" : "#3f8c87";
+      ctx.fillStyle = urgent ? "rgba(199, 146, 68, 0.07)" : "rgba(63, 140, 135, 0.055)";
+      ctx.globalAlpha = urgent ? 0.9 : 0.72;
+      ctx.lineWidth = urgent ? 1.8 : 1.35;
+      ctx.setLineDash([Math.max(3, cellSize * 0.095), Math.max(3, cellSize * 0.09)]);
+      ctx.beginPath();
+      ctx.arc(center.x, center.y, cellSize * 0.27, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.stroke();
+      ctx.restore();
+    });
+  }
+
   function winningCellSet() {
     var set = Object.create(null);
     if (game && game.winningMask) {
@@ -1496,6 +1585,7 @@
       });
     });
     dom.soundSwitch.addEventListener("click", toggleSound);
+    dom.hintSwitch.addEventListener("click", toggleHints);
     dom.developerButton.addEventListener("click", openDeveloperTools);
     dom.closeDeveloperButton.addEventListener("click", function closeDeveloperTools() { closeActiveSheet(false); });
     dom.developerDoneButton.addEventListener("click", function finishDeveloperTools() { closeActiveSheet(false); });
@@ -1513,6 +1603,8 @@
     dom.developerPlayerWin.addEventListener("click", function forcePlayerWin() { developerForceOutcome(HUMAN); });
     dom.developerAiWin.addEventListener("click", function forceAiWin() { developerForceOutcome(AI); });
     dom.developerClearBoard.addEventListener("click", developerClearCurrentBoard);
+    dom.developerHintThree.addEventListener("click", function seedLiveThree() { developerSeedHint("three"); });
+    dom.developerHintFour.addEventListener("click", function seedFour() { developerSeedHint("four"); });
     dom.developerResetProgress.addEventListener("click", developerResetProgress);
     dom.resultRetryButton.addEventListener("click", function runSecondaryResultAction() {
       var action = resultSecondaryAction;

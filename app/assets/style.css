@@ -1009,6 +1009,11 @@ button,
   margin-top: 10px;
 }
 
+.developer-hint-grid {
+  grid-template-columns: repeat(2, 1fr);
+  margin-top: 7px;
+}
+
 .developer-action-grid button,
 .developer-unlock-grid button,
 .developer-reset {

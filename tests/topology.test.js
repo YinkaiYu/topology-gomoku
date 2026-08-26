@@ -106,6 +106,40 @@ test("六关边界演示都沿真实拓扑连续落下五颗不同棋子", () =>
   });
 });
 
+test("跨越圆柱边界的活三会提示映射后的两个端点", () => {
+  const rules = Game.createRules({ type: "cylinder", width: 7, height: 6, target: 5 });
+  const board = Game.createBoard(rules);
+  put(board, rules, [[6, 2], [0, 2], [1, 2]], Game.HUMAN);
+
+  const hints = Game.findLineHints(board, rules, Game.HUMAN);
+  const rowHints = hints.filter((hint) => Game.toPoint(rules, hint.cell).y === 2);
+  assert.deepEqual(rowHints.map((hint) => Game.toPoint(rules, hint.cell)), [{ x: 2, y: 2 }, { x: 5, y: 2 }]);
+  assert.ok(rowHints.every((hint) => hint.kind === "three"));
+});
+
+test("莫比乌斯活三的提示端点遵循翻转后的真实位置", () => {
+  const rules = Game.createRules({ type: "mobius", width: 8, height: 6, target: 5 });
+  const board = Game.createBoard(rules);
+  put(board, rules, [[7, 1], [0, 4], [1, 4]], Game.HUMAN);
+
+  const hints = Game.findLineHints(board, rules, Game.HUMAN);
+  const expected = new Set([Game.toCell(rules, 6, 1), Game.toCell(rules, 2, 4)]);
+  const matching = hints.filter((hint) => expected.has(hint.cell));
+  assert.equal(matching.length, 2);
+  assert.ok(matching.every((hint) => hint.kind === "three"));
+});
+
+test("单边四子只提示尚未封死的第五点", () => {
+  const rules = Game.createRules({ type: "cylinder", width: 7, height: 6, target: 5 });
+  const board = Game.createBoard(rules);
+  put(board, rules, [[5, 2], [6, 2], [0, 2], [1, 2]], Game.HUMAN);
+  put(board, rules, [[4, 2]], Game.AI);
+
+  const hints = Game.findLineHints(board, rules, Game.HUMAN);
+  const winningCell = Game.toCell(rules, 2, 2);
+  assert.deepEqual(hints.filter((hint) => hint.kind === "four"), [{ cell: winningCell, kind: "four" }]);
+});
+
 test("AI 优先取胜，其次阻挡玩家单杀", () => {
   const rules = Game.createRules({ type: "plane", width: 7, height: 7, target: 5 });
   const winningBoard = Game.createBoard(rules);

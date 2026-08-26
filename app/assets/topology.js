@@ -299,6 +299,49 @@
     };
   }
 
+  function findLineHints(board, rules, player) {
+    var hintsByCell = Object.create(null);
+    var startCell;
+    var directionIndexValue;
+
+    function rememberHint(cell, kind) {
+      var current = hintsByCell[cell];
+      if (!current || (current.kind === "three" && kind === "four")) {
+        hintsByCell[cell] = { cell: cell, kind: kind };
+      }
+    }
+
+    for (startCell = 0; startCell < rules.cellCount; startCell += 1) {
+      for (directionIndexValue = 0; directionIndexValue < WIN_DIRECTIONS.length; directionIndexValue += 1) {
+        var path = tracePath(rules, startCell, WIN_DIRECTIONS[directionIndexValue], rules.target);
+        if (!path) {
+          continue;
+        }
+        var cells = path.cells;
+        var first = board[cells[0]];
+        var last = board[cells[cells.length - 1]];
+        var middleThree = board[cells[1]] === player && board[cells[2]] === player && board[cells[3]] === player;
+
+        if (first === EMPTY && last === EMPTY && middleThree) {
+          rememberHint(cells[0], "three");
+          rememberHint(cells[4], "three");
+        }
+        if (first === EMPTY && board[cells[1]] === player && board[cells[2]] === player && board[cells[3]] === player && board[cells[4]] === player) {
+          rememberHint(cells[0], "four");
+        }
+        if (last === EMPTY && board[cells[0]] === player && board[cells[1]] === player && board[cells[2]] === player && board[cells[3]] === player) {
+          rememberHint(cells[4], "four");
+        }
+      }
+    }
+
+    return Object.keys(hintsByCell).map(function toHint(cell) {
+      return hintsByCell[cell];
+    }).sort(function sortHints(a, b) {
+      return a.cell - b.cell;
+    });
+  }
+
   function countMask(board, mask, player) {
     var count = 0;
     var index;
@@ -636,6 +679,7 @@
     toPoint: toPoint,
     step: step,
     tracePath: tracePath,
+    findLineHints: findLineHints,
     checkWin: checkWin,
     boardIsFull: boardIsFull,
     boardIsDraw: boardIsDraw,
