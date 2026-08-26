@@ -4,6 +4,7 @@
   var Engine = window.TopologyGomoku;
   var Morph = window.TopologyMorph;
   var STORAGE_KEY = "topology-gomoku:v1";
+  var TUTORIAL_AUTO_ADVANCE_DELAY = 820;
   var HUMAN = Engine.HUMAN;
   var AI = Engine.AI;
   var DEV_MODE = isDeveloperLaunch();
@@ -590,6 +591,7 @@
       outcome: null,
       winningMask: null,
       winReason: null,
+      autoAdvancePending: false,
       lastMove: -1,
       demo: null,
       completion: null
@@ -744,9 +746,11 @@
     }
     var ended = isEndedView();
     var victory = isVictoryView();
+    var autoAdvancing = ended && Boolean(game.autoAdvancePending);
     var hasNextLevel = victory && game.levelIndex < LEVELS.length - 1;
     dom.gameTools.classList.toggle("is-ended", ended);
     dom.gameTools.classList.toggle("has-two-actions", ended && !hasNextLevel);
+    dom.gameTools.classList.toggle("is-auto-advancing", autoAdvancing);
     dom.ruleCaption.hidden = ended;
     dom.settledReplayButton.hidden = !ended;
     dom.restartButton.hidden = ended && !hasNextLevel;
@@ -802,9 +806,11 @@
     } else if (demoActive) {
       dom.turnStatus.textContent = "边界演示";
     } else if (game.status === "ended") {
-      dom.turnStatus.textContent = game.outcome === "win"
-        ? "通关"
-        : (game.outcome === "lose" ? "对手连成五颗" : "棋盘已满");
+      dom.turnStatus.textContent = game.autoAdvancePending
+        ? "下一关"
+        : (game.outcome === "win"
+          ? "通关"
+          : (game.outcome === "lose" ? "对手连成五颗" : "棋盘已满"));
     } else if (game.status === "forcing") {
       dom.turnStatus.textContent = "跨界连线";
     } else if (aiTurn && DEV_MODE && developer.aiPaused) {
@@ -973,11 +979,16 @@
   function finishGame(outcome, winningMask, reason) {
     turnToken += 1;
     var finishedGame = game;
+    var firstTutorialCompletion = outcome === "win"
+      && game.levelIndex === 0
+      && !prefs.completed[game.levelIndex]
+      && LEVELS.length > 1;
     game.status = "ended";
     game.outcome = outcome;
     game.turn = 0;
     game.winningMask = winningMask;
     game.winReason = reason || null;
+    game.autoAdvancePending = firstTutorialCompletion;
     renderState.winAt = performance.now();
     var shouldMorph = outcome === "win" && game.levelIndex > 0 && Boolean(Morph);
     game.completion = shouldMorph ? {
@@ -1019,6 +1030,15 @@
             sound.play("morph");
           }
         }, 260);
+      }
+      if (firstTutorialCompletion) {
+        window.setTimeout(function enterFirstTopologyLevel() {
+          if (game !== finishedGame || game.status !== "ended" || !game.autoAdvancePending) {
+            return;
+          }
+          game.autoAdvancePending = false;
+          transitionToLevel(1, false);
+        }, TUTORIAL_AUTO_ADVANCE_DELAY);
       }
     } else if (outcome === "lose") {
       sound.play("lose");

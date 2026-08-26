@@ -143,3 +143,14 @@ test("关卡卡片与棋盘使用可逆共享元素弹性过渡", () => {
   assert.match(game, /function transitionToLevel\(/);
   assert.match(game, /scale\(1\.026\)/);
 });
+
+test("第一关首次通关后自动以现有切关动效进入第二关", () => {
+  const game = fs.readFileSync(path.join(ROOT, "app", "assets", "game.js"), "utf8");
+  const style = fs.readFileSync(path.join(ROOT, "app", "assets", "style.css"), "utf8");
+  assert.match(game, /firstTutorialCompletion\s*=\s*outcome === "win"/);
+  assert.match(game, /!prefs\.completed\[game\.levelIndex\]/);
+  assert.match(game, /TUTORIAL_AUTO_ADVANCE_DELAY\s*=\s*820/);
+  assert.match(game, /transitionToLevel\(1, false\)/);
+  assert.match(game, /game\.autoAdvancePending\s*=\s*firstTutorialCompletion/);
+  assert.match(style, /\.game-tools\.is-auto-advancing\s*\{[^}]*visibility:\s*hidden/s);
+});

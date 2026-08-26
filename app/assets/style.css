@@ -809,6 +809,10 @@ button,
   grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
+.game-tools.is-auto-advancing {
+  visibility: hidden;
+}
+
 .game-tools [hidden] {
   display: none;
 }
