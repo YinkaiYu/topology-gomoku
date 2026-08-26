@@ -1,3 +1,27 @@
+@font-face {
+  font-family: "Topo Serif";
+  src: url("./fonts/noto-serif-sc-400.woff2") format("woff2");
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Topo Serif";
+  src: url("./fonts/noto-serif-sc-600.woff2") format("woff2");
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Topo Serif";
+  src: url("./fonts/noto-serif-sc-700.woff2") format("woff2");
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+}
+
 :root {
   color-scheme: light;
   --paper: #f2efe7;
@@ -16,7 +40,8 @@
   --soft-out: cubic-bezier(0.16, 0.84, 0.24, 1);
   --safe-top: var(--safe-area-inset-top, env(safe-area-inset-top, 0px));
   --safe-bottom: var(--safe-area-inset-bottom, env(safe-area-inset-bottom, 0px));
-  --host-chrome-clearance: clamp(58px, 8.5vh, 78px);
+  --host-chrome-clearance: clamp(24px, 3.6vh, 32px);
+  --display-font: "Topo Serif", "Songti SC", "STSong", serif;
 }
 
 *,
@@ -41,8 +66,7 @@ html {
 body {
   background: var(--paper);
   color: var(--ink);
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC",
-    "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+  font-family: var(--display-font);
   -webkit-font-smoothing: antialiased;
   -webkit-tap-highlight-color: transparent;
   -webkit-touch-callout: none;
@@ -128,6 +152,10 @@ button,
   transition-delay: 0s;
 }
 
+.app-shell.is-shared-return .screen {
+  transition: none;
+}
+
 .app-shell.is-navigating .screen,
 .app-shell.is-navigating .developer-fab {
   pointer-events: none;
@@ -158,18 +186,31 @@ button,
 }
 
 .level-transition-board {
-  display: grid;
-  place-items: center;
+  display: block;
   background: var(--card);
   box-shadow: var(--shadow);
 }
 
-.level-transition-board img,
 .level-transition-board .transition-board-canvas {
+  position: absolute;
+  z-index: 2;
+  inset: 0;
   display: block;
   width: 100%;
   height: 100%;
   object-fit: cover;
+}
+
+.level-transition-board .transition-card-content {
+  position: absolute;
+  z-index: 1;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  margin: 0;
+  opacity: 0;
+  pointer-events: none;
 }
 
 .level-card.is-transition-target {
@@ -216,38 +257,28 @@ button,
 .home-screen {
   display: flex;
   flex-direction: column;
+  overscroll-behavior: none;
 }
 
 .home-scroll {
-  flex: 1;
+  display: grid;
+  width: 100%;
+  height: 100%;
   min-height: 0;
-  overflow-y: auto;
-  overscroll-behavior-y: contain;
-  -webkit-overflow-scrolling: touch;
-  scrollbar-width: none;
-  padding: calc(8px + var(--safe-top) + var(--host-chrome-clearance)) 20px calc(26px + var(--safe-bottom));
-}
-
-.home-scroll::-webkit-scrollbar {
-  display: none;
-}
-
-.home-topbar {
-  min-height: 44px;
-  margin-bottom: 10px;
-}
-
-.home-topbar-spacer {
-  width: 1px;
-  height: 1px;
+  grid-template-rows: auto auto minmax(0, 1fr);
+  overflow: hidden;
+  gap: 0;
+  padding: calc(7px + var(--safe-top) + var(--host-chrome-clearance)) 20px calc(12px + var(--safe-bottom));
+  overscroll-behavior: none;
 }
 
 .hero {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) clamp(112px, 34vw, 156px);
+  grid-template-columns: minmax(0, 1fr) clamp(146px, 43vw, 190px);
   align-items: center;
-  gap: 8px;
-  padding: 1px 0 28px 2px;
+  gap: 2px;
+  min-height: 142px;
+  padding: 0 0 13px 2px;
 }
 
 .hero-copy {
@@ -258,18 +289,18 @@ button,
 
 .hero h1 {
   max-width: 260px;
-  font-family: ui-serif, "Songti SC", "STSong", serif;
-  font-size: clamp(46px, 13vw, 62px);
+  font-family: var(--display-font);
+  font-size: clamp(43px, 12vw, 57px);
   font-weight: 600;
-  letter-spacing: -0.08em;
-  line-height: 0.92;
+  letter-spacing: -0.065em;
+  line-height: 0.94;
 }
 
 .hero-line {
-  margin-top: 18px;
+  margin-top: 12px;
   color: var(--muted);
-  font-size: 13px;
-  letter-spacing: 0.04em;
+  font-size: 12px;
+  letter-spacing: 0.055em;
 }
 
 .hero-brand {
@@ -278,21 +309,23 @@ button,
   aspect-ratio: 1;
   object-fit: contain;
   filter: drop-shadow(0 14px 18px rgba(33, 48, 44, 0.12));
-  transform: rotate(-5deg) scale(1.04);
+  justify-self: end;
+  transform: rotate(-5deg) scale(1.09);
   transform-origin: center;
   animation: hero-brand-breathe 5.2s ease-in-out infinite;
 }
 
 @keyframes hero-brand-breathe {
-  0%, 100% { transform: rotate(-5deg) translateY(0) scale(1.04); }
-  50% { transform: rotate(-3.5deg) translateY(-4px) scale(1.075); }
+  0%, 100% { transform: rotate(-5deg) translateY(0) scale(1.09); }
+  50% { transform: rotate(-3.5deg) translateY(-3px) scale(1.125); }
 }
 
 .journey-head {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin: 6px 2px 13px;
+  min-height: 28px;
+  margin: 0 2px 8px;
   color: var(--muted);
   font-size: 12px;
   font-weight: 650;
@@ -308,8 +341,10 @@ button,
 .level-grid {
   position: relative;
   display: grid;
+  min-height: 0;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 12px;
+  grid-template-rows: repeat(3, minmax(0, 1fr));
+  gap: 9px;
 }
 
 .level-grid::before {
@@ -325,11 +360,11 @@ button,
 .level-card {
   position: relative;
   display: grid;
-  min-height: 153px;
+  min-height: 0;
   grid-template-columns: 1fr auto;
   grid-template-rows: auto 1fr auto auto;
   overflow: hidden;
-  padding: 14px;
+  padding: clamp(10px, 1.7vh, 14px);
   text-align: left;
   border-radius: 20px;
   background: rgba(251, 250, 246, 0.7);
@@ -389,8 +424,8 @@ button,
 }
 
 .level-glyph {
-  width: 88px;
-  height: 70px;
+  width: clamp(70px, 21vw, 88px);
+  height: clamp(48px, 8.2vh, 70px);
   grid-column: 1 / -1;
   grid-row: 2;
   align-self: center;
@@ -404,8 +439,8 @@ button,
 .level-mystery {
   position: relative;
   display: grid;
-  width: 88px;
-  height: 70px;
+  width: clamp(70px, 21vw, 88px);
+  height: clamp(48px, 8.2vh, 70px);
   grid-column: 1 / -1;
   grid-row: 2;
   align-self: center;
@@ -581,20 +616,12 @@ button,
 }
 
 .game-title {
-  display: flex;
-  align-items: baseline;
-  gap: 8px;
-}
-
-.game-title span {
-  color: var(--teal);
-  font-size: 10px;
-  font-weight: 800;
-  letter-spacing: 0.1em;
+  display: grid;
+  place-items: center;
 }
 
 .game-title strong {
-  font-family: ui-serif, "Songti SC", "STSong", serif;
+  font-family: var(--display-font);
   font-size: 19px;
   font-weight: 650;
   letter-spacing: 0.08em;
@@ -755,6 +782,27 @@ button,
   padding-top: 8px;
 }
 
+.game-tools.is-ended {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.game-tools.is-ended.has-two-actions {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.game-tools [hidden] {
+  display: none;
+}
+
+.game-tools.is-ended .tool-button {
+  width: 100%;
+  color: var(--ink);
+}
+
+.game-tools.is-ended .settled-replay-button {
+  color: var(--teal);
+}
+
 .tool-button {
   display: flex;
   height: 52px;
@@ -896,7 +944,6 @@ button,
 
 .sheet.is-visible .sheet-head,
 .sheet.is-visible .setting-row,
-.sheet.is-visible .result-actions,
 .sheet.is-visible .developer-section,
 .sheet.is-visible .sheet-done {
   animation: sheet-content-rise 480ms var(--spring) both;
@@ -929,7 +976,7 @@ button,
 }
 
 .sheet-head h2 {
-  font-family: ui-serif, "Songti SC", "STSong", serif;
+  font-family: var(--display-font);
   font-size: 21px;
   font-weight: 650;
   letter-spacing: 0.07em;
@@ -1023,71 +1070,6 @@ button,
   margin-top: 7px;
   color: #fff;
   background: var(--ink);
-}
-
-.result-sheet {
-  padding: 30px 22px 22px;
-  text-align: center;
-}
-
-.result-orbit {
-  position: relative;
-  width: 78px;
-  height: 42px;
-  margin: 0 auto 12px;
-}
-
-.result-orbit::before {
-  position: absolute;
-  inset: 5px 2px;
-  border: 1px solid rgba(63, 140, 135, 0.35);
-  border-radius: 50%;
-  content: "";
-  transform: rotate(-9deg);
-}
-
-.result-orbit i {
-  position: absolute;
-  top: 16px;
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  background: var(--ink);
-  box-shadow: 0 2px 4px rgba(33, 48, 44, 0.18);
-}
-
-.result-orbit i:nth-child(1) { left: 8px; }
-.result-orbit i:nth-child(2) { left: 21px; top: 11px; }
-.result-orbit i:nth-child(3) { left: 34px; top: 9px; background: var(--red); }
-.result-orbit i:nth-child(4) { left: 47px; top: 12px; }
-.result-orbit i:nth-child(5) { left: 60px; top: 17px; }
-
-.result-kicker {
-  color: var(--teal);
-  font-size: 10px;
-  font-weight: 800;
-  letter-spacing: 0.2em;
-}
-
-.result-sheet h2 {
-  margin-top: 6px;
-  font-family: ui-serif, "Songti SC", "STSong", serif;
-  font-size: 28px;
-  font-weight: 650;
-  letter-spacing: 0.04em;
-}
-
-.result-sheet > p:not(.result-kicker) {
-  margin-top: 7px;
-  color: var(--muted);
-  font-size: 12px;
-}
-
-.result-actions {
-  display: grid;
-  grid-template-columns: 0.85fr 1.15fr;
-  gap: 9px;
-  margin-top: 23px;
 }
 
 /* Developer mode */
@@ -1262,7 +1244,28 @@ button,
   }
 }
 
-@media (max-height: 690px) {
+@media (max-height: 760px) {
+  .home-scroll {
+    padding-top: calc(5px + var(--safe-top) + var(--host-chrome-clearance));
+    padding-bottom: calc(7px + var(--safe-bottom));
+  }
+
+  .hero {
+    min-height: 112px;
+    grid-template-columns: minmax(0, 1fr) clamp(122px, 38vw, 156px);
+    padding-bottom: 7px;
+  }
+
+  .hero h1 { font-size: clamp(37px, 10.5vw, 48px); }
+  .hero-line { margin-top: 7px; font-size: 10px; }
+  .journey-head { min-height: 23px; margin-bottom: 5px; }
+  .level-grid { gap: 6px; }
+  .level-card { padding: 8px 10px; }
+  .level-glyph,
+  .level-mystery { width: 68px; height: 46px; }
+  .level-name { font-size: 14px; }
+  .level-type { margin-top: 1px; font-size: 8px; }
+
   .game-screen {
     padding-right: 18px;
     padding-left: 18px;
@@ -1277,9 +1280,10 @@ button,
 
 @media (max-width: 340px) {
   .home-scroll { padding-right: 14px; padding-left: 14px; }
-  .level-card { min-height: 142px; padding: 12px; }
-  .level-glyph { width: 72px; height: 60px; }
-  .hero { grid-template-columns: minmax(0, 1fr) 100px; gap: 4px; }
+  .level-card { min-height: 0; padding: 9px; }
+  .level-glyph,
+  .level-mystery { width: 66px; height: 46px; }
+  .hero { grid-template-columns: minmax(0, 1fr) 118px; gap: 2px; }
 }
 
 @media (prefers-reduced-motion: reduce) {

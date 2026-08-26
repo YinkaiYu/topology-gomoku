@@ -99,15 +99,29 @@ test("通关曲面使用高密度采样，棋盘线沿曲面分段插值", () =>
   assert.doesNotMatch(game, /appendCompletionSegment\(points, sourceBoundary, targetBoundary/);
 });
 
-test("胜利曲面常驻旋转且支持拖动，不再自动弹出结算卡片", () => {
+test("胜负结算常驻棋盘且支持重玩，胜利曲面可以持续柔性拖动", () => {
   const game = fs.readFileSync(path.join(ROOT, "app", "assets", "game.js"), "utf8");
+  const html = fs.readFileSync(path.join(ROOT, "app", "index.html"), "utf8");
   assert.match(game, /if \(game\.completion\) \{\s*animate = true;/);
   assert.match(game, /function canExploreCompletion\(\)/);
   assert.match(game, /completion\.rotation\.y \+= yawDelta;/);
-  assert.match(game, /if \(outcome !== "win"\)/);
+  assert.match(game, /settledReplayButton\.addEventListener\("click", restartGame\)/);
+  assert.doesNotMatch(game, /showResult\(/);
+  assert.doesNotMatch(html, /id="resultSheet"/);
   assert.match(game, /chooseCompletionView\(winningMask\)/);
   assert.match(game, /elastic:\s*\{ x: 0, y: 0, velocityX: 0, velocityY: 0 \}/);
-  assert.match(game, /wobbleX: game\.completion\.elastic\.x/);
+  assert.match(game, /wobbleX: game\.completion\.elastic\.x \+ restingBounce/);
+  assert.match(game, /completion\.elastic\.velocityY \+= yawDelta/);
+});
+
+test("高阶曲面的五子展示会自动朝前并收束为等距路径", () => {
+  const game = fs.readFileSync(path.join(ROOT, "app", "assets", "game.js"), "utf8");
+  assert.match(game, /var yaw = -Math\.PI \+ yawIndex \/ 40 \* Math\.PI \* 2/);
+  assert.match(game, /minDepth \* 4\.8/);
+  assert.match(game, /segmentVariation \* 3\.8/);
+  assert.match(game, /function completionWinningPresentation\(/);
+  assert.match(game, /topology === "klein" \|\| game\.level\.topology === "projective" \? 1 : 0\.9/);
+  assert.match(game, /function compactCompletionSegment\(/);
 });
 
 test("开发者玩家胜利沿本关演示路径逐颗跨界落子", () => {

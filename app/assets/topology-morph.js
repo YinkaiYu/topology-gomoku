@@ -35,8 +35,8 @@
     if (t === 0 || t === 1) {
       return t;
     }
-    var damping = 0.62;
-    var frequency = 8.5;
+    var damping = 0.5;
+    var frequency = 9.2;
     var dampedFrequency = frequency * Math.sqrt(1 - damping * damping);
     var phase = damping / Math.sqrt(1 - damping * damping);
     return 1 - Math.exp(-damping * frequency * t) *
@@ -156,9 +156,10 @@
       camera.rotation[2] + offsetZ
     ];
     var surface = surfacePoint(type, u, v);
-    var softX = surface[0] * (1 + wobbleY * 0.78) + surface[1] * wobbleX * 0.34;
-    var softY = surface[1] * (1 - wobbleY * 0.28) + surface[2] * wobbleX * 0.22;
-    var softZ = surface[2] * (1 - wobbleY * 0.32) - surface[0] * wobbleX * 0.16;
+    var localFlex = Math.sin(surface[0] * 1.35 + surface[2] * 0.72);
+    var softX = surface[0] * (1 + wobbleY * (0.82 + localFlex * 0.12)) + surface[1] * wobbleX * 0.38;
+    var softY = surface[1] * (1 - wobbleY * 0.31) + surface[2] * wobbleX * (0.25 + localFlex * 0.05);
+    var softZ = surface[2] * (1 - wobbleY * (0.35 - localFlex * 0.08)) - surface[0] * wobbleX * 0.19;
     var point = rotate([softX, softY, softZ], angles);
     var scale = Math.min(width, height) * camera.scale * scaleFactor;
     return {

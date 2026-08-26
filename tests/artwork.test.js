@@ -97,7 +97,17 @@ test("首页采用 E 款品牌主视觉并移除二次进入按钮与英文副�
   assert.doesNotMatch(html, /class="brand-mark"/);
   assert.doesNotMatch(html, /TOPOLOGY\s*×\s*GOMOKU|id="startButton"|class="home-actions"/);
   assert.match(html, /<span class="level-name">双生<\/span>/);
+  assert.doesNotMatch(html, /id="homeSettingsButton"/);
   assert.match(game, /name:\s*"双生"/);
+});
+
+test("目录锁定整屏并使用本地内嵌的典雅中文字体", () => {
+  const style = fs.readFileSync(path.join(ROOT, "app", "assets", "style.css"), "utf8");
+  assert.match(style, /@font-face\s*\{[^}]*noto-serif-sc-400\.woff2/s);
+  assert.match(style, /--display-font:\s*"Topo Serif"/);
+  assert.match(style, /\.home-scroll\s*\{[^}]*overflow:\s*hidden/s);
+  assert.match(style, /grid-template-rows:\s*repeat\(3, minmax\(0, 1fr\)\)/);
+  assert.doesNotMatch(style, /\.home-scroll\s*\{[^}]*overflow-y:\s*auto/s);
 });
 
 test("目录与棋局顶栏为宿主默认按钮预留额外安全空间", () => {
@@ -116,6 +126,9 @@ test("关卡卡片与棋盘使用可逆共享元素弹性过渡", () => {
   assert.match(game, /function animateBoardBackToCard\(/);
   assert.match(game, /cloneNode\(true\)/);
   assert.match(game, /drawImage\(dom\.boardCanvas/);
+  assert.match(game, /cardLayer\.classList\.add\("transition-card-content"\)/);
+  assert.match(game, /duration:\s*440/);
+  assert.match(game, /is-shared-return/);
   assert.match(game, /function transitionToLevel\(/);
   assert.match(game, /scale\(1\.026\)/);
 });

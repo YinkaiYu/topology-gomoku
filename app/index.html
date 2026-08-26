@@ -18,15 +18,6 @@
     <main class="screens">
       <section class="screen home-screen is-active" id="homeScreen" aria-label="关卡选择">
         <div class="home-scroll">
-          <header class="topbar home-topbar">
-            <span class="home-topbar-spacer" aria-hidden="true"></span>
-            <button class="icon-button" id="homeSettingsButton" type="button" aria-label="设置">
-              <svg viewBox="0 0 24 24" aria-hidden="true">
-                <path d="M4 7h10M18 7h2M4 17h2M10 17h10M14 5v4M6 15v4" />
-              </svg>
-            </button>
-          </header>
-
           <div class="hero">
             <div class="hero-copy">
               <h1>拓扑<br />五子棋</h1>
@@ -104,7 +95,6 @@
             <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m15 5-7 7 7 7" /></svg>
           </button>
           <div class="game-title">
-            <span id="gameLevelNumber">01</span>
             <strong id="gameLevelName">方庭</strong>
           </div>
           <button class="icon-button" id="gameSettingsButton" type="button" aria-label="设置">
@@ -133,7 +123,7 @@
           </div>
         </div>
 
-        <div class="game-tools">
+        <div class="game-tools" id="gameTools">
           <button class="tool-button" id="undoButton" type="button" aria-label="悔棋">
             <svg viewBox="0 0 24 24" aria-hidden="true"><path id="undoIconPath" d="M9 8H5v-4M5 8c2-3 5-4 8-4 5 0 8 4 8 8s-3 8-8 8c-3 0-6-2-7-4" /></svg>
             <span id="undoButtonText">悔棋</span>
@@ -142,6 +132,10 @@
             <strong id="ruleCaptionTitle">四边有界</strong>
             <span id="ruleCaptionText">横、竖、斜，连成五子</span>
           </div>
+          <button class="tool-button settled-replay-button" id="settledReplayButton" type="button" aria-label="再玩一次" hidden>
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 7v5h-5M19 12a7 7 0 1 0-2 5" /></svg>
+            <span>再来</span>
+          </button>
           <button class="tool-button" id="restartButton" type="button" aria-label="重新开始">
             <svg viewBox="0 0 24 24" aria-hidden="true"><path id="restartIconPath" d="M20 7v5h-5M19 12a7 7 0 1 0-2 5" /></svg>
             <span id="restartButtonText">重来</span>
@@ -177,17 +171,6 @@
         <button class="switch is-on" id="soundSwitch" type="button" role="switch" aria-checked="true"><i></i></button>
       </div>
       <button class="sheet-done" id="settingsDoneButton" type="button">完成</button>
-    </section>
-
-    <section class="sheet result-sheet" id="resultSheet" aria-modal="true" role="dialog" aria-labelledby="resultTitle" hidden>
-      <div class="result-orbit" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div>
-      <p class="result-kicker" id="resultKicker">通关</p>
-      <h2 id="resultTitle">边界被你打通</h2>
-      <p id="resultText">下一片棋盘已解锁</p>
-      <div class="result-actions">
-        <button class="secondary-button" id="resultRetryButton" type="button">再来一局</button>
-        <button class="primary-button" id="resultNextButton" type="button">下一关</button>
-      </div>
     </section>
 
     <section class="sheet developer-sheet" id="developerSheet" aria-modal="true" role="dialog" aria-labelledby="developerTitle" hidden>
