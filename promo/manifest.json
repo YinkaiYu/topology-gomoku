@@ -1,0 +1,23 @@
+{
+  "name": "topology-gomoku-xiaohongshu-cover",
+  "dimensions": {
+    "width": 1080,
+    "height": 1440,
+    "ratio": "3:4"
+  },
+  "source": "cover-3x4.html",
+  "output": "exports/topology-gomoku-cover-3x4.png",
+  "brandAssets": [
+    "../app/assets/brand-icon.png",
+    "../app/assets/fonts/noto-serif-sc-400.woff2",
+    "../app/assets/fonts/noto-serif-sc-600.woff2",
+    "../app/assets/fonts/noto-serif-sc-700.woff2"
+  ],
+  "palette": {
+    "paper": "#f3f0e7",
+    "ink": "#21302c",
+    "teal": "#3f8c87",
+    "red": "#d95b4f",
+    "gold": "#c79244"
+  }
+}

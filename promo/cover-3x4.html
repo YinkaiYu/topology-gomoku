@@ -1,0 +1,232 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>拓扑五子棋 · 小红书封面</title>
+  <style>
+    @font-face {
+      font-family: "Topology Serif";
+      src: url("../app/assets/fonts/noto-serif-sc-400.woff2") format("woff2");
+      font-weight: 400;
+      font-style: normal;
+      font-display: block;
+    }
+
+    @font-face {
+      font-family: "Topology Serif";
+      src: url("../app/assets/fonts/noto-serif-sc-600.woff2") format("woff2");
+      font-weight: 600;
+      font-style: normal;
+      font-display: block;
+    }
+
+    @font-face {
+      font-family: "Topology Serif";
+      src: url("../app/assets/fonts/noto-serif-sc-700.woff2") format("woff2");
+      font-weight: 700;
+      font-style: normal;
+      font-display: block;
+    }
+
+    :root {
+      color-scheme: light;
+      --paper: #f3f0e7;
+      --paper-light: #fbfaf5;
+      --ink: #21302c;
+      --muted: #70766e;
+      --teal: #3f8c87;
+      --red: #d95b4f;
+      --gold: #c79244;
+    }
+
+    * { box-sizing: border-box; }
+
+    html,
+    body {
+      width: 1080px;
+      height: 1440px;
+      margin: 0;
+      overflow: hidden;
+      background: var(--paper);
+    }
+
+    body {
+      font-family: "Topology Serif", "Songti SC", serif;
+      color: var(--ink);
+      -webkit-font-smoothing: antialiased;
+      text-rendering: geometricPrecision;
+    }
+
+    .cover {
+      position: relative;
+      width: 1080px;
+      height: 1440px;
+      overflow: hidden;
+      isolation: isolate;
+      background:
+        radial-gradient(circle at 78% 36%, rgba(255,255,255,.86) 0 19%, rgba(255,255,255,0) 43%),
+        radial-gradient(circle at 12% 84%, rgba(199,146,68,.075), rgba(199,146,68,0) 39%),
+        linear-gradient(152deg, #faf8f2 0%, var(--paper) 59%, #ece8dc 100%);
+    }
+
+    .cover::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      z-index: -1;
+      opacity: .34;
+      background-image:
+        linear-gradient(108deg, rgba(33,48,44,.022) 1px, transparent 1px),
+        linear-gradient(18deg, rgba(255,255,255,.38) 1px, transparent 1px);
+      background-size: 17px 23px, 29px 31px;
+      mix-blend-mode: multiply;
+    }
+
+    .eyebrow {
+      position: absolute;
+      top: 96px;
+      left: 92px;
+      display: flex;
+      align-items: center;
+      gap: 17px;
+      font-size: 25px;
+      font-weight: 600;
+      letter-spacing: .38em;
+      color: var(--teal);
+    }
+
+    .eyebrow::before {
+      content: "";
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      background: var(--red);
+      box-shadow: 0 3px 9px rgba(217,91,79,.25);
+    }
+
+    .title {
+      position: absolute;
+      z-index: 3;
+      top: 165px;
+      left: 84px;
+      margin: 0;
+      font-size: 146px;
+      line-height: .98;
+      font-weight: 700;
+      letter-spacing: -.075em;
+      text-shadow: 0 4px 18px rgba(33,48,44,.055);
+    }
+
+    .title span { display: block; }
+    .title span + span { margin-top: 8px; }
+
+    .tagline {
+      position: absolute;
+      z-index: 3;
+      top: 480px;
+      left: 94px;
+      margin: 0;
+      color: var(--muted);
+      font-size: 35px;
+      font-weight: 400;
+      letter-spacing: .15em;
+    }
+
+    .rule {
+      position: absolute;
+      z-index: 2;
+      left: 96px;
+      top: 568px;
+      width: 104px;
+      height: 3px;
+      border-radius: 3px;
+      background: linear-gradient(90deg, var(--teal) 0 64%, var(--gold) 64% 84%, var(--red) 84%);
+    }
+
+    .hero {
+      position: absolute;
+      z-index: 1;
+      width: 930px;
+      height: 930px;
+      right: -92px;
+      bottom: -28px;
+      object-fit: contain;
+      filter: drop-shadow(0 30px 28px rgba(33,48,44,.13));
+      transform: rotate(-5deg);
+    }
+
+    .orbit {
+      position: absolute;
+      z-index: 0;
+      right: -158px;
+      bottom: -128px;
+      width: 910px;
+      height: 910px;
+      border: 2px solid rgba(63,140,135,.16);
+      border-radius: 50%;
+    }
+
+    .orbit::before,
+    .orbit::after {
+      content: "";
+      position: absolute;
+      border-radius: 50%;
+    }
+
+    .orbit::before {
+      inset: 62px;
+      border: 2px solid rgba(199,146,68,.13);
+    }
+
+    .orbit::after {
+      inset: 126px;
+      border: 2px solid rgba(33,48,44,.075);
+    }
+
+    .stones {
+      position: absolute;
+      z-index: 4;
+      left: 91px;
+      bottom: 96px;
+      display: flex;
+      gap: 13px;
+      align-items: center;
+    }
+
+    .stone {
+      width: 15px;
+      height: 15px;
+      border-radius: 50%;
+      background: var(--ink);
+      box-shadow: inset 3px 3px 4px rgba(255,255,255,.12), 0 3px 6px rgba(33,48,44,.16);
+    }
+
+    .stone:last-child { background: var(--red); }
+
+    .corner-mark {
+      position: absolute;
+      right: 75px;
+      top: 77px;
+      width: 76px;
+      height: 76px;
+      border-top: 2px solid rgba(33,48,44,.18);
+      border-right: 2px solid rgba(33,48,44,.18);
+    }
+  </style>
+</head>
+<body>
+  <main class="cover" aria-label="拓扑五子棋小红书宣传封面">
+    <div class="eyebrow">拓扑小游戏</div>
+    <h1 class="title"><span>拓扑</span><span>五子棋</span></h1>
+    <p class="tagline">边界之外，也能连成一线。</p>
+    <div class="rule" aria-hidden="true"></div>
+    <div class="orbit" aria-hidden="true"></div>
+    <img class="hero" src="../app/assets/brand-icon.png" alt="拓扑五子棋环结图标">
+    <div class="stones" aria-hidden="true">
+      <i class="stone"></i><i class="stone"></i><i class="stone"></i><i class="stone"></i><i class="stone"></i>
+    </div>
+    <div class="corner-mark" aria-hidden="true"></div>
+  </main>
+</body>
+</html>

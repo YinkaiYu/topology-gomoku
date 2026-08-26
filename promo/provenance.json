@@ -1,0 +1,24 @@
+{
+  "artifact": "exports/topology-gomoku-cover-3x4.png",
+  "createdFor": "小红书笔记封面",
+  "composition": "Deterministic HTML/CSS layout rendered at 1080x1440",
+  "sources": [
+    {
+      "asset": "../app/assets/brand-icon.png",
+      "role": "Exact project brand mark; no generative alteration"
+    },
+    {
+      "asset": "../app/assets/fonts/noto-serif-sc-400.woff2",
+      "role": "Embedded Chinese serif typography"
+    },
+    {
+      "asset": "../app/assets/fonts/noto-serif-sc-600.woff2",
+      "role": "Embedded Chinese serif typography"
+    },
+    {
+      "asset": "../app/assets/fonts/noto-serif-sc-700.woff2",
+      "role": "Embedded Chinese serif typography"
+    }
+  ],
+  "generatedImagery": false
+}
