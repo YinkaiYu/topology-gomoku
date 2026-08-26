@@ -340,23 +340,14 @@ button,
 }
 
 .level-glyph {
-  width: 70px;
-  height: 59px;
+  width: 76px;
+  height: 64px;
   grid-column: 1 / -1;
   grid-row: 2;
   align-self: center;
   justify-self: center;
-  fill: none;
-  stroke: var(--ink);
-  stroke-linecap: round;
-  stroke-linejoin: round;
-  stroke-width: 1.4;
-  opacity: 0.84;
-}
-
-.level-glyph .glyph-accent {
-  stroke: var(--teal);
-  stroke-width: 2;
+  object-fit: contain;
+  opacity: 0.9;
 }
 
 .level-name {
