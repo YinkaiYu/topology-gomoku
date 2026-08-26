@@ -5,6 +5,13 @@
   var Morph = window.TopologyMorph;
   var STORAGE_KEY = "topology-gomoku:v1";
   var TUTORIAL_AUTO_ADVANCE_DELAY = 820;
+  var TUTORIAL_PROMPTS = [
+    "传统的五子棋",
+    "就是把五颗子",
+    "连成一条线",
+    "好无趣",
+    "好无聊"
+  ];
   var HUMAN = Engine.HUMAN;
   var AI = Engine.AI;
   var DEV_MODE = isDeveloperLaunch();
@@ -729,7 +736,7 @@
 
   function tutorialPromptText() {
     var count = tutorialMoveCount();
-    return count ? "继续落子 · " + count + " / 5" : "落下第一颗";
+    return TUTORIAL_PROMPTS[Math.min(count, TUTORIAL_PROMPTS.length - 1)];
   }
 
   function isVictoryView() {
