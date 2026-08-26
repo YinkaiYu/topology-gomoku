@@ -65,3 +65,14 @@ test("所有关卡的三维投影均返回有限屏幕坐标", () => {
     }
   });
 });
+
+test("通关曲面使用高密度采样，棋盘线沿曲面分段插值", () => {
+  const game = fs.readFileSync(path.join(ROOT, "app", "assets", "game.js"), "utf8");
+  assert.match(game, /var columns = 44;/);
+  assert.match(game, /var rows = 34;/);
+  assert.match(game, /var samples = 8;/);
+  assert.match(game, /appendCompletionSegment/);
+  assert.match(game, /completionGridEdgePoints\(cells\[index\], step, direction/);
+  assert.doesNotMatch(game, /var columns = 18;/);
+  assert.doesNotMatch(game, /appendCompletionSegment\(points, sourceBoundary, targetBoundary/);
+});

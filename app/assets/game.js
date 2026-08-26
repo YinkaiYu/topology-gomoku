@@ -1149,9 +1149,7 @@
     ctx.restore();
   }
 
-  function completionPoint(u, v, morph, spin) {
-    var flatX = renderState.layout.left + u * (renderState.layout.right - renderState.layout.left);
-    var flatY = renderState.layout.top + v * (renderState.layout.bottom - renderState.layout.top);
+  function completionMappedPoint(flatX, flatY, u, v, morph, spin) {
     var projected = Morph.project(game.level.topology, u, v, renderState.width, renderState.height, spin);
     return {
       x: flatX + (projected.x - flatX) * morph,
@@ -1160,20 +1158,21 @@
     };
   }
 
+  function completionPoint(u, v, morph, spin) {
+    var flatX = renderState.layout.left + u * (renderState.layout.right - renderState.layout.left);
+    var flatY = renderState.layout.top + v * (renderState.layout.bottom - renderState.layout.top);
+    return completionMappedPoint(flatX, flatY, u, v, morph, spin);
+  }
+
   function completionCellPoint(cell, morph, spin) {
     var flat = cellCenter(cell);
     var uv = Morph.stoneUV(game.rules, cell);
-    var projected = Morph.project(game.level.topology, uv.u, uv.v, renderState.width, renderState.height, spin);
-    return {
-      x: flat.x + (projected.x - flat.x) * morph,
-      y: flat.y + (projected.y - flat.y) * morph,
-      depth: projected.depth * morph
-    };
+    return completionMappedPoint(flat.x, flat.y, uv.u, uv.v, morph, spin);
   }
 
   function drawCompletionSurface(ctx, morph, spin) {
-    var columns = 18;
-    var rows = 14;
+    var columns = 44;
+    var rows = 34;
     var points = [];
     var row;
     var column;
@@ -1202,15 +1201,23 @@
     }
     patches.sort(function sortPatches(a, b) { return a.depth - b.depth; });
 
+    var surfaceGradient = ctx.createLinearGradient(
+      0,
+      renderState.height * 0.2,
+      0,
+      renderState.height * 0.82
+    );
+    surfaceGradient.addColorStop(0, "rgba(251,249,243,0.98)");
+    surfaceGradient.addColorStop(0.48, "rgba(238,235,226,0.98)");
+    surfaceGradient.addColorStop(1, "rgba(213,210,201,0.98)");
+
     ctx.save();
+    ctx.globalAlpha = 0.3 + morph * 0.66;
+    ctx.fillStyle = surfaceGradient;
+    ctx.strokeStyle = surfaceGradient;
+    ctx.lineWidth = 0.72;
+    ctx.lineJoin = "round";
     patches.forEach(function drawPatch(patch) {
-      var shade = clamp01((patch.depth + 1.6) / 3.2);
-      var light = Math.round(220 + shade * 28);
-      var green = Math.round(217 + shade * 28);
-      var blue = Math.round(207 + shade * 31);
-      ctx.fillStyle = "rgba(" + light + "," + green + "," + blue + "," + (0.3 + morph * 0.62) + ")";
-      ctx.strokeStyle = ctx.fillStyle;
-      ctx.lineWidth = 1.15;
       ctx.beginPath();
       ctx.moveTo(patch.points[0].x, patch.points[0].y);
       for (var index = 1; index < patch.points.length; index += 1) {
@@ -1221,6 +1228,62 @@
       ctx.stroke();
     });
     ctx.restore();
+  }
+
+  function appendCompletionSegment(points, from, to, samples, morph, spin) {
+    for (var sample = points.length ? 1 : 0; sample <= samples; sample += 1) {
+      var amount = sample / samples;
+      points.push(completionMappedPoint(
+        from.flatX + (to.flatX - from.flatX) * amount,
+        from.flatY + (to.flatY - from.flatY) * amount,
+        from.u + (to.u - from.u) * amount,
+        from.v + (to.v - from.v) * amount,
+        morph,
+        spin
+      ));
+    }
+  }
+
+  function completionGridEdgePoints(cell, step, direction, morph, spin) {
+    var fromFlat = cellCenter(cell);
+    var toFlat = cellCenter(step.cell);
+    var fromUV = Morph.stoneUV(game.rules, cell);
+    var toUV = Morph.stoneUV(game.rules, step.cell);
+    var from = { flatX: fromFlat.x, flatY: fromFlat.y, u: fromUV.u, v: fromUV.v };
+    var to = { flatX: toFlat.x, flatY: toFlat.y, u: toUV.u, v: toUV.v };
+    var points = [];
+    var samples = 8;
+    if (!step.seam) {
+      appendCompletionSegment(points, from, to, samples, morph, spin);
+      return points;
+    }
+
+    var vector = Engine.DIRECTIONS[direction];
+    var sourceBoundary = { flatX: from.flatX, flatY: from.flatY, u: from.u, v: from.v };
+    var targetBoundary = { flatX: to.flatX, flatY: to.flatY, u: to.u, v: to.v };
+    if (step.seam & Engine.SEAM_X) {
+      sourceBoundary.flatX = vector.dx > 0 ? renderState.layout.right : renderState.layout.left;
+      sourceBoundary.u = vector.dx > 0 ? 1 : 0;
+      targetBoundary.flatX = vector.dx > 0 ? renderState.layout.left : renderState.layout.right;
+      targetBoundary.u = vector.dx > 0 ? 0 : 1;
+    }
+    if (step.seam & Engine.SEAM_Y) {
+      sourceBoundary.flatY = vector.dy > 0 ? renderState.layout.bottom : renderState.layout.top;
+      sourceBoundary.v = vector.dy > 0 ? 1 : 0;
+      targetBoundary.flatY = vector.dy > 0 ? renderState.layout.top : renderState.layout.bottom;
+      targetBoundary.v = vector.dy > 0 ? 0 : 1;
+    }
+    appendCompletionSegment(points, from, sourceBoundary, 5, morph, spin);
+    points.push(completionMappedPoint(
+      targetBoundary.flatX,
+      targetBoundary.flatY,
+      targetBoundary.u,
+      targetBoundary.v,
+      morph,
+      spin
+    ));
+    appendCompletionSegment(points, targetBoundary, to, 5, morph, spin);
+    return points;
   }
 
   function drawCompletionGrid(ctx, morph, spin) {
@@ -1234,30 +1297,27 @@
         if (!step) {
           return;
         }
-        var from = completionCellPoint(cell, morph, spin);
-        var to = completionCellPoint(step.cell, morph, spin);
         ctx.globalAlpha = step.seam ? Morph.smooth((morph - 0.16) / 0.66) : 1;
+        var points = completionGridEdgePoints(cell, step, direction, morph, spin);
         ctx.beginPath();
-        ctx.moveTo(from.x, from.y);
-        if (step.seam) {
-          var uv = Morph.stoneUV(game.rules, cell);
-          var seamPoint = step.seam & Engine.SEAM_X
-            ? completionPoint(1, uv.v, morph, spin)
-            : completionPoint(uv.u, 1, morph, spin);
-          ctx.lineTo(seamPoint.x, seamPoint.y);
-          ctx.lineTo(to.x, to.y);
-        } else {
-          ctx.lineTo(to.x, to.y);
+        points.forEach(function drawGridCurve(point, pointIndex) {
+          if (pointIndex === 0) {
+            ctx.moveTo(point.x, point.y);
+          } else {
+            ctx.lineTo(point.x, point.y);
+          }
+        });
+        if (points.length > 1) {
+          ctx.stroke();
         }
-        ctx.stroke();
       });
     }
     ctx.restore();
   }
 
   function drawCompletionBoundary(ctx, axis, morph, spin, color) {
-    var samples = 42;
-    var fade = 1 - Morph.smooth((morph - 0.78) / 0.22) * 0.78;
+    var samples = 72;
+    var fade = 1 - Morph.smooth((morph - 0.72) / 0.28);
     ctx.save();
     ctx.globalAlpha = (0.36 + morph * 0.5) * fade;
     ctx.strokeStyle = color;
@@ -1295,17 +1355,45 @@
     ctx.shadowBlur = 12;
     ctx.strokeStyle = "rgba(199, 146, 68," + pulse + ")";
     ctx.lineWidth = Math.max(3.4, renderState.layout.cell * 0.12);
+    var direction = game.winningMask.direction;
     for (var index = 0; index < cells.length - 1; index += 1) {
       var segmentProgress = clamp01(reveal * (cells.length - 1) - index);
       if (segmentProgress <= 0) {
         continue;
       }
-      var from = completionCellPoint(cells[index], morph, spin);
-      var to = completionCellPoint(cells[index + 1], morph, spin);
+      var step = Engine.step(game.rules, cells[index], direction);
+      if (!step || step.cell !== cells[index + 1]) {
+        for (var candidate = 0; candidate < Engine.DIRECTIONS.length; candidate += 1) {
+          var candidateStep = Engine.step(game.rules, cells[index], candidate);
+          if (candidateStep && candidateStep.cell === cells[index + 1]) {
+            direction = candidate;
+            step = candidateStep;
+            break;
+          }
+        }
+      }
+      if (!step || step.cell !== cells[index + 1]) {
+        continue;
+      }
+      var points = completionGridEdgePoints(cells[index], step, direction, morph, spin);
+      var lastPointIndex = (points.length - 1) * segmentProgress;
       ctx.beginPath();
-      ctx.moveTo(from.x, from.y);
-      ctx.lineTo(from.x + (to.x - from.x) * segmentProgress, from.y + (to.y - from.y) * segmentProgress);
+      ctx.moveTo(points[0].x, points[0].y);
+      for (var pointIndex = 1; pointIndex <= Math.floor(lastPointIndex); pointIndex += 1) {
+        ctx.lineTo(points[pointIndex].x, points[pointIndex].y);
+      }
+      if (lastPointIndex < points.length - 1) {
+        var wholeIndex = Math.floor(lastPointIndex);
+        var fraction = lastPointIndex - wholeIndex;
+        var fromPoint = points[wholeIndex];
+        var toPoint = points[wholeIndex + 1];
+        ctx.lineTo(
+          fromPoint.x + (toPoint.x - fromPoint.x) * fraction,
+          fromPoint.y + (toPoint.y - fromPoint.y) * fraction
+        );
+      }
       ctx.stroke();
+      direction = step.direction;
     }
     ctx.restore();
   }
