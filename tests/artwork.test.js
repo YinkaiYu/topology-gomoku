@@ -90,13 +90,23 @@ test("未揭示图鉴使用真实模型外轮廓的无孔实心剪影", () => {
   });
 });
 
-test("首页采用 E 款品牌图标并移除二次进入按钮与英文副标题", () => {
+test("首页采用 E 款品牌主视觉并移除二次进入按钮与英文副标题", () => {
   const html = fs.readFileSync(path.join(ROOT, "app", "index.html"), "utf8");
   const game = fs.readFileSync(path.join(ROOT, "app", "assets", "game.js"), "utf8");
-  assert.match(html, /class="brand-mark" src="\.\/assets\/brand-icon\.png"/);
+  assert.match(html, /class="hero-brand" src="\.\/assets\/brand-icon\.png"/);
+  assert.doesNotMatch(html, /class="brand-mark"/);
   assert.doesNotMatch(html, /TOPOLOGY\s*×\s*GOMOKU|id="startButton"|class="home-actions"/);
   assert.match(html, /<span class="level-name">双生<\/span>/);
   assert.match(game, /name:\s*"双生"/);
+});
+
+test("目录与棋局顶栏为宿主默认按钮预留额外安全空间", () => {
+  const style = fs.readFileSync(path.join(ROOT, "app", "assets", "style.css"), "utf8");
+  assert.match(style, /--host-chrome-clearance:\s*clamp\(/);
+  assert.match(style, /\.home-scroll\s*\{[^}]*var\(--host-chrome-clearance\)/s);
+  assert.match(style, /\.game-screen\s*\{[^}]*var\(--host-chrome-clearance\)/s);
+  assert.match(style, /\.developer-fab\s*\{[^}]*var\(--host-chrome-clearance\)/s);
+  assert.doesNotMatch(style, /\.hero::after/);
 });
 
 test("关卡卡片与棋盘使用可逆共享元素弹性过渡", () => {

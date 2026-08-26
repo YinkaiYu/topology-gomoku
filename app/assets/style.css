@@ -16,6 +16,7 @@
   --soft-out: cubic-bezier(0.16, 0.84, 0.24, 1);
   --safe-top: var(--safe-area-inset-top, env(safe-area-inset-top, 0px));
   --safe-bottom: var(--safe-area-inset-bottom, env(safe-area-inset-bottom, 0px));
+  --host-chrome-clearance: clamp(58px, 8.5vh, 78px);
 }
 
 *,
@@ -224,7 +225,7 @@ button,
   overscroll-behavior-y: contain;
   -webkit-overflow-scrolling: touch;
   scrollbar-width: none;
-  padding: calc(10px + var(--safe-top)) 20px calc(26px + var(--safe-bottom));
+  padding: calc(8px + var(--safe-top) + var(--host-chrome-clearance)) 20px calc(26px + var(--safe-bottom));
 }
 
 .home-scroll::-webkit-scrollbar {
@@ -232,19 +233,27 @@ button,
 }
 
 .home-topbar {
-  margin-bottom: 16px;
+  min-height: 44px;
+  margin-bottom: 10px;
 }
 
-.brand-mark {
-  width: 42px;
-  height: 42px;
-  object-fit: contain;
-  filter: drop-shadow(0 5px 8px rgba(33, 48, 44, 0.1));
+.home-topbar-spacer {
+  width: 1px;
+  height: 1px;
 }
 
 .hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) clamp(112px, 34vw, 156px);
+  align-items: center;
+  gap: 8px;
+  padding: 1px 0 28px 2px;
+}
+
+.hero-copy {
   position: relative;
-  padding: 3px 2px 26px;
+  z-index: 1;
+  min-width: 0;
 }
 
 .hero h1 {
@@ -263,20 +272,20 @@ button,
   letter-spacing: 0.04em;
 }
 
-.hero::after {
-  position: absolute;
-  right: 8px;
-  bottom: 32px;
-  width: 66px;
-  height: 66px;
-  border: 1px solid rgba(63, 140, 135, 0.25);
-  border-radius: 50%;
-  box-shadow:
-    0 0 0 10px rgba(63, 140, 135, 0.035),
-    inset 0 0 0 17px var(--paper),
-    inset 0 0 0 18px rgba(199, 146, 68, 0.34);
-  content: "";
-  transform: rotate(-18deg);
+.hero-brand {
+  display: block;
+  width: 100%;
+  aspect-ratio: 1;
+  object-fit: contain;
+  filter: drop-shadow(0 14px 18px rgba(33, 48, 44, 0.12));
+  transform: rotate(-5deg) scale(1.04);
+  transform-origin: center;
+  animation: hero-brand-breathe 5.2s ease-in-out infinite;
+}
+
+@keyframes hero-brand-breathe {
+  0%, 100% { transform: rotate(-5deg) translateY(0) scale(1.04); }
+  50% { transform: rotate(-3.5deg) translateY(-4px) scale(1.075); }
 }
 
 .journey-head {
@@ -564,7 +573,7 @@ button,
 .game-screen {
   display: flex;
   flex-direction: column;
-  padding: calc(8px + var(--safe-top)) 16px calc(10px + var(--safe-bottom));
+  padding: calc(8px + var(--safe-top) + var(--host-chrome-clearance)) 16px calc(10px + var(--safe-bottom));
 }
 
 .game-topbar {
@@ -837,7 +846,7 @@ button,
 .developer-fab {
   position: absolute;
   z-index: 16;
-  top: calc(17px + var(--safe-top));
+  top: calc(17px + var(--safe-top) + var(--host-chrome-clearance));
   right: 70px;
   min-width: 43px;
   height: 26px;
@@ -1219,7 +1228,7 @@ button,
 .toast {
   position: absolute;
   z-index: 40;
-  top: calc(20px + var(--safe-top));
+  top: calc(20px + var(--safe-top) + var(--host-chrome-clearance));
   left: 50%;
   max-width: calc(100% - 40px);
   padding: 9px 14px;
@@ -1261,7 +1270,7 @@ button,
 
   .game-topbar { min-height: 44px; }
   .match-strip { min-height: 44px; margin-bottom: 4px; }
-  .board-stage { max-width: min(100%, calc(100vh - 186px - var(--safe-top) - var(--safe-bottom))); }
+  .board-stage { max-width: min(100%, calc(100vh - 186px - var(--safe-top) - var(--safe-bottom) - var(--host-chrome-clearance))); }
   .game-tools { min-height: 54px; }
   .tool-button { height: 44px; }
 }
@@ -1270,7 +1279,7 @@ button,
   .home-scroll { padding-right: 14px; padding-left: 14px; }
   .level-card { min-height: 142px; padding: 12px; }
   .level-glyph { width: 72px; height: 60px; }
-  .hero::after { width: 54px; height: 54px; }
+  .hero { grid-template-columns: minmax(0, 1fr) 100px; gap: 4px; }
 }
 
 @media (prefers-reduced-motion: reduce) {
