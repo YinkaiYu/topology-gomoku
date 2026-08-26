@@ -2,6 +2,7 @@
   "use strict";
 
   var Engine = window.TopologyGomoku;
+  var Morph = window.TopologyMorph;
   var STORAGE_KEY = "topology-gomoku:v1";
   var HUMAN = Engine.HUMAN;
   var AI = Engine.AI;
@@ -12,13 +13,14 @@
       name: "方庭",
       typeName: "平面",
       topology: "plane",
+      tutorial: true,
       width: 7,
       height: 7,
       edgeText: "有边界",
       xConnection: null,
       yConnection: null,
-      ruleTitle: "四边有界",
-      ruleText: "横、竖、斜，连成五子",
+      ruleTitle: "先连成五颗",
+      ruleText: "连续落子，横、竖、斜皆可",
       demoStart: [1, 3],
       demoDirection: 0
     },
@@ -300,6 +302,10 @@
       this.tone(392, 0.28, 0, "sine", 0.025, 440);
       this.tone(523, 0.31, 0.13, "sine", 0.025, 587);
       this.tone(659, 0.4, 0.27, "sine", 0.028, 784);
+    } else if (name === "morph") {
+      this.tone(164, 0.72, 0, "sine", 0.014, 328);
+      this.tone(246, 0.66, 0.18, "sine", 0.012, 493);
+      this.tone(740, 0.28, 0.82, "sine", 0.012, 988);
     } else if (name === "lose") {
       this.tone(220, 0.42, 0, "triangle", 0.026, 146);
     } else if (name === "draw") {
@@ -381,7 +387,8 @@
       winningMask: null,
       winReason: null,
       lastMove: -1,
-      demo: null
+      demo: null,
+      completion: null
     };
     game.board = Engine.createBoard(game.rules);
     renderState.hoverCell = -1;
@@ -400,7 +407,7 @@
     window.setTimeout(function afterScreenTransition() {
       resizeCanvas();
       requestRender();
-      if (!skipDemo) {
+      if (!skipDemo && !level.tutorial) {
         startBoundaryDemo();
       }
     }, 90);
@@ -475,15 +482,19 @@
       return;
     }
     var demoActive = Boolean(game.demo && game.demo.active);
+    var completionActive = Boolean(game.completion && game.completion.active);
     var humanTurn = game.status === "playing" && game.turn === HUMAN && !demoActive;
     var aiTurn = game.status === "playing" && game.turn === AI && !demoActive;
     var aiActuallyThinking = aiTurn && !(DEV_MODE && developer.aiPaused);
     dom.humanChip.classList.toggle("is-active", humanTurn);
     dom.aiChip.classList.toggle("is-active", aiTurn);
-    dom.difficultyLabel.textContent = DIFFICULTIES[prefs.difficulty].label;
+    dom.aiChip.classList.toggle("is-tutorial-hidden", Boolean(game.level.tutorial));
+    dom.difficultyLabel.textContent = game.level.tutorial ? "教学" : DIFFICULTIES[prefs.difficulty].label;
     dom.thinkingIndicator.classList.toggle("is-visible", aiActuallyThinking);
     dom.undoButton.disabled = game.moves.length === 0 || game.status !== "playing";
-    if (demoActive) {
+    if (completionActive) {
+      dom.turnStatus.textContent = "边界合拢";
+    } else if (demoActive) {
       dom.turnStatus.textContent = "边界演示";
     } else if (game.status === "ended") {
       dom.turnStatus.textContent = "本局结束";
@@ -492,7 +503,7 @@
     } else if (aiTurn) {
       dom.turnStatus.textContent = "思考中";
     } else {
-      dom.turnStatus.textContent = "你的回合";
+      dom.turnStatus.textContent = game.level.tutorial ? "连成五颗" : "你的回合";
     }
     if (DEV_MODE && activeSheet === dom.developerSheet) {
       syncDeveloperUI();
@@ -536,6 +547,9 @@
     var winningMask = Engine.checkWin(game.board, game.rules, cell, player);
     if (winningMask) {
       finishGame(player === HUMAN ? "win" : "lose", winningMask);
+    } else if (game.level.tutorial) {
+      game.turn = HUMAN;
+      updateTurnUI();
     } else if (Engine.playerWinsByBlockingAi(game.board, game.rules)) {
       finishGame("win", null, "blocked");
     } else if (Engine.playerHasNoWinningPath(game.board, game.rules)) {
@@ -575,11 +589,18 @@
 
   function finishGame(outcome, winningMask, reason) {
     turnToken += 1;
+    var finishedGame = game;
     game.status = "ended";
     game.turn = 0;
     game.winningMask = winningMask;
     game.winReason = reason || null;
     renderState.winAt = performance.now();
+    var shouldMorph = outcome === "win" && game.levelIndex > 0 && Boolean(Morph);
+    game.completion = shouldMorph ? {
+      active: true,
+      startedAt: renderState.winAt,
+      duration: 3100
+    } : null;
     if (winningMask && winningMask.seam) {
       renderState.seamPulseAt = performance.now();
       renderState.seamPulseBits = winningMask.seam;
@@ -597,6 +618,13 @@
       }
       savePreferences();
       sound.play("win");
+      if (shouldMorph) {
+        window.setTimeout(function playMorphSound() {
+          if (game === finishedGame && game.completion) {
+            sound.play("morph");
+          }
+        }, 260);
+      }
     } else if (outcome === "lose") {
       sound.play("lose");
     } else {
@@ -604,10 +632,14 @@
     }
 
     window.setTimeout(function revealResult() {
-      if (game && game.status === "ended") {
+      if (game === finishedGame && game.status === "ended") {
+        if (game.completion) {
+          game.completion.active = false;
+          updateTurnUI();
+        }
         showResult(outcome);
       }
-    }, 820);
+    }, shouldMorph ? game.completion.duration + 120 : 820);
   }
 
   function undoMove() {
@@ -617,7 +649,7 @@
     turnToken += 1;
     dom.thinkingIndicator.classList.remove("is-visible");
 
-    var removeCount = game.turn === AI ? 1 : Math.min(2, game.moves.length);
+    var removeCount = game.level.tutorial ? 1 : (game.turn === AI ? 1 : Math.min(2, game.moves.length));
     while (removeCount > 0 && game.moves.length) {
       var move = game.moves.pop();
       game.board[move.cell] = Engine.EMPTY;
@@ -827,6 +859,7 @@
     game.status = "playing";
     game.winningMask = null;
     game.winReason = null;
+    game.completion = null;
     game.lastMove = -1;
     renderState.lastMoveAt = 0;
     renderState.seamPulseAt = 0;
@@ -870,6 +903,7 @@
     game.turn = HUMAN;
     game.winningMask = null;
     game.winReason = null;
+    game.completion = null;
     game.lastMove = path.cells[endIndex];
     developer.aiPaused = true;
     renderState.lastMoveAt = performance.now();
@@ -1022,6 +1056,9 @@
     if (renderState.winAt && time - renderState.winAt < 1450) {
       animate = true;
     }
+    if (game.completion && time - game.completion.startedAt < game.completion.duration) {
+      animate = true;
+    }
     if (game.demo && game.demo.active) {
       animate = true;
     }
@@ -1055,6 +1092,10 @@
     ctx.clearRect(0, 0, renderState.width, renderState.height);
 
     drawPaperTexture(ctx);
+    if (game.completion) {
+      drawCompletionMorph(ctx, time);
+      return;
+    }
     drawTopologyRails(ctx, time);
     drawGrid(ctx, layout);
     drawDemoStones(ctx, time);
@@ -1063,6 +1104,234 @@
     drawPlayerHints(ctx);
     drawMovePreview(ctx);
     drawStones(ctx, time);
+  }
+
+  function completionPoint(u, v, morph, spin) {
+    var flatX = renderState.layout.left + u * (renderState.layout.right - renderState.layout.left);
+    var flatY = renderState.layout.top + v * (renderState.layout.bottom - renderState.layout.top);
+    var projected = Morph.project(game.level.topology, u, v, renderState.width, renderState.height, spin);
+    return {
+      x: flatX + (projected.x - flatX) * morph,
+      y: flatY + (projected.y - flatY) * morph,
+      depth: projected.depth * morph
+    };
+  }
+
+  function completionCellPoint(cell, morph, spin) {
+    var flat = cellCenter(cell);
+    var uv = Morph.stoneUV(game.rules, cell);
+    var projected = Morph.project(game.level.topology, uv.u, uv.v, renderState.width, renderState.height, spin);
+    return {
+      x: flat.x + (projected.x - flat.x) * morph,
+      y: flat.y + (projected.y - flat.y) * morph,
+      depth: projected.depth * morph
+    };
+  }
+
+  function drawCompletionSurface(ctx, morph, spin) {
+    var columns = 18;
+    var rows = 14;
+    var points = [];
+    var row;
+    var column;
+    for (row = 0; row <= rows; row += 1) {
+      var pointRow = [];
+      for (column = 0; column <= columns; column += 1) {
+        pointRow.push(completionPoint(column / columns, row / rows, morph, spin));
+      }
+      points.push(pointRow);
+    }
+
+    var patches = [];
+    for (row = 0; row < rows; row += 1) {
+      for (column = 0; column < columns; column += 1) {
+        var patchPoints = [
+          points[row][column],
+          points[row][column + 1],
+          points[row + 1][column + 1],
+          points[row + 1][column]
+        ];
+        patches.push({
+          points: patchPoints,
+          depth: patchPoints.reduce(function sumDepth(total, point) { return total + point.depth; }, 0) / 4
+        });
+      }
+    }
+    patches.sort(function sortPatches(a, b) { return a.depth - b.depth; });
+
+    ctx.save();
+    patches.forEach(function drawPatch(patch) {
+      var shade = clamp01((patch.depth + 1.6) / 3.2);
+      var light = Math.round(220 + shade * 28);
+      var green = Math.round(217 + shade * 28);
+      var blue = Math.round(207 + shade * 31);
+      ctx.fillStyle = "rgba(" + light + "," + green + "," + blue + "," + (0.3 + morph * 0.62) + ")";
+      ctx.strokeStyle = ctx.fillStyle;
+      ctx.lineWidth = 1.15;
+      ctx.beginPath();
+      ctx.moveTo(patch.points[0].x, patch.points[0].y);
+      for (var index = 1; index < patch.points.length; index += 1) {
+        ctx.lineTo(patch.points[index].x, patch.points[index].y);
+      }
+      ctx.closePath();
+      ctx.fill();
+      ctx.stroke();
+    });
+    ctx.restore();
+  }
+
+  function drawCompletionGrid(ctx, morph, spin) {
+    ctx.save();
+    ctx.strokeStyle = "rgba(92, 88, 80," + (0.48 - morph * 0.17) + ")";
+    ctx.lineWidth = Math.max(0.7, renderState.layout.cell * (0.025 - morph * 0.006));
+    ctx.lineCap = "round";
+    for (var cell = 0; cell < game.rules.cellCount; cell += 1) {
+      [0, 2].forEach(function drawDirection(direction) {
+        var step = Engine.step(game.rules, cell, direction);
+        if (!step) {
+          return;
+        }
+        var from = completionCellPoint(cell, morph, spin);
+        var to = completionCellPoint(step.cell, morph, spin);
+        ctx.globalAlpha = step.seam ? Morph.smooth((morph - 0.16) / 0.66) : 1;
+        ctx.beginPath();
+        ctx.moveTo(from.x, from.y);
+        if (step.seam) {
+          var uv = Morph.stoneUV(game.rules, cell);
+          var seamPoint = step.seam & Engine.SEAM_X
+            ? completionPoint(1, uv.v, morph, spin)
+            : completionPoint(uv.u, 1, morph, spin);
+          ctx.lineTo(seamPoint.x, seamPoint.y);
+          ctx.lineTo(to.x, to.y);
+        } else {
+          ctx.lineTo(to.x, to.y);
+        }
+        ctx.stroke();
+      });
+    }
+    ctx.restore();
+  }
+
+  function drawCompletionBoundary(ctx, axis, morph, spin, color) {
+    var samples = 42;
+    var fade = 1 - Morph.smooth((morph - 0.78) / 0.22) * 0.78;
+    ctx.save();
+    ctx.globalAlpha = (0.36 + morph * 0.5) * fade;
+    ctx.strokeStyle = color;
+    ctx.lineWidth = 2.4;
+    ctx.lineCap = "round";
+    [0, 1].forEach(function drawSide(side) {
+      ctx.beginPath();
+      for (var index = 0; index <= samples; index += 1) {
+        var along = index / samples;
+        var point = axis === "x"
+          ? completionPoint(side, along, morph, spin)
+          : completionPoint(along, side, morph, spin);
+        if (index === 0) {
+          ctx.moveTo(point.x, point.y);
+        } else {
+          ctx.lineTo(point.x, point.y);
+        }
+      }
+      ctx.stroke();
+    });
+    ctx.restore();
+  }
+
+  function drawCompletionWinningLine(ctx, time, morph, spin) {
+    if (!game.winningMask) {
+      return;
+    }
+    var cells = Array.prototype.slice.call(game.winningMask.cells);
+    var reveal = Morph.smooth((time - game.completion.startedAt - 1250) / 760);
+    var pulse = 0.78 + Math.sin(time * 0.009) * 0.16;
+    ctx.save();
+    ctx.lineCap = "round";
+    ctx.lineJoin = "round";
+    ctx.shadowColor = "rgba(199, 146, 68, 0.8)";
+    ctx.shadowBlur = 12;
+    ctx.strokeStyle = "rgba(199, 146, 68," + pulse + ")";
+    ctx.lineWidth = Math.max(3.4, renderState.layout.cell * 0.12);
+    for (var index = 0; index < cells.length - 1; index += 1) {
+      var segmentProgress = clamp01(reveal * (cells.length - 1) - index);
+      if (segmentProgress <= 0) {
+        continue;
+      }
+      var from = completionCellPoint(cells[index], morph, spin);
+      var to = completionCellPoint(cells[index + 1], morph, spin);
+      ctx.beginPath();
+      ctx.moveTo(from.x, from.y);
+      ctx.lineTo(from.x + (to.x - from.x) * segmentProgress, from.y + (to.y - from.y) * segmentProgress);
+      ctx.stroke();
+    }
+    ctx.restore();
+  }
+
+  function drawCompletionStone(ctx, item, radius, dimmed) {
+    ctx.save();
+    ctx.globalAlpha = dimmed ? 0.5 : 1;
+    ctx.translate(item.point.x, item.point.y);
+    ctx.shadowColor = item.player === HUMAN ? "rgba(24, 31, 29, 0.3)" : "rgba(65, 58, 48, 0.2)";
+    ctx.shadowBlur = radius * 0.48;
+    ctx.shadowOffsetY = radius * 0.2;
+    var gradient = ctx.createRadialGradient(-radius * 0.3, -radius * 0.34, radius * 0.07, 0, 0, radius);
+    if (item.player === HUMAN) {
+      gradient.addColorStop(0, "#6d7b76");
+      gradient.addColorStop(0.38, "#2b3935");
+      gradient.addColorStop(1, "#14201d");
+    } else {
+      gradient.addColorStop(0, "#ffffff");
+      gradient.addColorStop(0.48, "#f8f4e9");
+      gradient.addColorStop(1, "#d5cec1");
+    }
+    ctx.fillStyle = gradient;
+    ctx.beginPath();
+    ctx.arc(0, 0, radius, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.shadowColor = "transparent";
+    if (item.player === AI) {
+      ctx.strokeStyle = "rgba(94, 88, 78, 0.36)";
+      ctx.lineWidth = 1;
+      ctx.stroke();
+    }
+    ctx.restore();
+  }
+
+  function drawCompletionStones(ctx, morph, spin) {
+    var winnerSet = winningCellSet();
+    var items = [];
+    for (var cell = 0; cell < game.board.length; cell += 1) {
+      if (game.board[cell] !== Engine.EMPTY) {
+        items.push({
+          cell: cell,
+          player: game.board[cell],
+          point: completionCellPoint(cell, morph, spin)
+        });
+      }
+    }
+    items.sort(function sortStones(a, b) { return a.point.depth - b.point.depth; });
+    var radius = renderState.layout.cell * (0.37 - morph * 0.07);
+    items.forEach(function drawItem(item) {
+      drawCompletionStone(ctx, item, radius, Boolean(game.winningMask && !winnerSet[item.cell]));
+    });
+  }
+
+  function drawCompletionMorph(ctx, time) {
+    var elapsed = time - game.completion.startedAt;
+    var morph = Morph.smooth((elapsed - 180) / 2050);
+    var hold = Morph.smooth((elapsed - 2050) / 900);
+    var spin = morph * 0.08 + hold * 0.14;
+
+    drawCompletionSurface(ctx, morph, spin);
+    drawCompletionGrid(ctx, morph, spin);
+    if (game.level.xConnection) {
+      drawCompletionBoundary(ctx, "x", morph, spin, "#3f8c87");
+    }
+    if (game.level.yConnection) {
+      drawCompletionBoundary(ctx, "y", morph, spin, "#c79244");
+    }
+    drawCompletionWinningLine(ctx, time, morph, spin);
+    drawCompletionStones(ctx, morph, spin);
   }
 
   function drawPaperTexture(ctx) {

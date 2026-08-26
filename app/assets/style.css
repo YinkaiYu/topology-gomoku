@@ -526,6 +526,10 @@ button,
   transform: translateY(-1px);
 }
 
+.player-chip.is-tutorial-hidden {
+  visibility: hidden;
+}
+
 .mini-stone {
   display: block;
   width: 19px;
