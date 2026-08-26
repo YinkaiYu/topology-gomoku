@@ -98,6 +98,8 @@ test("首页采用 E 款品牌主视觉并移除二次进入按钮与英文副�
   assert.doesNotMatch(html, /TOPOLOGY\s*×\s*GOMOKU|id="startButton"|class="home-actions"/);
   assert.match(html, /<span class="level-name">双生<\/span>/);
   assert.doesNotMatch(html, /id="homeSettingsButton"/);
+  assert.doesNotMatch(html, /class="level-number"/);
+  assert.match(html, /<span class="level-type">实射影平面<\/span>\s*<span class="level-name">双生<\/span>/);
   assert.match(game, /name:\s*"双生"/);
 });
 
@@ -107,6 +109,9 @@ test("目录锁定整屏并使用本地内嵌的典雅中文字体", () => {
   assert.match(style, /--display-font:\s*"Topo Serif"/);
   assert.match(style, /\.home-scroll\s*\{[^}]*overflow:\s*hidden/s);
   assert.match(style, /grid-template-rows:\s*repeat\(3, minmax\(0, 1fr\)\)/);
+  assert.match(style, /\.level-card\s*\{[^}]*text-align:\s*center/s);
+  assert.match(style, /\.level-type\s*\{[^}]*grid-row:\s*2/s);
+  assert.match(style, /\.level-name\s*\{[^}]*grid-row:\s*3/s);
   assert.doesNotMatch(style, /\.home-scroll\s*\{[^}]*overflow-y:\s*auto/s);
 });
 
@@ -129,6 +134,10 @@ test("关卡卡片与棋盘使用可逆共享元素弹性过渡", () => {
   assert.match(game, /cardLayer\.classList\.add\("transition-card-content"\)/);
   assert.match(game, /duration:\s*440/);
   assert.match(game, /is-shared-return/);
+  assert.match(game, /paintRealCardBelowTransition/);
+  assert.match(game, /is-transition-ready/);
+  assert.match(game, /paintStaticBoardBelowTransition/);
+  assert.match(game, /is-shared-ready/);
   assert.match(game, /function transitionToLevel\(/);
   assert.match(game, /scale\(1\.026\)/);
 });

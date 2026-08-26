@@ -329,7 +329,7 @@
       card.setAttribute("aria-disabled", locked ? "true" : "false");
       card.setAttribute(
         "aria-label",
-        padLevelNumber(index) + " " + LEVELS[index].name + (revealed ? "" : " · 图鉴未揭示")
+        LEVELS[index].name + (revealed ? "" : " · 图鉴未揭示")
       );
       if (complete) {
         completeCount += 1;
@@ -431,9 +431,16 @@
       fill: "both"
     });
     animation.onfinish = function finishCardExpansion() {
-      animation.cancel();
-      finishNavigationAnimation(null);
-      done();
+      dom.gameScreen.classList.add("is-shared-ready");
+      dom.gameScreen.classList.remove("is-shared-enter");
+      requestAnimationFrame(function paintStaticBoardBelowTransition() {
+        requestAnimationFrame(function retireExpansionAnimation() {
+          animation.cancel();
+          dom.gameScreen.classList.remove("is-shared-ready");
+          finishNavigationAnimation(null);
+          done();
+        });
+      });
     };
   }
 
@@ -499,9 +506,17 @@
         { opacity: 1, transform: "scale(1)" }
       ], { duration: 420, easing: "cubic-bezier(0.24, 0.7, 0.3, 1)", fill: "forwards" });
       animation.onfinish = function finishBoardCollapse() {
+        targetCard.classList.add("is-transition-ready", "is-handoff-stable");
         targetCard.classList.remove("is-transition-target");
-        finishNavigationAnimation(tile);
-        done();
+        requestAnimationFrame(function paintRealCardBelowTransition() {
+          requestAnimationFrame(function retireTransitionLayer() {
+            finishNavigationAnimation(tile);
+            requestAnimationFrame(function restoreCardInteractions() {
+              targetCard.classList.remove("is-transition-ready");
+            });
+            done();
+          });
+        });
       };
     });
   }
