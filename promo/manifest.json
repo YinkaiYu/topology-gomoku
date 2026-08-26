@@ -11,7 +11,8 @@
     "../app/assets/brand-icon.png",
     "../app/assets/fonts/noto-serif-sc-400.woff2",
     "../app/assets/fonts/noto-serif-sc-600.woff2",
-    "../app/assets/fonts/noto-serif-sc-700.woff2"
+    "../app/assets/fonts/noto-serif-sc-700.woff2",
+    "assets/noto-serif-sc-institution-400.ttf"
   ],
   "palette": {
     "paper": "#f3f0e7",

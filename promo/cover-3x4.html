@@ -29,6 +29,14 @@
       font-display: block;
     }
 
+    @font-face {
+      font-family: "Institution Serif";
+      src: url("./assets/noto-serif-sc-institution-400.ttf") format("truetype");
+      font-weight: 400;
+      font-style: normal;
+      font-display: block;
+    }
+
     :root {
       color-scheme: light;
       --paper: #f3f0e7;
@@ -83,32 +91,10 @@
       mix-blend-mode: multiply;
     }
 
-    .eyebrow {
-      position: absolute;
-      top: 96px;
-      left: 92px;
-      display: flex;
-      align-items: center;
-      gap: 17px;
-      font-size: 25px;
-      font-weight: 600;
-      letter-spacing: .38em;
-      color: var(--teal);
-    }
-
-    .eyebrow::before {
-      content: "";
-      width: 9px;
-      height: 9px;
-      border-radius: 50%;
-      background: var(--red);
-      box-shadow: 0 3px 9px rgba(217,91,79,.25);
-    }
-
     .title {
       position: absolute;
       z-index: 3;
-      top: 165px;
+      top: 119px;
       left: 84px;
       margin: 0;
       font-size: 146px;
@@ -124,7 +110,7 @@
     .tagline {
       position: absolute;
       z-index: 3;
-      top: 480px;
+      top: 434px;
       left: 94px;
       margin: 0;
       color: var(--muted);
@@ -137,7 +123,7 @@
       position: absolute;
       z-index: 2;
       left: 96px;
-      top: 568px;
+      top: 522px;
       width: 104px;
       height: 3px;
       border-radius: 3px;
@@ -184,25 +170,18 @@
       border: 2px solid rgba(33,48,44,.075);
     }
 
-    .stones {
+    .institution {
       position: absolute;
       z-index: 4;
       left: 91px;
-      bottom: 96px;
-      display: flex;
-      gap: 13px;
-      align-items: center;
+      bottom: 92px;
+      margin: 0;
+      font-family: "Institution Serif", "Topology Serif", serif;
+      font-size: 27px;
+      font-weight: 400;
+      letter-spacing: .15em;
+      color: rgba(33,48,44,.76);
     }
-
-    .stone {
-      width: 15px;
-      height: 15px;
-      border-radius: 50%;
-      background: var(--ink);
-      box-shadow: inset 3px 3px 4px rgba(255,255,255,.12), 0 3px 6px rgba(33,48,44,.16);
-    }
-
-    .stone:last-child { background: var(--red); }
 
     .corner-mark {
       position: absolute;
@@ -217,15 +196,12 @@
 </head>
 <body>
   <main class="cover" aria-label="拓扑五子棋小红书宣传封面">
-    <div class="eyebrow">拓扑小游戏</div>
     <h1 class="title"><span>拓扑</span><span>五子棋</span></h1>
     <p class="tagline">边界之外，也能连成一线。</p>
     <div class="rule" aria-hidden="true"></div>
     <div class="orbit" aria-hidden="true"></div>
     <img class="hero" src="../app/assets/brand-icon.png" alt="拓扑五子棋环结图标">
-    <div class="stones" aria-hidden="true">
-      <i class="stone"></i><i class="stone"></i><i class="stone"></i><i class="stone"></i><i class="stone"></i>
-    </div>
+    <p class="institution">中国科学院物理研究所</p>
     <div class="corner-mark" aria-hidden="true"></div>
   </main>
 </body>

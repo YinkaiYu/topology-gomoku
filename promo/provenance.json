@@ -18,6 +18,10 @@
     {
       "asset": "../app/assets/fonts/noto-serif-sc-700.woff2",
       "role": "Embedded Chinese serif typography"
+    },
+    {
+      "asset": "assets/noto-serif-sc-institution-400.ttf",
+      "role": "Embedded Chinese serif subset for the institutional credit"
     }
   ],
   "generatedImagery": false
