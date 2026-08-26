@@ -165,12 +165,6 @@ button,
   opacity: 0;
 }
 
-.game-screen.is-shared-ready .board-stage {
-  opacity: 1;
-  transform: none;
-  transition: none;
-}
-
 .level-transition-card,
 .level-transition-board {
   position: fixed;

@@ -161,6 +161,7 @@
   var turnToken = 0;
   var activeSheet = null;
   var toastTimer = 0;
+  var settledBoardAnimation = null;
   var developer = {
     aiPaused: false,
     placementPlayer: HUMAN
@@ -388,6 +389,14 @@
     });
   }
 
+  function releaseSettledBoardAnimation() {
+    if (!settledBoardAnimation) {
+      return;
+    }
+    settledBoardAnimation.cancel();
+    settledBoardAnimation = null;
+  }
+
   function animateCardIntoBoard(transition, done) {
     if (!transition || prefersReducedMotion() || !dom.boardStage.animate) {
       finishNavigationAnimation(null);
@@ -431,16 +440,10 @@
       fill: "both"
     });
     animation.onfinish = function finishCardExpansion() {
-      dom.gameScreen.classList.add("is-shared-ready");
       dom.gameScreen.classList.remove("is-shared-enter");
-      requestAnimationFrame(function paintStaticBoardBelowTransition() {
-        requestAnimationFrame(function retireExpansionAnimation() {
-          animation.cancel();
-          dom.gameScreen.classList.remove("is-shared-ready");
-          finishNavigationAnimation(null);
-          done();
-        });
-      });
+      settledBoardAnimation = animation;
+      finishNavigationAnimation(null);
+      done();
     };
   }
 
@@ -456,6 +459,7 @@
     tile.appendChild(tileCanvas);
     dom.appShell.classList.add("is-navigating", "is-shared-return");
     showScreen("home");
+    releaseSettledBoardAnimation();
     requestAnimationFrame(function measureReturnCard() {
       var targetCard = dom.levelCards[levelIndex];
       var target = targetCard.getBoundingClientRect();
@@ -482,13 +486,15 @@
           transformOrigin: "top left",
           transform: "translate(" + translateX + "px, " + translateY + "px) scale(" + scaleX + ", " + scaleY + ")",
           borderRadius: "28px",
+          backgroundColor: "rgba(251, 250, 246, 0.94)",
           boxShadow: "0 18px 48px rgba(46, 51, 46, 0.16)"
         },
         {
           transformOrigin: "top left",
           transform: "translate(0, 0) scale(1)",
           borderRadius: "20px",
-          boxShadow: "0 9px 24px rgba(46, 51, 46, 0.1)"
+          backgroundColor: "rgba(251, 250, 246, 0)",
+          boxShadow: "none"
         }
       ], {
         duration: 440,
@@ -552,6 +558,7 @@
       { opacity: 0, transform: "translateX(" + travel + "px) scale(0.92)" }
     ], { duration: 260, easing: "cubic-bezier(0.55, 0, 0.8, 0.2)", fill: "forwards" });
     animation.onfinish = function replaceBoardAfterExit() {
+      releaseSettledBoardAnimation();
       animation.cancel();
       startLevel(index, { skipDemo: skipDemo, levelSwitchDirection: direction });
     };

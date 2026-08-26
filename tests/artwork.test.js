@@ -136,8 +136,10 @@ test("关卡卡片与棋盘使用可逆共享元素弹性过渡", () => {
   assert.match(game, /is-shared-return/);
   assert.match(game, /paintRealCardBelowTransition/);
   assert.match(game, /is-transition-ready/);
-  assert.match(game, /paintStaticBoardBelowTransition/);
-  assert.match(game, /is-shared-ready/);
+  assert.match(game, /settledBoardAnimation\s*=\s*animation/);
+  assert.match(game, /function releaseSettledBoardAnimation\(/);
+  assert.match(game, /backgroundColor:\s*"rgba\(251, 250, 246, 0\)"/);
+  assert.match(game, /boxShadow:\s*"none"/);
   assert.match(game, /function transitionToLevel\(/);
   assert.match(game, /scale\(1\.026\)/);
 });
