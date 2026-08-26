@@ -82,6 +82,30 @@ test("每个胜利掩码都由五个不同交点构成", () => {
   });
 });
 
+test("六关边界演示都沿真实拓扑连续落下五颗不同棋子", () => {
+  const cases = [
+    { type: "plane", width: 7, height: 7, start: [1, 3], direction: 0, points: [[1, 3], [2, 3], [3, 3], [4, 3], [5, 3]], seam: 0 },
+    { type: "cylinder", width: 7, height: 6, start: [5, 2], direction: 0, points: [[5, 2], [6, 2], [0, 2], [1, 2], [2, 2]], seam: Game.SEAM_X },
+    { type: "torus", width: 7, height: 6, start: [5, 4], direction: 1, points: [[5, 4], [6, 5], [0, 0], [1, 1], [2, 2]], seam: Game.SEAM_X | Game.SEAM_Y },
+    { type: "mobius", width: 8, height: 6, start: [6, 1], direction: 0, points: [[6, 1], [7, 1], [0, 4], [1, 4], [2, 4]], seam: Game.SEAM_X | Game.SEAM_TWIST },
+    { type: "klein", width: 7, height: 6, start: [5, 4], direction: 1, points: [[5, 4], [6, 5], [0, 5], [1, 4], [2, 3]], seam: Game.SEAM_X | Game.SEAM_Y | Game.SEAM_TWIST },
+    { type: "projective", width: 8, height: 8, start: [1, 6], direction: 2, points: [[1, 6], [1, 7], [6, 0], [6, 1], [6, 2]], seam: Game.SEAM_Y | Game.SEAM_TWIST }
+  ];
+
+  cases.forEach((item) => {
+    const rules = Game.createRules({ type: item.type, width: item.width, height: item.height, target: 5 });
+    const startCell = Game.toCell(rules, item.start[0], item.start[1]);
+    const path = Game.tracePath(rules, startCell, item.direction, 5);
+    assert.ok(path, item.type);
+    assert.deepEqual(path.cells.map((cell) => {
+      const point = Game.toPoint(rules, cell);
+      return [point.x, point.y];
+    }), item.points, item.type);
+    assert.equal(path.seams.reduce((all, seam) => all | seam, 0), item.seam, item.type);
+    assert.equal(new Set(path.cells).size, 5, item.type);
+  });
+});
+
 test("AI 优先取胜，其次阻挡玩家单杀", () => {
   const rules = Game.createRules({ type: "plane", width: 7, height: 7, target: 5 });
   const winningBoard = Game.createBoard(rules);

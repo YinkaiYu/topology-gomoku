@@ -622,84 +622,6 @@ button,
   25% { transform: translateY(-3px); opacity: 1; }
 }
 
-.coach-card {
-  position: absolute;
-  z-index: 3;
-  right: 20px;
-  bottom: 20px;
-  left: 20px;
-  display: grid;
-  grid-template-columns: auto 1fr auto;
-  grid-template-rows: auto auto;
-  align-items: center;
-  gap: 2px 12px;
-  padding: 15px;
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  border-radius: 18px;
-  color: #f9f7f1;
-  background: rgba(33, 48, 44, 0.94);
-  box-shadow: 0 18px 36px rgba(24, 31, 29, 0.22);
-  animation: coach-in 260ms cubic-bezier(0.22, 1, 0.36, 1);
-}
-
-.coach-card[hidden] {
-  display: none;
-}
-
-@keyframes coach-in {
-  from { opacity: 0; transform: translateY(12px) scale(0.97); }
-}
-
-.coach-visual {
-  position: relative;
-  width: 42px;
-  height: 30px;
-  grid-row: 1 / 3;
-}
-
-.coach-visual::before,
-.coach-visual::after {
-  position: absolute;
-  top: 10px;
-  width: 10px;
-  height: 10px;
-  border: 2px solid var(--teal);
-  border-radius: 50%;
-  content: "";
-}
-
-.coach-visual::before { left: 2px; }
-.coach-visual::after { right: 2px; }
-
-.coach-visual {
-  background: linear-gradient(var(--teal), var(--teal)) center 14px / 20px 2px no-repeat;
-}
-
-.coach-card strong {
-  grid-column: 2;
-  grid-row: 1;
-  font-size: 13px;
-  letter-spacing: 0.06em;
-}
-
-.coach-card > span {
-  grid-column: 2;
-  grid-row: 2;
-  color: rgba(255, 255, 255, 0.64);
-  font-size: 10px;
-}
-
-.coach-card button {
-  grid-column: 3;
-  grid-row: 1 / 3;
-  padding: 8px 11px;
-  border-radius: 999px;
-  color: var(--ink);
-  background: #f9f7f1;
-  font-size: 11px;
-  font-weight: 700;
-}
-
 .game-tools {
   display: grid;
   flex: 1 1 auto;
@@ -740,25 +662,43 @@ button,
   height: 20px;
 }
 
-.topology-badge {
-  display: flex;
+.rule-caption {
+  display: grid;
   align-items: center;
   justify-content: center;
-  gap: 8px;
+  gap: 3px;
+  min-width: 0;
+  text-align: center;
+  transition: opacity 180ms ease, transform 240ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.rule-caption strong {
+  color: var(--ink);
+  font-size: 11px;
+  font-weight: 650;
+  letter-spacing: 0.13em;
+}
+
+.rule-caption span {
   color: var(--muted);
-  font-size: 10px;
-  letter-spacing: 0.1em;
+  font-size: 9px;
+  letter-spacing: 0.05em;
+  white-space: nowrap;
 }
 
-.topology-badge i {
-  display: block;
-  width: min(9vw, 34px);
-  height: 1px;
-  background: var(--faint);
+.rule-caption.is-demonstrating {
+  transform: translateY(-1px);
 }
 
-.topology-badge.is-connected i:first-child { background: var(--teal); }
-.topology-badge.is-connected i:last-child { background: var(--gold); }
+.rule-caption.is-demonstrating strong {
+  color: var(--teal);
+  animation: rule-breathe 900ms ease-in-out infinite alternate;
+}
+
+@keyframes rule-breathe {
+  from { opacity: 0.64; }
+  to { opacity: 1; }
+}
 
 /* Sheets */
 

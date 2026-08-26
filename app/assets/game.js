@@ -17,8 +17,10 @@
       edgeText: "有边界",
       xConnection: null,
       yConnection: null,
-      coachTitle: "连成五子",
-      coachText: "横、竖、斜线都算"
+      ruleTitle: "四边有界",
+      ruleText: "横、竖、斜，连成五子",
+      demoStart: [1, 3],
+      demoDirection: 0
     },
     {
       name: "回廊",
@@ -29,8 +31,10 @@
       edgeText: "左右相接",
       xConnection: "same",
       yConnection: null,
-      coachTitle: "同色边相连",
-      coachText: "左右可以穿过"
+      ruleTitle: "左右相接",
+      ruleText: "越过一边，从另一边继续",
+      demoStart: [5, 2],
+      demoDirection: 0
     },
     {
       name: "环游",
@@ -41,8 +45,10 @@
       edgeText: "四边相接",
       xConnection: "same",
       yConnection: "same",
-      coachTitle: "棋盘没有尽头",
-      coachText: "上下左右都会相遇"
+      ruleTitle: "四边相接",
+      ruleText: "上下左右，都没有尽头",
+      demoStart: [5, 4],
+      demoDirection: 1
     },
     {
       name: "扭带",
@@ -53,8 +59,10 @@
       edgeText: "左右翻转",
       xConnection: "twist",
       yConnection: null,
-      coachTitle: "反向会翻转",
-      coachText: "穿过后，上下镜像"
+      ruleTitle: "左右翻转",
+      ruleText: "越过边界，上下镜像",
+      demoStart: [6, 1],
+      demoDirection: 0
     },
     {
       name: "瓶界",
@@ -65,8 +73,10 @@
       edgeText: "一扭一环",
       xConnection: "twist",
       yConnection: "same",
-      coachTitle: "一扭一环",
-      coachText: "两组边，各走各的"
+      ruleTitle: "一扭一环",
+      ruleText: "一组翻转，一组相接",
+      demoStart: [5, 4],
+      demoDirection: 1
     },
     {
       name: "双生面",
@@ -77,8 +87,10 @@
       edgeText: "双向翻转",
       xConnection: "twist",
       yConnection: "twist",
-      coachTitle: "双向翻转",
-      coachText: "每一条边都有镜面"
+      ruleTitle: "双向翻转",
+      ruleText: "每条边，都通向镜面",
+      demoStart: [1, 6],
+      demoDirection: 2
     }
   ];
 
@@ -109,13 +121,11 @@
     boardStage: document.getElementById("boardStage"),
     boardCanvas: document.getElementById("boardCanvas"),
     thinkingIndicator: document.getElementById("thinkingIndicator"),
-    topologyBadge: document.getElementById("topologyBadge"),
+    ruleCaption: document.getElementById("ruleCaption"),
+    ruleCaptionTitle: document.getElementById("ruleCaptionTitle"),
+    ruleCaptionText: document.getElementById("ruleCaptionText"),
     undoButton: document.getElementById("undoButton"),
     restartButton: document.getElementById("restartButton"),
-    coachCard: document.getElementById("coachCard"),
-    coachTitle: document.getElementById("coachTitle"),
-    coachText: document.getElementById("coachText"),
-    coachButton: document.getElementById("coachButton"),
     scrim: document.getElementById("scrim"),
     settingsSheet: document.getElementById("settingsSheet"),
     closeSettingsButton: document.getElementById("closeSettingsButton"),
@@ -185,8 +195,7 @@
       completed: [],
       bestDifficulty: [],
       difficulty: "normal",
-      sound: true,
-      seenCoach: {}
+      sound: true
     };
   }
 
@@ -202,7 +211,6 @@
       defaults.bestDifficulty = Array.isArray(stored.bestDifficulty) ? stored.bestDifficulty.slice(0, LEVELS.length) : [];
       defaults.difficulty = DIFFICULTIES[stored.difficulty] ? stored.difficulty : "normal";
       defaults.sound = stored.sound !== false;
-      defaults.seenCoach = stored.seenCoach && typeof stored.seenCoach === "object" ? stored.seenCoach : {};
       return defaults;
     } catch (error) {
       return defaults;
@@ -348,11 +356,10 @@
 
   function startLevel(index, options) {
     var level = LEVELS[index];
-    var skipCoach = options && options.skipCoach;
+    var skipDemo = options && options.skipDemo;
     turnToken += 1;
     selectedLevel = index;
     closeActiveSheet(true);
-    hideCoach();
     game = {
       levelIndex: index,
       level: level,
@@ -368,7 +375,8 @@
       status: "playing",
       winningMask: null,
       winReason: null,
-      lastMove: -1
+      lastMove: -1,
+      demo: null
     };
     game.board = Engine.createBoard(game.rules);
     renderState.hoverCell = -1;
@@ -378,23 +386,23 @@
     renderState.winAt = 0;
     dom.gameLevelNumber.textContent = padLevelNumber(index);
     dom.gameLevelName.textContent = level.name;
-    dom.topologyBadge.querySelector("span").textContent = level.edgeText;
-    dom.topologyBadge.classList.toggle("is-connected", Boolean(level.xConnection || level.yConnection));
+    dom.ruleCaptionTitle.textContent = level.ruleTitle;
+    dom.ruleCaptionText.textContent = level.ruleText;
+    dom.ruleCaption.classList.remove("is-demonstrating");
     dom.boardStage.classList.remove("is-settled");
     showScreen("game");
     updateTurnUI();
     window.setTimeout(function afterScreenTransition() {
       resizeCanvas();
       requestRender();
-      if (!skipCoach && !prefs.seenCoach[index]) {
-        showCoach(level);
+      if (!skipDemo) {
+        startBoundaryDemo();
       }
     }, 90);
   }
 
   function leaveGame() {
     turnToken += 1;
-    hideCoach();
     closeActiveSheet(true);
     dom.thinkingIndicator.classList.remove("is-visible");
     game = null;
@@ -409,43 +417,70 @@
     }
     var levelIndex = game.levelIndex;
     sound.play("ui");
-    startLevel(levelIndex, { skipCoach: true });
+    startLevel(levelIndex, { skipDemo: true });
   }
 
-  function showCoach(level) {
-    dom.coachTitle.textContent = level.coachTitle;
-    dom.coachText.textContent = level.coachText;
-    dom.coachCard.hidden = false;
-  }
-
-  function hideCoach() {
-    dom.coachCard.hidden = true;
-  }
-
-  function dismissCoach() {
+  function startBoundaryDemo() {
     if (!game) {
-      hideCoach();
       return;
     }
-    prefs.seenCoach[game.levelIndex] = true;
-    savePreferences();
-    hideCoach();
-    sound.play("ui");
+    var startCell = Engine.toCell(game.rules, game.level.demoStart[0], game.level.demoStart[1]);
+    var path = Engine.tracePath(game.rules, startCell, game.level.demoDirection, game.rules.target);
+    if (!path) {
+      return;
+    }
+    game.demo = {
+      active: true,
+      startedAt: performance.now(),
+      cells: path.cells,
+      seams: path.seams,
+      directions: path.directions,
+      dropInterval: 245,
+      hold: 390,
+      fade: 330,
+      duration: (path.cells.length - 1) * 245 + 390 + 330
+    };
+    dom.ruleCaption.classList.add("is-demonstrating");
+    updateTurnUI();
+    requestRender();
+    path.cells.forEach(function scheduleDemoSound(cell, index) {
+      window.setTimeout(function playDemoStone() {
+        if (game && game.demo && game.demo.active && game.demo.cells[index] === cell) {
+          sound.play("move-human");
+          if (index > 0 && game.demo.seams[index - 1]) {
+            sound.play("seam");
+          }
+        }
+      }, index * 245);
+    });
+  }
+
+  function finishBoundaryDemo() {
+    if (!game || !game.demo || !game.demo.active) {
+      return;
+    }
+    game.demo.active = false;
+    dom.ruleCaption.classList.remove("is-demonstrating");
+    updateTurnUI();
+    requestRender();
   }
 
   function updateTurnUI() {
     if (!game) {
       return;
     }
-    var humanTurn = game.status === "playing" && game.turn === HUMAN;
-    var aiTurn = game.status === "playing" && game.turn === AI;
+    var demoActive = Boolean(game.demo && game.demo.active);
+    var humanTurn = game.status === "playing" && game.turn === HUMAN && !demoActive;
+    var aiTurn = game.status === "playing" && game.turn === AI && !demoActive;
     var aiActuallyThinking = aiTurn && !(DEV_MODE && developer.aiPaused);
     dom.humanChip.classList.toggle("is-active", humanTurn);
     dom.aiChip.classList.toggle("is-active", aiTurn);
     dom.difficultyLabel.textContent = DIFFICULTIES[prefs.difficulty].label;
     dom.thinkingIndicator.classList.toggle("is-visible", aiActuallyThinking);
     dom.undoButton.disabled = game.moves.length === 0 || game.status !== "playing";
-    if (game.status === "ended") {
+    if (demoActive) {
+      dom.turnStatus.textContent = "边界演示";
+    } else if (game.status === "ended") {
       dom.turnStatus.textContent = "本局结束";
     } else if (aiTurn && DEV_MODE && developer.aiPaused) {
       dom.turnStatus.textContent = "AI 已暂停";
@@ -731,6 +766,7 @@
       showToast("请先进入棋局");
       return;
     }
+    finishBoundaryDemo();
     turnToken += 1;
     var masks = game.rules.winMasks.slice().sort(function sortForceMasks(a, b) {
       var aBlocked = 0;
@@ -761,6 +797,7 @@
       showToast("请先进入棋局");
       return;
     }
+    finishBoundaryDemo();
     turnToken += 1;
     game.board.fill(Engine.EMPTY);
     game.moves = [];
@@ -799,7 +836,6 @@
     prefs.unlocked = 0;
     prefs.completed = [];
     prefs.bestDifficulty = [];
-    prefs.seenCoach = {};
     selectedLevel = 0;
     savePreferences();
     updateHome();
@@ -907,6 +943,9 @@
     if (!game || !renderState.layout) {
       return;
     }
+    if (game.demo && game.demo.active && time - game.demo.startedAt >= game.demo.duration) {
+      finishBoundaryDemo();
+    }
     drawBoard(time);
     var animate = false;
     if (renderState.lastMoveAt && time - renderState.lastMoveAt < 260) {
@@ -916,6 +955,9 @@
       animate = true;
     }
     if (renderState.winAt && time - renderState.winAt < 1450) {
+      animate = true;
+    }
+    if (game.demo && game.demo.active) {
       animate = true;
     }
     if (animate) {
@@ -950,6 +992,7 @@
     drawPaperTexture(ctx);
     drawTopologyRails(ctx, time);
     drawGrid(ctx, layout);
+    drawDemoStones(ctx, time);
     drawWinningConnections(ctx, time);
     drawMappedGhost(ctx);
     drawMovePreview(ctx);
@@ -999,12 +1042,113 @@
     ctx.restore();
   }
 
-  function seamPulseFor(bit, time) {
-    if (!(renderState.seamPulseBits & bit) || !renderState.seamPulseAt) {
-      return 0;
+  function drawDemoStones(ctx, time) {
+    if (!game.demo || !game.demo.active) {
+      return;
     }
-    var progress = clamp01((time - renderState.seamPulseAt) / 920);
-    return Math.sin(progress * Math.PI) * (1 - progress * 0.25);
+    var demo = game.demo;
+    var elapsed = Math.max(0, time - demo.startedAt);
+    var fadeStartsAt = (demo.cells.length - 1) * demo.dropInterval + demo.hold;
+    var alpha = 1 - clamp01((elapsed - fadeStartsAt) / demo.fade);
+    var radius = renderState.layout.cell * 0.34;
+
+    ctx.save();
+    ctx.globalAlpha = alpha * 0.45;
+    ctx.strokeStyle = "#3f8c87";
+    ctx.lineWidth = Math.max(2, renderState.layout.cell * 0.07);
+    ctx.lineCap = "round";
+    for (var lineIndex = 1; lineIndex < demo.cells.length; lineIndex += 1) {
+      var lineProgress = clamp01((elapsed - lineIndex * demo.dropInterval + 130) / 210);
+      if (lineProgress <= 0 || demo.seams[lineIndex - 1]) {
+        continue;
+      }
+      var lineFrom = cellCenter(demo.cells[lineIndex - 1]);
+      var lineTo = cellCenter(demo.cells[lineIndex]);
+      ctx.beginPath();
+      ctx.moveTo(lineFrom.x, lineFrom.y);
+      ctx.lineTo(
+        lineFrom.x + (lineTo.x - lineFrom.x) * lineProgress,
+        lineFrom.y + (lineTo.y - lineFrom.y) * lineProgress
+      );
+      ctx.stroke();
+    }
+    ctx.restore();
+
+    for (var index = 0; index < demo.cells.length; index += 1) {
+      var localProgress = clamp01((elapsed - index * demo.dropInterval) / 185);
+      if (localProgress <= 0) {
+        continue;
+      }
+      var center = cellCenter(demo.cells[index]);
+      var scale = easeOutBack(localProgress);
+      ctx.save();
+      ctx.globalAlpha = alpha * (0.52 + localProgress * 0.38);
+      ctx.translate(center.x, center.y);
+      ctx.scale(scale, scale);
+      ctx.shadowColor = "rgba(24, 31, 29, 0.2)";
+      ctx.shadowBlur = radius * 0.38;
+      ctx.shadowOffsetY = radius * 0.16;
+      var gradient = ctx.createRadialGradient(-radius * 0.28, -radius * 0.34, radius * 0.08, 0, 0, radius);
+      gradient.addColorStop(0, "#74827d");
+      gradient.addColorStop(0.4, "#34433f");
+      gradient.addColorStop(1, "#17231f");
+      ctx.fillStyle = gradient;
+      ctx.beginPath();
+      ctx.arc(0, 0, radius, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.shadowColor = "transparent";
+      ctx.strokeStyle = "rgba(93, 176, 167, 0.9)";
+      ctx.lineWidth = 1.5;
+      ctx.beginPath();
+      ctx.arc(0, 0, radius + 3, 0, Math.PI * 2);
+      ctx.stroke();
+      ctx.restore();
+    }
+
+    demo.seams.forEach(function drawDemoCrossing(seam, index) {
+      if (!seam) {
+        return;
+      }
+      var crossingAt = (index + 1) * demo.dropInterval;
+      var pulseProgress = (elapsed - crossingAt) / 600;
+      if (pulseProgress < 0 || pulseProgress > 1) {
+        return;
+      }
+      var pulse = Math.sin(pulseProgress * Math.PI);
+      var from = cellCenter(demo.cells[index]);
+      var to = cellCenter(demo.cells[index + 1]);
+      ctx.save();
+      ctx.globalAlpha = alpha * pulse * 0.82;
+      ctx.strokeStyle = seam & Engine.SEAM_TWIST ? "#c79244" : "#3f8c87";
+      ctx.lineWidth = 1.5 + pulse;
+      [from, to].forEach(function drawCrossingRing(point) {
+        ctx.beginPath();
+        ctx.arc(point.x, point.y, radius + 5 + pulse * 6, 0, Math.PI * 2);
+        ctx.stroke();
+      });
+      ctx.restore();
+    });
+  }
+
+  function seamPulseFor(bit, time) {
+    var pulse = 0;
+    if ((renderState.seamPulseBits & bit) && renderState.seamPulseAt) {
+      var progress = clamp01((time - renderState.seamPulseAt) / 920);
+      pulse = Math.sin(progress * Math.PI) * (1 - progress * 0.25);
+    }
+    if (game.demo && game.demo.active) {
+      game.demo.seams.forEach(function pulseDemoSeam(seam, index) {
+        if (!(seam & bit)) {
+          return;
+        }
+        var crossingAt = game.demo.startedAt + (index + 1) * game.demo.dropInterval;
+        var demoProgress = (time - crossingAt) / 620;
+        if (demoProgress >= 0 && demoProgress <= 1) {
+          pulse = Math.max(pulse, Math.sin(demoProgress * Math.PI));
+        }
+      });
+    }
+    return pulse;
   }
 
   function drawTopologyRails(ctx, time) {
@@ -1263,7 +1407,7 @@
   }
 
   function canPlaceOnBoard() {
-    if (!game || game.status !== "playing" || !dom.coachCard.hidden || activeSheet) {
+    if (!game || game.status !== "playing" || (game.demo && game.demo.active) || activeSheet) {
       return false;
     }
     return DEV_MODE || game.turn === HUMAN;
@@ -1271,6 +1415,11 @@
 
   function onBoardPointerDown(event) {
     sound.unlock();
+    if (game && game.demo && game.demo.active && !activeSheet) {
+      event.preventDefault();
+      finishBoundaryDemo();
+      return;
+    }
     if (!canPlaceOnBoard()) {
       return;
     }
@@ -1336,7 +1485,6 @@
     dom.backButton.addEventListener("click", leaveGame);
     dom.restartButton.addEventListener("click", restartGame);
     dom.undoButton.addEventListener("click", undoMove);
-    dom.coachButton.addEventListener("click", dismissCoach);
     dom.closeSettingsButton.addEventListener("click", function closeSettings() { closeActiveSheet(false); });
     dom.settingsDoneButton.addEventListener("click", function finishSettings() {
       sound.play("ui");

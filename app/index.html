@@ -153,12 +153,6 @@
           <div class="thinking" id="thinkingIndicator" aria-hidden="true">
             <i></i><i></i><i></i>
           </div>
-          <div class="coach-card" id="coachCard" hidden>
-            <div class="coach-visual" id="coachVisual" aria-hidden="true"></div>
-            <strong id="coachTitle">连成五子</strong>
-            <span id="coachText">横、竖、斜线都算</span>
-            <button type="button" id="coachButton">开始</button>
-          </div>
         </div>
 
         <div class="game-tools">
@@ -166,8 +160,9 @@
             <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 8H5v-4M5 8c2-3 5-4 8-4 5 0 8 4 8 8s-3 8-8 8c-3 0-6-2-7-4" /></svg>
             <span>悔棋</span>
           </button>
-          <div class="topology-badge" id="topologyBadge">
-            <i></i><span>有边界</span><i></i>
+          <div class="rule-caption" id="ruleCaption" aria-live="polite">
+            <strong id="ruleCaptionTitle">四边有界</strong>
+            <span id="ruleCaptionText">横、竖、斜，连成五子</span>
           </div>
           <button class="tool-button" id="restartButton" type="button" aria-label="重新开始">
             <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 7v5h-5M19 12a7 7 0 1 0-2 5" /></svg>

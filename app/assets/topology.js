@@ -267,6 +267,38 @@
     };
   }
 
+  function tracePath(rules, startCell, direction, length) {
+    if (startCell < 0 || startCell >= rules.cellCount || direction < 0 || direction >= DIRECTIONS.length || length < 1) {
+      return null;
+    }
+    var cells = [startCell];
+    var seams = [];
+    var directions = [direction];
+    var visited = Object.create(null);
+    var currentCell = startCell;
+    var currentDirection = direction;
+    visited[startCell] = true;
+
+    for (var index = 1; index < length; index += 1) {
+      var result = step(rules, currentCell, currentDirection);
+      if (!result || visited[result.cell]) {
+        return null;
+      }
+      seams.push(result.seam);
+      currentCell = result.cell;
+      currentDirection = result.direction;
+      visited[currentCell] = true;
+      cells.push(currentCell);
+      directions.push(currentDirection);
+    }
+
+    return {
+      cells: cells,
+      seams: seams,
+      directions: directions
+    };
+  }
+
   function countMask(board, mask, player) {
     var count = 0;
     var index;
@@ -603,6 +635,7 @@
     toCell: toCell,
     toPoint: toPoint,
     step: step,
+    tracePath: tracePath,
     checkWin: checkWin,
     boardIsFull: boardIsFull,
     boardIsDraw: boardIsDraw,
