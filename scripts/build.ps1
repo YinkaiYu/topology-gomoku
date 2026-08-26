@@ -64,7 +64,15 @@ if ($zipInfo.Length -gt 10MB) {
   throw 'The package exceeds the 10MB size limit.'
 }
 
-$hash = Get-FileHash -Algorithm SHA256 -LiteralPath $zipPath
+$hashStream = [System.IO.File]::OpenRead($zipPath)
+$sha256 = [System.Security.Cryptography.SHA256]::Create()
+try {
+  $hashBytes = $sha256.ComputeHash($hashStream)
+  $hashHex = -join ($hashBytes | ForEach-Object { $_.ToString('X2') })
+} finally {
+  $sha256.Dispose()
+  $hashStream.Dispose()
+}
 Write-Host "Build complete: $zipPath" -ForegroundColor Green
 Write-Host "Package size: $([math]::Round($zipInfo.Length / 1KB, 1)) KB"
-Write-Host "SHA256: $($hash.Hash)"
+Write-Host "SHA256: $hashHex"

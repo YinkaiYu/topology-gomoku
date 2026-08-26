@@ -81,7 +81,7 @@
       demoDirection: 1
     },
     {
-      name: "双生面",
+      name: "双生",
       typeName: "实射影平面",
       topology: "projective",
       width: 8,
@@ -109,8 +109,6 @@
     levelGrid: document.getElementById("levelGrid"),
     levelCards: Array.prototype.slice.call(document.querySelectorAll(".level-card")),
     progressCount: document.getElementById("progressCount"),
-    startButton: document.getElementById("startButton"),
-    startButtonText: document.getElementById("startButtonText"),
     homeSettingsButton: document.getElementById("homeSettingsButton"),
     gameSettingsButton: document.getElementById("gameSettingsButton"),
     backButton: document.getElementById("backButton"),
@@ -336,7 +334,6 @@
       card.classList.toggle("is-locked", locked);
       card.classList.toggle("is-complete", complete);
       card.classList.toggle("is-revealed", revealed);
-      card.classList.toggle("is-selected", index === selectedLevel && !locked);
       card.setAttribute("aria-disabled", locked ? "true" : "false");
       card.setAttribute(
         "aria-label",
@@ -347,10 +344,9 @@
       }
     });
     dom.progressCount.textContent = completeCount + " / " + LEVELS.length;
-    dom.startButtonText.textContent = "进入" + LEVELS[selectedLevel].name;
   }
 
-  function selectLevel(index) {
+  function selectLevel(index, card) {
     if (index > prefs.unlocked) {
       var card = dom.levelCards[index];
       card.classList.remove("is-shaking");
@@ -363,6 +359,7 @@
     selectedLevel = index;
     updateHome();
     sound.play("ui");
+    startLevel(index, { transitionCard: card });
   }
 
   function showScreen(screen) {
@@ -376,9 +373,192 @@
     });
   }
 
+  function prefersReducedMotion() {
+    return Boolean(window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches);
+  }
+
+  function fixedRectStyles(element, rect) {
+    element.style.left = rect.left + "px";
+    element.style.top = rect.top + "px";
+    element.style.width = rect.width + "px";
+    element.style.height = rect.height + "px";
+  }
+
+  function finishNavigationAnimation(element) {
+    if (element && element.parentNode) {
+      element.parentNode.removeChild(element);
+    }
+    dom.appShell.classList.remove("is-navigating");
+    dom.gameScreen.classList.remove("is-shared-enter");
+    dom.levelCards.forEach(function revealTransitionCard(card) {
+      card.classList.remove("is-transition-target");
+    });
+  }
+
+  function animateCardIntoBoard(transition, done) {
+    if (!transition || prefersReducedMotion() || !dom.boardStage.animate) {
+      finishNavigationAnimation(null);
+      done();
+      return;
+    }
+    var target = dom.boardStage.getBoundingClientRect();
+    var source = transition.rect;
+    var scaleX = source.width / target.width;
+    var scaleY = source.height / target.height;
+    var translateX = source.left + source.width / 2 - (target.left + target.width / 2);
+    var translateY = source.top + source.height / 2 - (target.top + target.height / 2);
+    dom.appShell.classList.add("is-navigating");
+    var animation = dom.boardStage.animate([
+      {
+        transformOrigin: "center",
+        transform: "translate(" + translateX + "px, " + translateY + "px) scale(" + scaleX + ", " + scaleY + ")",
+        borderRadius: "20px",
+        opacity: 0.9
+      },
+      {
+        offset: 0.7,
+        transform: "translate(" + (-translateX * 0.025) + "px, " + (-translateY * 0.025) + "px) scale(1.026)",
+        borderRadius: "30px",
+        opacity: 1,
+      },
+      {
+        offset: 0.88,
+        transform: "translate(0, 0) scale(0.992)",
+        borderRadius: "28px",
+        opacity: 1
+      },
+      {
+        transform: "translate(0, 0) scale(1)",
+        borderRadius: "28px",
+        opacity: 1
+      }
+    ], {
+      duration: 720,
+      easing: "cubic-bezier(0.18, 0.9, 0.24, 1)",
+      fill: "both"
+    });
+    animation.onfinish = function finishCardExpansion() {
+      animation.cancel();
+      finishNavigationAnimation(null);
+      done();
+    };
+  }
+
+  function animateBoardBackToCard(levelIndex, boardRect, done) {
+    var tile = dom.boardStage.cloneNode(true);
+    var tileCanvas = tile.querySelector("canvas");
+    tile.id = "";
+    tile.className = "level-transition-board";
+    tile.setAttribute("aria-hidden", "true");
+    if (tileCanvas) {
+      tileCanvas.id = "";
+      tileCanvas.classList.add("transition-board-canvas");
+      tileCanvas.width = dom.boardCanvas.width;
+      tileCanvas.height = dom.boardCanvas.height;
+      tileCanvas.getContext("2d").drawImage(dom.boardCanvas, 0, 0);
+    }
+    fixedRectStyles(tile, boardRect);
+    document.body.appendChild(tile);
+    showScreen("home");
+    requestAnimationFrame(function measureReturnCard() {
+      var targetCard = dom.levelCards[levelIndex];
+      var target = targetCard.getBoundingClientRect();
+      if (prefersReducedMotion() || !targetCard.animate) {
+        finishNavigationAnimation(tile);
+        done();
+        return;
+      }
+      targetCard.classList.add("is-transition-target");
+      dom.appShell.classList.add("is-navigating");
+      var animation = tile.animate([
+        {
+          left: boardRect.left + "px",
+          top: boardRect.top + "px",
+          width: boardRect.width + "px",
+          height: boardRect.height + "px",
+          borderRadius: "28px",
+          opacity: 1,
+          transform: "scale(1)"
+        },
+        {
+          offset: 0.78,
+          left: (target.left - 3) + "px",
+          top: (target.top - 3) + "px",
+          width: (target.width + 6) + "px",
+          height: (target.height + 6) + "px",
+          borderRadius: "21px",
+          opacity: 0.92,
+          transform: "scale(1.018)"
+        },
+        {
+          left: target.left + "px",
+          top: target.top + "px",
+          width: target.width + "px",
+          height: target.height + "px",
+          borderRadius: "20px",
+          opacity: 0,
+          transform: "scale(0.985)"
+        }
+      ], {
+        duration: 680,
+        easing: "cubic-bezier(0.18, 0.86, 0.24, 1)",
+        fill: "forwards"
+      });
+      animation.onfinish = function finishBoardCollapse() {
+        finishNavigationAnimation(tile);
+        targetCard.animate([
+          { opacity: 0.35, transform: "scale(0.94)" },
+          { offset: 0.68, opacity: 1, transform: "scale(1.026)" },
+          { opacity: 1, transform: "scale(1)" }
+        ], { duration: 360, easing: "cubic-bezier(0.18, 0.9, 0.24, 1)" });
+        done();
+      };
+    });
+  }
+
+  function animateBoardArrival(direction, done) {
+    if (prefersReducedMotion() || !dom.boardStage.animate) {
+      dom.appShell.classList.remove("is-navigating");
+      done();
+      return;
+    }
+    var travel = direction === 0 ? 0 : direction * 34;
+    var animation = dom.boardStage.animate([
+      { opacity: 0, transform: "translateX(" + travel + "px) scale(0.91)" },
+      { offset: 0.7, opacity: 1, transform: "translateX(" + (-travel * 0.08) + "px) scale(1.024)" },
+      { opacity: 1, transform: "translateX(0) scale(1)" }
+    ], { duration: 520, easing: "cubic-bezier(0.18, 0.9, 0.24, 1)" });
+    animation.onfinish = function finishBoardArrival() {
+      dom.appShell.classList.remove("is-navigating");
+      done();
+    };
+  }
+
+  function transitionToLevel(index, skipDemo) {
+    if (!game || prefersReducedMotion() || !dom.boardStage.animate) {
+      startLevel(index, { skipDemo: skipDemo });
+      return;
+    }
+    var direction = index === game.levelIndex ? 0 : (index > game.levelIndex ? 1 : -1);
+    dom.appShell.classList.add("is-navigating");
+    var travel = direction === 0 ? 0 : direction * -26;
+    var animation = dom.boardStage.animate([
+      { opacity: 1, transform: "translateX(0) scale(1)" },
+      { opacity: 0, transform: "translateX(" + travel + "px) scale(0.92)" }
+    ], { duration: 260, easing: "cubic-bezier(0.55, 0, 0.8, 0.2)", fill: "forwards" });
+    animation.onfinish = function replaceBoardAfterExit() {
+      animation.cancel();
+      startLevel(index, { skipDemo: skipDemo, levelSwitchDirection: direction });
+    };
+  }
+
   function startLevel(index, options) {
     var level = LEVELS[index];
     var skipDemo = options && options.skipDemo;
+    var transition = options && options.transitionCard ? {
+      rect: options.transitionCard.getBoundingClientRect()
+    } : null;
+    var levelSwitchDirection = options && options.levelSwitchDirection;
     turnToken += 1;
     selectedLevel = index;
     closeActiveSheet(true);
@@ -415,25 +595,42 @@
     dom.ruleCaptionText.textContent = level.ruleText;
     dom.ruleCaption.classList.remove("is-demonstrating");
     dom.boardStage.classList.remove("is-settled", "is-exploring", "is-dragging");
+    dom.gameScreen.classList.toggle("is-shared-enter", Boolean(transition));
     showScreen("game");
     updateTurnUI();
-    window.setTimeout(function afterScreenTransition() {
+    function readyLevel() {
       resizeCanvas();
       requestRender();
       if (!skipDemo && !level.tutorial) {
         startBoundaryDemo();
       }
-    }, 90);
+    }
+    requestAnimationFrame(function prepareBoardTransition() {
+      resizeCanvas();
+      requestRender();
+      if (transition) {
+        animateCardIntoBoard(transition, readyLevel);
+      } else if (typeof levelSwitchDirection === "number") {
+        animateBoardArrival(levelSwitchDirection, readyLevel);
+      } else {
+        window.setTimeout(readyLevel, 90);
+      }
+    });
   }
 
   function leaveGame() {
+    if (!game) {
+      return;
+    }
+    var levelIndex = game.levelIndex;
+    var boardRect = dom.boardStage.getBoundingClientRect();
     turnToken += 1;
     closeActiveSheet(true);
     dom.thinkingIndicator.classList.remove("is-visible");
     game = null;
     updateHome();
-    showScreen("home");
     sound.play("ui");
+    animateBoardBackToCard(levelIndex, boardRect, function finishLeaveGame() {});
   }
 
   function restartGame() {
@@ -442,7 +639,7 @@
     }
     var levelIndex = game.levelIndex;
     sound.play("ui");
-    startLevel(levelIndex, { skipDemo: true });
+    transitionToLevel(levelIndex, true);
   }
 
   function handleLeftTool() {
@@ -457,7 +654,7 @@
     if (isVictoryView()) {
       if (game.levelIndex < LEVELS.length - 1) {
         sound.play("ui");
-        startLevel(game.levelIndex + 1);
+        transitionToLevel(game.levelIndex + 1, false);
       } else {
         restartGame();
       }
@@ -847,7 +1044,7 @@
       resultSecondaryAction = restartGame;
       resultPrimaryAction = currentIndex === LEVELS.length - 1
         ? leaveGame
-        : function nextLevel() { startLevel(currentIndex + 1); };
+        : function nextLevel() { transitionToLevel(currentIndex + 1, false); };
     } else if (outcome === "lose") {
       dom.resultKicker.textContent = "差一步";
       dom.resultTitle.textContent = "再换个方向";
@@ -2298,12 +2495,8 @@
     dom.levelGrid.addEventListener("click", function onLevelClick(event) {
       var card = event.target.closest(".level-card");
       if (card) {
-        selectLevel(Number(card.dataset.level));
+        selectLevel(Number(card.dataset.level), card);
       }
-    });
-    dom.startButton.addEventListener("click", function startSelectedLevel() {
-      sound.play("ui");
-      startLevel(selectedLevel);
     });
     dom.homeSettingsButton.addEventListener("click", openSettings);
     dom.gameSettingsButton.addEventListener("click", openSettings);

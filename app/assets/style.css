@@ -12,6 +12,8 @@
   --gold: #c79244;
   --violet: #7f6ca8;
   --shadow: 0 18px 45px rgba(57, 51, 42, 0.09);
+  --spring: cubic-bezier(0.18, 1.22, 0.32, 1);
+  --soft-out: cubic-bezier(0.16, 0.84, 0.24, 1);
   --safe-top: var(--safe-area-inset-top, env(safe-area-inset-top, 0px));
   --safe-bottom: var(--safe-area-inset-bottom, env(safe-area-inset-bottom, 0px));
 }
@@ -62,6 +64,7 @@ button:focus-visible {
 button,
 .level-card {
   cursor: pointer;
+  transform-origin: center;
 }
 
 .app-shell {
@@ -114,7 +117,7 @@ button,
   visibility: hidden;
   opacity: 0;
   transform: translateY(12px) scale(0.992);
-  transition: opacity 260ms ease, transform 300ms cubic-bezier(0.22, 1, 0.36, 1), visibility 0s 300ms;
+  transition: opacity 320ms ease, transform 460ms var(--spring), visibility 0s 460ms;
 }
 
 .screen.is-active {
@@ -122,6 +125,54 @@ button,
   opacity: 1;
   transform: none;
   transition-delay: 0s;
+}
+
+.app-shell.is-navigating .screen,
+.app-shell.is-navigating .developer-fab {
+  pointer-events: none;
+}
+
+.game-screen.is-shared-enter .board-stage {
+  opacity: 0;
+}
+
+.level-transition-card,
+.level-transition-board {
+  position: fixed;
+  z-index: 90;
+  overflow: hidden;
+  margin: 0;
+  pointer-events: none;
+  will-change: left, top, width, height, opacity, transform, border-radius;
+}
+
+.level-transition-card {
+  display: grid;
+  padding: 14px;
+  border: 0;
+  background: var(--card);
+  box-shadow:
+    inset 0 0 0 1px rgba(57, 55, 49, 0.06),
+    0 22px 55px rgba(50, 58, 52, 0.18);
+}
+
+.level-transition-board {
+  display: grid;
+  place-items: center;
+  background: var(--card);
+  box-shadow: var(--shadow);
+}
+
+.level-transition-board img,
+.level-transition-board .transition-board-canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.level-card.is-transition-target {
+  opacity: 0;
 }
 
 .topbar {
@@ -139,11 +190,11 @@ button,
   border-radius: 50%;
   background: rgba(255, 255, 255, 0.52);
   box-shadow: inset 0 0 0 1px rgba(70, 67, 59, 0.06);
-  transition: transform 140ms ease, background 140ms ease;
+  transition: transform 360ms var(--spring), background 220ms ease, box-shadow 320ms ease;
 }
 
 .icon-button:active {
-  transform: scale(0.92);
+  transform: scale(0.88) rotate(-2deg);
   background: rgba(255, 255, 255, 0.82);
 }
 
@@ -173,7 +224,7 @@ button,
   overscroll-behavior-y: contain;
   -webkit-overflow-scrolling: touch;
   scrollbar-width: none;
-  padding: calc(10px + var(--safe-top)) 20px 112px;
+  padding: calc(10px + var(--safe-top)) 20px calc(26px + var(--safe-bottom));
 }
 
 .home-scroll::-webkit-scrollbar {
@@ -185,38 +236,15 @@ button,
 }
 
 .brand-mark {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  height: 38px;
-  padding: 0 2px;
+  width: 42px;
+  height: 42px;
+  object-fit: contain;
+  filter: drop-shadow(0 5px 8px rgba(33, 48, 44, 0.1));
 }
-
-.brand-mark i {
-  display: block;
-  width: 6px;
-  border-radius: 999px;
-  background: var(--ink);
-  transform-origin: center bottom;
-}
-
-.brand-mark i:nth-child(1),
-.brand-mark i:nth-child(5) { height: 9px; opacity: 0.32; }
-.brand-mark i:nth-child(2),
-.brand-mark i:nth-child(4) { height: 17px; opacity: 0.62; }
-.brand-mark i:nth-child(3) { height: 27px; background: var(--red); }
 
 .hero {
   position: relative;
   padding: 3px 2px 26px;
-}
-
-.eyebrow {
-  margin-bottom: 11px;
-  color: var(--teal);
-  font-size: 10px;
-  font-weight: 750;
-  letter-spacing: 0.18em;
 }
 
 .hero h1 {
@@ -299,19 +327,12 @@ button,
   box-shadow:
     inset 0 0 0 1px rgba(57, 55, 49, 0.06),
     0 8px 25px rgba(65, 59, 49, 0.045);
-  transition: transform 180ms cubic-bezier(0.22, 1, 0.36, 1), box-shadow 180ms ease, background 180ms ease;
+  transform-origin: center;
+  transition: transform 420ms var(--spring), box-shadow 320ms ease, background 260ms ease, opacity 260ms ease;
 }
 
 .level-card:active {
-  transform: scale(0.965);
-}
-
-.level-card.is-selected {
-  background: var(--card);
-  box-shadow:
-    inset 0 0 0 1.5px rgba(63, 140, 135, 0.58),
-    0 14px 34px rgba(63, 85, 79, 0.1);
-  transform: translateY(-2px);
+  transform: scale(0.94) rotate(-0.7deg);
 }
 
 .level-card.is-locked {
@@ -331,7 +352,7 @@ button,
 }
 
 .level-card.is-locked:not(.is-revealed) .level-glyph {
-  opacity: 0.62;
+  opacity: 0;
 }
 
 .level-card.is-locked .level-mystery {
@@ -383,11 +404,20 @@ button,
   place-items: center;
   opacity: 1;
   transform: scale(1);
-  transition: opacity 220ms ease, transform 420ms cubic-bezier(0.22, 1, 0.36, 1);
+  transition: opacity 260ms ease, transform 500ms var(--spring);
 }
 
 .level-mystery::before {
   content: none;
+}
+
+.level-silhouette {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  filter: drop-shadow(0 7px 7px rgba(28, 40, 36, 0.18));
 }
 
 .level-mystery::after {
@@ -414,9 +444,8 @@ button,
 }
 
 .level-card:not(.is-revealed) .level-glyph {
-  filter: brightness(0) saturate(100%);
-  opacity: 0.78;
-  transform: scale(0.94);
+  opacity: 0;
+  transform: scale(0.9);
 }
 
 .level-card.is-revealed .level-mystery {
@@ -426,7 +455,7 @@ button,
 }
 
 .level-card.is-revealed .level-glyph {
-  animation: collectible-reveal 620ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation: collectible-reveal 680ms var(--spring) both;
 }
 
 @keyframes collectible-reveal {
@@ -497,16 +526,6 @@ button,
   content: "";
 }
 
-.home-actions {
-  position: absolute;
-  z-index: 4;
-  right: 0;
-  bottom: 0;
-  left: 0;
-  padding: 14px 20px calc(14px + var(--safe-bottom));
-  background: linear-gradient(to bottom, rgba(242, 239, 231, 0), rgba(242, 239, 231, 0.94) 24%, var(--paper) 54%);
-}
-
 .primary-button,
 .secondary-button,
 .sheet-done {
@@ -514,13 +533,13 @@ button,
   border-radius: 17px;
   font-weight: 700;
   letter-spacing: 0.04em;
-  transition: transform 140ms ease, filter 140ms ease;
+  transition: transform 360ms var(--spring), filter 220ms ease, box-shadow 320ms ease;
 }
 
 .primary-button:active,
 .secondary-button:active,
 .sheet-done:active {
-  transform: scale(0.975);
+  transform: scale(0.94);
   filter: brightness(0.96);
 }
 
@@ -652,7 +671,8 @@ button,
   box-shadow:
     inset 0 0 0 1px rgba(61, 58, 51, 0.055),
     var(--shadow);
-  transition: transform 220ms ease, opacity 220ms ease;
+  transform-origin: center;
+  transition: transform 520ms var(--spring), opacity 320ms ease, box-shadow 420ms ease;
 }
 
 .board-stage.is-settled canvas {
@@ -692,7 +712,7 @@ button,
   background: rgba(33, 48, 44, 0.82);
   pointer-events: none;
   transform: translate(-50%, -7px);
-  transition: opacity 150ms ease, transform 180ms ease;
+  transition: opacity 220ms ease, transform 420ms var(--spring);
 }
 
 .thinking.is-visible {
@@ -737,13 +757,13 @@ button,
   border-radius: 15px;
   background: transparent;
   font-size: 9px;
-  transition: transform 140ms ease, color 140ms ease, background 140ms ease;
+  transition: transform 360ms var(--spring), color 220ms ease, background 220ms ease;
 }
 
 .tool-button:active {
   color: var(--ink);
   background: rgba(255, 255, 255, 0.5);
-  transform: scale(0.94);
+  transform: scale(0.88) translateY(1px);
 }
 
 .tool-button:disabled {
@@ -763,7 +783,7 @@ button,
   gap: 3px;
   min-width: 0;
   text-align: center;
-  transition: opacity 180ms ease, transform 240ms cubic-bezier(0.22, 1, 0.36, 1);
+  transition: opacity 220ms ease, transform 420ms var(--spring);
 }
 
 .rule-caption strong {
@@ -803,7 +823,7 @@ button,
   opacity: 0;
   background: rgba(28, 32, 29, 0.28);
   backdrop-filter: blur(4px);
-  transition: opacity 200ms ease;
+  transition: opacity 280ms ease;
 }
 
 .scrim[hidden] {
@@ -830,7 +850,7 @@ button,
   font-size: 9px;
   font-weight: 800;
   letter-spacing: 0.12em;
-  transition: transform 140ms ease, filter 140ms ease;
+  transition: transform 360ms var(--spring), filter 220ms ease;
 }
 
 .developer-fab[hidden] {
@@ -854,7 +874,7 @@ button,
   background: rgba(251, 250, 246, 0.97);
   box-shadow: 0 26px 70px rgba(36, 35, 31, 0.25);
   transform: translateY(calc(100% + 30px));
-  transition: transform 320ms cubic-bezier(0.22, 1, 0.36, 1);
+  transition: transform 520ms var(--spring);
 }
 
 .sheet[hidden] {
@@ -863,6 +883,25 @@ button,
 
 .sheet.is-visible {
   transform: translateY(0);
+}
+
+.sheet.is-visible .sheet-head,
+.sheet.is-visible .setting-row,
+.sheet.is-visible .result-actions,
+.sheet.is-visible .developer-section,
+.sheet.is-visible .sheet-done {
+  animation: sheet-content-rise 480ms var(--spring) both;
+}
+
+.sheet.is-visible .setting-row:nth-of-type(2),
+.sheet.is-visible .developer-section:nth-of-type(2) { animation-delay: 35ms; }
+.sheet.is-visible .setting-row:nth-of-type(3),
+.sheet.is-visible .developer-section:nth-of-type(3) { animation-delay: 70ms; }
+
+@keyframes sheet-content-rise {
+  from { opacity: 0; transform: translateY(10px) scale(0.985); }
+  72% { opacity: 1; transform: translateY(-1px) scale(1.006); }
+  to { opacity: 1; transform: none; }
 }
 
 .sheet-handle {
@@ -1229,7 +1268,6 @@ button,
 
 @media (max-width: 340px) {
   .home-scroll { padding-right: 14px; padding-left: 14px; }
-  .home-actions { padding-right: 14px; padding-left: 14px; }
   .level-card { min-height: 142px; padding: 12px; }
   .level-glyph { width: 72px; height: 60px; }
   .hero::after { width: 54px; height: 54px; }

@@ -7,6 +7,7 @@ const path = require("node:path");
 
 const ROOT = path.resolve(__dirname, "..");
 const TOPOLOGY_DIR = path.join(ROOT, "app", "assets", "topologies");
+const SILHOUETTE_DIR = path.join(ROOT, "app", "assets", "silhouettes");
 const NAMES = ["plane", "cylinder", "torus", "mobius", "klein", "projective"];
 const SHADED_3D_MODELS = {
   mobius: "shaded-mobius-embedding",
@@ -73,6 +74,38 @@ test("目录中的高阶拓扑必须通关后才揭示图鉴", () => {
   assert.match(game, /classList\.toggle\("is-revealed", revealed\)/);
   assert.match(style, /\.level-card:not\(\.is-revealed\) \.level-glyph/);
   assert.match(style, /\.level-card\.is-revealed \.level-mystery/);
-  assert.match(style, /\.level-card:not\(\.is-revealed\) \.level-glyph\s*\{[^}]*filter:\s*brightness\(0\)/s);
+  assert.equal((html.match(/class="level-silhouette"/g) || []).length, 5);
+  assert.match(style, /\.level-card:not\(\.is-revealed\) \.level-glyph\s*\{[^}]*opacity:\s*0/s);
   assert.doesNotMatch(style, /\.level-mystery::before\s*\{[^}]*border-radius:/s);
+});
+
+test("未揭示图鉴使用真实模型外轮廓的无孔实心剪影", () => {
+  ["cylinder", "torus", "mobius", "klein", "projective"].forEach((name) => {
+    const svg = fs.readFileSync(path.join(SILHOUETTE_DIR, `${name}.svg`), "utf8");
+    assert.match(svg, new RegExp(`data-source-model="${name}"`));
+    assert.match(svg, new RegExp(`data-source-href="../topologies/${name}\\.svg"`));
+    assert.match(svg, /<path [^>]*fill="#25332f"/);
+    assert.equal((svg.match(/<path /g) || []).length, 1);
+    assert.doesNotMatch(svg, /<image|<filter|fill-rule="evenodd"/);
+  });
+});
+
+test("首页采用 E 款品牌图标并移除二次进入按钮与英文副标题", () => {
+  const html = fs.readFileSync(path.join(ROOT, "app", "index.html"), "utf8");
+  const game = fs.readFileSync(path.join(ROOT, "app", "assets", "game.js"), "utf8");
+  assert.match(html, /class="brand-mark" src="\.\/assets\/brand-icon\.png"/);
+  assert.doesNotMatch(html, /TOPOLOGY\s*×\s*GOMOKU|id="startButton"|class="home-actions"/);
+  assert.match(html, /<span class="level-name">双生<\/span>/);
+  assert.match(game, /name:\s*"双生"/);
+});
+
+test("关卡卡片与棋盘使用可逆共享元素弹性过渡", () => {
+  const game = fs.readFileSync(path.join(ROOT, "app", "assets", "game.js"), "utf8");
+  assert.match(game, /startLevel\(index, \{ transitionCard: card \}\)/);
+  assert.match(game, /function animateCardIntoBoard\(/);
+  assert.match(game, /function animateBoardBackToCard\(/);
+  assert.match(game, /cloneNode\(true\)/);
+  assert.match(game, /drawImage\(dom\.boardCanvas/);
+  assert.match(game, /function transitionToLevel\(/);
+  assert.match(game, /scale\(1\.026\)/);
 });

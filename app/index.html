@@ -19,9 +19,7 @@
       <section class="screen home-screen is-active" id="homeScreen" aria-label="关卡选择">
         <div class="home-scroll">
           <header class="topbar home-topbar">
-            <div class="brand-mark" aria-hidden="true">
-              <i></i><i></i><i></i><i></i><i></i>
-            </div>
+            <img class="brand-mark" src="./assets/brand-icon.png" alt="" aria-hidden="true" />
             <button class="icon-button" id="homeSettingsButton" type="button" aria-label="设置">
               <svg viewBox="0 0 24 24" aria-hidden="true">
                 <path d="M4 7h10M18 7h2M4 17h2M10 17h10M14 5v4M6 15v4" />
@@ -30,7 +28,6 @@
           </header>
 
           <div class="hero">
-            <p class="eyebrow">TOPOLOGY × GOMOKU</p>
             <h1>拓扑<br />五子棋</h1>
             <p class="hero-line">边界之外，也能连成一线。</p>
           </div>
@@ -41,7 +38,7 @@
           </div>
 
           <div class="level-grid" id="levelGrid">
-            <button class="level-card is-selected" type="button" data-level="0" aria-label="第一关 方庭">
+            <button class="level-card" type="button" data-level="0" aria-label="第一关 方庭">
               <span class="level-number">01</span>
               <img class="level-glyph" src="./assets/topologies/plane.svg" alt="" aria-hidden="true" />
               <span class="level-name">方庭</span>
@@ -52,7 +49,7 @@
             <button class="level-card" type="button" data-level="1" aria-label="第二关 回廊">
               <span class="level-number">02</span>
               <img class="level-glyph" src="./assets/topologies/cylinder.svg" alt="" aria-hidden="true" />
-              <span class="level-mystery" aria-hidden="true"><span>?</span></span>
+              <span class="level-mystery" aria-hidden="true"><img class="level-silhouette" src="./assets/silhouettes/cylinder.svg" alt="" /><span>?</span></span>
               <span class="level-name">回廊</span>
               <span class="level-type">圆柱</span>
               <span class="level-state" aria-hidden="true"></span>
@@ -61,7 +58,7 @@
             <button class="level-card" type="button" data-level="2" aria-label="第三关 环游">
               <span class="level-number">03</span>
               <img class="level-glyph" src="./assets/topologies/torus.svg" alt="" aria-hidden="true" />
-              <span class="level-mystery" aria-hidden="true"><span>?</span></span>
+              <span class="level-mystery" aria-hidden="true"><img class="level-silhouette" src="./assets/silhouettes/torus.svg" alt="" /><span>?</span></span>
               <span class="level-name">环游</span>
               <span class="level-type">环面</span>
               <span class="level-state" aria-hidden="true"></span>
@@ -70,7 +67,7 @@
             <button class="level-card" type="button" data-level="3" aria-label="第四关 扭带">
               <span class="level-number">04</span>
               <img class="level-glyph" src="./assets/topologies/mobius.svg" alt="" aria-hidden="true" />
-              <span class="level-mystery" aria-hidden="true"><span>?</span></span>
+              <span class="level-mystery" aria-hidden="true"><img class="level-silhouette" src="./assets/silhouettes/mobius.svg" alt="" /><span>?</span></span>
               <span class="level-name">扭带</span>
               <span class="level-type">莫比乌斯</span>
               <span class="level-state" aria-hidden="true"></span>
@@ -79,29 +76,23 @@
             <button class="level-card" type="button" data-level="4" aria-label="第五关 瓶界">
               <span class="level-number">05</span>
               <img class="level-glyph" src="./assets/topologies/klein.svg" alt="" aria-hidden="true" />
-              <span class="level-mystery" aria-hidden="true"><span>?</span></span>
+              <span class="level-mystery" aria-hidden="true"><img class="level-silhouette" src="./assets/silhouettes/klein.svg" alt="" /><span>?</span></span>
               <span class="level-name">瓶界</span>
               <span class="level-type">克莱因瓶</span>
               <span class="level-state" aria-hidden="true"></span>
             </button>
 
-            <button class="level-card" type="button" data-level="5" aria-label="第六关 双生面">
+            <button class="level-card" type="button" data-level="5" aria-label="第六关 双生">
               <span class="level-number">06</span>
               <img class="level-glyph" src="./assets/topologies/projective.svg" alt="" aria-hidden="true" />
-              <span class="level-mystery" aria-hidden="true"><span>?</span></span>
-              <span class="level-name">双生面</span>
+              <span class="level-mystery" aria-hidden="true"><img class="level-silhouette" src="./assets/silhouettes/projective.svg" alt="" /><span>?</span></span>
+              <span class="level-name">双生</span>
               <span class="level-type">实射影平面</span>
               <span class="level-state" aria-hidden="true"></span>
             </button>
           </div>
         </div>
 
-        <footer class="home-actions">
-          <button class="primary-button" id="startButton" type="button">
-            <span id="startButtonText">进入方庭</span>
-            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 6 6 6-6 6" /></svg>
-          </button>
-        </footer>
       </section>
 
       <section class="screen game-screen" id="gameScreen" aria-label="对局">
