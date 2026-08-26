@@ -327,10 +327,16 @@
     dom.levelCards.forEach(function updateCard(card, index) {
       var locked = index > prefs.unlocked;
       var complete = Boolean(prefs.completed[index]);
+      var revealed = index === 0 || complete;
       card.classList.toggle("is-locked", locked);
       card.classList.toggle("is-complete", complete);
+      card.classList.toggle("is-revealed", revealed);
       card.classList.toggle("is-selected", index === selectedLevel && !locked);
       card.setAttribute("aria-disabled", locked ? "true" : "false");
+      card.setAttribute(
+        "aria-label",
+        padLevelNumber(index) + " " + LEVELS[index].name + (revealed ? "" : " · 图鉴未揭示")
+      );
       if (complete) {
         completeCount += 1;
       }

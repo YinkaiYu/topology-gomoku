@@ -330,6 +330,14 @@ button,
   filter: none;
 }
 
+.level-card.is-locked:not(.is-revealed) .level-glyph {
+  opacity: 0;
+}
+
+.level-card.is-locked .level-mystery {
+  opacity: 0.68;
+}
+
 .level-card.is-locked.is-shaking {
   animation: locked-shake 300ms ease;
 }
@@ -359,6 +367,91 @@ button,
   justify-self: center;
   object-fit: contain;
   opacity: 0.9;
+  transform: scale(1);
+  transition: opacity 260ms ease, transform 520ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.level-mystery {
+  position: relative;
+  display: grid;
+  width: 88px;
+  height: 70px;
+  grid-column: 1 / -1;
+  grid-row: 2;
+  align-self: center;
+  justify-self: center;
+  place-items: center;
+  opacity: 1;
+  transform: scale(1);
+  transition: opacity 220ms ease, transform 420ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.level-mystery::before {
+  position: absolute;
+  width: 72px;
+  height: 52px;
+  border-radius: 47% 53% 43% 57% / 56% 45% 55% 44%;
+  background: linear-gradient(145deg, #4e5d58 0%, #25332f 52%, #17231f 100%);
+  box-shadow:
+    inset 9px 7px 14px rgba(255, 255, 255, 0.09),
+    inset -8px -7px 12px rgba(5, 12, 10, 0.18),
+    0 8px 13px rgba(28, 40, 36, 0.16);
+  content: "";
+  transform: rotate(-6deg);
+}
+
+.level-mystery::after {
+  position: absolute;
+  bottom: 4px;
+  width: 48px;
+  height: 7px;
+  border-radius: 50%;
+  background: rgba(30, 39, 35, 0.16);
+  content: "";
+  filter: blur(3px);
+}
+
+.level-mystery > span {
+  position: relative;
+  z-index: 1;
+  color: rgba(247, 244, 235, 0.92);
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 28px;
+  font-weight: 500;
+  line-height: 1;
+  text-shadow: 0 1px 5px rgba(4, 10, 8, 0.28);
+  transform: translateY(-1px) rotate(4deg);
+}
+
+.level-card:not(.is-revealed) .level-glyph {
+  opacity: 0;
+  transform: scale(0.82) rotate(-4deg);
+}
+
+.level-card.is-revealed .level-mystery {
+  opacity: 0;
+  pointer-events: none;
+  transform: scale(0.78) rotate(7deg);
+}
+
+.level-card.is-revealed .level-glyph {
+  animation: collectible-reveal 620ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.level-card:nth-child(3n) .level-mystery::before {
+  border-radius: 54% 46% 58% 42% / 45% 58% 42% 55%;
+  transform: rotate(5deg) scale(0.96, 1.03);
+}
+
+.level-card:nth-child(3n + 2) .level-mystery::before {
+  border-radius: 43% 57% 48% 52% / 60% 42% 58% 40%;
+  transform: rotate(-9deg) scale(1.02, 0.95);
+}
+
+@keyframes collectible-reveal {
+  0% { opacity: 0; transform: scale(0.82) rotate(-4deg); }
+  58% { opacity: 1; transform: scale(1.045) rotate(1deg); }
+  100% { opacity: 0.9; transform: scale(1) rotate(0); }
 }
 
 .level-name {
