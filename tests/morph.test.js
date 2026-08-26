@@ -28,6 +28,8 @@ test("第一关是无边界演示、无 AI 回合的连续落子教学", () => {
   assert.match(game, /else if \(game\.level\.tutorial\) \{\s*game\.turn = HUMAN;/);
   assert.match(game, /game\.level\.tutorial \? 1 : \(game\.turn === AI/);
   assert.match(game, /outcome === "win" && game\.levelIndex > 0 && Boolean\(Morph\)/);
+  assert.match(game, /继续落子/);
+  assert.match(game, /Engine\.suggestTutorialMove/);
 });
 
 test("圆柱与环面的周期边界在三维中重合", () => {

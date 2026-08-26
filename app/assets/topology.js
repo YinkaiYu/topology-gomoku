@@ -501,6 +501,47 @@
     return typeof limit === "number" ? ranked.slice(0, limit) : ranked;
   }
 
+  function suggestTutorialMove(board, rules, lastCell) {
+    var centerX = Math.floor((rules.width - 1) / 2);
+    var centerY = Math.floor((rules.height - 1) / 2);
+    if (lastCell < 0 || board[lastCell] !== HUMAN) {
+      var centerCell = toCell(rules, centerX, centerY);
+      if (board[centerCell] === EMPTY) {
+        return centerCell;
+      }
+    }
+
+    var lastPoint = lastCell >= 0 ? toPoint(rules, lastCell) : { x: centerX, y: centerY };
+    var bestCell = -1;
+    var bestScore = -Infinity;
+    var maskIndex;
+    for (maskIndex = 0; maskIndex < rules.winMasks.length; maskIndex += 1) {
+      var mask = rules.winMasks[maskIndex];
+      var own = countMask(board, mask, HUMAN);
+      var blocked = countMask(board, mask, AI) > 0;
+      if (blocked) {
+        continue;
+      }
+      var containsLast = Array.prototype.indexOf.call(mask.cells, lastCell) >= 0;
+      for (var index = 0; index < mask.cells.length; index += 1) {
+        var cell = mask.cells[index];
+        if (board[cell] !== EMPTY) {
+          continue;
+        }
+        var point = toPoint(rules, cell);
+        var distance = Math.abs(point.x - lastPoint.x) + Math.abs(point.y - lastPoint.y);
+        var horizontal = point.y === lastPoint.y ? 8 : 0;
+        var forward = point.x > lastPoint.x ? 1.5 : 0;
+        var score = own * 100 + (containsLast ? 24 : 0) + horizontal + forward - distance * 4;
+        if (score > bestScore || (score === bestScore && cell < bestCell)) {
+          bestScore = score;
+          bestCell = cell;
+        }
+      }
+    }
+    return bestCell;
+  }
+
   function evaluateBoard(board, rules) {
     var score = 0;
     var maskIndex;
@@ -729,6 +770,7 @@
     immediateMoves: immediateMoves,
     scoreMove: scoreMove,
     rankMoves: rankMoves,
+    suggestTutorialMove: suggestTutorialMove,
     evaluateBoard: evaluateBoard,
     chooseMove: chooseMove
   };

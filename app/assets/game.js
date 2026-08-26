@@ -503,7 +503,16 @@
     } else if (aiTurn) {
       dom.turnStatus.textContent = "思考中";
     } else {
-      dom.turnStatus.textContent = game.level.tutorial ? "连成五颗" : "你的回合";
+      if (game.level.tutorial) {
+        var tutorialCount = game.moves.filter(function countTutorialStones(move) {
+          return move.player === HUMAN;
+        }).length;
+        dom.turnStatus.textContent = tutorialCount
+          ? "继续落子 · " + tutorialCount + " / 5"
+          : "落下第一颗";
+      } else {
+        dom.turnStatus.textContent = "你的回合";
+      }
     }
     if (DEV_MODE && activeSheet === dom.developerSheet) {
       syncDeveloperUI();
@@ -1062,6 +1071,9 @@
     if (game.demo && game.demo.active) {
       animate = true;
     }
+    if (game.level.tutorial && game.status === "playing") {
+      animate = true;
+    }
     if (animate) {
       requestRender();
     }
@@ -1098,12 +1110,43 @@
     }
     drawTopologyRails(ctx, time);
     drawGrid(ctx, layout);
+    drawTutorialGuide(ctx, time);
     drawDemoStones(ctx, time);
     drawWinningConnections(ctx, time);
     drawMappedGhost(ctx);
     drawPlayerHints(ctx);
     drawMovePreview(ctx);
     drawStones(ctx, time);
+  }
+
+  function drawTutorialGuide(ctx, time) {
+    if (!game.level.tutorial || game.status !== "playing") {
+      return;
+    }
+    var hintCell = Engine.suggestTutorialMove(game.board, game.rules, game.lastMove);
+    if (hintCell < 0 || game.board[hintCell] !== Engine.EMPTY) {
+      return;
+    }
+    var center = cellCenter(hintCell);
+    var pulse = Math.sin(time * 0.006) * 0.5 + 0.5;
+    var radius = renderState.layout.cell * 0.25 + pulse * 2.2;
+    ctx.save();
+    ctx.globalAlpha = 0.52 + pulse * 0.24;
+    ctx.strokeStyle = "#3f8c87";
+    ctx.fillStyle = "rgba(63, 140, 135, 0.08)";
+    ctx.lineWidth = 1.5;
+    ctx.setLineDash([4.5, 4.5]);
+    ctx.beginPath();
+    ctx.arc(center.x, center.y, radius, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.globalAlpha *= 0.72;
+    ctx.fillStyle = "#3f8c87";
+    ctx.beginPath();
+    ctx.arc(center.x, center.y, 1.7 + pulse * 0.65, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.restore();
   }
 
   function completionPoint(u, v, morph, spin) {

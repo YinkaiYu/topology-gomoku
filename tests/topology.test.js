@@ -140,6 +140,27 @@ test("单边四子只提示尚未封死的第五点", () => {
   assert.deepEqual(hints.filter((hint) => hint.kind === "four"), [{ cell: winningCell, kind: "four" }]);
 });
 
+test("第一关教学提示从中心开始并沿玩家的连线继续延伸", () => {
+  const rules = Game.createRules({ type: "plane", width: 7, height: 7, target: 5 });
+  const board = Game.createBoard(rules);
+  const center = Game.toCell(rules, 3, 3);
+
+  assert.equal(Game.suggestTutorialMove(board, rules, -1), center);
+
+  board[center] = Game.HUMAN;
+  const second = Game.suggestTutorialMove(board, rules, center);
+  const secondPoint = Game.toPoint(rules, second);
+  assert.equal(secondPoint.y, 3);
+  assert.equal(Math.abs(secondPoint.x - 3), 1);
+
+  put(board, rules, [[1, 3], [2, 3], [4, 3]], Game.HUMAN);
+  const fifth = Game.suggestTutorialMove(board, rules, Game.toCell(rules, 4, 3));
+  assert.ok([
+    Game.toCell(rules, 0, 3),
+    Game.toCell(rules, 5, 3)
+  ].includes(fifth));
+});
+
 test("AI 优先取胜，其次阻挡玩家单杀", () => {
   const rules = Game.createRules({ type: "plane", width: 7, height: 7, target: 5 });
   const winningBoard = Game.createBoard(rules);
