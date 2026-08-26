@@ -916,67 +916,90 @@
 
   function chooseCompletionView(winningMask) {
     if (!winningMask || !winningMask.cells || !winningMask.cells.length || !Morph) {
-      return { x: 0, y: 0, z: 0 };
+      return { x: 0, y: 0, z: 0, shapeX: 1, shapeY: 1, shapeZ: 1 };
     }
     var cells = Array.prototype.slice.call(winningMask.cells);
     var size = Math.max(1, Math.min(renderState.width, renderState.height));
     var targetLength = size * 0.34;
-    var best = { x: 0, y: 0, z: 0 };
+    var best = { x: 0, y: 0, z: 0, shapeX: 1, shapeY: 1, shapeZ: 1 };
     var bestScore = -Infinity;
     var pitchSteps = [-0.66, -0.44, -0.22, 0, 0.22, 0.44, 0.66];
     var rollSteps = [-0.36, -0.18, 0, 0.18, 0.36];
+    var shapeSteps = [
+      { x: 1, y: 1, z: 1 },
+      { x: 0.92, y: 1.06, z: 1.04 },
+      { x: 1.07, y: 0.93, z: 1.02 },
+      { x: 0.96, y: 1.02, z: 1.09 }
+    ];
     pitchSteps.forEach(function testPitch(pitch) {
       for (var yawIndex = 0; yawIndex < 41; yawIndex += 1) {
         var yaw = -Math.PI + yawIndex / 40 * Math.PI * 2;
         rollSteps.forEach(function testRoll(roll) {
-          var points = cells.map(function projectWinningCell(cell) {
-            var uv = Morph.stoneUV(game.rules, cell);
-            return Morph.project(game.level.topology, uv.u, uv.v, renderState.width, renderState.height, {
-              x: pitch,
-              y: yaw,
-              z: roll
+          shapeSteps.forEach(function testShape(shape) {
+            var points = cells.map(function projectWinningCell(cell) {
+              var uv = Morph.stoneUV(game.rules, cell);
+              return Morph.project(game.level.topology, uv.u, uv.v, renderState.width, renderState.height, {
+                x: pitch,
+                y: yaw,
+                z: roll,
+                shapeX: shape.x,
+                shapeY: shape.y,
+                shapeZ: shape.z
+              });
             });
-          });
-          var pathLength = 0;
-          var segmentLengths = [];
-          var depthTotal = 0;
-          var minDepth = Infinity;
-          var maxDepth = -Infinity;
-          var centerX = 0;
-          var centerY = 0;
-          points.forEach(function scorePoint(point, index) {
-            depthTotal += point.depth;
-            minDepth = Math.min(minDepth, point.depth);
-            maxDepth = Math.max(maxDepth, point.depth);
-            centerX += point.x;
-            centerY += point.y;
-            if (index > 0) {
-              var segmentLength = Math.hypot(point.x - points[index - 1].x, point.y - points[index - 1].y);
-              segmentLengths.push(segmentLength);
-              pathLength += segmentLength;
+            var pathLength = 0;
+            var segmentLengths = [];
+            var depthTotal = 0;
+            var minDepth = Infinity;
+            var maxDepth = -Infinity;
+            var centerX = 0;
+            var centerY = 0;
+            points.forEach(function scorePoint(point, index) {
+              depthTotal += point.depth;
+              minDepth = Math.min(minDepth, point.depth);
+              maxDepth = Math.max(maxDepth, point.depth);
+              centerX += point.x;
+              centerY += point.y;
+              if (index > 0) {
+                var segmentLength = Math.hypot(point.x - points[index - 1].x, point.y - points[index - 1].y);
+                segmentLengths.push(segmentLength);
+                pathLength += segmentLength;
+              }
+            });
+            centerX /= points.length;
+            centerY /= points.length;
+            var meanSegment = pathLength / Math.max(1, segmentLengths.length);
+            var segmentVariance = segmentLengths.reduce(function sumSegmentVariance(total, length) {
+              return total + Math.pow(length - meanSegment, 2);
+            }, 0) / Math.max(1, segmentLengths.length);
+            var segmentVariation = Math.sqrt(segmentVariance) / Math.max(1, meanSegment);
+            var shortestSegment = Math.min.apply(Math, segmentLengths);
+            var longestSegment = Math.max.apply(Math, segmentLengths);
+            var extremeStretch = longestSegment / Math.max(1, shortestSegment);
+            var averageDepth = depthTotal / points.length;
+            var centerDistance = Math.hypot(centerX - renderState.width * 0.5, centerY - renderState.height * 0.5);
+            var shapeCost = Math.abs(shape.x - 1) + Math.abs(shape.y - 1) + Math.abs(shape.z - 1);
+            var score = averageDepth * 5.4 + minDepth * 4.8;
+            score -= Math.abs(pathLength - targetLength) / size * 1.35;
+            score -= (maxDepth - minDepth) * 0.8;
+            score -= segmentVariation * 2.1;
+            score -= Math.max(0, extremeStretch - 2.15) * 2.8;
+            score -= shortestSegment < size * 0.026 ? 2.8 : 0;
+            score -= centerDistance / size * 0.2;
+            score -= Math.abs(roll) * 0.06;
+            score -= shapeCost * 0.28;
+            if (score > bestScore) {
+              bestScore = score;
+              best = {
+                x: pitch,
+                y: yaw,
+                z: roll,
+                shapeX: shape.x,
+                shapeY: shape.y,
+                shapeZ: shape.z
+              };
             }
           });
-          centerX /= points.length;
-          centerY /= points.length;
-          var meanSegment = pathLength / Math.max(1, segmentLengths.length);
-          var segmentVariance = segmentLengths.reduce(function sumSegmentVariance(total, length) {
-            return total + Math.pow(length - meanSegment, 2);
-          }, 0) / Math.max(1, segmentLengths.length);
-          var segmentVariation = Math.sqrt(segmentVariance) / Math.max(1, meanSegment);
-          var shortestSegment = Math.min.apply(Math, segmentLengths);
-          var averageDepth = depthTotal / points.length;
-          var centerDistance = Math.hypot(centerX - renderState.width * 0.5, centerY - renderState.height * 0.5);
-          var score = averageDepth * 5.4 + minDepth * 4.8;
-          score -= Math.abs(pathLength - targetLength) / size * 3.2;
-          score -= (maxDepth - minDepth) * 0.8;
-          score -= segmentVariation * 3.8;
-          score -= shortestSegment < size * 0.035 ? 2.4 : 0;
-          score -= centerDistance / size * 0.2;
-          score -= Math.abs(roll) * 0.06;
-          if (score > bestScore) {
-            bestScore = score;
-            best = { x: pitch, y: yaw, z: roll };
-          }
         });
       }
     });
@@ -1641,94 +1664,6 @@
     return completionMappedPoint(flat.x, flat.y, uv.u, uv.v, morph, spin);
   }
 
-  function completionWinningPresentation(morph, spin) {
-    if (!game.winningMask || !game.winningMask.cells || !game.winningMask.cells.length) {
-      return null;
-    }
-    var cells = Array.prototype.slice.call(game.winningMask.cells);
-    var actual = cells.map(function mapWinningCell(cell) {
-      return completionCellPoint(cell, morph, spin);
-    });
-    var center = actual.reduce(function sumCenter(total, point) {
-      total.x += point.x;
-      total.y += point.y;
-      total.depth += point.depth;
-      return total;
-    }, { x: 0, y: 0, depth: 0 });
-    center.x /= actual.length;
-    center.y /= actual.length;
-    center.depth /= actual.length;
-
-    var axisX = actual[actual.length - 1].x - actual[0].x;
-    var axisY = actual[actual.length - 1].y - actual[0].y;
-    var axisLength = Math.hypot(axisX, axisY);
-    if (axisLength < 8) {
-      var covarianceX = 0;
-      var covarianceY = 0;
-      var covarianceXY = 0;
-      actual.forEach(function accumulateCovariance(point) {
-        var dx = point.x - center.x;
-        var dy = point.y - center.y;
-        covarianceX += dx * dx;
-        covarianceY += dy * dy;
-        covarianceXY += dx * dy;
-      });
-      var axisAngle = 0.5 * Math.atan2(2 * covarianceXY, covarianceX - covarianceY);
-      axisX = Math.cos(axisAngle);
-      axisY = Math.sin(axisAngle);
-      if ((actual[actual.length - 1].x - actual[0].x) * axisX +
-          (actual[actual.length - 1].y - actual[0].y) * axisY < 0) {
-        axisX *= -1;
-        axisY *= -1;
-      }
-    } else {
-      axisX /= axisLength;
-      axisY /= axisLength;
-    }
-
-    var normalX = -axisY;
-    var normalY = axisX;
-    var middle = actual[Math.floor(actual.length / 2)];
-    var middleOffset = (middle.x - center.x) * normalX + (middle.y - center.y) * normalY;
-    var size = Math.max(1, Math.min(renderState.width, renderState.height));
-    var spacing = size * (game.level.topology === "klein" || game.level.topology === "projective" ? 0.076 : 0.083);
-    spacing = Math.max(renderState.layout.cell * 0.76, Math.min(size * 0.088, spacing));
-    var curve = Math.max(-spacing * 0.32, Math.min(spacing * 0.32, middleOffset));
-    var strength = game.level.topology === "klein" || game.level.topology === "projective" ? 1 : 0.9;
-    var blend = Morph.smooth((morph - 0.5) / 0.46) * strength;
-    var byCell = {};
-    actual.forEach(function placeWinningCell(point, index) {
-      var centeredIndex = index - (actual.length - 1) * 0.5;
-      var arcAmount = actual.length > 1 ? Math.sin(index / (actual.length - 1) * Math.PI) : 0;
-      var guideX = center.x + axisX * centeredIndex * spacing + normalX * curve * arcAmount;
-      var guideY = center.y + axisY * centeredIndex * spacing + normalY * curve * arcAmount;
-      byCell[cells[index]] = {
-        x: point.x + (guideX - point.x) * blend,
-        y: point.y + (guideY - point.y) * blend,
-        depth: point.depth + (center.depth - point.depth) * blend * 0.72
-      };
-    });
-    return { cells: cells, actual: actual, byCell: byCell, blend: blend };
-  }
-
-  function compactCompletionSegment(points, actualFrom, actualTo, shownFrom, shownTo, blend) {
-    if (!points.length || blend <= 0) {
-      return points;
-    }
-    return points.map(function compactPoint(point, index) {
-      var amount = points.length > 1 ? index / (points.length - 1) : 0;
-      var actualBaseX = actualFrom.x + (actualTo.x - actualFrom.x) * amount;
-      var actualBaseY = actualFrom.y + (actualTo.y - actualFrom.y) * amount;
-      var shownBaseX = shownFrom.x + (shownTo.x - shownFrom.x) * amount;
-      var shownBaseY = shownFrom.y + (shownTo.y - shownFrom.y) * amount;
-      return {
-        x: shownBaseX + (point.x - actualBaseX) * (1 - blend),
-        y: shownBaseY + (point.y - actualBaseY) * (1 - blend),
-        depth: point.depth
-      };
-    });
-  }
-
   function drawCompletionSurface(ctx, morph, spin) {
     var columns = 44;
     var rows = 34;
@@ -1900,8 +1835,8 @@
     ctx.restore();
   }
 
-  function drawCompletionWinningLine(ctx, time, morph, spin, presentation) {
-    if (!game.winningMask || !presentation) {
+  function drawCompletionWinningLine(ctx, time, morph, spin) {
+    if (!game.winningMask) {
       return;
     }
     var cells = Array.prototype.slice.call(game.winningMask.cells);
@@ -1935,14 +1870,6 @@
         continue;
       }
       var points = completionGridEdgePoints(cells[index], step, direction, morph, spin);
-      points = compactCompletionSegment(
-        points,
-        presentation.actual[index],
-        presentation.actual[index + 1],
-        presentation.byCell[cells[index]],
-        presentation.byCell[cells[index + 1]],
-        presentation.blend
-      );
       var lastPointIndex = (points.length - 1) * segmentProgress;
       ctx.beginPath();
       ctx.moveTo(points[0].x, points[0].y);
@@ -1995,15 +1922,12 @@
     ctx.restore();
   }
 
-  function drawCompletionStones(ctx, morph, spin, presentation) {
+  function drawCompletionStones(ctx, morph, spin) {
     var winnerSet = winningCellSet();
     var items = [];
     for (var cell = 0; cell < game.board.length; cell += 1) {
       if (game.board[cell] !== Engine.EMPTY) {
         var point = completionCellPoint(cell, morph, spin);
-        if (presentation && presentation.byCell[cell]) {
-          point = presentation.byCell[cell];
-        }
         items.push({
           cell: cell,
           player: game.board[cell],
@@ -2032,6 +1956,9 @@
       y: game.completion.view.y * viewBlend + game.completion.rotation.y,
       z: game.completion.view.z * viewBlend + game.completion.rotation.z,
       scale: jellyScale,
+      shapeX: 1 + ((Number(game.completion.view.shapeX) || 1) - 1) * viewBlend,
+      shapeY: 1 + ((Number(game.completion.view.shapeY) || 1) - 1) * viewBlend,
+      shapeZ: 1 + ((Number(game.completion.view.shapeZ) || 1) - 1) * viewBlend,
       wobbleX: game.completion.elastic.x + restingBounce,
       wobbleY: game.completion.elastic.y + Math.cos(time * 0.0021) * (game.completion.settled ? 0.009 : 0)
     };
@@ -2044,9 +1971,8 @@
     if (game.level.yConnection) {
       drawCompletionBoundary(ctx, "y", morph, orientation, "#c79244");
     }
-    var winningPresentation = completionWinningPresentation(morph, orientation);
-    drawCompletionWinningLine(ctx, time, morph, orientation, winningPresentation);
-    drawCompletionStones(ctx, morph, orientation, winningPresentation);
+    drawCompletionWinningLine(ctx, time, morph, orientation);
+    drawCompletionStones(ctx, morph, orientation);
   }
 
   function drawPaperTexture(ctx) {

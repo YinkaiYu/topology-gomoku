@@ -1,6 +1,6 @@
 {
   "name": "topology-gomoku-xhs-minitool",
-  "version": "1.18.1",
+  "version": "1.19.0",
   "private": true,
   "description": "拓扑五子棋：小红书离线小工具",
   "scripts": {

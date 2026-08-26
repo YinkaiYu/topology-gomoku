@@ -32,6 +32,7 @@ test("第一关是无边界演示、无 AI 回合的连续落子教学", () => {
   assert.match(game, /TUTORIAL_PROMPTS\[Math\.min\(count, TUTORIAL_PROMPTS\.length - 1\)\]/);
   assert.match(game, /Engine\.suggestTutorialMove/);
   assert.match(game, /var guideText = tutorialPromptText\(\);/);
+  assert.match(game, /ctx\.font = "700 " \+ fontSize \+ "px 'Topo Serif'/);
   assert.match(game, /ctx\.fillText\(guideText, textX, textY\);/);
 });
 
@@ -89,6 +90,18 @@ test("拖动时的柔性形变保持拓扑接缝重合", () => {
   assert.ok(Math.hypot(left.x - right.x, left.y - right.y) < 1e-6);
 });
 
+test("通关视图的整体比例变形仍保持拓扑接缝重合", () => {
+  const shape = { x: 0.2, y: -0.35, z: 0.12, shapeX: 0.92, shapeY: 1.06, shapeZ: 1.04 };
+  [0.13, 0.37, 0.81].forEach((v) => {
+    const cylinderLeft = Morph.project("cylinder", 0, v, 420, 420, shape);
+    const cylinderRight = Morph.project("cylinder", 1, v, 420, 420, shape);
+    assert.ok(Math.hypot(cylinderLeft.x - cylinderRight.x, cylinderLeft.y - cylinderRight.y) < 1e-6);
+    const torusTop = Morph.project("torus", v, 0, 420, 420, shape);
+    const torusBottom = Morph.project("torus", v, 1, 420, 420, shape);
+    assert.ok(Math.hypot(torusTop.x - torusBottom.x, torusTop.y - torusBottom.y) < 1e-6);
+  });
+});
+
 test("通关曲面使用高密度采样，棋盘线沿曲面分段插值", () => {
   const game = fs.readFileSync(path.join(ROOT, "app", "assets", "game.js"), "utf8");
   assert.match(game, /var columns = 44;/);
@@ -115,14 +128,18 @@ test("胜负结算常驻棋盘且支持重玩，胜利曲面可以持续柔性�
   assert.match(game, /completion\.elastic\.velocityY \+= yawDelta/);
 });
 
-test("高阶曲面的五子展示会自动朝前并收束为等距路径", () => {
+test("高阶曲面的五子展示会自动朝前且始终附着于曲面交点", () => {
   const game = fs.readFileSync(path.join(ROOT, "app", "assets", "game.js"), "utf8");
   assert.match(game, /var yaw = -Math\.PI \+ yawIndex \/ 40 \* Math\.PI \* 2/);
   assert.match(game, /minDepth \* 4\.8/);
-  assert.match(game, /segmentVariation \* 3\.8/);
-  assert.match(game, /function completionWinningPresentation\(/);
-  assert.match(game, /topology === "klein" \|\| game\.level\.topology === "projective" \? 1 : 0\.9/);
-  assert.match(game, /function compactCompletionSegment\(/);
+  assert.match(game, /segmentVariation \* 2\.1/);
+  assert.match(game, /extremeStretch - 2\.15/);
+  assert.match(game, /shapeCost \* 0\.28/);
+  assert.match(game, /shapeX: 1 \+ \(\(Number\(game\.completion\.view\.shapeX\) \|\| 1\) - 1\) \* viewBlend/);
+  assert.match(game, /var point = completionCellPoint\(cell, morph, spin\);/);
+  assert.match(game, /var points = completionGridEdgePoints\(cells\[index\], step, direction, morph, spin\);/);
+  assert.doesNotMatch(game, /presentation\.byCell/);
+  assert.doesNotMatch(game, /compactCompletionSegment/);
 });
 
 test("开发者玩家胜利沿本关演示路径逐颗跨界落子", () => {
