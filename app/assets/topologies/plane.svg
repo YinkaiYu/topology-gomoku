@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" role="img" data-model="bounded-plane-grid">
+  <desc>P(u,v)=(u,v,0), -1≤u,v≤1</desc>
+  <g>
+    <path d="M 26.00 120.30 L 168.41 221.97" fill="none" stroke="#21302c" stroke-width="2.00" stroke-opacity="0.72" stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke"/>
+    <path d="M 41.40 98.74 L 183.81 200.40" fill="none" stroke="#21302c" stroke-width="2.00" stroke-opacity="0.72" stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke"/>
+    <path d="M 26.00 120.30 L 87.59 34.03" fill="none" stroke="#21302c" stroke-width="2.00" stroke-opacity="0.72" stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke"/>
+    <path d="M 61.60 145.72 L 123.19 59.45" fill="none" stroke="#21302c" stroke-width="2.00" stroke-opacity="0.72" stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke"/>
+    <path d="M 97.20 171.14 L 158.80 84.86" fill="none" stroke="#21302c" stroke-width="2.00" stroke-opacity="0.72" stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke"/>
+    <path d="M 56.80 77.17 L 199.20 178.83" fill="none" stroke="#21302c" stroke-width="2.00" stroke-opacity="0.72" stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke"/>
+    <path d="M 132.81 196.55 L 194.40 110.28" fill="none" stroke="#21302c" stroke-width="2.00" stroke-opacity="0.72" stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke"/>
+    <path d="M 168.41 221.97 L 230.00 135.70" fill="none" stroke="#21302c" stroke-width="2.00" stroke-opacity="0.72" stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke"/>
+    <path d="M 72.19 55.60 L 214.60 157.26" fill="none" stroke="#21302c" stroke-width="2.00" stroke-opacity="0.72" stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke"/>
+    <path d="M 87.59 34.03 L 230.00 135.70" fill="none" stroke="#21302c" stroke-width="2.00" stroke-opacity="0.72" stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke"/>
+    <path d="M 26.00 120.30 L 168.41 221.97 L 230.00 135.70 L 87.59 34.03 Z" fill="none" stroke="#3f8c87" stroke-width="2.70" stroke-opacity="0.90" stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke"/>
+  </g>
+</svg>

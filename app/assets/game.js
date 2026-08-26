@@ -80,7 +80,7 @@
     },
     {
       name: "双生面",
-      typeName: "射影平面",
+      typeName: "实射影平面",
       topology: "projective",
       width: 8,
       height: 8,
