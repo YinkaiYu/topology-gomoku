@@ -29,6 +29,7 @@ class Curve:
 @dataclass
 class Patch:
     points: list[Point3]
+    fill: str | None = None
 
 
 @dataclass
@@ -80,6 +81,21 @@ def sampled_surface(function: Surface, u_start: float, u_end: float, u_segments:
     return patches
 
 
+def bezier_chain(start: tuple[float, float], segments: list[tuple[tuple[float, float], tuple[float, float], tuple[float, float]]],
+                 count: int = 16, depth: float = 0.0) -> list[Point3]:
+    points: list[Point3] = [(start[0], start[1], depth)]
+    current = start
+    for control_a, control_b, end in segments:
+        for step in range(1, count + 1):
+            t = step / count
+            inverse = 1 - t
+            x = inverse ** 3 * current[0] + 3 * inverse ** 2 * t * control_a[0] + 3 * inverse * t ** 2 * control_b[0] + t ** 3 * end[0]
+            y = inverse ** 3 * current[1] + 3 * inverse ** 2 * t * control_a[1] + 3 * inverse * t ** 2 * control_b[1] + t ** 3 * end[1]
+            points.append((x, y, depth))
+        current = end
+    return points
+
+
 def plane(u: float, v: float) -> Point3:
     return u, v, 0.0
 
@@ -101,14 +117,17 @@ def mobius(t: float, s: float) -> Point3:
 
 
 def klein(theta: float, v: float) -> Point3:
-    """Figure-eight immersion, with (2π,v) identified with (0,-v)."""
-    radius = 2.55
-    radial = radius + math.cos(theta / 2) * math.sin(v) - math.sin(theta / 2) * math.sin(2 * v)
-    return (
-        radial * math.cos(theta),
-        radial * math.sin(theta),
-        math.sin(theta / 2) * math.sin(v) + math.cos(theta / 2) * math.sin(2 * v),
-    )
+    """Classic bottle-shaped immersion, reparameterized so K(2π,v)=K(0,-v)."""
+    shifted_v = v + math.pi / 2
+    radius = 4 * (1 - 0.5 * math.cos(theta))
+    if theta < math.pi:
+        x = 6 * math.cos(theta) * (1 + math.sin(theta)) + radius * math.cos(theta) * math.cos(shifted_v)
+        y = 16 * math.sin(theta) + radius * math.sin(theta) * math.cos(shifted_v)
+    else:
+        x = 6 * math.cos(theta) * (1 + math.sin(theta)) - radius * math.cos(shifted_v)
+        y = 16 * math.sin(theta)
+    z = radius * math.sin(shifted_v)
+    return x, y, z
 
 
 def roman(theta: float, phi: float) -> Point3:
@@ -140,18 +159,48 @@ def torus_glyph() -> Glyph:
 
 
 def mobius_glyph() -> Glyph:
-    strip_width = 0.48
-    patches = sampled_surface(mobius, 0, TAU, 48, -strip_width, strip_width, 10)
+    strip_width = 0.72
+    boundary_points = [mobius(t, strip_width) for t in values(0, TAU, 193)]
+    boundary_points.extend(mobius(t, -strip_width) for t in values(0, TAU, 193))
+    curves = [Curve(boundary_points, width=2.8, opacity=0.96, closed=True)]
+    patches = sampled_surface(mobius, 0, TAU, 56, -strip_width, strip_width, 12)
     return Glyph("mobius", "shaded-mobius-embedding",
-                 "standard Möbius embedding with M(0,s)=M(2π,−s)", [], (0.92, 0.04, -0.30), patches)
+                 "standard Möbius embedding with M(0,s)=M(2π,−s)", curves, (1.02, -0.03, -0.10), patches)
 
 
 def klein_glyph() -> Glyph:
-    curves = [sampled_curve(lambda v: klein(0, v), 0, TAU, 121,
-                            accent=True, width=3.2, opacity=0.98, closed=True)]
-    patches = sampled_surface(klein, 0, TAU, 40, 0, TAU, 16)
-    return Glyph("klein", "shaded-figure-eight-klein-immersion",
-                 "figure-eight immersion with K(2π,v)=K(0,−v)", curves, (0.84, -0.18, -0.26), patches)
+    # The directory thumbnail uses the classic bottle silhouette rather than the
+    # alpha hull of the immersion: the neck grows out of the body, loops over,
+    # and visibly penetrates the right shoulder before disappearing behind it.
+    outer = bezier_chain((0.48, 0.08), [
+        ((0.85, 0.28), (1.28, 0.61), (1.30, 1.10)),
+        ((1.34, 1.58), (0.98, 1.92), (0.50, 1.96)),
+        ((0.02, 2.00), (-0.30, 1.67), (-0.32, 1.25)),
+        ((-0.35, 0.84), (-0.62, 0.55), (-0.83, 0.18)),
+        ((-1.15, -0.36), (-1.08, -1.02), (-0.62, -1.35)),
+        ((-0.20, -1.63), (0.48, -1.52), (0.78, -1.15)),
+        ((1.05, -0.78), (1.06, -0.20), (0.72, 0.12)),
+        ((0.62, 0.22), (0.55, 0.14), (0.48, 0.08)),
+    ], depth=-0.5)
+    loop_opening = bezier_chain((0.38, 0.35), [
+        ((0.72, 0.55), (0.95, 0.78), (0.92, 1.15)),
+        ((0.90, 1.50), (0.68, 1.70), (0.43, 1.68)),
+        ((0.15, 1.66), (0.00, 1.42), (0.01, 1.18)),
+        ((0.02, 0.88), (0.18, 0.58), (0.38, 0.35)),
+    ], depth=0.6)
+    shadow = bezier_chain((-0.64, -1.43), [
+        ((-0.12, -1.58), (0.53, -1.50), (0.83, -1.19)),
+        ((1.00, -0.98), (1.08, -0.66), (1.02, -0.42)),
+        ((0.65, -0.68), (0.20, -0.88), (-0.20, -0.98)),
+        ((-0.44, -1.10), (-0.56, -1.28), (-0.64, -1.43)),
+    ], depth=0.5)
+    crossing = sampled_curve(lambda angle: (0.58 + 0.24 * math.cos(angle), 0.15 + 0.11 * math.sin(angle), 0.0),
+                             0, TAU, 73, width=2.5, opacity=0.94, closed=True)
+    opening_outline = Curve(loop_opening, width=2.7, opacity=0.96, closed=True)
+    return Glyph("klein", "hand-drawn-classic-klein-bottle-schematic",
+                 "classic loop-neck bottle schematic backed by a verified Klein immersion",
+                 [opening_outline, crossing], (0.0, 0.0, -0.12),
+                 [Patch(outer, "#d6d2c7"), Patch(shadow, "#f4f1e9"), Patch(loop_opening, "#fbf9f2")])
 
 
 def projective_glyph() -> Glyph:
@@ -225,21 +274,21 @@ def render(glyph: Glyph) -> str:
     transformed.sort(key=lambda item: (item[0].accent, item[2]))
 
     surface_paths: list[str] = []
-    projected_patches: list[tuple[list[tuple[float, float]], float]] = []
-    for points in rotated_patches:
+    projected_patches: list[tuple[list[tuple[float, float]], float, str | None]] = []
+    for patch, points in zip(glyph.patches, rotated_patches):
         projected = [(128 + (point[0] - center_x) * scale, 128 - (point[1] - center_y) * scale) for point in points]
-        projected_patches.append((projected, sum(point[2] for point in points) / len(points)))
+        projected_patches.append((projected, sum(point[2] for point in points) / len(points), patch.fill))
     projected_patches.sort(key=lambda item: item[1])
     if projected_patches:
-        depths = [depth for _points, depth in projected_patches]
+        depths = [depth for _points, depth, _fill in projected_patches]
         depth_span = max(depths) - min(depths) or 1.0
-        for points, depth in projected_patches:
+        for points, depth, fill in projected_patches:
             relative_depth = (depth - min(depths)) / depth_span
             shade = 0.08 if len(projected_patches) == 1 else 0.48 if relative_depth < 0.34 else 0.23 if relative_depth < 0.67 else 0.06
-            color = mix_color((251, 249, 242), (164, 159, 147), shade)
+            color = fill or mix_color((251, 249, 242), (164, 159, 147), shade)
             surface_paths.append(
                 f'<path d="{path_data(points, True)}" fill="{color}" stroke="{color}" '
-                'stroke-width="0.85" stroke-linejoin="round" vector-effect="non-scaling-stroke"/>'
+                'stroke-width="1.50" stroke-linejoin="round" vector-effect="non-scaling-stroke"/>'
             )
     curve_paths: list[str] = []
     for curve, points, _depth in transformed:

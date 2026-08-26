@@ -10,7 +10,7 @@ const TOPOLOGY_DIR = path.join(ROOT, "app", "assets", "topologies");
 const NAMES = ["plane", "cylinder", "torus", "mobius", "klein", "projective"];
 const SHADED_3D_MODELS = {
   mobius: "shaded-mobius-embedding",
-  klein: "shaded-figure-eight-klein-immersion",
+  klein: "hand-drawn-classic-klein-bottle-schematic",
   projective: "shaded-roman-surface-rp2-immersion",
 };
 
@@ -42,10 +42,24 @@ test("六关均使用不透明曲面与统一投影轮廓", () => {
   });
 });
 
-test("高阶关卡使用带遮挡关系的三维曲面", () => {
+test("高阶关卡使用明确的拓扑形态模型", () => {
   Object.entries(SHADED_3D_MODELS).forEach(([name, model]) => {
     const svg = fs.readFileSync(path.join(TOPOLOGY_DIR, `${name}.svg`), "utf8");
     assert.match(svg, new RegExp(`data-model="${model}"`));
+  });
+
+  ["mobius", "projective"].forEach((name) => {
+    const svg = fs.readFileSync(path.join(TOPOLOGY_DIR, `${name}.svg`), "utf8");
     assert.ok((svg.match(/fill="#[0-9a-f]{6}"/g) || []).length >= 100, `${name}: missing shaded patches`);
   });
+
+  const klein = fs.readFileSync(path.join(TOPOLOGY_DIR, "klein.svg"), "utf8");
+  assert.ok((klein.match(/fill="#[0-9a-f]{6}"/g) || []).length >= 3, "klein: missing opaque bottle layers");
+  assert.ok((klein.match(/fill="none"/g) || []).length >= 2, "klein: missing loop and penetration outlines");
+});
+
+test("莫比乌斯带具有一条连续的真实边界描线", () => {
+  const svg = fs.readFileSync(path.join(TOPOLOGY_DIR, "mobius.svg"), "utf8");
+  assert.match(svg, /data-model="shaded-mobius-embedding"/);
+  assert.match(svg, /stroke-width="2\.80"/);
 });

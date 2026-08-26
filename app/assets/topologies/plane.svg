@@ -16,7 +16,7 @@
     </filter>
   </defs>
   <g filter="url(#handSurface)">
-    <path d="M 26.00 120.30 L 168.41 221.97 L 230.00 135.70 L 87.59 34.03 Z" fill="#f4f2ea" stroke="#f4f2ea" stroke-width="0.85" stroke-linejoin="round" vector-effect="non-scaling-stroke"/>
+    <path d="M 26.00 120.30 L 168.41 221.97 L 230.00 135.70 L 87.59 34.03 Z" fill="#f4f2ea" stroke="#f4f2ea" stroke-width="1.50" stroke-linejoin="round" vector-effect="non-scaling-stroke"/>
   </g>
   <g filter="url(#handLine)">
   </g>
