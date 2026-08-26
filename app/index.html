@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover"
+  />
+  <meta name="theme-color" content="#f2efe7" />
+  <title>拓扑五子棋</title>
+  <link rel="stylesheet" href="./assets/style.css" />
+</head>
+<body>
+  <div class="app-shell" id="appShell">
+    <div class="ambient ambient-one" aria-hidden="true"></div>
+    <div class="ambient ambient-two" aria-hidden="true"></div>
+
+    <main class="screens">
+      <section class="screen home-screen is-active" id="homeScreen" aria-label="关卡选择">
+        <div class="home-scroll">
+          <header class="topbar home-topbar">
+            <div class="brand-mark" aria-hidden="true">
+              <i></i><i></i><i></i><i></i><i></i>
+            </div>
+            <button class="icon-button" id="homeSettingsButton" type="button" aria-label="设置">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M4 7h10M18 7h2M4 17h2M10 17h10M14 5v4M6 15v4" />
+              </svg>
+            </button>
+          </header>
+
+          <div class="hero">
+            <p class="eyebrow">TOPOLOGY × GOMOKU</p>
+            <h1>拓扑<br />五子棋</h1>
+            <p class="hero-line">边界之外，也能连成一线。</p>
+          </div>
+
+          <div class="journey-head">
+            <span>旅程</span>
+            <span class="progress-count" id="progressCount">0 / 6</span>
+          </div>
+
+          <div class="level-grid" id="levelGrid">
+            <button class="level-card is-selected" type="button" data-level="0" aria-label="第一关 方庭">
+              <span class="level-number">01</span>
+              <svg class="level-glyph" viewBox="0 0 80 64" aria-hidden="true">
+                <rect x="15" y="7" width="50" height="50" rx="4" />
+                <path d="M27 7v50M40 7v50M53 7v50M15 19h50M15 32h50M15 45h50" />
+              </svg>
+              <span class="level-name">方庭</span>
+              <span class="level-type">平面</span>
+              <span class="level-state" aria-hidden="true"></span>
+            </button>
+
+            <button class="level-card" type="button" data-level="1" aria-label="第二关 回廊">
+              <span class="level-number">02</span>
+              <svg class="level-glyph" viewBox="0 0 80 64" aria-hidden="true">
+                <path d="M20 12h40v40H20zM20 23h40M20 34h40M20 45h40M33 12v40M47 12v40" />
+                <path class="glyph-accent" d="M14 18v28M66 18v28M10 22l4-4 4 4M62 42l4 4 4-4" />
+              </svg>
+              <span class="level-name">回廊</span>
+              <span class="level-type">圆柱</span>
+              <span class="level-state" aria-hidden="true"></span>
+            </button>
+
+            <button class="level-card" type="button" data-level="2" aria-label="第三关 环游">
+              <span class="level-number">03</span>
+              <svg class="level-glyph" viewBox="0 0 80 64" aria-hidden="true">
+                <ellipse cx="40" cy="32" rx="27" ry="21" />
+                <ellipse cx="40" cy="32" rx="11" ry="8" />
+                <path class="glyph-accent" d="M13 32c0-12 12-21 27-21M67 32c0 12-12 21-27 21" />
+              </svg>
+              <span class="level-name">环游</span>
+              <span class="level-type">环面</span>
+              <span class="level-state" aria-hidden="true"></span>
+            </button>
+
+            <button class="level-card" type="button" data-level="3" aria-label="第四关 扭带">
+              <span class="level-number">04</span>
+              <svg class="level-glyph" viewBox="0 0 80 64" aria-hidden="true">
+                <path d="M13 33c9-22 20-22 29 0s20 22 25 0c-5-22-16-22-25 0s-20 22-29 0Z" />
+                <path class="glyph-accent" d="M20 24c8-12 15-9 22 9M42 33c7 18 15 18 22 3" />
+              </svg>
+              <span class="level-name">扭带</span>
+              <span class="level-type">莫比乌斯</span>
+              <span class="level-state" aria-hidden="true"></span>
+            </button>
+
+            <button class="level-card" type="button" data-level="4" aria-label="第五关 瓶界">
+              <span class="level-number">05</span>
+              <svg class="level-glyph" viewBox="0 0 80 64" aria-hidden="true">
+                <path d="M33 8v13c0 6-14 10-14 23 0 9 8 14 19 12 14-2 19-12 15-21-4-8-14-10-14-18V8" />
+                <path class="glyph-accent" d="M39 17c0 12 17 12 17 25 0 7-5 12-12 14" />
+                <path d="M31 8h10" />
+              </svg>
+              <span class="level-name">瓶界</span>
+              <span class="level-type">克莱因瓶</span>
+              <span class="level-state" aria-hidden="true"></span>
+            </button>
+
+            <button class="level-card" type="button" data-level="5" aria-label="第六关 双生面">
+              <span class="level-number">06</span>
+              <svg class="level-glyph" viewBox="0 0 80 64" aria-hidden="true">
+                <path d="M40 8c14 0 25 11 25 24S54 56 40 56 15 45 15 32 26 8 40 8Z" />
+                <path d="M25 17c21 5 29 25 20 38M55 17C34 22 26 42 35 55" />
+                <path class="glyph-accent" d="M17 24c15 11 31 11 46 0M17 40c15-11 31-11 46 0" />
+              </svg>
+              <span class="level-name">双生面</span>
+              <span class="level-type">射影平面</span>
+              <span class="level-state" aria-hidden="true"></span>
+            </button>
+          </div>
+        </div>
+
+        <footer class="home-actions">
+          <button class="primary-button" id="startButton" type="button">
+            <span id="startButtonText">进入方庭</span>
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 6 6 6-6 6" /></svg>
+          </button>
+        </footer>
+      </section>
+
+      <section class="screen game-screen" id="gameScreen" aria-label="对局">
+        <header class="topbar game-topbar">
+          <button class="icon-button" id="backButton" type="button" aria-label="返回关卡">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m15 5-7 7 7 7" /></svg>
+          </button>
+          <div class="game-title">
+            <span id="gameLevelNumber">01</span>
+            <strong id="gameLevelName">方庭</strong>
+          </div>
+          <button class="icon-button" id="gameSettingsButton" type="button" aria-label="设置">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M4 7h10M18 7h2M4 17h2M10 17h10M14 5v4M6 15v4" />
+            </svg>
+          </button>
+        </header>
+
+        <div class="match-strip">
+          <div class="player-chip is-active" id="humanChip">
+            <span class="mini-stone stone-dark"></span>
+            <span>你</span>
+          </div>
+          <div class="turn-status" id="turnStatus" role="status">你的回合</div>
+          <div class="player-chip" id="aiChip">
+            <span id="difficultyLabel">敏捷</span>
+            <span class="mini-stone stone-light"></span>
+          </div>
+        </div>
+
+        <div class="board-stage" id="boardStage">
+          <canvas id="boardCanvas" aria-label="五子棋棋盘"></canvas>
+          <div class="thinking" id="thinkingIndicator" aria-hidden="true">
+            <i></i><i></i><i></i>
+          </div>
+          <div class="coach-card" id="coachCard" hidden>
+            <div class="coach-visual" id="coachVisual" aria-hidden="true"></div>
+            <strong id="coachTitle">连成五子</strong>
+            <span id="coachText">横、竖、斜线都算</span>
+            <button type="button" id="coachButton">开始</button>
+          </div>
+        </div>
+
+        <div class="game-tools">
+          <button class="tool-button" id="undoButton" type="button" aria-label="悔棋">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 8H5v-4M5 8c2-3 5-4 8-4 5 0 8 4 8 8s-3 8-8 8c-3 0-6-2-7-4" /></svg>
+            <span>悔棋</span>
+          </button>
+          <div class="topology-badge" id="topologyBadge">
+            <i></i><span>有边界</span><i></i>
+          </div>
+          <button class="tool-button" id="restartButton" type="button" aria-label="重新开始">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 7v5h-5M19 12a7 7 0 1 0-2 5" /></svg>
+            <span>重来</span>
+          </button>
+        </div>
+      </section>
+    </main>
+
+    <div class="scrim" id="scrim" hidden></div>
+
+    <section class="sheet settings-sheet" id="settingsSheet" aria-modal="true" role="dialog" aria-labelledby="settingsTitle" hidden>
+      <div class="sheet-handle" aria-hidden="true"></div>
+      <div class="sheet-head">
+        <h2 id="settingsTitle">设置</h2>
+        <button class="close-button" id="closeSettingsButton" type="button" aria-label="关闭">×</button>
+      </div>
+      <div class="setting-row setting-stack">
+        <span>对手</span>
+        <div class="segmented" id="difficultyControl" role="group" aria-label="对手水平">
+          <button type="button" data-difficulty="easy">悠闲</button>
+          <button class="is-active" type="button" data-difficulty="normal">敏捷</button>
+          <button type="button" data-difficulty="hard">深思</button>
+        </div>
+      </div>
+      <div class="setting-row">
+        <span>声音</span>
+        <button class="switch is-on" id="soundSwitch" type="button" role="switch" aria-checked="true"><i></i></button>
+      </div>
+      <button class="sheet-done" id="settingsDoneButton" type="button">完成</button>
+    </section>
+
+    <section class="sheet result-sheet" id="resultSheet" aria-modal="true" role="dialog" aria-labelledby="resultTitle" hidden>
+      <div class="result-orbit" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div>
+      <p class="result-kicker" id="resultKicker">通关</p>
+      <h2 id="resultTitle">边界被你打通</h2>
+      <p id="resultText">下一片棋盘已解锁</p>
+      <div class="result-actions">
+        <button class="secondary-button" id="resultRetryButton" type="button">再来一局</button>
+        <button class="primary-button" id="resultNextButton" type="button">下一关</button>
+      </div>
+    </section>
+
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  </div>
+
+  <script src="./assets/topology.js"></script>
+  <script src="./assets/game.js"></script>
+</body>
+</html>

@@ -1,0 +1,1204 @@
+(function topologyGomokuApp() {
+  "use strict";
+
+  var Engine = window.TopologyGomoku;
+  var STORAGE_KEY = "topology-gomoku:v1";
+  var HUMAN = Engine.HUMAN;
+  var AI = Engine.AI;
+
+  var LEVELS = [
+    {
+      name: "方庭",
+      typeName: "平面",
+      topology: "plane",
+      width: 7,
+      height: 7,
+      edgeText: "有边界",
+      xConnection: null,
+      yConnection: null,
+      coachTitle: "连成五子",
+      coachText: "横、竖、斜线都算"
+    },
+    {
+      name: "回廊",
+      typeName: "圆柱",
+      topology: "cylinder",
+      width: 7,
+      height: 6,
+      edgeText: "左右相接",
+      xConnection: "same",
+      yConnection: null,
+      coachTitle: "同色边相连",
+      coachText: "左右可以穿过"
+    },
+    {
+      name: "环游",
+      typeName: "环面",
+      topology: "torus",
+      width: 7,
+      height: 6,
+      edgeText: "四边相接",
+      xConnection: "same",
+      yConnection: "same",
+      coachTitle: "棋盘没有尽头",
+      coachText: "上下左右都会相遇"
+    },
+    {
+      name: "扭带",
+      typeName: "莫比乌斯",
+      topology: "mobius",
+      width: 8,
+      height: 6,
+      edgeText: "左右翻转",
+      xConnection: "twist",
+      yConnection: null,
+      coachTitle: "反向会翻转",
+      coachText: "穿过后，上下镜像"
+    },
+    {
+      name: "瓶界",
+      typeName: "克莱因瓶",
+      topology: "klein",
+      width: 7,
+      height: 6,
+      edgeText: "一扭一环",
+      xConnection: "twist",
+      yConnection: "same",
+      coachTitle: "一扭一环",
+      coachText: "两组边，各走各的"
+    },
+    {
+      name: "双生面",
+      typeName: "射影平面",
+      topology: "projective",
+      width: 8,
+      height: 8,
+      edgeText: "双向翻转",
+      xConnection: "twist",
+      yConnection: "twist",
+      coachTitle: "双向翻转",
+      coachText: "每一条边都有镜面"
+    }
+  ];
+
+  var DIFFICULTIES = {
+    easy: { label: "悠闲", wait: 390, rank: 1 },
+    normal: { label: "敏捷", wait: 520, rank: 2 },
+    hard: { label: "深思", wait: 680, rank: 3 }
+  };
+
+  var dom = {
+    appShell: document.getElementById("appShell"),
+    homeScreen: document.getElementById("homeScreen"),
+    gameScreen: document.getElementById("gameScreen"),
+    levelGrid: document.getElementById("levelGrid"),
+    levelCards: Array.prototype.slice.call(document.querySelectorAll(".level-card")),
+    progressCount: document.getElementById("progressCount"),
+    startButton: document.getElementById("startButton"),
+    startButtonText: document.getElementById("startButtonText"),
+    homeSettingsButton: document.getElementById("homeSettingsButton"),
+    gameSettingsButton: document.getElementById("gameSettingsButton"),
+    backButton: document.getElementById("backButton"),
+    gameLevelNumber: document.getElementById("gameLevelNumber"),
+    gameLevelName: document.getElementById("gameLevelName"),
+    difficultyLabel: document.getElementById("difficultyLabel"),
+    humanChip: document.getElementById("humanChip"),
+    aiChip: document.getElementById("aiChip"),
+    turnStatus: document.getElementById("turnStatus"),
+    boardStage: document.getElementById("boardStage"),
+    boardCanvas: document.getElementById("boardCanvas"),
+    thinkingIndicator: document.getElementById("thinkingIndicator"),
+    topologyBadge: document.getElementById("topologyBadge"),
+    undoButton: document.getElementById("undoButton"),
+    restartButton: document.getElementById("restartButton"),
+    coachCard: document.getElementById("coachCard"),
+    coachTitle: document.getElementById("coachTitle"),
+    coachText: document.getElementById("coachText"),
+    coachButton: document.getElementById("coachButton"),
+    scrim: document.getElementById("scrim"),
+    settingsSheet: document.getElementById("settingsSheet"),
+    closeSettingsButton: document.getElementById("closeSettingsButton"),
+    settingsDoneButton: document.getElementById("settingsDoneButton"),
+    difficultyButtons: Array.prototype.slice.call(document.querySelectorAll("[data-difficulty]")),
+    soundSwitch: document.getElementById("soundSwitch"),
+    resultSheet: document.getElementById("resultSheet"),
+    resultKicker: document.getElementById("resultKicker"),
+    resultTitle: document.getElementById("resultTitle"),
+    resultText: document.getElementById("resultText"),
+    resultRetryButton: document.getElementById("resultRetryButton"),
+    resultNextButton: document.getElementById("resultNextButton"),
+    toast: document.getElementById("toast")
+  };
+
+  var prefs = loadPreferences();
+  var selectedLevel = Math.min(prefs.unlocked, LEVELS.length - 1);
+  var game = null;
+  var turnToken = 0;
+  var activeSheet = null;
+  var toastTimer = 0;
+  var resultSecondaryAction = null;
+  var resultPrimaryAction = null;
+
+  var renderState = {
+    context: dom.boardCanvas.getContext("2d"),
+    width: 0,
+    height: 0,
+    dpr: 1,
+    layout: null,
+    frame: 0,
+    hoverCell: -1,
+    pressedCell: -1,
+    pointerId: null,
+    lastMoveAt: 0,
+    seamPulseAt: 0,
+    seamPulseBits: 0,
+    winAt: 0
+  };
+
+  function defaultPreferences() {
+    return {
+      unlocked: 0,
+      completed: [],
+      bestDifficulty: [],
+      difficulty: "normal",
+      sound: true,
+      seenCoach: {}
+    };
+  }
+
+  function loadPreferences() {
+    var defaults = defaultPreferences();
+    try {
+      var stored = JSON.parse(localStorage.getItem(STORAGE_KEY) || "null");
+      if (!stored || typeof stored !== "object") {
+        return defaults;
+      }
+      defaults.unlocked = Math.max(0, Math.min(LEVELS.length - 1, Number(stored.unlocked) || 0));
+      defaults.completed = Array.isArray(stored.completed) ? stored.completed.slice(0, LEVELS.length) : [];
+      defaults.bestDifficulty = Array.isArray(stored.bestDifficulty) ? stored.bestDifficulty.slice(0, LEVELS.length) : [];
+      defaults.difficulty = DIFFICULTIES[stored.difficulty] ? stored.difficulty : "normal";
+      defaults.sound = stored.sound !== false;
+      defaults.seenCoach = stored.seenCoach && typeof stored.seenCoach === "object" ? stored.seenCoach : {};
+      return defaults;
+    } catch (error) {
+      return defaults;
+    }
+  }
+
+  function savePreferences() {
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(prefs));
+    } catch (error) {
+      /* The game still works when storage is temporarily unavailable. */
+    }
+  }
+
+  function SoundEngine() {
+    this.context = null;
+    this.enabled = prefs.sound;
+  }
+
+  SoundEngine.prototype.unlock = function unlock() {
+    if (!this.enabled) {
+      return;
+    }
+    var AudioContextClass = window.AudioContext || window.webkitAudioContext;
+    if (!AudioContextClass) {
+      return;
+    }
+    if (!this.context) {
+      this.context = new AudioContextClass();
+    }
+    if (this.context.state === "suspended") {
+      this.context.resume();
+    }
+  };
+
+  SoundEngine.prototype.setEnabled = function setEnabled(enabled) {
+    this.enabled = enabled;
+    if (enabled) {
+      this.unlock();
+    }
+  };
+
+  SoundEngine.prototype.tone = function tone(frequency, duration, delay, type, volume, endFrequency) {
+    if (!this.enabled || !this.context) {
+      return;
+    }
+    var now = this.context.currentTime + (delay || 0);
+    var oscillator = this.context.createOscillator();
+    var gain = this.context.createGain();
+    oscillator.type = type || "sine";
+    oscillator.frequency.setValueAtTime(frequency, now);
+    if (endFrequency) {
+      oscillator.frequency.exponentialRampToValueAtTime(endFrequency, now + duration);
+    }
+    gain.gain.setValueAtTime(0.0001, now);
+    gain.gain.exponentialRampToValueAtTime(volume || 0.04, now + 0.012);
+    gain.gain.exponentialRampToValueAtTime(0.0001, now + duration);
+    oscillator.connect(gain);
+    gain.connect(this.context.destination);
+    oscillator.start(now);
+    oscillator.stop(now + duration + 0.02);
+  };
+
+  SoundEngine.prototype.play = function play(name) {
+    if (!this.enabled) {
+      return;
+    }
+    this.unlock();
+    if (!this.context) {
+      return;
+    }
+    if (name === "move-human") {
+      this.tone(186, 0.09, 0, "triangle", 0.035, 132);
+      this.tone(372, 0.045, 0.008, "sine", 0.012, 310);
+    } else if (name === "move-ai") {
+      this.tone(248, 0.075, 0, "triangle", 0.028, 194);
+      this.tone(512, 0.04, 0.012, "sine", 0.01, 430);
+    } else if (name === "seam") {
+      this.tone(480, 0.12, 0, "sine", 0.018, 620);
+      this.tone(720, 0.15, 0.085, "sine", 0.014, 860);
+    } else if (name === "win") {
+      this.tone(392, 0.28, 0, "sine", 0.025, 440);
+      this.tone(523, 0.31, 0.13, "sine", 0.025, 587);
+      this.tone(659, 0.4, 0.27, "sine", 0.028, 784);
+    } else if (name === "lose") {
+      this.tone(220, 0.42, 0, "triangle", 0.026, 146);
+    } else if (name === "draw") {
+      this.tone(294, 0.18, 0, "sine", 0.018, 294);
+      this.tone(262, 0.2, 0.12, "sine", 0.015, 262);
+    } else {
+      this.tone(520, 0.045, 0, "sine", 0.012, 440);
+    }
+  };
+
+  var sound = new SoundEngine();
+
+  function padLevelNumber(index) {
+    return String(index + 1).padStart(2, "0");
+  }
+
+  function updateHome() {
+    var completeCount = 0;
+    dom.levelCards.forEach(function updateCard(card, index) {
+      var locked = index > prefs.unlocked;
+      var complete = Boolean(prefs.completed[index]);
+      card.classList.toggle("is-locked", locked);
+      card.classList.toggle("is-complete", complete);
+      card.classList.toggle("is-selected", index === selectedLevel && !locked);
+      card.setAttribute("aria-disabled", locked ? "true" : "false");
+      if (complete) {
+        completeCount += 1;
+      }
+    });
+    dom.progressCount.textContent = completeCount + " / " + LEVELS.length;
+    dom.startButtonText.textContent = "进入" + LEVELS[selectedLevel].name;
+  }
+
+  function selectLevel(index) {
+    if (index > prefs.unlocked) {
+      var card = dom.levelCards[index];
+      card.classList.remove("is-shaking");
+      void card.offsetWidth;
+      card.classList.add("is-shaking");
+      showToast("先通过上一关");
+      sound.play("ui");
+      return;
+    }
+    selectedLevel = index;
+    updateHome();
+    sound.play("ui");
+  }
+
+  function showScreen(screen) {
+    dom.appShell.scrollTop = 0;
+    dom.appShell.scrollLeft = 0;
+    dom.homeScreen.classList.toggle("is-active", screen === "home");
+    dom.gameScreen.classList.toggle("is-active", screen === "game");
+    requestAnimationFrame(function keepRootAnchored() {
+      dom.appShell.scrollTop = 0;
+      dom.appShell.scrollLeft = 0;
+    });
+  }
+
+  function startLevel(index, options) {
+    var level = LEVELS[index];
+    var skipCoach = options && options.skipCoach;
+    turnToken += 1;
+    selectedLevel = index;
+    closeActiveSheet(true);
+    hideCoach();
+    game = {
+      levelIndex: index,
+      level: level,
+      rules: Engine.createRules({
+        type: level.topology,
+        width: level.width,
+        height: level.height,
+        target: 5
+      }),
+      board: null,
+      moves: [],
+      turn: HUMAN,
+      status: "playing",
+      winningMask: null,
+      lastMove: -1
+    };
+    game.board = Engine.createBoard(game.rules);
+    renderState.hoverCell = -1;
+    renderState.pressedCell = -1;
+    renderState.lastMoveAt = 0;
+    renderState.seamPulseAt = 0;
+    renderState.winAt = 0;
+    dom.gameLevelNumber.textContent = padLevelNumber(index);
+    dom.gameLevelName.textContent = level.name;
+    dom.topologyBadge.querySelector("span").textContent = level.edgeText;
+    dom.topologyBadge.classList.toggle("is-connected", Boolean(level.xConnection || level.yConnection));
+    dom.boardStage.classList.remove("is-settled");
+    showScreen("game");
+    updateTurnUI();
+    window.setTimeout(function afterScreenTransition() {
+      resizeCanvas();
+      requestRender();
+      if (!skipCoach && !prefs.seenCoach[index]) {
+        showCoach(level);
+      }
+    }, 90);
+  }
+
+  function leaveGame() {
+    turnToken += 1;
+    hideCoach();
+    closeActiveSheet(true);
+    dom.thinkingIndicator.classList.remove("is-visible");
+    game = null;
+    updateHome();
+    showScreen("home");
+    sound.play("ui");
+  }
+
+  function restartGame() {
+    if (!game) {
+      return;
+    }
+    var levelIndex = game.levelIndex;
+    sound.play("ui");
+    startLevel(levelIndex, { skipCoach: true });
+  }
+
+  function showCoach(level) {
+    dom.coachTitle.textContent = level.coachTitle;
+    dom.coachText.textContent = level.coachText;
+    dom.coachCard.hidden = false;
+  }
+
+  function hideCoach() {
+    dom.coachCard.hidden = true;
+  }
+
+  function dismissCoach() {
+    if (!game) {
+      hideCoach();
+      return;
+    }
+    prefs.seenCoach[game.levelIndex] = true;
+    savePreferences();
+    hideCoach();
+    sound.play("ui");
+  }
+
+  function updateTurnUI() {
+    if (!game) {
+      return;
+    }
+    var humanTurn = game.status === "playing" && game.turn === HUMAN;
+    var aiTurn = game.status === "playing" && game.turn === AI;
+    dom.humanChip.classList.toggle("is-active", humanTurn);
+    dom.aiChip.classList.toggle("is-active", aiTurn);
+    dom.difficultyLabel.textContent = DIFFICULTIES[prefs.difficulty].label;
+    dom.thinkingIndicator.classList.toggle("is-visible", aiTurn);
+    dom.undoButton.disabled = game.moves.length === 0 || game.status !== "playing";
+    if (game.status === "ended") {
+      dom.turnStatus.textContent = "本局结束";
+    } else if (aiTurn) {
+      dom.turnStatus.textContent = "思考中";
+    } else {
+      dom.turnStatus.textContent = "你的回合";
+    }
+  }
+
+  function connectedSeamAtCell(cell) {
+    var point = Engine.toPoint(game.rules, cell);
+    var bits = 0;
+    if (game.level.xConnection && (point.x === 0 || point.x === game.rules.width - 1)) {
+      bits |= Engine.SEAM_X;
+    }
+    if (game.level.yConnection && (point.y === 0 || point.y === game.rules.height - 1)) {
+      bits |= Engine.SEAM_Y;
+    }
+    return bits;
+  }
+
+  function performMove(cell, player) {
+    if (!game || game.status !== "playing" || game.board[cell] !== Engine.EMPTY) {
+      return false;
+    }
+    game.board[cell] = player;
+    game.moves.push({ cell: cell, player: player });
+    game.lastMove = cell;
+    renderState.lastMoveAt = performance.now();
+    renderState.hoverCell = -1;
+    renderState.pressedCell = -1;
+
+    var seamBits = connectedSeamAtCell(cell);
+    if (seamBits) {
+      renderState.seamPulseAt = performance.now();
+      renderState.seamPulseBits = seamBits;
+    }
+
+    sound.play(player === HUMAN ? "move-human" : "move-ai");
+    if (seamBits) {
+      window.setTimeout(function playSeamSound() { sound.play("seam"); }, 65);
+    }
+
+    var winningMask = Engine.checkWin(game.board, game.rules, cell, player);
+    if (winningMask) {
+      finishGame(player === HUMAN ? "win" : "lose", winningMask);
+    } else if (Engine.boardIsDraw(game.board, game.rules)) {
+      finishGame("draw", null);
+    } else if (player === HUMAN) {
+      game.turn = AI;
+      updateTurnUI();
+      scheduleAiMove();
+    } else {
+      game.turn = HUMAN;
+      updateTurnUI();
+    }
+    requestRender();
+    return true;
+  }
+
+  function scheduleAiMove() {
+    var scheduledToken = ++turnToken;
+    var wait = DIFFICULTIES[prefs.difficulty].wait;
+    window.setTimeout(function makeAiMove() {
+      if (!game || game.status !== "playing" || game.turn !== AI || scheduledToken !== turnToken) {
+        return;
+      }
+      var cell = Engine.chooseMove(game.board, game.rules, prefs.difficulty);
+      if (cell >= 0 && scheduledToken === turnToken) {
+        performMove(cell, AI);
+      }
+    }, wait);
+  }
+
+  function finishGame(outcome, winningMask) {
+    turnToken += 1;
+    game.status = "ended";
+    game.turn = 0;
+    game.winningMask = winningMask;
+    renderState.winAt = performance.now();
+    if (winningMask && winningMask.seam) {
+      renderState.seamPulseAt = performance.now();
+      renderState.seamPulseBits = winningMask.seam;
+    }
+    updateTurnUI();
+
+    if (outcome === "win") {
+      prefs.completed[game.levelIndex] = true;
+      prefs.bestDifficulty[game.levelIndex] = Math.max(
+        Number(prefs.bestDifficulty[game.levelIndex]) || 0,
+        DIFFICULTIES[prefs.difficulty].rank
+      );
+      if (game.levelIndex < LEVELS.length - 1) {
+        prefs.unlocked = Math.max(prefs.unlocked, game.levelIndex + 1);
+      }
+      savePreferences();
+      sound.play("win");
+    } else if (outcome === "lose") {
+      sound.play("lose");
+    } else {
+      sound.play("draw");
+    }
+
+    window.setTimeout(function revealResult() {
+      if (game && game.status === "ended") {
+        showResult(outcome);
+      }
+    }, 820);
+  }
+
+  function undoMove() {
+    if (!game || game.status !== "playing" || !game.moves.length) {
+      return;
+    }
+    turnToken += 1;
+    dom.thinkingIndicator.classList.remove("is-visible");
+
+    var removeCount = game.turn === AI ? 1 : Math.min(2, game.moves.length);
+    while (removeCount > 0 && game.moves.length) {
+      var move = game.moves.pop();
+      game.board[move.cell] = Engine.EMPTY;
+      removeCount -= 1;
+    }
+    game.lastMove = game.moves.length ? game.moves[game.moves.length - 1].cell : -1;
+    game.turn = HUMAN;
+    renderState.lastMoveAt = performance.now();
+    renderState.seamPulseAt = 0;
+    updateTurnUI();
+    requestRender();
+    sound.play("ui");
+  }
+
+  function showResult(outcome) {
+    var currentIndex = game.levelIndex;
+    dom.boardStage.classList.add("is-settled");
+    if (outcome === "win") {
+      dom.resultKicker.textContent = currentIndex === LEVELS.length - 1 ? "全数通关" : "通关";
+      dom.resultTitle.textContent = currentIndex === LEVELS.length - 1 ? "走遍所有边界" : "边界被你打通";
+      dom.resultText.textContent = currentIndex === LEVELS.length - 1 ? "再换一种走法" : "下一片棋盘已解锁";
+      dom.resultRetryButton.textContent = "再来一局";
+      dom.resultNextButton.textContent = currentIndex === LEVELS.length - 1 ? "回到旅程" : "下一关";
+      resultSecondaryAction = restartGame;
+      resultPrimaryAction = currentIndex === LEVELS.length - 1
+        ? leaveGame
+        : function nextLevel() { startLevel(currentIndex + 1); };
+    } else if (outcome === "lose") {
+      dom.resultKicker.textContent = "差一步";
+      dom.resultTitle.textContent = "再换个方向";
+      dom.resultText.textContent = "这次它先连成了五颗";
+      dom.resultRetryButton.textContent = "回到旅程";
+      dom.resultNextButton.textContent = "再来一局";
+      resultSecondaryAction = leaveGame;
+      resultPrimaryAction = restartGame;
+    } else {
+      dom.resultKicker.textContent = "平局";
+      dom.resultTitle.textContent = "棋盘已满";
+      dom.resultText.textContent = "谁也没有留下缺口";
+      dom.resultRetryButton.textContent = "回到旅程";
+      dom.resultNextButton.textContent = "再来一局";
+      resultSecondaryAction = leaveGame;
+      resultPrimaryAction = restartGame;
+    }
+    openSheet(dom.resultSheet);
+  }
+
+  function openSettings() {
+    syncSettingsUI();
+    openSheet(dom.settingsSheet);
+    sound.play("ui");
+  }
+
+  function syncSettingsUI() {
+    dom.difficultyButtons.forEach(function updateDifficultyButton(button) {
+      button.classList.toggle("is-active", button.dataset.difficulty === prefs.difficulty);
+    });
+    dom.soundSwitch.classList.toggle("is-on", prefs.sound);
+    dom.soundSwitch.setAttribute("aria-checked", prefs.sound ? "true" : "false");
+    dom.difficultyLabel.textContent = DIFFICULTIES[prefs.difficulty].label;
+  }
+
+  function setDifficulty(difficulty) {
+    if (!DIFFICULTIES[difficulty]) {
+      return;
+    }
+    prefs.difficulty = difficulty;
+    savePreferences();
+    syncSettingsUI();
+    showToast("对手 · " + DIFFICULTIES[difficulty].label);
+    sound.play("ui");
+  }
+
+  function toggleSound() {
+    prefs.sound = !prefs.sound;
+    sound.setEnabled(prefs.sound);
+    savePreferences();
+    syncSettingsUI();
+    if (prefs.sound) {
+      sound.play("ui");
+    }
+  }
+
+  function openSheet(sheet) {
+    if (activeSheet && activeSheet !== sheet) {
+      activeSheet.classList.remove("is-visible");
+      activeSheet.hidden = true;
+    }
+    activeSheet = sheet;
+    dom.scrim.hidden = false;
+    sheet.hidden = false;
+    requestAnimationFrame(function animateSheetIn() {
+      dom.scrim.classList.add("is-visible");
+      sheet.classList.add("is-visible");
+    });
+  }
+
+  function closeActiveSheet(immediate) {
+    if (!activeSheet) {
+      return;
+    }
+    var sheet = activeSheet;
+    activeSheet = null;
+    sheet.classList.remove("is-visible");
+    dom.scrim.classList.remove("is-visible");
+    var finish = function finishClose() {
+      if (activeSheet !== sheet) {
+        sheet.hidden = true;
+      }
+      if (!activeSheet) {
+        dom.scrim.hidden = true;
+      }
+    };
+    if (immediate) {
+      finish();
+    } else {
+      window.setTimeout(finish, 230);
+    }
+  }
+
+  function showToast(message) {
+    window.clearTimeout(toastTimer);
+    dom.toast.textContent = message;
+    dom.toast.classList.add("is-visible");
+    toastTimer = window.setTimeout(function hideToast() {
+      dom.toast.classList.remove("is-visible");
+    }, 1450);
+  }
+
+  function resizeCanvas() {
+    var rect = dom.boardCanvas.getBoundingClientRect();
+    if (rect.width < 10 || rect.height < 10) {
+      return;
+    }
+    var dpr = Math.min(window.devicePixelRatio || 1, 2);
+    var pixelWidth = Math.round(rect.width * dpr);
+    var pixelHeight = Math.round(rect.height * dpr);
+    if (dom.boardCanvas.width !== pixelWidth || dom.boardCanvas.height !== pixelHeight) {
+      dom.boardCanvas.width = pixelWidth;
+      dom.boardCanvas.height = pixelHeight;
+    }
+    renderState.width = rect.width;
+    renderState.height = rect.height;
+    renderState.dpr = dpr;
+    renderState.context.setTransform(dpr, 0, 0, dpr, 0, 0);
+    computeBoardLayout();
+    requestRender();
+  }
+
+  function computeBoardLayout() {
+    if (!game || !renderState.width || !renderState.height) {
+      renderState.layout = null;
+      return;
+    }
+    var margin = Math.max(34, Math.min(renderState.width, renderState.height) * 0.115);
+    var availableWidth = renderState.width - margin * 2;
+    var availableHeight = renderState.height - margin * 2;
+    var cellSize = Math.min(
+      availableWidth / Math.max(1, game.rules.width - 1),
+      availableHeight / Math.max(1, game.rules.height - 1)
+    );
+    var boardWidth = cellSize * (game.rules.width - 1);
+    var boardHeight = cellSize * (game.rules.height - 1);
+    renderState.layout = {
+      cell: cellSize,
+      left: (renderState.width - boardWidth) / 2,
+      top: (renderState.height - boardHeight) / 2,
+      right: (renderState.width + boardWidth) / 2,
+      bottom: (renderState.height + boardHeight) / 2
+    };
+  }
+
+  function requestRender() {
+    if (!renderState.frame) {
+      renderState.frame = requestAnimationFrame(renderFrame);
+    }
+  }
+
+  function renderFrame(time) {
+    renderState.frame = 0;
+    if (!game || !renderState.layout) {
+      return;
+    }
+    drawBoard(time);
+    var animate = false;
+    if (renderState.lastMoveAt && time - renderState.lastMoveAt < 260) {
+      animate = true;
+    }
+    if (renderState.seamPulseAt && time - renderState.seamPulseAt < 980) {
+      animate = true;
+    }
+    if (renderState.winAt && time - renderState.winAt < 1450) {
+      animate = true;
+    }
+    if (animate) {
+      requestRender();
+    }
+  }
+
+  function cellCenter(cell) {
+    var point = Engine.toPoint(game.rules, cell);
+    return {
+      x: renderState.layout.left + point.x * renderState.layout.cell,
+      y: renderState.layout.top + point.y * renderState.layout.cell
+    };
+  }
+
+  function clamp01(value) {
+    return Math.max(0, Math.min(1, value));
+  }
+
+  function easeOutBack(value) {
+    var c1 = 1.45;
+    var c3 = c1 + 1;
+    var shifted = value - 1;
+    return 1 + c3 * shifted * shifted * shifted + c1 * shifted * shifted;
+  }
+
+  function drawBoard(time) {
+    var ctx = renderState.context;
+    var layout = renderState.layout;
+    ctx.clearRect(0, 0, renderState.width, renderState.height);
+
+    drawPaperTexture(ctx);
+    drawTopologyRails(ctx, time);
+    drawGrid(ctx, layout);
+    drawWinningConnections(ctx, time);
+    drawMappedGhost(ctx);
+    drawMovePreview(ctx);
+    drawStones(ctx, time);
+  }
+
+  function drawPaperTexture(ctx) {
+    var index;
+    ctx.save();
+    ctx.fillStyle = "rgba(81, 75, 65, 0.035)";
+    for (index = 0; index < 46; index += 1) {
+      var x = (Math.sin(index * 91.73) * 0.5 + 0.5) * renderState.width;
+      var y = (Math.sin(index * 47.17 + 2.3) * 0.5 + 0.5) * renderState.height;
+      ctx.fillRect(x, y, 0.65, 0.65);
+    }
+    ctx.restore();
+  }
+
+  function drawGrid(ctx, layout) {
+    var x;
+    var y;
+    ctx.save();
+    ctx.strokeStyle = "rgba(108, 103, 94, 0.5)";
+    ctx.lineWidth = Math.max(0.7, layout.cell * 0.025);
+    for (x = 0; x < game.rules.width; x += 1) {
+      var px = layout.left + x * layout.cell;
+      ctx.beginPath();
+      ctx.moveTo(px, layout.top);
+      ctx.lineTo(px, layout.bottom);
+      ctx.stroke();
+    }
+    for (y = 0; y < game.rules.height; y += 1) {
+      var py = layout.top + y * layout.cell;
+      ctx.beginPath();
+      ctx.moveTo(layout.left, py);
+      ctx.lineTo(layout.right, py);
+      ctx.stroke();
+    }
+    ctx.fillStyle = "rgba(72, 71, 65, 0.48)";
+    for (y = 0; y < game.rules.height; y += 1) {
+      for (x = 0; x < game.rules.width; x += 1) {
+        ctx.beginPath();
+        ctx.arc(layout.left + x * layout.cell, layout.top + y * layout.cell, Math.max(0.9, layout.cell * 0.035), 0, Math.PI * 2);
+        ctx.fill();
+      }
+    }
+    ctx.restore();
+  }
+
+  function seamPulseFor(bit, time) {
+    if (!(renderState.seamPulseBits & bit) || !renderState.seamPulseAt) {
+      return 0;
+    }
+    var progress = clamp01((time - renderState.seamPulseAt) / 920);
+    return Math.sin(progress * Math.PI) * (1 - progress * 0.25);
+  }
+
+  function drawTopologyRails(ctx, time) {
+    var layout = renderState.layout;
+    if (game.level.xConnection) {
+      drawRailPair(ctx, "vertical", "#3f8c87", game.level.xConnection === "twist", seamPulseFor(Engine.SEAM_X, time));
+    }
+    if (game.level.yConnection) {
+      drawRailPair(ctx, "horizontal", "#c79244", game.level.yConnection === "twist", seamPulseFor(Engine.SEAM_Y, time));
+    }
+    if (!game.level.xConnection && !game.level.yConnection) {
+      ctx.save();
+      ctx.strokeStyle = "rgba(95, 91, 83, 0.16)";
+      ctx.lineWidth = 1;
+      ctx.strokeRect(layout.left - 8, layout.top - 8, layout.right - layout.left + 16, layout.bottom - layout.top + 16);
+      ctx.restore();
+    }
+  }
+
+  function drawRailPair(ctx, orientation, color, twisted, pulse) {
+    var layout = renderState.layout;
+    var offset = Math.min(15, layout.cell * 0.4);
+    var alpha = 0.58 + pulse * 0.4;
+    ctx.save();
+    ctx.strokeStyle = color;
+    ctx.fillStyle = color;
+    ctx.globalAlpha = alpha;
+    ctx.lineWidth = 2 + pulse * 2.2;
+    ctx.lineCap = "round";
+    ctx.shadowColor = color;
+    ctx.shadowBlur = pulse * 16;
+    if (twisted) {
+      ctx.setLineDash([5, 5]);
+    }
+
+    if (orientation === "vertical") {
+      var leftX = layout.left - offset;
+      var rightX = layout.right + offset;
+      drawRailLine(ctx, leftX, layout.top, leftX, layout.bottom);
+      drawRailLine(ctx, rightX, layout.top, rightX, layout.bottom);
+      ctx.setLineDash([]);
+      drawArrow(ctx, leftX, layout.top + (layout.bottom - layout.top) * 0.34, "vertical", 1);
+      drawArrow(ctx, leftX, layout.top + (layout.bottom - layout.top) * 0.7, "vertical", 1);
+      drawArrow(ctx, rightX, layout.top + (layout.bottom - layout.top) * 0.34, "vertical", twisted ? -1 : 1);
+      drawArrow(ctx, rightX, layout.top + (layout.bottom - layout.top) * 0.7, "vertical", twisted ? -1 : 1);
+    } else {
+      var topY = layout.top - offset;
+      var bottomY = layout.bottom + offset;
+      drawRailLine(ctx, layout.left, topY, layout.right, topY);
+      drawRailLine(ctx, layout.left, bottomY, layout.right, bottomY);
+      ctx.setLineDash([]);
+      drawArrow(ctx, layout.left + (layout.right - layout.left) * 0.34, topY, "horizontal", 1);
+      drawArrow(ctx, layout.left + (layout.right - layout.left) * 0.7, topY, "horizontal", 1);
+      drawArrow(ctx, layout.left + (layout.right - layout.left) * 0.34, bottomY, "horizontal", twisted ? -1 : 1);
+      drawArrow(ctx, layout.left + (layout.right - layout.left) * 0.7, bottomY, "horizontal", twisted ? -1 : 1);
+    }
+    ctx.restore();
+  }
+
+  function drawRailLine(ctx, x1, y1, x2, y2) {
+    ctx.beginPath();
+    ctx.moveTo(x1, y1);
+    ctx.lineTo(x2, y2);
+    ctx.stroke();
+  }
+
+  function drawArrow(ctx, x, y, orientation, sign) {
+    var size = 4.5;
+    ctx.beginPath();
+    if (orientation === "vertical") {
+      ctx.moveTo(x, y + size * sign);
+      ctx.lineTo(x - size, y - size * sign);
+      ctx.lineTo(x + size, y - size * sign);
+    } else {
+      ctx.moveTo(x + size * sign, y);
+      ctx.lineTo(x - size * sign, y - size);
+      ctx.lineTo(x - size * sign, y + size);
+    }
+    ctx.closePath();
+    ctx.fill();
+  }
+
+  function drawMappedGhost(ctx) {
+    var sourceCell = renderState.pressedCell >= 0 ? renderState.pressedCell : renderState.hoverCell;
+    if (sourceCell < 0 || !game || game.status !== "playing") {
+      return;
+    }
+    var point = Engine.toPoint(game.rules, sourceCell);
+    var directions = [];
+    if (game.level.xConnection && point.x === 0) { directions.push({ direction: 4, color: "#3f8c87" }); }
+    if (game.level.xConnection && point.x === game.rules.width - 1) { directions.push({ direction: 0, color: "#3f8c87" }); }
+    if (game.level.yConnection && point.y === 0) { directions.push({ direction: 6, color: "#c79244" }); }
+    if (game.level.yConnection && point.y === game.rules.height - 1) { directions.push({ direction: 2, color: "#c79244" }); }
+
+    directions.forEach(function drawGhost(mapping) {
+      var mapped = Engine.step(game.rules, sourceCell, mapping.direction);
+      if (!mapped || mapped.cell === sourceCell) {
+        return;
+      }
+      var center = cellCenter(mapped.cell);
+      ctx.save();
+      ctx.globalAlpha = game.board[mapped.cell] === Engine.EMPTY ? 0.38 : 0.22;
+      ctx.strokeStyle = mapping.color;
+      ctx.lineWidth = 1.5;
+      ctx.setLineDash([3, 3]);
+      ctx.beginPath();
+      ctx.arc(center.x, center.y, renderState.layout.cell * 0.29, 0, Math.PI * 2);
+      ctx.stroke();
+      ctx.restore();
+    });
+  }
+
+  function drawMovePreview(ctx) {
+    var cell = renderState.pressedCell >= 0 ? renderState.pressedCell : renderState.hoverCell;
+    if (cell < 0 || !game || game.status !== "playing" || game.turn !== HUMAN || game.board[cell] !== Engine.EMPTY || !dom.coachCard.hidden) {
+      return;
+    }
+    var center = cellCenter(cell);
+    var radius = renderState.layout.cell * 0.34;
+    ctx.save();
+    ctx.globalAlpha = renderState.pressedCell >= 0 ? 0.42 : 0.16;
+    ctx.fillStyle = "#21302c";
+    ctx.beginPath();
+    ctx.arc(center.x, center.y, radius, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.restore();
+  }
+
+  function winningCellSet() {
+    var set = Object.create(null);
+    if (game && game.winningMask) {
+      Array.prototype.forEach.call(game.winningMask.cells, function rememberCell(cell) {
+        set[cell] = true;
+      });
+    }
+    return set;
+  }
+
+  function drawWinningConnections(ctx, time) {
+    if (!game.winningMask) {
+      return;
+    }
+    var cells = game.winningMask.cells;
+    var progress = clamp01((time - renderState.winAt) / 620);
+    ctx.save();
+    ctx.strokeStyle = "rgba(199, 146, 68, " + (0.22 + progress * 0.55) + ")";
+    ctx.lineWidth = Math.max(3, renderState.layout.cell * 0.11);
+    ctx.lineCap = "round";
+    for (var index = 0; index < cells.length - 1; index += 1) {
+      var from = cellCenter(cells[index]);
+      var to = cellCenter(cells[index + 1]);
+      var distance = Math.hypot(to.x - from.x, to.y - from.y);
+      if (distance <= renderState.layout.cell * 1.65) {
+        ctx.beginPath();
+        ctx.moveTo(from.x, from.y);
+        ctx.lineTo(from.x + (to.x - from.x) * progress, from.y + (to.y - from.y) * progress);
+        ctx.stroke();
+      }
+    }
+    ctx.restore();
+  }
+
+  function drawStones(ctx, time) {
+    var winnerSet = winningCellSet();
+    var radius = renderState.layout.cell * 0.37;
+    var cell;
+    for (cell = 0; cell < game.board.length; cell += 1) {
+      var player = game.board[cell];
+      if (player === Engine.EMPTY) {
+        continue;
+      }
+      var center = cellCenter(cell);
+      var scale = 1;
+      if (cell === game.lastMove && renderState.lastMoveAt) {
+        scale = easeOutBack(clamp01((time - renderState.lastMoveAt) / 190));
+      }
+      var isWinning = Boolean(winnerSet[cell]);
+      var dimmed = game.winningMask && !isWinning;
+
+      ctx.save();
+      ctx.globalAlpha = dimmed ? 0.4 : 1;
+      ctx.translate(center.x, center.y);
+      ctx.scale(scale, scale);
+      ctx.shadowColor = player === HUMAN ? "rgba(24, 31, 29, 0.28)" : "rgba(65, 58, 48, 0.18)";
+      ctx.shadowBlur = radius * 0.42;
+      ctx.shadowOffsetY = radius * 0.2;
+
+      var gradient = ctx.createRadialGradient(-radius * 0.28, -radius * 0.34, radius * 0.08, 0, 0, radius);
+      if (player === HUMAN) {
+        gradient.addColorStop(0, "#66736f");
+        gradient.addColorStop(0.38, "#2b3935");
+        gradient.addColorStop(1, "#14201d");
+      } else {
+        gradient.addColorStop(0, "#ffffff");
+        gradient.addColorStop(0.48, "#f8f4e9");
+        gradient.addColorStop(1, "#d9d2c6");
+      }
+      ctx.fillStyle = gradient;
+      ctx.beginPath();
+      ctx.arc(0, 0, radius, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.shadowColor = "transparent";
+      if (player === AI) {
+        ctx.strokeStyle = "rgba(94, 88, 78, 0.28)";
+        ctx.lineWidth = 1;
+        ctx.stroke();
+      }
+
+      if (cell === game.lastMove) {
+        ctx.fillStyle = "#d95b4f";
+        ctx.beginPath();
+        ctx.arc(0, 0, Math.max(2.1, radius * 0.15), 0, Math.PI * 2);
+        ctx.fill();
+      }
+      ctx.restore();
+
+      if (isWinning) {
+        var winningIndex = Array.prototype.indexOf.call(game.winningMask.cells, cell);
+        var ringProgress = clamp01((time - renderState.winAt - winningIndex * 70) / 330);
+        ctx.save();
+        ctx.globalAlpha = ringProgress * 0.78;
+        ctx.strokeStyle = "#c79244";
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.arc(center.x, center.y, radius + 4 + ringProgress * 3, 0, Math.PI * 2);
+        ctx.stroke();
+        ctx.restore();
+      }
+    }
+  }
+
+  function eventToCell(event) {
+    if (!game || !renderState.layout) {
+      return -1;
+    }
+    var rect = dom.boardCanvas.getBoundingClientRect();
+    var localX = event.clientX - rect.left;
+    var localY = event.clientY - rect.top;
+    var gridX = Math.round((localX - renderState.layout.left) / renderState.layout.cell);
+    var gridY = Math.round((localY - renderState.layout.top) / renderState.layout.cell);
+    if (gridX < 0 || gridX >= game.rules.width || gridY < 0 || gridY >= game.rules.height) {
+      return -1;
+    }
+    var snapX = renderState.layout.left + gridX * renderState.layout.cell;
+    var snapY = renderState.layout.top + gridY * renderState.layout.cell;
+    if (Math.hypot(localX - snapX, localY - snapY) > renderState.layout.cell * 0.53) {
+      return -1;
+    }
+    return Engine.toCell(game.rules, gridX, gridY);
+  }
+
+  function canPlaceHuman() {
+    return game && game.status === "playing" && game.turn === HUMAN && dom.coachCard.hidden && !activeSheet;
+  }
+
+  function onBoardPointerDown(event) {
+    sound.unlock();
+    if (!canPlaceHuman()) {
+      return;
+    }
+    event.preventDefault();
+    renderState.pointerId = event.pointerId;
+    renderState.pressedCell = eventToCell(event);
+    if (dom.boardCanvas.setPointerCapture) {
+      dom.boardCanvas.setPointerCapture(event.pointerId);
+    }
+    requestRender();
+  }
+
+  function onBoardPointerMove(event) {
+    if (!game) {
+      return;
+    }
+    var cell = eventToCell(event);
+    if (renderState.pointerId === event.pointerId) {
+      event.preventDefault();
+      renderState.pressedCell = cell;
+    } else if (event.pointerType === "mouse" || event.pointerType === "pen") {
+      renderState.hoverCell = cell;
+    }
+    requestRender();
+  }
+
+  function onBoardPointerUp(event) {
+    if (renderState.pointerId !== event.pointerId) {
+      return;
+    }
+    event.preventDefault();
+    var cell = eventToCell(event);
+    renderState.pointerId = null;
+    renderState.pressedCell = -1;
+    if (canPlaceHuman() && cell >= 0 && game.board[cell] === Engine.EMPTY) {
+      performMove(cell, HUMAN);
+    } else {
+      requestRender();
+    }
+  }
+
+  function onBoardPointerCancel(event) {
+    if (renderState.pointerId === event.pointerId) {
+      renderState.pointerId = null;
+      renderState.pressedCell = -1;
+      requestRender();
+    }
+  }
+
+  function bindEvents() {
+    dom.levelGrid.addEventListener("click", function onLevelClick(event) {
+      var card = event.target.closest(".level-card");
+      if (card) {
+        selectLevel(Number(card.dataset.level));
+      }
+    });
+    dom.startButton.addEventListener("click", function startSelectedLevel() {
+      sound.play("ui");
+      startLevel(selectedLevel);
+    });
+    dom.homeSettingsButton.addEventListener("click", openSettings);
+    dom.gameSettingsButton.addEventListener("click", openSettings);
+    dom.backButton.addEventListener("click", leaveGame);
+    dom.restartButton.addEventListener("click", restartGame);
+    dom.undoButton.addEventListener("click", undoMove);
+    dom.coachButton.addEventListener("click", dismissCoach);
+    dom.closeSettingsButton.addEventListener("click", function closeSettings() { closeActiveSheet(false); });
+    dom.settingsDoneButton.addEventListener("click", function finishSettings() {
+      sound.play("ui");
+      closeActiveSheet(false);
+    });
+    dom.difficultyButtons.forEach(function bindDifficulty(button) {
+      button.addEventListener("click", function chooseDifficulty() {
+        setDifficulty(button.dataset.difficulty);
+      });
+    });
+    dom.soundSwitch.addEventListener("click", toggleSound);
+    dom.resultRetryButton.addEventListener("click", function runSecondaryResultAction() {
+      var action = resultSecondaryAction;
+      closeActiveSheet(true);
+      if (action) {
+        action();
+      }
+    });
+    dom.resultNextButton.addEventListener("click", function runPrimaryResultAction() {
+      var action = resultPrimaryAction;
+      closeActiveSheet(true);
+      if (action) {
+        action();
+      }
+    });
+    dom.scrim.addEventListener("click", function onScrimClick() {
+      if (activeSheet === dom.settingsSheet) {
+        closeActiveSheet(false);
+      }
+    });
+    dom.boardCanvas.addEventListener("pointerdown", onBoardPointerDown);
+    dom.boardCanvas.addEventListener("pointermove", onBoardPointerMove);
+    dom.boardCanvas.addEventListener("pointerup", onBoardPointerUp);
+    dom.boardCanvas.addEventListener("pointercancel", onBoardPointerCancel);
+    dom.boardCanvas.addEventListener("pointerleave", function clearHover() {
+      if (renderState.pointerId === null) {
+        renderState.hoverCell = -1;
+        requestRender();
+      }
+    });
+    document.addEventListener("pointerdown", function unlockAudioOnce() { sound.unlock(); }, { once: true });
+    window.addEventListener("resize", resizeCanvas);
+    if (window.visualViewport) {
+      window.visualViewport.addEventListener("resize", resizeCanvas);
+    }
+    document.addEventListener("visibilitychange", function pauseOnHide() {
+      if (document.hidden) {
+        renderState.pointerId = null;
+        renderState.pressedCell = -1;
+      }
+    });
+  }
+
+  function initialize() {
+    bindEvents();
+    updateHome();
+    syncSettingsUI();
+  }
+
+  initialize();
+})();
