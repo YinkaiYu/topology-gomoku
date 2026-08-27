@@ -160,7 +160,9 @@
         <div class="setting-row setting-stack">
           <span class="setting-label">对手</span>
           <div class="segmented" id="difficultyControl" role="group" aria-label="对手水平">
-            <i class="segmented-glass-thumb" id="difficultyThumb" aria-hidden="true"></i>
+            <i class="segmented-glass-thumb" id="difficultyThumb" aria-hidden="true">
+              <span class="segmented-lens-track"></span>
+            </i>
             <button type="button" data-difficulty="easy" aria-pressed="false">悠闲</button>
             <button class="is-active" type="button" data-difficulty="normal" aria-pressed="true">敏捷</button>
             <button type="button" data-difficulty="hard" aria-pressed="false">深思</button>
@@ -168,11 +170,11 @@
         </div>
         <div class="setting-row">
           <span class="setting-label">落点提示</span>
-          <button class="switch is-on" id="hintSwitch" type="button" role="switch" aria-checked="true"><i></i></button>
+          <button class="switch is-on" id="hintSwitch" type="button" role="switch" aria-checked="true"><i><span class="switch-lens-track"></span></i></button>
         </div>
         <div class="setting-row">
           <span class="setting-label">声音</span>
-          <button class="switch is-on" id="soundSwitch" type="button" role="switch" aria-checked="true"><i></i></button>
+          <button class="switch is-on" id="soundSwitch" type="button" role="switch" aria-checked="true"><i><span class="switch-lens-track"></span></i></button>
         </div>
         <button class="sheet-done" id="settingsDoneButton" type="button">完成</button>
       </div>
@@ -233,8 +235,6 @@
 
       <button class="sheet-done" id="developerDoneButton" type="button">完成</button>
     </section>
-
-    <div class="toast" id="toast" role="status" aria-live="polite"></div>
   </div>
 
   <script src="./assets/topology.js"></script>

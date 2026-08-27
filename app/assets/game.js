@@ -176,8 +176,7 @@
     developerClearBoard: document.getElementById("developerClearBoard"),
     developerHintThree: document.getElementById("developerHintThree"),
     developerHintFour: document.getElementById("developerHintFour"),
-    developerResetProgress: document.getElementById("developerResetProgress"),
-    toast: document.getElementById("toast")
+    developerResetProgress: document.getElementById("developerResetProgress")
   };
 
   var prefs = loadPreferences();
@@ -185,7 +184,6 @@
   var game = null;
   var turnToken = 0;
   var activeSheet = null;
-  var toastTimer = 0;
   var settledBoardAnimation = null;
   var REVERSIBLE_MOTION_DURATION = 380;
   var REVERSIBLE_MOTION_EASING = "cubic-bezier(0.37, 0, 0.63, 1)";
@@ -203,12 +201,14 @@
     frame: 0,
     hoverCell: -1,
     pressedCell: -1,
+    pressedAt: 0,
     pointerId: null,
     lastFrameAt: 0,
     lastMoveAt: 0,
     seamPulseAt: 0,
     seamPulseBits: 0,
-    winAt: 0
+    winAt: 0,
+    lastMoveFromPress: false
   };
 
   function isDeveloperLaunch() {
@@ -372,7 +372,6 @@
       card.classList.remove("is-shaking");
       void card.offsetWidth;
       card.classList.add("is-shaking");
-      showToast("先通过上一关");
       sound.play("ui");
       return;
     }
@@ -613,9 +612,11 @@
     game.board = Engine.createBoard(game.rules);
     renderState.hoverCell = -1;
     renderState.pressedCell = -1;
+    renderState.pressedAt = 0;
     renderState.lastMoveAt = 0;
     renderState.seamPulseAt = 0;
     renderState.winAt = 0;
+    renderState.lastMoveFromPress = false;
     renderState.lastFrameAt = 0;
     if (level.topology === "sphere") {
       dom.gameLevelName.innerHTML = '<span class="optical-title-rise">归</span><span>圆</span>';
@@ -871,7 +872,7 @@
     return bits;
   }
 
-  function performMove(cell, player) {
+  function performMove(cell, player, options) {
     if (!game || game.status !== "playing" || game.board[cell] !== Engine.EMPTY) {
       return false;
     }
@@ -879,8 +880,10 @@
     game.moves.push({ cell: cell, player: player });
     game.lastMove = cell;
     renderState.lastMoveAt = performance.now();
+    renderState.lastMoveFromPress = Boolean(options && options.fromPress);
     renderState.hoverCell = -1;
     renderState.pressedCell = -1;
+    renderState.pressedAt = 0;
 
     var seamBits = connectedSeamAtCell(cell);
     if (seamBits) {
@@ -1246,7 +1249,6 @@
     savePreferences();
     syncSettingsUI();
     requestRender();
-    showToast(prefs.hints ? "落点提示已开启" : "落点提示已关闭");
     sound.play("ui");
   }
 
@@ -1274,12 +1276,16 @@
       var stretch = 1.24 + energy * 0.12;
       var lift = 1.62 + energy * 0.08;
       var anchor = progress / 2;
-      var expansionOffset = drag.metrics.itemWidth * (stretch - 1) * anchor;
-      dom.difficultyThumb.style.translate = (progress * drag.metrics.step - expansionOffset) + "px 0";
+      var expansionOffset = drag.metrics.itemWidth * (stretch - 1) * anchor * 0.6;
+      var thumbTranslation = progress * drag.metrics.step - expansionOffset;
+      dom.difficultyThumb.style.translate = thumbTranslation + "px 0";
       dom.difficultyThumb.style.scale = stretch + " " + lift;
       dom.difficultyThumb.style.transformOrigin = "left center";
+      dom.difficultyThumb.style.setProperty("--lens-track-width", drag.metrics.rect.width + "px");
+      dom.difficultyThumb.style.setProperty("--lens-track-offset", (-4 - thumbTranslation) + "px");
+      dom.difficultyThumb.style.setProperty("--lens-origin-x", (4 + thumbTranslation + drag.metrics.itemWidth / 2) + "px");
       control.style.setProperty("--press-origin", ((progress / 2) * 100).toFixed(1) + "%");
-      previewDifficulty(progress);
+      previewDifficulty(Math.max(0, Math.min(2, progress)));
     }
 
     control.addEventListener("pointerdown", function beginDifficultyDrag(event) {
@@ -1293,6 +1299,7 @@
         pointerId: event.pointerId,
         startX: event.clientX,
         lastX: event.clientX,
+        rawProgress: startIndex,
         progress: startIndex,
         moved: false,
         metrics: metrics
@@ -1311,8 +1318,12 @@
       var frameDelta = event.clientX - drag.lastX;
       drag.lastX = event.clientX;
       drag.moved = drag.moved || Math.abs(totalDelta) > 3;
-      drag.progress = Math.max(0, Math.min(2, drag.progress + frameDelta / drag.metrics.step));
-      paint(drag.progress, frameDelta);
+      drag.rawProgress += frameDelta / drag.metrics.step;
+      drag.progress = Math.max(0, Math.min(2, drag.rawProgress));
+      var visualProgress = drag.rawProgress < 0
+        ? Math.max(-0.24, drag.rawProgress * 0.56)
+        : (drag.rawProgress > 2 ? Math.min(2.24, 2 + (drag.rawProgress - 2) * 0.56) : drag.rawProgress);
+      paint(visualProgress, frameDelta);
       event.preventDefault();
     });
 
@@ -1329,6 +1340,9 @@
       dom.difficultyThumb.style.removeProperty("translate");
       dom.difficultyThumb.style.removeProperty("scale");
       dom.difficultyThumb.style.removeProperty("transform-origin");
+      dom.difficultyThumb.style.removeProperty("--lens-track-width");
+      dom.difficultyThumb.style.removeProperty("--lens-track-offset");
+      dom.difficultyThumb.style.removeProperty("--lens-origin-x");
       if (cancelled) {
         syncSettingsUI();
       } else {
@@ -1366,14 +1380,19 @@
 
     function paint(progress, delta, travel) {
       var energy = Math.min(1, Math.abs(delta) / 14);
-      var stretch = 1.44 + energy * 0.1;
-      var lift = 1.62 + energy * 0.08;
-      var expansionOffset = knob.offsetWidth * (stretch - 1) * progress;
-      knob.style.translate = (progress * travel - expansionOffset) + "px 0";
+      var stretch = 1.72 + energy * 0.12;
+      var lift = 1.5 + energy * 0.06;
+      var anchor = Math.max(0, Math.min(1, progress));
+      var expansionOffset = knob.offsetWidth * (stretch - 1) * anchor * 0.45;
+      var knobTranslation = progress * travel - expansionOffset;
+      knob.style.translate = knobTranslation + "px 0";
       knob.style.scale = stretch + " " + lift;
       knob.style.transformOrigin = "left center";
-      control.style.setProperty("--press-origin", (progress * 100).toFixed(1) + "%");
-      control.classList.toggle("is-on", progress >= 0.5);
+      knob.style.setProperty("--lens-track-width", control.clientWidth + "px");
+      knob.style.setProperty("--lens-track-offset", (-3 - knobTranslation) + "px");
+      knob.style.setProperty("--lens-origin-x", (3 + knobTranslation + knob.offsetWidth / 2) + "px");
+      control.style.setProperty("--press-origin", (anchor * 100).toFixed(1) + "%");
+      control.classList.toggle("is-on", anchor >= 0.5);
     }
 
     control.addEventListener("pointerdown", function beginSwitchDrag(event) {
@@ -1404,8 +1423,12 @@
       var frameDelta = event.clientX - drag.lastX;
       drag.lastX = event.clientX;
       drag.moved = drag.moved || Math.abs(totalDelta) > 3;
-      drag.progress = Math.max(0, Math.min(1, drag.startProgress + totalDelta / drag.travel));
-      paint(drag.progress, frameDelta, drag.travel);
+      var rawProgress = drag.startProgress + totalDelta / drag.travel;
+      drag.progress = Math.max(0, Math.min(1, rawProgress));
+      var visualProgress = rawProgress < 0
+        ? Math.max(-0.22, rawProgress * 0.58)
+        : (rawProgress > 1 ? Math.min(1.22, 1 + (rawProgress - 1) * 0.58) : rawProgress);
+      paint(visualProgress, frameDelta, drag.travel);
       event.preventDefault();
     });
 
@@ -1420,6 +1443,9 @@
       knob.style.removeProperty("translate");
       knob.style.removeProperty("scale");
       knob.style.removeProperty("transform-origin");
+      knob.style.removeProperty("--lens-track-width");
+      knob.style.removeProperty("--lens-track-offset");
+      knob.style.removeProperty("--lens-origin-x");
       if (cancelled) {
         syncSettingsUI();
       } else {
@@ -1606,7 +1632,6 @@
     turnToken += 1;
     updateTurnUI();
     syncDeveloperUI();
-    showToast(developer.aiPaused ? "AI 已暂停" : "AI 已恢复");
     sound.play("ui");
     if (!developer.aiPaused && game.turn === AI) {
       scheduleAiMove();
@@ -1620,12 +1645,10 @@
     developer.placementPlayer = player;
     syncDeveloperUI();
     requestRender();
-    showToast(player === HUMAN ? "棋盘落黑子" : "棋盘落白子");
   }
 
   function developerForceOutcome(player) {
     if (!DEV_MODE || !game || game.status !== "playing") {
-      showToast("请先进入棋局");
       return;
     }
     finishBoundaryDemo();
@@ -1690,7 +1713,6 @@
 
   function developerClearCurrentBoard() {
     if (!DEV_MODE || !game) {
-      showToast("请先进入棋局");
       return;
     }
     finishBoundaryDemo();
@@ -1712,12 +1734,10 @@
     syncDeveloperUI();
     closeActiveSheet(false);
     requestRender();
-    showToast("棋盘已清空");
   }
 
   function developerSeedHint(kind) {
     if (!DEV_MODE || !game || game.status !== "playing") {
-      showToast("请先进入棋局");
       return;
     }
     finishBoundaryDemo();
@@ -1725,7 +1745,6 @@
     var startCell = Engine.toCell(game.rules, game.level.demoStart[0], game.level.demoStart[1]);
     var path = Engine.tracePath(game.rules, startCell, game.level.demoDirection, game.rules.target);
     if (!path) {
-      showToast("当前棋盘无法生成提示局面");
       return;
     }
     game.board.fill(Engine.EMPTY);
@@ -1756,7 +1775,6 @@
     updateTurnUI();
     closeActiveSheet(false);
     requestRender();
-    showToast(kind === "three" ? "已生成活三提示" : "已生成四子提示");
   }
 
   function developerUnlockTo(index) {
@@ -1768,7 +1786,6 @@
     savePreferences();
     updateHome();
     syncDeveloperUI();
-    showToast("已解锁至 " + padLevelNumber(prefs.unlocked));
   }
 
   function developerResetProgress() {
@@ -1782,7 +1799,6 @@
     savePreferences();
     updateHome();
     syncDeveloperUI();
-    showToast("关卡进度已重置");
   }
 
   function openSheet(sheet) {
@@ -1820,15 +1836,6 @@
     } else {
       window.setTimeout(finish, sheet === dom.settingsSheet ? REVERSIBLE_MOTION_DURATION + 30 : 570);
     }
-  }
-
-  function showToast(message) {
-    window.clearTimeout(toastTimer);
-    dom.toast.textContent = message;
-    dom.toast.classList.add("is-visible");
-    toastTimer = window.setTimeout(function hideToast() {
-      dom.toast.classList.remove("is-visible");
-    }, 1450);
   }
 
   function resizeCanvas() {
@@ -1935,7 +1942,10 @@
     updateCompletionMotion(time, delta);
     drawBoard(time);
     var animate = false;
-    if (renderState.lastMoveAt && time - renderState.lastMoveAt < 260) {
+    if (renderState.lastMoveAt && time - renderState.lastMoveAt < 320) {
+      animate = true;
+    }
+    if (renderState.pressedCell >= 0 && renderState.pointerId !== null) {
       animate = true;
     }
     if (renderState.seamPulseAt && time - renderState.seamPulseAt < 980) {
@@ -1994,7 +2004,7 @@
     drawWinningConnections(ctx, time);
     drawMappedGhost(ctx);
     drawTacticalHints(ctx);
-    drawMovePreview(ctx);
+    drawMovePreview(ctx, time);
     drawStones(ctx, time);
   }
 
@@ -2975,7 +2985,39 @@
     });
   }
 
-  function drawMovePreview(ctx) {
+  function drawStoneFace(ctx, player, radius, markLastMove, compression) {
+    var pressedDepth = compression || 0;
+    var highlightX = -radius * (0.28 - pressedDepth * 0.055);
+    var highlightY = -radius * (0.34 - pressedDepth * 0.12);
+    var gradient = ctx.createRadialGradient(highlightX, highlightY, radius * (0.08 + pressedDepth * 0.035), 0, 0, radius);
+    if (player === HUMAN) {
+      gradient.addColorStop(0, pressedDepth ? "#56635f" : "#66736f");
+      gradient.addColorStop(0.38, "#2b3935");
+      gradient.addColorStop(1, "#14201d");
+    } else {
+      gradient.addColorStop(0, pressedDepth ? "#fbfaf5" : "#ffffff");
+      gradient.addColorStop(0.48, "#f8f4e9");
+      gradient.addColorStop(1, "#d9d2c6");
+    }
+    ctx.fillStyle = gradient;
+    ctx.beginPath();
+    ctx.arc(0, 0, radius, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.shadowColor = "transparent";
+    if (player === AI) {
+      ctx.strokeStyle = "rgba(94, 88, 78, 0.28)";
+      ctx.lineWidth = 1;
+      ctx.stroke();
+    }
+    if (markLastMove) {
+      ctx.fillStyle = "#d95b4f";
+      ctx.beginPath();
+      ctx.arc(0, 0, Math.max(2.1, radius * 0.15), 0, Math.PI * 2);
+      ctx.fill();
+    }
+  }
+
+  function drawMovePreview(ctx, time) {
     var cell = renderState.pressedCell >= 0 ? renderState.pressedCell : renderState.hoverCell;
     if (cell < 0 || !canPlaceOnBoard() || game.board[cell] !== Engine.EMPTY) {
       return;
@@ -2983,17 +3025,34 @@
     var previewPlayer = DEV_MODE ? developer.placementPlayer : HUMAN;
     var center = cellCenter(cell);
     var radius = renderState.layout.cell * 0.34;
+    var pressed = renderState.pressedCell >= 0;
     ctx.save();
-    ctx.globalAlpha = renderState.pressedCell >= 0 ? 0.42 : 0.16;
-    ctx.fillStyle = previewPlayer === HUMAN ? "#21302c" : "#f8f4e9";
-    ctx.beginPath();
-    ctx.arc(center.x, center.y, radius, 0, Math.PI * 2);
-    ctx.fill();
-    if (previewPlayer === AI) {
-      ctx.strokeStyle = "rgba(94, 88, 78, 0.6)";
-      ctx.lineWidth = 1;
-      ctx.stroke();
+    if (!pressed) {
+      ctx.globalAlpha = 0.16;
+      ctx.fillStyle = previewPlayer === HUMAN ? "#21302c" : "#f8f4e9";
+      ctx.beginPath();
+      ctx.arc(center.x, center.y, radius, 0, Math.PI * 2);
+      ctx.fill();
+      if (previewPlayer === AI) {
+        ctx.strokeStyle = "rgba(94, 88, 78, 0.6)";
+        ctx.lineWidth = 1;
+        ctx.stroke();
+      }
+      ctx.restore();
+      return;
     }
+
+    var pressProgress = clamp01((time - renderState.pressedAt) / 135);
+    var landing = 1 - Math.pow(1 - pressProgress, 3);
+    var softBounce = Math.sin(pressProgress * Math.PI) * 0.045;
+    var planarScale = 0.72 + (1.16 - 0.72) * landing + softBounce;
+    ctx.globalAlpha = 0.46 + landing * 0.54;
+    ctx.translate(center.x, center.y + radius * (1 - landing) * -0.16);
+    ctx.scale(planarScale, planarScale);
+    ctx.shadowColor = previewPlayer === HUMAN ? "rgba(24, 31, 29, 0.24)" : "rgba(65, 58, 48, 0.16)";
+    ctx.shadowBlur = radius * (0.34 - landing * 0.08);
+    ctx.shadowOffsetY = radius * (0.18 - landing * 0.105);
+    drawStoneFace(ctx, previewPlayer, radius, false, landing);
     ctx.restore();
   }
 
@@ -3108,9 +3167,21 @@
         continue;
       }
       var center = cellCenter(cell);
-      var scale = 1;
+      var scaleX = 1;
+      var scaleY = 1;
+      var releaseCompression = 0;
       if (cell === game.lastMove && renderState.lastMoveAt) {
-        scale = easeOutBack(clamp01((time - renderState.lastMoveAt) / 190));
+        if (renderState.lastMoveFromPress) {
+          var releaseProgress = clamp01((time - renderState.lastMoveAt) / 260);
+          var releaseWave = Math.exp(-5.2 * releaseProgress) * Math.cos(releaseProgress * Math.PI * 2.15);
+          scaleX = 1 + 0.16 * releaseWave;
+          scaleY = scaleX;
+          releaseCompression = Math.exp(-5.4 * releaseProgress);
+        } else {
+          var entranceScale = easeOutBack(clamp01((time - renderState.lastMoveAt) / 190));
+          scaleX = entranceScale;
+          scaleY = entranceScale;
+        }
       }
       var isWinning = Boolean(winnerSet[cell]);
       var dimmed = game.winningMask && !isWinning;
@@ -3118,38 +3189,12 @@
       ctx.save();
       ctx.globalAlpha = dimmed ? 0.4 : 1;
       ctx.translate(center.x, center.y);
-      ctx.scale(scale, scale);
+      ctx.scale(scaleX, scaleY);
       ctx.shadowColor = player === HUMAN ? "rgba(24, 31, 29, 0.28)" : "rgba(65, 58, 48, 0.18)";
-      ctx.shadowBlur = radius * 0.42;
-      ctx.shadowOffsetY = radius * 0.2;
+      ctx.shadowBlur = radius * (0.42 - releaseCompression * 0.16);
+      ctx.shadowOffsetY = radius * (0.2 - releaseCompression * 0.125);
 
-      var gradient = ctx.createRadialGradient(-radius * 0.28, -radius * 0.34, radius * 0.08, 0, 0, radius);
-      if (player === HUMAN) {
-        gradient.addColorStop(0, "#66736f");
-        gradient.addColorStop(0.38, "#2b3935");
-        gradient.addColorStop(1, "#14201d");
-      } else {
-        gradient.addColorStop(0, "#ffffff");
-        gradient.addColorStop(0.48, "#f8f4e9");
-        gradient.addColorStop(1, "#d9d2c6");
-      }
-      ctx.fillStyle = gradient;
-      ctx.beginPath();
-      ctx.arc(0, 0, radius, 0, Math.PI * 2);
-      ctx.fill();
-      ctx.shadowColor = "transparent";
-      if (player === AI) {
-        ctx.strokeStyle = "rgba(94, 88, 78, 0.28)";
-        ctx.lineWidth = 1;
-        ctx.stroke();
-      }
-
-      if (cell === game.lastMove) {
-        ctx.fillStyle = "#d95b4f";
-        ctx.beginPath();
-        ctx.arc(0, 0, Math.max(2.1, radius * 0.15), 0, Math.PI * 2);
-        ctx.fill();
-      }
+      drawStoneFace(ctx, player, radius, cell === game.lastMove, releaseCompression);
       ctx.restore();
 
       if (isWinning) {
@@ -3229,6 +3274,7 @@
     event.preventDefault();
     renderState.pointerId = event.pointerId;
     renderState.pressedCell = eventToCell(event);
+    renderState.pressedAt = event.timeStamp || performance.now();
     if (dom.boardCanvas.setPointerCapture) {
       dom.boardCanvas.setPointerCapture(event.pointerId);
     }
@@ -3263,6 +3309,9 @@
     var cell = eventToCell(event);
     if (renderState.pointerId === event.pointerId) {
       event.preventDefault();
+      if (cell !== renderState.pressedCell) {
+        renderState.pressedAt = event.timeStamp || performance.now();
+      }
       renderState.pressedCell = cell;
     } else if (event.pointerType === "mouse" || event.pointerType === "pen") {
       renderState.hoverCell = cell;
@@ -3285,10 +3334,12 @@
     }
     event.preventDefault();
     var cell = eventToCell(event);
+    var releasedFromPress = cell >= 0 && cell === renderState.pressedCell && renderState.pressedAt > 0;
     renderState.pointerId = null;
     renderState.pressedCell = -1;
+    renderState.pressedAt = 0;
     if (canPlaceOnBoard() && cell >= 0 && game.board[cell] === Engine.EMPTY) {
-      performMove(cell, DEV_MODE ? developer.placementPlayer : HUMAN);
+      performMove(cell, DEV_MODE ? developer.placementPlayer : HUMAN, { fromPress: releasedFromPress });
     } else {
       requestRender();
     }
@@ -3306,6 +3357,7 @@
     if (renderState.pointerId === event.pointerId) {
       renderState.pointerId = null;
       renderState.pressedCell = -1;
+      renderState.pressedAt = 0;
       requestRender();
     }
   }
@@ -3375,6 +3427,7 @@
       if (document.hidden) {
         renderState.pointerId = null;
         renderState.pressedCell = -1;
+        renderState.pressedAt = 0;
       }
     });
   }
@@ -3397,7 +3450,6 @@
     if (DEV_MODE) {
       document.body.classList.add("is-developer-mode");
       syncDeveloperUI();
-      window.setTimeout(function announceDeveloperMode() { showToast("开发者模式"); }, 260);
     }
   }
 

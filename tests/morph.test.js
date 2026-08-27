@@ -330,9 +330,12 @@ test("设置页使用液态玻璃层次且三个控件均支持连续拖动", ()
   assert.match(html, /id="difficultyThumb"/);
   assert.match(game, /function bindDifficultySlider\(\)/);
   assert.match(game, /function bindLiquidSwitch\(control, getValue, setValue\)/);
-  assert.doesNotMatch(game, /showToast\("对手 · "/);
+  assert.doesNotMatch(game, /showToast|toastTimer|dom\.toast/);
+  assert.doesNotMatch(html, /class="toast"|id="toast"/);
+  assert.doesNotMatch(style, /\.toast(?:\s|\.|\{)/);
   assert.match(game, /setPointerCapture\(event\.pointerId\)/);
-  assert.match(game, /drag\.progress = Math\.max\(0, Math\.min\(1, drag\.startProgress \+ totalDelta \/ drag\.travel\)\)/);
+  assert.match(game, /Math\.max\(-0\.24, drag\.rawProgress \* 0\.56\)/);
+  assert.match(game, /Math\.min\(1\.22, 1 \+ \(rawProgress - 1\) \* 0\.58\)/);
   assert.match(style, /\.settings-sheet\s*\{[\s\S]*overflow:\s*visible[\s\S]*background:\s*transparent[\s\S]*backdrop-filter:\s*none/);
   assert.match(style, /\.settings-sheet::before\s*\{[\s\S]*filter:\s*drop-shadow/);
   assert.match(style, /\.settings-sheet::after\s*\{[\s\S]*inset:\s*1\.5px[\s\S]*backdrop-filter:\s*blur\(5px\) saturate\(1\.45\)/);
@@ -342,11 +345,14 @@ test("设置页使用液态玻璃层次且三个控件均支持连续拖动", ()
   assert.match(style, /\.switch\.is-dragging\s*\{\s*transform: none/);
   assert.match(style, /\.segmented\s*\{[\s\S]*overflow:\s*visible/);
   assert.match(style, /\.switch\s*\{[\s\S]*overflow:\s*visible/);
-  assert.equal((game.match(/var lift = 1\.62 \+ energy \* 0\.08/g) || []).length, 2);
-  assert.match(style, /\.segmented\.is-dragging \.segmented-glass-thumb\s*\{[\s\S]*blur\(0\.22px\)[\s\S]*rgba\(255, 255, 255, 0\.18\)/);
-  assert.match(style, /\.switch\.is-dragging i\s*\{[\s\S]*blur\(0\.22px\)[\s\S]*rgba\(255, 255, 255, 0\.18\)/);
+  assert.match(style, /\.switch\s*\{[\s\S]*width:\s*66px/);
+  assert.match(style, /\.switch\.is-on i\s*\{\s*translate:\s*34px 0/);
+  assert.equal((game.match(/var lift = 1\.62 \+ energy \* 0\.08/g) || []).length, 1);
+  assert.match(game, /var stretch = 1\.72 \+ energy \* 0\.12[\s\S]*var lift = 1\.5 \+ energy \* 0\.06/);
+  assert.match(style, /\.segmented\.is-dragging \.segmented-glass-thumb\s*\{[\s\S]*border:\s*1px solid rgba\(255, 255, 255, 0\.18\)[\s\S]*blur\(0\.8px\)/);
+  assert.match(style, /\.switch\.is-dragging i\s*\{[\s\S]*border:\s*1px solid rgba\(255, 255, 255, 0\.18\)[\s\S]*blur\(0\.7px\)/);
   assert.match(style, /@keyframes liquid-thumb-settle\s*\{[\s\S]*scale:\s*1\.34 1\.58/);
-  assert.match(style, /@keyframes liquid-knob-settle\s*\{[\s\S]*scale:\s*1\.48 1\.58/);
+  assert.match(style, /@keyframes liquid-knob-settle\s*\{[\s\S]*scale:\s*1\.66 1\.48/);
   assert.match(style, /@keyframes liquid-thumb-settle/);
   assert.match(style, /@keyframes liquid-knob-settle/);
   assert.doesNotMatch(style, /@keyframes liquid-control-glint/);
@@ -354,8 +360,26 @@ test("设置页使用液态玻璃层次且三个控件均支持连续拖动", ()
   assert.equal((game.match(/style\.removeProperty\("scale"\)/g) || []).length, 2);
   assert.equal((game.match(/style\.translate = /g) || []).length, 2);
   assert.equal((game.match(/style\.removeProperty\("translate"\)/g) || []).length, 2);
-  assert.match(style, /\.segmented-glass-thumb::before\s*\{[\s\S]*inset:\s*36% 10%[\s\S]*border-radius:\s*999px/);
-  assert.match(style, /\.switch\.is-on\.is-dragging i::before\s*\{[\s\S]*background:\s*rgba\(28, 139, 112, 0\.43\)/);
+  assert.match(html, /class="segmented-lens-track"><\/span>/);
+  assert.match(html, /class="switch-lens-track"/);
+  assert.match(game, /--lens-track-width/);
+  assert.match(game, /--lens-track-offset/);
+  assert.match(game, /--lens-origin-x/);
+  assert.match(style, /\.segmented-lens-track\s*\{[\s\S]*left:\s*var\(--lens-track-offset[\s\S]*width:\s*var\(--lens-track-width[\s\S]*scale\(0\.76, 0\.34\)/);
+  assert.match(style, /\.switch-lens-track\s*\{[\s\S]*left:\s*var\(--lens-track-offset[\s\S]*width:\s*var\(--lens-track-width[\s\S]*scale\(0\.43, 0\.3\)/);
+  assert.doesNotMatch(style, /rgba\(45, 96, 79, 0\.26\) 45% 55%|rgba\(22, 146, 112, 0\.62\) 45% 55%/);
+  assert.match(style, /\.segmented\.is-dragging \.segmented-glass-thumb::after\s*\{\s*opacity:\s*0\.9/);
+});
+
+test("棋子按下时沿棋盘法向压薄并在平面内均匀鼓大，松手后回弹", () => {
+  const game = fs.readFileSync(path.join(ROOT, "app", "assets", "game.js"), "utf8");
+  assert.match(game, /pressedAt:\s*0/);
+  assert.match(game, /lastMoveFromPress:\s*false/);
+  assert.match(game, /var planarScale = 0\.72 \+ \(1\.16 - 0\.72\) \* landing \+ softBounce/);
+  assert.match(game, /ctx\.scale\(planarScale, planarScale\)/);
+  assert.match(game, /shadowOffsetY = radius \* \(0\.18 - landing \* 0\.105\)/);
+  assert.match(game, /scaleY = scaleX/);
+  assert.match(game, /performMove\(cell, DEV_MODE \? developer\.placementPlayer : HUMAN, \{ fromPress: releasedFromPress \}\)/);
 });
 
 test("目录卡片、棋盘与顶栏按钮共享通透液态玻璃语言", () => {

@@ -7,46 +7,42 @@
 - Pressed switch reference: `C:\Users\Newton\AppData\Local\Temp\codex-clipboard-579c1a54-363f-4caf-a307-f735422b56f0.jpg`.
 - Enlarged pressed-glass reference: `C:\Users\Newton\AppData\Local\Temp\codex-clipboard-871c210e-6cf1-4b34-9be7-282c6b17a24c.jpg`.
 - High-refraction pressed reference: `C:\Users\Newton\AppData\Local\Temp\codex-clipboard-5783ecfc-cfac-4d5c-ac1a-032d82c21819.jpg`.
+- Clean iOS pressed-glass reference used for the final same-state comparison: `C:\Users\Newton\AppData\Local\Temp\codex-clipboard-0d8c8ddb-4662-4d3b-858a-da164c6b6f92.jpg`.
+- Rejected opaque-band implementation supplied by the user: `C:\Users\Newton\AppData\Local\Temp\codex-clipboard-992a6433-17a9-44bb-9d7f-e5e3a2b0d907.png`.
 - Earlier implementation references for clipping, insufficient vertical expansion, and excessive reflection: `codex-clipboard-b5971cfe-2ace-4112-9e1f-b4102db176be.png`, `codex-clipboard-68ac8c48-fd3e-4f82-98fb-c9f86a110e8d.png`, and `codex-clipboard-8fbac19c-0564-47b9-8bbe-3736c69fb50f.png`.
 
 **Implementation evidence**
 
-- Settings on: `C:\Users\Newton\Documents\Codex\xiaohongshu-tools\artifacts\qa-settings-v133-390x844.jpg` (390 × 844 px).
-- Direct pointer-down frame: `C:\Users\Newton\Documents\Codex\xiaohongshu-tools\artifacts\qa-liquid-lens-pressed-v133.jpg` (390 × 844 px).
-- Release frames: `qa-liquid-release-0ms-v133.jpg`, `qa-liquid-release-120ms-v133.jpg`, and `qa-liquid-release-380ms-v133.jpg`.
-- Refraction comparison: `C:\Users\Newton\Documents\Codex\xiaohongshu-tools\artifacts\qa-liquid-refraction-comparison-v133.jpg`.
-- Settings off: `C:\Users\Newton\Documents\Codex\xiaohongshu-tools\artifacts\qa-settings-toggle-off-v131-390x844.jpg` (390 × 843 px).
-- Game: `C:\Users\Newton\Documents\Codex\xiaohongshu-tools\artifacts\qa-game-v132-390x844.jpg` (390 × 843 px).
-- Home: `C:\Users\Newton\Documents\Codex\xiaohongshu-tools\artifacts\qa-home-v132-390x844.jpg` (390 × 843 px).
-- Full comparison: `C:\Users\Newton\Documents\Codex\xiaohongshu-tools\artifacts\qa-liquid-glass-full-comparison.jpg`.
-- Focused switch comparison: `C:\Users\Newton\Documents\Codex\xiaohongshu-tools\artifacts\qa-switch-focused-comparison.jpg`.
+- Settings at rest: `C:\Users\Newton\Documents\Codex\xiaohongshu-tools\artifacts\qa-settings-v134-final.png` (390 × 844 px).
+- Direct difficulty pointer-down frame: `C:\Users\Newton\Documents\Codex\xiaohongshu-tools\artifacts\qa-liquid-slider-pressed-v134-final.png` (390 × 844 px).
+- Direct switch overdrag frame: `C:\Users\Newton\Documents\Codex\xiaohongshu-tools\artifacts\qa-liquid-switch-overdrag-v134-final.png` (390 × 844 px).
+- Same-state iOS/implementation comparison: `C:\Users\Newton\Documents\Codex\xiaohongshu-tools\artifacts\qa-liquid-ios-comparison-v134-final.jpg`.
+- Stone pressed and released states: `qa-stone-pressed-v134-final.png` and `qa-stone-released-v134-final.png`.
 
 **Viewport and state**
 
 - Browser: Codex in-app Browser.
-- CSS viewport override: 390 × 844; captured implementation bitmap: 390 × 843; device density normalized to one screenshot pixel per captured CSS pixel.
-- States: settings fully open, difficulty set to 深思, switches on and off, direct pointer-down drag, immediate release, 120 ms release, 380 ms settlement, game screen, and home collection screen.
+- CSS viewport: 390 × 844; captured implementation bitmap: 390 × 844.
+- States: settings fully open, difficulty set to 深思, switches on/off, direct pointer-down drag, elastic right overdrag, stone pressed, and stone released.
 
 **Findings**
 
 - No remaining P0/P1/P2 finding.
-- Direct pointer-down frames now confirm that the glass expands on both axes while the track remains stationary and visible beneath it.
+- Direct pointer-down frames confirm a single transmitted track image, an outward glass rim, and elastic travel beyond the stationary track.
+- The enabled switches now settle at the actual right endpoint of the widened 66 px track.
+- The stone remains circular while pressed, expands uniformly in the board plane, reduces its apparent height through flatter lighting/shadow, and springs back after release.
 
 **Required fidelity surfaces**
 
 - Fonts and typography: embedded Topo Serif remains active; title, labels, control text, line height, and hierarchy remain legible through the more transparent material.
 - Spacing and layout rhythm: settings rows, segmented control, switches, close button, and completion button remain aligned at 390 × 844. No overflow or clipped persistent control was observed.
-- Colors and visual tokens: white reflection and chromatic dispersion stay restrained. The dominant optical cue is one horizontally and vertically reduced transmission image of the track; the unrefracted track is suppressed beneath the lens so no double image remains. Teal remains the only strong semantic accent.
+- Colors and visual tokens: white reflection and chromatic dispersion stay restrained. The dominant optical cue is one horizontally and vertically reduced transmission image of the track plus a directional edge rim; the earlier hard green stripe and duplicate label image are absent. Teal remains the only strong semantic accent.
 - Image quality and assets: existing brand and topology assets remain unchanged and sharp. No visual asset was replaced with a placeholder.
 - Copy and content: the redundant black opponent-level toast was removed; the segmented slider itself is the only difficulty feedback.
 
-**Full-view comparison evidence**
-
-- `qa-liquid-glass-full-comparison.jpg` shows the source and implementation at the same normalized phone width. The implementation preserves the source hierarchy of transparent panel, restrained blur, narrow edge rim, stable tracks, and floating glass controls without importing the source's unrelated system layout.
-
 **Focused region comparison evidence**
 
-- `qa-liquid-refraction-comparison-v133.jpg` compares the earlier flat overlay, the iOS reference, and the direct pointer-down implementation. The final control visibly expands beyond its stationary track while a single transmitted image becomes smaller inside the lens.
+- `qa-liquid-ios-comparison-v134-final.jpg` places the supplied iOS pressed switch and the implementation in the same comparison image. Both retain the stationary colored track, enlarge the clear control beyond it, compress the transmitted track inside the lens, and concentrate optical emphasis at the rim rather than in a broad highlight.
 
 **Comparison history**
 
@@ -66,12 +62,17 @@
    - Removed the layered transmission simulation that produced a double image; the lens now masks the original track locally and shows one reduced transmission image.
    - Removed the redundant opponent-level toast above the game.
    - Added the same restrained liquid-glass material to the game turn-status capsule.
+   - Replaced the rejected opaque white slab and hard horizontal color band with a dynamically aligned, clipped copy of the real track.
+   - Removed duplicated refracted label text so the difficulty control has one readable transmitted image rather than a ghosted pair.
+   - Corrected the widened switches from the obsolete 22 px endpoint to a 34 px endpoint, then reduced overdrag resistance and allowed the glass to travel visibly past the track.
+   - Rebalanced switch press deformation from a tall bubble to a wider clear oval; reduced fill/blur and strengthened only the directional edge refraction.
+   - Changed board placement so pointer-down performs the soft landing and uniform planar expansion; pointer release now restores the stone with a damped circular rebound.
 3. Post-fix evidence
    - Full and focused final comparisons listed above show no remaining P0/P1/P2 mismatch.
 
 **Primary interactions tested**
 
-- Open settings; close with ×; close with 完成; select opponent difficulty; toggle hint on/off; return between game and journey.
+- Open settings; close with ×; select opponent difficulty; drag beyond both switch endpoints; toggle hint/sound; press and release a legal board intersection.
 - Pointer-drag logic for difficulty, switches, and sheet dismissal is covered by regression assertions and direct hold-frame captures.
 - No uncaught failure surfaced during the browser flow; the current Browser surface does not expose a console-message stream for archival.
 
@@ -87,6 +88,9 @@
 - [x] Liquid-glass turn-status capsule.
 - [x] Outward press growth for cards, icon buttons, regular buttons, thumbs, and knobs.
 - [x] High-refraction compressed track image with restrained color dispersion.
+- [x] Single transmitted image with no duplicate label or hard color band.
+- [x] Wider switch tracks with exact right-end settlement and lower-resistance overdrag.
+- [x] Circular, board-plane stone compression on pointer-down and damped recovery on pointer-up.
 - [x] Continuous release with no glint flash or double-scale overshoot.
 - [x] Responsive 390 × 844 visual check.
 
