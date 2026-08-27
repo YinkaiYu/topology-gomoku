@@ -138,6 +138,20 @@
     return pending;
   };
 
+  GameController.prototype.nextScheduledAt = function nextScheduledAt() {
+    if (this.pausedAt !== null) {
+      return null;
+    }
+    var next = Infinity;
+    for (var index = 0; index < this.scheduled.length; index += 1) {
+      var item = this.scheduled[index];
+      if (item.token === this.token && item.due < next) {
+        next = item.due;
+      }
+    }
+    return Number.isFinite(next) ? next : null;
+  };
+
   GameController.prototype.getPreferences = function getPreferences() {
     return clonePreferences(this.preferences);
   };

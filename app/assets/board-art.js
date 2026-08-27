@@ -759,6 +759,53 @@
     return { centerX: centerX, centerY: centerY };
   }
 
+  function drawTopologySilhouette(ctx, topology, rect, options) {
+    var settings = options || {};
+    var type = topology || "plane";
+    var orientation = DEFAULT_VIEWS[type] || { x: 0.45, y: -0.4, z: 0, scale: 1 };
+    var width = rect.width;
+    var height = rect.height;
+    var columns = type === "sphere" ? 20 : 18;
+    var rows = type === "sphere" ? 20 : 14;
+    var patches = [];
+    for (var row = 0; row < rows; row += 1) {
+      for (var column = 0; column < columns; column += 1) {
+        var points = [
+          Morph.project(type, column / columns, row / rows, width, height, orientation),
+          Morph.project(type, (column + 1) / columns, row / rows, width, height, orientation),
+          Morph.project(type, (column + 1) / columns, (row + 1) / rows, width, height, orientation),
+          Morph.project(type, column / columns, (row + 1) / rows, width, height, orientation)
+        ];
+        patches.push({
+          points: points,
+          depth: points.reduce(function sum(total, point) { return total + point.depth; }, 0) / points.length
+        });
+      }
+    }
+    patches.sort(function sort(a, b) { return a.depth - b.depth; });
+    ctx.save();
+    ctx.translate(rect.x, rect.y);
+    ctx.fillStyle = settings.color || "rgba(28,40,36,0.68)";
+    ctx.strokeStyle = settings.color || "rgba(28,40,36,0.68)";
+    ctx.lineWidth = 1;
+    ctx.lineJoin = "round";
+    ctx.shadowColor = settings.shadowColor || "rgba(28,40,36,0.2)";
+    ctx.shadowBlur = Math.max(4, width * 0.065);
+    ctx.shadowOffsetY = Math.max(2, height * 0.055);
+    patches.forEach(function drawPatch(patch) {
+      ctx.beginPath();
+      ctx.moveTo(patch.points[0].x, patch.points[0].y);
+      for (var index = 1; index < patch.points.length; index += 1) {
+        ctx.lineTo(patch.points[index].x, patch.points[index].y);
+      }
+      ctx.closePath();
+      ctx.fill();
+      ctx.stroke();
+    });
+    ctx.restore();
+    return { centerX: rect.x + width / 2, centerY: rect.y + height / 2 };
+  }
+
   return {
     TOKENS: TOKENS,
     computeLayout: computeLayout,
@@ -767,6 +814,7 @@
     pointInsideBoard: pointInsideBoard,
     drawBoard: drawBoard,
     drawCompletion: drawCompletion,
-    drawTopologyGlyph: drawTopologyGlyph
+    drawTopologyGlyph: drawTopologyGlyph,
+    drawTopologySilhouette: drawTopologySilhouette
   };
 });
