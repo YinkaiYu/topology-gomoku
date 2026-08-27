@@ -2,6 +2,7 @@
   "name": "topology-gomoku",
   "version": "1.35.0",
   "private": true,
+  "license": "MIT",
   "description": "拓扑五子棋：面向小红书、Bilibili Toy 与微信小程序的跨平台小游戏",
   "scripts": {
     "test": "node --test tests/*.test.js",
