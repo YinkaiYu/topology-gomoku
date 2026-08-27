@@ -130,3 +130,20 @@ final result: passed
 - No clipping, alignment regression, unreadable state, or browser warning/error was observed at 390 × 844.
 
 final result: passed
+
+## 2026-08-28 — v1.36.1 host chrome safe-area fallback
+
+**Evidence**
+
+- Before: `artifacts/qa-host-top-inset-before-360x770-v1360.png` at a 360 × 770 CSS viewport with a zero top safe area.
+- After: `artifacts/qa-host-top-inset-android-360x770-v1361.png` at the same 360 × 770 viewport and zero top safe area.
+- iOS guardrail: `artifacts/qa-host-top-inset-ios-game-v1361.png` at 390 × 844 with a simulated 59 px top safe area.
+
+**Findings**
+
+- At the Android/HarmonyOS-sized viewport, the previous combined padding was 35.7 px and the 42 px back/settings controls occupied y=41–83. The fallback raises padding to 76 px and moves both controls to y=81–123, clearing the host's floating-button row by 40 px.
+- The 360 × 770 viewport remains exactly one viewport high with no document overflow. The board remains 328 × 328 and the action deck ends at y=656.
+- With a 59 px iOS safe area, the existing additive safe-area behavior remains active: controls occupy y=102–144, the board remains 358 × 358, the action deck ends at y=708, and the document remains exactly 844 px high.
+- Settings opened and closed successfully at 360 × 770, returning to the collection also succeeded, and no browser warning or error was recorded.
+
+final result: passed

@@ -164,7 +164,7 @@ test("目录锁定整屏并使用本地内嵌的典雅中文字体", () => {
 test("终章标题作为同一字体文本运行且字体资源带版本缓存键", () => {
   const html = fs.readFileSync(path.join(ROOT, "app", "index.html"), "utf8");
   const style = fs.readFileSync(path.join(ROOT, "app", "assets", "style.css"), "utf8");
-  assert.match(html, /href="\.\/assets\/style\.css\?v=1\.36\.0"/);
+  assert.match(html, /href="\.\/assets\/style\.css\?v=1\.36\.1"/);
   assert.match(html, /<span class="level-name">归圆<\/span>/);
   assert.doesNotMatch(html, /optical-title-rise/);
   assert.match(style, /\.level-name\s*\{[^}]*font-weight:\s*700/s);
@@ -182,12 +182,15 @@ test("第七关以横向终章卡片收束双列目录且整页不可滚动", ()
   assert.match(style, /\.home-scroll\s*\{[^}]*overflow:\s*hidden/s);
 });
 
-test("目录与棋局顶栏为宿主默认按钮预留额外安全空间", () => {
+test("顶部交互区在安全区缺失时仍避开宿主悬浮按钮", () => {
   const style = fs.readFileSync(path.join(ROOT, "app", "assets", "style.css"), "utf8");
   assert.match(style, /--host-chrome-clearance:\s*clamp\(/);
-  assert.match(style, /\.home-scroll\s*\{[^}]*var\(--host-chrome-clearance\)/s);
-  assert.match(style, /\.game-screen\s*\{[^}]*var\(--host-chrome-clearance\)/s);
-  assert.match(style, /\.developer-fab\s*\{[^}]*var\(--host-chrome-clearance\)/s);
+  assert.match(style, /--host-top-inset:\s*max\(68px,\s*calc\(var\(--safe-top\)\s*\+\s*var\(--host-chrome-clearance\)\)\)/);
+  assert.match(style, /\.home-scroll\s*\{[^}]*var\(--host-top-inset\)/s);
+  assert.match(style, /\.game-screen\s*\{[^}]*var\(--host-top-inset\)/s);
+  assert.match(style, /\.developer-fab\s*\{[^}]*var\(--host-top-inset\)/s);
+  assert.match(style, /\.board-stage\s*\{[^}]*var\(--host-top-inset\)/s);
+  assert.equal((style.match(/var\(--host-chrome-clearance\)/g) || []).length, 1);
   assert.doesNotMatch(style, /\.hero::after/);
 });
 

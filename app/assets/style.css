@@ -46,6 +46,9 @@
   --safe-top: var(--safe-area-inset-top, env(safe-area-inset-top, 0px));
   --safe-bottom: var(--safe-area-inset-bottom, env(safe-area-inset-bottom, 0px));
   --host-chrome-clearance: clamp(24px, 3.6vh, 32px);
+  /* Some Android/HarmonyOS hosts report little or no top safe area even though
+     their floating chrome still occupies the first row of the H5 viewport. */
+  --host-top-inset: max(68px, calc(var(--safe-top) + var(--host-chrome-clearance)));
   --display-font: "Topo Serif", "Songti SC", "STSong", serif;
 }
 
@@ -319,7 +322,7 @@ button,
   grid-template-rows: auto auto minmax(0, 1fr);
   overflow: hidden;
   gap: 0;
-  padding: calc(7px + var(--safe-top) + var(--host-chrome-clearance)) 20px calc(12px + var(--safe-bottom));
+  padding: calc(7px + var(--host-top-inset)) 20px calc(12px + var(--safe-bottom));
   overscroll-behavior: none;
 }
 
@@ -664,7 +667,7 @@ button,
   display: flex;
   flex-direction: column;
   row-gap: var(--game-vertical-gap);
-  padding: calc(8px + var(--safe-top) + var(--host-chrome-clearance)) 16px calc(10px + var(--safe-bottom));
+  padding: calc(8px + var(--host-top-inset)) 16px calc(10px + var(--safe-bottom));
 }
 
 .game-topbar {
@@ -1042,7 +1045,7 @@ button,
 .developer-fab {
   position: absolute;
   z-index: 16;
-  top: calc(17px + var(--safe-top) + var(--host-chrome-clearance));
+  top: calc(17px + var(--host-top-inset));
   right: 70px;
   min-width: 43px;
   height: 26px;
@@ -1889,7 +1892,7 @@ button,
 
 @media (max-height: 760px) {
   .home-scroll {
-    padding-top: calc(5px + var(--safe-top) + var(--host-chrome-clearance));
+    padding-top: calc(5px + var(--host-top-inset));
     padding-bottom: calc(7px + var(--safe-bottom));
   }
 
@@ -1919,7 +1922,7 @@ button,
 
   .game-topbar { min-height: 44px; }
   .match-strip { min-height: 44px; margin: 0 4px; }
-  .board-stage { max-width: min(100%, calc(100vh - 186px - var(--safe-top) - var(--safe-bottom) - var(--host-chrome-clearance))); }
+  .board-stage { max-width: min(100%, calc(100vh - 186px - var(--host-top-inset) - var(--safe-bottom))); }
 }
 
 @media (max-width: 340px) {
