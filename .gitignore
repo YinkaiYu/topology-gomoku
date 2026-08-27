@@ -1,5 +1,12 @@
 node_modules/
 .tmp/
+.worktrees/
+coverage/
+dist/
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
 *.log
+*.tgz
 release/*.zip
-

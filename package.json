@@ -1,12 +1,14 @@
 {
-  "name": "topology-gomoku-xhs-minitool",
+  "name": "topology-gomoku",
   "version": "1.35.0",
   "private": true,
-  "description": "拓扑五子棋：小红书离线小工具",
+  "description": "拓扑五子棋：面向小红书、Bilibili Toy 与微信小程序的跨平台小游戏",
   "scripts": {
     "test": "node --test tests/*.test.js",
     "validate": "powershell -NoProfile -ExecutionPolicy Bypass -File ./scripts/validate.ps1",
-    "build": "powershell -NoProfile -ExecutionPolicy Bypass -File ./scripts/build.ps1"
+    "check": "npm test && npm run validate",
+    "build": "npm run build:xiaohongshu",
+    "build:xiaohongshu": "powershell -NoProfile -ExecutionPolicy Bypass -File ./scripts/build.ps1"
   },
   "engines": {
     "node": ">=18"
