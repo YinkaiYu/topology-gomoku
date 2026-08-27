@@ -35,10 +35,8 @@ test("七关均使用不透明曲面与统一投影轮廓", () => {
     const pathCount = (svg.match(/<path\b/g) || []).length;
     assert.ok(pathCount >= 1, `${name}: ${pathCount} paths`);
     assert.match(svg, /data-style="hand-drawn-cel-silhouette"/);
-    assert.match(svg, /<filter id="handSurface"/);
     assert.match(svg, /shape-rendering="geometricPrecision"/);
-    assert.equal((svg.match(/filterRes="768 768"/g) || []).length, 2, `${name}: low-resolution filters`);
-    assert.match(svg, /<feTurbulence\b/);
+    assert.doesNotMatch(svg, /<filter\b|<feTurbulence\b|<feDisplacementMap\b|<feMorphology\b/);
     assert.match(svg, /fill="#[0-9a-f]{6}"/);
     assert.doesNotMatch(svg, /<rect[^>]+fill=/);
     assert.doesNotMatch(svg, /<text\b|<foreignObject\b/i);
@@ -51,7 +49,12 @@ test("图鉴矢量在手机小尺寸下保持清晰", () => {
   assert.match(style, /\.level-glyph\s*\{[^}]*opacity:\s*1/s);
   assert.match(style, /100%\s*\{\s*opacity:\s*1;\s*transform:\s*scale\(1\) rotate\(0\);\s*\}/);
   const sphere = fs.readFileSync(path.join(TOPOLOGY_DIR, "sphere.svg"), "utf8");
-  assert.match(sphere, /filter="url\(#handLine\)"[^>]*stroke-width="3"/);
+  assert.match(sphere, /clip-path="url\(#sphereClip\)"[^>]*stroke-width="3"/);
+  assert.doesNotMatch(sphere, /filter="url\(#handLine\)"/);
+  NAMES.forEach((name) => {
+    const svg = fs.readFileSync(path.join(TOPOLOGY_DIR, `${name}.svg`), "utf8");
+    assert.doesNotMatch(svg, /<filter\b|<fe[A-Z]/, `${name}: rasterized SVG effect`);
+  });
 });
 
 test("高阶关卡使用明确的拓扑形态模型", () => {

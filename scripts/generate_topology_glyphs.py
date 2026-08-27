@@ -40,6 +40,7 @@ class Glyph:
     curves: list[Curve]
     rotation: tuple[float, float, float]
     patches: list[Patch] = field(default_factory=list)
+    hull_outline: bool = True
 
 
 def values(start: float, end: float, count: int, endpoint: bool = True) -> list[float]:
@@ -154,8 +155,11 @@ def cylinder_glyph() -> Glyph:
 
 def torus_glyph() -> Glyph:
     patches = sampled_surface(torus, 0, TAU, 40, 0, TAU, 16)
+    inner_ring = sampled_curve(lambda angle: torus(angle, math.pi), 0, TAU, 161,
+                               closed=True, width=2.5, opacity=0.94)
     return Glyph("torus", "shaded-doubly-periodic-torus",
-                 "T(u,v)=((R+r cos v)cos u,(R+r cos v)sin u,r sin v)", [], (0.78, -0.12, -0.2), patches)
+                 "T(u,v)=((R+r cos v)cos u,(R+r cos v)sin u,r sin v)",
+                 [inner_ring], (0.78, -0.12, -0.2), patches)
 
 
 def mobius_glyph() -> Glyph:
@@ -165,7 +169,8 @@ def mobius_glyph() -> Glyph:
     curves = [Curve(boundary_points, width=2.8, opacity=0.96, closed=True)]
     patches = sampled_surface(mobius, 0, TAU, 56, -strip_width, strip_width, 12)
     return Glyph("mobius", "shaded-mobius-embedding",
-                 "standard Möbius embedding with M(0,s)=M(2π,−s)", curves, (1.02, -0.03, -0.10), patches)
+                 "standard Möbius embedding with M(0,s)=M(2π,−s)", curves,
+                 (1.02, -0.03, -0.10), patches, hull_outline=False)
 
 
 def klein_glyph() -> Glyph:
@@ -199,8 +204,10 @@ def klein_glyph() -> Glyph:
     opening_outline = Curve(loop_opening, width=2.7, opacity=0.96, closed=True)
     return Glyph("klein", "hand-drawn-classic-klein-bottle-schematic",
                  "classic loop-neck bottle schematic backed by a verified Klein immersion",
-                 [opening_outline, crossing], (0.0, 0.0, -0.12),
-                 [Patch(outer, "#d6d2c7"), Patch(shadow, "#f4f1e9"), Patch(loop_opening, "#fbf9f2")])
+                 [Curve(outer, width=3.0, opacity=0.96, closed=True), opening_outline, crossing],
+                 (0.0, 0.0, -0.12),
+                 [Patch(outer, "#d6d2c7"), Patch(shadow, "#f4f1e9"), Patch(loop_opening, "#fbf9f2")],
+                 hull_outline=False)
 
 
 def projective_glyph() -> Glyph:
@@ -238,6 +245,38 @@ def path_data(points: Iterable[tuple[float, float]], closed: bool) -> str:
     return " ".join(commands)
 
 
+def vector_wobble(point: tuple[float, float], seed: float) -> tuple[float, float]:
+    """Add a subtle, deterministic ink wobble without rasterizing the stroke."""
+    x, y = point
+    offset_x = math.sin(x * 0.061 + y * 0.037 + seed) * 0.58
+    offset_x += math.sin(x * 0.019 - y * 0.047 + seed * 1.7) * 0.24
+    offset_y = math.sin(x * 0.041 - y * 0.057 + seed * 1.3) * 0.52
+    offset_y += math.sin(x * 0.023 + y * 0.031 + seed * 2.1) * 0.22
+    return x + offset_x, y + offset_y
+
+
+def convex_hull(points: Iterable[tuple[float, float]]) -> list[tuple[float, float]]:
+    """Return a deterministic outer contour for the projected color blocks."""
+    unique = sorted(set(points))
+    if len(unique) <= 2:
+        return unique
+
+    def cross(origin: tuple[float, float], left: tuple[float, float], right: tuple[float, float]) -> float:
+        return (left[0] - origin[0]) * (right[1] - origin[1]) - (left[1] - origin[1]) * (right[0] - origin[0])
+
+    lower: list[tuple[float, float]] = []
+    for point in unique:
+        while len(lower) >= 2 and cross(lower[-2], lower[-1], point) <= 0:
+            lower.pop()
+        lower.append(point)
+    upper: list[tuple[float, float]] = []
+    for point in reversed(unique):
+        while len(upper) >= 2 and cross(upper[-2], upper[-1], point) <= 0:
+            upper.pop()
+        upper.append(point)
+    return lower[:-1] + upper[:-1]
+
+
 def mix_color(light: tuple[int, int, int], dark: tuple[int, int, int], amount: float) -> str:
     channels = [round(left + (right - left) * amount) for left, right in zip(light, dark)]
     return "#" + "".join(f"{channel:02x}" for channel in channels)
@@ -265,10 +304,14 @@ def render(glyph: Glyph) -> str:
     scale = min(204 / span_x, 188 / span_y)
     center_x = (min_x + max_x) / 2
     center_y = (min_y + max_y) / 2
+    wobble_seed = sum((index + 1) * ord(character) for index, character in enumerate(glyph.name)) * 0.017
 
     transformed: list[tuple[Curve, list[tuple[float, float]], float]] = []
     for curve, points in rotated_curves:
-        projected = [(128 + (point[0] - center_x) * scale, 128 - (point[1] - center_y) * scale) for point in points]
+        projected = [vector_wobble(
+            (128 + (point[0] - center_x) * scale, 128 - (point[1] - center_y) * scale),
+            wobble_seed,
+        ) for point in points]
         average_depth = sum(point[2] for point in points) / len(points)
         transformed.append((curve, projected, average_depth))
     transformed.sort(key=lambda item: (item[0].accent, item[2]))
@@ -276,7 +319,10 @@ def render(glyph: Glyph) -> str:
     surface_paths: list[str] = []
     projected_patches: list[tuple[list[tuple[float, float]], float, str | None]] = []
     for patch, points in zip(glyph.patches, rotated_patches):
-        projected = [(128 + (point[0] - center_x) * scale, 128 - (point[1] - center_y) * scale) for point in points]
+        projected = [vector_wobble(
+            (128 + (point[0] - center_x) * scale, 128 - (point[1] - center_y) * scale),
+            wobble_seed,
+        ) for point in points]
         projected_patches.append((projected, sum(point[2] for point in points) / len(points), patch.fill))
     projected_patches.sort(key=lambda item: item[1])
     if projected_patches:
@@ -290,6 +336,8 @@ def render(glyph: Glyph) -> str:
                 f'<path d="{path_data(points, True)}" fill="{color}" stroke="{color}" '
                 'stroke-width="1.50" stroke-linejoin="round" vector-effect="non-scaling-stroke"/>'
             )
+    outline = convex_hull(point for points, _depth, _fill in projected_patches for point in points) \
+        if glyph.hull_outline else []
     curve_paths: list[str] = []
     for curve, points, _depth in transformed:
         curve_paths.append(
@@ -302,24 +350,12 @@ def render(glyph: Glyph) -> str:
         '<?xml version="1.0" encoding="UTF-8"?>',
         f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" role="img" shape-rendering="geometricPrecision" data-model="{glyph.model}" data-style="hand-drawn-cel-silhouette">',
         f'  <desc>{glyph.description}</desc>',
-        '  <defs>',
-        '    <filter id="handSurface" x="-14%" y="-14%" width="128%" height="128%" filterRes="768 768" color-interpolation-filters="sRGB">',
-        '      <feTurbulence type="fractalNoise" baseFrequency="0.018 0.026" numOctaves="2" seed="19" result="paperNoise"/>',
-        '      <feDisplacementMap in="SourceGraphic" in2="paperNoise" scale="1.35" xChannelSelector="R" yChannelSelector="G" result="drawn"/>',
-        '      <feMorphology in="drawn" operator="dilate" radius="4.4" result="expanded"/>',
-        f'      <feFlood flood-color="{INK}" result="ink"/>',
-        '      <feComposite in="ink" in2="expanded" operator="in" result="outline"/>',
-        '      <feMerge><feMergeNode in="outline"/><feMergeNode in="drawn"/></feMerge>',
-        '    </filter>',
-        '    <filter id="handLine" x="-8%" y="-8%" width="116%" height="116%" filterRes="768 768">',
-        '      <feTurbulence type="fractalNoise" baseFrequency="0.024" numOctaves="2" seed="31" result="lineNoise"/>',
-        '      <feDisplacementMap in="SourceGraphic" in2="lineNoise" scale="1.05" xChannelSelector="R" yChannelSelector="G"/>',
-        '    </filter>',
-        '  </defs>',
-        '  <g filter="url(#handSurface)">',
+        '  <g>',
         *[f"    {path}" for path in surface_paths],
         '  </g>',
-        '  <g filter="url(#handLine)">',
+        *([f'  <path d="{path_data(outline, True)}" fill="none" stroke="{INK}" stroke-width="3.14" '
+           'stroke-opacity="0.96" stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke"/>'] if outline else []),
+        '  <g>',
         *[f"    {path}" for path in curve_paths],
         '  </g>',
         '</svg>',
