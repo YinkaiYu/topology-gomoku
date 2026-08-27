@@ -8,8 +8,9 @@
     "test": "node --test tests/*.test.js",
     "validate": "powershell -NoProfile -ExecutionPolicy Bypass -File ./scripts/validate.ps1",
     "check": "npm test && npm run validate",
-    "build": "npm run build:xiaohongshu",
-    "build:xiaohongshu": "powershell -NoProfile -ExecutionPolicy Bypass -File ./scripts/build.ps1"
+    "build": "npm run build:bilibili",
+    "build:xiaohongshu": "powershell -NoProfile -ExecutionPolicy Bypass -File ./scripts/build.ps1",
+    "build:bilibili": "powershell -NoProfile -ExecutionPolicy Bypass -File ./scripts/build.ps1"
   },
   "engines": {
     "node": ">=18"

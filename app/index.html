@@ -9,6 +9,7 @@
   <meta name="theme-color" content="#f2efe7" />
   <title>拓扑五子棋</title>
   <link rel="stylesheet" href="./assets/style.css?v=1.35.2" />
+  <script src="//s1.hdslb.com/bfs/seed/toy/app/sdk/toy-sdk.js"></script>
 </head>
 <body>
   <div class="app-shell" id="appShell">
@@ -112,7 +113,12 @@
         </div>
 
         <div class="board-stage" id="boardStage">
-          <canvas id="boardCanvas" aria-label="五子棋棋盘"></canvas>
+          <canvas
+            id="boardCanvas"
+            tabindex="0"
+            role="application"
+            aria-label="五子棋棋盘。可用方向键移动落点，空格或回车落子，Esc 返回关卡。"
+          ></canvas>
           <div class="thinking" id="thinkingIndicator" aria-hidden="true">
             <i></i><i></i><i></i>
           </div>
@@ -232,6 +238,7 @@
 
   <script src="./assets/topology.js"></script>
   <script src="./assets/topology-morph.js"></script>
+  <script src="./assets/bilibili-adapter.js?v=1.35.2"></script>
   <script src="./assets/game.js"></script>
 </body>
 </html>

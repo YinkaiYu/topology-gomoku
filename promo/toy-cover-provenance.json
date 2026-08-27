@@ -1,0 +1,24 @@
+{
+  "artifact": "exports/topology-gomoku-toy-cover-4x3.png",
+  "createdFor": "Bilibili Toy 4:3 横版封面",
+  "composition": "AI-generated restrained paper/topology background with deterministic brand mark and Chinese typography overlay",
+  "generatedBackground": {
+    "asset": "assets/toy-cover-background-v1.png",
+    "tool": "built-in image generation",
+    "promptSummary": "Warm ivory handmade paper, faint topology arcs and sparse board intersections, calm left title space and right emblem space; no text, logo, watermark, neon, glossy 3D or gaming UI."
+  },
+  "deterministicSources": [
+    {
+      "asset": "../app/assets/brand-icon.png",
+      "role": "Exact project brand mark; no generative alteration"
+    },
+    {
+      "asset": "C:/Windows/Fonts/STSONG.TTF",
+      "role": "Exact Chinese title and subtitle typography"
+    },
+    {
+      "asset": "assets/noto-serif-sc-institution-400.ttf",
+      "role": "Exact institutional credit typography"
+    }
+  ]
+}

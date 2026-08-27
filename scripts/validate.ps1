@@ -6,6 +6,7 @@ $indexPath = Join-Path $appRoot 'index.html'
 $projectRootPrefix = $projectRoot + [System.IO.Path]::DirectorySeparatorChar
 $errors = [System.Collections.Generic.List[string]]::new()
 $allowedExtensions = @('.html', '.css', '.js', '.png', '.jpg', '.jpeg', '.gif', '.webp', '.svg', '.woff', '.woff2', '.json')
+$allowedExternalResources = @('//s1.hdslb.com/bfs/seed/toy/app/sdk/toy-sdk.js')
 
 if (-not (Test-Path -LiteralPath $indexPath -PathType Leaf)) {
   $errors.Add('Missing app/index.html.')
@@ -43,7 +44,8 @@ if (Test-Path -LiteralPath $indexPath) {
   $resourceMatches = [regex]::Matches($html, '(?:src|href)="([^"]+)"')
   foreach ($match in $resourceMatches) {
     $resource = $match.Groups[1].Value
-    if ($resource -match '^(?:https?:|//|/)') {
+    if ($allowedExternalResources -contains $resource) { continue }
+    if ($resource -match '^(?:https?:|//|/)' -and $allowedExternalResources -notcontains $resource) {
       $errors.Add("Resource must use a package-relative path: $resource")
       continue
     }
@@ -77,6 +79,9 @@ $forbiddenPatterns = [ordered]@{
 $scanFiles = @($files | Where-Object { $_.Extension -in @('.html', '.css', '.js') })
 foreach ($file in $scanFiles) {
   $content = Get-Content -LiteralPath $file.FullName -Raw
+  foreach ($allowedResource in $allowedExternalResources) {
+    $content = $content.Replace($allowedResource, '')
+  }
   foreach ($entry in $forbiddenPatterns.GetEnumerator()) {
     if ($content -match $entry.Value) {
       $relative = $file.FullName.Substring($projectRootPrefix.Length)

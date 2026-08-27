@@ -3458,6 +3458,66 @@
     }
   }
 
+  function ensureKeyboardCell() {
+    if (!game) {
+      return -1;
+    }
+    if (renderState.hoverCell >= 0) {
+      return renderState.hoverCell;
+    }
+    var centerX = Math.floor(game.rules.width / 2);
+    var centerY = Math.floor(game.rules.height / 2);
+    renderState.hoverCell = Engine.toCell(game.rules, centerX, centerY);
+    return renderState.hoverCell;
+  }
+
+  function moveKeyboardCell(deltaX, deltaY) {
+    var cell = ensureKeyboardCell();
+    if (cell < 0) {
+      return;
+    }
+    var point = Engine.toPoint(game.rules, cell);
+    var nextX = Math.max(0, Math.min(game.rules.width - 1, point.x + deltaX));
+    var nextY = Math.max(0, Math.min(game.rules.height - 1, point.y + deltaY));
+    renderState.hoverCell = Engine.toCell(game.rules, nextX, nextY);
+    requestRender();
+  }
+
+  function onBoardKeyDown(event) {
+    if (!game || activeSheet) {
+      return;
+    }
+    var moves = {
+      ArrowUp: [0, -1],
+      ArrowDown: [0, 1],
+      ArrowLeft: [-1, 0],
+      ArrowRight: [1, 0]
+    };
+    if (moves[event.key]) {
+      event.preventDefault();
+      moveKeyboardCell(moves[event.key][0], moves[event.key][1]);
+      return;
+    }
+    if (event.key === "Escape") {
+      event.preventDefault();
+      leaveGame();
+      return;
+    }
+    if (event.key !== "Enter" && event.key !== " ") {
+      return;
+    }
+    event.preventDefault();
+    sound.unlock();
+    if (game.demo && game.demo.active) {
+      finishBoundaryDemo();
+      return;
+    }
+    var cell = ensureKeyboardCell();
+    if (canPlaceOnBoard() && cell >= 0 && game.board[cell] === Engine.EMPTY) {
+      performMove(cell, DEV_MODE ? developer.placementPlayer : HUMAN, { fromPress: false });
+    }
+  }
+
   function bindEvents() {
     dom.levelGrid.addEventListener("click", function onLevelClick(event) {
       var card = event.target.closest(".level-card");
@@ -3508,6 +3568,11 @@
     dom.boardCanvas.addEventListener("pointermove", onBoardPointerMove);
     dom.boardCanvas.addEventListener("pointerup", onBoardPointerUp);
     dom.boardCanvas.addEventListener("pointercancel", onBoardPointerCancel);
+    dom.boardCanvas.addEventListener("keydown", onBoardKeyDown);
+    dom.boardCanvas.addEventListener("focus", function showKeyboardCell() {
+      ensureKeyboardCell();
+      requestRender();
+    });
     dom.boardCanvas.addEventListener("pointerleave", function clearHover() {
       if (renderState.pointerId === null) {
         renderState.hoverCell = -1;
@@ -3516,6 +3581,7 @@
     });
     document.addEventListener("pointerdown", function unlockAudioOnce() { sound.unlock(); }, { once: true });
     window.addEventListener("resize", resizeCanvas);
+    window.addEventListener("toycontainerchange", resizeCanvas);
     if (window.visualViewport) {
       window.visualViewport.addEventListener("resize", resizeCanvas);
     }
