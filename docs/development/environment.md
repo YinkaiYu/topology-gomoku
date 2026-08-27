@@ -20,10 +20,12 @@ npm run validate
 npm run check
 npm run build:xiaohongshu
 npm run fonts:subset
+npm run release:check-versions -- X.Y.Z
 ```
 
 - `npm run check` 同时执行逻辑测试和 H5 包校验。
 - `npm run fonts:subset` 通过 `uv run --locked` 自动创建或同步 `.venv`，无需激活虚拟环境。
+- `npm run release:check-versions -- X.Y.Z` 仅供维护者在稳定同步后检查 `main` 与三个发行分支的统一游戏版本。
 - 首次同步需要下载 `uv.lock` 中的依赖；之后会复用锁定环境与本地缓存。
 
 ## Python 环境

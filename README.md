@@ -57,7 +57,7 @@
 想参与贡献？把下面这段话发给你的 Agent 就好：
 
 ```text
-请帮我参与开源项目“拓扑五子棋”：https://github.com/YinkaiYu/topology-gomoku 。请先完整读取仓库里的 AGENTS.md 和贡献约定，确认当前分支与 worktree；共享任务从 dev、平台专属任务从对应发行分支创建独立的 codex/<task> 分支和 worktree。完成实现、必要测试和自检后，在该任务 worktree 拉起本地预览交给我确认；得到我的明确确认前不要合并。不要直接修改 main、dev 或长期发行 worktree，也不要提交密钥、构建产物或与任务无关的改动。
+请帮我参与开源项目“拓扑五子棋”：https://github.com/YinkaiYu/topology-gomoku 。请先完整读取仓库里的 AGENTS.md 和贡献约定，确认当前分支与 worktree；从最新 dev 创建独立的 codex/<task> 分支和 worktree，选择一个范围清晰的 Issue 或小创意。完成实现、必要测试和自检后，在该任务 worktree 拉起本地预览交给我确认；得到我的明确确认前不要合并，确认后只向 dev 提交贡献。不要直接修改 main、dev 或三个平台发行 worktree，也不要提交密钥、构建产物或与任务无关的改动。dev 到 main 以及三个平台的发布同步由仓库维护者负责。
 ```
 
 <div align="center">

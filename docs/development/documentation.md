@@ -9,7 +9,8 @@
 | 产品能力、玩法、关卡或平台状态 | 根目录 `README.md` |
 | Agent 硬约束、完成标准或安全边界 | 根目录 `AGENTS.md` |
 | 贡献步骤、验证矩阵或 PR 交接 | 根目录 `CONTRIBUTING.md`、PR 模板 |
-| 分支、worktree、合并、提升或发布流 | `docs/development/repository.md` |
+| 分支、worktree 或日常合并流 | `docs/development/repository.md` |
+| 稳定提升、平台发布或统一版本规则 | `docs/development/release.md` |
 | 命令、脚本、运行时、依赖或生成工具 | `docs/development/environment.md` |
 | 色彩、材质、字体、动效或组件语言 | `docs/design/visual-language.md` |
 | 视觉验收方法、视口、证据或已知限制 | `docs/design/qa.md` |

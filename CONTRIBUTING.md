@@ -5,8 +5,8 @@
 ## 开始之前
 
 1. 完整阅读 `AGENTS.md`，运行 `git status --short --branch` 与 `git worktree list`。
-2. 判断任务属于共享玩法还是平台专属适配。共享任务以 `dev` 为基线；平台任务以 `xiaohongshu`、`bilibili` 或 `wechat` 对应分支为基线。
-3. 从正确基线创建独立的短期分支与 worktree。不要直接在 `main`、`dev` 或长期发行 worktree 中开发，也不要与另一项任务共享脏工作区。
+2. 从最新 `dev` 创建独立的短期分支与 worktree；所有外部贡献和普通开发任务都以 `dev` 为唯一集成目标。
+3. 不要直接在 `main`、`dev` 或长期发行 worktree 中开发，也不要从平台发行分支开始普通贡献。
 4. 只处理本任务范围内的文件；发现其他 worktree 的未提交内容时，不删除、不覆盖、不清理。
 
 完整分支与 worktree 操作见 [docs/development/repository.md](docs/development/repository.md)，文档总入口见 [docs/README.md](docs/README.md)。
@@ -27,19 +27,19 @@
 合并到目标集成分支
 ```
 
-预览或评审阶段不得提前合并。共享任务合回 `dev`；平台专属任务合回对应发行分支。一个改动同时涉及共享玩法和平台桥接时，尽量拆成两个可独立预览、审查和回滚的提交或 Pull Request。
+预览或评审阶段不得提前合并。外部贡献者确认后的 Pull Request 只以 `dev` 为目标，不负责 `dev → main`、平台原生分支或发行同步。涉及平台需求的外部贡献应先在 `dev` 收敛共享行为、adapter 契约、测试向量或可复用资源；维护者的平台专属适配流程见 [docs/development/repository.md](docs/development/repository.md)。
 
 ## 分支模型
 
 | 分支 | 用途 | 接受的改动 |
 | --- | --- | --- |
-| `dev` | 共享集成与下一版本基线 | 经预览确认的共享玩法、测试、设计、文档与可复用平台抽象 |
-| `main` | 稳定的跨平台基线 | 从 `dev` 提升的已验证改动；紧急修复除外不直接开发 |
-| `xiaohongshu` | 小红书发行版 | 小红书容器、JSBridge、离线 ZIP 与发布配置 |
-| `bilibili` | Bilibili Toy 发行版 | Toy API、生命周期、资源与发布配置 |
-| `wechat` | 微信小程序发行版 | 小程序生命周期、组件、资源与发布配置 |
+| `dev` | 外部贡献与日常开发的唯一集成目标 | 经预览确认的玩法、测试、设计、文档与可复用平台抽象 |
+| `main` | 稳定的跨平台基线 | 只由维护者从稳定 `dev` 提升 |
+| `xiaohongshu` | 小红书发行版 | 维护者从 `main` 同步；仅承载容器、JSBridge、ZIP 等宿主专属改动 |
+| `bilibili` | Bilibili Toy 发行版 | 维护者从 `main` 同步，并承载 Toy 原生 adapter 与平台任务 |
+| `wechat` | 微信小程序发行版 | 维护者从 `main` 同步，并承载小程序原生 adapter 与平台任务 |
 
-共享能力的常规流向是 `任务分支 → dev → main → 三个发行分支`。平台分支中发现的通用修复应先提炼回 `dev`，再沿正常路径传播，避免长期漂移。
+贡献者的职责边界是 `任务分支 → dev`。后续 `dev → main → 三个发行分支` 属于仓库维护流程，见 [docs/development/release.md](docs/development/release.md)。平台分支中发现的通用问题由维护者另建 `dev` 任务回流，再沿正常路径传播。
 
 ## 视觉与交互
 

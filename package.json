@@ -8,6 +8,7 @@
     "test": "node --test tests/*.test.js",
     "validate": "powershell -NoProfile -ExecutionPolicy Bypass -File ./scripts/validate.ps1",
     "docs:check": "powershell -NoProfile -ExecutionPolicy Bypass -File ./scripts/validate-docs.ps1",
+    "release:check-versions": "powershell -NoProfile -ExecutionPolicy Bypass -File ./scripts/validate-release-versions.ps1",
     "check": "npm test && npm run validate && npm run docs:check",
     "build": "npm run build:xiaohongshu",
     "build:xiaohongshu": "powershell -NoProfile -ExecutionPolicy Bypass -File ./scripts/build.ps1"
