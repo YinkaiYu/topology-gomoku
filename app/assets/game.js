@@ -788,8 +788,10 @@
     dom.restartButton.setAttribute("aria-label", "重新开始");
     dom.restartButtonText.textContent = "重来";
     dom.restartIconPath.setAttribute("d", "M20 7v5h-5M19 12a7 7 0 1 0-2 5");
-    dom.ruleCaptionTitle.textContent = game.level.ruleTitle;
-    dom.ruleCaptionText.textContent = game.level.ruleText;
+    var drawLikely = game.levelIndex > 0 && Engine.isLikelyDraw(game.board, game.rules);
+    dom.ruleCaption.classList.toggle("is-draw-likely", drawLikely);
+    dom.ruleCaptionTitle.textContent = drawLikely ? "和局亦胜" : game.level.ruleTitle;
+    dom.ruleCaptionText.textContent = drawLikely ? "平局，也算通关" : game.level.ruleText;
     dom.boardStage.classList.remove("is-exploring", "is-settled", "is-dragging");
   }
 

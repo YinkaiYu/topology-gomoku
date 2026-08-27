@@ -871,6 +871,7 @@ button,
   font-size: 11px;
   font-weight: 650;
   letter-spacing: 0.13em;
+  transition: color 320ms ease;
 }
 
 .rule-caption span {
@@ -878,6 +879,26 @@ button,
   font-size: 9px;
   letter-spacing: 0.05em;
   white-space: nowrap;
+  transition: color 320ms ease;
+}
+
+.rule-caption.is-draw-likely {
+  transform: translateY(-1px);
+}
+
+.rule-caption.is-draw-likely strong {
+  color: var(--teal);
+  animation: draw-pass-arrive 520ms var(--spring) both;
+}
+
+.rule-caption.is-draw-likely span {
+  color: #8b7556;
+  animation: draw-pass-arrive 520ms var(--spring) 45ms both;
+}
+
+@keyframes draw-pass-arrive {
+  from { opacity: 0.18; transform: translateY(3px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 .rule-caption.is-demonstrating {

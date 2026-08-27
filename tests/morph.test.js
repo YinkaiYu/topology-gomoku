@@ -213,6 +213,16 @@ test("棋盘同时提示玩家进攻点与对手封堵点并保持克制配色",
   assert.match(game, /function tacticalHintPriority/);
 });
 
+test("后期大概率和局时在既有规则区域提示平局也算通关", () => {
+  const game = fs.readFileSync(path.join(ROOT, "app", "assets", "game.js"), "utf8");
+  const style = fs.readFileSync(path.join(ROOT, "app", "assets", "style.css"), "utf8");
+  assert.match(game, /Engine\.isLikelyDraw\(game\.board, game\.rules\)/);
+  assert.match(game, /drawLikely \? "和局亦胜"/);
+  assert.match(game, /drawLikely \? "平局，也算通关"/);
+  assert.match(style, /\.rule-caption\.is-draw-likely/);
+  assert.match(style, /@keyframes draw-pass-arrive/);
+});
+
 test("高阶曲面的五子展示会自动朝前且始终附着于曲面交点", () => {
   const game = fs.readFileSync(path.join(ROOT, "app", "assets", "game.js"), "utf8");
   assert.match(game, /var yaw = -Math\.PI \+ yawIndex \/ 40 \* Math\.PI \* 2/);

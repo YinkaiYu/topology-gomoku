@@ -297,3 +297,24 @@ test("玩家自己已无五连路径时也立即通关", () => {
     assert.equal(Game.checkWin(board, rules, Game.toCell(rules, x, y), Game.AI), null);
   });
 });
+
+test("后期双方可用五连路径都很少时提示平局也可通关", () => {
+  const rules = Game.createRules({ type: "cylinder", width: 7, height: 6, target: 5 });
+  const board = new Int8Array([
+    1, -1, -1, 1, 0, -1, 1,
+    0, 0, 0, 0, 1, -1, 0,
+    1, 1, -1, -1, 0, 0, 0,
+    -1, 1, -1, 1, -1, 1, 1,
+    -1, -1, 0, 1, -1, 0, 1,
+    0, 0, 1, 0, 0, -1, 0
+  ]);
+
+  assert.equal(Game.isLikelyDraw(board, rules), true);
+  assert.ok(Game.countLiveLines(board, rules, Game.HUMAN) > 0);
+  assert.ok(Game.countLiveLines(board, rules, Game.AI) > 0);
+
+  const earlyBoard = Game.createBoard(rules);
+  put(earlyBoard, rules, [[0, 0], [1, 1], [2, 2], [4, 3]], Game.HUMAN);
+  put(earlyBoard, rules, [[6, 0], [5, 1], [4, 2]], Game.AI);
+  assert.equal(Game.isLikelyDraw(earlyBoard, rules), false);
+});

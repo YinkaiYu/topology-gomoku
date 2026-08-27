@@ -390,14 +390,19 @@
   }
 
   function hasLiveLine(board, rules, player) {
+    return countLiveLines(board, rules, player) > 0;
+  }
+
+  function countLiveLines(board, rules, player) {
     var opponent = -player;
+    var count = 0;
     var maskIndex;
     for (maskIndex = 0; maskIndex < rules.winMasks.length; maskIndex += 1) {
       if (countMask(board, rules.winMasks[maskIndex], opponent) === 0) {
-        return true;
+        count += 1;
       }
     }
-    return false;
+    return count;
   }
 
   function boardIsDraw(board, rules) {
@@ -442,6 +447,28 @@
       }
     }
     return moves;
+  }
+
+  function isLikelyDraw(board, rules) {
+    var occupied = 0;
+    for (var cell = 0; cell < board.length; cell += 1) {
+      if (board[cell] !== EMPTY) {
+        occupied += 1;
+      }
+    }
+    if (occupied / Math.max(1, rules.cellCount) < 0.58) {
+      return false;
+    }
+    if (immediateMoves(board, rules, HUMAN).length || immediateMoves(board, rules, AI).length) {
+      return false;
+    }
+    var totalLines = Math.max(1, rules.winMasks.length);
+    var humanLive = countLiveLines(board, rules, HUMAN);
+    var aiLive = countLiveLines(board, rules, AI);
+    if (!humanLive || !aiLive) {
+      return false;
+    }
+    return humanLive / totalLines <= 0.2 && aiLive / totalLines <= 0.2;
   }
 
   function centerBias(rules, cell) {
@@ -778,6 +805,8 @@
     boardIsFull: boardIsFull,
     boardIsDraw: boardIsDraw,
     hasLiveLine: hasLiveLine,
+    countLiveLines: countLiveLines,
+    isLikelyDraw: isLikelyDraw,
     playerWinsByBlockingAi: playerWinsByBlockingAi,
     playerHasNoWinningPath: playerHasNoWinningPath,
     playerWinsBySettledPosition: playerWinsBySettledPosition,
