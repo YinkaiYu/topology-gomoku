@@ -33,7 +33,8 @@ test("第一关每次进入都逐子教学、隐藏边界演示且仍无 AI 回�
   assert.match(game, /if \(!game \|\| game\.levelIndex === 0 \|\| game\.status === "forcing"/);
   assert.match(game, /else if \(game\.level\.tutorial \|\| lesson\) \{\s*game\.turn = HUMAN;/);
   assert.match(game, /game\.level\.tutorial \|\| lessonActive \? 1 : \(game\.turn === AI/);
-  assert.match(game, /outcome === "win" && game\.levelIndex > 0 && Boolean\(Morph\)/);
+  assert.match(game, /var passed = outcome === "win" \|\| outcome === "draw";/);
+  assert.match(game, /var shouldMorph = passed && game\.levelIndex > 0 && Boolean\(Morph\)/);
   assert.match(game, /"传统的五子棋",\s*"就是把五颗子",\s*"连成一条线",\s*"好无趣",\s*"好无聊"/s);
   assert.match(game, /TUTORIAL_PROMPTS\[Math\.min\(count, TUTORIAL_PROMPTS\.length - 1\)\]/);
   assert.match(game, /Engine\.suggestTutorialMove/);
@@ -74,7 +75,7 @@ test("底部只保留无卡片的边界演示工具按钮", () => {
   assert.match(game, /function replayBoundaryLesson\(\)[\s\S]*transitionToLevel\(levelIndex, \{\s*introMode: "lesson",\s*lessonReturn: lessonReturn\s*\}\)/);
   assert.match(game, /dom\.boundaryDemoButton\.addEventListener\("click", replayBoundaryLesson\)/);
   assert.doesNotMatch(style, /\.rule-caption/);
-  assert.match(style, /\.boundary-demo-button\.is-active\s*\{\s*color:\s*var\(--teal\)/);
+  assert.match(style, /\.boundary-demo-button,[\s\S]*\.boundary-demo-button\.is-active\s*\{\s*color:\s*var\(--spatial\)/);
   assert.match(style, /\.game-tools > #restartButton\s*\{\s*grid-column:\s*3/);
   assert.match(style, /\.game-tools\.is-basic-tutorial\s*\{\s*grid-template-columns:\s*repeat\(3, minmax\(0, 1fr\)\)/);
 });
@@ -340,19 +341,75 @@ test("通关曲面使用高密度采样，棋盘线沿曲面分段插值", () =>
   assert.doesNotMatch(game, /appendCompletionSegment\(points, sourceBoundary, targetBoundary/);
 });
 
-test("胜负结算常驻棋盘且支持重玩，胜利曲面可以持续柔性拖动", () => {
+test("复盘与二维三维切换相互独立，曲面可以持续柔性拖动", () => {
   const game = fs.readFileSync(path.join(ROOT, "app", "assets", "game.js"), "utf8");
   const html = fs.readFileSync(path.join(ROOT, "app", "index.html"), "utf8");
+  const style = fs.readFileSync(path.join(ROOT, "app", "assets", "style.css"), "utf8");
   assert.match(game, /if \(game\.completion\) \{\s*animate = true;/);
   assert.match(game, /function canExploreCompletion\(\)/);
   assert.match(game, /completion\.rotation\.y \+= yawDelta;/);
-  assert.match(game, /settledReplayButton\.addEventListener\("click", restartGame\)/);
+  assert.match(game, /settledReplayButton\.addEventListener\("click", handleSettledAction\)/);
+  assert.match(game, /function beginReplayReview\(\)/);
+  assert.match(game, /game\.completion\.phase = "returning";/);
+  assert.match(game, /function stepReplay\(direction\)/);
+  assert.match(game, /Replay\.boardAt\(game\.moves, game\.rules\.cellCount, nextStep, Engine\.EMPTY\)/);
+  assert.match(game, /function toggleEndgameDimension\(\)/);
+  assert.match(game, /function endReplayReview\(\)/);
+  assert.match(game, /reviewToggleButton\.addEventListener\("click", handleReviewToggle\)/);
+  assert.match(game, /reviewPreviousButton\.addEventListener/);
+  assert.match(game, /reviewNextButton\.addEventListener/);
+  assert.match(game, /dimensionToggleButton\.addEventListener\("click", toggleEndgameDimension\)/);
+  assert.match(game, /dom\.humanChip\.hidden = false;\s*dom\.aiChip\.hidden = false;/);
+  assert.doesNotMatch(game, /humanChip\.hidden = reviewing|aiChip\.hidden = reviewing/);
+  assert.match(game, /drawCompletionWinningLine[\s\S]*activeWinningMask\(\)/);
+  assert.match(html, /id="endgameReviewTools"/);
+  assert.match(html, /class="game-action-deck"[\s\S]*id="endgameReviewTools"[\s\S]*id="gameTools"/);
+  assert.ok(html.indexOf('id="endgameReviewTools"') > html.indexOf('id="boardStage"'));
+  assert.ok(html.indexOf('id="endgameReviewTools"') < html.indexOf('id="gameTools"'));
+  assert.match(html, /M19 12H6m5-5-5 5 5 5/);
+  assert.match(html, /M5 12h13m-5-5 5 5-5 5/);
+  assert.match(html, /id="nextLevelButton"/);
+  assert.match(html, /id="dimensionToggleIconPath"[^>]+M5 6c0-1\.7 3\.1-3 7-3/);
+  assert.match(game, /M4 4h16v16H4zM9\.33 4v16M14\.67 4v16M4 9\.33h16M4 14\.67h16/);
+  assert.match(style, /\.endgame-review-tools\s*\{[\s\S]*grid-template-columns:\s*repeat\(4, minmax\(0, 1fr\)\)/);
+  assert.match(style, /\.game-tools\.is-ended \.journey-button\s*\{[\s\S]*grid-column:\s*1/);
+  assert.match(style, /\.game-tools\.is-ended \.settled-replay-button\s*\{\s*grid-column:\s*2/);
+  assert.match(style, /\.game-tools\.is-ended \.next-level-button\s*\{[\s\S]*grid-column:\s*3/);
+  assert.match(html, /id="journeyButton"[^>]+aria-label="返回旅程"/);
+  assert.match(game, /dom\.journeyButton\.hidden = !ended;/);
+  assert.match(game, /dom\.nextLevelButton\.hidden = !ended;/);
+  assert.match(game, /dom\.nextLevelButton\.disabled = dimensionTransitioning \|\| !hasNextLevel;/);
+  assert.match(game, /function handleJourney\(\) \{\s*if \(isEndedView\(\)\) \{\s*leaveGame\(\)/);
+  assert.match(game, /journeyButton\.addEventListener\("click", handleJourney\)/);
   assert.doesNotMatch(game, /showResult\(/);
   assert.doesNotMatch(html, /id="resultSheet"/);
-  assert.match(game, /chooseCompletionView\(winningMask, completionPresentation\)/);
+  assert.match(game, /chooseCompletionView\(winningMask, presentation\)/);
   assert.match(game, /elastic:\s*\{ x: 0, y: 0, velocityX: 0, velocityY: 0 \}/);
   assert.match(game, /wobbleX: sphereCompletion \? game\.completion\.elastic\.x/);
   assert.match(game, /completion\.elastic\.velocityY \+= yawDelta/);
+});
+
+test("标题、状态、棋盘与两层操作区使用统一垂直节奏", () => {
+  const game = fs.readFileSync(path.join(ROOT, "app", "assets", "game.js"), "utf8");
+  const style = fs.readFileSync(path.join(ROOT, "app", "assets", "style.css"), "utf8");
+  assert.match(style, /\.game-screen\s*\{[\s\S]*--game-vertical-gap:\s*10px;[\s\S]*--game-control-row-size:\s*52px;[\s\S]*row-gap:\s*var\(--game-vertical-gap\)/);
+  assert.match(style, /\.match-strip\s*\{[\s\S]*margin:\s*0 4px/);
+  assert.match(style, /\.game-action-deck\s*\{[\s\S]*grid-template-rows:\s*repeat\(2, var\(--game-control-row-size\)\);[\s\S]*row-gap:\s*var\(--game-vertical-gap\)/);
+  assert.match(style, /\.endgame-review-tools\s*\{[\s\S]*min-height:\s*0;[\s\S]*padding-top:\s*0/);
+  assert.match(style, /\.endgame-review-tools\.is-reserved\s*\{[\s\S]*visibility:\s*hidden;[\s\S]*pointer-events:\s*none/);
+  assert.match(style, /\.game-tools\s*\{[\s\S]*min-height:\s*0;[\s\S]*grid-template-columns:\s*repeat\(3, minmax\(0, 1fr\)\);[\s\S]*padding-top:\s*0/);
+  assert.match(style, /@media \(max-height:\s*760px\)[\s\S]*--game-control-row-size:\s*44px/);
+  assert.match(game, /dom\.endgameReviewTools\.hidden = false;[\s\S]*classList\.toggle\("is-reserved", !ended \|\| autoAdvancing\)/);
+});
+
+test("终局操作以中性色为底并只保留两组克制强调色", () => {
+  const style = fs.readFileSync(path.join(ROOT, "app", "assets", "style.css"), "utf8");
+  assert.match(style, /\.endgame-review-tools \.tool-button\s*\{[\s\S]*color:\s*var\(--muted\)/);
+  assert.match(style, /\.game-tools\.is-ended \.tool-button\s*\{[\s\S]*color:\s*var\(--muted\)/);
+  assert.match(style, /\.endgame-review-tools \.review-toggle-button\s*\{\s*color:\s*var\(--teal\)/);
+  assert.match(style, /\.game-tools\.is-ended \.next-level-button\s*\{[\s\S]*color:\s*var\(--teal\)/);
+  assert.match(style, /\.endgame-review-tools \.dimension-toggle-button\s*\{\s*color:\s*var\(--spatial\)/);
+  assert.match(style, /\.boundary-demo-button,[\s\S]*\.boundary-demo-button\.is-active\s*\{\s*color:\s*var\(--spatial\)/);
 });
 
 test("三维观赏的上下拖动与左右同样跟手且不受隐藏俯仰硬限位", () => {
@@ -371,13 +428,18 @@ test("棋盘同时提示玩家进攻点与对手封堵点并保持克制配色",
   assert.match(game, /function tacticalHintPriority/);
 });
 
-test("对局底部不再堆叠规则说明与和局提示", () => {
+test("对局底部不再堆叠规则说明且平局仍按通关处理", () => {
   const game = fs.readFileSync(path.join(ROOT, "app", "assets", "game.js"), "utf8");
   const html = fs.readFileSync(path.join(ROOT, "app", "index.html"), "utf8");
   const style = fs.readFileSync(path.join(ROOT, "app", "assets", "style.css"), "utf8");
   assert.doesNotMatch(game, /drawLikely|ruleCaption/);
   assert.doesNotMatch(html, /和局亦胜|平局，也算通关|ruleCaption/);
   assert.doesNotMatch(style, /draw-pass-arrive|rule-caption/);
+  assert.match(game, /var passed = outcome === "win" \|\| outcome === "draw";/);
+  assert.match(game, /if \(passed\) \{\s*rememberLevel\(game\.levelIndex\);\s*prefs\.completed\[game\.levelIndex\] = true;/);
+  assert.match(game, /var hasNextLevel = passed && game\.levelIndex < LEVELS\.length - 1;/);
+  assert.match(game, /function developerForceDraw\(\)/);
+  assert.match(html, /id="developerDraw">平局通关/);
 });
 
 test("设置页使用液态玻璃层次且三个控件均支持连续拖动", () => {
@@ -443,6 +505,21 @@ test("设置页使用液态玻璃层次且三个控件均支持连续拖动", ()
   assert.match(style, /\.switch\.is-dragging \.switch-lens-track\s*\{\s*opacity:\s*0\.9/);
 });
 
+test("测试控制台沿用设置页液态玻璃风格且双项落子控制对齐", () => {
+  const game = fs.readFileSync(path.join(ROOT, "app", "assets", "game.js"), "utf8");
+  const html = fs.readFileSync(path.join(ROOT, "app", "index.html"), "utf8");
+  const style = fs.readFileSync(path.join(ROOT, "app", "assets", "style.css"), "utf8");
+  assert.match(html, /class="sheet settings-sheet developer-sheet"/);
+  assert.match(html, /class="settings-softbody developer-softbody"/);
+  assert.doesNotMatch(html, /DEVELOPER MODE/);
+  assert.match(html, /id="developerPieceControl" data-index="0"/);
+  assert.match(style, /\.developer-piece-control\s*\{\s*grid-template-columns:\s*repeat\(2, minmax\(0, 1fr\)\)/);
+  assert.match(style, /\.developer-piece-control \.segmented-glass-thumb\s*\{\s*width:\s*calc\(\(100% - 11px\) \/ 2\)/);
+  assert.match(style, /\.developer-action-grid button,[\s\S]*backdrop-filter:\s*blur\(4px\) saturate\(1\.42\)/);
+  assert.match(game, /developerPieceControl:\s*document\.getElementById\("developerPieceControl"\)/);
+  assert.match(game, /dom\.developerPieceControl\.dataset\.index = developer\.placementPlayer === HUMAN \? "0" : "1"/);
+});
+
 test("棋子按下时沿棋盘法向压薄并在平面内均匀鼓大，松手后回弹", () => {
   const game = fs.readFileSync(path.join(ROOT, "app", "assets", "game.js"), "utf8");
   assert.match(game, /pressedAt:\s*0/);
@@ -483,7 +560,7 @@ test("所有可按压玻璃控件在手指按下时向外鼓起而非缩小", ()
   assert.match(style, /\.developer-fab:active\s*\{[\s\S]*scale\(1\.08\)/);
   assert.match(style, /\.settings-sheet \.close-button:active\s*\{[\s\S]*scaleX\(1\.14\) scaleY\(1\.12\)/);
   assert.match(style, /\.settings-sheet \.sheet-done:active\s*\{[\s\S]*scaleX\(1\.035\) scaleY\(1\.08\)/);
-  assert.match(style, /\.developer-reset:active\s*\{[\s\S]*scale\(1\.06\)/);
+  assert.match(style, /\.developer-reset:active\s*\{[\s\S]*scaleX\(1\.035\) scaleY\(1\.075\)/);
 });
 
 test("设置面板以可逆梯形软体层展开且支持抓住顶部下拉收回", () => {

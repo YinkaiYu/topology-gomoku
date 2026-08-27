@@ -118,23 +118,52 @@
           </div>
         </div>
 
-        <div class="game-tools" id="gameTools">
-          <button class="tool-button" id="undoButton" type="button" aria-label="悔棋">
-            <svg viewBox="0 0 24 24" aria-hidden="true"><path id="undoIconPath" d="M9 8H5v-4M5 8c2-3 5-4 8-4 5 0 8 4 8 8s-3 8-8 8c-3 0-6-2-7-4" /></svg>
-            <span id="undoButtonText">悔棋</span>
-          </button>
-          <button class="tool-button boundary-demo-button" id="boundaryDemoButton" type="button" aria-label="重新体验本关边界指引">
-            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 18h6M10 22h4M15.1 14c.2-.7.7-1.2 1.2-1.7A6 6 0 1 0 7.7 12.3c.5.5 1 1 1.2 1.7h6.2Z" /></svg>
-            <span>边界演示</span>
-          </button>
-          <button class="tool-button settled-replay-button" id="settledReplayButton" type="button" aria-label="再玩一次" hidden>
-            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 7v5h-5M19 12a7 7 0 1 0-2 5" /></svg>
-            <span>再来</span>
-          </button>
-          <button class="tool-button" id="restartButton" type="button" aria-label="重新开始">
-            <svg viewBox="0 0 24 24" aria-hidden="true"><path id="restartIconPath" d="M20 7v5h-5M19 12a7 7 0 1 0-2 5" /></svg>
-            <span id="restartButtonText">重来</span>
-          </button>
+        <div class="game-action-deck">
+          <div class="endgame-review-tools" id="endgameReviewTools" hidden>
+            <button class="tool-button endgame-tool review-toggle-button" id="reviewToggleButton" type="button" aria-label="复盘棋局">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path id="reviewToggleIconPath" d="M9 8H5V4M5 8c2-3 5-4 8-4 5 0 8 4 8 8s-3 8-8 8c-3 0-6-2-7-4" /></svg>
+              <span id="reviewToggleButtonText">复盘</span>
+            </button>
+            <button class="tool-button endgame-tool" id="reviewPreviousButton" type="button" aria-label="上一步" disabled>
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12H6m5-5-5 5 5 5" /></svg>
+              <span>上一步</span>
+            </button>
+            <button class="tool-button endgame-tool" id="reviewNextButton" type="button" aria-label="下一步" disabled>
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h13m-5-5 5 5-5 5" /></svg>
+              <span>下一步</span>
+            </button>
+            <button class="tool-button endgame-tool dimension-toggle-button" id="dimensionToggleButton" type="button" aria-label="查看三维棋局">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path id="dimensionToggleIconPath" d="M5 6c0-1.7 3.1-3 7-3s7 1.3 7 3-3.1 3-7 3-7-1.3-7-3Zm0 0v12c0 1.7 3.1 3 7 3s7-1.3 7-3V6" /></svg>
+              <span id="dimensionToggleButtonText">三维</span>
+            </button>
+          </div>
+
+          <div class="game-tools" id="gameTools">
+            <button class="tool-button" id="undoButton" type="button" aria-label="悔棋">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path id="undoIconPath" d="M9 8H5v-4M5 8c2-3 5-4 8-4 5 0 8 4 8 8s-3 8-8 8c-3 0-6-2-7-4" /></svg>
+              <span id="undoButtonText">悔棋</span>
+            </button>
+            <button class="tool-button boundary-demo-button" id="boundaryDemoButton" type="button" aria-label="重新体验本关边界指引">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 18h6M10 22h4M15.1 14c.2-.7.7-1.2 1.2-1.7A6 6 0 1 0 7.7 12.3c.5.5 1 1 1.2 1.7h6.2Z" /></svg>
+              <span>边界演示</span>
+            </button>
+            <button class="tool-button journey-button" id="journeyButton" type="button" aria-label="返回旅程" hidden>
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m15 6-6 6 6 6" /></svg>
+              <span>旅程</span>
+            </button>
+            <button class="tool-button settled-replay-button" id="settledReplayButton" type="button" aria-label="再玩一次" hidden>
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path id="settledReplayIconPath" d="M20 7v5h-5M19 12a7 7 0 1 0-2 5" /></svg>
+              <span id="settledReplayButtonText">再来</span>
+            </button>
+            <button class="tool-button next-level-button" id="nextLevelButton" type="button" aria-label="进入下一关" hidden>
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path id="nextLevelIconPath" d="m9 6 6 6-6 6" /></svg>
+              <span id="nextLevelButtonText">下一关</span>
+            </button>
+            <button class="tool-button" id="restartButton" type="button" aria-label="重新开始">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path id="restartIconPath" d="M20 7v5h-5M19 12a7 7 0 1 0-2 5" /></svg>
+              <span id="restartButtonText">重来</span>
+            </button>
+          </div>
         </div>
       </section>
     </main>
@@ -173,65 +202,67 @@
       </div>
     </section>
 
-    <section class="sheet developer-sheet" id="developerSheet" aria-modal="true" role="dialog" aria-labelledby="developerTitle" hidden>
-      <div class="sheet-handle" aria-hidden="true"></div>
-      <div class="sheet-head">
-        <div>
-          <p class="developer-kicker">DEVELOPER MODE</p>
+    <section class="sheet settings-sheet developer-sheet" id="developerSheet" aria-modal="true" role="dialog" aria-labelledby="developerTitle" hidden>
+      <div class="settings-softbody developer-softbody">
+        <div class="sheet-handle" aria-hidden="true"></div>
+        <div class="sheet-head">
           <h2 id="developerTitle">测试控制台</h2>
+          <button class="close-button" id="closeDeveloperButton" type="button" aria-label="关闭开发者工具">×</button>
         </div>
-        <button class="close-button" id="closeDeveloperButton" type="button" aria-label="关闭开发者工具">×</button>
-      </div>
 
-      <div class="developer-section" id="developerGameControls">
-        <div class="developer-section-head">
-          <span>当前对局</span>
-          <small id="developerGameStatus">未进入棋局</small>
-        </div>
-        <div class="setting-row developer-toggle-row">
-          <span>暂停 AI 落子</span>
-          <button class="switch" id="developerPauseSwitch" type="button" role="switch" aria-checked="false"><i></i></button>
-        </div>
-        <div class="developer-control-row">
-          <span>点棋盘时落下</span>
-          <div class="segmented developer-piece-control" role="group" aria-label="开发者落子身份">
-            <button class="is-active" type="button" data-developer-player="1">玩家 · 黑</button>
-            <button type="button" data-developer-player="-1">对手 · 白</button>
+        <div class="developer-section" id="developerGameControls">
+          <div class="developer-section-head">
+            <span>当前对局</span>
+            <small id="developerGameStatus">未进入棋局</small>
+          </div>
+          <div class="setting-row developer-toggle-row">
+            <span class="setting-label">暂停 AI 落子</span>
+            <button class="switch" id="developerPauseSwitch" type="button" role="switch" aria-checked="false"><i><span class="switch-lens-track"></span></i></button>
+          </div>
+          <div class="developer-control-row">
+            <span class="setting-label">点棋盘时落下</span>
+            <div class="segmented developer-piece-control" id="developerPieceControl" data-index="0" role="group" aria-label="开发者落子身份">
+              <i class="segmented-glass-thumb" aria-hidden="true"></i>
+              <button class="is-active" type="button" data-developer-player="1" aria-pressed="true">玩家 · 黑</button>
+              <button type="button" data-developer-player="-1" aria-pressed="false">对手 · 白</button>
+            </div>
+          </div>
+          <div class="developer-action-grid">
+            <button type="button" id="developerPlayerWin">玩家胜利</button>
+            <button type="button" id="developerAiWin">对手胜利</button>
+            <button type="button" id="developerDraw">平局通关</button>
+            <button type="button" id="developerClearBoard">清空棋盘</button>
+          </div>
+          <div class="developer-action-grid developer-hint-grid">
+            <button type="button" id="developerHintThree">活三提示</button>
+            <button type="button" id="developerHintFour">四子提示</button>
           </div>
         </div>
-        <div class="developer-action-grid">
-          <button type="button" id="developerPlayerWin">玩家胜利</button>
-          <button type="button" id="developerAiWin">对手胜利</button>
-          <button type="button" id="developerClearBoard">清空棋盘</button>
-        </div>
-        <div class="developer-action-grid developer-hint-grid">
-          <button type="button" id="developerHintThree">活三提示</button>
-          <button type="button" id="developerHintFour">四子提示</button>
-        </div>
-      </div>
 
-      <div class="developer-section developer-unlock-section">
-        <div class="developer-section-head">
-          <span>解锁至</span>
-          <button class="developer-reset" id="developerResetProgress" type="button">重置</button>
+        <div class="developer-section developer-unlock-section">
+          <div class="developer-section-head">
+            <span>解锁至</span>
+            <button class="developer-reset" id="developerResetProgress" type="button">重置</button>
+          </div>
+          <div class="developer-unlock-grid" role="group" aria-label="手动解锁关卡">
+            <button type="button" data-developer-unlock="0">01</button>
+            <button type="button" data-developer-unlock="1">02</button>
+            <button type="button" data-developer-unlock="2">03</button>
+            <button type="button" data-developer-unlock="3">04</button>
+            <button type="button" data-developer-unlock="4">05</button>
+            <button type="button" data-developer-unlock="5">06</button>
+            <button type="button" data-developer-unlock="6">07</button>
+          </div>
         </div>
-        <div class="developer-unlock-grid" role="group" aria-label="手动解锁关卡">
-          <button type="button" data-developer-unlock="0">01</button>
-          <button type="button" data-developer-unlock="1">02</button>
-          <button type="button" data-developer-unlock="2">03</button>
-          <button type="button" data-developer-unlock="3">04</button>
-          <button type="button" data-developer-unlock="4">05</button>
-          <button type="button" data-developer-unlock="5">06</button>
-          <button type="button" data-developer-unlock="6">07</button>
-        </div>
-      </div>
 
-      <button class="sheet-done" id="developerDoneButton" type="button">完成</button>
+        <button class="sheet-done" id="developerDoneButton" type="button">完成</button>
+      </div>
     </section>
   </div>
 
   <script src="./assets/topology.js"></script>
   <script src="./assets/topology-morph.js"></script>
+  <script src="./assets/game-replay.js"></script>
   <script src="./assets/game.js"></script>
 </body>
 </html>
