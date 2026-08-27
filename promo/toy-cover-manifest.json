@@ -7,14 +7,6 @@
   },
   "source": "../scripts/compose_toy_cover.py",
   "output": "exports/topology-gomoku-toy-cover-4x3.png",
-  "safeArea": {
-    "purpose": "Centered square crop used by off-site Toy shares",
-    "x": 150,
-    "y": 0,
-    "width": 900,
-    "height": 900,
-    "qaCrop": "../artifacts/qa-toy-cover-square-safe-v2.png"
-  },
   "brandAssets": [
     "../app/assets/brand-icon.png",
     "assets/toy-cover-background-v1.png"

@@ -1,7 +1,7 @@
 {
   "artifact": "exports/topology-gomoku-toy-cover-4x3.png",
   "createdFor": "Bilibili Toy 4:3 横版封面",
-  "composition": "Centered title and exact project brand mark inside a deterministic 900x900 safety crop over the restrained paper/topology background; no secondary copy or institutional credit",
+  "composition": "Oversized exact project brand mark above an oversized single-line title, centered on the complete 4:3 canvas over the restrained paper/topology background; no secondary copy or institutional credit",
   "generatedBackground": {
     "asset": "assets/toy-cover-background-v1.png",
     "tool": "built-in image generation",

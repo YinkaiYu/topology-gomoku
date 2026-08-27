@@ -105,23 +105,17 @@ test("Toy 封面是可追溯的 1200x900 确定性导出", () => {
   const provenance = JSON.parse(fs.readFileSync(path.join(ROOT, "promo", "toy-cover-provenance.json"), "utf8"));
   assert.equal(manifest.output, "exports/topology-gomoku-toy-cover-4x3.png");
   assert.equal(manifest.dimensions.ratio, "4:3");
-  assert.deepEqual(manifest.safeArea, {
-    purpose: "Centered square crop used by off-site Toy shares",
-    x: 150,
-    y: 0,
-    width: 900,
-    height: 900,
-    qaCrop: "../artifacts/qa-toy-cover-square-safe-v2.png"
-  });
+  assert.equal(manifest.safeArea, undefined);
   assert.equal(provenance.generatedBackground.tool, "built-in image generation");
 });
 
-test("Toy 封面仅把大标题和主图标放进中央方形安全区", () => {
+test("Toy 封面仅以超大标题和超大主图标使用完整横版画布", () => {
   const script = fs.readFileSync(path.join(ROOT, "scripts", "compose_toy_cover.py"), "utf8");
-  assert.match(script, /SAFE_BOX = \(150, 0, 1050, 900\)/);
   assert.match(script, /title = "拓扑五子棋"/);
-  assert.match(script, /brand\.thumbnail\(\(530, 530\)/);
-  assert.match(script, /assert_inside_safe_box\(title_bounds, "title"\)/);
-  assert.match(script, /assert_inside_safe_box\(brand_bounds, "brand mark"\)/);
+  assert.match(script, /ImageFont\.truetype\(str\(TITLE_FONT\), 172\)/);
+  assert.match(script, /title_y = 624/);
+  assert.match(script, /brand\.thumbnail\(\(650, 650\)/);
+  assert.match(script, /brand_y = -8/);
+  assert.doesNotMatch(script, /SAFE_BOX|safe area|square crop/i);
   assert.doesNotMatch(script, /世界之外|也能连成一线|中国科学院物理研究所/);
 });
