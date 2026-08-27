@@ -264,8 +264,11 @@
   var settledBoardAnimation = null;
   var REVERSIBLE_MOTION_DURATION = 380;
   var REVERSIBLE_MOTION_EASING = "cubic-bezier(0.37, 0, 0.63, 1)";
-  var LIQUID_CARD_ENTRY_DURATION = 580;
-  var LIQUID_CARD_ENTRY_EASING = "linear";
+  var LIQUID_CARD_MOTION_DURATION = 300;
+  var LIQUID_CARD_RETURN_DURATION = 240;
+  var LIQUID_CARD_MOTION_EASING = "linear";
+  var LIQUID_CARD_TRAVEL_EASING = "cubic-bezier(0.16, 0.84, 0.24, 1)";
+  var LIQUID_CARD_BOUNCE_EASING = "cubic-bezier(0.37, 0, 0.63, 1)";
   var developer = {
     aiPaused: false,
     placementPlayer: HUMAN
@@ -546,71 +549,120 @@
     var scaleY = source.height / target.height;
     var translateX = source.left + source.width / 2 - (target.left + target.width / 2);
     var translateY = source.top + source.height / 2 - (target.top + target.height / 2);
-    var verticalTravel = Math.abs(translateY) >= Math.abs(translateX);
-    var liquidLeadX = translateX * -0.018;
-    var liquidLeadY = translateY * -0.018;
-    var liquidRecoilX = translateX * 0.006;
-    var liquidRecoilY = translateY * 0.006;
-    var stretchX = verticalTravel ? 0.976 : 1.034;
-    var stretchY = verticalTravel ? 1.034 : 0.976;
-    var recoilX = verticalTravel ? 1.014 : 0.988;
-    var recoilY = verticalTravel ? 0.988 : 1.014;
+    var expansionScale = 1.068;
+    var recoilScale = 0.962;
+    var secondaryBounceScale = 1.028;
+    var tertiaryRecoilScale = 0.988;
+    var targetRadius = window.getComputedStyle(dom.boardStage).borderRadius;
+    var sourceRadius = transition.borderRadius || "21px";
     dom.appShell.classList.add("is-navigating");
     var animation = dom.boardStage.animate([
       {
         transformOrigin: "center",
         transform: "translate(" + translateX + "px, " + translateY + "px) scale(" + scaleX + ", " + scaleY + ")",
-        borderRadius: "21px",
+        borderRadius: sourceRadius,
         opacity: 0.94,
         filter: "saturate(1.04) brightness(1.025)",
-        easing: "cubic-bezier(0.16, 0.84, 0.24, 1)"
+        easing: LIQUID_CARD_TRAVEL_EASING
       },
       {
-        offset: 0.62,
-        transform: "translate(" + liquidLeadX + "px, " + liquidLeadY + "px) scale(" + stretchX + ", " + stretchY + ")",
-        borderRadius: "33px 27px 31px 26px",
+        offset: 0.46,
+        transform: "translate(0, 0) scale(" + expansionScale + ")",
+        borderRadius: targetRadius,
         opacity: 1,
-        filter: "saturate(1.2) brightness(1.055)",
-        easing: "cubic-bezier(0.32, 0, 0.3, 1)"
+        filter: "saturate(1.1) brightness(1.025)",
+        easing: LIQUID_CARD_BOUNCE_EASING
+      },
+      {
+        offset: 0.64,
+        transform: "translate(0, 0) scale(" + recoilScale + ")",
+        borderRadius: targetRadius,
+        opacity: 1,
+        filter: "saturate(1.06) brightness(1.015)",
+        easing: LIQUID_CARD_BOUNCE_EASING
       },
       {
         offset: 0.8,
-        transform: "translate(" + liquidRecoilX + "px, " + liquidRecoilY + "px) scale(" + recoilX + ", " + recoilY + ")",
-        borderRadius: "27px 31px 28px 30px",
+        transform: "translate(0, 0) scale(" + secondaryBounceScale + ")",
+        borderRadius: targetRadius,
         opacity: 1,
-        filter: "saturate(1.08) brightness(1.02)",
-        easing: "cubic-bezier(0.3, 0, 0.36, 1)"
+        filter: "saturate(1.035) brightness(1.008)",
+        easing: LIQUID_CARD_BOUNCE_EASING
       },
       {
         offset: 0.92,
-        transform: "translate(" + (liquidLeadX * 0.12) + "px, " + (liquidLeadY * 0.12) + "px) scale(1.004, 0.997)",
-        borderRadius: "30px 28px 30px 28px",
+        transform: "translate(0, 0) scale(" + tertiaryRecoilScale + ")",
+        borderRadius: targetRadius,
         opacity: 1,
-        filter: "saturate(1.025) brightness(1.008)",
-        easing: "ease-out"
+        filter: "saturate(1.015) brightness(1.003)",
+        easing: LIQUID_CARD_BOUNCE_EASING
       },
       {
-        transform: "translate(0, 0) scale(1)",
-        borderRadius: "29px",
+        transform: "none",
+        borderRadius: targetRadius,
         opacity: 1,
-        filter: "saturate(1) brightness(1)"
+        filter: "none"
       }
     ], {
-      duration: LIQUID_CARD_ENTRY_DURATION,
-      easing: LIQUID_CARD_ENTRY_EASING,
+      duration: LIQUID_CARD_MOTION_DURATION,
+      easing: LIQUID_CARD_MOTION_EASING,
+      fill: "both"
+    });
+    var contentAnimation = dom.boardCanvas.animate([
+      {
+        opacity: 0.34,
+        filter: "blur(0.8px)",
+        easing: LIQUID_CARD_TRAVEL_EASING
+      },
+      {
+        offset: 0.46,
+        opacity: 0.94,
+        filter: "none",
+        easing: LIQUID_CARD_BOUNCE_EASING
+      },
+      {
+        offset: 0.64,
+        opacity: 1,
+        filter: "none",
+        easing: LIQUID_CARD_BOUNCE_EASING
+      },
+      {
+        offset: 0.8,
+        opacity: 1,
+        filter: "none",
+        easing: LIQUID_CARD_BOUNCE_EASING
+      },
+      {
+        offset: 0.92,
+        opacity: 1,
+        filter: "none",
+        easing: LIQUID_CARD_BOUNCE_EASING
+      },
+      {
+        opacity: 1,
+        filter: "none"
+      }
+    ], {
+      duration: LIQUID_CARD_MOTION_DURATION,
+      easing: LIQUID_CARD_MOTION_EASING,
       fill: "both"
     });
     animation.onfinish = function finishCardExpansion() {
-      dom.gameScreen.classList.remove("is-shared-enter");
       settledBoardAnimation = animation;
-      finishNavigationAnimation(null);
       done();
+      requestAnimationFrame(function paintFinalBoardBeforeHandoff() {
+        finishNavigationAnimation(null);
+        animation.cancel();
+        contentAnimation.cancel();
+        settledBoardAnimation = null;
+      });
     };
   }
 
   function animateBoardBackToCard(levelIndex, boardRect, done) {
     var tile = document.createElement("div");
     var tileCanvas = document.createElement("canvas");
+    var boardRadius = window.getComputedStyle(dom.boardStage).borderRadius;
     tile.className = "level-transition-board";
     tile.setAttribute("aria-hidden", "true");
     tileCanvas.className = "transition-board-canvas";
@@ -618,64 +670,80 @@
     tileCanvas.height = dom.boardCanvas.height;
     tileCanvas.getContext("2d").drawImage(dom.boardCanvas, 0, 0);
     tile.appendChild(tileCanvas);
+    fixedRectStyles(tile, boardRect);
+    tile.style.borderRadius = boardRadius;
+    document.body.appendChild(tile);
+    var targetCard = dom.levelCards[levelIndex];
+    targetCard.classList.add("is-transition-target");
     dom.appShell.classList.add("is-navigating", "is-shared-return");
-    showScreen("home");
     releaseSettledBoardAnimation();
+    showScreen("home");
     requestAnimationFrame(function measureReturnCard() {
-      var targetCard = dom.levelCards[levelIndex];
       var target = targetCard.getBoundingClientRect();
       if (prefersReducedMotion() || !targetCard.animate) {
-        finishNavigationAnimation(null);
+        finishNavigationAnimation(tile);
         done();
         return;
       }
-      var cardLayer = targetCard.cloneNode(true);
-      cardLayer.classList.remove("is-transition-target", "is-shaking");
-      cardLayer.classList.add("transition-card-content");
-      cardLayer.removeAttribute("id");
-      cardLayer.setAttribute("tabindex", "-1");
-      tile.appendChild(cardLayer);
-      fixedRectStyles(tile, target);
-      document.body.appendChild(tile);
-      targetCard.classList.add("is-transition-target");
-      var translateX = boardRect.left - target.left;
-      var translateY = boardRect.top - target.top;
-      var scaleX = boardRect.width / target.width;
-      var scaleY = boardRect.height / target.height;
+      var translateX = target.left + target.width / 2 - (boardRect.left + boardRect.width / 2);
+      var translateY = target.top + target.height / 2 - (boardRect.top + boardRect.height / 2);
+      var scaleX = target.width / boardRect.width;
+      var scaleY = target.height / boardRect.height;
+      var uniformScale = Math.min(scaleX, scaleY);
+      var canvasCounterScaleX = uniformScale / scaleX;
+      var canvasCounterScaleY = uniformScale / scaleY;
+      var targetRadius = parseFloat(window.getComputedStyle(targetCard).borderRadius) || 21;
+      var transformedTargetRadius = targetRadius / scaleX + "px / " + targetRadius / scaleY + "px";
       var animation = tile.animate([
         {
-          transformOrigin: "top left",
-          transform: "translate(" + translateX + "px, " + translateY + "px) scale(" + scaleX + ", " + scaleY + ")",
-          borderRadius: "28px",
-          backgroundColor: "rgba(251, 250, 246, 0.94)",
-          boxShadow: "0 18px 48px rgba(46, 51, 46, 0.16)"
+          transformOrigin: "center",
+          transform: "none",
+          borderRadius: boardRadius,
+          filter: "none",
+          easing: LIQUID_CARD_TRAVEL_EASING
         },
         {
-          transformOrigin: "top left",
-          transform: "translate(0, 0) scale(1)",
-          borderRadius: "20px",
-          backgroundColor: "rgba(251, 250, 246, 0)",
-          boxShadow: "none"
+          transformOrigin: "center",
+          transform: "translate(" + translateX + "px, " + translateY + "px) scale(" + scaleX + ", " + scaleY + ")",
+          borderRadius: transformedTargetRadius,
+          filter: "none"
         }
       ], {
-        duration: REVERSIBLE_MOTION_DURATION,
-        easing: REVERSIBLE_MOTION_EASING,
+        duration: LIQUID_CARD_RETURN_DURATION,
+        easing: LIQUID_CARD_MOTION_EASING,
         fill: "forwards"
       });
+      tile.animate([
+        { opacity: 1 },
+        { offset: 0.68, opacity: 1 },
+        { opacity: 0 }
+      ], { duration: LIQUID_CARD_RETURN_DURATION, easing: "linear", fill: "forwards" });
       tileCanvas.animate([
-        { opacity: 1, filter: "blur(0)" },
-        { offset: 0.5, opacity: 0.72, filter: "blur(0)" },
-        { opacity: 0, filter: "blur(1.5px)" }
-      ], { duration: REVERSIBLE_MOTION_DURATION, easing: REVERSIBLE_MOTION_EASING, fill: "forwards" });
-      cardLayer.animate([
-        { opacity: 0, transform: "scale(0.97)" },
-        { offset: 0.5, opacity: 0, transform: "scale(0.97)" },
-        { opacity: 1, transform: "scale(1)" }
-      ], { duration: REVERSIBLE_MOTION_DURATION, easing: REVERSIBLE_MOTION_EASING, fill: "forwards" });
+        { opacity: 1, transform: "none", filter: "none", easing: LIQUID_CARD_TRAVEL_EASING },
+        {
+          offset: 0.52,
+          opacity: 0.58,
+          transform: "scale(" + canvasCounterScaleX + ", " + canvasCounterScaleY + ")",
+          filter: "none",
+          easing: LIQUID_CARD_TRAVEL_EASING
+        },
+        {
+          opacity: 0,
+          transform: "scale(" + canvasCounterScaleX + ", " + canvasCounterScaleY + ")",
+          filter: "blur(0.8px)"
+        }
+      ], { duration: LIQUID_CARD_RETURN_DURATION, easing: LIQUID_CARD_MOTION_EASING, fill: "forwards" });
+      var cardAnimation = targetCard.animate([
+        { opacity: 0, transform: "scale(0.96)" },
+        { offset: 0.44, opacity: 0, transform: "scale(0.96)" },
+        { offset: 0.88, opacity: 1, transform: "none" },
+        { opacity: 1, transform: "none" }
+      ], { duration: LIQUID_CARD_RETURN_DURATION, easing: LIQUID_CARD_TRAVEL_EASING, fill: "forwards" });
       animation.onfinish = function finishBoardCollapse() {
         targetCard.classList.add("is-transition-ready", "is-handoff-stable");
         targetCard.classList.remove("is-transition-target");
         requestAnimationFrame(function paintRealCardBelowTransition() {
+          cardAnimation.cancel();
           requestAnimationFrame(function retireTransitionLayer() {
             finishNavigationAnimation(tile);
             requestAnimationFrame(function restoreCardInteractions() {
@@ -751,7 +819,8 @@
       ? options.resumeMatch
       : null;
     var transition = options && options.transitionCard ? {
-      rect: options.transitionCard.getBoundingClientRect()
+      rect: options.transitionCard.getBoundingClientRect(),
+      borderRadius: window.getComputedStyle(options.transitionCard).borderRadius
     } : null;
     var levelSwitchDirection = options && options.levelSwitchDirection;
     turnToken += 1;

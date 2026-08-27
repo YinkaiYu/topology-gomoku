@@ -175,8 +175,9 @@ button,
   transform: none;
 }
 
-.game-screen.is-shared-enter .board-stage {
-  opacity: 0;
+.game-screen.is-shared-enter {
+  transform: none;
+  transition: opacity 240ms var(--soft-out), visibility 0s;
 }
 
 .level-transition-card,
@@ -201,8 +202,14 @@ button,
 
 .level-transition-board {
   display: block;
-  background: var(--card);
-  box-shadow: var(--shadow);
+  border: 1px solid rgba(255, 255, 255, 0.46);
+  background: rgba(251, 250, 246, 0.22);
+  -webkit-backdrop-filter: blur(7px) saturate(1.4) brightness(1.02);
+  backdrop-filter: blur(7px) saturate(1.4) brightness(1.02);
+  box-shadow:
+    inset 0 1px 1px rgba(255, 255, 255, 0.68),
+    inset 0 -1px 1px rgba(48, 104, 85, 0.055),
+    0 16px 40px rgba(43, 65, 55, 0.075);
 }
 
 .level-transition-board .transition-board-canvas {
@@ -212,30 +219,8 @@ button,
   display: block;
   width: 100%;
   height: 100%;
-  object-fit: cover;
-}
-
-.level-transition-board .transition-card-content {
-  position: absolute;
-  z-index: 1;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  min-height: 0;
-  margin: 0;
-  opacity: 0;
-  pointer-events: none;
-}
-
-.level-transition-board .transition-card-content,
-.level-transition-board .transition-card-content * {
-  animation: none !important;
-  transition: none !important;
-}
-
-.level-transition-board .transition-card-content.is-revealed .level-glyph {
-  opacity: 0.9;
-  transform: none;
+  object-fit: contain;
+  transform-origin: center;
 }
 
 .level-card.is-transition-target {
@@ -791,19 +776,19 @@ button,
   place-items: center;
   overflow: hidden;
   isolation: isolate;
-  border: 1px solid rgba(255, 255, 255, 0.7);
+  border: 1px solid rgba(255, 255, 255, 0.48);
   border-radius: 29px;
   background:
-    linear-gradient(138deg, rgba(255, 255, 255, 0.36), rgba(223, 241, 232, 0.1)),
-    rgba(251, 250, 246, 0.27);
-  -webkit-backdrop-filter: blur(6px) saturate(1.34) brightness(1.025);
-  backdrop-filter: blur(6px) saturate(1.34) brightness(1.025);
+    linear-gradient(138deg, rgba(255, 255, 255, 0.22), rgba(223, 241, 232, 0.045)),
+    rgba(251, 250, 246, 0.16);
+  -webkit-backdrop-filter: blur(7px) saturate(1.4) brightness(1.02);
+  backdrop-filter: blur(7px) saturate(1.4) brightness(1.02);
   box-shadow:
-    inset 0 1px 1px rgba(255, 255, 255, 0.94),
-    inset 0 -1px 2px rgba(48, 104, 85, 0.11),
-    inset 1px 0 1px rgba(211, 255, 245, 0.35),
-    inset -1px 0 1px rgba(255, 230, 195, 0.2),
-    0 20px 48px rgba(43, 65, 55, 0.1);
+    inset 0 1px 1px rgba(255, 255, 255, 0.68),
+    inset 0 -1px 1px rgba(48, 104, 85, 0.055),
+    inset 1px 0 1px rgba(211, 255, 245, 0.18),
+    inset -1px 0 1px rgba(255, 230, 195, 0.12),
+    0 16px 40px rgba(43, 65, 55, 0.075);
   transform-origin: center;
   transition: transform 520ms var(--spring), opacity 320ms ease, box-shadow 420ms ease;
 }
@@ -811,12 +796,10 @@ button,
 .board-stage::after {
   position: absolute;
   z-index: 5;
-  inset: 4px;
-  border: 1px solid rgba(255, 255, 255, 0.3);
+  inset: 2px;
+  border: 0;
   border-radius: 25px;
-  box-shadow:
-    inset 2px 2px 4px rgba(255, 255, 255, 0.27),
-    inset -2px -2px 5px rgba(35, 86, 68, 0.07);
+  background: linear-gradient(138deg, rgba(255, 255, 255, 0.14), transparent 34%, rgba(202, 255, 242, 0.025) 68%, transparent);
   content: "";
   pointer-events: none;
 }

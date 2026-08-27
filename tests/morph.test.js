@@ -550,7 +550,8 @@ test("按住棋子拖动时保持连续可见并以阻尼弹簧吸附到最近�
 test("目录卡片、棋盘与顶栏按钮共享通透液态玻璃语言", () => {
   const style = fs.readFileSync(path.join(ROOT, "app", "assets", "style.css"), "utf8");
   assert.match(style, /\.level-card\s*\{[\s\S]*backdrop-filter: blur\(5px\) saturate\(1\.36\)/);
-  assert.match(style, /\.board-stage\s*\{[\s\S]*backdrop-filter: blur\(6px\) saturate\(1\.34\)/);
+  assert.match(style, /\.board-stage\s*\{[\s\S]*backdrop-filter: blur\(7px\) saturate\(1\.4\)/);
+  assert.match(style, /\.board-stage\s*\{[\s\S]*border: 1px solid rgba\(255, 255, 255, 0\.48\)/);
   assert.match(style, /\.board-stage::after/);
   assert.match(style, /\.icon-button\s*\{[\s\S]*backdrop-filter: blur\(4px\) saturate\(1\.48\)/);
   assert.match(style, /\.icon-button:active\s*\{[\s\S]*scaleX\(1\.12\) scaleY\(1\.1\)/);
