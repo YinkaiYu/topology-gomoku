@@ -22,12 +22,12 @@
       "role": "Official Institute of Physics, Chinese Academy of Sciences roundel extracted without generative alteration from the user-provided IOP.pdf"
     },
     {
-      "asset": "C:/Windows/Fonts/STSONG.TTF",
-      "role": "Exact Chinese title and subtitle typography"
+      "asset": "C:/Windows/Fonts/STZHONGS.TTF",
+      "role": "Exact Chinese display-title typography"
     },
     {
-      "asset": "assets/noto-serif-sc-institution-400.ttf",
-      "role": "Exact institutional credit typography"
+      "asset": "C:/Windows/Fonts/msyhbd.ttc",
+      "role": "Exact bold Chinese subtitle and institutional-credit typography"
     }
   ]
 }
