@@ -12,6 +12,7 @@
 | 分支、worktree 或日常合并流 | `docs/development/repository.md` |
 | 稳定提升、平台发布或统一版本规则 | `docs/development/release.md` |
 | 命令、脚本、运行时、依赖或生成工具 | `docs/development/environment.md` |
+| 共享模块、状态机、渲染器或平台 adapter 边界 | `docs/development/architecture.md` |
 | 色彩、材质、字体、动效或组件语言 | `docs/design/visual-language.md` |
 | 视觉验收方法、视口、证据或已知限制 | `docs/design/qa.md` |
 | 小红书容器、JSBridge 或 ZIP 规范 | `.codex/SKILL.md` 及其 references |

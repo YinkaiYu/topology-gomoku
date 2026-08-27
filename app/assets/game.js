@@ -4,6 +4,7 @@
   var Engine = window.TopologyGomoku;
   var Morph = window.TopologyMorph;
   var Replay = window.TopologyReplay;
+  var Content = window.TopologyGameContent;
   var STORAGE_KEY = "topology-gomoku:v1";
   var TUTORIAL_AUTO_ADVANCE_DELAY = 820;
   var TUTORIAL_PROMPTS = [
@@ -186,6 +187,17 @@
     hard: { label: "深思", wait: 680, rank: 3 }
   };
   var DIFFICULTY_ORDER = ["easy", "normal", "hard"];
+
+  // Content is a host-neutral source shared by the H5 and native adapters.
+  // Keep the legacy literals above temporarily so older cached HTML can still
+  // boot this script, but prefer the versioned shared module whenever present.
+  if (Content) {
+    TUTORIAL_AUTO_ADVANCE_DELAY = Content.TUTORIAL_AUTO_ADVANCE_DELAY;
+    TUTORIAL_PROMPTS = Content.TUTORIAL_PROMPTS;
+    LEVELS = Content.LEVELS;
+    DIFFICULTIES = Content.DIFFICULTIES;
+    DIFFICULTY_ORDER = Content.DIFFICULTY_ORDER;
+  }
 
   var dom = {
     appShell: document.getElementById("appShell"),
