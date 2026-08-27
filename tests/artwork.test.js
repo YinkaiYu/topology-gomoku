@@ -49,19 +49,26 @@ test("图鉴矢量在手机小尺寸下保持清晰", () => {
   assert.match(style, /\.level-glyph\s*\{[^}]*opacity:\s*1/s);
   assert.match(style, /100%\s*\{\s*opacity:\s*1;\s*transform:\s*scale\(1\) rotate\(0\);\s*\}/);
   const sphere = fs.readFileSync(path.join(TOPOLOGY_DIR, "sphere.svg"), "utf8");
-  assert.match(sphere, /stroke="#282522" stroke-width="3\.14"[^>]*vector-effect="non-scaling-stroke"/);
-  assert.match(sphere, /clip-path="url\(#sphereClip\)"[^>]*stroke="#282522"[^>]*stroke-width="2\.8"/);
+  assert.match(sphere, /stroke="#282522" stroke-width="1\.76"[^>]*data-ink-layer="gesture"/);
+  assert.match(sphere, /stroke="#282522"[^>]*stroke-width="2\.32"[^>]*stroke-dasharray="[0-9 ]+"[^>]*data-ink-layer="pressure"/);
   ["#f4f2ea", "#fbf9f2", "#d1cec4", "#d6d2c7"].forEach((color) => {
     assert.match(sphere, new RegExp(`fill="${color}"`));
   });
   ["#efede5", "#f8f6ef", "#d0cdc4", "#dedbd2"].forEach((color) => {
     assert.doesNotMatch(sphere, new RegExp(color));
   });
-  assert.equal((sphere.match(/vector-effect="non-scaling-stroke"/g) || []).length, 5);
+  assert.equal((sphere.match(/vector-effect="non-scaling-stroke"/g) || []).length, 10);
   assert.doesNotMatch(sphere, /filter="url\(#handLine\)"/);
   NAMES.forEach((name) => {
     const svg = fs.readFileSync(path.join(TOPOLOGY_DIR, `${name}.svg`), "utf8");
     assert.doesNotMatch(svg, /<filter\b|<fe[A-Z]/, `${name}: rasterized SVG effect`);
+    assert.match(svg, /data-ink-layer="gesture"/, `${name}: missing continuous gesture line`);
+    assert.match(svg, /data-ink-layer="pressure"/, `${name}: missing pressure variation`);
+    assert.match(svg, /stroke-dasharray="[0-9. ]+"/, `${name}: missing pressure rhythm`);
+    const inkWidths = [...svg.matchAll(/stroke="#282522"[^>]*stroke-width="([0-9.]+)"/g)]
+      .map((match) => Number(match[1]));
+    assert.ok(new Set(inkWidths).size >= 2, `${name}: uniform ink width`);
+    assert.ok(Math.max(...inkWidths) <= 2.54, `${name}: ink is still too heavy`);
   });
 });
 
@@ -84,7 +91,8 @@ test("高阶关卡使用明确的拓扑形态模型", () => {
 test("莫比乌斯带具有一条连续的真实边界描线", () => {
   const svg = fs.readFileSync(path.join(TOPOLOGY_DIR, "mobius.svg"), "utf8");
   assert.match(svg, /data-model="shaded-mobius-embedding"/);
-  assert.match(svg, /stroke-width="3\.14"/);
+  assert.match(svg, /data-ink-layer="gesture"/);
+  assert.match(svg, /data-ink-layer="pressure"/);
 });
 
 test("目录中的高阶拓扑必须通关后才揭示图鉴", () => {
@@ -99,6 +107,10 @@ test("目录中的高阶拓扑必须通关后才揭示图鉴", () => {
   assert.equal((html.match(/class="level-silhouette"/g) || []).length, 6);
   assert.match(style, /\.level-card:not\(\.is-revealed\) \.level-glyph\s*\{[^}]*opacity:\s*0/s);
   assert.doesNotMatch(style, /\.level-mystery::before\s*\{[^}]*border-radius:/s);
+  assert.doesNotMatch(html, /class="level-state"/);
+  assert.doesNotMatch(style, /\.level-state/);
+  assert.doesNotMatch(style, /\.level-grid::before/);
+  assert.doesNotMatch(style, /border-left:\s*1px dashed rgba\(63, 140, 135/);
 });
 
 test("未揭示图鉴使用真实模型外轮廓的无孔实心剪影", () => {

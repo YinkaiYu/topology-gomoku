@@ -282,6 +282,33 @@ def mix_color(light: tuple[int, int, int], dark: tuple[int, int, int], amount: f
     return "#" + "".join(f"{channel:02x}" for channel in channels)
 
 
+def ink_layers(points: list[tuple[float, float]], closed: bool, base_width: float,
+               opacity: float, seed: float) -> list[str]:
+    """Build a crisp continuous line plus sparse pressure accents for hand-drawn rhythm."""
+    data = path_data(points, closed)
+    pressure_width = base_width + 0.56
+    dash_offset = seed % 37
+    pressure_pattern = " ".join(f"{value:.1f}" for value in (
+        13 + (seed * 0.7) % 9,
+        8 + (seed * 1.1) % 7,
+        5 + (seed * 1.7) % 6,
+        12 + (seed * 0.9) % 10,
+        18 + (seed * 1.3) % 12,
+        21 + (seed * 0.6) % 14,
+    ))
+    common = (
+        f'd="{data}" fill="none" stroke="{INK}" stroke-linecap="round" '
+        'stroke-linejoin="round" vector-effect="non-scaling-stroke"'
+    )
+    return [
+        f'<path {common} stroke-width="{base_width:.2f}" stroke-opacity="{opacity:.2f}" '
+        'data-ink-layer="gesture"/>',
+        f'<path {common} pathLength="100" stroke-width="{pressure_width:.2f}" '
+        f'stroke-opacity="0.88" stroke-dasharray="{pressure_pattern}" '
+        f'stroke-dashoffset="{dash_offset:.2f}" data-ink-layer="pressure"/>',
+    ]
+
+
 def render(glyph: Glyph) -> str:
     rotated_curves: list[tuple[Curve, list[Point3]]] = []
     rotated_patches: list[list[Point3]] = []
@@ -339,12 +366,16 @@ def render(glyph: Glyph) -> str:
     outline = convex_hull(point for points, _depth, _fill in projected_patches for point in points) \
         if glyph.hull_outline else []
     curve_paths: list[str] = []
-    for curve, points, _depth in transformed:
-        curve_paths.append(
-            f'<path d="{path_data(points, curve.closed)}" fill="none" stroke="{INK}" '
-            f'stroke-width="{curve.width * 1.12:.2f}" stroke-opacity="{curve.opacity:.2f}" '
-            'stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke"/>'
-        )
+    for curve_index, (curve, points, _depth) in enumerate(transformed):
+        curve_paths.extend(ink_layers(
+            points,
+            curve.closed,
+            max(1.46, curve.width * 0.66),
+            curve.opacity,
+            wobble_seed + curve_index * 11.3,
+        ))
+
+    outline_paths = ink_layers(outline, True, 1.76, 0.96, wobble_seed + 23.7) if outline else []
 
     return "\n".join([
         '<?xml version="1.0" encoding="UTF-8"?>',
@@ -353,8 +384,7 @@ def render(glyph: Glyph) -> str:
         '  <g>',
         *[f"    {path}" for path in surface_paths],
         '  </g>',
-        *([f'  <path d="{path_data(outline, True)}" fill="none" stroke="{INK}" stroke-width="3.14" '
-           'stroke-opacity="0.96" stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke"/>'] if outline else []),
+        *[f"  {path}" for path in outline_paths],
         '  <g>',
         *[f"    {path}" for path in curve_paths],
         '  </g>',

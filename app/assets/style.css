@@ -395,16 +395,6 @@ button,
   gap: 9px;
 }
 
-.level-grid::before {
-  position: absolute;
-  z-index: -1;
-  top: 12%;
-  bottom: 28%;
-  left: 50%;
-  border-left: 1px dashed rgba(63, 140, 135, 0.2);
-  content: "";
-}
-
 .level-card {
   position: relative;
   display: grid;
@@ -495,8 +485,7 @@ button,
 }
 
 .level-card.is-locked .level-name,
-.level-card.is-locked .level-type,
-.level-card.is-locked .level-state {
+.level-card.is-locked .level-type {
   opacity: 0.48;
 }
 
@@ -629,51 +618,6 @@ button,
   font-size: 9px;
   letter-spacing: 0.16em;
   line-height: 1.05;
-}
-
-.level-state {
-  position: absolute;
-  top: 13px;
-  right: 13px;
-  display: grid;
-  width: 19px;
-  height: 19px;
-  place-items: center;
-  border-radius: 50%;
-}
-
-.level-card.is-complete .level-state {
-  color: white;
-  background: var(--teal);
-}
-
-.level-card.is-complete .level-state::after {
-  width: 7px;
-  height: 4px;
-  border-bottom: 1.8px solid currentColor;
-  border-left: 1.8px solid currentColor;
-  content: "";
-  transform: translateY(-1px) rotate(-45deg);
-}
-
-.level-card.is-locked .level-state::before {
-  width: 8px;
-  height: 7px;
-  border: 1.5px solid currentColor;
-  border-radius: 2px;
-  content: "";
-  transform: translateY(2px);
-}
-
-.level-card.is-locked .level-state::after {
-  position: absolute;
-  top: 2px;
-  width: 6px;
-  height: 7px;
-  border: 1.5px solid currentColor;
-  border-bottom: 0;
-  border-radius: 5px 5px 0 0;
-  content: "";
 }
 
 .primary-button,
