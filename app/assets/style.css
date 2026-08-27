@@ -1197,7 +1197,8 @@ html[data-toy-container="bilibili-app"][data-toy-immersive="true"] {
 .settings-softbody > .setting-row:nth-child(3) { transform: scaleX(0.64); }
 .settings-softbody > .setting-row:nth-child(4) { transform: scaleX(0.56); }
 .settings-softbody > .setting-row:nth-child(5) { transform: scaleX(0.48); }
-.settings-softbody > .sheet-done { transform: scaleX(0.4); }
+.settings-softbody > .setting-row:nth-child(6) { transform: scaleX(0.44); }
+.settings-softbody > .sheet-done { transform: scaleX(0.38); }
 
 .settings-sheet.is-visible .settings-softbody > .sheet-handle,
 .settings-sheet.is-visible .settings-softbody > .sheet-head,

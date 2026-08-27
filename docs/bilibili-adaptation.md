@@ -13,7 +13,7 @@
 - 平板适度扩大容器和棋盘，避免把平板当作放大的手机或缩小的 PC。
 - PC 维持居中、克制的最大宽度，并提供 hover 与键盘操作。
 - 短横屏把首页改为主视觉与旅程双区布局，棋局压缩非核心垂直间距。
-- App 沉浸容器减少重复顶部留白，同时以 SDK 安全区为准。
+- App 默认保留 Toy 详情页的 UP 主信息、评论等互动区域；用户可在设置中主动开启沉浸模式。
 
 ## 已发现并修复的问题
 
@@ -36,7 +36,7 @@
 - 页面保留 `viewport-fit=cover`，补齐 top/right/bottom/left 四向安全区。
 - 新增 `bilibili-adapter.js` 作为唯一平台边界，游戏规则代码不直接判断宿主。
 - adapter 使用 Toy SDK `onContainerChange` 接收设备、方向、视口、沉浸状态与安全区，并在变化后触发画布重排。
-- App 内请求 `orientation: auto` 与 `immersive: true`；实际状态仍以 `onContainerChange` 回调为准。
+- App 内始终请求 `orientation: auto`，沉浸模式默认关闭；设置页提供用户开关，只有用户主动开启时才请求 `immersive: true`，实际状态仍以 `onContainerChange` 回调为准。
 - Web 或不支持 SDK 的环境自动回退到浏览器视口、CSS media query 和标准 `env(safe-area-inset-*)`。
 
 ## 验证结果

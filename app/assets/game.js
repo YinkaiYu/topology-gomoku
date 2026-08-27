@@ -162,6 +162,7 @@
     difficultyButtons: Array.prototype.slice.call(document.querySelectorAll("[data-difficulty]")),
     hintSwitch: document.getElementById("hintSwitch"),
     soundSwitch: document.getElementById("soundSwitch"),
+    immersiveSwitch: document.getElementById("immersiveSwitch"),
     developerButton: document.getElementById("developerButton"),
     developerSheet: document.getElementById("developerSheet"),
     closeDeveloperButton: document.getElementById("closeDeveloperButton"),
@@ -231,7 +232,8 @@
       bestDifficulty: [],
       difficulty: "normal",
       hints: true,
-      sound: true
+      sound: true,
+      immersive: false
     };
   }
 
@@ -248,6 +250,7 @@
       defaults.difficulty = DIFFICULTIES[stored.difficulty] ? stored.difficulty : "normal";
       defaults.hints = stored.hints !== false;
       defaults.sound = stored.sound !== false;
+      defaults.immersive = stored.immersive === true;
       return defaults;
     } catch (error) {
       return defaults;
@@ -1231,6 +1234,8 @@
     dom.hintSwitch.setAttribute("aria-checked", prefs.hints ? "true" : "false");
     syncSwitchUI(dom.soundSwitch, prefs.sound);
     dom.soundSwitch.setAttribute("aria-checked", prefs.sound ? "true" : "false");
+    syncSwitchUI(dom.immersiveSwitch, prefs.immersive);
+    dom.immersiveSwitch.setAttribute("aria-checked", prefs.immersive ? "true" : "false");
     dom.difficultyLabel.textContent = DIFFICULTIES[prefs.difficulty].label;
   }
 
@@ -1278,6 +1283,28 @@
     savePreferences();
     syncSettingsUI();
     requestRender();
+    sound.play("ui");
+  }
+
+  function applyImmersivePreference() {
+    var platform = window.BilibiliToyPlatform;
+    if (!platform || typeof platform.setImmersive !== "function") {
+      return;
+    }
+    Promise.resolve(platform.setImmersive(prefs.immersive)).then(function handleImmersiveResult(applied) {
+      if (applied === false && prefs.immersive) {
+        prefs.immersive = false;
+        savePreferences();
+        syncSettingsUI();
+      }
+    });
+  }
+
+  function setImmersiveEnabled(enabled) {
+    prefs.immersive = Boolean(enabled);
+    savePreferences();
+    syncSettingsUI();
+    applyImmersivePreference();
     sound.play("ui");
   }
 
@@ -1506,7 +1533,8 @@
       { element: softbody.querySelectorAll(".setting-row")[0], collapse: 0.36 },
       { element: softbody.querySelectorAll(".setting-row")[1], collapse: 0.44 },
       { element: softbody.querySelectorAll(".setting-row")[2], collapse: 0.52 },
-      { element: softbody.querySelector(".sheet-done"), collapse: 0.6 }
+      { element: softbody.querySelectorAll(".setting-row")[3], collapse: 0.58 },
+      { element: softbody.querySelector(".sheet-done"), collapse: 0.64 }
     ];
     var drag = null;
 
@@ -3538,6 +3566,7 @@
     bindDifficultySlider();
     bindLiquidSwitch(dom.hintSwitch, function hintsEnabled() { return prefs.hints; }, setHintsEnabled);
     bindLiquidSwitch(dom.soundSwitch, function soundEnabled() { return prefs.sound; }, setSoundEnabled);
+    bindLiquidSwitch(dom.immersiveSwitch, function immersiveEnabled() { return prefs.immersive; }, setImmersiveEnabled);
     bindSettingsSheetDismiss();
     dom.developerButton.addEventListener("click", openDeveloperTools);
     dom.closeDeveloperButton.addEventListener("click", function closeDeveloperTools() { closeActiveSheet(false); });
@@ -3599,6 +3628,7 @@
     bindEvents();
     updateHome();
     syncSettingsUI();
+    applyImmersivePreference();
     var warmSphereParameterization = function warmSphereParameterization() {
       if (Morph && typeof Morph.prepareSphere === "function") {
         Morph.prepareSphere();

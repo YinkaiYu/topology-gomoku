@@ -4,6 +4,12 @@
   var root = document.documentElement;
   var cleanup = [];
   var lastState = null;
+  var sdk = null;
+  var supportsMode = false;
+  var readyPromise = null;
+
+  root.dataset.toyImmersive = "false";
+  root.dataset.toyImmersiveRequested = "false";
 
   function finitePixel(value) {
     var number = Number(value);
@@ -48,8 +54,18 @@
     }
   }
 
+  async function requestContainerMode(immersive) {
+    if (!supportsMode || !sdk || typeof sdk.setContainerMode !== "function") {
+      return false;
+    }
+    var enabled = Boolean(immersive);
+    await sdk.setContainerMode({ orientation: "auto", immersive: enabled });
+    root.dataset.toyImmersiveRequested = String(enabled);
+    return true;
+  }
+
   async function initializeSdk() {
-    var sdk = window.toy;
+    sdk = window.toy;
     if (!sdk || typeof sdk.isSupport !== "function") {
       root.dataset.toyContainer = "browser";
       return;
@@ -66,10 +82,8 @@
         cleanup.push(off);
       }
 
-      var supportsMode = await sdk.isSupport("setContainerMode");
-      if (supportsMode && typeof sdk.setContainerMode === "function") {
-        await sdk.setContainerMode({ orientation: "auto", immersive: true });
-      }
+      supportsMode = Boolean(await sdk.isSupport("setContainerMode"));
+      await requestContainerMode(false);
     } catch (error) {
       root.dataset.toyContainer = lastState ? "bilibili-app" : "browser";
     }
@@ -87,12 +101,19 @@
 
   setViewportHeight();
   addViewportListeners();
-  initializeSdk();
+  readyPromise = initializeSdk();
   window.addEventListener("pagehide", destroy, { once: true });
 
   window.BilibiliToyPlatform = {
     getContainerState: function getContainerState() {
       return lastState;
+    },
+    setImmersive: function setImmersive(enabled) {
+      return readyPromise.then(function applyRequestedMode() {
+        return requestContainerMode(Boolean(enabled));
+      }).catch(function rejectRequestedMode() {
+        return false;
+      });
     },
     refreshViewport: setViewportHeight
   };
