@@ -175,6 +175,7 @@
     developerGameControls: document.getElementById("developerGameControls"),
     developerGameStatus: document.getElementById("developerGameStatus"),
     developerPauseSwitch: document.getElementById("developerPauseSwitch"),
+    developerPieceControl: document.getElementById("developerPieceControl"),
     developerPlayerButtons: Array.prototype.slice.call(document.querySelectorAll("[data-developer-player]")),
     developerUnlockButtons: Array.prototype.slice.call(document.querySelectorAll("[data-developer-unlock]")),
     developerPlayerWin: document.getElementById("developerPlayerWin"),
@@ -1839,6 +1840,13 @@
     });
     dom.developerPauseSwitch.classList.toggle("is-on", developer.aiPaused);
     dom.developerPauseSwitch.setAttribute("aria-checked", developer.aiPaused ? "true" : "false");
+    dom.developerPieceControl.dataset.index = developer.placementPlayer === HUMAN ? "0" : "1";
+    dom.developerPlayerButtons.forEach(function syncDeveloperPlayerA11y(button) {
+      button.setAttribute(
+        "aria-pressed",
+        Number(button.dataset.developerPlayer) === developer.placementPlayer ? "true" : "false"
+      );
+    });
     if (game) {
       var turnLabel = game.status === "ended" ? "已结束" : (game.turn === AI ? "对手回合" : "玩家回合");
       dom.developerGameStatus.textContent = padLevelNumber(game.levelIndex) + " " + game.level.name + " · " + turnLabel;

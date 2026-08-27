@@ -392,6 +392,21 @@ test("设置页使用液态玻璃层次且三个控件均支持连续拖动", ()
   assert.match(style, /\.switch\.is-dragging \.switch-lens-track\s*\{\s*opacity:\s*0\.9/);
 });
 
+test("测试控制台沿用设置页液态玻璃风格且双项落子控制对齐", () => {
+  const game = fs.readFileSync(path.join(ROOT, "app", "assets", "game.js"), "utf8");
+  const html = fs.readFileSync(path.join(ROOT, "app", "index.html"), "utf8");
+  const style = fs.readFileSync(path.join(ROOT, "app", "assets", "style.css"), "utf8");
+  assert.match(html, /class="sheet settings-sheet developer-sheet"/);
+  assert.match(html, /class="settings-softbody developer-softbody"/);
+  assert.doesNotMatch(html, /DEVELOPER MODE/);
+  assert.match(html, /id="developerPieceControl" data-index="0"/);
+  assert.match(style, /\.developer-piece-control\s*\{\s*grid-template-columns:\s*repeat\(2, minmax\(0, 1fr\)\)/);
+  assert.match(style, /\.developer-piece-control \.segmented-glass-thumb\s*\{\s*width:\s*calc\(\(100% - 11px\) \/ 2\)/);
+  assert.match(style, /\.developer-action-grid button,[\s\S]*backdrop-filter:\s*blur\(4px\) saturate\(1\.42\)/);
+  assert.match(game, /developerPieceControl:\s*document\.getElementById\("developerPieceControl"\)/);
+  assert.match(game, /dom\.developerPieceControl\.dataset\.index = developer\.placementPlayer === HUMAN \? "0" : "1"/);
+});
+
 test("棋子按下时沿棋盘法向压薄并在平面内均匀鼓大，松手后回弹", () => {
   const game = fs.readFileSync(path.join(ROOT, "app", "assets", "game.js"), "utf8");
   assert.match(game, /pressedAt:\s*0/);
@@ -432,7 +447,7 @@ test("所有可按压玻璃控件在手指按下时向外鼓起而非缩小", ()
   assert.match(style, /\.developer-fab:active\s*\{[\s\S]*scale\(1\.08\)/);
   assert.match(style, /\.settings-sheet \.close-button:active\s*\{[\s\S]*scaleX\(1\.14\) scaleY\(1\.12\)/);
   assert.match(style, /\.settings-sheet \.sheet-done:active\s*\{[\s\S]*scaleX\(1\.035\) scaleY\(1\.08\)/);
-  assert.match(style, /\.developer-reset:active\s*\{[\s\S]*scale\(1\.06\)/);
+  assert.match(style, /\.developer-reset:active\s*\{[\s\S]*scaleX\(1\.035\) scaleY\(1\.075\)/);
 });
 
 test("设置面板以可逆梯形软体层展开且支持抓住顶部下拉收回", () => {
