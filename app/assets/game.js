@@ -113,8 +113,8 @@
       yConnection: "adjacent",
       ruleTitle: "邻边相合",
       ruleText: "相邻两边，转向后相接",
-      demoStart: [4, 1],
-      demoDirection: 7
+      demoStart: [2, 1],
+      demoDirection: 6
     }
   ];
 
@@ -1016,6 +1016,7 @@
             var shapeCost = Math.abs(shape.x - 1) + Math.abs(shape.y - 1) + Math.abs(shape.z - 1);
             var lineDeviation = 0;
             var turnPenalty = 0;
+            var sphereSingularityDepth = 0;
             if (game.level.topology === "sphere" && points.length > 2) {
               var lineStart = points[0];
               var lineEnd = points[points.length - 1];
@@ -1035,6 +1036,18 @@
                   incomingX * outgoingX + incomingY * outgoingY
                 ) / Math.max(1, Math.hypot(incomingX, incomingY) * Math.hypot(outgoingX, outgoingY));
               }
+              var sphereView = {
+                x: pitch,
+                y: yaw,
+                z: roll,
+                shapeX: 1,
+                shapeY: 1,
+                shapeZ: 1,
+                presentation: presentation
+              };
+              var upperPole = Morph.project("sphere", 2 / 3, 1 / 3, renderState.width, renderState.height, sphereView);
+              var lowerPole = Morph.project("sphere", 1 / 3, 2 / 3, renderState.width, renderState.height, sphereView);
+              sphereSingularityDepth = Math.max(Math.abs(upperPole.depth), Math.abs(lowerPole.depth));
             }
             var score = averageDepth * 5.4 + minDepth * 4.8;
             score -= Math.abs(pathLength - targetLength) / size * 1.35;
@@ -1047,6 +1060,7 @@
             score -= shapeCost * 0.28;
             score -= lineDeviation * 5.6;
             score -= turnPenalty * 0.72;
+            score -= sphereSingularityDepth * 1.15;
             if (score > bestScore) {
               bestScore = score;
               best = {
@@ -1987,15 +2001,11 @@
     surfaceGradient.addColorStop(0.48, "rgba(238,235,226,0.98)");
     surfaceGradient.addColorStop(1, "rgba(213,210,201,0.98)");
 
-    var sphereShellBlend = game.level.topology === "sphere"
-      ? Morph.smooth((morph - 0.58) / 0.34) * clamp01(1 - (Math.abs(spin.wobbleX || 0) + Math.abs(spin.wobbleY || 0)) * 7)
-      : 0;
-
     ctx.save();
-    ctx.globalAlpha = (0.3 + morph * 0.66) * (1 - sphereShellBlend * 0.92);
+    ctx.globalAlpha = 0.3 + morph * 0.66;
     ctx.fillStyle = surfaceGradient;
     ctx.strokeStyle = surfaceGradient;
-    ctx.lineWidth = game.level.topology === "sphere" ? 1.05 : 0.82;
+    ctx.lineWidth = 0.82;
     ctx.lineJoin = "round";
     patches.forEach(function drawPatch(patch) {
       ctx.beginPath();
@@ -2008,29 +2018,6 @@
       ctx.stroke();
     });
     ctx.restore();
-
-    if (sphereShellBlend > 0) {
-      var sphereScale = Number(spin.scale) || 1;
-      var sphereRadius = Math.min(renderState.width, renderState.height) * 0.315 * sphereScale;
-      var sphereGradient = ctx.createRadialGradient(
-        renderState.width * 0.45,
-        renderState.height * 0.41,
-        sphereRadius * 0.08,
-        renderState.width * 0.5,
-        renderState.height * 0.5,
-        sphereRadius
-      );
-      sphereGradient.addColorStop(0, "rgba(253,252,248,0.99)");
-      sphereGradient.addColorStop(0.58, "rgba(240,238,231,0.99)");
-      sphereGradient.addColorStop(1, "rgba(211,208,198,0.99)");
-      ctx.save();
-      ctx.globalAlpha = sphereShellBlend * (0.32 + morph * 0.65);
-      ctx.fillStyle = sphereGradient;
-      ctx.beginPath();
-      ctx.arc(renderState.width * 0.5, renderState.height * 0.5, sphereRadius, 0, Math.PI * 2);
-      ctx.fill();
-      ctx.restore();
-    }
   }
 
   function appendCompletionSegment(points, from, to, samples, morph, spin) {
@@ -2188,8 +2175,10 @@
   }
 
   function completionSphereRailPoint(u, v, morph, spin) {
-    var xRatio = (u * game.rules.width - 0.5) / Math.max(1, game.rules.width - 1);
-    var yRatio = (v * game.rules.height - 0.5) / Math.max(1, game.rules.height - 1);
+    var firstUV = Morph.stoneUV(game.rules, 0);
+    var lastUV = Morph.stoneUV(game.rules, game.rules.cellCount - 1);
+    var xRatio = (u - firstUV.u) / Math.max(1e-6, lastUV.u - firstUV.u);
+    var yRatio = (v - firstUV.v) / Math.max(1e-6, lastUV.v - firstUV.v);
     return completionMappedPoint(
       renderState.layout.left + xRatio * (renderState.layout.right - renderState.layout.left),
       renderState.layout.top + yRatio * (renderState.layout.bottom - renderState.layout.top),
@@ -2200,46 +2189,23 @@
     );
   }
 
-  function smoothCompletionSphereRail(points, anchorInterval) {
-    var smoothed = points.map(function cloneRailPoint(point) {
-      return { x: point.x, y: point.y, depth: point.depth };
-    });
-    for (var pass = 0; pass < 3; pass += 1) {
-      var previous = smoothed;
-      smoothed = previous.map(function smoothRailPoint(point, index) {
-        // Every board intersection is an anchor: smoothing may reshape the
-        // curve between intersections, but never detaches a stone from its
-        // original chess-grid crossing.
-        if (index === 0 || index === previous.length - 1 || index % anchorInterval === 0) {
-          return point;
-        }
-        return {
-          x: previous[index - 1].x * 0.24 + point.x * 0.52 + previous[index + 1].x * 0.24,
-          y: previous[index - 1].y * 0.24 + point.y * 0.52 + previous[index + 1].y * 0.24,
-          depth: previous[index - 1].depth * 0.24 + point.depth * 0.52 + previous[index + 1].depth * 0.24
-        };
-      });
-    }
-    return smoothed;
-  }
-
   function drawCompletionSphereGrid(ctx, morph, spin) {
     var samples = 72;
-    var anchorInterval = samples / Math.max(1, game.rules.width - 1);
     var frontBlend = Morph.smooth((morph - 0.46) / 0.42);
     var depthThreshold = -0.012 * morph;
-    var firstU = 0.5 / game.rules.width;
-    var lastU = (game.rules.width - 0.5) / game.rules.width;
-    var firstV = 0.5 / game.rules.height;
-    var lastV = (game.rules.height - 0.5) / game.rules.height;
+    var firstGridUV = Morph.stoneUV(game.rules, 0);
+    var lastGridUV = Morph.stoneUV(game.rules, game.rules.cellCount - 1);
+    var firstU = firstGridUV.u;
+    var lastU = lastGridUV.u;
+    var firstV = firstGridUV.v;
+    var lastV = lastGridUV.v;
     for (var x = 0; x < game.rules.width; x += 1) {
-      var u = (x + 0.5) / game.rules.width;
+      var u = Morph.stoneUV(game.rules, x).u;
       var vertical = [];
       for (var verticalSample = 0; verticalSample <= samples; verticalSample += 1) {
         var verticalAmount = verticalSample / samples;
         vertical.push(completionSphereRailPoint(u, firstV + (lastV - firstV) * verticalAmount, morph, spin));
       }
-      vertical = smoothCompletionSphereRail(vertical, anchorInterval);
       ctx.save();
       ctx.globalAlpha *= 1 - frontBlend * 0.84;
       strokeSmoothCompletionPath(ctx, vertical);
@@ -2252,13 +2218,12 @@
       }
     }
     for (var y = 0; y < game.rules.height; y += 1) {
-      var v = (y + 0.5) / game.rules.height;
+      var v = Morph.stoneUV(game.rules, y * game.rules.width).v;
       var horizontal = [];
       for (var horizontalSample = 0; horizontalSample <= samples; horizontalSample += 1) {
         var horizontalAmount = horizontalSample / samples;
         horizontal.push(completionSphereRailPoint(firstU + (lastU - firstU) * horizontalAmount, v, morph, spin));
       }
-      horizontal = smoothCompletionSphereRail(horizontal, anchorInterval);
       ctx.save();
       ctx.globalAlpha *= 1 - frontBlend * 0.84;
       strokeSmoothCompletionPath(ctx, horizontal);
@@ -3294,6 +3259,16 @@
     bindEvents();
     updateHome();
     syncSettingsUI();
+    var warmSphereParameterization = function warmSphereParameterization() {
+      if (Morph && typeof Morph.prepareSphere === "function") {
+        Morph.prepareSphere();
+      }
+    };
+    if (typeof window.requestIdleCallback === "function") {
+      window.requestIdleCallback(warmSphereParameterization, { timeout: 1400 });
+    } else {
+      window.setTimeout(warmSphereParameterization, 1200);
+    }
     dom.developerButton.hidden = !DEV_MODE;
     if (DEV_MODE) {
       document.body.classList.add("is-developer-mode");

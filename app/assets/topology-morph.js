@@ -149,7 +149,7 @@
     ];
   }
 
-  function sphere(u, v) {
+  function sphereBase(u, v) {
     // The square is split along its diagonal.  Corresponding sides of the two
     // triangles are precisely top~left, right~bottom and the shared diagonal;
     // mapping them to opposite hemispheres therefore realizes the quotient
@@ -159,6 +159,106 @@
     var b = upper ? u - v : v - u;
     var c = upper ? v : u;
     return triangleHemisphere(a, b, c, upper ? 1 : -1);
+  }
+
+  // Six lattice intervals per board interval keep every 7x7 intersection
+  // exact while leaving enough resolution for a smooth low-bend solve.
+  var SPHERE_LATTICE_SIZE = 42;
+  var sphereLattice = null;
+
+  function buildSphereLattice() {
+    var size = SPHERE_LATTICE_SIZE;
+    var original = [];
+    var points = [];
+    for (var row = 0; row <= size; row += 1) {
+      var originalRow = [];
+      var pointRow = [];
+      for (var column = 0; column <= size; column += 1) {
+        var point = sphereBase(column / size, row / size);
+        originalRow.push(point);
+        pointRow.push(point.slice());
+      }
+      original.push(originalRow);
+      points.push(pointRow);
+    }
+
+    // Minimise a discrete bending energy before the grid is ever rendered.
+    // Horizontal and vertical neighbours behave like elastic rods: a point
+    // is pulled toward the spherical midpoint of both opposite neighbour
+    // pairs.  A light equal-area tether prevents the rods from collapsing or
+    // migrating into one hemisphere.  The quotient boundary stays fixed, so
+    // all original square-edge identifications remain exact.
+    for (var iteration = 0; iteration < 96; iteration += 1) {
+      var next = points.map(function cloneSphereRow(pointRow) {
+        return pointRow.map(function cloneSpherePoint(point) { return point.slice(); });
+      });
+      for (row = 1; row < size; row += 1) {
+        for (column = 1; column < size; column += 1) {
+          var current = points[row][column];
+          var horizontalMidpoint = normalize3([
+            points[row][column - 1][0] + points[row][column + 1][0],
+            points[row][column - 1][1] + points[row][column + 1][1],
+            points[row][column - 1][2] + points[row][column + 1][2]
+          ]);
+          var verticalMidpoint = normalize3([
+            points[row - 1][column][0] + points[row + 1][column][0],
+            points[row - 1][column][1] + points[row + 1][column][1],
+            points[row - 1][column][2] + points[row + 1][column][2]
+          ]);
+          var lowBendTarget = normalize3([
+            horizontalMidpoint[0] + verticalMidpoint[0],
+            horizontalMidpoint[1] + verticalMidpoint[1],
+            horizontalMidpoint[2] + verticalMidpoint[2]
+          ]);
+          var tether = original[row][column];
+          next[row][column] = normalize3([
+            current[0] * 0.34 + lowBendTarget[0] * 0.56 + tether[0] * 0.1,
+            current[1] * 0.34 + lowBendTarget[1] * 0.56 + tether[1] * 0.1,
+            current[2] * 0.34 + lowBendTarget[2] * 0.56 + tether[2] * 0.1
+          ]);
+        }
+      }
+      points = next;
+    }
+    return points;
+  }
+
+  function sphere(u, v) {
+    prepareSphere();
+    var size = SPHERE_LATTICE_SIZE;
+    var scaledU = clamp01(u) * size;
+    var scaledV = clamp01(v) * size;
+    var left = Math.min(size - 1, Math.floor(scaledU));
+    var top = Math.min(size - 1, Math.floor(scaledV));
+    var amountU = scaledU - left;
+    var amountV = scaledV - top;
+    if (scaledU >= size) {
+      left = size - 1;
+      amountU = 1;
+    }
+    if (scaledV >= size) {
+      top = size - 1;
+      amountV = 1;
+    }
+    var topLeft = sphereLattice[top][left];
+    var topRight = sphereLattice[top][left + 1];
+    var bottomLeft = sphereLattice[top + 1][left];
+    var bottomRight = sphereLattice[top + 1][left + 1];
+    return normalize3([
+      topLeft[0] * (1 - amountU) * (1 - amountV) + topRight[0] * amountU * (1 - amountV) +
+        bottomLeft[0] * (1 - amountU) * amountV + bottomRight[0] * amountU * amountV,
+      topLeft[1] * (1 - amountU) * (1 - amountV) + topRight[1] * amountU * (1 - amountV) +
+        bottomLeft[1] * (1 - amountU) * amountV + bottomRight[1] * amountU * amountV,
+      topLeft[2] * (1 - amountU) * (1 - amountV) + topRight[2] * amountU * (1 - amountV) +
+        bottomLeft[2] * (1 - amountU) * amountV + bottomRight[2] * amountU * amountV
+    ]);
+  }
+
+  function prepareSphere() {
+    if (!sphereLattice) {
+      sphereLattice = buildSphereLattice();
+    }
+    return sphereLattice;
   }
 
   function dot3(a, b) {
@@ -489,6 +589,16 @@
   function stoneUV(rules, cell) {
     var x = cell % rules.width;
     var y = Math.floor(cell / rules.width);
+    if (rules.type === "sphere") {
+      // Sphere seams are genuine glued edges rather than translated periods.
+      // Keep only a small elastic margin outside the first/last board lines;
+      // the former half-cell margin expanded into conspicuous empty wedges.
+      var inset = 0.24;
+      return {
+        u: (x + inset) / Math.max(1, rules.width - 1 + inset * 2),
+        v: (y + inset) / Math.max(1, rules.height - 1 + inset * 2)
+      };
+    }
     return {
       u: isPeriodicX(rules.type) ? (x + 0.5) / rules.width : x / Math.max(1, rules.width - 1),
       v: isPeriodicY(rules.type) ? (y + 0.5) / rules.height : y / Math.max(1, rules.height - 1)
@@ -515,6 +625,7 @@
     seamBridgeUV: seamBridgeUV,
     createPresentation: createPresentation,
     applyPresentation: applyPresentation,
+    prepareSphere: prepareSphere,
     close: close
   };
 });

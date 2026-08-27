@@ -141,7 +141,7 @@ test("七关边界演示都沿真实拓扑连续落下五颗不同棋子", () =>
     { type: "mobius", width: 8, height: 6, start: [6, 1], direction: 0, points: [[6, 1], [7, 1], [0, 4], [1, 4], [2, 4]], seam: Game.SEAM_X | Game.SEAM_TWIST },
     { type: "klein", width: 7, height: 6, start: [5, 4], direction: 1, points: [[5, 4], [6, 5], [0, 5], [1, 4], [2, 3]], seam: Game.SEAM_X | Game.SEAM_Y | Game.SEAM_TWIST },
     { type: "projective", width: 8, height: 8, start: [1, 6], direction: 2, points: [[1, 6], [1, 7], [6, 0], [6, 1], [6, 2]], seam: Game.SEAM_Y | Game.SEAM_TWIST },
-    { type: "sphere", width: 7, height: 7, start: [4, 1], direction: 7, points: [[4, 1], [5, 0], [0, 6], [6, 1], [5, 2]], seam: Game.SEAM_X | Game.SEAM_Y }
+    { type: "sphere", width: 7, height: 7, start: [2, 1], direction: 6, points: [[2, 1], [2, 0], [0, 2], [1, 2], [2, 2]], seam: Game.SEAM_X }
   ];
 
   cases.forEach((item) => {

@@ -67,7 +67,7 @@ test("球面的两组相邻边在两个半球图册中严格重合", () => {
   });
 });
 
-test("球面通关动画使用完整半球网格、圆形壳层与平滑参数曲线", () => {
+test("球面通关动画使用完整半球网格与平滑参数曲线", () => {
   const game = fs.readFileSync(path.join(ROOT, "app", "assets", "game.js"), "utf8");
   assert.match(game, /game\.level\.topology === "sphere" \? 48 : 46/);
   assert.match(game, /\[\[0, 1, 2\], \[0, 2, 3\]\]/);
@@ -75,8 +75,7 @@ test("球面通关动画使用完整半球网格、圆形壳层与平滑参数�
   assert.match(game, /function drawSphereRails/);
   assert.match(game, /function drawCompletionSphereGrid/);
   assert.match(game, /ctx\.bezierCurveTo/);
-  assert.match(game, /var sphereShellBlend/);
-  assert.match(game, /ctx\.arc\(renderState\.width \* 0\.5, renderState\.height \* 0\.5, sphereRadius/);
+  assert.doesNotMatch(game, /var sphereShellBlend/);
 });
 
 test("球面参数化覆盖单位球且按实际五连选择无折叠的共形重参数化", () => {
@@ -99,7 +98,7 @@ test("球面参数化覆盖单位球且按实际五连选择无折叠的共形�
   });
 });
 
-test("球面棋盘参数化近似等面积且结算时弱化背面重叠网格", () => {
+test("球面棋盘参数化兼顾面积分布、网格韧性与背面层次", () => {
   function localArea(u, v) {
     const delta = 1e-5;
     const left = Morph.surfacePoint("sphere", u - delta, v);
@@ -116,14 +115,38 @@ test("球面棋盘参数化近似等面积且结算时弱化背面重叠网格",
   }
   const samples = [[0.15, 0.08], [0.45, 0.12], [0.75, 0.18], [0.32, 0.24], [0.68, 0.47], [0.22, 0.37], [0.53, 0.74], [0.82, 0.91]];
   const areas = samples.map(([u, v]) => localArea(u, v));
-  assert.ok(Math.max(...areas) / Math.min(...areas) < 1.002);
+  assert.ok(Math.min(...areas) > 1.5);
+  assert.ok(Math.max(...areas) < 20);
+
+  function maximumRailTurn(horizontal, fixed) {
+    let maximum = 0;
+    for (let index = 1; index < 72; index += 1) {
+      const sample = (amount) => horizontal
+        ? Morph.surfacePoint("sphere", amount, fixed)
+        : Morph.surfacePoint("sphere", fixed, amount);
+      const previous = sample((index - 1) / 72);
+      const current = sample(index / 72);
+      const next = sample((index + 1) / 72);
+      const incoming = previous.map((value, axis) => value - current[axis]);
+      const outgoing = next.map((value, axis) => value - current[axis]);
+      const cosine = incoming.reduce((total, value, axis) => total + value * outgoing[axis], 0) /
+        (Math.hypot(...incoming) * Math.hypot(...outgoing));
+      maximum = Math.max(maximum, Math.PI - Math.acos(Math.max(-1, Math.min(1, cosine))));
+    }
+    return maximum;
+  }
+  for (let line = 0; line < 7; line += 1) {
+    const fixed = (line + 0.5) / 7;
+    assert.ok(maximumRailTurn(true, fixed) < 0.65);
+    assert.ok(maximumRailTurn(false, fixed) < 0.65);
+  }
 
   const game = fs.readFileSync(path.join(ROOT, "app", "assets", "game.js"), "utf8");
   assert.match(game, /function strokeFrontFacingCompletionPath/);
-  assert.match(game, /function smoothCompletionSphereRail/);
-  assert.match(game, /index % anchorInterval === 0/);
   assert.match(game, /var frontBlend = Morph\.smooth/);
   assert.match(game, /var depthThreshold = -0\.012 \* morph/);
+  assert.match(game, /sphereSingularityDepth \* 1\.15/);
+  assert.match(game, /requestIdleCallback\(warmSphereParameterization/);
 });
 
 test("斜向跨缝使用真实边界交点且接缝两侧投影重合", () => {
