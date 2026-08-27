@@ -893,6 +893,19 @@
     this.scheduled.forEach(function shiftScheduled(item) {
       item.due += shift;
     });
+    if (this.game && shift > 0) {
+      ["lastMoveAt", "seamPulseAt", "winAt"].forEach(function shiftTimestamp(key) {
+        if (this.game[key]) {
+          this.game[key] += shift;
+        }
+      }, this);
+      if (this.game.demo && this.game.demo.startedAt) {
+        this.game.demo.startedAt += shift;
+      }
+      if (this.game.lesson && this.game.lesson.startedAt) {
+        this.game.lesson.startedAt += shift;
+      }
+    }
     this.pausedAt = null;
     this._changed();
   };

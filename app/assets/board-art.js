@@ -579,7 +579,15 @@
       y: layout.top + v * (layout.bottom - layout.top)
     };
     var projected = Morph.project(game.level.topology, u, v, width, height, orientation);
-    return { x: projected.x, y: projected.y, depth: projected.depth, flat: flat };
+    var morph = orientation && Number.isFinite(orientation.morph)
+      ? clamp01(orientation.morph)
+      : 1;
+    return {
+      x: flat.x + (projected.x - flat.x) * morph,
+      y: flat.y + (projected.y - flat.y) * morph,
+      depth: projected.depth * morph,
+      flat: flat
+    };
   }
 
   function drawSurface(ctx, game, layout, width, height, orientation) {
@@ -623,7 +631,7 @@
     ctx.restore();
   }
 
-  function drawSurfaceGrid(ctx, game, width, height, orientation) {
+  function drawSurfaceGrid(ctx, game, layout, width, height, orientation) {
     var samples = game.level.topology === "sphere" ? 48 : 32;
     ctx.save();
     ctx.strokeStyle = "rgba(92, 88, 80, 0.31)";
@@ -633,7 +641,7 @@
       var u = Morph.stoneUV(game.rules, x).u;
       ctx.beginPath();
       for (var sample = 0; sample <= samples; sample += 1) {
-        var point = Morph.project(game.level.topology, u, sample / samples, width, height, orientation);
+        var point = surfacePoint(game, layout, width, height, u, sample / samples, orientation);
         if (sample === 0) { ctx.moveTo(point.x, point.y); } else { ctx.lineTo(point.x, point.y); }
       }
       ctx.stroke();
@@ -642,11 +650,33 @@
       var v = Morph.stoneUV(game.rules, y * game.rules.width).v;
       ctx.beginPath();
       for (var rowSample = 0; rowSample <= samples; rowSample += 1) {
-        var rowPoint = Morph.project(game.level.topology, rowSample / samples, v, width, height, orientation);
+        var rowPoint = surfacePoint(game, layout, width, height, rowSample / samples, v, orientation);
         if (rowSample === 0) { ctx.moveTo(rowPoint.x, rowPoint.y); } else { ctx.lineTo(rowPoint.x, rowPoint.y); }
       }
       ctx.stroke();
     }
+    ctx.restore();
+  }
+
+  function drawSurfaceBoundary(ctx, game, layout, width, height, orientation, axis, color) {
+    var samples = game.level.topology === "sphere" ? 64 : 42;
+    ctx.save();
+    ctx.strokeStyle = color;
+    ctx.lineWidth = 1.8;
+    ctx.lineCap = "round";
+    ctx.shadowColor = color;
+    ctx.shadowBlur = 5;
+    [0, 1].forEach(function drawEdge(edge) {
+      ctx.beginPath();
+      for (var sample = 0; sample <= samples; sample += 1) {
+        var amount = sample / samples;
+        var point = axis === "x"
+          ? surfacePoint(game, layout, width, height, edge, amount, orientation)
+          : surfacePoint(game, layout, width, height, amount, edge, orientation);
+        if (sample === 0) { ctx.moveTo(point.x, point.y); } else { ctx.lineTo(point.x, point.y); }
+      }
+      ctx.stroke();
+    });
     ctx.restore();
   }
 
@@ -659,20 +689,37 @@
     }
     var base = DEFAULT_VIEWS[game.level.topology] || { x: 0.5, y: -0.4, z: 0, scale: 1 };
     var rotation = settings.rotation || { x: 0, y: 0, z: 0 };
+    var morph = settings.morph === undefined ? 1 : clamp01(Number(settings.morph) || 0);
+    var viewBlend = Morph.smooth(morph);
     var orientation = {
-      x: base.x + (rotation.x || 0),
-      y: base.y + (rotation.y || 0),
-      z: base.z + (rotation.z || 0),
+      x: (base.x + (rotation.x || 0)) * viewBlend,
+      y: (base.y + (rotation.y || 0)) * viewBlend,
+      z: (base.z + (rotation.z || 0)) * viewBlend,
       scale: Number(settings.scale) || 1,
       shapeX: 1,
       shapeY: 1,
       shapeZ: 1,
+      wobbleX: Number(settings.wobbleX) || 0,
+      wobbleY: Number(settings.wobbleY) || 0,
+      morph: morph,
       presentation: settings.presentation || (game.winningMask
         ? Morph.createPresentation(game.level.topology, game.rules, Array.prototype.slice.call(game.winningMask.cells))
         : null)
     };
     drawSurface(ctx, game, layout, layout.width, layout.height, orientation);
-    drawSurfaceGrid(ctx, game, layout.width, layout.height, orientation);
+    drawSurfaceGrid(ctx, game, layout, layout.width, layout.height, orientation);
+    if (game.level.xConnection || game.level.topology === "sphere") {
+      drawSurfaceBoundary(ctx, game, layout, layout.width, layout.height, orientation, "x", "rgba(63,140,135,0.78)");
+    }
+    if (game.level.yConnection || game.level.topology === "sphere") {
+      drawSurfaceBoundary(ctx, game, layout, layout.width, layout.height, orientation, "y", "rgba(199,146,68,0.76)");
+    }
+    if (morph < 0.98) {
+      ctx.save();
+      ctx.globalAlpha = 1 - morph;
+      drawTopologyRails(ctx, game, layout, Number(settings.time) || 0);
+      ctx.restore();
+    }
     var winnerSet = winningCellSet(game);
     var stones = [];
     for (var cell = 0; cell < game.board.length; cell += 1) {
@@ -683,11 +730,11 @@
       stones.push({
         cell: cell,
         player: game.board[cell],
-        point: Morph.project(game.level.topology, uv.u, uv.v, layout.width, layout.height, orientation)
+        point: surfacePoint(game, layout, layout.width, layout.height, uv.u, uv.v, orientation)
       });
     }
     stones.sort(function sortStones(a, b) { return a.point.depth - b.point.depth; });
-    var radius = layout.cell * 0.3;
+    var radius = layout.cell * (0.37 - morph * 0.07);
     stones.forEach(function drawSurfaceStone(item) {
       ctx.save();
       ctx.globalAlpha = game.winningMask && !winnerSet[item.cell] ? 0.5 : 1;
@@ -710,7 +757,7 @@
       ctx.beginPath();
       cells.forEach(function trace(cell, index) {
         var uv = Morph.stoneUV(game.rules, cell);
-        var point = Morph.project(game.level.topology, uv.u, uv.v, layout.width, layout.height, orientation);
+        var point = surfacePoint(game, layout, layout.width, layout.height, uv.u, uv.v, orientation);
         if (index === 0) { ctx.moveTo(point.x, point.y); } else { ctx.lineTo(point.x, point.y); }
       });
       ctx.stroke();
