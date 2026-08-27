@@ -162,7 +162,7 @@
     difficultyButtons: Array.prototype.slice.call(document.querySelectorAll("[data-difficulty]")),
     hintSwitch: document.getElementById("hintSwitch"),
     soundSwitch: document.getElementById("soundSwitch"),
-    immersiveButton: document.getElementById("immersiveButton"),
+    immersiveSwitch: document.getElementById("immersiveSwitch"),
     developerButton: document.getElementById("developerButton"),
     developerSheet: document.getElementById("developerSheet"),
     closeDeveloperButton: document.getElementById("closeDeveloperButton"),
@@ -1234,9 +1234,8 @@
     dom.hintSwitch.setAttribute("aria-checked", prefs.hints ? "true" : "false");
     syncSwitchUI(dom.soundSwitch, prefs.sound);
     dom.soundSwitch.setAttribute("aria-checked", prefs.sound ? "true" : "false");
-    dom.immersiveButton.classList.toggle("is-on", prefs.immersive);
-    dom.immersiveButton.setAttribute("aria-checked", prefs.immersive ? "true" : "false");
-    dom.immersiveButton.setAttribute("aria-label", prefs.immersive ? "关闭沉浸模式" : "开启沉浸模式");
+    syncSwitchUI(dom.immersiveSwitch, prefs.immersive);
+    dom.immersiveSwitch.setAttribute("aria-checked", prefs.immersive ? "true" : "false");
     dom.difficultyLabel.textContent = DIFFICULTIES[prefs.difficulty].label;
   }
 
@@ -1534,7 +1533,8 @@
       { element: softbody.querySelectorAll(".setting-row")[0], collapse: 0.36 },
       { element: softbody.querySelectorAll(".setting-row")[1], collapse: 0.44 },
       { element: softbody.querySelectorAll(".setting-row")[2], collapse: 0.52 },
-      { element: softbody.querySelector(".sheet-done"), collapse: 0.6 }
+      { element: softbody.querySelectorAll(".setting-row")[3], collapse: 0.58 },
+      { element: softbody.querySelector(".sheet-done"), collapse: 0.64 }
     ];
     var drag = null;
 
@@ -3554,9 +3554,6 @@
       }
     });
     dom.gameSettingsButton.addEventListener("click", openSettings);
-    dom.immersiveButton.addEventListener("click", function toggleImmersiveMode() {
-      setImmersiveEnabled(!prefs.immersive);
-    });
     dom.backButton.addEventListener("click", leaveGame);
     dom.restartButton.addEventListener("click", handleRightTool);
     dom.settledReplayButton.addEventListener("click", restartGame);
@@ -3569,6 +3566,7 @@
     bindDifficultySlider();
     bindLiquidSwitch(dom.hintSwitch, function hintsEnabled() { return prefs.hints; }, setHintsEnabled);
     bindLiquidSwitch(dom.soundSwitch, function soundEnabled() { return prefs.sound; }, setSoundEnabled);
+    bindLiquidSwitch(dom.immersiveSwitch, function immersiveEnabled() { return prefs.immersive; }, setImmersiveEnabled);
     bindSettingsSheetDismiss();
     dom.developerButton.addEventListener("click", openDeveloperTools);
     dom.closeDeveloperButton.addEventListener("click", function closeDeveloperTools() { closeActiveSheet(false); });

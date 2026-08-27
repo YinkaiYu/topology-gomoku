@@ -679,17 +679,12 @@ html[data-toy-container="bilibili-app"][data-toy-immersive="true"] {
 }
 
 .game-topbar {
-  position: relative;
   flex: 0 0 auto;
 }
 
 .game-title {
-  position: absolute;
-  left: 50%;
   display: grid;
   place-items: center;
-  pointer-events: none;
-  transform: translateX(-50%);
 }
 
 .game-title strong {
@@ -697,65 +692,6 @@ html[data-toy-container="bilibili-app"][data-toy-immersive="true"] {
   font-size: 19px;
   font-weight: 650;
   letter-spacing: 0.08em;
-}
-
-.game-actions {
-  display: flex;
-  align-items: center;
-  gap: 7px;
-  margin-left: auto;
-}
-
-.immersive-button {
-  display: inline-flex;
-  height: 42px;
-  align-items: center;
-  justify-content: center;
-  gap: 5px;
-  padding: 0 11px 0 10px;
-  color: var(--muted);
-  border: 1px solid rgba(255, 255, 255, 0.66);
-  border-radius: 999px;
-  background:
-    linear-gradient(145deg, rgba(255, 255, 255, 0.28), rgba(203, 238, 225, 0.07)),
-    rgba(246, 252, 248, 0.08);
-  -webkit-backdrop-filter: blur(4px) saturate(1.48) brightness(1.04);
-  backdrop-filter: blur(4px) saturate(1.48) brightness(1.04);
-  box-shadow:
-    inset 0 1px 1px rgba(255, 255, 255, 0.9),
-    inset 0 -1px 2px rgba(37, 96, 76, 0.1),
-    0 7px 17px rgba(39, 69, 58, 0.07);
-  font-size: 11px;
-  font-weight: 650;
-  letter-spacing: 0.06em;
-  transition: color 260ms ease, background 260ms ease, border-color 260ms ease, box-shadow 320ms ease, transform 520ms var(--spring);
-}
-
-.immersive-button svg {
-  width: 16px;
-  height: 16px;
-  fill: none;
-  stroke: currentColor;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-  stroke-width: 1.7;
-}
-
-.immersive-button.is-on {
-  color: #285f58;
-  border-color: rgba(103, 191, 173, 0.42);
-  background:
-    linear-gradient(145deg, rgba(224, 248, 239, 0.52), rgba(182, 225, 211, 0.2)),
-    rgba(63, 140, 135, 0.1);
-  box-shadow:
-    inset 0 1px 1px rgba(255, 255, 255, 0.94),
-    inset 0 -1px 3px rgba(44, 121, 102, 0.14),
-    0 8px 19px rgba(48, 119, 99, 0.1);
-}
-
-.immersive-button:active {
-  border-radius: 52% 48% 49% 51% / 58% 58% 42% 42%;
-  transform: scaleX(1.055) scaleY(1.09);
 }
 
 .match-strip {
@@ -1261,7 +1197,8 @@ html[data-toy-container="bilibili-app"][data-toy-immersive="true"] {
 .settings-softbody > .setting-row:nth-child(3) { transform: scaleX(0.64); }
 .settings-softbody > .setting-row:nth-child(4) { transform: scaleX(0.56); }
 .settings-softbody > .setting-row:nth-child(5) { transform: scaleX(0.48); }
-.settings-softbody > .sheet-done { transform: scaleX(0.4); }
+.settings-softbody > .setting-row:nth-child(6) { transform: scaleX(0.44); }
+.settings-softbody > .sheet-done { transform: scaleX(0.38); }
 
 .settings-sheet.is-visible .settings-softbody > .sheet-handle,
 .settings-sheet.is-visible .settings-softbody > .sheet-head,
@@ -1904,7 +1841,6 @@ html[data-toy-container="bilibili-app"][data-toy-immersive="true"] {
 @media (hover: hover) and (pointer: fine) {
   .level-card:hover,
   .icon-button:hover,
-  .immersive-button:hover,
   .tool-button:hover,
   .sheet-done:hover {
     filter: brightness(1.025);
