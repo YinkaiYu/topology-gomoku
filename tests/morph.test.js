@@ -28,7 +28,8 @@ test("第一关是无边界演示、无 AI 回合的连续落子教学", () => {
   assert.match(game, /if \(!skipDemo && !level\.tutorial\)/);
   assert.match(game, /else if \(game\.level\.tutorial\) \{\s*game\.turn = HUMAN;/);
   assert.match(game, /game\.level\.tutorial \? 1 : \(game\.turn === AI/);
-  assert.match(game, /outcome === "win" && game\.levelIndex > 0 && Boolean\(Morph\)/);
+  assert.match(game, /var passed = outcome === "win" \|\| outcome === "draw";/);
+  assert.match(game, /var shouldMorph = passed && game\.levelIndex > 0 && Boolean\(Morph\)/);
   assert.match(game, /"传统的五子棋",\s*"就是把五颗子",\s*"连成一条线",\s*"好无趣",\s*"好无聊"/s);
   assert.match(game, /TUTORIAL_PROMPTS\[Math\.min\(count, TUTORIAL_PROMPTS\.length - 1\)\]/);
   assert.match(game, /Engine\.suggestTutorialMove/);
@@ -282,7 +283,7 @@ test("通关曲面使用高密度采样，棋盘线沿曲面分段插值", () =>
   assert.doesNotMatch(game, /appendCompletionSegment\(points, sourceBoundary, targetBoundary/);
 });
 
-test("胜负结算可进入二维复盘，胜利曲面可以持续柔性拖动", () => {
+test("复盘与二维三维切换相互独立，曲面可以持续柔性拖动", () => {
   const game = fs.readFileSync(path.join(ROOT, "app", "assets", "game.js"), "utf8");
   const html = fs.readFileSync(path.join(ROOT, "app", "index.html"), "utf8");
   assert.match(game, /if \(game\.completion\) \{\s*animate = true;/);
@@ -293,7 +294,12 @@ test("胜负结算可进入二维复盘，胜利曲面可以持续柔性拖动",
   assert.match(game, /game\.completion\.phase = "returning";/);
   assert.match(game, /function stepReplay\(direction\)/);
   assert.match(game, /Replay\.boardAt\(game\.moves, game\.rules\.cellCount, nextStep, Engine\.EMPTY\)/);
-  assert.match(game, /canOfferThreeDimensional/);
+  assert.match(game, /function toggleEndgameDimension\(\)/);
+  assert.match(game, /function endReplayReview\(\)/);
+  assert.match(game, /reviewPreviousButton\.addEventListener/);
+  assert.match(game, /reviewNextButton\.addEventListener/);
+  assert.match(game, /drawCompletionWinningLine[\s\S]*activeWinningMask\(\)/);
+  assert.match(html, /id="nextLevelButton"/);
   assert.doesNotMatch(game, /showResult\(/);
   assert.doesNotMatch(html, /id="resultSheet"/);
   assert.match(game, /chooseCompletionView\(winningMask, presentation\)/);
@@ -320,10 +326,16 @@ test("棋盘同时提示玩家进攻点与对手封堵点并保持克制配色",
 
 test("后期大概率和局时在既有规则区域提示平局也算通关", () => {
   const game = fs.readFileSync(path.join(ROOT, "app", "assets", "game.js"), "utf8");
+  const html = fs.readFileSync(path.join(ROOT, "app", "index.html"), "utf8");
   const style = fs.readFileSync(path.join(ROOT, "app", "assets", "style.css"), "utf8");
   assert.match(game, /Engine\.isLikelyDraw\(game\.board, game\.rules\)/);
   assert.match(game, /drawLikely \? "和局亦胜"/);
   assert.match(game, /drawLikely \? "平局，也算通关"/);
+  assert.match(game, /var passed = outcome === "win" \|\| outcome === "draw";/);
+  assert.match(game, /if \(passed\) \{\s*prefs\.completed\[game\.levelIndex\] = true;/);
+  assert.match(game, /var hasNextLevel = passed && game\.levelIndex < LEVELS\.length - 1;/);
+  assert.match(game, /function developerForceDraw\(\)/);
+  assert.match(html, /id="developerDraw">平局通关/);
   assert.match(style, /\.rule-caption\.is-draw-likely/);
   assert.match(style, /@keyframes draw-pass-arrive/);
 });

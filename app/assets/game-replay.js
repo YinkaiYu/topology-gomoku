@@ -57,7 +57,7 @@
     if (outcome === "lose") {
       return safeTotal + " 手惜败";
     }
-    return safeTotal + " 手和局";
+    return safeTotal + " 手和局通关";
   }
 
   return {

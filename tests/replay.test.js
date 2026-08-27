@@ -35,6 +35,7 @@ test("复盘步数在棋谱边界内钳制并给出克制的结果文案", () =>
   assert.equal(Replay.progressText(7, 18), "7 / 18 手");
   assert.equal(Replay.resultText("win", 23), "23 手通关");
   assert.equal(Replay.resultText("lose", 24), "24 手惜败");
+  assert.equal(Replay.resultText("draw", 25), "25 手和局通关");
 });
 
 test("复盘脚本在游戏脚本之前以本地经典脚本加载", () => {

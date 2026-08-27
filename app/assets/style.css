@@ -686,6 +686,46 @@ button,
   margin: 4px 4px 8px;
 }
 
+.match-strip [hidden] {
+  display: none;
+}
+
+.review-step-button {
+  display: inline-flex;
+  min-width: 58px;
+  height: 36px;
+  justify-self: start;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 3px;
+  color: var(--muted);
+  border-radius: 13px;
+  background: transparent;
+  font-size: 9px;
+  letter-spacing: 0.04em;
+  transition: color 220ms ease, background 220ms ease, transform 360ms var(--spring), opacity 220ms ease;
+}
+
+.review-step-button.is-next {
+  justify-self: end;
+  justify-content: flex-end;
+}
+
+.review-step-button:active {
+  color: var(--ink);
+  background: rgba(255, 255, 255, 0.18);
+  transform: scale(1.06);
+}
+
+.review-step-button:disabled {
+  opacity: 0.24;
+}
+
+.review-step-button svg {
+  width: 17px;
+  height: 17px;
+}
+
 .player-chip {
   display: flex;
   align-items: center;
@@ -696,7 +736,7 @@ button,
   transition: color 180ms ease, transform 180ms ease;
 }
 
-.player-chip:last-child {
+.player-chip:last-of-type {
   justify-content: flex-end;
 }
 
@@ -887,8 +927,8 @@ button,
   grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
-.game-tools.is-ended.is-reviewing {
-  grid-template-columns: 64px 1fr 64px;
+.game-tools.is-ended.has-next-action {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
 }
 
 .game-tools.is-auto-advancing {
@@ -904,22 +944,16 @@ button,
   color: var(--ink);
 }
 
-.game-tools.is-ended:not(.is-reviewing) #undoButton {
+.game-tools.is-ended #undoButton {
   color: var(--teal);
 }
 
-.game-tools.is-ended .settled-replay-button.is-three-dimensional {
+.game-tools.is-ended #restartButton {
   color: #8b7556;
 }
 
-.game-tools.is-ended.is-reviewing .tool-button {
-  width: 64px;
+.game-tools.is-ended .next-level-button {
   color: var(--muted);
-}
-
-.game-tools.is-reviewing .rule-caption strong,
-.game-tools.is-reviewing .rule-caption span {
-  font-variant-numeric: tabular-nums;
 }
 
 .tool-button {
@@ -1742,7 +1776,7 @@ button,
 
 .developer-action-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(2, 1fr);
   gap: 7px;
   margin-top: 10px;
 }
