@@ -61,7 +61,7 @@
 2. Fixes made
    - Reduced panel blur and fill opacity, narrowed edge reflections, and retained more background information.
    - Kept segmented and switch tracks stationary; deformation and settlement now belong only to the glass thumb/knob.
-   - Unified settings open/close and card/board enter/return to the same 380 ms time-reversal-symmetric curve.
+   - Kept the expressive card-to-board entry at 300 ms and shortened the board-to-card return to 240 ms after removing return-side oscillation.
    - Added a shared soft-body layer so the panel edge texture, text, sliders, switches, and buttons deform with the same tapered geometry.
    - Removed collection breathing entirely after return-flow testing showed animation-phase resets could create a visible handoff flash.
    - Made active glass thumbs expand on both axes, float beyond their stationary tracks, and transmit/refract the track beneath them.
@@ -91,7 +91,7 @@
 - [x] Transparent, restrained liquid-glass material.
 - [x] Stable tracks with Q-elastic glass thumbs.
 - [x] Reversible tapered sheet open/close.
-- [x] Matched 380 ms card-to-board and board-to-card motion.
+- [x] 300 ms low-damping entry and 240 ms compositor-only return.
 - [x] Soft-body deformation shared by panel edge and internal UI.
 - [x] Top-region drag-to-dismiss behavior.
 - [x] Static collection art with no return-transition phase jump.
@@ -145,5 +145,39 @@ final result: passed
 - The 360 × 770 viewport remains exactly one viewport high with no document overflow. The board remains 328 × 328 and the action deck ends at y=656.
 - With a 59 px iOS safe area, the existing additive safe-area behavior remains active: controls occupy y=102–144, the board remains 358 × 358, the action deck ends at y=708, and the document remains exactly 844 px high.
 - Settings opened and closed successfully at 360 × 770, returning to the collection also succeeded, and no browser warning or error was recorded.
+
+final result: passed
+
+## 2026-08-28 — v1.36.1 level-card liquid entry
+
+共享元素转场的长期设计与实现约束见 [`docs/LIQUID-GLASS-SHARED-TRANSITIONS.md`](docs/LIQUID-GLASS-SHARED-TRANSITIONS.md)。本节保留本版本的同视口 QA 证据与结果。
+
+**Evidence**
+
+- Before entry: `artifacts/qa-level-card-entry-before-v1361.png` at a 390 × 844 CSS viewport.
+- Whole-board overshoot: `artifacts/qa-level-card-entry-mid-v1361.png` at the same viewport.
+- Settled board: `artifacts/qa-level-card-entry-settled-v1361.png` at the same viewport.
+- Return shrink/fade: `artifacts/qa-level-card-return-mid-v1361.png` at the same viewport.
+- Settled directory: `artifacts/qa-level-card-return-settled-v1361.png` at the same viewport.
+- Browser: Codex in-app Browser, using the local H5 files from the feature worktree.
+
+**Interactions tested**
+
+- Opened the first unlocked level from the directory, returned to the directory, and sampled both shared-element directions before, during, and after settlement.
+- Compared the hero and level-grid bounds before entry and while the home screen was fading.
+- Inspected the whole board's mid-transition transform, stable radius, content transform, optical filter, final geometry, and browser console.
+
+**Findings**
+
+- The hero remained at `(20, 37.375)` and the level grid at `(20, 254.238)` before and during navigation; the directory now fades in place without the former 12 px downward motion.
+- Entry uses a 300 ms lower-damping settlement with uniform whole-object scales `1.068 → 0.962 → 1.028 → 0.988 → 1`; a symmetric ease-in-out curve carries velocity through four gradually shrinking extrema without the former single sharp twitch. X/Y scale remains identical and the radius stays at 29 px.
+- Return uses a shorter 240 ms compositor-only transform and has no oscillatory scale keyframes or layout-size animation. The outer glass shell transforms to the exact target-card rectangle and compensated corner radius; the canvas counter-scales to remain square, stays `object-fit: contain`, and fades before the shell completes.
+- The real target card is hidden before the directory becomes visible, eliminating its former one-frame appearance before return setup. The actual card—not a clone—then fades in from 44% to full opacity by 88%; its Web Animation is cancelled only after the static card is already visible beneath the transparent transition shell, avoiding a clone-to-static handoff.
+- The board and return overlay now use a thinner 1 px translucent edge, a single low-opacity optical highlight, and reduced inner/outer shadows; the former nested outline no longer reads as a thick rim.
+- The shared-entry game screen skips its independent geometry transition, so the canvas is sized once against the final board bounds instead of being rebuilt during the visual handoff.
+- The obsolete underlying `opacity: 0` board rule was removed. Frame sampling across the animation-to-static handoff kept board opacity at `1`, eliminating the former one-frame near-zero-opacity flash.
+- The canvas backing store remained `357 × 357` px through the sampled elastic frame and final handoff; the outer game screen stayed at `transform: none`, and no final-frame resize or console issue occurred.
+- The board settled exactly at unit transform, full opacity, and the authored 29 px radius.
+- No clipping, alignment regression, browser warning, or browser error was observed.
 
 final result: passed
