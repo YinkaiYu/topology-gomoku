@@ -1,4 +1,6 @@
 node_modules/
+.venv/
+.uv-cache/
 .tmp/
 .worktrees/
 coverage/
