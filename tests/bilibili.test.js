@@ -11,6 +11,7 @@ test("Bilibili Toy SDK 通过独立 adapter 接入", () => {
   const html = fs.readFileSync(path.join(ROOT, "app", "index.html"), "utf8");
   const adapter = fs.readFileSync(path.join(ROOT, "app", "assets", "bilibili-adapter.js"), "utf8");
   const game = fs.readFileSync(path.join(ROOT, "app", "assets", "game.js"), "utf8");
+  const style = fs.readFileSync(path.join(ROOT, "app", "assets", "style.css"), "utf8");
   assert.match(html, /\/\/s1\.hdslb\.com\/bfs\/seed\/toy\/app\/sdk\/toy-sdk\.js/);
   assert.match(html, /\.\/assets\/bilibili-adapter\.js\?v=1\.35\.2/);
   assert.match(adapter, /isSupport\("onContainerChange"\)/);
@@ -18,11 +19,13 @@ test("Bilibili Toy SDK 通过独立 adapter 接入", () => {
   assert.match(adapter, /requestContainerMode\(false\)/);
   assert.match(adapter, /setContainerMode\(\{ orientation: "auto", immersive: enabled \}\)/);
   assert.doesNotMatch(adapter, /immersive: true/);
-  assert.match(html, /id="immersiveSwitch"[\s\S]*aria-checked="false"/);
+  assert.match(html, /class="game-actions"[\s\S]*id="immersiveButton"[\s\S]*aria-checked="false"[\s\S]*id="gameSettingsButton"/);
+  assert.doesNotMatch(html, /settings-softbody[\s\S]*id="immersiveButton"/);
   assert.match(adapter, /setImmersive: function setImmersive\(enabled\)/);
   assert.match(game, /immersive:\s*false/);
   assert.match(game, /defaults\.immersive = stored\.immersive === true/);
-  assert.match(game, /bindLiquidSwitch\(dom\.immersiveSwitch/);
+  assert.match(game, /dom\.immersiveButton\.addEventListener\("click"/);
+  assert.match(style, /\.immersive-button\.is-on/);
   assert.match(adapter, /--safe-area-inset-left/);
   assert.match(adapter, /--toy-viewport-height/);
 });

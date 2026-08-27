@@ -93,11 +93,19 @@
           <div class="game-title">
             <strong id="gameLevelName">方庭</strong>
           </div>
-          <button class="icon-button" id="gameSettingsButton" type="button" aria-label="设置">
-            <svg viewBox="0 0 24 24" aria-hidden="true">
-              <path d="M4 7h10M18 7h2M4 17h2M10 17h10M14 5v4M6 15v4" />
-            </svg>
-          </button>
+          <div class="game-actions">
+            <button class="immersive-button" id="immersiveButton" type="button" role="switch" aria-checked="false" aria-label="沉浸模式">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M9 4H5a1 1 0 0 0-1 1v4M15 4h4a1 1 0 0 1 1 1v4M9 20H5a1 1 0 0 1-1-1v-4M15 20h4a1 1 0 0 0 1-1v-4" />
+              </svg>
+              <span>沉浸</span>
+            </button>
+            <button class="icon-button" id="gameSettingsButton" type="button" aria-label="设置">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M4 7h10M18 7h2M4 17h2M10 17h10M14 5v4M6 15v4" />
+              </svg>
+            </button>
+          </div>
         </header>
 
         <div class="match-strip">
@@ -174,10 +182,6 @@
         <div class="setting-row">
           <span class="setting-label">声音</span>
           <button class="switch is-on" id="soundSwitch" type="button" role="switch" aria-checked="true"><i><span class="switch-lens-track"></span></i></button>
-        </div>
-        <div class="setting-row">
-          <span class="setting-label">沉浸模式</span>
-          <button class="switch" id="immersiveSwitch" type="button" role="switch" aria-checked="false" aria-label="沉浸模式，开启后隐藏 Toy 详情互动区域"><i><span class="switch-lens-track"></span></i></button>
         </div>
         <button class="sheet-done" id="settingsDoneButton" type="button">完成</button>
       </div>

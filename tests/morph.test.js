@@ -323,12 +323,11 @@ test("后期大概率和局时在既有规则区域提示平局也算通关", ()
   assert.match(style, /@keyframes draw-pass-arrive/);
 });
 
-test("设置页使用液态玻璃层次且四个控件均支持连续拖动", () => {
+test("设置页使用液态玻璃层次且三个控件均支持连续拖动", () => {
   const game = fs.readFileSync(path.join(ROOT, "app", "assets", "game.js"), "utf8");
   const html = fs.readFileSync(path.join(ROOT, "app", "index.html"), "utf8");
   const style = fs.readFileSync(path.join(ROOT, "app", "assets", "style.css"), "utf8");
   assert.match(html, /id="difficultyThumb"/);
-  assert.match(html, /id="immersiveSwitch"/);
   assert.match(game, /function bindDifficultySlider\(\)/);
   assert.match(game, /function bindLiquidSwitch\(control, getValue, setValue\)/);
   assert.doesNotMatch(game, /showToast|toastTimer|dom\.toast/);
@@ -433,8 +432,7 @@ test("设置面板以可逆梯形软体层展开且支持抓住顶部下拉收�
   assert.doesNotMatch(style, /\.settings-softbody\s*\{[^}]*clip-path/s);
   assert.match(style, /\.settings-softbody > \.sheet-head\s*\{\s*transform:\s*scaleX\(0\.74\)/);
   assert.match(style, /\.settings-softbody > \.setting-row:nth-child\(5\)\s*\{\s*transform:\s*scaleX\(0\.48\)/);
-  assert.match(style, /\.settings-softbody > \.setting-row:nth-child\(6\)\s*\{\s*transform:\s*scaleX\(0\.44\)/);
-  assert.match(style, /\.settings-softbody > \.sheet-done\s*\{\s*transform:\s*scaleX\(0\.38\)/);
+  assert.match(style, /\.settings-softbody > \.sheet-done\s*\{\s*transform:\s*scaleX\(0\.4\)/);
   assert.match(style, /\.settings-sheet\.is-visible::before,[\s\S]*\.settings-sheet\.is-visible::after/);
   assert.match(style, /\.sheet\.settings-sheet\.is-visible \.sheet-head,[\s\S]*animation:\s*none/);
   assert.match(game, /function bindSettingsSheetDismiss\(\)/);
