@@ -667,9 +667,9 @@
       shapeX: 1,
       shapeY: 1,
       shapeZ: 1,
-      presentation: game.winningMask
+      presentation: settings.presentation || (game.winningMask
         ? Morph.createPresentation(game.level.topology, game.rules, Array.prototype.slice.call(game.winningMask.cells))
-        : null
+        : null)
     };
     drawSurface(ctx, game, layout, layout.width, layout.height, orientation);
     drawSurfaceGrid(ctx, game, layout.width, layout.height, orientation);
