@@ -246,8 +246,6 @@
   var settledBoardAnimation = null;
   var REVERSIBLE_MOTION_DURATION = 380;
   var REVERSIBLE_MOTION_EASING = "cubic-bezier(0.37, 0, 0.63, 1)";
-  var LIQUID_CARD_ENTRY_DURATION = 580;
-  var LIQUID_CARD_ENTRY_EASING = "linear";
   var developer = {
     aiPaused: false,
     placementPlayer: HUMAN
@@ -528,58 +526,22 @@
     var scaleY = source.height / target.height;
     var translateX = source.left + source.width / 2 - (target.left + target.width / 2);
     var translateY = source.top + source.height / 2 - (target.top + target.height / 2);
-    var verticalTravel = Math.abs(translateY) >= Math.abs(translateX);
-    var liquidLeadX = translateX * -0.018;
-    var liquidLeadY = translateY * -0.018;
-    var liquidRecoilX = translateX * 0.006;
-    var liquidRecoilY = translateY * 0.006;
-    var stretchX = verticalTravel ? 0.976 : 1.034;
-    var stretchY = verticalTravel ? 1.034 : 0.976;
-    var recoilX = verticalTravel ? 1.014 : 0.988;
-    var recoilY = verticalTravel ? 0.988 : 1.014;
     dom.appShell.classList.add("is-navigating");
     var animation = dom.boardStage.animate([
       {
         transformOrigin: "center",
         transform: "translate(" + translateX + "px, " + translateY + "px) scale(" + scaleX + ", " + scaleY + ")",
-        borderRadius: "21px",
-        opacity: 0.94,
-        filter: "saturate(1.04) brightness(1.025)",
-        easing: "cubic-bezier(0.16, 0.84, 0.24, 1)"
-      },
-      {
-        offset: 0.62,
-        transform: "translate(" + liquidLeadX + "px, " + liquidLeadY + "px) scale(" + stretchX + ", " + stretchY + ")",
-        borderRadius: "33px 27px 31px 26px",
-        opacity: 1,
-        filter: "saturate(1.2) brightness(1.055)",
-        easing: "cubic-bezier(0.32, 0, 0.3, 1)"
-      },
-      {
-        offset: 0.8,
-        transform: "translate(" + liquidRecoilX + "px, " + liquidRecoilY + "px) scale(" + recoilX + ", " + recoilY + ")",
-        borderRadius: "27px 31px 28px 30px",
-        opacity: 1,
-        filter: "saturate(1.08) brightness(1.02)",
-        easing: "cubic-bezier(0.3, 0, 0.36, 1)"
-      },
-      {
-        offset: 0.92,
-        transform: "translate(" + (liquidLeadX * 0.12) + "px, " + (liquidLeadY * 0.12) + "px) scale(1.004, 0.997)",
-        borderRadius: "30px 28px 30px 28px",
-        opacity: 1,
-        filter: "saturate(1.025) brightness(1.008)",
-        easing: "ease-out"
+        borderRadius: "20px",
+        opacity: 0.96
       },
       {
         transform: "translate(0, 0) scale(1)",
-        borderRadius: "29px",
-        opacity: 1,
-        filter: "saturate(1) brightness(1)"
+        borderRadius: "28px",
+        opacity: 1
       }
     ], {
-      duration: LIQUID_CARD_ENTRY_DURATION,
-      easing: LIQUID_CARD_ENTRY_EASING,
+      duration: REVERSIBLE_MOTION_DURATION,
+      easing: REVERSIBLE_MOTION_EASING,
       fill: "both"
     });
     animation.onfinish = function finishCardExpansion() {
@@ -788,9 +750,6 @@
       dom.gameLevelName.textContent = level.name;
     }
     dom.boardStage.classList.remove("is-settled", "is-exploring", "is-dragging");
-    if (transition) {
-      dom.appShell.classList.add("is-navigating");
-    }
     dom.gameScreen.classList.toggle("is-shared-enter", Boolean(transition));
     showScreen("game");
     updateTurnUI();
