@@ -123,7 +123,7 @@ test("首页采用 E 款品牌主视觉并移除二次进入按钮与英文副�
   assert.doesNotMatch(html, /class="level-number"/);
   assert.match(html, /<span class="level-type">实射影平面<\/span>\s*<span class="level-name">双生<\/span>/);
   assert.match(game, /name:\s*"双生"/);
-  assert.match(html, /<span class="level-type">球面<\/span>\s*<span class="level-name"><span class="optical-title-rise">归<\/span><span>圆<\/span><\/span>/);
+  assert.match(html, /<span class="level-type">球面<\/span>\s*<span class="level-name">归圆<\/span>/);
   assert.match(html, /<span class="level-type">莫比乌斯环<\/span>/);
   assert.match(game, /name:\s*"归圆"/);
 });
@@ -147,6 +147,18 @@ test("目录锁定整屏并使用本地内嵌的典雅中文字体", () => {
   assert.match(style, /\.level-type\s*\{[^}]*grid-row:\s*2/s);
   assert.match(style, /\.level-name\s*\{[^}]*grid-row:\s*3/s);
   assert.doesNotMatch(style, /\.home-scroll\s*\{[^}]*overflow-y:\s*auto/s);
+});
+
+test("终章标题作为同一字体文本运行且字体资源带版本缓存键", () => {
+  const html = fs.readFileSync(path.join(ROOT, "app", "index.html"), "utf8");
+  const style = fs.readFileSync(path.join(ROOT, "app", "assets", "style.css"), "utf8");
+  assert.match(html, /href="\.\/assets\/style\.css\?v=1\.35\.2"/);
+  assert.match(html, /<span class="level-name">归圆<\/span>/);
+  assert.doesNotMatch(html, /optical-title-rise/);
+  assert.match(style, /\.level-name\s*\{[^}]*font-weight:\s*700/s);
+  ["400", "600", "700"].forEach((weight) => {
+    assert.match(style, new RegExp(`noto-serif-sc-${weight}\\.woff2\\?v=1\\.35\\.2`));
+  });
 });
 
 test("第七关以横向终章卡片收束双列目录且整页不可滚动", () => {

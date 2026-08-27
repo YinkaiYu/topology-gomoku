@@ -48,7 +48,8 @@ if (Test-Path -LiteralPath $indexPath) {
       continue
     }
     if ($resource.StartsWith('#') -or $resource.StartsWith('data:')) { continue }
-    $relativeResource = $resource.TrimStart('.', '/', '\')
+    $resourcePath = ($resource -split '[?#]', 2)[0]
+    $relativeResource = $resourcePath.TrimStart('.', '/', '\')
     if (-not (Test-Path -LiteralPath (Join-Path $appRoot $relativeResource) -PathType Leaf)) {
       $errors.Add("Referenced resource does not exist: $resource")
     }
