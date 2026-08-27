@@ -4,7 +4,13 @@ const test = require("node:test");
 const assert = require("node:assert/strict");
 const Game = require("../app/assets/topology.js");
 
-const TYPES = ["plane", "cylinder", "torus", "mobius", "klein", "projective"];
+const TYPES = ["plane", "cylinder", "torus", "mobius", "klein", "projective", "sphere"];
+
+function rulesFor(type) {
+  return Game.createRules(type === "sphere"
+    ? { type, width: 7, height: 7, target: 5 }
+    : { type, width: 8, height: 6, target: 5 });
+}
 
 function put(board, rules, points, player) {
   points.forEach(([x, y]) => {
@@ -14,7 +20,7 @@ function put(board, rules, points, player) {
 
 test("所有拓扑的有向步进都能沿反方向返回", () => {
   TYPES.forEach((type) => {
-    const rules = Game.createRules({ type, width: 8, height: 6, target: 5 });
+    const rules = rulesFor(type);
     for (let cell = 0; cell < rules.cellCount; cell += 1) {
       for (let direction = 0; direction < 8; direction += 1) {
         const next = Game.step(rules, cell, direction);
@@ -35,6 +41,22 @@ test("圆柱左右边相连并能跨缝形成五连", () => {
   const win = Game.checkWin(board, rules, Game.toCell(rules, 0, 2), Game.HUMAN);
   assert.ok(win);
   assert.ok(win.seam & Game.SEAM_X);
+});
+
+test("球面把相邻边配对并在跨缝时旋转行进方向", () => {
+  const rules = rulesFor("sphere");
+  const north = Game.step(rules, Game.toCell(rules, 3, 0), 6);
+  assert.deepEqual(Game.toPoint(rules, north.cell), { x: 0, y: 3 });
+  assert.equal(north.direction, 0);
+  assert.equal(north.seam, Game.SEAM_X);
+  const westBack = Game.step(rules, north.cell, 4);
+  assert.deepEqual(Game.toPoint(rules, westBack.cell), { x: 3, y: 0 });
+  assert.equal(westBack.direction, 2);
+
+  const south = Game.step(rules, Game.toCell(rules, 4, 6), 2);
+  assert.deepEqual(Game.toPoint(rules, south.cell), { x: 6, y: 4 });
+  assert.equal(south.direction, 4);
+  assert.equal(south.seam, Game.SEAM_Y);
 });
 
 test("莫比乌斯带跨缝时位置与方向同时翻转", () => {
@@ -73,7 +95,7 @@ test("莫比乌斯边界翻转后落入反向象限的斜线仍判为五连", ()
 
 test("所有拓扑中任一方向可追踪的五子路径都存在胜利掩码", () => {
   TYPES.forEach((type) => {
-    const rules = Game.createRules({ type, width: 8, height: 6, target: 5 });
+    const rules = rulesFor(type);
     const maskKeys = new Set(rules.winMasks.map((mask) => Array.from(mask.cells).sort((a, b) => a - b).join(",")));
     for (let cell = 0; cell < rules.cellCount; cell += 1) {
       for (let direction = 0; direction < 8; direction += 1) {
@@ -104,21 +126,22 @@ test("五格环面的一整圈可以获胜", () => {
 
 test("每个胜利掩码都由五个不同交点构成", () => {
   TYPES.forEach((type) => {
-    const rules = Game.createRules({ type, width: 8, height: 6, target: 5 });
+    const rules = rulesFor(type);
     rules.winMasks.forEach((mask) => {
       assert.equal(new Set(mask.cells).size, 5, type);
     });
   });
 });
 
-test("六关边界演示都沿真实拓扑连续落下五颗不同棋子", () => {
+test("七关边界演示都沿真实拓扑连续落下五颗不同棋子", () => {
   const cases = [
     { type: "plane", width: 7, height: 7, start: [1, 3], direction: 0, points: [[1, 3], [2, 3], [3, 3], [4, 3], [5, 3]], seam: 0 },
     { type: "cylinder", width: 7, height: 6, start: [5, 2], direction: 0, points: [[5, 2], [6, 2], [0, 2], [1, 2], [2, 2]], seam: Game.SEAM_X },
     { type: "torus", width: 7, height: 6, start: [5, 4], direction: 1, points: [[5, 4], [6, 5], [0, 0], [1, 1], [2, 2]], seam: Game.SEAM_X | Game.SEAM_Y },
     { type: "mobius", width: 8, height: 6, start: [6, 1], direction: 0, points: [[6, 1], [7, 1], [0, 4], [1, 4], [2, 4]], seam: Game.SEAM_X | Game.SEAM_TWIST },
     { type: "klein", width: 7, height: 6, start: [5, 4], direction: 1, points: [[5, 4], [6, 5], [0, 5], [1, 4], [2, 3]], seam: Game.SEAM_X | Game.SEAM_Y | Game.SEAM_TWIST },
-    { type: "projective", width: 8, height: 8, start: [1, 6], direction: 2, points: [[1, 6], [1, 7], [6, 0], [6, 1], [6, 2]], seam: Game.SEAM_Y | Game.SEAM_TWIST }
+    { type: "projective", width: 8, height: 8, start: [1, 6], direction: 2, points: [[1, 6], [1, 7], [6, 0], [6, 1], [6, 2]], seam: Game.SEAM_Y | Game.SEAM_TWIST },
+    { type: "sphere", width: 7, height: 7, start: [4, 1], direction: 7, points: [[4, 1], [5, 0], [0, 6], [6, 1], [5, 2]], seam: Game.SEAM_X | Game.SEAM_Y }
   ];
 
   cases.forEach((item) => {

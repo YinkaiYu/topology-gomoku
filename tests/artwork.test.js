@@ -8,11 +8,12 @@ const path = require("node:path");
 const ROOT = path.resolve(__dirname, "..");
 const TOPOLOGY_DIR = path.join(ROOT, "app", "assets", "topologies");
 const SILHOUETTE_DIR = path.join(ROOT, "app", "assets", "silhouettes");
-const NAMES = ["plane", "cylinder", "torus", "mobius", "klein", "projective"];
+const NAMES = ["plane", "cylinder", "torus", "mobius", "klein", "projective", "sphere"];
 const SHADED_3D_MODELS = {
   mobius: "shaded-mobius-embedding",
   klein: "hand-drawn-classic-klein-bottle-schematic",
   projective: "shaded-roman-surface-rp2-immersion",
+  sphere: "hand-drawn-spherical-quotient",
 };
 
 test("目录拓扑图全部来自带模型标记的本地 SVG", () => {
@@ -28,7 +29,7 @@ test("目录拓扑图全部来自带模型标记的本地 SVG", () => {
   assert.doesNotMatch(html, /assets\/topologies\/[^"]+\.png/);
 });
 
-test("六关均使用不透明曲面与统一投影轮廓", () => {
+test("七关均使用不透明曲面与统一投影轮廓", () => {
   NAMES.forEach((name) => {
     const svg = fs.readFileSync(path.join(TOPOLOGY_DIR, `${name}.svg`), "utf8");
     const pathCount = (svg.match(/<path\b/g) || []).length;
@@ -69,18 +70,18 @@ test("目录中的高阶拓扑必须通关后才揭示图鉴", () => {
   const html = fs.readFileSync(path.join(ROOT, "app", "index.html"), "utf8");
   const game = fs.readFileSync(path.join(ROOT, "app", "assets", "game.js"), "utf8");
   const style = fs.readFileSync(path.join(ROOT, "app", "assets", "style.css"), "utf8");
-  assert.equal((html.match(/class="level-mystery"/g) || []).length, 5);
+  assert.equal((html.match(/class="level-mystery"/g) || []).length, 6);
   assert.match(game, /var revealed = index === 0 \|\| complete;/);
   assert.match(game, /classList\.toggle\("is-revealed", revealed\)/);
   assert.match(style, /\.level-card:not\(\.is-revealed\) \.level-glyph/);
   assert.match(style, /\.level-card\.is-revealed \.level-mystery/);
-  assert.equal((html.match(/class="level-silhouette"/g) || []).length, 5);
+  assert.equal((html.match(/class="level-silhouette"/g) || []).length, 6);
   assert.match(style, /\.level-card:not\(\.is-revealed\) \.level-glyph\s*\{[^}]*opacity:\s*0/s);
   assert.doesNotMatch(style, /\.level-mystery::before\s*\{[^}]*border-radius:/s);
 });
 
 test("未揭示图鉴使用真实模型外轮廓的无孔实心剪影", () => {
-  ["cylinder", "torus", "mobius", "klein", "projective"].forEach((name) => {
+  ["cylinder", "torus", "mobius", "klein", "projective", "sphere"].forEach((name) => {
     const svg = fs.readFileSync(path.join(SILHOUETTE_DIR, `${name}.svg`), "utf8");
     assert.match(svg, new RegExp(`data-source-model="${name}"`));
     assert.match(svg, new RegExp(`data-source-href="../topologies/${name}\\.svg"`));
@@ -101,6 +102,8 @@ test("首页采用 E 款品牌主视觉并移除二次进入按钮与英文副�
   assert.doesNotMatch(html, /class="level-number"/);
   assert.match(html, /<span class="level-type">实射影平面<\/span>\s*<span class="level-name">双生<\/span>/);
   assert.match(game, /name:\s*"双生"/);
+  assert.match(html, /<span class="level-type">球面<\/span>\s*<span class="level-name">归圆<\/span>/);
+  assert.match(game, /name:\s*"归圆"/);
 });
 
 test("目录锁定整屏并使用本地内嵌的典雅中文字体", () => {
@@ -108,11 +111,20 @@ test("目录锁定整屏并使用本地内嵌的典雅中文字体", () => {
   assert.match(style, /@font-face\s*\{[^}]*noto-serif-sc-400\.woff2/s);
   assert.match(style, /--display-font:\s*"Topo Serif"/);
   assert.match(style, /\.home-scroll\s*\{[^}]*overflow:\s*hidden/s);
-  assert.match(style, /grid-template-rows:\s*repeat\(3, minmax\(0, 1fr\)\)/);
+  assert.match(style, /grid-template-rows:\s*repeat\(4, minmax\(0, 1fr\)\)/);
   assert.match(style, /\.level-card\s*\{[^}]*text-align:\s*center/s);
   assert.match(style, /\.level-type\s*\{[^}]*grid-row:\s*2/s);
   assert.match(style, /\.level-name\s*\{[^}]*grid-row:\s*3/s);
   assert.doesNotMatch(style, /\.home-scroll\s*\{[^}]*overflow-y:\s*auto/s);
+});
+
+test("第七关以横向终章卡片收束双列目录且整页不可滚动", () => {
+  const html = fs.readFileSync(path.join(ROOT, "app", "index.html"), "utf8");
+  const style = fs.readFileSync(path.join(ROOT, "app", "assets", "style.css"), "utf8");
+  assert.match(html, /class="level-card level-card-finale"[^>]+data-level="6"/);
+  assert.match(style, /\.level-card-finale\s*\{[^}]*grid-column:\s*1 \/ -1/s);
+  assert.match(style, /\.level-card-finale\s*\{[^}]*grid-template-columns:/s);
+  assert.match(style, /\.home-scroll\s*\{[^}]*overflow:\s*hidden/s);
 });
 
 test("目录与棋局顶栏为宿主默认按钮预留额外安全空间", () => {

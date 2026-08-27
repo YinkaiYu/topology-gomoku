@@ -124,6 +124,40 @@
         nextX = width - 1 - nextX;
         nextDx = -nextDx;
       }
+    } else if (type === "sphere") {
+      // A square becomes a sphere when adjacent edge pairs are identified:
+      // north with west, and south with east. Crossing a seam therefore
+      // rotates the direction by a quarter turn instead of translating or
+      // reflecting it. The four outward corner diagonals pass through a
+      // chart vertex and are intentionally omitted from this discrete grid.
+      if (crossesX && crossesY) {
+        return null;
+      }
+      if (rawY < 0) {
+        seam |= SEAM_X;
+        nextX = 0;
+        nextY = rawX;
+        nextDx = -vector.dy;
+        nextDy = vector.dx;
+      } else if (rawX < 0) {
+        seam |= SEAM_X;
+        nextX = rawY;
+        nextY = 0;
+        nextDx = vector.dy;
+        nextDy = -vector.dx;
+      } else if (rawY >= height) {
+        seam |= SEAM_Y;
+        nextX = width - 1;
+        nextY = rawX;
+        nextDx = -vector.dy;
+        nextDy = vector.dx;
+      } else if (rawX >= width) {
+        seam |= SEAM_Y;
+        nextX = rawY;
+        nextY = height - 1;
+        nextDx = vector.dy;
+        nextDy = -vector.dx;
+      }
     } else {
       throw new Error("Unknown topology: " + type);
     }
@@ -147,6 +181,10 @@
     var seamByStep = new Uint8Array(cellCount * 8);
     var cell;
     var direction;
+
+    if (type === "sphere" && width !== height) {
+      throw new Error("Sphere topology requires a square board");
+    }
 
     nextCell.fill(-1);
 

@@ -59,6 +59,23 @@ test("实射影平面的两组反向边界在 Roman 曲面中重合", () => {
   });
 });
 
+test("球面的两组相邻边在两个半球图册中严格重合", () => {
+  [0.09, 0.28, 0.67, 0.91].forEach((value) => {
+    samePoint(Morph.surfacePoint("sphere", value, 0), Morph.surfacePoint("sphere", 0, value), "sphere north-west seam");
+    samePoint(Morph.surfacePoint("sphere", value, 1), Morph.surfacePoint("sphere", 1, value), "sphere south-east seam");
+  });
+});
+
+test("球面通关动画使用三角半球网格并补齐两组相邻接缝", () => {
+  const game = fs.readFileSync(path.join(ROOT, "app", "assets", "game.js"), "utf8");
+  assert.match(game, /game\.level\.topology === "sphere" \? columns : 34/);
+  assert.match(game, /\[\[0, 1, 2\], \[0, 2, 3\]\]/);
+  assert.match(game, /function drawCompletionSphereBoundary/);
+  assert.match(game, /function drawSphereRails/);
+  assert.match(game, /if \(gridPoint\.x === 0\) \{ gridDirections\.push\(4\); \}/);
+  assert.match(game, /if \(gridPoint\.y === 0\) \{ gridDirections\.push\(6\); \}/);
+});
+
 test("斜向跨缝使用真实边界交点且接缝两侧投影重合", () => {
   const cases = [
     {
@@ -110,6 +127,16 @@ test("斜向跨缝使用真实边界交点且接缝两侧投影重合", () => {
       y: true,
       expectedSource: { u: 0.25, v: 1 },
       expectedTarget: { u: 0.75, v: 0 }
+    },
+    {
+      type: "sphere",
+      from: { u: 5.5 / 7, v: 0.5 / 7 },
+      to: { u: 0.5 / 7, v: 6.5 / 7 },
+      vector: { dx: 1, dy: -1 },
+      x: true,
+      y: false,
+      expectedSource: { u: 6 / 7, v: 0 },
+      expectedTarget: { u: 0, v: 6 / 7 }
     }
   ];
 
@@ -128,7 +155,7 @@ test("斜向跨缝使用真实边界交点且接缝两侧投影重合", () => {
 });
 
 test("所有关卡的三维投影均返回有限屏幕坐标", () => {
-  ["cylinder", "torus", "mobius", "klein", "projective"].forEach((type) => {
+  ["cylinder", "torus", "mobius", "klein", "projective", "sphere"].forEach((type) => {
     for (let u = 0; u <= 1; u += 0.2) {
       for (let v = 0; v <= 1; v += 0.2) {
         const point = Morph.project(type, u, v, 360, 360, 0.12);
@@ -173,7 +200,7 @@ test("通关视图的整体比例变形仍保持拓扑接缝重合", () => {
 test("通关曲面使用高密度采样，棋盘线沿曲面分段插值", () => {
   const game = fs.readFileSync(path.join(ROOT, "app", "assets", "game.js"), "utf8");
   assert.match(game, /var columns = 44;/);
-  assert.match(game, /var rows = 34;/);
+  assert.match(game, /var rows = game\.level\.topology === "sphere" \? columns : 34;/);
   assert.match(game, /var samples = 8;/);
   assert.match(game, /appendCompletionSegment/);
   assert.match(game, /Morph\.seamBridgeUV/);

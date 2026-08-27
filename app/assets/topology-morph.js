@@ -18,7 +18,8 @@
     torus: { rotation: [0.72, -0.12, -0.24], scale: 0.235 },
     mobius: { rotation: [0.96, -0.08, -0.12], scale: 0.245 },
     klein: { rotation: [0.18, -0.2, -0.08], scale: 0.29 },
-    projective: { rotation: [0.66, -0.52, 0.12], scale: 0.285 }
+    projective: { rotation: [0.66, -0.52, 0.12], scale: 0.285 },
+    sphere: { rotation: [0.42, -0.58, -0.08], scale: 0.315 }
   };
 
   function clamp01(value) {
@@ -93,6 +94,25 @@
     ];
   }
 
+  function sphere(u, v) {
+    // Split the square along its diagonal into two triangular charts. Their
+    // common three-edge boundary maps to the equator; the interiors map to
+    // opposite hemispheres. This realizes the adjacent-edge quotient exactly:
+    // S(u,0)=S(0,u) and S(u,1)=S(1,u).
+    var upper = v <= u;
+    var a = upper ? 1 - u : 1 - v;
+    var b = upper ? u - v : v - u;
+    var c = upper ? v : u;
+    var angleA = 0;
+    var angleB = TAU / 3;
+    var angleC = TAU * 2 / 3;
+    var x = a * Math.cos(angleA) + b * Math.cos(angleB) + c * Math.cos(angleC);
+    var y = a * Math.sin(angleA) + b * Math.sin(angleB) + c * Math.sin(angleC);
+    var z = (upper ? 1 : -1) * 3 * Math.sqrt(3) * Math.sqrt(Math.max(0, a * b * c));
+    var length = Math.hypot(x, y, z) || 1;
+    return [x / length, y / length, z / length];
+  }
+
   function surfacePoint(type, u, v) {
     if (type === "cylinder") {
       return cylinder(u, v);
@@ -108,6 +128,9 @@
     }
     if (type === "projective") {
       return projective(u, v);
+    }
+    if (type === "sphere") {
+      return sphere(u, v);
     }
     return [(u - 0.5) * 2, (v - 0.5) * 2, 0];
   }
@@ -181,7 +204,7 @@
   }
 
   function isPeriodicY(type) {
-    return type === "torus" || type === "klein" || type === "projective";
+    return type === "torus" || type === "klein" || type === "projective" || type === "sphere";
   }
 
   function hasXTwist(type) {
@@ -193,6 +216,30 @@
   }
 
   function seamBridgeUV(type, from, to, vector, crossesX, crossesY) {
+    if (type === "sphere") {
+      var source;
+      var target;
+      var along;
+      if (crossesX && vector.dy < 0) {
+        along = clamp01((from.u + to.v) * 0.5);
+        source = { u: along, v: 0 };
+        target = { u: 0, v: along };
+      } else if (crossesX) {
+        along = clamp01((from.v + to.u) * 0.5);
+        source = { u: 0, v: along };
+        target = { u: along, v: 0 };
+      } else if (crossesY && vector.dy > 0) {
+        along = clamp01((from.u + to.v) * 0.5);
+        source = { u: along, v: 1 };
+        target = { u: 1, v: along };
+      } else {
+        along = clamp01((from.v + to.u) * 0.5);
+        source = { u: 1, v: along };
+        target = { u: along, v: 1 };
+      }
+      return { source: source, target: target, amount: 0.5 };
+    }
+
     var sourceChartTo = { u: to.u, v: to.v };
 
     // Undo the quotient identification first so both stone centres live in

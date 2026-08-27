@@ -101,6 +101,20 @@
       ruleText: "每条边，都通向镜面",
       demoStart: [1, 6],
       demoDirection: 2
+    },
+    {
+      name: "归圆",
+      typeName: "球面",
+      topology: "sphere",
+      width: 7,
+      height: 7,
+      edgeText: "邻边相合",
+      xConnection: "adjacent",
+      yConnection: "adjacent",
+      ruleTitle: "邻边相合",
+      ruleText: "相邻两边，转向后相接",
+      demoStart: [4, 1],
+      demoDirection: 7
     }
   ];
 
@@ -845,6 +859,15 @@
   function connectedSeamAtCell(cell) {
     var point = Engine.toPoint(game.rules, cell);
     var bits = 0;
+    if (game.level.topology === "sphere") {
+      if (point.x === 0 || point.y === 0) {
+        bits |= Engine.SEAM_X;
+      }
+      if (point.x === game.rules.width - 1 || point.y === game.rules.height - 1) {
+        bits |= Engine.SEAM_Y;
+      }
+      return bits;
+    }
     if (game.level.xConnection && (point.x === 0 || point.x === game.rules.width - 1)) {
       bits |= Engine.SEAM_X;
     }
@@ -1880,7 +1903,7 @@
 
   function drawCompletionSurface(ctx, morph, spin) {
     var columns = 44;
-    var rows = 34;
+    var rows = game.level.topology === "sphere" ? columns : 34;
     var points = [];
     var row;
     var column;
@@ -1901,10 +1924,20 @@
           points[row + 1][column + 1],
           points[row + 1][column]
         ];
-        patches.push({
-          points: patchPoints,
-          depth: patchPoints.reduce(function sumDepth(total, point) { return total + point.depth; }, 0) / 4
-        });
+        if (game.level.topology === "sphere") {
+          [[0, 1, 2], [0, 2, 3]].forEach(function addSphereTriangle(indices) {
+            var triangle = indices.map(function sphereTrianglePoint(index) { return patchPoints[index]; });
+            patches.push({
+              points: triangle,
+              depth: triangle.reduce(function sumDepth(total, point) { return total + point.depth; }, 0) / 3
+            });
+          });
+        } else {
+          patches.push({
+            points: patchPoints,
+            depth: patchPoints.reduce(function sumDepth(total, point) { return total + point.depth; }, 0) / 4
+          });
+        }
       }
     }
     patches.sort(function sortPatches(a, b) { return a.depth - b.depth; });
@@ -2021,7 +2054,13 @@
     ctx.lineWidth = Math.max(0.7, renderState.layout.cell * (0.025 - morph * 0.006));
     ctx.lineCap = "round";
     for (var cell = 0; cell < game.rules.cellCount; cell += 1) {
-      [0, 2].forEach(function drawDirection(direction) {
+      var gridDirections = [0, 2];
+      if (game.level.topology === "sphere") {
+        var gridPoint = Engine.toPoint(game.rules, cell);
+        if (gridPoint.x === 0) { gridDirections.push(4); }
+        if (gridPoint.y === 0) { gridDirections.push(6); }
+      }
+      gridDirections.forEach(function drawDirection(direction) {
         var step = Engine.step(game.rules, cell, direction);
         if (!step) {
           return;
@@ -2059,6 +2098,32 @@
         var point = axis === "x"
           ? completionPoint(side, along, morph, spin)
           : completionPoint(along, side, morph, spin);
+        if (index === 0) {
+          ctx.moveTo(point.x, point.y);
+        } else {
+          ctx.lineTo(point.x, point.y);
+        }
+      }
+      ctx.stroke();
+    });
+    ctx.restore();
+  }
+
+  function drawCompletionSphereBoundary(ctx, pair, morph, spin, color) {
+    var samples = 72;
+    var fade = 1 - Morph.smooth((morph - 0.72) / 0.28);
+    var sides = pair === "a"
+      ? [function top(along) { return completionPoint(along, 0, morph, spin); }, function left(along) { return completionPoint(0, along, morph, spin); }]
+      : [function bottom(along) { return completionPoint(along, 1, morph, spin); }, function right(along) { return completionPoint(1, along, morph, spin); }];
+    ctx.save();
+    ctx.globalAlpha = (0.36 + morph * 0.5) * fade;
+    ctx.strokeStyle = color;
+    ctx.lineWidth = 2.4;
+    ctx.lineCap = "round";
+    sides.forEach(function drawSphereSide(pointAt) {
+      ctx.beginPath();
+      for (var index = 0; index <= samples; index += 1) {
+        var point = pointAt(index / samples);
         if (index === 0) {
           ctx.moveTo(point.x, point.y);
         } else {
@@ -2200,11 +2265,16 @@
 
     drawCompletionSurface(ctx, morph, orientation);
     drawCompletionGrid(ctx, morph, orientation);
-    if (game.level.xConnection) {
-      drawCompletionBoundary(ctx, "x", morph, orientation, "#3f8c87");
-    }
-    if (game.level.yConnection) {
-      drawCompletionBoundary(ctx, "y", morph, orientation, "#c79244");
+    if (game.level.topology === "sphere") {
+      drawCompletionSphereBoundary(ctx, "a", morph, orientation, "#3f8c87");
+      drawCompletionSphereBoundary(ctx, "b", morph, orientation, "#c79244");
+    } else {
+      if (game.level.xConnection) {
+        drawCompletionBoundary(ctx, "x", morph, orientation, "#3f8c87");
+      }
+      if (game.level.yConnection) {
+        drawCompletionBoundary(ctx, "y", morph, orientation, "#c79244");
+      }
     }
     drawCompletionWinningLine(ctx, time, morph, orientation);
     drawCompletionStones(ctx, morph, orientation);
@@ -2364,6 +2434,10 @@
 
   function drawTopologyRails(ctx, time) {
     var layout = renderState.layout;
+    if (game.level.topology === "sphere") {
+      drawSphereRails(ctx, time);
+      return;
+    }
     if (game.level.xConnection) {
       drawRailPair(ctx, "vertical", "#3f8c87", game.level.xConnection === "twist", seamPulseFor(Engine.SEAM_X, time));
     }
@@ -2377,6 +2451,39 @@
       ctx.strokeRect(layout.left - 8, layout.top - 8, layout.right - layout.left + 16, layout.bottom - layout.top + 16);
       ctx.restore();
     }
+  }
+
+  function drawSphereRails(ctx, time) {
+    var layout = renderState.layout;
+    var offset = Math.min(15, layout.cell * 0.4);
+    var pairs = [
+      { color: "#3f8c87", pulse: seamPulseFor(Engine.SEAM_X, time), sides: ["top", "left"] },
+      { color: "#c79244", pulse: seamPulseFor(Engine.SEAM_Y, time), sides: ["bottom", "right"] }
+    ];
+    pairs.forEach(function drawAdjacentPair(pair) {
+      ctx.save();
+      ctx.strokeStyle = pair.color;
+      ctx.fillStyle = pair.color;
+      ctx.globalAlpha = 0.58 + pair.pulse * 0.4;
+      ctx.lineWidth = 2 + pair.pulse * 2.2;
+      ctx.lineCap = "round";
+      ctx.shadowColor = pair.color;
+      ctx.shadowBlur = pair.pulse * 16;
+      pair.sides.forEach(function drawAdjacentSide(side) {
+        if (side === "top" || side === "bottom") {
+          var y = side === "top" ? layout.top - offset : layout.bottom + offset;
+          drawRailLine(ctx, layout.left, y, layout.right, y);
+          drawArrow(ctx, layout.left + (layout.right - layout.left) * 0.36, y, "horizontal", 1);
+          drawArrow(ctx, layout.left + (layout.right - layout.left) * 0.7, y, "horizontal", 1);
+        } else {
+          var x = side === "left" ? layout.left - offset : layout.right + offset;
+          drawRailLine(ctx, x, layout.top, x, layout.bottom);
+          drawArrow(ctx, x, layout.top + (layout.bottom - layout.top) * 0.36, "vertical", 1);
+          drawArrow(ctx, x, layout.top + (layout.bottom - layout.top) * 0.7, "vertical", 1);
+        }
+      });
+      ctx.restore();
+    });
   }
 
   function drawRailPair(ctx, orientation, color, twisted, pulse) {
@@ -2449,10 +2556,17 @@
     }
     var point = Engine.toPoint(game.rules, sourceCell);
     var directions = [];
+    if (game.level.topology === "sphere") {
+      if (point.y === 0) { directions.push({ direction: 6, color: "#3f8c87" }); }
+      if (point.x === 0) { directions.push({ direction: 4, color: "#3f8c87" }); }
+      if (point.y === game.rules.height - 1) { directions.push({ direction: 2, color: "#c79244" }); }
+      if (point.x === game.rules.width - 1) { directions.push({ direction: 0, color: "#c79244" }); }
+    } else {
     if (game.level.xConnection && point.x === 0) { directions.push({ direction: 4, color: "#3f8c87" }); }
     if (game.level.xConnection && point.x === game.rules.width - 1) { directions.push({ direction: 0, color: "#3f8c87" }); }
     if (game.level.yConnection && point.y === 0) { directions.push({ direction: 6, color: "#c79244" }); }
     if (game.level.yConnection && point.y === game.rules.height - 1) { directions.push({ direction: 2, color: "#c79244" }); }
+    }
 
     directions.forEach(function drawGhost(mapping) {
       var mapped = Engine.step(game.rules, sourceCell, mapping.direction);
