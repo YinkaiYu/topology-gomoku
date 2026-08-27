@@ -257,7 +257,7 @@ test("AI 优先取胜，其次阻挡玩家单杀", () => {
   assert.ok([Game.toCell(rules, 0, 2), Game.toCell(rules, 5, 2)].includes(Game.chooseMove(blockingBoard, rules, "normal", () => 0)));
 });
 
-test("悠闲 AI 会错过必胜点和玩家的单杀点", () => {
+test("随性 AI 会错过必胜点和玩家的单杀点", () => {
   const rules = Game.createRules({ type: "plane", width: 7, height: 7, target: 5 });
   const winningBoard = Game.createBoard(rules);
   put(winningBoard, rules, [[1, 3], [2, 3], [3, 3], [4, 3]], Game.AI);
@@ -270,7 +270,7 @@ test("悠闲 AI 会错过必胜点和玩家的单杀点", () => {
   assert.equal(blockingCells.includes(Game.chooseMove(blockingBoard, rules, "easy", () => 0.99)), false);
 });
 
-test("敏捷 AI 偶尔会漏掉玩家的单杀点", () => {
+test("机敏 AI 偶尔会漏掉玩家的单杀点", () => {
   const rules = Game.createRules({ type: "plane", width: 7, height: 7, target: 5 });
   const board = Game.createBoard(rules);
   put(board, rules, [[1, 2], [2, 2], [3, 2], [4, 2]], Game.HUMAN);
