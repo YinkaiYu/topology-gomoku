@@ -110,6 +110,6 @@ git worktree list
 - Agent 任务分支：`codex/<topic>`。
 - 人工短期分支：`feat/<topic>`、`fix/<topic>`、`docs/<topic>` 等。
 - 维护者发行整合分支可使用 `codex/release-<platform>-<semver>`。
-- 三个平台 tag 使用相同 SemVer，例如 `xiaohongshu-v1.37.0`、`bilibili-v1.37.0`、`wechat-v1.37.0`；不得各自使用不同产品版本。
+- 三个平台 tag 使用相同 SemVer，例如 `xiaohongshu-v1.37.1`、`bilibili-v1.37.1`、`wechat-v1.37.1`；不得各自使用不同产品版本。
 
 分支名描述集成责任，目录名描述代码责任。即使未来平台迁移到不同工程形态，共享规则的测试向量、视觉原则和行为契约仍应保持一致。
