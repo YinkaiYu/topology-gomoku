@@ -131,8 +131,11 @@ test("前后台暂停会冻结 AI 截止时间而不是回前台立即落子", (
   controller.startLevel(1, { skipDemo: true }, 0);
   const humanCell = Engine.toCell(controller.game.rules, 3, 3);
   controller.performMove(humanCell, Engine.HUMAN, null, 100);
+  assert.equal(controller.nextScheduledAt(), 100 + Content.DIFFICULTIES.normal.wait);
   controller.pause(200);
+  assert.equal(controller.nextScheduledAt(), null);
   controller.resume(1200);
+  assert.equal(controller.nextScheduledAt(), 1100 + Content.DIFFICULTIES.normal.wait);
   controller.tick(1500);
   assert.equal(controller.game.moves.length, 1);
   controller.tick(1620);
@@ -171,6 +174,7 @@ test("棋盘命中测试保留 0.53 cell 吸附与 0.58 cell 容错边界", () =
 });
 
 test("共享控制与美术模块不依赖 DOM、Web Storage 或微信宿主", () => {
+  assert.equal(typeof BoardArt.drawTopologySilhouette, "function");
   ["level-config.js", "game-controller.js", "board-art.js"].forEach((name) => {
     const source = fs.readFileSync(path.join(ROOT, "app", "assets", name), "utf8");
     assert.doesNotMatch(source, /\bdocument\b|\blocalStorage\b|\bwx\.|getBoundingClientRect|PointerEvent/);
