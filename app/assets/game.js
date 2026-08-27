@@ -1738,6 +1738,19 @@
     }
   }
 
+  function completionFlatPointFromUV(u, v) {
+    var xRatio = Morph.isPeriodicX(game.rules.type)
+      ? (u * game.rules.width - 0.5) / Math.max(1, game.rules.width - 1)
+      : u;
+    var yRatio = Morph.isPeriodicY(game.rules.type)
+      ? (v * game.rules.height - 0.5) / Math.max(1, game.rules.height - 1)
+      : v;
+    return {
+      x: renderState.layout.left + clamp01(xRatio) * (renderState.layout.right - renderState.layout.left),
+      y: renderState.layout.top + clamp01(yRatio) * (renderState.layout.bottom - renderState.layout.top)
+    };
+  }
+
   function completionGridEdgePoints(cell, step, direction, morph, spin) {
     var fromFlat = cellCenter(cell);
     var toFlat = cellCenter(step.cell);
@@ -1753,20 +1766,28 @@
     }
 
     var vector = Engine.DIRECTIONS[direction];
-    var sourceBoundary = { flatX: from.flatX, flatY: from.flatY, u: from.u, v: from.v };
-    var targetBoundary = { flatX: to.flatX, flatY: to.flatY, u: to.u, v: to.v };
-    if (step.seam & Engine.SEAM_X) {
-      sourceBoundary.flatX = vector.dx > 0 ? renderState.layout.right : renderState.layout.left;
-      sourceBoundary.u = vector.dx > 0 ? 1 : 0;
-      targetBoundary.flatX = vector.dx > 0 ? renderState.layout.left : renderState.layout.right;
-      targetBoundary.u = vector.dx > 0 ? 0 : 1;
-    }
-    if (step.seam & Engine.SEAM_Y) {
-      sourceBoundary.flatY = vector.dy > 0 ? renderState.layout.bottom : renderState.layout.top;
-      sourceBoundary.v = vector.dy > 0 ? 1 : 0;
-      targetBoundary.flatY = vector.dy > 0 ? renderState.layout.top : renderState.layout.bottom;
-      targetBoundary.v = vector.dy > 0 ? 0 : 1;
-    }
+    var bridge = Morph.seamBridgeUV(
+      game.rules.type,
+      fromUV,
+      toUV,
+      vector,
+      Boolean(step.seam & Engine.SEAM_X),
+      Boolean(step.seam & Engine.SEAM_Y)
+    );
+    var sourceFlat = completionFlatPointFromUV(bridge.source.u, bridge.source.v);
+    var targetFlat = completionFlatPointFromUV(bridge.target.u, bridge.target.v);
+    var sourceBoundary = {
+      flatX: sourceFlat.x,
+      flatY: sourceFlat.y,
+      u: bridge.source.u,
+      v: bridge.source.v
+    };
+    var targetBoundary = {
+      flatX: targetFlat.x,
+      flatY: targetFlat.y,
+      u: bridge.target.u,
+      v: bridge.target.v
+    };
     appendCompletionSegment(points, from, sourceBoundary, 5, morph, spin);
     points.push(completionMappedPoint(
       targetBoundary.flatX,

@@ -30,7 +30,11 @@
     { dx: 1, dy: -1, name: "NE" }
   ];
 
-  var WIN_DIRECTIONS = [0, 1, 2, 3];
+  // On orientable boards four directions are enough because every path has a
+  // canonical reverse. A twisted seam can flip a diagonal, though, leaving
+  // both endpoint directions in the other half of the compass. Generate from
+  // all eight directions and let the cell-set key remove true reversals.
+  var WIN_DIRECTIONS = [0, 1, 2, 3, 4, 5, 6, 7];
   var LINE_WEIGHTS = [0, 2, 14, 120, 2600, WIN_SCORE];
 
   function mod(value, size) {

@@ -59,6 +59,74 @@ test("实射影平面的两组反向边界在 Roman 曲面中重合", () => {
   });
 });
 
+test("斜向跨缝使用真实边界交点且接缝两侧投影重合", () => {
+  const cases = [
+    {
+      type: "cylinder",
+      from: { u: 7.5 / 8, v: 1 / 5 },
+      to: { u: 0.5 / 8, v: 2 / 5 },
+      vector: { dx: 1, dy: 1 },
+      x: true,
+      y: false,
+      expectedSource: { u: 1, v: 0.3 },
+      expectedTarget: { u: 0, v: 0.3 }
+    },
+    {
+      type: "torus",
+      from: { u: 2.5 / 8, v: 5.5 / 6 },
+      to: { u: 3.5 / 8, v: 0.5 / 6 },
+      vector: { dx: 1, dy: 1 },
+      x: false,
+      y: true,
+      expectedSource: { u: 3 / 8, v: 1 },
+      expectedTarget: { u: 3 / 8, v: 0 }
+    },
+    {
+      type: "mobius",
+      from: { u: 7.5 / 8, v: 1 },
+      to: { u: 0.5 / 8, v: 1 / 5 },
+      vector: { dx: 1, dy: -1 },
+      x: true,
+      y: false,
+      expectedSource: { u: 1, v: 0.9 },
+      expectedTarget: { u: 0, v: 0.1 }
+    },
+    {
+      type: "klein",
+      from: { u: 6.5 / 7, v: 1.5 / 6 },
+      to: { u: 0.5 / 7, v: 3.5 / 6 },
+      vector: { dx: 1, dy: 1 },
+      x: true,
+      y: false,
+      expectedSource: { u: 1, v: 1 / 3 },
+      expectedTarget: { u: 0, v: 2 / 3 }
+    },
+    {
+      type: "projective",
+      from: { u: 1.5 / 8, v: 7.5 / 8 },
+      to: { u: 5.5 / 8, v: 0.5 / 8 },
+      vector: { dx: 1, dy: 1 },
+      x: false,
+      y: true,
+      expectedSource: { u: 0.25, v: 1 },
+      expectedTarget: { u: 0.75, v: 0 }
+    }
+  ];
+
+  cases.forEach((item) => {
+    const bridge = Morph.seamBridgeUV(item.type, item.from, item.to, item.vector, item.x, item.y);
+    assert.ok(Math.abs(bridge.source.u - item.expectedSource.u) < 1e-6, `${item.type} source u`);
+    assert.ok(Math.abs(bridge.source.v - item.expectedSource.v) < 1e-6, `${item.type} source v`);
+    assert.ok(Math.abs(bridge.target.u - item.expectedTarget.u) < 1e-6, `${item.type} target u`);
+    assert.ok(Math.abs(bridge.target.v - item.expectedTarget.v) < 1e-6, `${item.type} target v`);
+    samePoint(
+      Morph.surfacePoint(item.type, bridge.source.u, bridge.source.v),
+      Morph.surfacePoint(item.type, bridge.target.u, bridge.target.v),
+      `${item.type} seam bridge`
+    );
+  });
+});
+
 test("所有关卡的三维投影均返回有限屏幕坐标", () => {
   ["cylinder", "torus", "mobius", "klein", "projective"].forEach((type) => {
     for (let u = 0; u <= 1; u += 0.2) {
@@ -108,6 +176,7 @@ test("通关曲面使用高密度采样，棋盘线沿曲面分段插值", () =>
   assert.match(game, /var rows = 34;/);
   assert.match(game, /var samples = 8;/);
   assert.match(game, /appendCompletionSegment/);
+  assert.match(game, /Morph\.seamBridgeUV/);
   assert.match(game, /completionGridEdgePoints\(cells\[index\], step, direction/);
   assert.doesNotMatch(game, /var columns = 18;/);
   assert.doesNotMatch(game, /appendCompletionSegment\(points, sourceBoundary, targetBoundary/);

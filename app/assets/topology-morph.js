@@ -184,6 +184,82 @@
     return type === "torus" || type === "klein" || type === "projective";
   }
 
+  function hasXTwist(type) {
+    return type === "mobius" || type === "klein" || type === "projective";
+  }
+
+  function hasYTwist(type) {
+    return type === "projective";
+  }
+
+  function seamBridgeUV(type, from, to, vector, crossesX, crossesY) {
+    var sourceChartTo = { u: to.u, v: to.v };
+
+    // Undo the quotient identification first so both stone centres live in
+    // one continuous, unfolded chart. This is the step the old renderer
+    // skipped, which made diagonal seam edges travel horizontally and then
+    // jump vertically at the join.
+    if (crossesY && hasYTwist(type)) {
+      sourceChartTo.u = 1 - sourceChartTo.u;
+    }
+    if (crossesX && hasXTwist(type)) {
+      sourceChartTo.v = 1 - sourceChartTo.v;
+    }
+    if (crossesX) {
+      sourceChartTo.u += vector.dx > 0 ? 1 : -1;
+    }
+    if (crossesY) {
+      sourceChartTo.v += vector.dy > 0 ? 1 : -1;
+    }
+
+    var crossingTimes = [];
+    if (crossesX) {
+      var boundaryU = vector.dx > 0 ? 1 : 0;
+      crossingTimes.push((boundaryU - from.u) / (sourceChartTo.u - from.u));
+    }
+    if (crossesY) {
+      var boundaryV = vector.dy > 0 ? 1 : 0;
+      crossingTimes.push((boundaryV - from.v) / (sourceChartTo.v - from.v));
+    }
+    var amount = crossingTimes.reduce(function sum(total, value) {
+      return total + value;
+    }, 0) / Math.max(1, crossingTimes.length);
+    amount = clamp01(Number.isFinite(amount) ? amount : 0.5);
+
+    var source = {
+      u: from.u + (sourceChartTo.u - from.u) * amount,
+      v: from.v + (sourceChartTo.v - from.v) * amount
+    };
+    if (crossesX) {
+      source.u = vector.dx > 0 ? 1 : 0;
+    }
+    if (crossesY) {
+      source.v = vector.dy > 0 ? 1 : 0;
+    }
+
+    // Apply the actual edge identification to obtain the same surface point
+    // in the target chart. Twisted edges reflect their transverse coordinate.
+    var target = { u: source.u, v: source.v };
+    if (crossesX) {
+      target.u = vector.dx > 0 ? 0 : 1;
+    }
+    if (crossesY) {
+      target.v = vector.dy > 0 ? 0 : 1;
+    }
+    if (crossesX && hasXTwist(type)) {
+      target.v = 1 - target.v;
+    }
+    if (crossesY && hasYTwist(type)) {
+      target.u = 1 - target.u;
+    }
+
+    return {
+      source: source,
+      target: target,
+      amount: amount
+    };
+  }
+
   function stoneUV(rules, cell) {
     var x = cell % rules.width;
     var y = Math.floor(cell / rules.width);
@@ -209,6 +285,7 @@
     stoneUV: stoneUV,
     isPeriodicX: isPeriodicX,
     isPeriodicY: isPeriodicY,
+    seamBridgeUV: seamBridgeUV,
     close: close
   };
 });

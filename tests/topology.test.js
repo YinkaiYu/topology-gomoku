@@ -57,6 +57,35 @@ test("莫比乌斯带的镜像对角线可判为五连", () => {
   assert.ok(win.seam & Game.SEAM_TWIST);
 });
 
+test("莫比乌斯边界翻转后落入反向象限的斜线仍判为五连", () => {
+  const rules = Game.createRules({ type: "mobius", width: 8, height: 6, target: 5 });
+  const board = Game.createBoard(rules);
+  const points = [[7, 5], [0, 1], [1, 2], [2, 3], [3, 4]];
+  put(board, rules, points, Game.HUMAN);
+
+  const path = Game.tracePath(rules, Game.toCell(rules, 7, 5), 7, 5);
+  assert.deepEqual(path.cells.map((cell) => Game.toPoint(rules, cell)), points.map(([x, y]) => ({ x, y })));
+  const win = Game.checkWin(board, rules, Game.toCell(rules, 3, 4), Game.HUMAN);
+  assert.ok(win);
+  assert.ok(win.seam & Game.SEAM_X);
+  assert.ok(win.seam & Game.SEAM_TWIST);
+});
+
+test("所有拓扑中任一方向可追踪的五子路径都存在胜利掩码", () => {
+  TYPES.forEach((type) => {
+    const rules = Game.createRules({ type, width: 8, height: 6, target: 5 });
+    const maskKeys = new Set(rules.winMasks.map((mask) => Array.from(mask.cells).sort((a, b) => a - b).join(",")));
+    for (let cell = 0; cell < rules.cellCount; cell += 1) {
+      for (let direction = 0; direction < 8; direction += 1) {
+        const path = Game.tracePath(rules, cell, direction, 5);
+        if (!path) continue;
+        const key = path.cells.slice().sort((a, b) => a - b).join(",");
+        assert.ok(maskKeys.has(key), `${type}: cell=${cell}, direction=${direction}`);
+      }
+    }
+  });
+});
+
 test("四格环面不会重复使用棋子伪造五连", () => {
   const rules = Game.createRules({ type: "torus", width: 4, height: 6, target: 5 });
   const board = Game.createBoard(rules);
