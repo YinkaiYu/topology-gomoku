@@ -1,8 +1,8 @@
 # Bilibili Toy 原生适配与响应式审视
 
-全平台游戏版本：1.35.2
+全平台游戏版本：1.37.0
 
-审视日期：2026-08-27
+审视日期：2026-08-28
 平台范围：Bilibili Toy
 
 ## 设计原则
@@ -36,14 +36,16 @@
 - 页面保留 `viewport-fit=cover`，补齐 top/right/bottom/left 四向安全区。
 - 新增 `bilibili-adapter.js` 作为唯一平台边界，游戏规则代码不直接判断宿主。
 - adapter 使用 Toy SDK `onContainerChange` 接收设备、方向、视口、沉浸状态与安全区，并在变化后触发画布重排。
-- App 内始终请求 `orientation: auto`，沉浸模式默认关闭；设置页提供用户开关，只有用户主动开启时才请求 `immersive: true`，实际状态仍以 `onContainerChange` 回调为准。
+- adapter 不接管屏幕方向，只在用户操作设置开关时调用 `setContainerMode({ immersive })`。沉浸模式默认关闭，实际状态仍以 `onContainerChange` 回调为准。
+- 非沉浸状态继承共享基线的宿主顶栏避让；进入沉浸状态后，Toy 宿主状态会把顶部间距收敛为安全区加小幅留白。左右安全区与宿主报告的动态视口高度始终保留。
 - Web 或不支持 SDK 的环境自动回退到浏览器视口、CSS media query 和标准 `env(safe-area-inset-*)`。
 
 ## 验证结果
 
-- `npm test`：73/73 通过。
-- `npm run validate`：通过，23 个包内文件，约 1.71 MB 未压缩。
-- `npm run build:bilibili`：通过，ZIP 根目录包含 `index.html`，资源均为相对路径；压缩包约 1.11 MB。
+- `npm test`：88/88 通过，其中包含 Toy adapter、沉浸模式、动态视口、复盘和三字重内嵌字体覆盖。
+- `npm run validate`：通过，25 个包内文件，约 1.89 MB 未压缩。
+- `npm run docs:check`：通过，19 份 Markdown 文档全部进入导航且相对链接有效。
+- `npm run build:bilibili`：通过，ZIP 根目录包含 `index.html`，资源路径和官方 SDK 白名单有效；压缩包约 1.27 MB。
 - `git diff --check`：通过，仅有 Git 对 PowerShell 文件行尾转换的提示。
 - Toy SDK 外部资源白名单只允许官方 `//s1.hdslb.com/bfs/seed/toy/app/sdk/toy-sdk.js`。
 - 自动化测试覆盖三档断点、`100dvh`、四向安全区、短横屏、hover/pointer、键盘和容器变化重排。
@@ -63,4 +65,5 @@
 - Bilibili Toy 发布指南：<https://www.bilibili.com/toy/publish/guide>
 - Bilibili Toy SDK：<https://www.bilibili.com/toy/publish/sdk>
 - Bilibili Toy 响应式演示：<https://www.bilibili.com/toy/toy-responsive-demo/index.html>
+- 仓库保存的响应式指南：[`bilibili-responsive-guide.md`](bilibili-responsive-guide.md)
 - 官方示例实际引用的响应式指南：<https://s1.hdslb.com/bfs/static/toy/app/toy-responsive-demo/v2/toy-responsive-guide.md>

@@ -133,28 +133,35 @@ test("每个胜利掩码都由五个不同交点构成", () => {
   });
 });
 
-test("七关边界演示都沿真实拓扑连续落下五颗不同棋子", () => {
+test("七关全部教学线路都沿真实拓扑连续落下五颗不同棋子", () => {
   const cases = [
-    { type: "plane", width: 7, height: 7, start: [1, 3], direction: 0, points: [[1, 3], [2, 3], [3, 3], [4, 3], [5, 3]], seam: 0 },
-    { type: "cylinder", width: 7, height: 6, start: [5, 2], direction: 0, points: [[5, 2], [6, 2], [0, 2], [1, 2], [2, 2]], seam: Game.SEAM_X },
-    { type: "torus", width: 7, height: 6, start: [5, 4], direction: 1, points: [[5, 4], [6, 5], [0, 0], [1, 1], [2, 2]], seam: Game.SEAM_X | Game.SEAM_Y },
-    { type: "mobius", width: 8, height: 6, start: [6, 1], direction: 0, points: [[6, 1], [7, 1], [0, 4], [1, 4], [2, 4]], seam: Game.SEAM_X | Game.SEAM_TWIST },
-    { type: "klein", width: 7, height: 6, start: [5, 4], direction: 1, points: [[5, 4], [6, 5], [0, 5], [1, 4], [2, 3]], seam: Game.SEAM_X | Game.SEAM_Y | Game.SEAM_TWIST },
-    { type: "projective", width: 8, height: 8, start: [1, 6], direction: 2, points: [[1, 6], [1, 7], [6, 0], [6, 1], [6, 2]], seam: Game.SEAM_Y | Game.SEAM_TWIST },
-    { type: "sphere", width: 7, height: 7, start: [2, 1], direction: 6, points: [[2, 1], [2, 0], [0, 2], [1, 2], [2, 2]], seam: Game.SEAM_X }
+    { name: "plane straight", type: "plane", width: 7, height: 7, start: [1, 3], direction: 0, points: [[1, 3], [2, 3], [3, 3], [4, 3], [5, 3]], seam: 0, crossings: 0 },
+    { name: "cylinder straight", type: "cylinder", width: 7, height: 6, start: [5, 2], direction: 0, points: [[5, 2], [6, 2], [0, 2], [1, 2], [2, 2]], seam: Game.SEAM_X, crossings: 1 },
+    { name: "cylinder diagonal", type: "cylinder", width: 7, height: 6, start: [5, 0], direction: 1, points: [[5, 0], [6, 1], [0, 2], [1, 3], [2, 4]], seam: Game.SEAM_X, crossings: 1 },
+    { name: "torus vertical", type: "torus", width: 7, height: 6, start: [3, 4], direction: 2, points: [[3, 4], [3, 5], [3, 0], [3, 1], [3, 2]], seam: Game.SEAM_Y, crossings: 1 },
+    { name: "torus double seam", type: "torus", width: 7, height: 6, start: [1, 0], direction: 5, points: [[1, 0], [0, 5], [6, 4], [5, 3], [4, 2]], seam: Game.SEAM_X | Game.SEAM_Y, crossings: 2 },
+    { name: "mobius straight", type: "mobius", width: 8, height: 6, start: [6, 1], direction: 0, points: [[6, 1], [7, 1], [0, 4], [1, 4], [2, 4]], seam: Game.SEAM_X | Game.SEAM_TWIST, crossings: 1 },
+    { name: "mobius diagonal", type: "mobius", width: 8, height: 6, start: [6, 0], direction: 1, points: [[6, 0], [7, 1], [0, 3], [1, 2], [2, 1]], seam: Game.SEAM_X | Game.SEAM_TWIST, crossings: 1 },
+    { name: "klein vertical", type: "klein", width: 7, height: 6, start: [3, 4], direction: 2, points: [[3, 4], [3, 5], [3, 0], [3, 1], [3, 2]], seam: Game.SEAM_Y, crossings: 1 },
+    { name: "klein double seam", type: "klein", width: 7, height: 6, start: [1, 0], direction: 5, points: [[1, 0], [0, 5], [6, 1], [5, 2], [4, 3]], seam: Game.SEAM_X | Game.SEAM_Y | Game.SEAM_TWIST, crossings: 2 },
+    { name: "projective vertical", type: "projective", width: 8, height: 8, start: [1, 6], direction: 2, points: [[1, 6], [1, 7], [6, 0], [6, 1], [6, 2]], seam: Game.SEAM_Y | Game.SEAM_TWIST, crossings: 1 },
+    { name: "projective double seam", type: "projective", width: 8, height: 8, start: [1, 0], direction: 5, points: [[1, 0], [7, 7], [0, 1], [1, 2], [2, 3]], seam: Game.SEAM_X | Game.SEAM_Y | Game.SEAM_TWIST, crossings: 2 },
+    { name: "sphere edge turn", type: "sphere", width: 7, height: 7, start: [2, 1], direction: 6, points: [[2, 1], [2, 0], [0, 2], [1, 2], [2, 2]], seam: Game.SEAM_X, crossings: 1 },
+    { name: "sphere vertex turn", type: "sphere", width: 7, height: 7, start: [1, 0], direction: 5, points: [[1, 0], [0, 0], [0, 1], [1, 2], [2, 3]], seam: Game.SEAM_X, crossings: 2 }
   ];
 
   cases.forEach((item) => {
     const rules = Game.createRules({ type: item.type, width: item.width, height: item.height, target: 5 });
     const startCell = Game.toCell(rules, item.start[0], item.start[1]);
     const path = Game.tracePath(rules, startCell, item.direction, 5);
-    assert.ok(path, item.type);
+    assert.ok(path, item.name);
     assert.deepEqual(path.cells.map((cell) => {
       const point = Game.toPoint(rules, cell);
       return [point.x, point.y];
-    }), item.points, item.type);
-    assert.equal(path.seams.reduce((all, seam) => all | seam, 0), item.seam, item.type);
-    assert.equal(new Set(path.cells).size, 5, item.type);
+    }), item.points, item.name);
+    assert.equal(path.seams.reduce((all, seam) => all | seam, 0), item.seam, item.name);
+    assert.equal(path.seams.filter(Boolean).length, item.crossings, item.name);
+    assert.equal(new Set(path.cells).size, 5, item.name);
   });
 });
 
@@ -250,7 +257,7 @@ test("AI 优先取胜，其次阻挡玩家单杀", () => {
   assert.ok([Game.toCell(rules, 0, 2), Game.toCell(rules, 5, 2)].includes(Game.chooseMove(blockingBoard, rules, "normal", () => 0)));
 });
 
-test("悠闲 AI 会错过必胜点和玩家的单杀点", () => {
+test("随性 AI 会错过必胜点和玩家的单杀点", () => {
   const rules = Game.createRules({ type: "plane", width: 7, height: 7, target: 5 });
   const winningBoard = Game.createBoard(rules);
   put(winningBoard, rules, [[1, 3], [2, 3], [3, 3], [4, 3]], Game.AI);
@@ -263,7 +270,7 @@ test("悠闲 AI 会错过必胜点和玩家的单杀点", () => {
   assert.equal(blockingCells.includes(Game.chooseMove(blockingBoard, rules, "easy", () => 0.99)), false);
 });
 
-test("敏捷 AI 偶尔会漏掉玩家的单杀点", () => {
+test("机敏 AI 偶尔会漏掉玩家的单杀点", () => {
   const rules = Game.createRules({ type: "plane", width: 7, height: 7, target: 5 });
   const board = Game.createBoard(rules);
   put(board, rules, [[1, 2], [2, 2], [3, 2], [4, 2]], Game.HUMAN);

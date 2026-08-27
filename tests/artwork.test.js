@@ -161,15 +161,16 @@ test("目录锁定整屏并使用本地内嵌的典雅中文字体", () => {
   assert.doesNotMatch(style, /\.home-scroll\s*\{[^}]*overflow-y:\s*auto/s);
 });
 
-test("终章标题作为同一字体文本运行且字体资源带平台修订缓存键", () => {
+test("终章标题作为同一字体文本运行且字体资源带版本缓存键", () => {
   const html = fs.readFileSync(path.join(ROOT, "app", "index.html"), "utf8");
   const style = fs.readFileSync(path.join(ROOT, "app", "assets", "style.css"), "utf8");
-  assert.match(html, /href="\.\/assets\/style\.css\?v=1\.35\.2-bili\.3"/);
+  const packageVersion = JSON.parse(fs.readFileSync(path.join(ROOT, "package.json"), "utf8")).version;
+  assert.match(html, new RegExp(`href="\\.\\/assets\\/style\\.css\\?v=${packageVersion.replace(/\./g, "\\.")}"`));
   assert.match(html, /<span class="level-name">归圆<\/span>/);
   assert.doesNotMatch(html, /optical-title-rise/);
   assert.match(style, /\.level-name\s*\{[^}]*font-weight:\s*700/s);
   ["400", "600", "700"].forEach((weight) => {
-    assert.match(style, new RegExp(`noto-serif-sc-${weight}\\.woff2\\?v=1\\.35\\.2-bili\\.1`));
+    assert.match(style, new RegExp(`noto-serif-sc-${weight}\\.woff2\\?v=${packageVersion.replace(/\./g, "\\.")}`));
   });
 });
 
@@ -182,34 +183,78 @@ test("第七关以横向终章卡片收束双列目录且整页不可滚动", ()
   assert.match(style, /\.home-scroll\s*\{[^}]*overflow:\s*hidden/s);
 });
 
-test("目录与棋局顶栏为宿主默认按钮预留额外安全空间", () => {
+test("顶部交互区在安全区缺失时仍避开宿主悬浮按钮", () => {
   const style = fs.readFileSync(path.join(ROOT, "app", "assets", "style.css"), "utf8");
   assert.match(style, /--host-chrome-clearance:\s*clamp\(/);
-  assert.match(style, /\.home-scroll\s*\{[^}]*var\(--host-chrome-clearance\)/s);
-  assert.match(style, /\.game-screen\s*\{[^}]*var\(--host-chrome-clearance\)/s);
-  assert.match(style, /\.developer-fab\s*\{[^}]*var\(--host-chrome-clearance\)/s);
+  assert.match(style, /--host-top-inset:\s*max\(68px,\s*calc\(var\(--safe-top\)\s*\+\s*var\(--host-chrome-clearance\)\)\)/);
+  assert.match(style, /\.home-scroll\s*\{[^}]*var\(--host-top-inset\)/s);
+  assert.match(style, /\.game-screen\s*\{[^}]*var\(--host-top-inset\)/s);
+  assert.match(style, /\.developer-fab\s*\{[^}]*var\(--host-top-inset\)/s);
+  assert.match(style, /\.board-stage\s*\{[^}]*var\(--host-top-inset\)/s);
+  assert.match(style, /html\[data-toy-container="bilibili-app"\]\[data-toy-immersive="true"\][\s\S]*--host-top-inset:\s*calc\(var\(--safe-top\) \+ var\(--host-chrome-clearance\)\)/);
   assert.doesNotMatch(style, /\.hero::after/);
 });
 
-test("关卡卡片与棋盘使用可逆共享元素弹性过渡", () => {
+test("关卡卡片展开时目录保持原位并以液态弹性共享元素进入棋盘", () => {
   const game = fs.readFileSync(path.join(ROOT, "app", "assets", "game.js"), "utf8");
+  const style = fs.readFileSync(path.join(ROOT, "app", "assets", "style.css"), "utf8");
   assert.match(game, /startLevel\(index, \{ transitionCard: card \}\)/);
   assert.match(game, /function animateCardIntoBoard\(/);
   assert.match(game, /function animateBoardBackToCard\(/);
-  assert.match(game, /cloneNode\(true\)/);
   assert.match(game, /drawImage\(dom\.boardCanvas/);
-  assert.match(game, /cardLayer\.classList\.add\("transition-card-content"\)/);
   assert.match(game, /REVERSIBLE_MOTION_DURATION\s*=\s*380/);
   assert.match(game, /REVERSIBLE_MOTION_EASING\s*=\s*"cubic-bezier\(0\.37, 0, 0\.63, 1\)"/);
-  assert.ok((game.match(/duration:\s*REVERSIBLE_MOTION_DURATION/g) || []).length >= 4);
-  assert.ok((game.match(/easing:\s*REVERSIBLE_MOTION_EASING/g) || []).length >= 4);
+  assert.match(game, /LIQUID_CARD_MOTION_DURATION\s*=\s*300/);
+  assert.match(game, /LIQUID_CARD_RETURN_DURATION\s*=\s*240/);
+  assert.match(game, /LIQUID_CARD_MOTION_EASING\s*=\s*"linear"/);
+  assert.match(game, /LIQUID_CARD_TRAVEL_EASING\s*=\s*"cubic-bezier\(0\.16, 0\.84, 0\.24, 1\)"/);
+  assert.match(game, /LIQUID_CARD_BOUNCE_EASING\s*=\s*"cubic-bezier\(0\.37, 0, 0\.63, 1\)"/);
+  assert.ok((game.match(/duration:\s*LIQUID_CARD_MOTION_DURATION/g) || []).length >= 2);
+  assert.ok((game.match(/duration:\s*LIQUID_CARD_RETURN_DURATION/g) || []).length >= 3);
+  assert.ok((game.match(/easing:\s*LIQUID_CARD_MOTION_EASING/g) || []).length >= 3);
+  assert.match(game, /offset:\s*0\.46/);
+  assert.match(game, /offset:\s*0\.64/);
+  assert.match(game, /offset:\s*0\.8/);
+  assert.match(game, /offset:\s*0\.92/);
+  assert.match(game, /offset:\s*0\.68/);
+  assert.match(game, /offset:\s*0\.52/);
+  assert.match(game, /offset:\s*0\.44/);
+  assert.match(game, /offset:\s*0\.88/);
+  assert.match(game, /expansionScale\s*=\s*1\.068/);
+  assert.match(game, /recoilScale\s*=\s*0\.962/);
+  assert.match(game, /secondaryBounceScale\s*=\s*1\.028/);
+  assert.match(game, /tertiaryRecoilScale\s*=\s*0\.988/);
+  assert.match(game, /translate\(0, 0\) scale\(" \+ expansionScale \+ "\)"/);
+  assert.doesNotMatch(game, /stretchX|stretchY|inverseStretch/);
+  assert.doesNotMatch(game, /borderRadius:\s*"(?:36px 23px|26px 32px|30px 28px)/);
+  assert.match(game, /fixedRectStyles\(tile, boardRect\)/);
+  assert.match(game, /targetCard\.classList\.add\("is-transition-target"\);[\s\S]*showScreen\("home"\)/s);
+  assert.match(game, /scaleX\s*=\s*target\.width \/ boardRect\.width/);
+  assert.match(game, /scaleY\s*=\s*target\.height \/ boardRect\.height/);
+  assert.match(game, /uniformScale\s*=\s*Math\.min\(scaleX, scaleY\)/);
+  assert.match(game, /translate\(" \+ translateX \+ "px, " \+ translateY \+ "px\) scale\(" \+ scaleX \+ ", " \+ scaleY/);
+  assert.match(game, /transformedTargetRadius\s*=\s*targetRadius \/ scaleX \+ "px \/ " \+ targetRadius \/ scaleY/);
+  assert.match(game, /tileCanvas\.animate\(/);
+  assert.match(game, /canvasCounterScaleX\s*=\s*uniformScale \/ scaleX/);
+  assert.match(game, /canvasCounterScaleY\s*=\s*uniformScale \/ scaleY/);
+  assert.match(game, /tile\.animate\(\[\s*\{ opacity:\s*1 \},\s*\{ offset:\s*0\.68, opacity:\s*1 \},\s*\{ opacity:\s*0 \}/s);
+  assert.match(game, /var cardAnimation\s*=\s*targetCard\.animate/);
+  assert.match(game, /paintRealCardBelowTransition\(\) \{\s*cardAnimation\.cancel\(\);/s);
+  assert.match(game, /transform:\s*"none"[\s\S]*filter:\s*"none"/);
+  assert.match(style, /\.transition-board-canvas\s*\{[^}]*object-fit:\s*contain[^}]*transform-origin:\s*center/s);
+  assert.doesNotMatch(style, /\.transition-board-canvas\s*\{[^}]*object-fit:\s*cover/s);
+  assert.match(style, /\.level-transition-board\s*\{[^}]*background:\s*rgba\(251, 250, 246, 0\.22\)[^}]*backdrop-filter:\s*blur\(7px\) saturate\(1\.4\)/s);
+  assert.match(style, /\.board-stage\s*\{[^}]*border:\s*1px solid rgba\(255, 255, 255, 0\.48\)[^}]*background:[^}]*rgba\(251, 250, 246, 0\.16\)/s);
+  assert.match(style, /\.app-shell\.is-navigating \.home-screen\s*\{[^}]*transform:\s*none/s);
+  assert.match(style, /\.game-screen\.is-shared-enter\s*\{[^}]*transform:\s*none[^}]*transition:\s*opacity 240ms var\(--soft-out\)/s);
+  assert.doesNotMatch(style, /\.game-screen\.is-shared-enter \.board-stage\s*\{/);
+  assert.match(game, /if \(transition\) \{\s*dom\.appShell\.classList\.add\("is-navigating"\);\s*\}\s*dom\.gameScreen\.classList\.toggle\("is-shared-enter"/s);
+  assert.match(game, /settledBoardAnimation\s*=\s*animation;\s*done\(\);\s*requestAnimationFrame\(function paintFinalBoardBeforeHandoff\(\) \{\s*finishNavigationAnimation\(null\);\s*animation\.cancel\(\);\s*contentAnimation\.cancel\(\);\s*settledBoardAnimation\s*=\s*null;/s);
   assert.match(game, /is-shared-return/);
   assert.match(game, /paintRealCardBelowTransition/);
   assert.match(game, /is-transition-ready/);
   assert.match(game, /settledBoardAnimation\s*=\s*animation/);
   assert.match(game, /function releaseSettledBoardAnimation\(/);
-  assert.match(game, /backgroundColor:\s*"rgba\(251, 250, 246, 0\)"/);
-  assert.match(game, /boxShadow:\s*"none"/);
   assert.match(game, /function transitionToLevel\(/);
   assert.doesNotMatch(game, /scale\(1\.026\)/);
 });
@@ -221,13 +266,13 @@ test("棋盘回合状态胶囊使用通透且克制折射的液态玻璃", () =>
   assert.match(style, /\.turn-status::after\s*\{[^}]*border:\s*1px solid rgba\(255, 255, 255, 0\.24\)/s);
 });
 
-test("第一关首次通关后自动以现有切关动效进入第二关", () => {
+test("第一关每次通关后都自动以现有切关动效进入第二关", () => {
   const game = fs.readFileSync(path.join(ROOT, "app", "assets", "game.js"), "utf8");
   const style = fs.readFileSync(path.join(ROOT, "app", "assets", "style.css"), "utf8");
-  assert.match(game, /firstTutorialCompletion\s*=\s*outcome === "win"/);
-  assert.match(game, /!prefs\.completed\[game\.levelIndex\]/);
+  assert.match(game, /firstLevelAutoAdvance\s*=\s*passed\s*&&\s*game\.levelIndex === 0/);
+  assert.doesNotMatch(game, /firstTutorialCompletion|!prefs\.completed\[game\.levelIndex\]/);
   assert.match(game, /TUTORIAL_AUTO_ADVANCE_DELAY\s*=\s*820/);
-  assert.match(game, /transitionToLevel\(1, false\)/);
-  assert.match(game, /game\.autoAdvancePending\s*=\s*firstTutorialCompletion/);
+  assert.match(game, /transitionToLevel\(1, \{\}\)/);
+  assert.match(game, /game\.autoAdvancePending\s*=\s*firstLevelAutoAdvance/);
   assert.match(style, /\.game-tools\.is-auto-advancing\s*\{[^}]*visibility:\s*hidden/s);
 });

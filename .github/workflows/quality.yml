@@ -27,8 +27,8 @@ jobs:
         with:
           node-version: 24
 
-      - name: Run deterministic tests
-        run: npm test
+      - name: Run repository quality checks
+        run: npm run check
 
       - name: Validate and build the current H5 release
         run: npm run build:xiaohongshu
