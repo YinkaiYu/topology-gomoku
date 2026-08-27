@@ -107,6 +107,17 @@ test("首页采用 E 款品牌主视觉并移除二次进入按钮与英文副�
   assert.match(game, /name:\s*"归圆"/);
 });
 
+test("目录主视觉、图鉴与剪影使用错相的克制呼吸动效", () => {
+  const style = fs.readFileSync(path.join(ROOT, "app", "assets", "style.css"), "utf8");
+  assert.match(style, /@keyframes hero-brand-breathe/);
+  assert.match(style, /@keyframes collectible-breathe/);
+  assert.match(style, /\.level-card\.is-revealed \.level-glyph\s*\{[^}]*collectible-breathe/s);
+  assert.match(style, /\.level-card:not\(\.is-revealed\) \.level-mystery\s*\{[^}]*collectible-breathe/s);
+  assert.match(style, /--art-breathe-delay:\s*-4\.2s/);
+  assert.match(style, /\.app-shell\.is-navigating \.level-glyph/);
+  assert.match(style, /@media \(prefers-reduced-motion: reduce\)/);
+});
+
 test("目录锁定整屏并使用本地内嵌的典雅中文字体", () => {
   const style = fs.readFileSync(path.join(ROOT, "app", "assets", "style.css"), "utf8");
   assert.match(style, /@font-face\s*\{[^}]*noto-serif-sc-400\.woff2/s);

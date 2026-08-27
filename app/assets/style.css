@@ -386,6 +386,7 @@ button,
 }
 
 .level-card {
+  --art-breathe-delay: 0s;
   position: relative;
   display: grid;
   min-height: 0;
@@ -402,6 +403,13 @@ button,
   transform-origin: center;
   transition: transform 420ms var(--spring), box-shadow 320ms ease, background 260ms ease, opacity 260ms ease;
 }
+
+.level-card:nth-child(2) { --art-breathe-delay: -1.15s; }
+.level-card:nth-child(3) { --art-breathe-delay: -2.75s; }
+.level-card:nth-child(4) { --art-breathe-delay: -4.2s; }
+.level-card:nth-child(5) { --art-breathe-delay: -0.55s; }
+.level-card:nth-child(6) { --art-breathe-delay: -3.45s; }
+.level-card:nth-child(7) { --art-breathe-delay: -1.95s; }
 
 .level-card-finale {
   grid-column: 1 / -1;
@@ -549,13 +557,35 @@ button,
 }
 
 .level-card.is-revealed .level-glyph {
-  animation: collectible-reveal 680ms var(--spring) both;
+  will-change: translate, scale;
+  animation:
+    collectible-reveal 680ms var(--spring) both,
+    collectible-breathe 5.8s cubic-bezier(0.45, 0, 0.24, 1) var(--art-breathe-delay) infinite;
+}
+
+.level-card:not(.is-revealed) .level-mystery {
+  will-change: translate, scale;
+  animation: collectible-breathe 5.8s cubic-bezier(0.45, 0, 0.24, 1) var(--art-breathe-delay) infinite;
 }
 
 @keyframes collectible-reveal {
   0% { opacity: 0; transform: scale(0.82) rotate(-4deg); }
   58% { opacity: 1; transform: scale(1.045) rotate(1deg); }
   100% { opacity: 0.9; transform: scale(1) rotate(0); }
+}
+
+@keyframes collectible-breathe {
+  0%, 100% { translate: 0 0; scale: 1; }
+  46% { translate: 0 -1.6px; scale: 1.024; }
+  68% { translate: 0 -0.7px; scale: 1.012; }
+}
+
+.app-shell.is-navigating .level-glyph,
+.app-shell.is-navigating .level-mystery,
+.level-card.is-handoff-stable .level-glyph,
+.level-card.is-handoff-stable .level-mystery {
+  translate: 0 0 !important;
+  scale: 1 !important;
 }
 
 .level-name {
