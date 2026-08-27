@@ -164,12 +164,13 @@ test("目录锁定整屏并使用本地内嵌的典雅中文字体", () => {
 test("终章标题作为同一字体文本运行且字体资源带版本缓存键", () => {
   const html = fs.readFileSync(path.join(ROOT, "app", "index.html"), "utf8");
   const style = fs.readFileSync(path.join(ROOT, "app", "assets", "style.css"), "utf8");
-  assert.match(html, /href="\.\/assets\/style\.css\?v=1\.36\.1"/);
+  const packageVersion = JSON.parse(fs.readFileSync(path.join(ROOT, "package.json"), "utf8")).version;
+  assert.match(html, new RegExp(`href="\\.\\/assets\\/style\\.css\\?v=${packageVersion.replace(/\./g, "\\.")}"`));
   assert.match(html, /<span class="level-name">归圆<\/span>/);
   assert.doesNotMatch(html, /optical-title-rise/);
   assert.match(style, /\.level-name\s*\{[^}]*font-weight:\s*700/s);
   ["400", "600", "700"].forEach((weight) => {
-    assert.match(style, new RegExp(`noto-serif-sc-${weight}\\.woff2\\?v=1\\.35\\.2`));
+    assert.match(style, new RegExp(`noto-serif-sc-${weight}\\.woff2\\?v=${packageVersion.replace(/\./g, "\\.")}`));
   });
 });
 
