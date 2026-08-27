@@ -107,14 +107,12 @@ test("首页采用 E 款品牌主视觉并移除二次进入按钮与英文副�
   assert.match(game, /name:\s*"归圆"/);
 });
 
-test("目录主视觉、图鉴与剪影使用错相的克制呼吸动效", () => {
+test("目录仅保留主视觉呼吸，图鉴与剪影保持静止以保证共享元素无闪烁", () => {
   const style = fs.readFileSync(path.join(ROOT, "app", "assets", "style.css"), "utf8");
   assert.match(style, /@keyframes hero-brand-breathe/);
-  assert.match(style, /@keyframes collectible-breathe/);
-  assert.match(style, /\.level-card\.is-revealed \.level-glyph\s*\{[^}]*collectible-breathe/s);
-  assert.match(style, /\.level-card:not\(\.is-revealed\) \.level-mystery\s*\{[^}]*collectible-breathe/s);
-  assert.match(style, /--art-breathe-delay:\s*-4\.2s/);
-  assert.match(style, /\.app-shell\.is-navigating \.level-glyph/);
+  assert.doesNotMatch(style, /@keyframes collectible-breathe/);
+  assert.doesNotMatch(style, /--art-breathe-delay/);
+  assert.match(style, /\.level-card:not\(\.is-revealed\) \.level-mystery\s*\{[^}]*animation:\s*none/s);
   assert.match(style, /@media \(prefers-reduced-motion: reduce\)/);
 });
 
@@ -156,7 +154,10 @@ test("关卡卡片与棋盘使用可逆共享元素弹性过渡", () => {
   assert.match(game, /cloneNode\(true\)/);
   assert.match(game, /drawImage\(dom\.boardCanvas/);
   assert.match(game, /cardLayer\.classList\.add\("transition-card-content"\)/);
-  assert.match(game, /duration:\s*440/);
+  assert.match(game, /REVERSIBLE_MOTION_DURATION\s*=\s*460/);
+  assert.match(game, /REVERSIBLE_MOTION_EASING\s*=\s*"cubic-bezier\(0\.37, 0, 0\.63, 1\)"/);
+  assert.ok((game.match(/duration:\s*REVERSIBLE_MOTION_DURATION/g) || []).length >= 4);
+  assert.ok((game.match(/easing:\s*REVERSIBLE_MOTION_EASING/g) || []).length >= 4);
   assert.match(game, /is-shared-return/);
   assert.match(game, /paintRealCardBelowTransition/);
   assert.match(game, /is-transition-ready/);
@@ -165,7 +166,14 @@ test("关卡卡片与棋盘使用可逆共享元素弹性过渡", () => {
   assert.match(game, /backgroundColor:\s*"rgba\(251, 250, 246, 0\)"/);
   assert.match(game, /boxShadow:\s*"none"/);
   assert.match(game, /function transitionToLevel\(/);
-  assert.match(game, /scale\(1\.026\)/);
+  assert.doesNotMatch(game, /scale\(1\.026\)/);
+});
+
+test("棋盘回合状态胶囊使用通透且克制折射的液态玻璃", () => {
+  const style = fs.readFileSync(path.join(ROOT, "app", "assets", "style.css"), "utf8");
+  assert.match(style, /\.turn-status\s*\{[^}]*backdrop-filter:\s*blur\(4px\) saturate\(1\.38\)/s);
+  assert.match(style, /\.turn-status\s*\{[^}]*inset 1px 0 1px rgba\(202, 255, 242, 0\.25\)/s);
+  assert.match(style, /\.turn-status::after\s*\{[^}]*border:\s*1px solid rgba\(255, 255, 255, 0\.24\)/s);
 });
 
 test("第一关首次通关后自动以现有切关动效进入第二关", () => {

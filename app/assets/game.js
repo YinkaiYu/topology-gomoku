@@ -187,6 +187,8 @@
   var activeSheet = null;
   var toastTimer = 0;
   var settledBoardAnimation = null;
+  var REVERSIBLE_MOTION_DURATION = 460;
+  var REVERSIBLE_MOTION_EASING = "cubic-bezier(0.37, 0, 0.63, 1)";
   var developer = {
     aiPaused: false,
     placementPlayer: HUMAN
@@ -440,19 +442,7 @@
         transformOrigin: "center",
         transform: "translate(" + translateX + "px, " + translateY + "px) scale(" + scaleX + ", " + scaleY + ")",
         borderRadius: "20px",
-        opacity: 0.9
-      },
-      {
-        offset: 0.7,
-        transform: "translate(" + (-translateX * 0.025) + "px, " + (-translateY * 0.025) + "px) scale(1.026)",
-        borderRadius: "30px",
-        opacity: 1,
-      },
-      {
-        offset: 0.88,
-        transform: "translate(0, 0) scale(0.992)",
-        borderRadius: "28px",
-        opacity: 1
+        opacity: 0.96
       },
       {
         transform: "translate(0, 0) scale(1)",
@@ -460,8 +450,8 @@
         opacity: 1
       }
     ], {
-      duration: 720,
-      easing: "cubic-bezier(0.18, 0.9, 0.24, 1)",
+      duration: REVERSIBLE_MOTION_DURATION,
+      easing: REVERSIBLE_MOTION_EASING,
       fill: "both"
     });
     animation.onfinish = function finishCardExpansion() {
@@ -522,20 +512,20 @@
           boxShadow: "none"
         }
       ], {
-        duration: 440,
-        easing: "cubic-bezier(0.24, 0.7, 0.3, 1)",
+        duration: REVERSIBLE_MOTION_DURATION,
+        easing: REVERSIBLE_MOTION_EASING,
         fill: "forwards"
       });
       tileCanvas.animate([
         { opacity: 1, filter: "blur(0)" },
-        { offset: 0.38, opacity: 0.72, filter: "blur(0)" },
+        { offset: 0.5, opacity: 0.72, filter: "blur(0)" },
         { opacity: 0, filter: "blur(1.5px)" }
-      ], { duration: 330, easing: "ease-out", fill: "forwards" });
+      ], { duration: REVERSIBLE_MOTION_DURATION, easing: REVERSIBLE_MOTION_EASING, fill: "forwards" });
       cardLayer.animate([
         { opacity: 0, transform: "scale(0.97)" },
-        { offset: 0.34, opacity: 0, transform: "scale(0.97)" },
+        { offset: 0.5, opacity: 0, transform: "scale(0.97)" },
         { opacity: 1, transform: "scale(1)" }
-      ], { duration: 420, easing: "cubic-bezier(0.24, 0.7, 0.3, 1)", fill: "forwards" });
+      ], { duration: REVERSIBLE_MOTION_DURATION, easing: REVERSIBLE_MOTION_EASING, fill: "forwards" });
       animation.onfinish = function finishBoardCollapse() {
         targetCard.classList.add("is-transition-ready", "is-handoff-stable");
         targetCard.classList.remove("is-transition-target");
@@ -1281,9 +1271,12 @@
     }
 
     function paint(progress, delta) {
-      var stretch = 1 + Math.min(0.13, Math.abs(delta) / 90);
-      dom.difficultyThumb.style.transform = "translate3d(" + (progress * drag.metrics.step) + "px, 0, 0) scaleX(" + stretch + ")";
+      var energy = Math.min(1, Math.abs(delta) / 18);
+      var stretch = 1.18 + energy * 0.16;
+      var lift = 1.16 + energy * 0.1;
+      dom.difficultyThumb.style.transform = "translate3d(" + (progress * drag.metrics.step) + "px, 0, 0) scaleX(" + stretch + ") scaleY(" + lift + ")";
       dom.difficultyThumb.style.transformOrigin = delta < 0 ? "right center" : "left center";
+      control.style.setProperty("--press-origin", ((progress / 2) * 100).toFixed(1) + "%");
       previewDifficulty(progress);
     }
 
@@ -1339,6 +1332,9 @@
         setDifficulty(DIFFICULTY_ORDER[nextIndex]);
         settleLiquidControl(control);
       }
+      window.setTimeout(function clearDifficultyPressOrigin() {
+        control.style.removeProperty("--press-origin");
+      }, 560);
       event.preventDefault();
     }
 
@@ -1366,9 +1362,12 @@
     var drag = null;
 
     function paint(progress, delta, travel) {
-      var stretch = 1 + Math.min(0.17, Math.abs(delta) / 70);
-      knob.style.transform = "translate3d(" + (progress * travel) + "px, 0, 0) scaleX(" + stretch + ")";
+      var energy = Math.min(1, Math.abs(delta) / 14);
+      var stretch = 1.36 + energy * 0.12;
+      var lift = 1.3 + energy * 0.1;
+      knob.style.transform = "translate3d(" + (progress * travel) + "px, 0, 0) scaleX(" + stretch + ") scaleY(" + lift + ")";
       knob.style.transformOrigin = delta < 0 ? "right center" : "left center";
+      control.style.setProperty("--press-origin", (progress * 100).toFixed(1) + "%");
       control.classList.toggle("is-on", progress >= 0.5);
     }
 
@@ -1388,6 +1387,7 @@
       };
       control.classList.add("is-dragging");
       try { control.setPointerCapture(event.pointerId); } catch (error) { /* Pointer capture is an enhancement. */ }
+      paint(drag.progress, 0, drag.travel);
       event.preventDefault();
     });
 
@@ -1420,6 +1420,9 @@
         setValue(Boolean(nextValue));
         settleLiquidControl(control);
       }
+      window.setTimeout(function clearSwitchPressOrigin() {
+        control.style.removeProperty("--press-origin");
+      }, 560);
       event.preventDefault();
     }
 
@@ -1436,6 +1439,89 @@
       }
       setValue(!getValue());
       settleLiquidControl(control);
+    });
+  }
+
+  function bindSettingsSheetDismiss() {
+    var sheet = dom.settingsSheet;
+    var drag = null;
+
+    function clearSheetDragStyles() {
+      sheet.style.removeProperty("transform");
+      sheet.style.removeProperty("clip-path");
+      dom.scrim.style.removeProperty("opacity");
+    }
+
+    sheet.addEventListener("pointerdown", function beginSheetDismiss(event) {
+      if (event.isPrimary === false || event.button > 0 || activeSheet !== sheet) {
+        return;
+      }
+      var rect = sheet.getBoundingClientRect();
+      if (event.clientY - rect.top > 92 || event.target.closest("button, .segmented, .switch")) {
+        return;
+      }
+      drag = {
+        pointerId: event.pointerId,
+        startY: event.clientY,
+        lastY: event.clientY,
+        lastAt: performance.now(),
+        velocity: 0,
+        distance: 0
+      };
+      sheet.classList.add("is-dragging-sheet");
+      try { sheet.setPointerCapture(event.pointerId); } catch (error) { /* Pointer capture is an enhancement. */ }
+      event.preventDefault();
+    });
+
+    sheet.addEventListener("pointermove", function moveSheetDismiss(event) {
+      if (!drag || drag.pointerId !== event.pointerId) {
+        return;
+      }
+      var now = performance.now();
+      var distance = Math.max(0, event.clientY - drag.startY);
+      var frameTime = Math.max(8, now - drag.lastAt);
+      drag.velocity = (event.clientY - drag.lastY) / frameTime;
+      drag.lastY = event.clientY;
+      drag.lastAt = now;
+      drag.distance = distance;
+      var progress = Math.min(1, distance / Math.max(180, sheet.offsetHeight * 0.54));
+      var topInset = progress * 4.5;
+      var bottomInset = progress * 15;
+      sheet.style.transform = "translate3d(0, " + distance + "px, 0) scaleX(" + (1 - progress * 0.1) + ") scaleY(" + (1 - progress * 0.035) + ")";
+      sheet.style.clipPath = "polygon(" + topInset + "% 0, " + (100 - topInset) + "% 0, " + (100 - bottomInset) + "% 100%, " + bottomInset + "% 100%)";
+      dom.scrim.style.opacity = String(1 - progress * 0.68);
+      event.preventDefault();
+    });
+
+    function finishSheetDismiss(event, cancelled) {
+      if (!drag || drag.pointerId !== event.pointerId) {
+        return;
+      }
+      var shouldDismiss = !cancelled && (drag.distance > 82 || drag.velocity > 0.72);
+      try { sheet.releasePointerCapture(event.pointerId); } catch (error) { /* Capture may already be released. */ }
+      drag = null;
+      sheet.classList.remove("is-dragging-sheet");
+      if (shouldDismiss) {
+        closeActiveSheet(false);
+        requestAnimationFrame(clearSheetDragStyles);
+      } else {
+        sheet.classList.add("is-returning-sheet");
+        sheet.style.transform = "translate3d(0, 0, 0) scaleX(1) scaleY(1)";
+        sheet.style.clipPath = "polygon(0 0, 100% 0, 100% 100%, 0 100%)";
+        dom.scrim.style.removeProperty("opacity");
+        window.setTimeout(function finishSheetReturn() {
+          sheet.classList.remove("is-returning-sheet");
+          clearSheetDragStyles();
+        }, REVERSIBLE_MOTION_DURATION + 30);
+      }
+      event.preventDefault();
+    }
+
+    sheet.addEventListener("pointerup", function endSheetDismiss(event) {
+      finishSheetDismiss(event, false);
+    });
+    sheet.addEventListener("pointercancel", function cancelSheetDismiss(event) {
+      finishSheetDismiss(event, true);
     });
   }
 
@@ -1695,7 +1781,7 @@
     if (immediate) {
       finish();
     } else {
-      window.setTimeout(finish, 570);
+      window.setTimeout(finish, sheet === dom.settingsSheet ? REVERSIBLE_MOTION_DURATION + 30 : 570);
     }
   }
 
@@ -3207,6 +3293,7 @@
     bindDifficultySlider();
     bindLiquidSwitch(dom.hintSwitch, function hintsEnabled() { return prefs.hints; }, setHintsEnabled);
     bindLiquidSwitch(dom.soundSwitch, function soundEnabled() { return prefs.sound; }, setSoundEnabled);
+    bindSettingsSheetDismiss();
     dom.developerButton.addEventListener("click", openDeveloperTools);
     dom.closeDeveloperButton.addEventListener("click", function closeDeveloperTools() { closeActiveSheet(false); });
     dom.developerDoneButton.addEventListener("click", function finishDeveloperTools() { closeActiveSheet(false); });

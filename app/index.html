@@ -151,29 +151,31 @@
     <button class="developer-fab" id="developerButton" type="button" aria-label="开发者工具" hidden>DEV</button>
 
     <section class="sheet settings-sheet" id="settingsSheet" aria-modal="true" role="dialog" aria-labelledby="settingsTitle" hidden>
-      <div class="sheet-handle" aria-hidden="true"></div>
-      <div class="sheet-head">
-        <h2 id="settingsTitle">设置</h2>
-        <button class="close-button" id="closeSettingsButton" type="button" aria-label="关闭">×</button>
-      </div>
-      <div class="setting-row setting-stack">
-        <span class="setting-label">对手</span>
-        <div class="segmented" id="difficultyControl" role="group" aria-label="对手水平">
-          <i class="segmented-glass-thumb" id="difficultyThumb" aria-hidden="true"></i>
-          <button type="button" data-difficulty="easy" aria-pressed="false">悠闲</button>
-          <button class="is-active" type="button" data-difficulty="normal" aria-pressed="true">敏捷</button>
-          <button type="button" data-difficulty="hard" aria-pressed="false">深思</button>
+      <div class="settings-softbody">
+        <div class="sheet-handle" aria-hidden="true"></div>
+        <div class="sheet-head">
+          <h2 id="settingsTitle">设置</h2>
+          <button class="close-button" id="closeSettingsButton" type="button" aria-label="关闭">×</button>
         </div>
+        <div class="setting-row setting-stack">
+          <span class="setting-label">对手</span>
+          <div class="segmented" id="difficultyControl" role="group" aria-label="对手水平">
+            <i class="segmented-glass-thumb" id="difficultyThumb" aria-hidden="true"></i>
+            <button type="button" data-difficulty="easy" aria-pressed="false">悠闲</button>
+            <button class="is-active" type="button" data-difficulty="normal" aria-pressed="true">敏捷</button>
+            <button type="button" data-difficulty="hard" aria-pressed="false">深思</button>
+          </div>
+        </div>
+        <div class="setting-row">
+          <span class="setting-label">落点提示</span>
+          <button class="switch is-on" id="hintSwitch" type="button" role="switch" aria-checked="true"><i></i></button>
+        </div>
+        <div class="setting-row">
+          <span class="setting-label">声音</span>
+          <button class="switch is-on" id="soundSwitch" type="button" role="switch" aria-checked="true"><i></i></button>
+        </div>
+        <button class="sheet-done" id="settingsDoneButton" type="button">完成</button>
       </div>
-      <div class="setting-row">
-        <span class="setting-label">落点提示</span>
-        <button class="switch is-on" id="hintSwitch" type="button" role="switch" aria-checked="true"><i></i></button>
-      </div>
-      <div class="setting-row">
-        <span class="setting-label">声音</span>
-        <button class="switch is-on" id="soundSwitch" type="button" role="switch" aria-checked="true"><i></i></button>
-      </div>
-      <button class="sheet-done" id="settingsDoneButton" type="button">完成</button>
     </section>
 
     <section class="sheet developer-sheet" id="developerSheet" aria-modal="true" role="dialog" aria-labelledby="developerTitle" hidden>
