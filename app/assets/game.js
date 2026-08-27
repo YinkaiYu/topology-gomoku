@@ -181,8 +181,8 @@
   ];
 
   var DIFFICULTIES = {
-    easy: { label: "悠闲", wait: 390, rank: 1 },
-    normal: { label: "敏捷", wait: 520, rank: 2 },
+    easy: { label: "随性", wait: 390, rank: 1 },
+    normal: { label: "机敏", wait: 520, rank: 2 },
     hard: { label: "深思", wait: 680, rank: 3 }
   };
   var DIFFICULTY_ORDER = ["easy", "normal", "hard"];

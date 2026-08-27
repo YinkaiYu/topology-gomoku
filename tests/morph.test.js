@@ -494,7 +494,7 @@ test("设置页使用液态玻璃层次且三个控件均支持连续拖动", ()
   assert.equal((game.match(/style\.removeProperty\("translate"\)/g) || []).length, 1);
   assert.match(game, /function animateLiquidSelection\(control, movingElement, commitSelection\)/);
   assert.match(game, /requestAnimationFrame\(function releaseLiquidSelection/);
-  assert.match(html, /class="segmented-lens-track"><b>悠闲<\/b><b>敏捷<\/b><b>深思<\/b><\/span>/);
+  assert.match(html, /class="segmented-lens-track"><b>随性<\/b><b>机敏<\/b><b>深思<\/b><\/span>/);
   assert.match(html, /class="switch-lens-track"/);
   assert.match(game, /function syncDifficultyLensGeometry\(index\)/);
   assert.match(game, /function syncSwitchLensGeometry\(control, enabled\)/);
