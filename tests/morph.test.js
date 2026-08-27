@@ -22,20 +22,78 @@ test("二维转三维脚本在游戏脚本之前以本地经典脚本加载", ()
   assert.doesNotMatch(html, /topology-morph[^>]+type="module"/);
 });
 
-test("第一关是无边界演示、无 AI 回合的连续落子教学", () => {
+test("第一关每次进入都逐子教学、隐藏边界演示且仍无 AI 回合", () => {
   const game = fs.readFileSync(path.join(ROOT, "app", "assets", "game.js"), "utf8");
   assert.match(game, /topology:\s*"plane",\s*\n\s*tutorial:\s*true/);
-  assert.match(game, /if \(!skipDemo && !level\.tutorial\)/);
-  assert.match(game, /else if \(game\.level\.tutorial\) \{\s*game\.turn = HUMAN;/);
-  assert.match(game, /game\.level\.tutorial \? 1 : \(game\.turn === AI/);
+  assert.match(game, /function introModeFor\(levelIndex, options\) \{\s*if \(levelIndex === 0\) \{\s*return "lesson";/);
+  assert.match(game, /return hasLearnedLevel\(levelIndex\) \? "demo" : "lesson"/);
+  assert.match(game, /if \(introMode === "lesson"\) \{\s*startBoundaryLesson/);
+  assert.match(game, /dom\.boundaryDemoButton\.hidden = game\.levelIndex === 0/);
+  assert.match(game, /dom\.gameTools\.classList\.toggle\("is-basic-tutorial", !ended && game\.levelIndex === 0\)/);
+  assert.match(game, /if \(!game \|\| game\.levelIndex === 0 \|\| game\.status === "forcing"/);
+  assert.match(game, /else if \(game\.level\.tutorial \|\| lesson\) \{\s*game\.turn = HUMAN;/);
+  assert.match(game, /game\.level\.tutorial \|\| lessonActive \? 1 : \(game\.turn === AI/);
   assert.match(game, /var passed = outcome === "win" \|\| outcome === "draw";/);
   assert.match(game, /var shouldMorph = passed && game\.levelIndex > 0 && Boolean\(Morph\)/);
   assert.match(game, /"传统的五子棋",\s*"就是把五颗子",\s*"连成一条线",\s*"好无趣",\s*"好无聊"/s);
   assert.match(game, /TUTORIAL_PROMPTS\[Math\.min\(count, TUTORIAL_PROMPTS\.length - 1\)\]/);
   assert.match(game, /Engine\.suggestTutorialMove/);
-  assert.match(game, /var guideText = tutorialPromptText\(\);/);
+  assert.match(game, /var guideText = lessonPromptText\(\);/);
   assert.match(game, /ctx\.font = "700 " \+ fontSize \+ "px 'Topo Serif'/);
   assert.match(game, /ctx\.fillText\(guideText, textX, textY\);/);
+});
+
+test("除第一关外，每关只在首次游玩时逐子教学，重玩改为自动演示", () => {
+  const game = fs.readFileSync(path.join(ROOT, "app", "assets", "game.js"), "utf8");
+  assert.equal((game.match(/lessonPaths:\s*\[/g) || []).length, 7);
+  assert.match(game, /learnedLevels:\s*\[\]/);
+  assert.match(game, /normalizeLearnedLevels\(stored\.learnedLevels, defaults\.completed\)/);
+  assert.match(game, /function hasLearnedLevel\(index\)/);
+  assert.match(game, /lesson\.cells\[lesson\.step\] !== cell/);
+  assert.match(game, /rememberLevel\(game\.levelIndex\)/);
+  assert.match(game, /transitionToLevel\(game\.levelIndex, \{ introMode: "none" \}\)/);
+});
+
+test("多线路教学逐条清盘继续，并以辅助动画解释跨界连接", () => {
+  const game = fs.readFileSync(path.join(ROOT, "app", "assets", "game.js"), "utf8");
+  assert.match(game, /game\.lesson\.pathIndex < game\.lesson\.paths\.length - 1/);
+  assert.match(game, /game\.status = hasNextPath \? "lesson-line-complete" : "lesson-complete"/);
+  assert.match(game, /game\.board\.fill\(Engine\.EMPTY\);[\s\S]*activateLessonPath\(game\.lesson, game\.lesson\.pathIndex \+ 1\)/);
+  assert.match(game, /function drawLessonConnections\(/);
+  assert.match(game, /function drawLessonSeamCue\(/);
+  assert.match(game, /pendingSeam & bit/);
+});
+
+test("底部只保留无卡片的边界演示工具按钮", () => {
+  const html = fs.readFileSync(path.join(ROOT, "app", "index.html"), "utf8");
+  const game = fs.readFileSync(path.join(ROOT, "app", "assets", "game.js"), "utf8");
+  const style = fs.readFileSync(path.join(ROOT, "app", "assets", "style.css"), "utf8");
+  assert.match(html, /class="tool-button boundary-demo-button" id="boundaryDemoButton"[^>]+aria-label="重新体验本关边界指引"/);
+  assert.match(html, /<path d="M9 18h6M10 22h4M15\.1 14/);
+  assert.match(html, /<span>边界演示<\/span>/);
+  assert.doesNotMatch(html, /rule-caption|轻触教学|ruleCaption/);
+  assert.match(game, /function replayBoundaryLesson\(\)[\s\S]*transitionToLevel\(levelIndex, \{\s*introMode: "lesson",\s*lessonReturn: lessonReturn\s*\}\)/);
+  assert.match(game, /dom\.boundaryDemoButton\.addEventListener\("click", replayBoundaryLesson\)/);
+  assert.doesNotMatch(style, /\.rule-caption/);
+  assert.match(style, /\.boundary-demo-button\.is-active\s*\{\s*color:\s*var\(--teal\)/);
+  assert.match(style, /\.game-tools > #restartButton\s*\{\s*grid-column:\s*3/);
+  assert.match(style, /\.game-tools\.is-basic-tutorial\s*\{\s*grid-template-columns:\s*repeat\(3, minmax\(0, 1fr\)\)/);
+});
+
+test("对局中重温边界指引后原样恢复棋盘、历史与当前回合", () => {
+  const game = fs.readFileSync(path.join(ROOT, "app", "assets", "game.js"), "utf8");
+  assert.match(game, /function snapshotMatchForLesson\(\)/);
+  assert.match(game, /board:\s*Array\.prototype\.slice\.call\(game\.board\)/);
+  assert.match(game, /moves:\s*game\.moves\.map\(function copyMove/);
+  assert.match(game, /turn:\s*game\.turn,\s*\n\s*lastMove:\s*game\.lastMove/);
+  assert.match(game, /lessonReturn:\s*options && options\.lessonReturn \? options\.lessonReturn : null/);
+  assert.match(game, /transitionToLevel\(levelIndex, \{\s*introMode:\s*"lesson",\s*lessonReturn:\s*lessonReturn/);
+  assert.match(game, /resumeMatch\.board\.forEach\(function restoreBoardCell/);
+  assert.match(game, /game\.moves = resumeMatch\.moves\.map\(function restoreMove/);
+  assert.match(game, /game\.turn = resumeMatch\.turn/);
+  assert.match(game, /resumeMatch:\s*game\.lessonReturn/);
+  assert.match(game, /else if \(resumeMatch && game\.turn === AI\) \{\s*scheduleAiMove\(\)/);
+  assert.match(game, /lesson && \(game\.lessonReturn \|\| !game\.level\.tutorial\)/);
 });
 
 test("圆柱与环面的周期边界在三维中重合", () => {
@@ -286,6 +344,7 @@ test("通关曲面使用高密度采样，棋盘线沿曲面分段插值", () =>
 test("复盘与二维三维切换相互独立，曲面可以持续柔性拖动", () => {
   const game = fs.readFileSync(path.join(ROOT, "app", "assets", "game.js"), "utf8");
   const html = fs.readFileSync(path.join(ROOT, "app", "index.html"), "utf8");
+  const style = fs.readFileSync(path.join(ROOT, "app", "assets", "style.css"), "utf8");
   assert.match(game, /if \(game\.completion\) \{\s*animate = true;/);
   assert.match(game, /function canExploreCompletion\(\)/);
   assert.match(game, /completion\.rotation\.y \+= yawDelta;/);
@@ -296,10 +355,22 @@ test("复盘与二维三维切换相互独立，曲面可以持续柔性拖动",
   assert.match(game, /Replay\.boardAt\(game\.moves, game\.rules\.cellCount, nextStep, Engine\.EMPTY\)/);
   assert.match(game, /function toggleEndgameDimension\(\)/);
   assert.match(game, /function endReplayReview\(\)/);
+  assert.match(game, /reviewToggleButton\.addEventListener\("click", handleReviewToggle\)/);
   assert.match(game, /reviewPreviousButton\.addEventListener/);
   assert.match(game, /reviewNextButton\.addEventListener/);
+  assert.match(game, /dimensionToggleButton\.addEventListener\("click", toggleEndgameDimension\)/);
+  assert.match(game, /dom\.humanChip\.hidden = false;\s*dom\.aiChip\.hidden = false;/);
+  assert.doesNotMatch(game, /humanChip\.hidden = reviewing|aiChip\.hidden = reviewing/);
   assert.match(game, /drawCompletionWinningLine[\s\S]*activeWinningMask\(\)/);
+  assert.match(html, /id="endgameReviewTools"/);
+  assert.ok(html.indexOf('id="endgameReviewTools"') > html.indexOf('id="boardStage"'));
+  assert.ok(html.indexOf('id="endgameReviewTools"') < html.indexOf('id="gameTools"'));
   assert.match(html, /id="nextLevelButton"/);
+  assert.match(html, /id="dimensionToggleIconPath"[^>]+M5 6c0-1\.7 3\.1-3 7-3/);
+  assert.match(game, /M4 4h16v16H4zM9\.33 4v16M14\.67 4v16M4 9\.33h16M4 14\.67h16/);
+  assert.match(style, /\.endgame-review-tools\s*\{[\s\S]*grid-template-columns:\s*repeat\(4, minmax\(0, 1fr\)\)/);
+  assert.match(style, /\.game-tools\.is-ended \.settled-replay-button\s*\{\s*grid-column:\s*2/);
+  assert.match(style, /\.game-tools\.is-ended \.next-level-button\s*\{[\s\S]*grid-column:\s*3/);
   assert.doesNotMatch(game, /showResult\(/);
   assert.doesNotMatch(html, /id="resultSheet"/);
   assert.match(game, /chooseCompletionView\(winningMask, presentation\)/);
@@ -324,20 +395,18 @@ test("棋盘同时提示玩家进攻点与对手封堵点并保持克制配色",
   assert.match(game, /function tacticalHintPriority/);
 });
 
-test("后期大概率和局时在既有规则区域提示平局也算通关", () => {
+test("对局底部不再堆叠规则说明且平局仍按通关处理", () => {
   const game = fs.readFileSync(path.join(ROOT, "app", "assets", "game.js"), "utf8");
   const html = fs.readFileSync(path.join(ROOT, "app", "index.html"), "utf8");
   const style = fs.readFileSync(path.join(ROOT, "app", "assets", "style.css"), "utf8");
-  assert.match(game, /Engine\.isLikelyDraw\(game\.board, game\.rules\)/);
-  assert.match(game, /drawLikely \? "和局亦胜"/);
-  assert.match(game, /drawLikely \? "平局，也算通关"/);
+  assert.doesNotMatch(game, /drawLikely|ruleCaption/);
+  assert.doesNotMatch(html, /和局亦胜|平局，也算通关|ruleCaption/);
+  assert.doesNotMatch(style, /draw-pass-arrive|rule-caption/);
   assert.match(game, /var passed = outcome === "win" \|\| outcome === "draw";/);
-  assert.match(game, /if \(passed\) \{\s*prefs\.completed\[game\.levelIndex\] = true;/);
+  assert.match(game, /if \(passed\) \{\s*rememberLevel\(game\.levelIndex\);\s*prefs\.completed\[game\.levelIndex\] = true;/);
   assert.match(game, /var hasNextLevel = passed && game\.levelIndex < LEVELS\.length - 1;/);
   assert.match(game, /function developerForceDraw\(\)/);
   assert.match(html, /id="developerDraw">平局通关/);
-  assert.match(style, /\.rule-caption\.is-draw-likely/);
-  assert.match(style, /@keyframes draw-pass-arrive/);
 });
 
 test("设置页使用液态玻璃层次且三个控件均支持连续拖动", () => {
@@ -353,6 +422,12 @@ test("设置页使用液态玻璃层次且三个控件均支持连续拖动", ()
   assert.match(game, /setPointerCapture\(event\.pointerId\)/);
   assert.match(game, /Math\.max\(-0\.24, drag\.rawProgress \* 0\.56\)/);
   assert.match(game, /Math\.min\(1\.22, 1 \+ \(rawProgress - 1\) \* 0\.58\)/);
+  assert.match(game, /function detentProgress\(progress, maximum\)/);
+  assert.match(game, /Math\.pow\(normalizedDistance, 2\.05\) \* 0\.5/);
+  assert.match(game, /paint\(detentProgress\(visualProgress, 2\), frameDelta\)/);
+  assert.match(game, /paint\(detentProgress\(visualProgress, 1\), frameDelta, drag\.travel\)/);
+  assert.match(game, /var startIndex = difficultyIndex\(prefs\.difficulty\);/);
+  assert.doesNotMatch(game, /targetButton \? difficultyIndex\(targetButton\.dataset\.difficulty\)/);
   assert.match(style, /\.settings-sheet\s*\{[\s\S]*overflow:\s*visible[\s\S]*background:\s*transparent[\s\S]*backdrop-filter:\s*none/);
   assert.match(style, /\.settings-sheet::before\s*\{[\s\S]*filter:\s*drop-shadow/);
   assert.match(style, /\.settings-sheet::after\s*\{[\s\S]*inset:\s*1\.5px[\s\S]*backdrop-filter:\s*blur\(5px\) saturate\(1\.45\)/);
@@ -360,6 +435,9 @@ test("设置页使用液态玻璃层次且三个控件均支持连续拖动", ()
   assert.match(style, /\.switch\.is-dragging i/);
   assert.match(style, /\.segmented\.is-dragging\s*\{\s*transform: none/);
   assert.match(style, /\.switch\.is-dragging\s*\{\s*transform: none/);
+  assert.match(style, /--liquid-snap:\s*cubic-bezier\(0\.2, 1\.38, 0\.32, 1\)/);
+  assert.match(style, /\.segmented\.is-dragging \.segmented-glass-thumb\s*\{[\s\S]*transition:\s*translate 92ms var\(--liquid-drag\), scale 108ms var\(--liquid-drag\)/);
+  assert.match(style, /\.switch\.is-dragging i\s*\{[\s\S]*transition:\s*translate 82ms var\(--liquid-drag\), scale 98ms var\(--liquid-drag\)/);
   assert.match(style, /\.segmented\s*\{[\s\S]*overflow:\s*visible/);
   assert.match(style, /\.switch\s*\{[\s\S]*overflow:\s*visible/);
   assert.match(style, /\.switch\s*\{[\s\S]*width:\s*66px/);
@@ -374,9 +452,11 @@ test("设置页使用液态玻璃层次且三个控件均支持连续拖动", ()
   assert.match(style, /@keyframes liquid-knob-settle/);
   assert.doesNotMatch(style, /@keyframes liquid-control-glint/);
   assert.equal((game.match(/style\.scale = stretch \+ " " \+ lift/g) || []).length, 2);
-  assert.equal((game.match(/style\.removeProperty\("scale"\)/g) || []).length, 2);
-  assert.equal((game.match(/style\.translate = /g) || []).length, 2);
-  assert.equal((game.match(/style\.removeProperty\("translate"\)/g) || []).length, 2);
+  assert.equal((game.match(/style\.removeProperty\("scale"\)/g) || []).length, 1);
+  assert.equal((game.match(/style\.translate = /g) || []).length, 3);
+  assert.equal((game.match(/style\.removeProperty\("translate"\)/g) || []).length, 1);
+  assert.match(game, /function animateLiquidSelection\(control, movingElement, commitSelection\)/);
+  assert.match(game, /requestAnimationFrame\(function releaseLiquidSelection/);
   assert.match(html, /class="segmented-lens-track"><b>悠闲<\/b><b>敏捷<\/b><b>深思<\/b><\/span>/);
   assert.match(html, /class="switch-lens-track"/);
   assert.match(game, /function syncDifficultyLensGeometry\(index\)/);
@@ -425,7 +505,7 @@ test("按住棋子拖动时保持连续可见并以阻尼弹簧吸附到最近�
   assert.match(game, /function updatePressedStoneMotion\(delta\)/);
   assert.match(game, /var follow = 1 - Math\.pow\(0\.46, frameScale\)/);
   assert.match(game, /pressedVelocityX = \(renderState\.pressedTargetX - renderState\.pressedX\) \* follow/);
-  assert.match(game, /if \(cell >= 0 && game\.board\[cell\] === Engine\.EMPTY && cell !== renderState\.pressedCell\)/);
+  assert.match(game, /if \(canPlaceCell\(cell\) && cell !== renderState\.pressedCell\)/);
   assert.match(game, /if \(cell < 0 && pointerInsideBoard\(event\)\)\s*\{\s*cell = renderState\.pressedCell/);
   assert.doesNotMatch(game, /if \(cell !== renderState\.pressedCell\)\s*\{\s*renderState\.pressedAt = event\.timeStamp/);
 });
@@ -496,7 +576,7 @@ test("高阶曲面的五子展示会自动朝前且始终附着于曲面交点",
 test("开发者玩家胜利沿本关演示路径逐颗跨界落子", () => {
   const game = fs.readFileSync(path.join(ROOT, "app", "assets", "game.js"), "utf8");
   assert.match(game, /player === HUMAN && game\.levelIndex > 0/);
-  assert.match(game, /Engine\.tracePath\(game\.rules, boundaryStart, game\.level\.demoDirection/);
+  assert.match(game, /boundaryPath = boundaryGuidePaths\(\)\[0\] \|\| null/);
   assert.match(game, /boundaryPath \? boundaryPath\.cells/);
   assert.match(game, /index \* 220/);
   assert.match(game, /boundaryPath\.seams\[index - 1\]/);

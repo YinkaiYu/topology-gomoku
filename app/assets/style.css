@@ -37,6 +37,8 @@
   --violet: #7f6ca8;
   --shadow: 0 18px 45px rgba(57, 51, 42, 0.09);
   --spring: cubic-bezier(0.18, 1.22, 0.32, 1);
+  --liquid-snap: cubic-bezier(0.2, 1.38, 0.32, 1);
+  --liquid-drag: cubic-bezier(0.22, 0.78, 0.36, 1);
   --soft-out: cubic-bezier(0.16, 0.84, 0.24, 1);
   --reversible-motion: cubic-bezier(0.37, 0, 0.63, 1);
   --reversible-duration: 380ms;
@@ -690,42 +692,6 @@ button,
   display: none;
 }
 
-.review-step-button {
-  display: inline-flex;
-  min-width: 58px;
-  height: 36px;
-  justify-self: start;
-  align-items: center;
-  justify-content: flex-start;
-  gap: 3px;
-  color: var(--muted);
-  border-radius: 13px;
-  background: transparent;
-  font-size: 9px;
-  letter-spacing: 0.04em;
-  transition: color 220ms ease, background 220ms ease, transform 360ms var(--spring), opacity 220ms ease;
-}
-
-.review-step-button.is-next {
-  justify-self: end;
-  justify-content: flex-end;
-}
-
-.review-step-button:active {
-  color: var(--ink);
-  background: rgba(255, 255, 255, 0.18);
-  transform: scale(1.06);
-}
-
-.review-step-button:disabled {
-  opacity: 0.24;
-}
-
-.review-step-button svg {
-  width: 17px;
-  height: 17px;
-}
-
 .player-chip {
   display: flex;
   align-items: center;
@@ -909,6 +875,48 @@ button,
   25% { transform: translateY(-3px); opacity: 1; }
 }
 
+.endgame-review-tools {
+  display: grid;
+  flex: 0 0 auto;
+  min-height: 58px;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  align-items: center;
+  gap: 4px;
+  padding-top: 6px;
+  animation: endgame-tools-arrive 420ms var(--spring) both;
+}
+
+.endgame-review-tools[hidden] {
+  display: none;
+}
+
+.endgame-review-tools.has-no-dimension {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.endgame-review-tools .tool-button {
+  width: 100%;
+  height: 50px;
+}
+
+.endgame-review-tools .review-toggle-button {
+  color: var(--teal);
+}
+
+.endgame-review-tools .dimension-toggle-button {
+  color: #8b7556;
+}
+
+.endgame-review-tools.is-reviewing #reviewPreviousButton:not(:disabled),
+.endgame-review-tools.is-reviewing #reviewNextButton:not(:disabled) {
+  color: var(--ink);
+}
+
+@keyframes endgame-tools-arrive {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: none; }
+}
+
 .game-tools {
   display: grid;
   flex: 1 1 auto;
@@ -923,12 +931,8 @@ button,
   grid-template-columns: repeat(3, minmax(0, 1fr));
 }
 
-.game-tools.is-ended.has-two-actions {
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-}
-
-.game-tools.is-ended.has-next-action {
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+.game-tools.is-basic-tutorial {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
 }
 
 .game-tools.is-auto-advancing {
@@ -939,21 +943,22 @@ button,
   display: none;
 }
 
+.game-tools > #restartButton {
+  grid-column: 3;
+}
+
 .game-tools.is-ended .tool-button {
   width: 100%;
   color: var(--ink);
 }
 
-.game-tools.is-ended #undoButton {
-  color: var(--teal);
-}
-
-.game-tools.is-ended #restartButton {
-  color: #8b7556;
+.game-tools.is-ended .settled-replay-button {
+  grid-column: 2;
 }
 
 .game-tools.is-ended .next-level-button {
-  color: var(--muted);
+  grid-column: 3;
+  color: var(--teal);
 }
 
 .tool-button {
@@ -986,61 +991,15 @@ button,
   height: 20px;
 }
 
-.rule-caption {
-  display: grid;
-  align-items: center;
-  justify-content: center;
-  gap: 3px;
-  min-width: 0;
-  text-align: center;
-  transition: opacity 220ms ease, transform 420ms var(--spring);
-}
-
-.rule-caption strong {
-  color: var(--ink);
-  font-size: 11px;
-  font-weight: 650;
-  letter-spacing: 0.13em;
-  transition: color 320ms ease;
-}
-
-.rule-caption span {
-  color: var(--muted);
-  font-size: 9px;
-  letter-spacing: 0.05em;
-  white-space: nowrap;
-  transition: color 320ms ease;
-}
-
-.rule-caption.is-draw-likely {
-  transform: translateY(-1px);
-}
-
-.rule-caption.is-draw-likely strong {
+.boundary-demo-button.is-active {
   color: var(--teal);
-  animation: draw-pass-arrive 520ms var(--spring) both;
 }
 
-.rule-caption.is-draw-likely span {
-  color: #8b7556;
-  animation: draw-pass-arrive 520ms var(--spring) 45ms both;
+.boundary-demo-button.is-active svg {
+  animation: boundary-demo-breathe 900ms ease-in-out infinite alternate;
 }
 
-@keyframes draw-pass-arrive {
-  from { opacity: 0.18; transform: translateY(3px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-.rule-caption.is-demonstrating {
-  transform: translateY(-1px);
-}
-
-.rule-caption.is-demonstrating strong {
-  color: var(--teal);
-  animation: rule-breathe 900ms ease-in-out infinite alternate;
-}
-
-@keyframes rule-breathe {
+@keyframes boundary-demo-breathe {
   from { opacity: 0.64; }
   to { opacity: 1; }
 }
@@ -1417,7 +1376,7 @@ button,
     inset 1px 0 1px rgba(208, 255, 244, 0.18),
     inset -1px 0 1px rgba(255, 231, 198, 0.11);
   translate: 0 0;
-  transition: translate 520ms var(--spring), scale 520ms var(--spring), border-radius 280ms ease, box-shadow 280ms ease, background 140ms ease, border-color 140ms ease;
+  transition: translate 540ms var(--liquid-snap), scale 520ms var(--liquid-snap), border-radius 280ms ease, box-shadow 280ms ease, background 140ms ease, border-color 140ms ease;
   pointer-events: none;
 }
 
@@ -1526,7 +1485,7 @@ button,
     inset 1.5px 0 0.8px rgba(61, 221, 190, 0.14),
     inset -1.5px 0 0.8px rgba(255, 196, 100, 0.11),
     inset 0 -1.5px 0.8px rgba(49, 110, 90, 0.13);
-  transition: none;
+  transition: translate 92ms var(--liquid-drag), scale 108ms var(--liquid-drag);
 }
 
 .segmented.is-dragging .segmented-lens-track {
@@ -1581,7 +1540,7 @@ button,
     0 4px 10px rgba(31, 42, 36, 0.15),
     inset 0 1px 1px rgba(255, 255, 255, 0.5);
   translate: 0 0;
-  transition: translate 500ms var(--spring), scale 500ms var(--spring), border-radius 240ms ease, box-shadow 260ms ease, background 140ms ease, border-color 140ms ease;
+  transition: translate 520ms var(--liquid-snap), scale 500ms var(--liquid-snap), border-radius 240ms ease, box-shadow 260ms ease, background 140ms ease, border-color 140ms ease;
   pointer-events: none;
 }
 
@@ -1663,7 +1622,7 @@ button,
     inset 1.5px 0 0.8px rgba(55, 220, 188, 0.14),
     inset -1.5px 0 0.8px rgba(255, 189, 92, 0.11),
     inset 0 -1.5px 0.8px rgba(48, 111, 89, 0.14);
-  transition: none;
+  transition: translate 82ms var(--liquid-drag), scale 98ms var(--liquid-drag);
 }
 
 .switch.is-dragging .switch-lens-track {
