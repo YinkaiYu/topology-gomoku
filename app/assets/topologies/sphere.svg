@@ -5,16 +5,16 @@
     <clipPath id="sphereClip"><circle cx="128" cy="128" r="91"/></clipPath>
   </defs>
   <g>
-    <path d="M128 37 C177 36 218 75 219 124 C221 175 183 217 133 219 C82 221 40 185 37 135 C34 85 74 39 128 37 Z" fill="#efede5" stroke="#efede5" stroke-width="1.5" stroke-linejoin="round"/>
-    <path d="M128 37 C178 38 217 77 219 124 C207 97 183 77 153 70 C115 61 77 73 48 104 C58 64 88 39 128 37 Z" fill="#f8f6ef" stroke="#f8f6ef" stroke-width="1.5"/>
-    <path d="M219 124 C221 175 183 217 133 219 C98 220 68 202 50 176 C85 194 126 195 162 178 C190 165 207 146 219 124 Z" fill="#d0cdc4" stroke="#d0cdc4" stroke-width="1.5"/>
-    <path d="M196 74 C214 93 222 121 217 148 C204 183 174 209 137 216 C167 185 182 143 177 105 C175 87 168 69 157 53 C172 57 184 64 196 74 Z" fill="#dedbd2" stroke="#dedbd2" stroke-width="1.5"/>
+    <path d="M128 37 C177 36 218 75 219 124 C221 175 183 217 133 219 C82 221 40 185 37 135 C34 85 74 39 128 37 Z" fill="#f4f2ea" stroke="#f4f2ea" stroke-width="1.5" stroke-linejoin="round"/>
+    <path d="M128 37 C178 38 217 77 219 124 C207 97 183 77 153 70 C115 61 77 73 48 104 C58 64 88 39 128 37 Z" fill="#fbf9f2" stroke="#fbf9f2" stroke-width="1.5"/>
+    <path d="M219 124 C221 175 183 217 133 219 C98 220 68 202 50 176 C85 194 126 195 162 178 C190 165 207 146 219 124 Z" fill="#d1cec4" stroke="#d1cec4" stroke-width="1.5"/>
+    <path d="M196 74 C214 93 222 121 217 148 C204 183 174 209 137 216 C167 185 182 143 177 105 C175 87 168 69 157 53 C172 57 184 64 196 74 Z" fill="#d6d2c7" stroke="#d6d2c7" stroke-width="1.5"/>
   </g>
-  <path d="M128 37 C177 36 218 75 219 124 C221 175 183 217 133 219 C82 221 40 185 37 135 C34 85 74 39 128 37 Z" fill="none" stroke="#282522" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/>
-  <g clip-path="url(#sphereClip)" fill="none" stroke="#373431" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
-    <path d="M39 129 C67 109 101 102 129 103 C163 103 193 113 218 130"/>
-    <path d="M48 173 C75 160 101 155 129 156 C160 156 188 164 207 178"/>
-    <path d="M128 38 C102 60 91 94 92 128 C93 165 105 196 133 218"/>
-    <path d="M128 38 C157 60 169 93 168 128 C167 165 157 196 133 218"/>
+  <path d="M128 37 C177 36 218 75 219 124 C221 175 183 217 133 219 C82 221 40 185 37 135 C34 85 74 39 128 37 Z" fill="none" stroke="#282522" stroke-width="3.14" stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke"/>
+  <g clip-path="url(#sphereClip)" fill="none" stroke="#282522" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M39 129 C67 109 101 102 129 103 C163 103 193 113 218 130" vector-effect="non-scaling-stroke"/>
+    <path d="M48 173 C75 160 101 155 129 156 C160 156 188 164 207 178" vector-effect="non-scaling-stroke"/>
+    <path d="M128 38 C102 60 91 94 92 128 C93 165 105 196 133 218" vector-effect="non-scaling-stroke"/>
+    <path d="M128 38 C157 60 169 93 168 128 C167 165 157 196 133 218" vector-effect="non-scaling-stroke"/>
   </g>
 </svg>

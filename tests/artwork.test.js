@@ -49,7 +49,15 @@ test("图鉴矢量在手机小尺寸下保持清晰", () => {
   assert.match(style, /\.level-glyph\s*\{[^}]*opacity:\s*1/s);
   assert.match(style, /100%\s*\{\s*opacity:\s*1;\s*transform:\s*scale\(1\) rotate\(0\);\s*\}/);
   const sphere = fs.readFileSync(path.join(TOPOLOGY_DIR, "sphere.svg"), "utf8");
-  assert.match(sphere, /clip-path="url\(#sphereClip\)"[^>]*stroke-width="3"/);
+  assert.match(sphere, /stroke="#282522" stroke-width="3\.14"[^>]*vector-effect="non-scaling-stroke"/);
+  assert.match(sphere, /clip-path="url\(#sphereClip\)"[^>]*stroke="#282522"[^>]*stroke-width="2\.8"/);
+  ["#f4f2ea", "#fbf9f2", "#d1cec4", "#d6d2c7"].forEach((color) => {
+    assert.match(sphere, new RegExp(`fill="${color}"`));
+  });
+  ["#efede5", "#f8f6ef", "#d0cdc4", "#dedbd2"].forEach((color) => {
+    assert.doesNotMatch(sphere, new RegExp(color));
+  });
+  assert.equal((sphere.match(/vector-effect="non-scaling-stroke"/g) || []).length, 5);
   assert.doesNotMatch(sphere, /filter="url\(#handLine\)"/);
   NAMES.forEach((name) => {
     const svg = fs.readFileSync(path.join(TOPOLOGY_DIR, `${name}.svg`), "utf8");
