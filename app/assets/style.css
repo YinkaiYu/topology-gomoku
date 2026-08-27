@@ -1,6 +1,6 @@
 @font-face {
   font-family: "Topo Serif";
-  src: url("./fonts/noto-serif-sc-400.woff2?v=1.37.0") format("woff2");
+  src: url("./fonts/noto-serif-sc-400.woff2?v=1.37.1") format("woff2");
   font-style: normal;
   font-weight: 400;
   font-display: swap;
@@ -8,7 +8,7 @@
 
 @font-face {
   font-family: "Topo Serif";
-  src: url("./fonts/noto-serif-sc-600.woff2?v=1.37.0") format("woff2");
+  src: url("./fonts/noto-serif-sc-600.woff2?v=1.37.1") format("woff2");
   font-style: normal;
   font-weight: 600;
   font-display: swap;
@@ -16,7 +16,7 @@
 
 @font-face {
   font-family: "Topo Serif";
-  src: url("./fonts/noto-serif-sc-700.woff2?v=1.37.0") format("woff2");
+  src: url("./fonts/noto-serif-sc-700.woff2?v=1.37.1") format("woff2");
   font-style: normal;
   font-weight: 700;
   font-display: swap;
@@ -24,7 +24,7 @@
 
 @font-face {
   font-family: "Topo Serif Immersive";
-  src: url("./fonts/noto-serif-sc-immersive.woff2?v=1.37.0") format("woff2");
+  src: url("./fonts/noto-serif-sc-immersive.woff2?v=1.37.1") format("woff2");
   font-style: normal;
   font-weight: 200 900;
   font-display: block;
@@ -46,7 +46,7 @@
   --violet: #7f6ca8;
   --shadow: 0 18px 45px rgba(57, 51, 42, 0.09);
   --spring: cubic-bezier(0.18, 1.22, 0.32, 1);
-  --liquid-snap: cubic-bezier(0.2, 1.38, 0.32, 1);
+  --liquid-snap: cubic-bezier(0.32, 0.05, 0.2, 1.13);
   --liquid-drag: cubic-bezier(0.22, 0.78, 0.36, 1);
   --soft-out: cubic-bezier(0.16, 0.84, 0.24, 1);
   --reversible-motion: cubic-bezier(0.37, 0, 0.63, 1);
@@ -1434,7 +1434,7 @@ html[data-toy-container="bilibili-app"][data-toy-immersive="true"] {
     inset 1px 0 1px rgba(208, 255, 244, 0.18),
     inset -1px 0 1px rgba(255, 231, 198, 0.11);
   translate: 0 0;
-  transition: translate 540ms var(--liquid-snap), scale 520ms var(--liquid-snap), border-radius 280ms ease, box-shadow 280ms ease, background 140ms ease, border-color 140ms ease;
+  transition: translate var(--liquid-glide-duration, 800ms) var(--liquid-snap), scale 690ms var(--liquid-snap), border-radius 280ms ease, box-shadow 280ms ease, background 140ms ease, border-color 140ms ease;
   pointer-events: none;
 }
 
@@ -1543,7 +1543,7 @@ html[data-toy-container="bilibili-app"][data-toy-immersive="true"] {
     inset 1.5px 0 0.8px rgba(61, 221, 190, 0.14),
     inset -1.5px 0 0.8px rgba(255, 196, 100, 0.11),
     inset 0 -1.5px 0.8px rgba(49, 110, 90, 0.13);
-  transition: translate 92ms var(--liquid-drag), scale 108ms var(--liquid-drag);
+  transition: translate 146ms var(--liquid-drag), scale 162ms var(--liquid-drag);
 }
 
 .segmented.is-dragging .segmented-lens-track {
@@ -1559,7 +1559,7 @@ html[data-toy-container="bilibili-app"][data-toy-immersive="true"] {
 }
 
 .segmented.is-settling .segmented-glass-thumb {
-  animation: liquid-thumb-settle 560ms cubic-bezier(0.18, 1.42, 0.3, 1) both;
+  animation: liquid-thumb-settle var(--liquid-glide-duration, 800ms) cubic-bezier(0.22, 0.64, 0.2, 1) both;
 }
 
 .switch {
@@ -1598,7 +1598,7 @@ html[data-toy-container="bilibili-app"][data-toy-immersive="true"] {
     0 4px 10px rgba(31, 42, 36, 0.15),
     inset 0 1px 1px rgba(255, 255, 255, 0.5);
   translate: 0 0;
-  transition: translate 520ms var(--liquid-snap), scale 500ms var(--liquid-snap), border-radius 240ms ease, box-shadow 260ms ease, background 140ms ease, border-color 140ms ease;
+  transition: translate var(--liquid-glide-duration, 760ms) var(--liquid-snap), scale 650ms var(--liquid-snap), border-radius 240ms ease, box-shadow 260ms ease, background 140ms ease, border-color 140ms ease;
   pointer-events: none;
 }
 
@@ -1680,7 +1680,7 @@ html[data-toy-container="bilibili-app"][data-toy-immersive="true"] {
     inset 1.5px 0 0.8px rgba(55, 220, 188, 0.14),
     inset -1.5px 0 0.8px rgba(255, 189, 92, 0.11),
     inset 0 -1.5px 0.8px rgba(48, 111, 89, 0.14);
-  transition: translate 82ms var(--liquid-drag), scale 98ms var(--liquid-drag);
+  transition: translate 136ms var(--liquid-drag), scale 152ms var(--liquid-drag);
 }
 
 .switch.is-dragging .switch-lens-track {
@@ -1696,20 +1696,22 @@ html[data-toy-container="bilibili-app"][data-toy-immersive="true"] {
 }
 
 .switch.is-settling i {
-  animation: liquid-knob-settle 540ms cubic-bezier(0.18, 1.46, 0.3, 1) both;
+  animation: liquid-knob-settle var(--liquid-glide-duration, 760ms) cubic-bezier(0.22, 0.64, 0.2, 1) both;
 }
 
 @keyframes liquid-thumb-settle {
   0% { scale: 1.34 1.58; }
-  42% { scale: 0.96 0.94; }
-  72% { scale: 1.025 1.04; }
+  28% { scale: 1.14 1.06; }
+  66% { scale: 0.975 1.025; }
+  84% { scale: 1.012 0.99; }
   100% { scale: 1; }
 }
 
 @keyframes liquid-knob-settle {
   0% { scale: 1.66 1.48; }
-  44% { scale: 0.92 0.9; }
-  72% { scale: 1.045 1.055; }
+  26% { scale: 1.2 1.055; }
+  64% { scale: 0.965 1.03; }
+  84% { scale: 1.018 0.985; }
   100% { scale: 1; }
 }
 

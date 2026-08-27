@@ -1920,26 +1920,43 @@
     }
   }
 
-  function settleLiquidControl(control) {
+  function liquidGlideDuration(control, travelDistance, directSelection) {
+    var distance = Math.max(0, Math.min(2, Math.abs(travelDistance || 0)));
+    if (control === dom.difficultyControl) {
+      if (directSelection) {
+        return Math.round(540 + distance * 100);
+      }
+      return Math.round(680 + distance * 120);
+    }
+    if (directSelection) {
+      return 660;
+    }
+    return Math.round(660 + Math.min(1, distance) * 100);
+  }
+
+  function settleLiquidControl(control, duration) {
     control.classList.remove("is-settling");
     void control.offsetWidth;
     control.classList.add("is-settling");
     window.setTimeout(function finishLiquidSettlement() {
       control.classList.remove("is-settling");
-    }, 540);
+      control.style.removeProperty("--liquid-glide-duration");
+    }, duration);
   }
 
-  function animateLiquidSelection(control, movingElement, commitSelection) {
+  function animateLiquidSelection(control, movingElement, travelDistance, directSelection, commitSelection) {
     if (!movingElement.style.translate) {
       movingElement.style.translate = window.getComputedStyle(movingElement).translate;
     }
+    var duration = liquidGlideDuration(control, travelDistance, directSelection);
+    control.style.setProperty("--liquid-glide-duration", duration + "ms");
     control.classList.remove("is-dragging", "is-settling");
     commitSelection();
     window.requestAnimationFrame(function releaseLiquidSelection() {
       movingElement.style.removeProperty("translate");
       movingElement.style.removeProperty("scale");
       movingElement.style.removeProperty("transform-origin");
-      settleLiquidControl(control);
+      settleLiquidControl(control, duration);
     });
   }
 
@@ -2085,9 +2102,11 @@
       var nextIndex = cancelled
         ? difficultyIndex(prefs.difficulty)
         : Math.round(drag.moved ? drag.progress : indexAt(event.clientX, drag.metrics));
+      var travelDistance = Math.abs(nextIndex - drag.progress);
+      var directSelection = !cancelled && !drag.moved;
       try { control.releasePointerCapture(event.pointerId); } catch (error) { /* Capture may already be released. */ }
       drag = null;
-      animateLiquidSelection(control, dom.difficultyThumb, function commitDifficultySelection() {
+      animateLiquidSelection(control, dom.difficultyThumb, travelDistance, directSelection, function commitDifficultySelection() {
         if (cancelled) {
           syncSettingsUI();
         } else {
@@ -2113,7 +2132,8 @@
       }
       var button = event.target.closest("[data-difficulty]");
       if (button) {
-        animateLiquidSelection(control, dom.difficultyThumb, function commitKeyboardDifficulty() {
+        var targetIndex = difficultyIndex(button.dataset.difficulty);
+        animateLiquidSelection(control, dom.difficultyThumb, Math.abs(targetIndex - difficultyIndex(prefs.difficulty)), true, function commitKeyboardDifficulty() {
           setDifficulty(button.dataset.difficulty);
         });
       }
@@ -2183,9 +2203,11 @@
         return;
       }
       var nextValue = cancelled ? getValue() : (drag.moved ? drag.progress >= 0.5 : !drag.startProgress);
+      var travelDistance = Math.abs((nextValue ? 1 : 0) - drag.progress);
+      var directSelection = !cancelled && !drag.moved;
       try { control.releasePointerCapture(event.pointerId); } catch (error) { /* Capture may already be released. */ }
       drag = null;
-      animateLiquidSelection(control, knob, function commitSwitchSelection() {
+      animateLiquidSelection(control, knob, travelDistance, directSelection, function commitSwitchSelection() {
         if (cancelled) {
           syncSettingsUI();
         } else {
@@ -2209,7 +2231,7 @@
         event.preventDefault();
         return;
       }
-      animateLiquidSelection(control, knob, function commitKeyboardSwitch() {
+      animateLiquidSelection(control, knob, 1, true, function commitKeyboardSwitch() {
         setValue(!getValue());
       });
     });
