@@ -130,3 +130,27 @@ final result: passed
 - No clipping, alignment regression, unreadable state, or browser warning/error was observed at 390 × 844.
 
 final result: passed
+
+## 2026-08-28 — v1.36.1 level-card liquid entry
+
+**Evidence**
+
+- Before entry: `artifacts/qa-level-card-entry-before-v1361.png` at a 390 × 844 CSS viewport.
+- Liquid overshoot: `artifacts/qa-level-card-entry-mid-v1361.png` at the same viewport.
+- Settled board: `artifacts/qa-level-card-entry-settled-v1361.png` at the same viewport.
+- Browser: Codex in-app Browser, using the local H5 files from the feature worktree.
+
+**Interactions tested**
+
+- Opened the first unlocked level from the directory and sampled the shared-element transition before, during, and after settlement.
+- Compared the hero and level-grid bounds before entry and while the home screen was fading.
+- Inspected the liquid shell's mid-transition transform, asymmetric radius, optical filter, final geometry, and browser console.
+
+**Findings**
+
+- The hero remained at `(20, 37.375)` and the level grid at `(20, 254.238)` before and during navigation; the directory now fades in place without the former 12 px downward motion.
+- The overshoot frame reached directional scale `(1.034, 0.976)`, asymmetric `33 / 27 / 31 / 26 px` corners, and a restrained saturation/brightness lift before the damped recoil.
+- The board settled exactly at unit transform, full opacity, and the authored 29 px radius.
+- No clipping, alignment regression, browser warning, or browser error was observed.
+
+final result: passed
