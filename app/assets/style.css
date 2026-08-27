@@ -143,90 +143,6 @@ html[data-toy-container="bilibili-app"][data-toy-immersive="true"] {
   background: radial-gradient(circle, rgba(199, 146, 68, 0.13), transparent 69%);
 }
 
-.global-immersive-switch {
-  position: absolute;
-  z-index: 18;
-  top: calc(10px + var(--safe-top) + var(--host-chrome-clearance));
-  right: calc(16px + var(--safe-right));
-  display: inline-flex;
-  height: 38px;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  padding: 0 8px 0 12px;
-  color: var(--muted);
-  border: 1px solid rgba(255, 255, 255, 0.66);
-  border-radius: 999px;
-  background:
-    linear-gradient(145deg, rgba(255, 255, 255, 0.3), rgba(203, 238, 225, 0.07)),
-    rgba(246, 252, 248, 0.1);
-  -webkit-backdrop-filter: blur(5px) saturate(1.46) brightness(1.035);
-  backdrop-filter: blur(5px) saturate(1.46) brightness(1.035);
-  box-shadow:
-    inset 0 1px 1px rgba(255, 255, 255, 0.92),
-    inset 0 -1px 2px rgba(37, 96, 76, 0.1),
-    0 7px 17px rgba(39, 69, 58, 0.07);
-  font-size: 11px;
-  font-weight: 650;
-  letter-spacing: 0.08em;
-  transition: color 260ms ease, background 260ms ease, border-color 260ms ease, box-shadow 320ms ease, transform 520ms var(--spring);
-}
-
-.global-immersive-switch > i {
-  position: relative;
-  display: block;
-  width: 38px;
-  height: 22px;
-  border: 1px solid rgba(56, 79, 70, 0.16);
-  border-radius: 999px;
-  background: rgba(44, 67, 59, 0.08);
-  box-shadow: inset 0 2px 4px rgba(31, 49, 43, 0.11), 0 1px 0 rgba(255, 255, 255, 0.7);
-  transition: background 300ms ease, border-color 300ms ease, box-shadow 300ms ease;
-}
-
-.global-immersive-switch > i > b {
-  position: absolute;
-  top: 2px;
-  left: 2px;
-  width: 16px;
-  height: 16px;
-  border: 1px solid rgba(255, 255, 255, 0.76);
-  border-radius: 50%;
-  background: rgba(248, 249, 244, 0.94);
-  box-shadow: 0 2px 5px rgba(31, 51, 44, 0.18), inset 0 1px 0 rgba(255, 255, 255, 0.88);
-  translate: 0 0;
-  transition: translate 460ms var(--spring), background 240ms ease, box-shadow 260ms ease;
-}
-
-.global-immersive-switch.is-on {
-  color: #285f58;
-  border-color: rgba(103, 191, 173, 0.42);
-  background:
-    linear-gradient(145deg, rgba(224, 248, 239, 0.52), rgba(182, 225, 211, 0.2)),
-    rgba(63, 140, 135, 0.1);
-  box-shadow:
-    inset 0 1px 1px rgba(255, 255, 255, 0.94),
-    inset 0 -1px 3px rgba(44, 121, 102, 0.14),
-    0 8px 19px rgba(48, 119, 99, 0.1);
-}
-
-.global-immersive-switch.is-on > i {
-  border-color: rgba(54, 137, 119, 0.3);
-  background: rgba(63, 140, 135, 0.68);
-  box-shadow: inset 0 2px 4px rgba(30, 91, 77, 0.18), 0 1px 0 rgba(255, 255, 255, 0.78);
-}
-
-.global-immersive-switch.is-on > i > b {
-  background: rgba(250, 253, 248, 0.98);
-  box-shadow: 0 2px 6px rgba(29, 91, 76, 0.24), inset 0 1px 0 rgba(255, 255, 255, 0.92);
-  translate: 16px 0;
-}
-
-.global-immersive-switch:active {
-  border-radius: 52% 48% 49% 51% / 58% 58% 42% 42%;
-  transform: scaleX(1.035) scaleY(1.07);
-}
-
 .screens,
 .screen {
   width: 100%;
@@ -410,7 +326,7 @@ html[data-toy-container="bilibili-app"][data-toy-immersive="true"] {
   overflow: hidden;
   gap: 0;
   padding:
-    calc(54px + var(--safe-top) + var(--host-chrome-clearance))
+    calc(7px + var(--safe-top) + var(--host-chrome-clearance))
     calc(20px + var(--safe-right))
     calc(12px + var(--safe-bottom))
     calc(20px + var(--safe-left));
@@ -788,7 +704,58 @@ html[data-toy-container="bilibili-app"][data-toy-immersive="true"] {
   align-items: center;
   gap: 7px;
   margin-left: auto;
-  margin-right: 112px;
+}
+
+.immersive-button {
+  display: inline-flex;
+  height: 42px;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  padding: 0 11px 0 10px;
+  color: var(--muted);
+  border: 1px solid rgba(255, 255, 255, 0.66);
+  border-radius: 999px;
+  background:
+    linear-gradient(145deg, rgba(255, 255, 255, 0.28), rgba(203, 238, 225, 0.07)),
+    rgba(246, 252, 248, 0.08);
+  -webkit-backdrop-filter: blur(4px) saturate(1.48) brightness(1.04);
+  backdrop-filter: blur(4px) saturate(1.48) brightness(1.04);
+  box-shadow:
+    inset 0 1px 1px rgba(255, 255, 255, 0.9),
+    inset 0 -1px 2px rgba(37, 96, 76, 0.1),
+    0 7px 17px rgba(39, 69, 58, 0.07);
+  font-size: 11px;
+  font-weight: 650;
+  letter-spacing: 0.06em;
+  transition: color 260ms ease, background 260ms ease, border-color 260ms ease, box-shadow 320ms ease, transform 520ms var(--spring);
+}
+
+.immersive-button svg {
+  width: 16px;
+  height: 16px;
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 1.7;
+}
+
+.immersive-button.is-on {
+  color: #285f58;
+  border-color: rgba(103, 191, 173, 0.42);
+  background:
+    linear-gradient(145deg, rgba(224, 248, 239, 0.52), rgba(182, 225, 211, 0.2)),
+    rgba(63, 140, 135, 0.1);
+  box-shadow:
+    inset 0 1px 1px rgba(255, 255, 255, 0.94),
+    inset 0 -1px 3px rgba(44, 121, 102, 0.14),
+    0 8px 19px rgba(48, 119, 99, 0.1);
+}
+
+.immersive-button:active {
+  border-radius: 52% 48% 49% 51% / 58% 58% 42% 42%;
+  transform: scaleX(1.055) scaleY(1.09);
 }
 
 .match-strip {
@@ -1937,7 +1904,7 @@ html[data-toy-container="bilibili-app"][data-toy-immersive="true"] {
 @media (hover: hover) and (pointer: fine) {
   .level-card:hover,
   .icon-button:hover,
-  .global-immersive-switch:hover,
+  .immersive-button:hover,
   .tool-button:hover,
   .sheet-done:hover {
     filter: brightness(1.025);
@@ -1950,7 +1917,7 @@ html[data-toy-container="bilibili-app"][data-toy-immersive="true"] {
 
 @media (max-height: 760px) {
   .home-scroll {
-    padding-top: calc(50px + var(--safe-top) + var(--host-chrome-clearance));
+    padding-top: calc(5px + var(--safe-top) + var(--host-chrome-clearance));
     padding-bottom: calc(7px + var(--safe-bottom));
   }
 
@@ -2012,7 +1979,6 @@ html[data-toy-container="bilibili-app"][data-toy-immersive="true"] {
   .hero h1 { font-size: clamp(34px, 9vh, 48px); }
   .hero-line { margin-top: 7px; }
   .journey-head { min-height: 24px; margin-bottom: 4px; }
-  .journey-head { padding-right: 112px; }
   .level-grid { gap: 6px; }
   .level-card { padding: 6px 9px; border-radius: 17px; }
   .level-glyph,
@@ -2028,7 +1994,6 @@ html[data-toy-container="bilibili-app"][data-toy-immersive="true"] {
   }
 
   .game-topbar { min-height: 38px; }
-  .global-immersive-switch { top: calc(4px + var(--safe-top) + var(--host-chrome-clearance)); }
   .match-strip { min-height: 34px; margin: 0 4px 3px; }
   .board-stage { max-width: min(100%, calc(100dvh - 128px - var(--safe-top) - var(--safe-bottom) - var(--host-chrome-clearance))); }
   .game-tools { min-height: 44px; padding-top: 3px; }

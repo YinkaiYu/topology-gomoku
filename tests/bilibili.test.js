@@ -19,14 +19,13 @@ test("Bilibili Toy SDK 通过独立 adapter 接入", () => {
   assert.match(adapter, /requestContainerMode\(false\)/);
   assert.match(adapter, /setContainerMode\(\{ orientation: "auto", immersive: enabled \}\)/);
   assert.doesNotMatch(adapter, /immersive: true/);
-  assert.match(html, /id="immersiveButton"[\s\S]*aria-checked="false"[\s\S]*<main class="screens"/);
-  assert.match(html, /id="immersiveButton"[\s\S]*<i aria-hidden="true"><b><\/b><\/i>/);
+  assert.match(html, /class="game-actions"[\s\S]*id="immersiveButton"[\s\S]*aria-checked="false"[\s\S]*id="gameSettingsButton"/);
   assert.doesNotMatch(html, /settings-softbody[\s\S]*id="immersiveButton"/);
   assert.match(adapter, /setImmersive: function setImmersive\(enabled\)/);
   assert.match(game, /immersive:\s*false/);
   assert.match(game, /defaults\.immersive = stored\.immersive === true/);
   assert.match(game, /dom\.immersiveButton\.addEventListener\("click"/);
-  assert.match(style, /\.global-immersive-switch\.is-on > i > b[\s\S]*translate:\s*16px 0/);
+  assert.match(style, /\.immersive-button\.is-on/);
   assert.match(adapter, /--safe-area-inset-left/);
   assert.match(adapter, /--toy-viewport-height/);
 });
