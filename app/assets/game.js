@@ -215,6 +215,7 @@
     thinkingIndicator: document.getElementById("thinkingIndicator"),
     gameTools: document.getElementById("gameTools"),
     boundaryDemoButton: document.getElementById("boundaryDemoButton"),
+    journeyButton: document.getElementById("journeyButton"),
     undoButton: document.getElementById("undoButton"),
     undoButtonText: document.getElementById("undoButtonText"),
     undoIconPath: document.getElementById("undoIconPath"),
@@ -222,6 +223,8 @@
     settledReplayButtonText: document.getElementById("settledReplayButtonText"),
     settledReplayIconPath: document.getElementById("settledReplayIconPath"),
     nextLevelButton: document.getElementById("nextLevelButton"),
+    nextLevelButtonText: document.getElementById("nextLevelButtonText"),
+    nextLevelIconPath: document.getElementById("nextLevelIconPath"),
     restartButton: document.getElementById("restartButton"),
     restartButtonText: document.getElementById("restartButtonText"),
     restartIconPath: document.getElementById("restartIconPath"),
@@ -870,6 +873,12 @@
     restartGame();
   }
 
+  function handleJourney() {
+    if (isEndedView()) {
+      leaveGame();
+    }
+  }
+
   function handleNextLevel() {
     if (!game || !isPassedView() || game.levelIndex >= LEVELS.length - 1) {
       return;
@@ -1103,6 +1112,7 @@
       Boolean((game.demo && game.demo.active) || isInteractiveLesson())
     );
     dom.undoButton.hidden = ended;
+    dom.journeyButton.hidden = !ended;
     dom.settledReplayButton.hidden = !ended;
     dom.nextLevelButton.hidden = !ended || !hasNextLevel;
     dom.restartButton.hidden = ended;
@@ -1122,6 +1132,10 @@
       dom.settledReplayButtonText.textContent = "再来";
       dom.settledReplayIconPath.setAttribute("d", "M20 7v5h-5M19 12a7 7 0 1 0-2 5");
       dom.nextLevelButton.disabled = dimensionTransitioning;
+      dom.journeyButton.disabled = dimensionTransitioning;
+      dom.nextLevelButton.setAttribute("aria-label", "进入下一关");
+      dom.nextLevelButtonText.textContent = "下一关";
+      dom.nextLevelIconPath.setAttribute("d", "m9 6 6 6-6 6");
       dom.dimensionToggleButton.setAttribute("aria-label", surfaceVisible ? "查看二维棋盘" : "查看三维棋局");
       dom.dimensionToggleButtonText.textContent = surfaceVisible ? "二维" : "三维";
       dom.dimensionToggleIconPath.setAttribute(
@@ -1137,6 +1151,7 @@
     }
 
     dom.boundaryDemoButton.hidden = game.levelIndex === 0;
+    dom.journeyButton.hidden = true;
     dom.settledReplayButton.hidden = true;
     dom.nextLevelButton.hidden = true;
     dom.undoButton.hidden = false;
@@ -4202,6 +4217,7 @@
     dom.reviewNextButton.addEventListener("click", function showNextMove() { stepReplay(1); });
     dom.dimensionToggleButton.addEventListener("click", toggleEndgameDimension);
     dom.restartButton.addEventListener("click", handleRightTool);
+    dom.journeyButton.addEventListener("click", handleJourney);
     dom.settledReplayButton.addEventListener("click", handleSettledAction);
     dom.nextLevelButton.addEventListener("click", handleNextLevel);
     dom.boundaryDemoButton.addEventListener("click", replayBoundaryLesson);

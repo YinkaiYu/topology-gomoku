@@ -658,8 +658,10 @@ button,
 /* Game */
 
 .game-screen {
+  --game-vertical-gap: 10px;
   display: flex;
   flex-direction: column;
+  row-gap: var(--game-vertical-gap);
   padding: calc(8px + var(--safe-top) + var(--host-chrome-clearance)) 16px calc(10px + var(--safe-bottom));
 }
 
@@ -685,7 +687,7 @@ button,
   grid-template-columns: 1fr auto 1fr;
   align-items: center;
   min-height: 56px;
-  margin: 4px 4px 8px;
+  margin: 0 4px;
 }
 
 .match-strip [hidden] {
@@ -878,11 +880,11 @@ button,
 .endgame-review-tools {
   display: grid;
   flex: 0 0 auto;
-  min-height: 58px;
+  min-height: 52px;
   grid-template-columns: repeat(4, minmax(0, 1fr));
   align-items: center;
   gap: 4px;
-  padding-top: 6px;
+  padding-top: 0;
   animation: endgame-tools-arrive 420ms var(--spring) both;
 }
 
@@ -919,12 +921,12 @@ button,
 
 .game-tools {
   display: grid;
-  flex: 1 1 auto;
-  min-height: 66px;
+  flex: 0 0 auto;
+  min-height: 52px;
   grid-template-columns: 64px 1fr 64px;
   align-items: center;
   gap: 8px;
-  padding-top: 8px;
+  padding-top: 0;
 }
 
 .game-tools.is-ended {
@@ -950,6 +952,11 @@ button,
 .game-tools.is-ended .tool-button {
   width: 100%;
   color: var(--ink);
+}
+
+.game-tools.is-ended .journey-button {
+  grid-column: 1;
+  color: var(--muted);
 }
 
 .game-tools.is-ended .settled-replay-button {
@@ -1905,9 +1912,10 @@ button,
   }
 
   .game-topbar { min-height: 44px; }
-  .match-strip { min-height: 44px; margin-bottom: 4px; }
+  .match-strip { min-height: 44px; margin: 0 4px; }
   .board-stage { max-width: min(100%, calc(100vh - 186px - var(--safe-top) - var(--safe-bottom) - var(--host-chrome-clearance))); }
-  .game-tools { min-height: 54px; }
+  .endgame-review-tools,
+  .game-tools { min-height: 44px; }
   .tool-button { height: 44px; }
 }
 

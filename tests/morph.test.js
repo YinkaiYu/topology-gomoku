@@ -365,18 +365,34 @@ test("复盘与二维三维切换相互独立，曲面可以持续柔性拖动",
   assert.match(html, /id="endgameReviewTools"/);
   assert.ok(html.indexOf('id="endgameReviewTools"') > html.indexOf('id="boardStage"'));
   assert.ok(html.indexOf('id="endgameReviewTools"') < html.indexOf('id="gameTools"'));
+  assert.match(html, /M19 12H6m5-5-5 5 5 5/);
+  assert.match(html, /M5 12h13m-5-5 5 5-5 5/);
   assert.match(html, /id="nextLevelButton"/);
   assert.match(html, /id="dimensionToggleIconPath"[^>]+M5 6c0-1\.7 3\.1-3 7-3/);
   assert.match(game, /M4 4h16v16H4zM9\.33 4v16M14\.67 4v16M4 9\.33h16M4 14\.67h16/);
   assert.match(style, /\.endgame-review-tools\s*\{[\s\S]*grid-template-columns:\s*repeat\(4, minmax\(0, 1fr\)\)/);
+  assert.match(style, /\.game-tools\.is-ended \.journey-button\s*\{[\s\S]*grid-column:\s*1/);
   assert.match(style, /\.game-tools\.is-ended \.settled-replay-button\s*\{\s*grid-column:\s*2/);
   assert.match(style, /\.game-tools\.is-ended \.next-level-button\s*\{[\s\S]*grid-column:\s*3/);
+  assert.match(html, /id="journeyButton"[^>]+aria-label="返回旅程"/);
+  assert.match(game, /dom\.journeyButton\.hidden = !ended;/);
+  assert.match(game, /dom\.nextLevelButton\.hidden = !ended \|\| !hasNextLevel;/);
+  assert.match(game, /function handleJourney\(\) \{\s*if \(isEndedView\(\)\) \{\s*leaveGame\(\)/);
+  assert.match(game, /journeyButton\.addEventListener\("click", handleJourney\)/);
   assert.doesNotMatch(game, /showResult\(/);
   assert.doesNotMatch(html, /id="resultSheet"/);
   assert.match(game, /chooseCompletionView\(winningMask, presentation\)/);
   assert.match(game, /elastic:\s*\{ x: 0, y: 0, velocityX: 0, velocityY: 0 \}/);
   assert.match(game, /wobbleX: sphereCompletion \? game\.completion\.elastic\.x/);
   assert.match(game, /completion\.elastic\.velocityY \+= yawDelta/);
+});
+
+test("标题、状态、棋盘与两层操作区使用统一垂直节奏", () => {
+  const style = fs.readFileSync(path.join(ROOT, "app", "assets", "style.css"), "utf8");
+  assert.match(style, /\.game-screen\s*\{[\s\S]*--game-vertical-gap:\s*10px;[\s\S]*row-gap:\s*var\(--game-vertical-gap\)/);
+  assert.match(style, /\.match-strip\s*\{[\s\S]*margin:\s*0 4px/);
+  assert.match(style, /\.endgame-review-tools\s*\{[\s\S]*min-height:\s*52px;[\s\S]*padding-top:\s*0/);
+  assert.match(style, /\.game-tools\s*\{[\s\S]*flex:\s*0 0 auto;[\s\S]*min-height:\s*52px;[\s\S]*padding-top:\s*0/);
 });
 
 test("三维观赏的上下拖动与左右同样跟手且不受隐藏俯仰硬限位", () => {
