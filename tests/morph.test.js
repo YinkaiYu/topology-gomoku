@@ -336,6 +336,12 @@ test("设置页使用液态玻璃层次且三个控件均支持连续拖动", ()
   assert.match(game, /setPointerCapture\(event\.pointerId\)/);
   assert.match(game, /Math\.max\(-0\.24, drag\.rawProgress \* 0\.56\)/);
   assert.match(game, /Math\.min\(1\.22, 1 \+ \(rawProgress - 1\) \* 0\.58\)/);
+  assert.match(game, /function detentProgress\(progress, maximum\)/);
+  assert.match(game, /Math\.pow\(normalizedDistance, 1\.58\) \* 0\.5/);
+  assert.match(game, /paint\(detentProgress\(visualProgress, 2\), frameDelta\)/);
+  assert.match(game, /paint\(detentProgress\(visualProgress, 1\), frameDelta, drag\.travel\)/);
+  assert.match(game, /var startIndex = difficultyIndex\(prefs\.difficulty\);/);
+  assert.doesNotMatch(game, /targetButton \? difficultyIndex\(targetButton\.dataset\.difficulty\)/);
   assert.match(style, /\.settings-sheet\s*\{[\s\S]*overflow:\s*visible[\s\S]*background:\s*transparent[\s\S]*backdrop-filter:\s*none/);
   assert.match(style, /\.settings-sheet::before\s*\{[\s\S]*filter:\s*drop-shadow/);
   assert.match(style, /\.settings-sheet::after\s*\{[\s\S]*inset:\s*1\.5px[\s\S]*backdrop-filter:\s*blur\(5px\) saturate\(1\.45\)/);
@@ -343,6 +349,9 @@ test("设置页使用液态玻璃层次且三个控件均支持连续拖动", ()
   assert.match(style, /\.switch\.is-dragging i/);
   assert.match(style, /\.segmented\.is-dragging\s*\{\s*transform: none/);
   assert.match(style, /\.switch\.is-dragging\s*\{\s*transform: none/);
+  assert.match(style, /--liquid-snap:\s*cubic-bezier\(0\.2, 1\.38, 0\.32, 1\)/);
+  assert.match(style, /\.segmented\.is-dragging \.segmented-glass-thumb\s*\{[\s\S]*transition:\s*translate 92ms var\(--liquid-drag\), scale 108ms var\(--liquid-drag\)/);
+  assert.match(style, /\.switch\.is-dragging i\s*\{[\s\S]*transition:\s*translate 82ms var\(--liquid-drag\), scale 98ms var\(--liquid-drag\)/);
   assert.match(style, /\.segmented\s*\{[\s\S]*overflow:\s*visible/);
   assert.match(style, /\.switch\s*\{[\s\S]*overflow:\s*visible/);
   assert.match(style, /\.switch\s*\{[\s\S]*width:\s*66px/);
@@ -357,9 +366,11 @@ test("设置页使用液态玻璃层次且三个控件均支持连续拖动", ()
   assert.match(style, /@keyframes liquid-knob-settle/);
   assert.doesNotMatch(style, /@keyframes liquid-control-glint/);
   assert.equal((game.match(/style\.scale = stretch \+ " " \+ lift/g) || []).length, 2);
-  assert.equal((game.match(/style\.removeProperty\("scale"\)/g) || []).length, 2);
-  assert.equal((game.match(/style\.translate = /g) || []).length, 2);
-  assert.equal((game.match(/style\.removeProperty\("translate"\)/g) || []).length, 2);
+  assert.equal((game.match(/style\.removeProperty\("scale"\)/g) || []).length, 1);
+  assert.equal((game.match(/style\.translate = /g) || []).length, 3);
+  assert.equal((game.match(/style\.removeProperty\("translate"\)/g) || []).length, 1);
+  assert.match(game, /function animateLiquidSelection\(control, movingElement, commitSelection\)/);
+  assert.match(game, /requestAnimationFrame\(function releaseLiquidSelection/);
   assert.match(html, /class="segmented-lens-track"><b>悠闲<\/b><b>敏捷<\/b><b>深思<\/b><\/span>/);
   assert.match(html, /class="switch-lens-track"/);
   assert.match(game, /function syncDifficultyLensGeometry\(index\)/);

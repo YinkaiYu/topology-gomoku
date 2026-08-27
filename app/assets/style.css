@@ -37,6 +37,8 @@
   --violet: #7f6ca8;
   --shadow: 0 18px 45px rgba(57, 51, 42, 0.09);
   --spring: cubic-bezier(0.18, 1.22, 0.32, 1);
+  --liquid-snap: cubic-bezier(0.2, 1.38, 0.32, 1);
+  --liquid-drag: cubic-bezier(0.22, 0.78, 0.36, 1);
   --soft-out: cubic-bezier(0.16, 0.84, 0.24, 1);
   --reversible-motion: cubic-bezier(0.37, 0, 0.63, 1);
   --reversible-duration: 380ms;
@@ -1347,7 +1349,7 @@ button,
     inset 1px 0 1px rgba(208, 255, 244, 0.18),
     inset -1px 0 1px rgba(255, 231, 198, 0.11);
   translate: 0 0;
-  transition: translate 520ms var(--spring), scale 520ms var(--spring), border-radius 280ms ease, box-shadow 280ms ease, background 140ms ease, border-color 140ms ease;
+  transition: translate 540ms var(--liquid-snap), scale 520ms var(--liquid-snap), border-radius 280ms ease, box-shadow 280ms ease, background 140ms ease, border-color 140ms ease;
   pointer-events: none;
 }
 
@@ -1456,7 +1458,7 @@ button,
     inset 1.5px 0 0.8px rgba(61, 221, 190, 0.14),
     inset -1.5px 0 0.8px rgba(255, 196, 100, 0.11),
     inset 0 -1.5px 0.8px rgba(49, 110, 90, 0.13);
-  transition: none;
+  transition: translate 92ms var(--liquid-drag), scale 108ms var(--liquid-drag);
 }
 
 .segmented.is-dragging .segmented-lens-track {
@@ -1511,7 +1513,7 @@ button,
     0 4px 10px rgba(31, 42, 36, 0.15),
     inset 0 1px 1px rgba(255, 255, 255, 0.5);
   translate: 0 0;
-  transition: translate 500ms var(--spring), scale 500ms var(--spring), border-radius 240ms ease, box-shadow 260ms ease, background 140ms ease, border-color 140ms ease;
+  transition: translate 520ms var(--liquid-snap), scale 500ms var(--liquid-snap), border-radius 240ms ease, box-shadow 260ms ease, background 140ms ease, border-color 140ms ease;
   pointer-events: none;
 }
 
@@ -1593,7 +1595,7 @@ button,
     inset 1.5px 0 0.8px rgba(55, 220, 188, 0.14),
     inset -1.5px 0 0.8px rgba(255, 189, 92, 0.11),
     inset 0 -1.5px 0.8px rgba(48, 111, 89, 0.14);
-  transition: none;
+  transition: translate 82ms var(--liquid-drag), scale 98ms var(--liquid-drag);
 }
 
 .switch.is-dragging .switch-lens-track {
