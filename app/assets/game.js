@@ -109,6 +109,7 @@
     normal: { label: "敏捷", wait: 520, rank: 2 },
     hard: { label: "深思", wait: 680, rank: 3 }
   };
+  var DIFFICULTY_ORDER = ["easy", "normal", "hard"];
 
   var dom = {
     appShell: document.getElementById("appShell"),
@@ -142,6 +143,8 @@
     settingsSheet: document.getElementById("settingsSheet"),
     closeSettingsButton: document.getElementById("closeSettingsButton"),
     settingsDoneButton: document.getElementById("settingsDoneButton"),
+    difficultyControl: document.getElementById("difficultyControl"),
+    difficultyThumb: document.getElementById("difficultyThumb"),
     difficultyButtons: Array.prototype.slice.call(document.querySelectorAll("[data-difficulty]")),
     hintSwitch: document.getElementById("hintSwitch"),
     soundSwitch: document.getElementById("soundSwitch"),
@@ -1106,18 +1109,54 @@
   function openSettings() {
     syncSettingsUI();
     openSheet(dom.settingsSheet);
+    requestAnimationFrame(syncSettingsUI);
     sound.play("ui");
   }
 
-  function syncSettingsUI() {
-    dom.difficultyButtons.forEach(function updateDifficultyButton(button) {
-      button.classList.toggle("is-active", button.dataset.difficulty === prefs.difficulty);
+  function difficultyIndex(difficulty) {
+    return Math.max(0, DIFFICULTY_ORDER.indexOf(difficulty));
+  }
+
+  function previewDifficulty(index) {
+    var bounded = Math.max(0, Math.min(DIFFICULTY_ORDER.length - 1, Math.round(index)));
+    dom.difficultyButtons.forEach(function updateDifficultyPreview(button) {
+      var active = button.dataset.difficulty === DIFFICULTY_ORDER[bounded];
+      button.classList.toggle("is-active", active);
+      button.setAttribute("aria-pressed", active ? "true" : "false");
     });
-    dom.hintSwitch.classList.toggle("is-on", prefs.hints);
+  }
+
+  function syncSettingsUI() {
+    var selectedDifficulty = difficultyIndex(prefs.difficulty);
+    previewDifficulty(selectedDifficulty);
+    dom.difficultyControl.dataset.index = String(selectedDifficulty);
+    if (!dom.difficultyControl.classList.contains("is-dragging")) {
+      dom.difficultyThumb.style.removeProperty("transform");
+      dom.difficultyThumb.style.removeProperty("transform-origin");
+    }
+    syncSwitchUI(dom.hintSwitch, prefs.hints);
     dom.hintSwitch.setAttribute("aria-checked", prefs.hints ? "true" : "false");
-    dom.soundSwitch.classList.toggle("is-on", prefs.sound);
+    syncSwitchUI(dom.soundSwitch, prefs.sound);
     dom.soundSwitch.setAttribute("aria-checked", prefs.sound ? "true" : "false");
     dom.difficultyLabel.textContent = DIFFICULTIES[prefs.difficulty].label;
+  }
+
+  function syncSwitchUI(control, enabled) {
+    control.classList.toggle("is-on", enabled);
+    if (!control.classList.contains("is-dragging")) {
+      var knob = control.querySelector("i");
+      knob.style.removeProperty("transform");
+      knob.style.removeProperty("transform-origin");
+    }
+  }
+
+  function settleLiquidControl(control) {
+    control.classList.remove("is-settling");
+    void control.offsetWidth;
+    control.classList.add("is-settling");
+    window.setTimeout(function finishLiquidSettlement() {
+      control.classList.remove("is-settling");
+    }, 540);
   }
 
   function setDifficulty(difficulty) {
@@ -1131,8 +1170,8 @@
     sound.play("ui");
   }
 
-  function toggleSound() {
-    prefs.sound = !prefs.sound;
+  function setSoundEnabled(enabled) {
+    prefs.sound = Boolean(enabled);
     sound.setEnabled(prefs.sound);
     savePreferences();
     syncSettingsUI();
@@ -1141,13 +1180,191 @@
     }
   }
 
-  function toggleHints() {
-    prefs.hints = !prefs.hints;
+  function setHintsEnabled(enabled) {
+    prefs.hints = Boolean(enabled);
     savePreferences();
     syncSettingsUI();
     requestRender();
     showToast(prefs.hints ? "落点提示已开启" : "落点提示已关闭");
     sound.play("ui");
+  }
+
+  function bindDifficultySlider() {
+    var control = dom.difficultyControl;
+    var drag = null;
+
+    function geometry() {
+      var rect = control.getBoundingClientRect();
+      var itemWidth = dom.difficultyThumb.offsetWidth || Math.max(1, (rect.width - 14) / 3);
+      return {
+        rect: rect,
+        itemWidth: itemWidth,
+        step: itemWidth + 3
+      };
+    }
+
+    function indexAt(clientX, metrics) {
+      var firstCenter = metrics.rect.left + 4 + metrics.itemWidth / 2;
+      return Math.max(0, Math.min(2, (clientX - firstCenter) / metrics.step));
+    }
+
+    function paint(progress, delta) {
+      var stretch = 1 + Math.min(0.13, Math.abs(delta) / 90);
+      dom.difficultyThumb.style.transform = "translate3d(" + (progress * drag.metrics.step) + "px, 0, 0) scaleX(" + stretch + ")";
+      dom.difficultyThumb.style.transformOrigin = delta < 0 ? "right center" : "left center";
+      previewDifficulty(progress);
+    }
+
+    control.addEventListener("pointerdown", function beginDifficultyDrag(event) {
+      if (event.isPrimary === false || event.button > 0) {
+        return;
+      }
+      var metrics = geometry();
+      var targetButton = event.target.closest("[data-difficulty]");
+      var startIndex = targetButton ? difficultyIndex(targetButton.dataset.difficulty) : difficultyIndex(prefs.difficulty);
+      drag = {
+        pointerId: event.pointerId,
+        startX: event.clientX,
+        lastX: event.clientX,
+        progress: startIndex,
+        moved: false,
+        metrics: metrics
+      };
+      control.classList.add("is-dragging");
+      try { control.setPointerCapture(event.pointerId); } catch (error) { /* Pointer capture is an enhancement. */ }
+      paint(startIndex, 0);
+      event.preventDefault();
+    });
+
+    control.addEventListener("pointermove", function moveDifficultyDrag(event) {
+      if (!drag || drag.pointerId !== event.pointerId) {
+        return;
+      }
+      var totalDelta = event.clientX - drag.startX;
+      var frameDelta = event.clientX - drag.lastX;
+      drag.lastX = event.clientX;
+      drag.moved = drag.moved || Math.abs(totalDelta) > 3;
+      drag.progress = Math.max(0, Math.min(2, drag.progress + frameDelta / drag.metrics.step));
+      paint(drag.progress, frameDelta);
+      event.preventDefault();
+    });
+
+    function finishDifficultyDrag(event, cancelled) {
+      if (!drag || drag.pointerId !== event.pointerId) {
+        return;
+      }
+      var nextIndex = cancelled
+        ? difficultyIndex(prefs.difficulty)
+        : Math.round(drag.moved ? drag.progress : indexAt(event.clientX, drag.metrics));
+      try { control.releasePointerCapture(event.pointerId); } catch (error) { /* Capture may already be released. */ }
+      drag = null;
+      control.classList.remove("is-dragging");
+      dom.difficultyThumb.style.removeProperty("transform");
+      dom.difficultyThumb.style.removeProperty("transform-origin");
+      if (cancelled) {
+        syncSettingsUI();
+      } else {
+        setDifficulty(DIFFICULTY_ORDER[nextIndex]);
+        settleLiquidControl(control);
+      }
+      event.preventDefault();
+    }
+
+    control.addEventListener("pointerup", function endDifficultyDrag(event) {
+      finishDifficultyDrag(event, false);
+    });
+    control.addEventListener("pointercancel", function cancelDifficultyDrag(event) {
+      finishDifficultyDrag(event, true);
+    });
+    control.addEventListener("click", function supportDifficultyKeyboard(event) {
+      if (event.detail !== 0) {
+        event.preventDefault();
+        return;
+      }
+      var button = event.target.closest("[data-difficulty]");
+      if (button) {
+        setDifficulty(button.dataset.difficulty);
+        settleLiquidControl(control);
+      }
+    });
+  }
+
+  function bindLiquidSwitch(control, getValue, setValue) {
+    var knob = control.querySelector("i");
+    var drag = null;
+
+    function paint(progress, delta, travel) {
+      var stretch = 1 + Math.min(0.17, Math.abs(delta) / 70);
+      knob.style.transform = "translate3d(" + (progress * travel) + "px, 0, 0) scaleX(" + stretch + ")";
+      knob.style.transformOrigin = delta < 0 ? "right center" : "left center";
+      control.classList.toggle("is-on", progress >= 0.5);
+    }
+
+    control.addEventListener("pointerdown", function beginSwitchDrag(event) {
+      if (event.isPrimary === false || event.button > 0) {
+        return;
+      }
+      var travel = Math.max(1, control.clientWidth - 6 - knob.offsetWidth);
+      drag = {
+        pointerId: event.pointerId,
+        startX: event.clientX,
+        lastX: event.clientX,
+        startProgress: getValue() ? 1 : 0,
+        progress: getValue() ? 1 : 0,
+        travel: travel,
+        moved: false
+      };
+      control.classList.add("is-dragging");
+      try { control.setPointerCapture(event.pointerId); } catch (error) { /* Pointer capture is an enhancement. */ }
+      event.preventDefault();
+    });
+
+    control.addEventListener("pointermove", function moveSwitchDrag(event) {
+      if (!drag || drag.pointerId !== event.pointerId) {
+        return;
+      }
+      var totalDelta = event.clientX - drag.startX;
+      var frameDelta = event.clientX - drag.lastX;
+      drag.lastX = event.clientX;
+      drag.moved = drag.moved || Math.abs(totalDelta) > 3;
+      drag.progress = Math.max(0, Math.min(1, drag.startProgress + totalDelta / drag.travel));
+      paint(drag.progress, frameDelta, drag.travel);
+      event.preventDefault();
+    });
+
+    function finishSwitchDrag(event, cancelled) {
+      if (!drag || drag.pointerId !== event.pointerId) {
+        return;
+      }
+      var nextValue = cancelled ? getValue() : (drag.moved ? drag.progress >= 0.5 : !drag.startProgress);
+      try { control.releasePointerCapture(event.pointerId); } catch (error) { /* Capture may already be released. */ }
+      drag = null;
+      control.classList.remove("is-dragging");
+      knob.style.removeProperty("transform");
+      knob.style.removeProperty("transform-origin");
+      if (cancelled) {
+        syncSettingsUI();
+      } else {
+        setValue(Boolean(nextValue));
+        settleLiquidControl(control);
+      }
+      event.preventDefault();
+    }
+
+    control.addEventListener("pointerup", function endSwitchDrag(event) {
+      finishSwitchDrag(event, false);
+    });
+    control.addEventListener("pointercancel", function cancelSwitchDrag(event) {
+      finishSwitchDrag(event, true);
+    });
+    control.addEventListener("click", function supportSwitchKeyboard(event) {
+      if (event.detail !== 0) {
+        event.preventDefault();
+        return;
+      }
+      setValue(!getValue());
+      settleLiquidControl(control);
+    });
   }
 
   function openDeveloperTools() {
@@ -1406,7 +1623,7 @@
     if (immediate) {
       finish();
     } else {
-      window.setTimeout(finish, 230);
+      window.setTimeout(finish, 570);
     }
   }
 
@@ -2607,13 +2824,9 @@
       sound.play("ui");
       closeActiveSheet(false);
     });
-    dom.difficultyButtons.forEach(function bindDifficulty(button) {
-      button.addEventListener("click", function chooseDifficulty() {
-        setDifficulty(button.dataset.difficulty);
-      });
-    });
-    dom.soundSwitch.addEventListener("click", toggleSound);
-    dom.hintSwitch.addEventListener("click", toggleHints);
+    bindDifficultySlider();
+    bindLiquidSwitch(dom.hintSwitch, function hintsEnabled() { return prefs.hints; }, setHintsEnabled);
+    bindLiquidSwitch(dom.soundSwitch, function soundEnabled() { return prefs.sound; }, setSoundEnabled);
     dom.developerButton.addEventListener("click", openDeveloperTools);
     dom.closeDeveloperButton.addEventListener("click", function closeDeveloperTools() { closeActiveSheet(false); });
     dom.developerDoneButton.addEventListener("click", function finishDeveloperTools() { closeActiveSheet(false); });

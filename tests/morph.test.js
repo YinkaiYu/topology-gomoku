@@ -223,6 +223,21 @@ test("后期大概率和局时在既有规则区域提示平局也算通关", ()
   assert.match(style, /@keyframes draw-pass-arrive/);
 });
 
+test("设置页使用液态玻璃层次且三个控件均支持连续拖动", () => {
+  const game = fs.readFileSync(path.join(ROOT, "app", "assets", "game.js"), "utf8");
+  const html = fs.readFileSync(path.join(ROOT, "app", "index.html"), "utf8");
+  const style = fs.readFileSync(path.join(ROOT, "app", "assets", "style.css"), "utf8");
+  assert.match(html, /id="difficultyThumb"/);
+  assert.match(game, /function bindDifficultySlider\(\)/);
+  assert.match(game, /function bindLiquidSwitch\(control, getValue, setValue\)/);
+  assert.match(game, /setPointerCapture\(event\.pointerId\)/);
+  assert.match(game, /drag\.progress = Math\.max\(0, Math\.min\(1, drag\.startProgress \+ totalDelta \/ drag\.travel\)\)/);
+  assert.match(style, /\.settings-sheet\s*\{[\s\S]*backdrop-filter: blur\(24px\) saturate\(1\.32\)/);
+  assert.match(style, /\.segmented\.is-dragging \.segmented-glass-thumb/);
+  assert.match(style, /\.switch\.is-dragging i/);
+  assert.match(style, /@keyframes liquid-control-glint/);
+});
+
 test("高阶曲面的五子展示会自动朝前且始终附着于曲面交点", () => {
   const game = fs.readFileSync(path.join(ROOT, "app", "assets", "game.js"), "utf8");
   assert.match(game, /var yaw = -Math\.PI \+ yawIndex \/ 40 \* Math\.PI \* 2/);
