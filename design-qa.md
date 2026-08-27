@@ -13,6 +13,8 @@
 
 **Implementation evidence**
 
+- Embedded-font coverage for the finale card at 390 × 844: `artifacts/qa-font-gui-v1351.png`; “归圆” renders as one consistent local serif face.
+- Sharper hand-drawn topology outlines at the same 390 × 844 viewport: `artifacts/qa-topology-glyph-lines-v1351.png`; all seven retain their original geometry, cel shading, and irregular ink treatment.
 - Settings at rest after the state split: `C:\Users\Newton\Documents\Codex\xiaohongshu-tools\artifacts\qa-settings-release-v135.png`.
 - Difficulty held with one reduced refracted image: `C:\Users\Newton\Documents\Codex\xiaohongshu-tools\artifacts\qa-settings-pressed-v135.png`.
 - Difficulty after release with clear, unrefracted type: `C:\Users\Newton\Documents\Codex\xiaohongshu-tools\artifacts\qa-settings-released-after-press-v135.png`.

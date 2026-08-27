@@ -501,7 +501,7 @@ button,
 }
 
 .level-card.is-locked .level-glyph {
-  opacity: 0.88;
+  opacity: 1;
   filter: none;
 }
 
@@ -531,7 +531,7 @@ button,
   align-self: center;
   justify-self: center;
   object-fit: contain;
-  opacity: 0.9;
+  opacity: 1;
   transform: scale(1);
   transition: opacity 260ms ease, transform 520ms cubic-bezier(0.22, 1, 0.36, 1);
 }
@@ -609,7 +609,7 @@ button,
 @keyframes collectible-reveal {
   0% { opacity: 0; transform: scale(0.82) rotate(-4deg); }
   58% { opacity: 1; transform: scale(1.045) rotate(1deg); }
-  100% { opacity: 0.9; transform: scale(1) rotate(0); }
+  100% { opacity: 1; transform: scale(1) rotate(0); }
 }
 
 .level-name {

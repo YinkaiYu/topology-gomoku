@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" role="img" data-model="hand-drawn-spherical-quotient" data-style="hand-drawn-cel-silhouette">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" role="img" shape-rendering="geometricPrecision" data-model="hand-drawn-spherical-quotient" data-style="hand-drawn-cel-silhouette">
   <desc>S(u,0)=S(0,u), S(u,1)=S(1,u); two triangular square charts map to opposite hemispheres</desc>
   <defs>
-    <filter id="handSurface" x="-14%" y="-14%" width="128%" height="128%" color-interpolation-filters="sRGB">
+    <filter id="handSurface" x="-14%" y="-14%" width="128%" height="128%" filterRes="768 768" color-interpolation-filters="sRGB">
       <feTurbulence type="fractalNoise" baseFrequency="0.018 0.026" numOctaves="2" seed="43" result="paperNoise"/>
       <feDisplacementMap in="SourceGraphic" in2="paperNoise" scale="1.35" xChannelSelector="R" yChannelSelector="G" result="drawn"/>
       <feMorphology in="drawn" operator="dilate" radius="4.4" result="expanded"/>
@@ -10,7 +10,7 @@
       <feComposite in="ink" in2="expanded" operator="in" result="outline"/>
       <feMerge><feMergeNode in="outline"/><feMergeNode in="drawn"/></feMerge>
     </filter>
-    <filter id="handLine" x="-8%" y="-8%" width="116%" height="116%">
+    <filter id="handLine" x="-8%" y="-8%" width="116%" height="116%" filterRes="768 768">
       <feTurbulence type="fractalNoise" baseFrequency="0.024" numOctaves="2" seed="47" result="lineNoise"/>
       <feDisplacementMap in="SourceGraphic" in2="lineNoise" scale="1.05" xChannelSelector="R" yChannelSelector="G"/>
     </filter>
@@ -22,7 +22,7 @@
     <path d="M219 124 C221 175 183 217 133 219 C98 220 68 202 50 176 C85 194 126 195 162 178 C190 165 207 146 219 124 Z" fill="#d0cdc4" stroke="#d0cdc4" stroke-width="1.5"/>
     <path d="M196 74 C214 93 222 121 217 148 C204 183 174 209 137 216 C167 185 182 143 177 105 C175 87 168 69 157 53 C172 57 184 64 196 74 Z" fill="#dedbd2" stroke="#dedbd2" stroke-width="1.5"/>
   </g>
-  <g clip-path="url(#sphereClip)" filter="url(#handLine)" fill="none" stroke="#373431" stroke-width="2.7" stroke-linecap="round">
+  <g clip-path="url(#sphereClip)" filter="url(#handLine)" fill="none" stroke="#373431" stroke-width="3" stroke-linecap="round">
     <path d="M39 129 C67 109 101 102 129 103 C163 103 193 113 218 130"/>
     <path d="M48 173 C75 160 101 155 129 156 C160 156 188 164 207 178"/>
     <path d="M128 38 C102 60 91 94 92 128 C93 165 105 196 133 218"/>

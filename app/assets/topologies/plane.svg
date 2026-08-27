@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" role="img" data-model="shaded-bounded-plane" data-style="hand-drawn-cel-silhouette">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" role="img" shape-rendering="geometricPrecision" data-model="shaded-bounded-plane" data-style="hand-drawn-cel-silhouette">
   <desc>P(u,v)=(u,v,0), -1≤u,v≤1</desc>
   <defs>
-    <filter id="handSurface" x="-14%" y="-14%" width="128%" height="128%" color-interpolation-filters="sRGB">
+    <filter id="handSurface" x="-14%" y="-14%" width="128%" height="128%" filterRes="768 768" color-interpolation-filters="sRGB">
       <feTurbulence type="fractalNoise" baseFrequency="0.018 0.026" numOctaves="2" seed="19" result="paperNoise"/>
       <feDisplacementMap in="SourceGraphic" in2="paperNoise" scale="1.35" xChannelSelector="R" yChannelSelector="G" result="drawn"/>
       <feMorphology in="drawn" operator="dilate" radius="4.4" result="expanded"/>
@@ -10,7 +10,7 @@
       <feComposite in="ink" in2="expanded" operator="in" result="outline"/>
       <feMerge><feMergeNode in="outline"/><feMergeNode in="drawn"/></feMerge>
     </filter>
-    <filter id="handLine" x="-8%" y="-8%" width="116%" height="116%">
+    <filter id="handLine" x="-8%" y="-8%" width="116%" height="116%" filterRes="768 768">
       <feTurbulence type="fractalNoise" baseFrequency="0.024" numOctaves="2" seed="31" result="lineNoise"/>
       <feDisplacementMap in="SourceGraphic" in2="lineNoise" scale="1.05" xChannelSelector="R" yChannelSelector="G"/>
     </filter>

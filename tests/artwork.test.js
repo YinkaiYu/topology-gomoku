@@ -36,12 +36,22 @@ test("七关均使用不透明曲面与统一投影轮廓", () => {
     assert.ok(pathCount >= 1, `${name}: ${pathCount} paths`);
     assert.match(svg, /data-style="hand-drawn-cel-silhouette"/);
     assert.match(svg, /<filter id="handSurface"/);
+    assert.match(svg, /shape-rendering="geometricPrecision"/);
+    assert.equal((svg.match(/filterRes="768 768"/g) || []).length, 2, `${name}: low-resolution filters`);
     assert.match(svg, /<feTurbulence\b/);
     assert.match(svg, /fill="#[0-9a-f]{6}"/);
     assert.doesNotMatch(svg, /<rect[^>]+fill=/);
     assert.doesNotMatch(svg, /<text\b|<foreignObject\b/i);
     assert.doesNotMatch(svg, /stroke-opacity="0\.[0-7]/);
   });
+});
+
+test("图鉴矢量在手机小尺寸下保持清晰", () => {
+  const style = fs.readFileSync(path.join(ROOT, "app", "assets", "style.css"), "utf8");
+  assert.match(style, /\.level-glyph\s*\{[^}]*opacity:\s*1/s);
+  assert.match(style, /100%\s*\{\s*opacity:\s*1;\s*transform:\s*scale\(1\) rotate\(0\);\s*\}/);
+  const sphere = fs.readFileSync(path.join(TOPOLOGY_DIR, "sphere.svg"), "utf8");
+  assert.match(sphere, /filter="url\(#handLine\)"[^>]*stroke-width="3"/);
 });
 
 test("高阶关卡使用明确的拓扑形态模型", () => {
@@ -63,7 +73,7 @@ test("高阶关卡使用明确的拓扑形态模型", () => {
 test("莫比乌斯带具有一条连续的真实边界描线", () => {
   const svg = fs.readFileSync(path.join(TOPOLOGY_DIR, "mobius.svg"), "utf8");
   assert.match(svg, /data-model="shaded-mobius-embedding"/);
-  assert.match(svg, /stroke-width="2\.80"/);
+  assert.match(svg, /stroke-width="3\.14"/);
 });
 
 test("目录中的高阶拓扑必须通关后才揭示图鉴", () => {

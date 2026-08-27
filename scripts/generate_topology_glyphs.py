@@ -294,16 +294,16 @@ def render(glyph: Glyph) -> str:
     for curve, points, _depth in transformed:
         curve_paths.append(
             f'<path d="{path_data(points, curve.closed)}" fill="none" stroke="{INK}" '
-            f'stroke-width="{curve.width:.2f}" stroke-opacity="{curve.opacity:.2f}" '
+            f'stroke-width="{curve.width * 1.12:.2f}" stroke-opacity="{curve.opacity:.2f}" '
             'stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke"/>'
         )
 
     return "\n".join([
         '<?xml version="1.0" encoding="UTF-8"?>',
-        f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" role="img" data-model="{glyph.model}" data-style="hand-drawn-cel-silhouette">',
+        f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" role="img" shape-rendering="geometricPrecision" data-model="{glyph.model}" data-style="hand-drawn-cel-silhouette">',
         f'  <desc>{glyph.description}</desc>',
         '  <defs>',
-        '    <filter id="handSurface" x="-14%" y="-14%" width="128%" height="128%" color-interpolation-filters="sRGB">',
+        '    <filter id="handSurface" x="-14%" y="-14%" width="128%" height="128%" filterRes="768 768" color-interpolation-filters="sRGB">',
         '      <feTurbulence type="fractalNoise" baseFrequency="0.018 0.026" numOctaves="2" seed="19" result="paperNoise"/>',
         '      <feDisplacementMap in="SourceGraphic" in2="paperNoise" scale="1.35" xChannelSelector="R" yChannelSelector="G" result="drawn"/>',
         '      <feMorphology in="drawn" operator="dilate" radius="4.4" result="expanded"/>',
@@ -311,7 +311,7 @@ def render(glyph: Glyph) -> str:
         '      <feComposite in="ink" in2="expanded" operator="in" result="outline"/>',
         '      <feMerge><feMergeNode in="outline"/><feMergeNode in="drawn"/></feMerge>',
         '    </filter>',
-        '    <filter id="handLine" x="-8%" y="-8%" width="116%" height="116%">',
+        '    <filter id="handLine" x="-8%" y="-8%" width="116%" height="116%" filterRes="768 768">',
         '      <feTurbulence type="fractalNoise" baseFrequency="0.024" numOctaves="2" seed="31" result="lineNoise"/>',
         '      <feDisplacementMap in="SourceGraphic" in2="lineNoise" scale="1.05" xChannelSelector="R" yChannelSelector="G"/>',
         '    </filter>',
