@@ -5,6 +5,7 @@ const assert = require("node:assert/strict");
 const fs = require("node:fs");
 const path = require("node:path");
 const Morph = require("../app/assets/topology-morph.js");
+const Engine = require("../app/assets/topology.js");
 
 const ROOT = path.resolve(__dirname, "..");
 
@@ -66,14 +67,36 @@ test("球面的两组相邻边在两个半球图册中严格重合", () => {
   });
 });
 
-test("球面通关动画使用三角半球网格并补齐两组相邻接缝", () => {
+test("球面通关动画使用完整半球网格、圆形壳层与平滑参数曲线", () => {
   const game = fs.readFileSync(path.join(ROOT, "app", "assets", "game.js"), "utf8");
-  assert.match(game, /game\.level\.topology === "sphere" \? columns : 34/);
+  assert.match(game, /game\.level\.topology === "sphere" \? 48 : 46/);
   assert.match(game, /\[\[0, 1, 2\], \[0, 2, 3\]\]/);
   assert.match(game, /function drawCompletionSphereBoundary/);
   assert.match(game, /function drawSphereRails/);
-  assert.match(game, /if \(gridPoint\.x === 0\) \{ gridDirections\.push\(4\); \}/);
-  assert.match(game, /if \(gridPoint\.y === 0\) \{ gridDirections\.push\(6\); \}/);
+  assert.match(game, /function drawCompletionSphereGrid/);
+  assert.match(game, /ctx\.quadraticCurveTo/);
+  assert.match(game, /var sphereShellBlend/);
+  assert.match(game, /ctx\.arc\(renderState\.width \* 0\.5, renderState\.height \* 0\.5, sphereRadius/);
+});
+
+test("球面参数化覆盖单位球且按实际五连选择无折叠的共形重参数化", () => {
+  for (let u = 0; u <= 1; u += 0.05) {
+    for (let v = 0; v <= 1; v += 0.05) {
+      const point = Morph.surfacePoint("sphere", u, v);
+      assert.ok(Math.abs(Math.hypot(...point) - 1) < 1e-7);
+    }
+  }
+  const rules = Engine.createRules({ type: "sphere", width: 7, height: 7 });
+  const cells = [[4, 1], [5, 0], [0, 6], [6, 1], [5, 2]].map(([x, y]) => y * 7 + x);
+  const presentation = Morph.createPresentation("sphere", rules, cells);
+  assert.equal(presentation.type, "sphere-path");
+  assert.ok(Math.hypot(...presentation.boost) <= 0.400001);
+  [0.12, 0.38, 0.79].forEach((value) => {
+    const top = Morph.applyPresentation(Morph.surfacePoint("sphere", value, 0), presentation);
+    const left = Morph.applyPresentation(Morph.surfacePoint("sphere", 0, value), presentation);
+    samePoint(top, left, "adaptive sphere seam");
+    assert.ok(Math.abs(Math.hypot(...top) - 1) < 1e-7);
+  });
 });
 
 test("斜向跨缝使用真实边界交点且接缝两侧投影重合", () => {
@@ -199,9 +222,9 @@ test("通关视图的整体比例变形仍保持拓扑接缝重合", () => {
 
 test("通关曲面使用高密度采样，棋盘线沿曲面分段插值", () => {
   const game = fs.readFileSync(path.join(ROOT, "app", "assets", "game.js"), "utf8");
-  assert.match(game, /var columns = 44;/);
-  assert.match(game, /var rows = game\.level\.topology === "sphere" \? columns : 34;/);
-  assert.match(game, /var samples = 8;/);
+  assert.match(game, /var columns = game\.level\.topology === "sphere" \? 48 : 46;/);
+  assert.match(game, /var rows = game\.level\.topology === "sphere" \? columns : 36;/);
+  assert.match(game, /var samples = game\.level\.topology === "sphere" \? 16 : 12;/);
   assert.match(game, /appendCompletionSegment/);
   assert.match(game, /Morph\.seamBridgeUV/);
   assert.match(game, /completionGridEdgePoints\(cells\[index\], step, direction/);
@@ -218,9 +241,9 @@ test("胜负结算常驻棋盘且支持重玩，胜利曲面可以持续柔性�
   assert.match(game, /settledReplayButton\.addEventListener\("click", restartGame\)/);
   assert.doesNotMatch(game, /showResult\(/);
   assert.doesNotMatch(html, /id="resultSheet"/);
-  assert.match(game, /chooseCompletionView\(winningMask\)/);
+  assert.match(game, /chooseCompletionView\(winningMask, completionPresentation\)/);
   assert.match(game, /elastic:\s*\{ x: 0, y: 0, velocityX: 0, velocityY: 0 \}/);
-  assert.match(game, /wobbleX: game\.completion\.elastic\.x \+ restingBounce/);
+  assert.match(game, /wobbleX: sphereCompletion \? game\.completion\.elastic\.x/);
   assert.match(game, /completion\.elastic\.velocityY \+= yawDelta/);
 });
 
@@ -272,10 +295,12 @@ test("高阶曲面的五子展示会自动朝前且始终附着于曲面交点",
   assert.match(game, /segmentVariation \* 2\.1/);
   assert.match(game, /extremeStretch - 2\.15/);
   assert.match(game, /shapeCost \* 0\.28/);
-  assert.match(game, /shapeX: 1 \+ \(\(Number\(game\.completion\.view\.shapeX\) \|\| 1\) - 1\) \* viewBlend/);
+  assert.match(game, /shapeX: sphereCompletion \? 1 : 1 \+ \(\(Number\(game\.completion\.view\.shapeX\) \|\| 1\) - 1\) \* viewBlend/);
   assert.match(game, /var point = completionCellPoint\(cell, morph, spin\);/);
   assert.match(game, /var points = completionGridEdgePoints\(cells\[index\], step, direction, morph, spin\);/);
-  assert.doesNotMatch(game, /presentation\.byCell/);
+  assert.match(game, /Morph\.createPresentation\(game\.level\.topology, game\.rules/);
+  assert.match(game, /function completionSphereWinningCurve/);
+  assert.match(game, /lineDeviation \* 5\.6/);
   assert.doesNotMatch(game, /compactCompletionSegment/);
 });
 

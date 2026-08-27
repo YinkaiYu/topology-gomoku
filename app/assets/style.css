@@ -567,6 +567,11 @@ button,
   line-height: 1.15;
 }
 
+.optical-title-rise {
+  display: inline-block;
+  transform: translateY(-0.045em);
+}
+
 .level-type {
   grid-column: 1 / -1;
   grid-row: 2;

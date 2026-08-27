@@ -94,23 +94,162 @@
     ];
   }
 
+  function triangleHemisphere(a, b, c, sign) {
+    // Send an equilateral triangular chart radially to a disk, then use the
+    // equal-area disk-to-hemisphere map.  Unlike normalising a shallow
+    // triangular dome, this covers every viewing direction and keeps the
+    // chart lines distributed across the whole hemisphere.
+    var planarX = a - (b + c) * 0.5;
+    var planarY = (b - c) * Math.sqrt(3) * 0.5;
+    var planarLength = Math.hypot(planarX, planarY);
+    // 27abc is a smooth interior coordinate: it is one at the chart centre
+    // and exactly zero on every edge.  Its complementary square root gives
+    // a full disk radius without the piecewise "nearest edge" corners that
+    // used to put sharp kinks in the projected chess grid.
+    var radial = Math.sqrt(Math.max(0, 1 - 27 * a * b * c));
+    if (planarLength < 1e-10 || radial < 1e-10) {
+      return [0, 0, sign];
+    }
+    var z = sign * (1 - radial * radial);
+    var ringRadius = Math.sqrt(Math.max(0, 1 - z * z));
+    return [
+      planarX / planarLength * ringRadius,
+      planarY / planarLength * ringRadius,
+      z
+    ];
+  }
+
   function sphere(u, v) {
-    // Split the square along its diagonal into two triangular charts. Their
-    // common three-edge boundary maps to the equator; the interiors map to
-    // opposite hemispheres. This realizes the adjacent-edge quotient exactly:
-    // S(u,0)=S(0,u) and S(u,1)=S(1,u).
+    // The square is split along its diagonal.  Corresponding sides of the two
+    // triangles are precisely top~left, right~bottom and the shared diagonal;
+    // mapping them to opposite hemispheres therefore realizes the quotient
+    // S(u,0)=S(0,u), S(u,1)=S(1,u) without a gap or self-intersection.
     var upper = v <= u;
     var a = upper ? 1 - u : 1 - v;
     var b = upper ? u - v : v - u;
     var c = upper ? v : u;
-    var angleA = 0;
-    var angleB = TAU / 3;
-    var angleC = TAU * 2 / 3;
-    var x = a * Math.cos(angleA) + b * Math.cos(angleB) + c * Math.cos(angleC);
-    var y = a * Math.sin(angleA) + b * Math.sin(angleB) + c * Math.sin(angleC);
-    var z = (upper ? 1 : -1) * 3 * Math.sqrt(3) * Math.sqrt(Math.max(0, a * b * c));
-    var length = Math.hypot(x, y, z) || 1;
-    return [x / length, y / length, z / length];
+    return triangleHemisphere(a, b, c, upper ? 1 : -1);
+  }
+
+  function dot3(a, b) {
+    return a[0] * b[0] + a[1] * b[1] + a[2] * b[2];
+  }
+
+  function normalize3(point) {
+    var length = Math.hypot(point[0], point[1], point[2]) || 1;
+    return [point[0] / length, point[1] / length, point[2] / length];
+  }
+
+  function cross3(a, b) {
+    return [
+      a[1] * b[2] - a[2] * b[1],
+      a[2] * b[0] - a[0] * b[2],
+      a[0] * b[1] - a[1] * b[0]
+    ];
+  }
+
+  function bestGreatCircleNormal(points) {
+    var best = null;
+    var bestScore = Infinity;
+    for (var first = 0; first < points.length; first += 1) {
+      for (var second = first + 1; second < points.length; second += 1) {
+        var candidate = cross3(points[first], points[second]);
+        if (Math.hypot(candidate[0], candidate[1], candidate[2]) < 0.08) {
+          continue;
+        }
+        candidate = normalize3(candidate);
+        var score = points.reduce(function planeError(total, point) {
+          return total + Math.pow(dot3(point, candidate), 2);
+        }, 0);
+        if (score < bestScore) {
+          bestScore = score;
+          best = candidate;
+        }
+      }
+    }
+    return best || [0, 0, 1];
+  }
+
+  function sphereMobius(point, boost) {
+    var boostLength2 = dot3(boost, boost);
+    if (boostLength2 < 1e-10) {
+      return point;
+    }
+    var pointBoost = dot3(point, boost);
+    var denominator = 1 + 2 * pointBoost + boostLength2;
+    return normalize3([
+      ((1 - boostLength2) * point[0] + 2 * (1 + pointBoost) * boost[0]) / denominator,
+      ((1 - boostLength2) * point[1] + 2 * (1 + pointBoost) * boost[1]) / denominator,
+      ((1 - boostLength2) * point[2] + 2 * (1 + pointBoost) * boost[2]) / denominator
+    ]);
+  }
+
+  function spherePathCost(points) {
+    var normal = bestGreatCircleNormal(points);
+    var planeError = points.reduce(function sumPlaneError(total, point) {
+      return total + Math.pow(dot3(point, normal), 2);
+    }, 0) / points.length;
+    var segments = [];
+    for (var index = 1; index < points.length; index += 1) {
+      segments.push(Math.acos(Math.max(-1, Math.min(1, dot3(points[index - 1], points[index])))));
+    }
+    var mean = segments.reduce(function sumSegments(total, length) { return total + length; }, 0) / segments.length;
+    var variance = segments.reduce(function sumVariance(total, length) {
+      return total + Math.pow(length - mean, 2);
+    }, 0) / segments.length;
+    var variation = Math.sqrt(variance) / Math.max(0.01, mean);
+    var shortest = Math.min.apply(Math, segments);
+    var longest = Math.max.apply(Math, segments);
+    return planeError * 4.2 + variation * 0.9 + Math.max(0, longest / Math.max(0.05, shortest) - 1.8) * 0.7;
+  }
+
+  function createSpherePresentation(rules, cells) {
+    if (!rules || !cells || cells.length < 3) {
+      return null;
+    }
+    var anchors = cells.map(function sphereAnchor(cell) {
+      var uv = stoneUV(rules, cell);
+      return sphere(uv.u, uv.v);
+    });
+    var bestBoost = [0, 0, 0];
+    var bestCost = spherePathCost(anchors);
+    var goldenAngle = Math.PI * (3 - Math.sqrt(5));
+    [0.14, 0.27, 0.4].forEach(function testMagnitude(magnitude) {
+      for (var sample = 0; sample < 42; sample += 1) {
+        var vertical = 1 - 2 * (sample + 0.5) / 42;
+        var horizontal = Math.sqrt(Math.max(0, 1 - vertical * vertical));
+        var azimuth = sample * goldenAngle;
+        var boost = [
+          Math.cos(azimuth) * horizontal * magnitude,
+          vertical * magnitude,
+          Math.sin(azimuth) * horizontal * magnitude
+        ];
+        var transformed = anchors.map(function transformAnchor(anchor) {
+          return sphereMobius(anchor, boost);
+        });
+        var cost = spherePathCost(transformed) + magnitude * 0.06;
+        if (cost < bestCost) {
+          bestCost = cost;
+          bestBoost = boost;
+        }
+      }
+    });
+    return {
+      type: "sphere-path",
+      anchors: anchors,
+      boost: bestBoost
+    };
+  }
+
+  function applyPresentation(point, presentation) {
+    if (!presentation || presentation.type !== "sphere-path") {
+      return point;
+    }
+    return sphereMobius(point, presentation.boost);
+  }
+
+  function createPresentation(type, rules, cells) {
+    return type === "sphere" ? createSpherePresentation(rules, cells) : null;
   }
 
   function surfacePoint(type, u, v) {
@@ -155,7 +294,7 @@
     return [nextX, nextY, z];
   }
 
-  function project(type, u, v, width, height, orientation) {
+  function projectPoint(type, surface, width, height, orientation) {
     var camera = CAMERAS[type] || CAMERAS.cylinder;
     var offsetX = 0;
     var offsetY = 0;
@@ -166,6 +305,7 @@
     var shapeZ = 1;
     var wobbleX = 0;
     var wobbleY = 0;
+    var presentation = null;
     if (orientation && typeof orientation === "object") {
       offsetX = Number(orientation.x) || 0;
       offsetY = Number(orientation.y) || 0;
@@ -176,6 +316,7 @@
       shapeZ = Number(orientation.shapeZ) || 1;
       wobbleX = Number(orientation.wobbleX) || 0;
       wobbleY = Number(orientation.wobbleY) || 0;
+      presentation = orientation.presentation || null;
     } else {
       offsetY = Number(orientation) || 0;
     }
@@ -184,7 +325,7 @@
       camera.rotation[1] + offsetY,
       camera.rotation[2] + offsetZ
     ];
-    var surface = surfacePoint(type, u, v);
+    surface = applyPresentation(surface, presentation);
     surface = [surface[0] * shapeX, surface[1] * shapeY, surface[2] * shapeZ];
     var localFlex = Math.sin(surface[0] * 1.35 + surface[2] * 0.72);
     var softX = surface[0] * (1 + wobbleY * (0.82 + localFlex * 0.12)) + surface[1] * wobbleX * 0.38;
@@ -197,6 +338,10 @@
       y: height * 0.5 - point[1] * scale,
       depth: point[2]
     };
+  }
+
+  function project(type, u, v, width, height, orientation) {
+    return projectPoint(type, surfacePoint(type, u, v), width, height, orientation);
   }
 
   function isPeriodicX(type) {
@@ -329,10 +474,13 @@
     spring: spring,
     surfacePoint: surfacePoint,
     project: project,
+    projectPoint: projectPoint,
     stoneUV: stoneUV,
     isPeriodicX: isPeriodicX,
     isPeriodicY: isPeriodicY,
     seamBridgeUV: seamBridgeUV,
+    createPresentation: createPresentation,
+    applyPresentation: applyPresentation,
     close: close
   };
 });

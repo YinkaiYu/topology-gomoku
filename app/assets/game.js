@@ -62,7 +62,7 @@
     },
     {
       name: "扭带",
-      typeName: "莫比乌斯",
+      typeName: "莫比乌斯环",
       topology: "mobius",
       width: 8,
       height: 6,
@@ -627,7 +627,11 @@
     renderState.seamPulseAt = 0;
     renderState.winAt = 0;
     renderState.lastFrameAt = 0;
-    dom.gameLevelName.textContent = level.name;
+    if (level.topology === "sphere") {
+      dom.gameLevelName.innerHTML = '<span class="optical-title-rise">归</span><span>圆</span>';
+    } else {
+      dom.gameLevelName.textContent = level.name;
+    }
     dom.ruleCaptionTitle.textContent = level.ruleTitle;
     dom.ruleCaptionText.textContent = level.ruleText;
     dom.ruleCaption.classList.remove("is-demonstrating");
@@ -942,7 +946,7 @@
     }, wait);
   }
 
-  function chooseCompletionView(winningMask) {
+  function chooseCompletionView(winningMask, presentation) {
     if (!winningMask || !winningMask.cells || !winningMask.cells.length || !Morph) {
       return { x: 0, y: 0, z: 0, shapeX: 1, shapeY: 1, shapeZ: 1 };
     }
@@ -953,7 +957,9 @@
     var bestScore = -Infinity;
     var pitchSteps = [-0.66, -0.44, -0.22, 0, 0.22, 0.44, 0.66];
     var rollSteps = [-0.36, -0.18, 0, 0.18, 0.36];
-    var shapeSteps = [
+    var shapeSteps = game.level.topology === "sphere" ? [
+      { x: 1, y: 1, z: 1 }
+    ] : [
       { x: 1, y: 1, z: 1 },
       { x: 0.92, y: 1.06, z: 1.04 },
       { x: 1.07, y: 0.93, z: 1.02 },
@@ -972,7 +978,8 @@
                 z: roll,
                 shapeX: shape.x,
                 shapeY: shape.y,
-                shapeZ: shape.z
+                shapeZ: shape.z,
+                presentation: presentation
               });
             });
             var pathLength = 0;
@@ -1007,6 +1014,28 @@
             var averageDepth = depthTotal / points.length;
             var centerDistance = Math.hypot(centerX - renderState.width * 0.5, centerY - renderState.height * 0.5);
             var shapeCost = Math.abs(shape.x - 1) + Math.abs(shape.y - 1) + Math.abs(shape.z - 1);
+            var lineDeviation = 0;
+            var turnPenalty = 0;
+            if (game.level.topology === "sphere" && points.length > 2) {
+              var lineStart = points[0];
+              var lineEnd = points[points.length - 1];
+              var lineX = lineEnd.x - lineStart.x;
+              var lineY = lineEnd.y - lineStart.y;
+              var lineLength = Math.hypot(lineX, lineY) || 1;
+              for (var bendIndex = 1; bendIndex < points.length - 1; bendIndex += 1) {
+                lineDeviation += Math.abs(
+                  lineX * (points[bendIndex].y - lineStart.y) -
+                  lineY * (points[bendIndex].x - lineStart.x)
+                ) / lineLength / size;
+                var incomingX = points[bendIndex].x - points[bendIndex - 1].x;
+                var incomingY = points[bendIndex].y - points[bendIndex - 1].y;
+                var outgoingX = points[bendIndex + 1].x - points[bendIndex].x;
+                var outgoingY = points[bendIndex + 1].y - points[bendIndex].y;
+                turnPenalty += 1 - (
+                  incomingX * outgoingX + incomingY * outgoingY
+                ) / Math.max(1, Math.hypot(incomingX, incomingY) * Math.hypot(outgoingX, outgoingY));
+              }
+            }
             var score = averageDepth * 5.4 + minDepth * 4.8;
             score -= Math.abs(pathLength - targetLength) / size * 1.35;
             score -= (maxDepth - minDepth) * 0.8;
@@ -1016,6 +1045,8 @@
             score -= centerDistance / size * 0.2;
             score -= Math.abs(roll) * 0.06;
             score -= shapeCost * 0.28;
+            score -= lineDeviation * 5.6;
+            score -= turnPenalty * 0.72;
             if (score > bestScore) {
               bestScore = score;
               best = {
@@ -1049,12 +1080,16 @@
     game.autoAdvancePending = firstTutorialCompletion;
     renderState.winAt = performance.now();
     var shouldMorph = outcome === "win" && game.levelIndex > 0 && Boolean(Morph);
+    var completionPresentation = shouldMorph && winningMask
+      ? Morph.createPresentation(game.level.topology, game.rules, Array.prototype.slice.call(winningMask.cells))
+      : null;
     game.completion = shouldMorph ? {
       active: true,
       startedAt: renderState.winAt,
       duration: 3000,
       settled: false,
-      view: chooseCompletionView(winningMask),
+      view: chooseCompletionView(winningMask, completionPresentation),
+      presentation: completionPresentation,
       rotation: { x: 0, y: 0, z: 0 },
       velocity: { x: 0, y: 0 },
       elastic: { x: 0, y: 0, velocityX: 0, velocityY: 0 },
@@ -1902,8 +1937,8 @@
   }
 
   function drawCompletionSurface(ctx, morph, spin) {
-    var columns = 44;
-    var rows = game.level.topology === "sphere" ? columns : 34;
+    var columns = game.level.topology === "sphere" ? 48 : 46;
+    var rows = game.level.topology === "sphere" ? columns : 36;
     var points = [];
     var row;
     var column;
@@ -1952,11 +1987,15 @@
     surfaceGradient.addColorStop(0.48, "rgba(238,235,226,0.98)");
     surfaceGradient.addColorStop(1, "rgba(213,210,201,0.98)");
 
+    var sphereShellBlend = game.level.topology === "sphere"
+      ? Morph.smooth((morph - 0.58) / 0.34) * clamp01(1 - (Math.abs(spin.wobbleX || 0) + Math.abs(spin.wobbleY || 0)) * 7)
+      : 0;
+
     ctx.save();
-    ctx.globalAlpha = 0.3 + morph * 0.66;
+    ctx.globalAlpha = (0.3 + morph * 0.66) * (1 - sphereShellBlend * 0.92);
     ctx.fillStyle = surfaceGradient;
     ctx.strokeStyle = surfaceGradient;
-    ctx.lineWidth = 0.72;
+    ctx.lineWidth = game.level.topology === "sphere" ? 1.05 : 0.82;
     ctx.lineJoin = "round";
     patches.forEach(function drawPatch(patch) {
       ctx.beginPath();
@@ -1969,6 +2008,29 @@
       ctx.stroke();
     });
     ctx.restore();
+
+    if (sphereShellBlend > 0) {
+      var sphereScale = Number(spin.scale) || 1;
+      var sphereRadius = Math.min(renderState.width, renderState.height) * 0.315 * sphereScale;
+      var sphereGradient = ctx.createRadialGradient(
+        renderState.width * 0.45,
+        renderState.height * 0.41,
+        sphereRadius * 0.08,
+        renderState.width * 0.5,
+        renderState.height * 0.5,
+        sphereRadius
+      );
+      sphereGradient.addColorStop(0, "rgba(253,252,248,0.99)");
+      sphereGradient.addColorStop(0.58, "rgba(240,238,231,0.99)");
+      sphereGradient.addColorStop(1, "rgba(211,208,198,0.99)");
+      ctx.save();
+      ctx.globalAlpha = sphereShellBlend * (0.32 + morph * 0.65);
+      ctx.fillStyle = sphereGradient;
+      ctx.beginPath();
+      ctx.arc(renderState.width * 0.5, renderState.height * 0.5, sphereRadius, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.restore();
+    }
   }
 
   function appendCompletionSegment(points, from, to, samples, morph, spin) {
@@ -2006,7 +2068,7 @@
     var from = { flatX: fromFlat.x, flatY: fromFlat.y, u: fromUV.u, v: fromUV.v };
     var to = { flatX: toFlat.x, flatY: toFlat.y, u: toUV.u, v: toUV.v };
     var points = [];
-    var samples = 8;
+    var samples = game.level.topology === "sphere" ? 16 : 12;
     if (!step.seam) {
       appendCompletionSegment(points, from, to, samples, morph, spin);
       return points;
@@ -2035,7 +2097,8 @@
       u: bridge.target.u,
       v: bridge.target.v
     };
-    appendCompletionSegment(points, from, sourceBoundary, 5, morph, spin);
+    var seamSamples = game.level.topology === "sphere" ? 12 : 8;
+    appendCompletionSegment(points, from, sourceBoundary, seamSamples, morph, spin);
     points.push(completionMappedPoint(
       targetBoundary.flatX,
       targetBoundary.flatY,
@@ -2044,8 +2107,66 @@
       morph,
       spin
     ));
-    appendCompletionSegment(points, targetBoundary, to, 5, morph, spin);
+    appendCompletionSegment(points, targetBoundary, to, seamSamples, morph, spin);
     return points;
+  }
+
+  function strokeSmoothCompletionPath(ctx, points) {
+    if (!points.length) {
+      return;
+    }
+    ctx.beginPath();
+    ctx.moveTo(points[0].x, points[0].y);
+    if (points.length === 2) {
+      ctx.lineTo(points[1].x, points[1].y);
+    } else {
+      for (var index = 1; index < points.length - 1; index += 1) {
+        var midpointX = (points[index].x + points[index + 1].x) * 0.5;
+        var midpointY = (points[index].y + points[index + 1].y) * 0.5;
+        ctx.quadraticCurveTo(points[index].x, points[index].y, midpointX, midpointY);
+      }
+      ctx.lineTo(points[points.length - 1].x, points[points.length - 1].y);
+    }
+    ctx.stroke();
+  }
+
+  function completionSphereRailPoint(u, v, morph, spin) {
+    var xRatio = (u * game.rules.width - 0.5) / Math.max(1, game.rules.width - 1);
+    var yRatio = (v * game.rules.height - 0.5) / Math.max(1, game.rules.height - 1);
+    return completionMappedPoint(
+      renderState.layout.left + xRatio * (renderState.layout.right - renderState.layout.left),
+      renderState.layout.top + yRatio * (renderState.layout.bottom - renderState.layout.top),
+      u,
+      v,
+      morph,
+      spin
+    );
+  }
+
+  function drawCompletionSphereGrid(ctx, morph, spin) {
+    var samples = 72;
+    var firstU = 0.5 / game.rules.width;
+    var lastU = (game.rules.width - 0.5) / game.rules.width;
+    var firstV = 0.5 / game.rules.height;
+    var lastV = (game.rules.height - 0.5) / game.rules.height;
+    for (var x = 0; x < game.rules.width; x += 1) {
+      var u = (x + 0.5) / game.rules.width;
+      var vertical = [];
+      for (var verticalSample = 0; verticalSample <= samples; verticalSample += 1) {
+        var verticalAmount = verticalSample / samples;
+        vertical.push(completionSphereRailPoint(u, firstV + (lastV - firstV) * verticalAmount, morph, spin));
+      }
+      strokeSmoothCompletionPath(ctx, vertical);
+    }
+    for (var y = 0; y < game.rules.height; y += 1) {
+      var v = (y + 0.5) / game.rules.height;
+      var horizontal = [];
+      for (var horizontalSample = 0; horizontalSample <= samples; horizontalSample += 1) {
+        var horizontalAmount = horizontalSample / samples;
+        horizontal.push(completionSphereRailPoint(firstU + (lastU - firstU) * horizontalAmount, v, morph, spin));
+      }
+      strokeSmoothCompletionPath(ctx, horizontal);
+    }
   }
 
   function drawCompletionGrid(ctx, morph, spin) {
@@ -2053,13 +2174,27 @@
     ctx.strokeStyle = "rgba(92, 88, 80," + (0.48 - morph * 0.17) + ")";
     ctx.lineWidth = Math.max(0.7, renderState.layout.cell * (0.025 - morph * 0.006));
     ctx.lineCap = "round";
+    ctx.lineJoin = "round";
+    if (game.level.topology === "sphere") {
+      var sphereRound = morph > 0.9 && Math.abs(spin.wobbleX || 0) + Math.abs(spin.wobbleY || 0) < 0.012;
+      if (sphereRound) {
+        var clipScale = Number(spin.scale) || 1;
+        ctx.beginPath();
+        ctx.arc(
+          renderState.width * 0.5,
+          renderState.height * 0.5,
+          Math.min(renderState.width, renderState.height) * 0.315 * clipScale,
+          0,
+          Math.PI * 2
+        );
+        ctx.clip();
+      }
+      drawCompletionSphereGrid(ctx, morph, spin);
+      ctx.restore();
+      return;
+    }
     for (var cell = 0; cell < game.rules.cellCount; cell += 1) {
       var gridDirections = [0, 2];
-      if (game.level.topology === "sphere") {
-        var gridPoint = Engine.toPoint(game.rules, cell);
-        if (gridPoint.x === 0) { gridDirections.push(4); }
-        if (gridPoint.y === 0) { gridDirections.push(6); }
-      }
       gridDirections.forEach(function drawDirection(direction) {
         var step = Engine.step(game.rules, cell, direction);
         if (!step) {
@@ -2067,16 +2202,8 @@
         }
         ctx.globalAlpha = step.seam ? Morph.smooth((morph - 0.16) / 0.66) : 1;
         var points = completionGridEdgePoints(cell, step, direction, morph, spin);
-        ctx.beginPath();
-        points.forEach(function drawGridCurve(point, pointIndex) {
-          if (pointIndex === 0) {
-            ctx.moveTo(point.x, point.y);
-          } else {
-            ctx.lineTo(point.x, point.y);
-          }
-        });
         if (points.length > 1) {
-          ctx.stroke();
+          strokeSmoothCompletionPath(ctx, points);
         }
       });
     }
@@ -2135,6 +2262,55 @@
     ctx.restore();
   }
 
+  function catmullRomPoint(points, segment, amount) {
+    var first = points[Math.max(0, segment - 1)];
+    var from = points[segment];
+    var to = points[Math.min(points.length - 1, segment + 1)];
+    var last = points[Math.min(points.length - 1, segment + 2)];
+    var amount2 = amount * amount;
+    var amount3 = amount2 * amount;
+    return from.map(function interpolateCoordinate(value, axis) {
+      return 0.5 * (
+        2 * value +
+        (-first[axis] + to[axis]) * amount +
+        (2 * first[axis] - 5 * value + 4 * to[axis] - last[axis]) * amount2 +
+        (-first[axis] + 3 * value - 3 * to[axis] + last[axis]) * amount3
+      );
+    });
+  }
+
+  function normalizeSurfacePoint(point) {
+    var length = Math.hypot(point[0], point[1], point[2]) || 1;
+    return [point[0] / length, point[1] / length, point[2] / length];
+  }
+
+  function completionSphereWinningCurve(cells, morph, spin) {
+    var flatAnchors = cells.map(function flatWinningAnchor(cell) {
+      var point = cellCenter(cell);
+      return [point.x, point.y];
+    });
+    var sphereAnchors = cells.map(function sphereWinningAnchor(cell) {
+      var uv = Morph.stoneUV(game.rules, cell);
+      return Morph.surfacePoint("sphere", uv.u, uv.v);
+    });
+    var curve = [];
+    var samples = 18;
+    for (var segment = 0; segment < cells.length - 1; segment += 1) {
+      for (var sample = segment ? 1 : 0; sample <= samples; sample += 1) {
+        var amount = sample / samples;
+        var flat = catmullRomPoint(flatAnchors, segment, amount);
+        var surface = normalizeSurfacePoint(catmullRomPoint(sphereAnchors, segment, amount));
+        var projected = Morph.projectPoint("sphere", surface, renderState.width, renderState.height, spin);
+        curve.push({
+          x: flat[0] + (projected.x - flat[0]) * morph,
+          y: flat[1] + (projected.y - flat[1]) * morph,
+          depth: projected.depth * morph
+        });
+      }
+    }
+    return curve;
+  }
+
   function drawCompletionWinningLine(ctx, time, morph, spin) {
     if (!game.winningMask) {
       return;
@@ -2149,6 +2325,26 @@
     ctx.shadowBlur = 12;
     ctx.strokeStyle = "rgba(199, 146, 68," + pulse + ")";
     ctx.lineWidth = Math.max(3.4, renderState.layout.cell * 0.12);
+    if (game.level.topology === "sphere") {
+      var sphereCurve = completionSphereWinningCurve(cells, morph, spin);
+      var visibleEnd = (sphereCurve.length - 1) * reveal;
+      ctx.beginPath();
+      ctx.moveTo(sphereCurve[0].x, sphereCurve[0].y);
+      for (var sphereIndex = 1; sphereIndex <= Math.floor(visibleEnd); sphereIndex += 1) {
+        ctx.lineTo(sphereCurve[sphereIndex].x, sphereCurve[sphereIndex].y);
+      }
+      if (visibleEnd < sphereCurve.length - 1) {
+        var sphereWhole = Math.floor(visibleEnd);
+        var sphereFraction = visibleEnd - sphereWhole;
+        ctx.lineTo(
+          sphereCurve[sphereWhole].x + (sphereCurve[sphereWhole + 1].x - sphereCurve[sphereWhole].x) * sphereFraction,
+          sphereCurve[sphereWhole].y + (sphereCurve[sphereWhole + 1].y - sphereCurve[sphereWhole].y) * sphereFraction
+        );
+      }
+      ctx.stroke();
+      ctx.restore();
+      return;
+    }
     var direction = game.winningMask.direction;
     for (var index = 0; index < cells.length - 1; index += 1) {
       var segmentProgress = clamp01(reveal * (cells.length - 1) - index);
@@ -2251,16 +2447,18 @@
       ? Math.sin(time * 0.00245) * 0.012
       : 0;
     var jellyScale = 1 + Math.sin(progress * Math.PI * 2.35) * Math.pow(1 - progress, 1.85) * 0.048 + restingBounce * 0.42;
+    var sphereCompletion = game.level.topology === "sphere";
     var orientation = {
       x: game.completion.view.x * viewBlend + game.completion.rotation.x,
       y: game.completion.view.y * viewBlend + game.completion.rotation.y,
       z: game.completion.view.z * viewBlend + game.completion.rotation.z,
       scale: jellyScale,
-      shapeX: 1 + ((Number(game.completion.view.shapeX) || 1) - 1) * viewBlend,
-      shapeY: 1 + ((Number(game.completion.view.shapeY) || 1) - 1) * viewBlend,
-      shapeZ: 1 + ((Number(game.completion.view.shapeZ) || 1) - 1) * viewBlend,
-      wobbleX: game.completion.elastic.x + restingBounce,
-      wobbleY: game.completion.elastic.y + Math.cos(time * 0.0021) * (game.completion.settled ? 0.009 : 0)
+      shapeX: sphereCompletion ? 1 : 1 + ((Number(game.completion.view.shapeX) || 1) - 1) * viewBlend,
+      shapeY: sphereCompletion ? 1 : 1 + ((Number(game.completion.view.shapeY) || 1) - 1) * viewBlend,
+      shapeZ: sphereCompletion ? 1 : 1 + ((Number(game.completion.view.shapeZ) || 1) - 1) * viewBlend,
+      wobbleX: sphereCompletion ? game.completion.elastic.x : game.completion.elastic.x + restingBounce,
+      wobbleY: sphereCompletion ? game.completion.elastic.y : game.completion.elastic.y + Math.cos(time * 0.0021) * (game.completion.settled ? 0.009 : 0),
+      presentation: game.completion.presentation
     };
 
     drawCompletionSurface(ctx, morph, orientation);

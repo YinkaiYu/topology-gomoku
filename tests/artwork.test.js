@@ -102,7 +102,8 @@ test("首页采用 E 款品牌主视觉并移除二次进入按钮与英文副�
   assert.doesNotMatch(html, /class="level-number"/);
   assert.match(html, /<span class="level-type">实射影平面<\/span>\s*<span class="level-name">双生<\/span>/);
   assert.match(game, /name:\s*"双生"/);
-  assert.match(html, /<span class="level-type">球面<\/span>\s*<span class="level-name">归圆<\/span>/);
+  assert.match(html, /<span class="level-type">球面<\/span>\s*<span class="level-name"><span class="optical-title-rise">归<\/span><span>圆<\/span><\/span>/);
+  assert.match(html, /<span class="level-type">莫比乌斯环<\/span>/);
   assert.match(game, /name:\s*"归圆"/);
 });
 
