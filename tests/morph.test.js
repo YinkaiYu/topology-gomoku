@@ -363,6 +363,7 @@ test("复盘与二维三维切换相互独立，曲面可以持续柔性拖动",
   assert.doesNotMatch(game, /humanChip\.hidden = reviewing|aiChip\.hidden = reviewing/);
   assert.match(game, /drawCompletionWinningLine[\s\S]*activeWinningMask\(\)/);
   assert.match(html, /id="endgameReviewTools"/);
+  assert.match(html, /class="game-action-deck"[\s\S]*id="endgameReviewTools"[\s\S]*id="gameTools"/);
   assert.ok(html.indexOf('id="endgameReviewTools"') > html.indexOf('id="boardStage"'));
   assert.ok(html.indexOf('id="endgameReviewTools"') < html.indexOf('id="gameTools"'));
   assert.match(html, /M19 12H6m5-5-5 5 5 5/);
@@ -391,11 +392,13 @@ test("复盘与二维三维切换相互独立，曲面可以持续柔性拖动",
 test("标题、状态、棋盘与两层操作区使用统一垂直节奏", () => {
   const game = fs.readFileSync(path.join(ROOT, "app", "assets", "game.js"), "utf8");
   const style = fs.readFileSync(path.join(ROOT, "app", "assets", "style.css"), "utf8");
-  assert.match(style, /\.game-screen\s*\{[\s\S]*--game-vertical-gap:\s*10px;[\s\S]*row-gap:\s*var\(--game-vertical-gap\)/);
+  assert.match(style, /\.game-screen\s*\{[\s\S]*--game-vertical-gap:\s*10px;[\s\S]*--game-control-row-size:\s*52px;[\s\S]*row-gap:\s*var\(--game-vertical-gap\)/);
   assert.match(style, /\.match-strip\s*\{[\s\S]*margin:\s*0 4px/);
-  assert.match(style, /\.endgame-review-tools\s*\{[\s\S]*min-height:\s*52px;[\s\S]*padding-top:\s*0/);
+  assert.match(style, /\.game-action-deck\s*\{[\s\S]*grid-template-rows:\s*repeat\(2, var\(--game-control-row-size\)\);[\s\S]*row-gap:\s*var\(--game-vertical-gap\)/);
+  assert.match(style, /\.endgame-review-tools\s*\{[\s\S]*min-height:\s*0;[\s\S]*padding-top:\s*0/);
   assert.match(style, /\.endgame-review-tools\.is-reserved\s*\{[\s\S]*visibility:\s*hidden;[\s\S]*pointer-events:\s*none/);
-  assert.match(style, /\.game-tools\s*\{[\s\S]*flex:\s*0 0 auto;[\s\S]*min-height:\s*52px;[\s\S]*grid-template-columns:\s*repeat\(3, minmax\(0, 1fr\)\);[\s\S]*padding-top:\s*0/);
+  assert.match(style, /\.game-tools\s*\{[\s\S]*min-height:\s*0;[\s\S]*grid-template-columns:\s*repeat\(3, minmax\(0, 1fr\)\);[\s\S]*padding-top:\s*0/);
+  assert.match(style, /@media \(max-height:\s*760px\)[\s\S]*--game-control-row-size:\s*44px/);
   assert.match(game, /dom\.endgameReviewTools\.hidden = false;[\s\S]*classList\.toggle\("is-reserved", !ended \|\| autoAdvancing\)/);
 });
 
