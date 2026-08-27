@@ -48,6 +48,10 @@
 
 我们希望不同平台上的拓扑五子棋都像真正属于那里，而不是简单套上一层外壳。
 
+## 开发与文档
+
+项目的设计语言、环境管理、分支/worktree 流程和视觉 QA 均从 [docs/README.md](docs/README.md) 进入。参与开发前请先阅读 [CONTRIBUTING.md](CONTRIBUTING.md)；Agent 还必须遵守 [AGENTS.md](AGENTS.md)。
+
 ## 把你的想法放上棋盘
 
 想参与贡献？把下面这段话发给你的 Agent 就好：

@@ -9,7 +9,7 @@
 3. 从正确基线创建独立的短期分支与 worktree。不要直接在 `main`、`dev` 或长期发行 worktree 中开发，也不要与另一项任务共享脏工作区。
 4. 只处理本任务范围内的文件；发现其他 worktree 的未提交内容时，不删除、不覆盖、不清理。
 
-完整分支与 worktree 操作见 [docs/REPOSITORY.md](docs/REPOSITORY.md)。
+完整分支与 worktree 操作见 [docs/development/repository.md](docs/development/repository.md)，文档总入口见 [docs/README.md](docs/README.md)。
 
 ## 必经流程
 
@@ -43,12 +43,12 @@
 
 ## 视觉与交互
 
-整体设计语言是**简约、典雅、克制**，液态玻璃是贯穿卡片、按钮、滑块、开关、状态胶囊与浮层的统一材质语言。
+整体设计语言是**简约、典雅、克制**，液态玻璃是贯穿卡片、按钮、滑块、开关、状态胶囊与浮层的统一材质语言。完整原则见 [docs/design/visual-language.md](docs/design/visual-language.md)。
 
 - 复用现有颜色、圆角、描边、阴影、间距、字体层级和运动节奏。
 - 液态玻璃保持通透、受控折射、克制边缘光与连续形变；避免乳白厚雾、硬色带、过强彩边和无意义高光。
 - 没有清晰交互或层级意义时，不增加颜色、阴影、动画、材质或特殊组件。
-- 视觉修改用同一视口、同一内容和同一状态做前后对比；证据以仓库相对路径记录到 `design-qa.md`。
+- 视觉修改用同一视口、同一内容和同一状态做前后对比；证据以仓库相对路径记录到 `docs/design/qa.md`。
 - 不把本机临时路径、聊天附件路径或不可复现截图写入长期文档。
 
 ## 文本与内嵌字体
@@ -61,7 +61,7 @@
 4. 字体二进制变化后，同步更新字体 URL、`style.css` URL 与 `package.json` 版本，确保离线容器不复用旧缓存。
 5. 再次运行 `npm test`，并在目标视口确认字形、字重和排版一致。
 
-完整源字体不提交到仓库；当前字体许可见 `licenses/OFL.txt`。
+完整源字体不提交到仓库；环境与依赖说明见 [docs/development/environment.md](docs/development/environment.md)，当前字体许可见 `licenses/OFL.txt`。
 
 ## 验证矩阵
 
@@ -70,12 +70,17 @@
 | 共享逻辑、用户文案 | `npm test` |
 | 小红书 H5 或包结构 | `npm run validate` |
 | 同时涉及共享逻辑与 H5 | `npm run check` |
+| 文档新增、移动或链接修改 | `npm run docs:check` |
 | 小红书发布与构建 | `npm run build:xiaohongshu` |
 | 新拓扑规则 | 确定性测试 |
 | 视觉或交互 | 同视口前后证据 + 任务 worktree 本地预览 |
 | 平台原生适配 | 对应模拟器；具备条件时补至少一台真机记录 |
 
 提交前还要运行 `git diff --check` 和 `git status --short`，确认只包含本任务文件。
+
+## 文档影响
+
+任务开始和交付前都要按 [docs/development/documentation.md](docs/development/documentation.md) 检查文档影响。行为、命令、依赖、架构、设计语言或平台事实发生变化时，对应文档必须与实现同分支更新。确实无影响时，在 Pull Request 中写明理由；不能把空白视作“无需更新”。
 
 ## Agent-first 协作
 
@@ -91,6 +96,7 @@
 范围：共享 / 小红书 / Bilibili Toy / 微信 / 文档
 验证：
 预览确认：
+文档影响：
 视觉或真机检查：
 已知限制：
 ```
