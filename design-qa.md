@@ -1,4 +1,4 @@
-# Design QA — Outward High-Refraction Liquid Glass
+# Design QA — Stateful Liquid Glass and Magnetic Stone Drag
 
 **Source visual truth**
 
@@ -13,6 +13,10 @@
 
 **Implementation evidence**
 
+- Settings at rest after the state split: `C:\Users\Newton\Documents\Codex\xiaohongshu-tools\artifacts\qa-settings-release-v135.png`.
+- Difficulty held with one reduced refracted image: `C:\Users\Newton\Documents\Codex\xiaohongshu-tools\artifacts\qa-settings-pressed-v135.png`.
+- Difficulty after release with clear, unrefracted type: `C:\Users\Newton\Documents\Codex\xiaohongshu-tools\artifacts\qa-settings-released-after-press-v135.png`.
+- Stone held during a cross-cell drag and after magnetic settlement: `qa-stone-drag-snap-v135.png`, `qa-stone-drag-mid-v135.png`, and `qa-stone-drag-release-v135.png`.
 - Settings at rest: `C:\Users\Newton\Documents\Codex\xiaohongshu-tools\artifacts\qa-settings-v134-final.png` (390 × 844 px).
 - Direct difficulty pointer-down frame: `C:\Users\Newton\Documents\Codex\xiaohongshu-tools\artifacts\qa-liquid-slider-pressed-v134-final.png` (390 × 844 px).
 - Direct switch overdrag frame: `C:\Users\Newton\Documents\Codex\xiaohongshu-tools\artifacts\qa-liquid-switch-overdrag-v134-final.png` (390 × 844 px).
@@ -23,14 +27,15 @@
 
 - Browser: Codex in-app Browser.
 - CSS viewport: 390 × 844; captured implementation bitmap: 390 × 844.
-- States: settings fully open, difficulty set to 深思, switches on/off, direct pointer-down drag, elastic right overdrag, stone pressed, and stone released.
+- States: settings fully open, difficulty held, difficulty released, switches on/off, elastic right overdrag, stone pressed, stone crossing an inter-cell gap, and stone released.
 
 **Findings**
 
 - No remaining P0/P1/P2 finding.
-- Direct pointer-down frames confirm a single transmitted track image, an outward glass rim, and elastic travel beyond the stationary track.
+- Direct pointer-down frames confirm a single transmitted track image, an outward glass rim, and elastic travel beyond the stationary track. The unrefracted source is locally occluded only while strong refraction is active.
+- Release frames confirm the internal lens image fades out and the original label returns to a clear, undistorted resting state; only the restrained edge material remains.
 - The enabled switches now settle at the actual right endpoint of the widened 66 px track.
-- The stone remains circular while pressed, expands uniformly in the board plane, reduces its apparent height through flatter lighting/shadow, and springs back after release.
+- The stone remains continuously visible across cell gaps, travels toward the next valid intersection with a fast non-overshooting magnetic easing, and does not restart its landing animation at every crossed cell. It reaches the new intersection in roughly 100 ms at 60 fps, so it follows the finger without visible oscillation.
 
 **Required fidelity surfaces**
 
@@ -43,6 +48,7 @@
 **Focused region comparison evidence**
 
 - `qa-liquid-ios-comparison-v134-final.jpg` places the supplied iOS pressed switch and the implementation in the same comparison image. Both retain the stationary colored track, enlarge the clear control beyond it, compress the transmitted track inside the lens, and concentrate optical emphasis at the rim rather than in a broad highlight.
+- The v1.35 pressed and released captures reuse that same calibrated 390 × 844 implementation state. A new three-panel local comparison page was prepared, but the chosen in-app Browser correctly blocked direct `file:` navigation; the existing combined comparison plus the new state captures were used without switching browser surfaces.
 
 **Comparison history**
 
@@ -67,13 +73,15 @@
    - Corrected the widened switches from the obsolete 22 px endpoint to a 34 px endpoint, then reduced overdrag resistance and allowed the glass to travel visibly past the track.
    - Rebalanced switch press deformation from a tall bubble to a wider clear oval; reduced fill/blur and strengthened only the directional edge refraction.
    - Changed board placement so pointer-down performs the soft landing and uniform planar expansion; pointer release now restores the stone with a damped circular rebound.
+   - Split glass optics by interaction state: strong, single-image refraction exists only under the finger; the resting thumb/knob is transparent and internally unrefracted with a restrained edge.
+   - Preserved one pressed-stone render instance while dragging and moved it between valid intersections with a fast frame-rate-independent magnetic easing, so crossing cell gaps no longer causes disappear/reappear, repeated landing animation, laggy settlement, or conspicuous overshoot.
 3. Post-fix evidence
    - Full and focused final comparisons listed above show no remaining P0/P1/P2 mismatch.
 
 **Primary interactions tested**
 
 - Open settings; close with ×; select opponent difficulty; drag beyond both switch endpoints; toggle hint/sound; press and release a legal board intersection.
-- Pointer-drag logic for difficulty, switches, and sheet dismissal is covered by regression assertions and direct hold-frame captures.
+- Pointer-drag logic for difficulty, switches, sheet dismissal, and continuous stone snapping is covered by 68 regression assertions and direct hold/mid-drag/release captures.
 - No uncaught failure surfaced during the browser flow; the current Browser surface does not expose a console-message stream for archival.
 
 **Implementation checklist**
@@ -92,6 +100,8 @@
 - [x] Wider switch tracks with exact right-end settlement and lower-resistance overdrag.
 - [x] Circular, board-plane stone compression on pointer-down and damped recovery on pointer-up.
 - [x] Continuous release with no glint flash or double-scale overshoot.
+- [x] Strong internal refraction only while pressed; clear undistorted label after release.
+- [x] One continuous stone instance with damped magnetic snapping between empty intersections.
 - [x] Responsive 390 × 844 visual check.
 
 final result: passed

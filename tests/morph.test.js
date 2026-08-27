@@ -349,8 +349,8 @@ test("设置页使用液态玻璃层次且三个控件均支持连续拖动", ()
   assert.match(style, /\.switch\.is-on i\s*\{\s*translate:\s*34px 0/);
   assert.equal((game.match(/var lift = 1\.62 \+ energy \* 0\.08/g) || []).length, 1);
   assert.match(game, /var stretch = 1\.72 \+ energy \* 0\.12[\s\S]*var lift = 1\.5 \+ energy \* 0\.06/);
-  assert.match(style, /\.segmented\.is-dragging \.segmented-glass-thumb\s*\{[\s\S]*border:\s*1px solid rgba\(255, 255, 255, 0\.18\)[\s\S]*blur\(0\.8px\)/);
-  assert.match(style, /\.switch\.is-dragging i\s*\{[\s\S]*border:\s*1px solid rgba\(255, 255, 255, 0\.18\)[\s\S]*blur\(0\.7px\)/);
+  assert.match(style, /\.segmented\.is-dragging \.segmented-glass-thumb\s*\{[\s\S]*border:\s*1px solid rgba\(255, 255, 255, 0\.18\)[\s\S]*backdrop-filter:\s*none/);
+  assert.match(style, /\.switch\.is-dragging i\s*\{[\s\S]*border:\s*1px solid rgba\(255, 255, 255, 0\.18\)[\s\S]*backdrop-filter:\s*none/);
   assert.match(style, /@keyframes liquid-thumb-settle\s*\{[\s\S]*scale:\s*1\.34 1\.58/);
   assert.match(style, /@keyframes liquid-knob-settle\s*\{[\s\S]*scale:\s*1\.66 1\.48/);
   assert.match(style, /@keyframes liquid-thumb-settle/);
@@ -360,15 +360,19 @@ test("设置页使用液态玻璃层次且三个控件均支持连续拖动", ()
   assert.equal((game.match(/style\.removeProperty\("scale"\)/g) || []).length, 2);
   assert.equal((game.match(/style\.translate = /g) || []).length, 2);
   assert.equal((game.match(/style\.removeProperty\("translate"\)/g) || []).length, 2);
-  assert.match(html, /class="segmented-lens-track"><\/span>/);
+  assert.match(html, /class="segmented-lens-track"><b>悠闲<\/b><b>敏捷<\/b><b>深思<\/b><\/span>/);
   assert.match(html, /class="switch-lens-track"/);
+  assert.match(game, /function syncDifficultyLensGeometry\(index\)/);
+  assert.match(game, /function syncSwitchLensGeometry\(control, enabled\)/);
   assert.match(game, /--lens-track-width/);
   assert.match(game, /--lens-track-offset/);
   assert.match(game, /--lens-origin-x/);
-  assert.match(style, /\.segmented-lens-track\s*\{[\s\S]*left:\s*var\(--lens-track-offset[\s\S]*width:\s*var\(--lens-track-width[\s\S]*scale\(0\.76, 0\.34\)/);
-  assert.match(style, /\.switch-lens-track\s*\{[\s\S]*left:\s*var\(--lens-track-offset[\s\S]*width:\s*var\(--lens-track-width[\s\S]*scale\(0\.43, 0\.3\)/);
+  assert.match(style, /\.segmented-lens-track\s*\{[\s\S]*left:\s*var\(--lens-track-offset[\s\S]*width:\s*var\(--lens-track-width[\s\S]*opacity:\s*0[\s\S]*scale\(0\.62, 0\.5\)/);
+  assert.match(style, /\.switch-lens-track\s*\{[\s\S]*left:\s*var\(--lens-track-offset[\s\S]*width:\s*var\(--lens-track-width[\s\S]*opacity:\s*0[\s\S]*scale\(0\.43, 0\.42\)/);
   assert.doesNotMatch(style, /rgba\(45, 96, 79, 0\.26\) 45% 55%|rgba\(22, 146, 112, 0\.62\) 45% 55%/);
   assert.match(style, /\.segmented\.is-dragging \.segmented-glass-thumb::after\s*\{\s*opacity:\s*0\.9/);
+  assert.match(style, /\.segmented\.is-dragging \.segmented-lens-track\s*\{\s*opacity:\s*0\.92/);
+  assert.match(style, /\.switch\.is-dragging \.switch-lens-track\s*\{\s*opacity:\s*0\.9/);
 });
 
 test("棋子按下时沿棋盘法向压薄并在平面内均匀鼓大，松手后回弹", () => {
@@ -380,6 +384,18 @@ test("棋子按下时沿棋盘法向压薄并在平面内均匀鼓大，松手�
   assert.match(game, /shadowOffsetY = radius \* \(0\.18 - landing \* 0\.105\)/);
   assert.match(game, /scaleY = scaleX/);
   assert.match(game, /performMove\(cell, DEV_MODE \? developer\.placementPlayer : HUMAN, \{ fromPress: releasedFromPress \}\)/);
+});
+
+test("按住棋子拖动时保持连续可见并以阻尼弹簧吸附到最近空交点", () => {
+  const game = fs.readFileSync(path.join(ROOT, "app", "assets", "game.js"), "utf8");
+  assert.match(game, /pressedMotionReady:\s*false/);
+  assert.match(game, /function targetPressedStone\(cell, immediate\)/);
+  assert.match(game, /function updatePressedStoneMotion\(delta\)/);
+  assert.match(game, /var follow = 1 - Math\.pow\(0\.46, frameScale\)/);
+  assert.match(game, /pressedVelocityX = \(renderState\.pressedTargetX - renderState\.pressedX\) \* follow/);
+  assert.match(game, /if \(cell >= 0 && game\.board\[cell\] === Engine\.EMPTY && cell !== renderState\.pressedCell\)/);
+  assert.match(game, /if \(cell < 0 && pointerInsideBoard\(event\)\)\s*\{\s*cell = renderState\.pressedCell/);
+  assert.doesNotMatch(game, /if \(cell !== renderState\.pressedCell\)\s*\{\s*renderState\.pressedAt = event\.timeStamp/);
 });
 
 test("目录卡片、棋盘与顶栏按钮共享通透液态玻璃语言", () => {

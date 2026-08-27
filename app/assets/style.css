@@ -1398,9 +1398,9 @@ button,
   border: 1px solid rgba(255, 255, 255, 0.5);
   border-radius: 15px;
   background:
-    linear-gradient(138deg, rgba(255, 255, 255, 0.2), rgba(244, 255, 250, 0.075) 58%, rgba(119, 190, 166, 0.07));
-  -webkit-backdrop-filter: blur(0.8px) saturate(1.58) brightness(1.07) contrast(1.035);
-  backdrop-filter: blur(0.8px) saturate(1.58) brightness(1.07) contrast(1.035);
+    linear-gradient(138deg, rgba(255, 255, 255, 0.15), rgba(220, 238, 229, 0.055));
+  -webkit-backdrop-filter: blur(0.25px) saturate(1.12);
+  backdrop-filter: blur(0.25px) saturate(1.12);
   box-shadow:
     0 5px 14px rgba(27, 60, 48, 0.085),
     inset 0 1px 1px rgba(255, 255, 255, 0.5),
@@ -1408,7 +1408,7 @@ button,
     inset 1px 0 1px rgba(208, 255, 244, 0.18),
     inset -1px 0 1px rgba(255, 231, 198, 0.11);
   translate: 0 0;
-  transition: translate 520ms var(--spring), scale 520ms var(--spring), border-radius 280ms ease, box-shadow 280ms ease;
+  transition: translate 520ms var(--spring), scale 520ms var(--spring), border-radius 280ms ease, box-shadow 280ms ease, background 140ms ease, border-color 140ms ease;
   pointer-events: none;
 }
 
@@ -1431,10 +1431,22 @@ button,
     inset 0 1px 3px rgba(26, 65, 51, 0.09),
     inset 0 -1px 1px rgba(255, 255, 255, 0.16);
   opacity: 0;
-  transform: translateY(-50%) scale(0.76, 0.34);
+  transform: translateY(-50%) scale(0.62, 0.5);
   transform-origin: var(--lens-origin-x, 50%) center;
   filter: saturate(1.16) contrast(1.06);
   transition: opacity 150ms ease;
+}
+
+.segmented-lens-track b {
+  display: grid;
+  place-items: center;
+  min-width: 0;
+  color: rgba(31, 50, 43, 0.8);
+  font-size: 18px;
+  font-style: normal;
+  font-weight: 650;
+  line-height: 1;
+  white-space: nowrap;
 }
 
 .segmented-glass-thumb::after {
@@ -1454,7 +1466,7 @@ button,
       rgba(72, 220, 187, 0.2)
     ) border-box;
   content: "";
-  opacity: 0.12;
+  opacity: 0.22;
   box-shadow:
     inset 1.4px 1px 0.8px rgba(255, 255, 255, 0.3),
     inset -1.5px -1.1px 0.8px rgba(37, 101, 79, 0.13),
@@ -1495,9 +1507,10 @@ button,
   z-index: 2;
   border: 1px solid rgba(255, 255, 255, 0.18);
   border-radius: 18px 13px 18px 13px;
-  background: rgba(242, 248, 245, 0.075);
-  -webkit-backdrop-filter: blur(0.8px) saturate(1.38) brightness(1.045) contrast(0.96);
-  backdrop-filter: blur(0.8px) saturate(1.38) brightness(1.045) contrast(0.96);
+  background:
+    linear-gradient(138deg, rgba(238, 242, 232, 0.97), rgba(222, 231, 220, 0.95));
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
   box-shadow:
     0 7px 17px rgba(38, 54, 47, 0.065),
     inset 0 1px 0.7px rgba(255, 255, 255, 0.17),
@@ -1552,14 +1565,14 @@ button,
   overflow: hidden;
   border: 1px solid rgba(255, 255, 255, 0.54);
   border-radius: 50%;
-  background: linear-gradient(145deg, rgba(255, 255, 255, 0.3), rgba(222, 244, 235, 0.12));
-  -webkit-backdrop-filter: blur(0.7px) saturate(1.62) brightness(1.08) contrast(1.04);
-  backdrop-filter: blur(0.7px) saturate(1.62) brightness(1.08) contrast(1.04);
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.18), rgba(220, 239, 229, 0.06));
+  -webkit-backdrop-filter: blur(0.2px) saturate(1.12);
+  backdrop-filter: blur(0.2px) saturate(1.12);
   box-shadow:
     0 4px 10px rgba(31, 42, 36, 0.15),
     inset 0 1px 1px rgba(255, 255, 255, 0.5);
   translate: 0 0;
-  transition: translate 500ms var(--spring), scale 500ms var(--spring), border-radius 240ms ease, box-shadow 260ms ease;
+  transition: translate 500ms var(--spring), scale 500ms var(--spring), border-radius 240ms ease, box-shadow 260ms ease, background 140ms ease, border-color 140ms ease;
   pointer-events: none;
 }
 
@@ -1577,7 +1590,7 @@ button,
     linear-gradient(145deg, rgba(42, 78, 65, 0.11), rgba(255, 255, 255, 0.08));
   box-shadow: inset 0 2px 4px rgba(39, 55, 49, 0.1);
   opacity: 0;
-  transform: translateY(-50%) scale(0.43, 0.3);
+  transform: translateY(-50%) scale(0.43, 0.42);
   transform-origin: var(--lens-origin-x, 50%) center;
   filter: saturate(1.16) contrast(1.06);
   transition: opacity 150ms ease;
@@ -1600,7 +1613,7 @@ button,
       rgba(68, 220, 185, 0.2)
     ) border-box;
   content: "";
-  opacity: 0.12;
+  opacity: 0.24;
   box-shadow:
     inset 1.3px 1px 0.8px rgba(255, 255, 255, 0.3),
     inset -1.4px -1px 0.8px rgba(35, 98, 77, 0.14),
@@ -1622,13 +1635,19 @@ button,
   translate: 34px 0;
 }
 
+.switch.is-on .switch-lens-track {
+  background:
+    linear-gradient(135deg, rgba(78, 177, 160, 0.62), rgba(36, 133, 120, 0.67));
+  box-shadow: inset 0 2px 4px rgba(22, 86, 79, 0.17);
+}
+
 .switch.is-dragging i {
   z-index: 2;
   border: 1px solid rgba(255, 255, 255, 0.18);
   border-radius: 58% 42% 44% 56% / 52% 48% 52% 48%;
-  background: rgba(244, 250, 247, 0.055);
-  -webkit-backdrop-filter: blur(0.7px) saturate(1.42) brightness(1.05) contrast(0.97);
-  backdrop-filter: blur(0.7px) saturate(1.42) brightness(1.05) contrast(0.97);
+  background: linear-gradient(145deg, rgba(239, 243, 234, 0.98), rgba(220, 231, 220, 0.96));
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
   box-shadow:
     0 7px 16px rgba(31, 42, 36, 0.075),
     inset 0 1px 0.7px rgba(255, 255, 255, 0.17),
@@ -1640,12 +1659,6 @@ button,
 
 .switch.is-dragging .switch-lens-track {
   opacity: 0.9;
-}
-
-.switch.is-on.is-dragging .switch-lens-track {
-  background:
-    linear-gradient(135deg, rgba(78, 177, 160, 0.62), rgba(36, 133, 120, 0.67));
-  box-shadow: inset 0 2px 4px rgba(22, 86, 79, 0.17);
 }
 
 .switch.is-dragging i::after {

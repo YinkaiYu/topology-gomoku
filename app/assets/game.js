@@ -202,6 +202,13 @@
     hoverCell: -1,
     pressedCell: -1,
     pressedAt: 0,
+    pressedX: 0,
+    pressedY: 0,
+    pressedTargetX: 0,
+    pressedTargetY: 0,
+    pressedVelocityX: 0,
+    pressedVelocityY: 0,
+    pressedMotionReady: false,
     pointerId: null,
     lastFrameAt: 0,
     lastMoveAt: 0,
@@ -613,6 +620,7 @@
     renderState.hoverCell = -1;
     renderState.pressedCell = -1;
     renderState.pressedAt = 0;
+    renderState.pressedMotionReady = false;
     renderState.lastMoveAt = 0;
     renderState.seamPulseAt = 0;
     renderState.winAt = 0;
@@ -884,6 +892,7 @@
     renderState.hoverCell = -1;
     renderState.pressedCell = -1;
     renderState.pressedAt = 0;
+    renderState.pressedMotionReady = false;
 
     var seamBits = connectedSeamAtCell(cell);
     if (seamBits) {
@@ -1191,10 +1200,29 @@
     });
   }
 
+  function syncDifficultyLensGeometry(index) {
+    var controlWidth = dom.difficultyControl.clientWidth;
+    var itemWidth = dom.difficultyThumb.offsetWidth || Math.max(1, (controlWidth - 14) / 3);
+    var translation = index * (itemWidth + 3);
+    dom.difficultyThumb.style.setProperty("--lens-track-width", controlWidth + "px");
+    dom.difficultyThumb.style.setProperty("--lens-track-offset", (-4 - translation) + "px");
+    dom.difficultyThumb.style.setProperty("--lens-origin-x", (4 + translation + itemWidth / 2) + "px");
+  }
+
+  function syncSwitchLensGeometry(control, enabled) {
+    var knob = control.querySelector("i");
+    var travel = Math.max(1, control.clientWidth - 6 - knob.offsetWidth);
+    var translation = enabled ? travel : 0;
+    knob.style.setProperty("--lens-track-width", control.clientWidth + "px");
+    knob.style.setProperty("--lens-track-offset", (-3 - translation) + "px");
+    knob.style.setProperty("--lens-origin-x", (3 + translation + knob.offsetWidth / 2) + "px");
+  }
+
   function syncSettingsUI() {
     var selectedDifficulty = difficultyIndex(prefs.difficulty);
     previewDifficulty(selectedDifficulty);
     dom.difficultyControl.dataset.index = String(selectedDifficulty);
+    syncDifficultyLensGeometry(selectedDifficulty);
     if (!dom.difficultyControl.classList.contains("is-dragging")) {
       dom.difficultyThumb.style.removeProperty("transform");
       dom.difficultyThumb.style.removeProperty("transform-origin");
@@ -1208,6 +1236,7 @@
 
   function syncSwitchUI(control, enabled) {
     control.classList.toggle("is-on", enabled);
+    syncSwitchLensGeometry(control, enabled);
     if (!control.classList.contains("is-dragging")) {
       var knob = control.querySelector("i");
       knob.style.removeProperty("transform");
@@ -1340,9 +1369,6 @@
       dom.difficultyThumb.style.removeProperty("translate");
       dom.difficultyThumb.style.removeProperty("scale");
       dom.difficultyThumb.style.removeProperty("transform-origin");
-      dom.difficultyThumb.style.removeProperty("--lens-track-width");
-      dom.difficultyThumb.style.removeProperty("--lens-track-offset");
-      dom.difficultyThumb.style.removeProperty("--lens-origin-x");
       if (cancelled) {
         syncSettingsUI();
       } else {
@@ -1443,9 +1469,6 @@
       knob.style.removeProperty("translate");
       knob.style.removeProperty("scale");
       knob.style.removeProperty("transform-origin");
-      knob.style.removeProperty("--lens-track-width");
-      knob.style.removeProperty("--lens-track-offset");
-      knob.style.removeProperty("--lens-origin-x");
       if (cancelled) {
         syncSettingsUI();
       } else {
@@ -1940,6 +1963,7 @@
     var delta = renderState.lastFrameAt ? Math.min(34, time - renderState.lastFrameAt) : 16.67;
     renderState.lastFrameAt = time;
     updateCompletionMotion(time, delta);
+    updatePressedStoneMotion(delta);
     drawBoard(time);
     var animate = false;
     if (renderState.lastMoveAt && time - renderState.lastMoveAt < 320) {
@@ -3023,9 +3047,11 @@
       return;
     }
     var previewPlayer = DEV_MODE ? developer.placementPlayer : HUMAN;
-    var center = cellCenter(cell);
-    var radius = renderState.layout.cell * 0.34;
     var pressed = renderState.pressedCell >= 0;
+    var center = pressed && renderState.pressedMotionReady
+      ? { x: renderState.pressedX, y: renderState.pressedY }
+      : cellCenter(cell);
+    var radius = renderState.layout.cell * 0.34;
     ctx.save();
     if (!pressed) {
       ctx.globalAlpha = 0.16;
@@ -3212,6 +3238,51 @@
     }
   }
 
+  function clearPressedStoneMotion() {
+    renderState.pressedMotionReady = false;
+    renderState.pressedVelocityX = 0;
+    renderState.pressedVelocityY = 0;
+  }
+
+  function targetPressedStone(cell, immediate) {
+    if (cell < 0) {
+      return;
+    }
+    var center = cellCenter(cell);
+    renderState.pressedTargetX = center.x;
+    renderState.pressedTargetY = center.y;
+    if (immediate || !renderState.pressedMotionReady) {
+      renderState.pressedX = center.x;
+      renderState.pressedY = center.y;
+      renderState.pressedVelocityX = 0;
+      renderState.pressedVelocityY = 0;
+      renderState.pressedMotionReady = true;
+      return;
+    }
+    renderState.pressedVelocityX = 0;
+    renderState.pressedVelocityY = 0;
+  }
+
+  function updatePressedStoneMotion(delta) {
+    if (!renderState.pressedMotionReady || renderState.pointerId === null || renderState.pressedCell < 0) {
+      return;
+    }
+    var frameScale = Math.max(0.55, Math.min(2.05, delta / 16.67));
+    var follow = 1 - Math.pow(0.46, frameScale);
+    renderState.pressedVelocityX = (renderState.pressedTargetX - renderState.pressedX) * follow;
+    renderState.pressedVelocityY = (renderState.pressedTargetY - renderState.pressedY) * follow;
+    renderState.pressedX += renderState.pressedVelocityX * frameScale;
+    renderState.pressedY += renderState.pressedVelocityY * frameScale;
+    if (Math.abs(renderState.pressedTargetX - renderState.pressedX) < 0.04 && Math.abs(renderState.pressedVelocityX) < 0.04) {
+      renderState.pressedX = renderState.pressedTargetX;
+      renderState.pressedVelocityX = 0;
+    }
+    if (Math.abs(renderState.pressedTargetY - renderState.pressedY) < 0.04 && Math.abs(renderState.pressedVelocityY) < 0.04) {
+      renderState.pressedY = renderState.pressedTargetY;
+      renderState.pressedVelocityY = 0;
+    }
+  }
+
   function eventToCell(event) {
     if (!game || !renderState.layout) {
       return -1;
@@ -3230,6 +3301,20 @@
       return -1;
     }
     return Engine.toCell(game.rules, gridX, gridY);
+  }
+
+  function pointerInsideBoard(event) {
+    if (!renderState.layout) {
+      return false;
+    }
+    var rect = dom.boardCanvas.getBoundingClientRect();
+    var localX = event.clientX - rect.left;
+    var localY = event.clientY - rect.top;
+    var margin = renderState.layout.cell * 0.58;
+    return localX >= renderState.layout.left - margin
+      && localX <= renderState.layout.right + margin
+      && localY >= renderState.layout.top - margin
+      && localY <= renderState.layout.bottom + margin;
   }
 
   function canPlaceOnBoard() {
@@ -3275,6 +3360,12 @@
     renderState.pointerId = event.pointerId;
     renderState.pressedCell = eventToCell(event);
     renderState.pressedAt = event.timeStamp || performance.now();
+    if (renderState.pressedCell >= 0 && game.board[renderState.pressedCell] === Engine.EMPTY) {
+      targetPressedStone(renderState.pressedCell, true);
+    } else {
+      renderState.pressedCell = -1;
+      clearPressedStoneMotion();
+    }
     if (dom.boardCanvas.setPointerCapture) {
       dom.boardCanvas.setPointerCapture(event.pointerId);
     }
@@ -3309,10 +3400,10 @@
     var cell = eventToCell(event);
     if (renderState.pointerId === event.pointerId) {
       event.preventDefault();
-      if (cell !== renderState.pressedCell) {
-        renderState.pressedAt = event.timeStamp || performance.now();
+      if (cell >= 0 && game.board[cell] === Engine.EMPTY && cell !== renderState.pressedCell) {
+        renderState.pressedCell = cell;
+        targetPressedStone(cell, false);
       }
-      renderState.pressedCell = cell;
     } else if (event.pointerType === "mouse" || event.pointerType === "pen") {
       renderState.hoverCell = cell;
     }
@@ -3334,10 +3425,14 @@
     }
     event.preventDefault();
     var cell = eventToCell(event);
+    if (cell < 0 && pointerInsideBoard(event)) {
+      cell = renderState.pressedCell;
+    }
     var releasedFromPress = cell >= 0 && cell === renderState.pressedCell && renderState.pressedAt > 0;
     renderState.pointerId = null;
     renderState.pressedCell = -1;
     renderState.pressedAt = 0;
+    clearPressedStoneMotion();
     if (canPlaceOnBoard() && cell >= 0 && game.board[cell] === Engine.EMPTY) {
       performMove(cell, DEV_MODE ? developer.placementPlayer : HUMAN, { fromPress: releasedFromPress });
     } else {
@@ -3358,6 +3453,7 @@
       renderState.pointerId = null;
       renderState.pressedCell = -1;
       renderState.pressedAt = 0;
+      clearPressedStoneMotion();
       requestRender();
     }
   }
@@ -3428,6 +3524,7 @@
         renderState.pointerId = null;
         renderState.pressedCell = -1;
         renderState.pressedAt = 0;
+        clearPressedStoneMotion();
       }
     });
   }
