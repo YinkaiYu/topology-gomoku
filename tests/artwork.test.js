@@ -227,7 +227,7 @@ test("第一关首次通关后自动以现有切关动效进入第二关", () =>
   assert.match(game, /firstTutorialCompletion\s*=\s*outcome === "win"/);
   assert.match(game, /!prefs\.completed\[game\.levelIndex\]/);
   assert.match(game, /TUTORIAL_AUTO_ADVANCE_DELAY\s*=\s*820/);
-  assert.match(game, /transitionToLevel\(1, false\)/);
+  assert.match(game, /transitionToLevel\(1, \{\}\)/);
   assert.match(game, /game\.autoAdvancePending\s*=\s*firstTutorialCompletion/);
   assert.match(style, /\.game-tools\.is-auto-advancing\s*\{[^}]*visibility:\s*hidden/s);
 });

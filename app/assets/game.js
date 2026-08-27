@@ -29,8 +29,9 @@
       yConnection: null,
       ruleTitle: "先连成五颗",
       ruleText: "连续落子，横、竖、斜皆可",
-      demoStart: [1, 3],
-      demoDirection: 0
+      lessonPaths: [
+        { start: [1, 3], direction: 0, prompts: TUTORIAL_PROMPTS }
+      ]
     },
     {
       name: "回廊",
@@ -43,8 +44,18 @@
       yConnection: null,
       ruleTitle: "左右相接",
       ruleText: "越过一边，从另一边继续",
-      demoStart: [5, 2],
-      demoDirection: 0
+      lessonPaths: [
+        {
+          start: [5, 2],
+          direction: 0,
+          prompts: ["从右侧开始", "走到边界", "越过右边，从左边回来", "两侧其实相接", "补上第五颗"]
+        },
+        {
+          start: [5, 0],
+          direction: 1,
+          prompts: ["再试一条斜线", "斜着走向右边", "越界后从左边接回", "方向没有改变", "斜线也能五连"]
+        }
+      ]
     },
     {
       name: "环游",
@@ -57,8 +68,18 @@
       yConnection: "same",
       ruleTitle: "四边相接",
       ruleText: "上下左右，都没有尽头",
-      demoStart: [5, 4],
-      demoDirection: 1
+      lessonPaths: [
+        {
+          start: [3, 4],
+          direction: 2,
+          prompts: ["先从下方开始", "走到下边界", "越过下边，从上边回来", "上下也没有尽头", "补上第五颗"]
+        },
+        {
+          start: [1, 0],
+          direction: 5,
+          prompts: ["再走一条斜线", "先越过上边", "再越过左边", "两次跨界仍是同一条线", "补上第五颗"]
+        }
+      ]
     },
     {
       name: "扭带",
@@ -71,8 +92,18 @@
       yConnection: null,
       ruleTitle: "左右翻转",
       ruleText: "越过边界，上下镜像",
-      demoStart: [6, 1],
-      demoDirection: 0
+      lessonPaths: [
+        {
+          start: [6, 1],
+          direction: 0,
+          prompts: ["从右侧开始", "走到边界", "越界后，上下镜像", "镜像后仍是同一条线", "补上第五颗"]
+        },
+        {
+          start: [6, 0],
+          direction: 1,
+          prompts: ["再试一条斜线", "斜着走到右边", "越界后方向翻转", "折向的两段彼此相连", "补上第五颗"]
+        }
+      ]
     },
     {
       name: "瓶界",
@@ -85,8 +116,18 @@
       yConnection: "same",
       ruleTitle: "一扭一环",
       ruleText: "一组翻转，一组相接",
-      demoStart: [5, 4],
-      demoDirection: 1
+      lessonPaths: [
+        {
+          start: [3, 4],
+          direction: 2,
+          prompts: ["先从下方开始", "走到下边界", "这一组边直接相接", "上下没有尽头", "补上第五颗"]
+        },
+        {
+          start: [1, 0],
+          direction: 5,
+          prompts: ["再走一条斜线", "先越过相接的边", "再越过翻转的边", "一环一扭仍能连成线", "补上第五颗"]
+        }
+      ]
     },
     {
       name: "双生",
@@ -99,8 +140,18 @@
       yConnection: "twist",
       ruleTitle: "双向翻转",
       ruleText: "每条边，都通向镜面",
-      demoStart: [1, 6],
-      demoDirection: 2
+      lessonPaths: [
+        {
+          start: [1, 6],
+          direction: 2,
+          prompts: ["从下方开始", "走到边界", "越界后，左右镜像", "下边通向倒影", "补上第五颗"]
+        },
+        {
+          start: [1, 0],
+          direction: 5,
+          prompts: ["再走一条斜线", "越过上边后翻转", "接着越过左边再翻转", "两次倒映仍在同一条线上", "补上第五颗"]
+        }
+      ]
     },
     {
       name: "归圆",
@@ -113,8 +164,18 @@
       yConnection: "adjacent",
       ruleTitle: "邻边相合",
       ruleText: "相邻两边，转向后相接",
-      demoStart: [2, 1],
-      demoDirection: 6
+      lessonPaths: [
+        {
+          start: [2, 1],
+          direction: 6,
+          prompts: ["从上方开始", "走向上边界", "上边转向左边", "转弯后，线仍连续", "补上第五颗"]
+        },
+        {
+          start: [1, 0],
+          direction: 5,
+          prompts: ["再靠近顶点", "落在两边交会处", "路径沿邻边转向", "穿过顶点仍然连续", "补上第五颗"]
+        }
+      ]
     }
   ];
 
@@ -143,9 +204,7 @@
     boardCanvas: document.getElementById("boardCanvas"),
     thinkingIndicator: document.getElementById("thinkingIndicator"),
     gameTools: document.getElementById("gameTools"),
-    ruleCaption: document.getElementById("ruleCaption"),
-    ruleCaptionTitle: document.getElementById("ruleCaptionTitle"),
-    ruleCaptionText: document.getElementById("ruleCaptionText"),
+    boundaryDemoButton: document.getElementById("boundaryDemoButton"),
     undoButton: document.getElementById("undoButton"),
     undoButtonText: document.getElementById("undoButtonText"),
     undoIconPath: document.getElementById("undoIconPath"),
@@ -231,8 +290,20 @@
       bestDifficulty: [],
       difficulty: "normal",
       hints: true,
-      sound: true
+      sound: true,
+      learnedLevels: []
     };
+  }
+
+  function normalizeLearnedLevels(storedLevels, completed) {
+    var learned = [];
+    var saved = Array.isArray(storedLevels) ? storedLevels : [];
+    for (var index = 0; index < LEVELS.length; index += 1) {
+      if ((saved.indexOf(index) >= 0 || completed[index]) && learned.indexOf(index) < 0) {
+        learned.push(index);
+      }
+    }
+    return learned;
   }
 
   function loadPreferences() {
@@ -248,6 +319,7 @@
       defaults.difficulty = DIFFICULTIES[stored.difficulty] ? stored.difficulty : "normal";
       defaults.hints = stored.hints !== false;
       defaults.sound = stored.sound !== false;
+      defaults.learnedLevels = normalizeLearnedLevels(stored.learnedLevels, defaults.completed);
       return defaults;
     } catch (error) {
       return defaults;
@@ -260,6 +332,18 @@
     } catch (error) {
       /* The game still works when storage is temporarily unavailable. */
     }
+  }
+
+  function hasLearnedLevel(index) {
+    return prefs.learnedLevels.indexOf(index) >= 0;
+  }
+
+  function rememberLevel(index) {
+    if (index < 0 || index >= LEVELS.length || hasLearnedLevel(index)) {
+      return;
+    }
+    prefs.learnedLevels.push(index);
+    savePreferences();
   }
 
   function SoundEngine() {
@@ -566,9 +650,10 @@
     };
   }
 
-  function transitionToLevel(index, skipDemo) {
+  function transitionToLevel(index, options) {
+    options = options || {};
     if (!game || prefersReducedMotion() || !dom.boardStage.animate) {
-      startLevel(index, { skipDemo: skipDemo });
+      startLevel(index, options);
       return;
     }
     var direction = index === game.levelIndex ? 0 : (index > game.levelIndex ? 1 : -1);
@@ -581,13 +666,34 @@
     animation.onfinish = function replaceBoardAfterExit() {
       releaseSettledBoardAnimation();
       animation.cancel();
-      startLevel(index, { skipDemo: skipDemo, levelSwitchDirection: direction });
+      var startOptions = {};
+      Object.keys(options).forEach(function copyStartOption(key) {
+        startOptions[key] = options[key];
+      });
+      startOptions.levelSwitchDirection = direction;
+      startLevel(index, startOptions);
     };
+  }
+
+  function introModeFor(levelIndex, options) {
+    if (levelIndex === 0) {
+      return "lesson";
+    }
+    if (options && options.introMode) {
+      return options.introMode;
+    }
+    if (options && options.skipDemo) {
+      return "none";
+    }
+    return hasLearnedLevel(levelIndex) ? "demo" : "lesson";
   }
 
   function startLevel(index, options) {
     var level = LEVELS[index];
-    var skipDemo = options && options.skipDemo;
+    var introMode = introModeFor(index, options);
+    var resumeMatch = options && options.resumeMatch && options.resumeMatch.levelIndex === index
+      ? options.resumeMatch
+      : null;
     var transition = options && options.transitionCard ? {
       rect: options.transitionCard.getBoundingClientRect()
     } : null;
@@ -614,9 +720,21 @@
       autoAdvancePending: false,
       lastMove: -1,
       demo: null,
+      lesson: null,
+      lessonReturn: options && options.lessonReturn ? options.lessonReturn : null,
       completion: null
     };
     game.board = Engine.createBoard(game.rules);
+    if (resumeMatch && resumeMatch.board.length === game.board.length) {
+      resumeMatch.board.forEach(function restoreBoardCell(value, cell) {
+        game.board[cell] = value;
+      });
+      game.moves = resumeMatch.moves.map(function restoreMove(move) {
+        return { cell: move.cell, player: move.player };
+      });
+      game.turn = resumeMatch.turn;
+      game.lastMove = resumeMatch.lastMove;
+    }
     renderState.hoverCell = -1;
     renderState.pressedCell = -1;
     renderState.pressedAt = 0;
@@ -631,9 +749,6 @@
     } else {
       dom.gameLevelName.textContent = level.name;
     }
-    dom.ruleCaptionTitle.textContent = level.ruleTitle;
-    dom.ruleCaptionText.textContent = level.ruleText;
-    dom.ruleCaption.classList.remove("is-demonstrating");
     dom.boardStage.classList.remove("is-settled", "is-exploring", "is-dragging");
     dom.gameScreen.classList.toggle("is-shared-enter", Boolean(transition));
     showScreen("game");
@@ -641,8 +756,12 @@
     function readyLevel() {
       resizeCanvas();
       requestRender();
-      if (!skipDemo && !level.tutorial) {
+      if (introMode === "lesson") {
+        startBoundaryLesson();
+      } else if (introMode === "demo") {
         startBoundaryDemo();
+      } else if (resumeMatch && game.turn === AI) {
+        scheduleAiMove();
       }
     }
     requestAnimationFrame(function prepareBoardTransition() {
@@ -679,7 +798,35 @@
     }
     var levelIndex = game.levelIndex;
     sound.play("ui");
-    transitionToLevel(levelIndex, true);
+    transitionToLevel(levelIndex, { introMode: "demo" });
+  }
+
+  function snapshotMatchForLesson() {
+    if (!game || game.status !== "playing" || isInteractiveLesson()) {
+      return null;
+    }
+    return {
+      levelIndex: game.levelIndex,
+      board: Array.prototype.slice.call(game.board),
+      moves: game.moves.map(function copyMove(move) {
+        return { cell: move.cell, player: move.player };
+      }),
+      turn: game.turn,
+      lastMove: game.lastMove
+    };
+  }
+
+  function replayBoundaryLesson() {
+    if (!game || game.levelIndex === 0 || game.status === "forcing" || game.status === "lesson-complete") {
+      return;
+    }
+    var levelIndex = game.levelIndex;
+    var lessonReturn = game.lessonReturn || snapshotMatchForLesson();
+    sound.play("ui");
+    transitionToLevel(levelIndex, {
+      introMode: "lesson",
+      lessonReturn: lessonReturn
+    });
   }
 
   function handleLeftTool() {
@@ -694,7 +841,7 @@
     if (isEndedView()) {
       if (isVictoryView() && game.levelIndex < LEVELS.length - 1) {
         sound.play("ui");
-        transitionToLevel(game.levelIndex + 1, false);
+        transitionToLevel(game.levelIndex + 1, {});
       } else {
         restartGame();
       }
@@ -703,47 +850,135 @@
     restartGame();
   }
 
-  function startBoundaryDemo() {
-    if (!game) {
-      return;
+  function traceLessonPath(definition) {
+    if (!game || !definition) {
+      return null;
     }
-    var startCell = Engine.toCell(game.rules, game.level.demoStart[0], game.level.demoStart[1]);
-    var path = Engine.tracePath(game.rules, startCell, game.level.demoDirection, game.rules.target);
+    var startCell = Engine.toCell(game.rules, definition.start[0], definition.start[1]);
+    var path = Engine.tracePath(game.rules, startCell, definition.direction, game.rules.target);
     if (!path) {
+      return null;
+    }
+    path.prompts = definition.prompts || TUTORIAL_PROMPTS;
+    path.direction = definition.direction;
+    return path;
+  }
+
+  function boundaryGuidePaths() {
+    if (!game) {
+      return [];
+    }
+    return (game.level.lessonPaths || []).map(traceLessonPath).filter(Boolean);
+  }
+
+  function boundaryLessonPaths() {
+    if (!game || !game.level.tutorial) {
+      return boundaryGuidePaths();
+    }
+    var lessonBoard = Engine.createBoard(game.rules);
+    var cells = [];
+    var lastCell = -1;
+    for (var index = 0; index < game.rules.target; index += 1) {
+      var cell = Engine.suggestTutorialMove(lessonBoard, game.rules, lastCell);
+      if (cell < 0) {
+        return null;
+      }
+      cells.push(cell);
+      lessonBoard[cell] = HUMAN;
+      lastCell = cell;
+    }
+    return [{
+      cells: cells,
+      seams: [0, 0, 0, 0],
+      directions: [0, 0, 0, 0, 0],
+      prompts: TUTORIAL_PROMPTS,
+      direction: 0
+    }];
+  }
+
+  function activateDemoPath(demo, pathIndex) {
+    var path = demo.paths[pathIndex];
+    demo.pathIndex = pathIndex;
+    demo.startedAt = performance.now();
+    demo.cells = path.cells;
+    demo.seams = path.seams;
+    demo.directions = path.directions;
+    demo.duration = (path.cells.length - 1) * demo.dropInterval + demo.hold + demo.fade;
+    path.cells.forEach(function scheduleDemoSound(cell, index) {
+      window.setTimeout(function playDemoStone() {
+        if (
+          game
+          && game.demo === demo
+          && demo.active
+          && demo.pathIndex === pathIndex
+          && demo.cells[index] === cell
+        ) {
+          sound.play("move-human");
+          if (index > 0 && demo.seams[index - 1]) {
+            sound.play("seam");
+          }
+        }
+      }, index * demo.dropInterval);
+    });
+  }
+
+  function startBoundaryDemo() {
+    var paths = boundaryGuidePaths();
+    if (!paths.length) {
       return;
     }
     game.demo = {
       active: true,
-      startedAt: performance.now(),
-      cells: path.cells,
-      seams: path.seams,
-      directions: path.directions,
+      paths: paths,
+      pathIndex: 0,
       dropInterval: 245,
       hold: 390,
-      fade: 330,
-      duration: (path.cells.length - 1) * 245 + 390 + 330
+      fade: 330
     };
-    dom.ruleCaption.classList.add("is-demonstrating");
+    activateDemoPath(game.demo, 0);
     updateTurnUI();
     requestRender();
-    path.cells.forEach(function scheduleDemoSound(cell, index) {
-      window.setTimeout(function playDemoStone() {
-        if (game && game.demo && game.demo.active && game.demo.cells[index] === cell) {
-          sound.play("move-human");
-          if (index > 0 && game.demo.seams[index - 1]) {
-            sound.play("seam");
-          }
-        }
-      }, index * 245);
-    });
   }
 
-  function finishBoundaryDemo() {
+  function activateLessonPath(lesson, pathIndex) {
+    var path = lesson.paths[pathIndex];
+    lesson.pathIndex = pathIndex;
+    lesson.cells = path.cells;
+    lesson.seams = path.seams;
+    lesson.directions = path.directions;
+    lesson.prompts = path.prompts;
+    lesson.step = 0;
+    lesson.startedAt = performance.now();
+  }
+
+  function startBoundaryLesson() {
+    var paths = boundaryLessonPaths();
+    if (!paths.length) {
+      return;
+    }
+    game.lesson = {
+      active: true,
+      completed: false,
+      paths: paths,
+      pathIndex: 0
+    };
+    activateLessonPath(game.lesson, 0);
+    game.turn = HUMAN;
+    updateTurnUI();
+    requestRender();
+  }
+
+  function finishBoundaryDemo(continueSequence) {
     if (!game || !game.demo || !game.demo.active) {
       return;
     }
+    if (continueSequence && game.demo.pathIndex < game.demo.paths.length - 1) {
+      activateDemoPath(game.demo, game.demo.pathIndex + 1);
+      updateTurnUI();
+      requestRender();
+      return;
+    }
     game.demo.active = false;
-    dom.ruleCaption.classList.remove("is-demonstrating");
     updateTurnUI();
     requestRender();
   }
@@ -759,6 +994,21 @@
     return TUTORIAL_PROMPTS[Math.min(count, TUTORIAL_PROMPTS.length - 1)];
   }
 
+  function isInteractiveLesson() {
+    return Boolean(game && game.lesson && game.lesson.active);
+  }
+
+  function lessonPromptText() {
+    if (!game || !game.lesson) {
+      return game ? game.level.ruleText : "";
+    }
+    if (game.level.tutorial) {
+      return tutorialPromptText();
+    }
+    var prompts = game.lesson.prompts || TUTORIAL_PROMPTS;
+    return prompts[Math.min(game.lesson.step, prompts.length - 1)];
+  }
+
   function isVictoryView() {
     return Boolean(game && game.status === "ended" && game.outcome === "win");
   }
@@ -772,13 +1022,20 @@
       return;
     }
     var ended = isEndedView();
+    var lessonComplete = game.status === "lesson-complete";
     var victory = isVictoryView();
     var autoAdvancing = ended && Boolean(game.autoAdvancePending);
     var hasNextLevel = victory && game.levelIndex < LEVELS.length - 1;
     dom.gameTools.classList.toggle("is-ended", ended);
+    dom.gameTools.classList.toggle("is-basic-tutorial", !ended && game.levelIndex === 0);
     dom.gameTools.classList.toggle("has-two-actions", ended && !hasNextLevel);
     dom.gameTools.classList.toggle("is-auto-advancing", autoAdvancing);
-    dom.ruleCaption.hidden = ended;
+    dom.boundaryDemoButton.hidden = ended || game.levelIndex === 0;
+    dom.boundaryDemoButton.disabled = game.status === "forcing" || lessonComplete;
+    dom.boundaryDemoButton.classList.toggle(
+      "is-active",
+      Boolean((game.demo && game.demo.active) || isInteractiveLesson())
+    );
     dom.settledReplayButton.hidden = !ended;
     dom.restartButton.hidden = ended && !hasNextLevel;
     if (ended) {
@@ -799,7 +1056,7 @@
       return;
     }
 
-    dom.ruleCaption.hidden = false;
+    dom.boundaryDemoButton.hidden = game.levelIndex === 0;
     dom.settledReplayButton.hidden = true;
     dom.restartButton.hidden = false;
     dom.undoButton.setAttribute("aria-label", "悔棋");
@@ -808,10 +1065,6 @@
     dom.restartButton.setAttribute("aria-label", "重新开始");
     dom.restartButtonText.textContent = "重来";
     dom.restartIconPath.setAttribute("d", "M20 7v5h-5M19 12a7 7 0 1 0-2 5");
-    var drawLikely = game.levelIndex > 0 && Engine.isLikelyDraw(game.board, game.rules);
-    dom.ruleCaption.classList.toggle("is-draw-likely", drawLikely);
-    dom.ruleCaptionTitle.textContent = drawLikely ? "和局亦胜" : game.level.ruleTitle;
-    dom.ruleCaptionText.textContent = drawLikely ? "平局，也算通关" : game.level.ruleText;
     dom.boardStage.classList.remove("is-exploring", "is-settled", "is-dragging");
   }
 
@@ -820,20 +1073,25 @@
       return;
     }
     var demoActive = Boolean(game.demo && game.demo.active);
+    var lessonActive = isInteractiveLesson();
     var completionActive = Boolean(game.completion && game.completion.active);
     var humanTurn = game.status === "playing" && game.turn === HUMAN && !demoActive;
     var aiTurn = game.status === "playing" && game.turn === AI && !demoActive;
     var aiActuallyThinking = aiTurn && !(DEV_MODE && developer.aiPaused);
     dom.humanChip.classList.toggle("is-active", humanTurn);
     dom.aiChip.classList.toggle("is-active", aiTurn);
-    dom.aiChip.classList.toggle("is-tutorial-hidden", Boolean(game.level.tutorial));
-    dom.difficultyLabel.textContent = game.level.tutorial ? "教学" : DIFFICULTIES[prefs.difficulty].label;
+    dom.aiChip.classList.toggle("is-tutorial-hidden", Boolean(game.level.tutorial || lessonActive));
+    dom.difficultyLabel.textContent = game.level.tutorial || lessonActive ? "教学" : DIFFICULTIES[prefs.difficulty].label;
     dom.thinkingIndicator.classList.toggle("is-visible", aiActuallyThinking);
     dom.undoButton.disabled = game.moves.length === 0 || game.status !== "playing";
     if (completionActive) {
       dom.turnStatus.textContent = game.completion.settled ? "拖动欣赏" : "边界合拢";
     } else if (demoActive) {
       dom.turnStatus.textContent = "边界演示";
+    } else if (game.status === "lesson-line-complete") {
+      dom.turnStatus.textContent = "再看一条连线";
+    } else if (game.status === "lesson-complete") {
+      dom.turnStatus.textContent = "边界已懂";
     } else if (game.status === "ended") {
       dom.turnStatus.textContent = game.autoAdvancePending
         ? "下一关"
@@ -847,8 +1105,10 @@
     } else if (aiTurn) {
       dom.turnStatus.textContent = "思考中";
     } else {
-      if (game.level.tutorial) {
-        dom.turnStatus.textContent = tutorialPromptText();
+      if (lessonActive) {
+        dom.turnStatus.textContent = lessonPromptText();
+      } else if (game.level.tutorial) {
+        dom.turnStatus.textContent = "自由落子";
       } else {
         dom.turnStatus.textContent = "你的回合";
       }
@@ -884,6 +1144,10 @@
     if (!game || game.status !== "playing" || game.board[cell] !== Engine.EMPTY) {
       return false;
     }
+    var lesson = isInteractiveLesson() ? game.lesson : null;
+    if (lesson && (player !== HUMAN || lesson.cells[lesson.step] !== cell)) {
+      return false;
+    }
     game.board[cell] = player;
     game.moves.push({ cell: cell, player: player });
     game.lastMove = cell;
@@ -894,7 +1158,8 @@
     renderState.pressedAt = 0;
     renderState.pressedMotionReady = false;
 
-    var seamBits = connectedSeamAtCell(cell);
+    var lessonSeam = lesson && lesson.step > 0 ? lesson.seams[lesson.step - 1] : 0;
+    var seamBits = lessonSeam || connectedSeamAtCell(cell);
     if (seamBits) {
       renderState.seamPulseAt = performance.now();
       renderState.seamPulseBits = seamBits;
@@ -905,10 +1170,18 @@
       window.setTimeout(function playSeamSound() { sound.play("seam"); }, 65);
     }
 
+    if (lesson) {
+      lesson.step += 1;
+    }
+
     var winningMask = Engine.checkWin(game.board, game.rules, cell, player);
     if (winningMask) {
-      finishGame(player === HUMAN ? "win" : "lose", winningMask);
-    } else if (game.level.tutorial) {
+      if (lesson && (game.lessonReturn || !game.level.tutorial)) {
+        finishBoundaryLesson(winningMask);
+      } else {
+        finishGame(player === HUMAN ? "win" : "lose", winningMask);
+      }
+    } else if (game.level.tutorial || lesson) {
       game.turn = HUMAN;
       updateTurnUI();
     } else if (Engine.playerWinsByBlockingAi(game.board, game.rules)) {
@@ -927,6 +1200,62 @@
     }
     requestRender();
     return true;
+  }
+
+  function finishBoundaryLesson(winningMask) {
+    if (!game || !game.lesson) {
+      return;
+    }
+    turnToken += 1;
+    var lessonGame = game;
+    var lessonToken = turnToken;
+    var hasNextPath = game.lesson.pathIndex < game.lesson.paths.length - 1;
+    game.lesson.active = false;
+    game.lesson.completed = true;
+    game.status = hasNextPath ? "lesson-line-complete" : "lesson-complete";
+    game.turn = 0;
+    game.winningMask = winningMask;
+    renderState.winAt = performance.now();
+    if (!hasNextPath) {
+      rememberLevel(game.levelIndex);
+    }
+    updateTurnUI();
+    sound.play("win");
+    requestRender();
+    window.setTimeout(function continueAfterLessonLine() {
+      if (
+        game !== lessonGame
+        || turnToken !== lessonToken
+        || (game.status !== "lesson-line-complete" && game.status !== "lesson-complete")
+      ) {
+        return;
+      }
+      if (hasNextPath) {
+        game.board.fill(Engine.EMPTY);
+        game.moves = [];
+        game.lastMove = -1;
+        game.winningMask = null;
+        game.status = "playing";
+        game.turn = HUMAN;
+        game.lesson.active = true;
+        game.lesson.completed = false;
+        activateLessonPath(game.lesson, game.lesson.pathIndex + 1);
+        renderState.lastMoveAt = 0;
+        renderState.seamPulseAt = 0;
+        renderState.winAt = 0;
+        updateTurnUI();
+        requestRender();
+        return;
+      }
+      if (game.lessonReturn) {
+        transitionToLevel(game.levelIndex, {
+          introMode: "none",
+          resumeMatch: game.lessonReturn
+        });
+        return;
+      }
+      transitionToLevel(game.levelIndex, { introMode: "none" });
+    }, hasNextPath ? 920 : 1080);
   }
 
   function scheduleAiMove() {
@@ -1123,6 +1452,7 @@
     updateTurnUI();
 
     if (outcome === "win") {
+      rememberLevel(game.levelIndex);
       prefs.completed[game.levelIndex] = true;
       prefs.bestDifficulty[game.levelIndex] = Math.max(
         Number(prefs.bestDifficulty[game.levelIndex]) || 0,
@@ -1146,7 +1476,7 @@
             return;
           }
           game.autoAdvancePending = false;
-          transitionToLevel(1, false);
+          transitionToLevel(1, {});
         }, TUTORIAL_AUTO_ADVANCE_DELAY);
       }
     } else if (outcome === "lose") {
@@ -1165,13 +1495,17 @@
     turnToken += 1;
     dom.thinkingIndicator.classList.remove("is-visible");
 
-    var removeCount = game.level.tutorial ? 1 : (game.turn === AI ? 1 : Math.min(2, game.moves.length));
+    var lessonActive = isInteractiveLesson();
+    var removeCount = game.level.tutorial || lessonActive ? 1 : (game.turn === AI ? 1 : Math.min(2, game.moves.length));
     while (removeCount > 0 && game.moves.length) {
       var move = game.moves.pop();
       game.board[move.cell] = Engine.EMPTY;
       removeCount -= 1;
     }
     game.lastMove = game.moves.length ? game.moves[game.moves.length - 1].cell : -1;
+    if (lessonActive) {
+      game.lesson.step = game.moves.length;
+    }
     game.turn = HUMAN;
     renderState.lastMoveAt = performance.now();
     renderState.seamPulseAt = 0;
@@ -1680,8 +2014,7 @@
     var forcedGame = game;
     var boundaryPath = null;
     if (player === HUMAN && game.levelIndex > 0) {
-      var boundaryStart = Engine.toCell(game.rules, game.level.demoStart[0], game.level.demoStart[1]);
-      boundaryPath = Engine.tracePath(game.rules, boundaryStart, game.level.demoDirection, game.rules.target);
+      boundaryPath = boundaryGuidePaths()[0] || null;
     }
     var masks = game.rules.winMasks.slice().sort(function sortForceMasks(a, b) {
       var aBlocked = 0;
@@ -1765,8 +2098,7 @@
     }
     finishBoundaryDemo();
     turnToken += 1;
-    var startCell = Engine.toCell(game.rules, game.level.demoStart[0], game.level.demoStart[1]);
-    var path = Engine.tracePath(game.rules, startCell, game.level.demoDirection, game.rules.target);
+    var path = boundaryGuidePaths()[0] || null;
     if (!path) {
       return;
     }
@@ -1775,7 +2107,7 @@
     var endIndex = kind === "three" ? 3 : 3;
     game.moves = [];
     if (kind === "four") {
-      var previous = Engine.step(game.rules, path.cells[0], (game.level.demoDirection + 4) % 8);
+      var previous = Engine.step(game.rules, path.cells[0], (path.direction + 4) % 8);
       if (previous && path.cells.indexOf(previous.cell) < 0) {
         game.board[previous.cell] = AI;
         game.moves.push({ cell: previous.cell, player: AI });
@@ -1818,6 +2150,7 @@
     prefs.unlocked = 0;
     prefs.completed = [];
     prefs.bestDifficulty = [];
+    prefs.learnedLevels = [];
     selectedLevel = 0;
     savePreferences();
     updateHome();
@@ -1958,7 +2291,7 @@
       return;
     }
     if (game.demo && game.demo.active && time - game.demo.startedAt >= game.demo.duration) {
-      finishBoundaryDemo();
+      finishBoundaryDemo(true);
     }
     var delta = renderState.lastFrameAt ? Math.min(34, time - renderState.lastFrameAt) : 16.67;
     renderState.lastFrameAt = time;
@@ -1984,7 +2317,7 @@
     if (game.demo && game.demo.active) {
       animate = true;
     }
-    if (game.level.tutorial && game.status === "playing") {
+    if (isInteractiveLesson()) {
       animate = true;
     }
     if (animate) {
@@ -2023,6 +2356,7 @@
     }
     drawTopologyRails(ctx, time);
     drawGrid(ctx, layout);
+    drawLessonConnections(ctx, time);
     drawTutorialGuide(ctx, time);
     drawDemoStones(ctx, time);
     drawWinningConnections(ctx, time);
@@ -2033,10 +2367,10 @@
   }
 
   function drawTutorialGuide(ctx, time) {
-    if (!game.level.tutorial || game.status !== "playing") {
+    if (!isInteractiveLesson() || game.status !== "playing") {
       return;
     }
-    var hintCell = Engine.suggestTutorialMove(game.board, game.rules, game.lastMove);
+    var hintCell = game.lesson.cells[game.lesson.step];
     if (hintCell < 0 || game.board[hintCell] !== Engine.EMPTY) {
       return;
     }
@@ -2044,7 +2378,7 @@
     var breath = Math.sin(time * 0.006);
     var pulse = breath * 0.5 + 0.5;
     var radius = renderState.layout.cell * 0.25 + pulse * 2.2;
-    var guideText = tutorialPromptText();
+    var guideText = lessonPromptText();
     var fontSize = Math.max(12, Math.min(14, renderState.layout.cell * 0.195));
     var floatY = -breath * 1.25;
     ctx.save();
@@ -2083,6 +2417,95 @@
     ctx.fillStyle = "#315f5b";
     ctx.strokeText(guideText, textX, textY);
     ctx.fillText(guideText, textX, textY);
+    ctx.restore();
+  }
+
+  function drawLessonConnections(ctx, time) {
+    if (!isInteractiveLesson() || game.level.tutorial || game.lesson.step < 1) {
+      return;
+    }
+    var lesson = game.lesson;
+    var pulse = Math.sin(time * 0.0055) * 0.5 + 0.5;
+    var cell = renderState.layout.cell;
+
+    for (var index = 1; index < lesson.step; index += 1) {
+      drawLessonSegment(ctx, lesson, index, false, pulse, cell, time);
+    }
+    if (lesson.step < lesson.cells.length) {
+      drawLessonSegment(ctx, lesson, lesson.step, true, pulse, cell, time);
+    }
+  }
+
+  function drawLessonSegment(ctx, lesson, index, pending, pulse, cell, time) {
+    var from = cellCenter(lesson.cells[index - 1]);
+    var to = cellCenter(lesson.cells[index]);
+    var seam = lesson.seams[index - 1];
+    var color = seam & Engine.SEAM_TWIST ? "#c79244" : "#3f8c87";
+    if (seam) {
+      drawLessonSeamCue(ctx, lesson, index, from, to, color, pending, pulse, cell, time);
+      return;
+    }
+    ctx.save();
+    ctx.globalAlpha = pending ? 0.3 + pulse * 0.2 : 0.34;
+    ctx.strokeStyle = color;
+    ctx.lineWidth = Math.max(1.5, cell * 0.045);
+    ctx.lineCap = "round";
+    if (pending) {
+      ctx.setLineDash([cell * 0.12, cell * 0.1]);
+      ctx.lineDashOffset = -time * 0.018;
+    }
+    ctx.beginPath();
+    ctx.moveTo(from.x, from.y);
+    ctx.lineTo(to.x, to.y);
+    ctx.stroke();
+    ctx.restore();
+  }
+
+  function drawLessonSeamCue(ctx, lesson, index, from, to, color, pending, pulse, cell, time) {
+    var fromDirection = Engine.DIRECTIONS[lesson.directions[index - 1]];
+    var toDirection = Engine.DIRECTIONS[lesson.directions[index]];
+    var ray = cell * (pending ? 0.72 : 0.58);
+    var radius = cell * 0.37 + pulse * (pending ? 4 : 2);
+    var alpha = pending ? 0.5 + pulse * 0.34 : 0.34;
+    var fromEdge = { x: from.x + fromDirection.dx * ray, y: from.y + fromDirection.dy * ray };
+    var toEdge = { x: to.x - toDirection.dx * ray, y: to.y - toDirection.dy * ray };
+    ctx.save();
+    ctx.globalAlpha = alpha;
+    ctx.strokeStyle = color;
+    ctx.fillStyle = color;
+    ctx.lineWidth = Math.max(1.4, cell * 0.04);
+    ctx.lineCap = "round";
+    ctx.setLineDash(pending ? [cell * 0.11, cell * 0.09] : []);
+    ctx.lineDashOffset = -time * 0.02;
+    ctx.beginPath();
+    ctx.moveTo(from.x, from.y);
+    ctx.lineTo(fromEdge.x, fromEdge.y);
+    ctx.moveTo(toEdge.x, toEdge.y);
+    ctx.lineTo(to.x, to.y);
+    ctx.stroke();
+    ctx.setLineDash([]);
+    [from, to].forEach(function drawLessonCrossingRing(point) {
+      ctx.beginPath();
+      ctx.arc(point.x, point.y, radius, 0, Math.PI * 2);
+      ctx.stroke();
+    });
+    if (pending) {
+      var travel = 0.2 + pulse * 0.64;
+      [
+        { start: from, end: fromEdge },
+        { start: toEdge, end: to }
+      ].forEach(function drawTravelDot(segment) {
+        ctx.beginPath();
+        ctx.arc(
+          segment.start.x + (segment.end.x - segment.start.x) * travel,
+          segment.start.y + (segment.end.y - segment.start.y) * travel,
+          Math.max(2, cell * 0.055),
+          0,
+          Math.PI * 2
+        );
+        ctx.fill();
+      });
+    }
     ctx.restore();
   }
 
@@ -2852,6 +3275,12 @@
         }
       });
     }
+    if (isInteractiveLesson() && game.lesson.step > 0 && game.lesson.step < game.lesson.cells.length) {
+      var pendingSeam = game.lesson.seams[game.lesson.step - 1];
+      if (pendingSeam & bit) {
+        pulse = Math.max(pulse, 0.34 + (Math.sin(time * 0.0055) * 0.5 + 0.5) * 0.56);
+      }
+    }
     return pulse;
   }
 
@@ -2974,7 +3403,7 @@
 
   function drawMappedGhost(ctx) {
     var sourceCell = renderState.pressedCell >= 0 ? renderState.pressedCell : renderState.hoverCell;
-    if (sourceCell < 0 || !game || game.status !== "playing") {
+    if (sourceCell < 0 || !game || game.status !== "playing" || !canPlaceCell(sourceCell)) {
       return;
     }
     var point = Engine.toPoint(game.rules, sourceCell);
@@ -3043,7 +3472,7 @@
 
   function drawMovePreview(ctx, time) {
     var cell = renderState.pressedCell >= 0 ? renderState.pressedCell : renderState.hoverCell;
-    if (cell < 0 || !canPlaceOnBoard() || game.board[cell] !== Engine.EMPTY) {
+    if (!canPlaceCell(cell)) {
       return;
     }
     var previewPlayer = DEV_MODE ? developer.placementPlayer : HUMAN;
@@ -3096,7 +3525,7 @@
   }
 
   function drawTacticalHints(ctx) {
-    if (!prefs.hints || !game || game.levelIndex === 0 || game.status !== "playing" || (game.demo && game.demo.active)) {
+    if (!prefs.hints || !game || game.levelIndex === 0 || game.status !== "playing" || isInteractiveLesson() || (game.demo && game.demo.active)) {
       return;
     }
     var hintsByCell = Object.create(null);
@@ -3324,6 +3753,13 @@
     return DEV_MODE || game.turn === HUMAN;
   }
 
+  function canPlaceCell(cell) {
+    if (!canPlaceOnBoard() || cell < 0 || game.board[cell] !== Engine.EMPTY) {
+      return false;
+    }
+    return !isInteractiveLesson() || game.lesson.cells[game.lesson.step] === cell;
+  }
+
   function canExploreCompletion() {
     return Boolean(game && game.completion && game.status === "ended" && !activeSheet);
   }
@@ -3360,7 +3796,7 @@
     renderState.pointerId = event.pointerId;
     renderState.pressedCell = eventToCell(event);
     renderState.pressedAt = event.timeStamp || performance.now();
-    if (renderState.pressedCell >= 0 && game.board[renderState.pressedCell] === Engine.EMPTY) {
+    if (canPlaceCell(renderState.pressedCell)) {
       targetPressedStone(renderState.pressedCell, true);
     } else {
       renderState.pressedCell = -1;
@@ -3400,7 +3836,7 @@
     var cell = eventToCell(event);
     if (renderState.pointerId === event.pointerId) {
       event.preventDefault();
-      if (cell >= 0 && game.board[cell] === Engine.EMPTY && cell !== renderState.pressedCell) {
+      if (canPlaceCell(cell) && cell !== renderState.pressedCell) {
         renderState.pressedCell = cell;
         targetPressedStone(cell, false);
       }
@@ -3433,7 +3869,7 @@
     renderState.pressedCell = -1;
     renderState.pressedAt = 0;
     clearPressedStoneMotion();
-    if (canPlaceOnBoard() && cell >= 0 && game.board[cell] === Engine.EMPTY) {
+    if (canPlaceCell(cell)) {
       performMove(cell, DEV_MODE ? developer.placementPlayer : HUMAN, { fromPress: releasedFromPress });
     } else {
       requestRender();
@@ -3468,6 +3904,7 @@
     dom.gameSettingsButton.addEventListener("click", openSettings);
     dom.backButton.addEventListener("click", leaveGame);
     dom.restartButton.addEventListener("click", handleRightTool);
+    dom.boundaryDemoButton.addEventListener("click", replayBoundaryLesson);
     dom.settledReplayButton.addEventListener("click", restartGame);
     dom.undoButton.addEventListener("click", handleLeftTool);
     dom.closeSettingsButton.addEventListener("click", function closeSettings() { closeActiveSheet(false); });

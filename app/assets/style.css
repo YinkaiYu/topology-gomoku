@@ -879,6 +879,10 @@ button,
   grid-template-columns: repeat(3, minmax(0, 1fr));
 }
 
+.game-tools.is-basic-tutorial {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
 .game-tools.is-ended.has-two-actions {
   grid-template-columns: repeat(2, minmax(0, 1fr));
 }
@@ -889,6 +893,10 @@ button,
 
 .game-tools [hidden] {
   display: none;
+}
+
+.game-tools > #restartButton {
+  grid-column: 3;
 }
 
 .game-tools.is-ended .tool-button {
@@ -930,61 +938,15 @@ button,
   height: 20px;
 }
 
-.rule-caption {
-  display: grid;
-  align-items: center;
-  justify-content: center;
-  gap: 3px;
-  min-width: 0;
-  text-align: center;
-  transition: opacity 220ms ease, transform 420ms var(--spring);
-}
-
-.rule-caption strong {
-  color: var(--ink);
-  font-size: 11px;
-  font-weight: 650;
-  letter-spacing: 0.13em;
-  transition: color 320ms ease;
-}
-
-.rule-caption span {
-  color: var(--muted);
-  font-size: 9px;
-  letter-spacing: 0.05em;
-  white-space: nowrap;
-  transition: color 320ms ease;
-}
-
-.rule-caption.is-draw-likely {
-  transform: translateY(-1px);
-}
-
-.rule-caption.is-draw-likely strong {
+.boundary-demo-button.is-active {
   color: var(--teal);
-  animation: draw-pass-arrive 520ms var(--spring) both;
 }
 
-.rule-caption.is-draw-likely span {
-  color: #8b7556;
-  animation: draw-pass-arrive 520ms var(--spring) 45ms both;
+.boundary-demo-button.is-active svg {
+  animation: boundary-demo-breathe 900ms ease-in-out infinite alternate;
 }
 
-@keyframes draw-pass-arrive {
-  from { opacity: 0.18; transform: translateY(3px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-.rule-caption.is-demonstrating {
-  transform: translateY(-1px);
-}
-
-.rule-caption.is-demonstrating strong {
-  color: var(--teal);
-  animation: rule-breathe 900ms ease-in-out infinite alternate;
-}
-
-@keyframes rule-breathe {
+@keyframes boundary-demo-breathe {
   from { opacity: 0.64; }
   to { opacity: 1; }
 }
