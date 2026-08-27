@@ -95,26 +95,56 @@
   }
 
   function triangleHemisphere(a, b, c, sign) {
-    // Send an equilateral triangular chart radially to a disk, then use the
-    // equal-area disk-to-hemisphere map.  Unlike normalising a shallow
-    // triangular dome, this covers every viewing direction and keeps the
-    // chart lines distributed across the whole hemisphere.
+    // Send the triangular chart to a disk using a concentric-triangle map.
+    // Each ray is normalised by the exact triangle boundary it reaches and
+    // each boundary edge occupies one third of the equator.  This preserves
+    // the original chess-grid curves while avoiding the severe centre/edge
+    // crowding caused by the old 27abc radial coordinate.
     var planarX = a - (b + c) * 0.5;
     var planarY = (b - c) * Math.sqrt(3) * 0.5;
     var planarLength = Math.hypot(planarX, planarY);
-    // 27abc is a smooth interior coordinate: it is one at the chart centre
-    // and exactly zero on every edge.  Its complementary square root gives
-    // a full disk radius without the piecewise "nearest edge" corners that
-    // used to put sharp kinks in the projected chess grid.
-    var radial = Math.sqrt(Math.max(0, 1 - 27 * a * b * c));
-    if (planarLength < 1e-10 || radial < 1e-10) {
+    if (planarLength < 1e-10) {
       return [0, 0, sign];
     }
+
+    var directionX = planarX / planarLength;
+    var directionY = planarY / planarLength;
+    var boundaryRadius = Infinity;
+    var constraints = [
+      2 * directionX,
+      -directionX + Math.sqrt(3) * directionY,
+      -directionX - Math.sqrt(3) * directionY
+    ];
+    constraints.forEach(function findBoundary(coefficient) {
+      if (coefficient < -1e-10) {
+        boundaryRadius = Math.min(boundaryRadius, -1 / coefficient);
+      }
+    });
+    var radial = Math.max(0, Math.min(1, planarLength / boundaryRadius));
+    if (radial < 1e-10) {
+      return [0, 0, sign];
+    }
+
+    // Recover the point where this ray meets the triangular boundary.  Its
+    // barycentric coordinate gives a perimeter-linear angle, so equal board
+    // intervals stay much closer to equal intervals around the equator.
+    var boundaryA = 1 / 3 + (a - 1 / 3) / radial;
+    var boundaryB = 1 / 3 + (b - 1 / 3) / radial;
+    var boundaryC = 1 / 3 + (c - 1 / 3) / radial;
+    var angle;
+    if (boundaryC <= boundaryA && boundaryC <= boundaryB) {
+      angle = boundaryB * TAU / 3;
+    } else if (boundaryA <= boundaryB && boundaryA <= boundaryC) {
+      angle = TAU / 3 + boundaryC * TAU / 3;
+    } else {
+      angle = TAU * 2 / 3 + boundaryA * TAU / 3;
+    }
+
     var z = sign * (1 - radial * radial);
     var ringRadius = Math.sqrt(Math.max(0, 1 - z * z));
     return [
-      planarX / planarLength * ringRadius,
-      planarY / planarLength * ringRadius,
+      Math.cos(angle) * ringRadius,
+      Math.sin(angle) * ringRadius,
       z
     ];
   }
@@ -214,7 +244,7 @@
     var bestBoost = [0, 0, 0];
     var bestCost = spherePathCost(anchors);
     var goldenAngle = Math.PI * (3 - Math.sqrt(5));
-    [0.14, 0.27, 0.4].forEach(function testMagnitude(magnitude) {
+    [0.04, 0.08, 0.12].forEach(function testMagnitude(magnitude) {
       for (var sample = 0; sample < 42; sample += 1) {
         var vertical = 1 - 2 * (sample + 0.5) / 42;
         var horizontal = Math.sqrt(Math.max(0, 1 - vertical * vertical));
@@ -227,7 +257,11 @@
         var transformed = anchors.map(function transformAnchor(anchor) {
           return sphereMobius(anchor, boost);
         });
-        var cost = spherePathCost(transformed) + magnitude * 0.06;
+        // A conformal boost helps place the winning line, but it also changes
+        // the apparent grid density.  Keep that adjustment deliberately mild
+        // and charge quadratically for distortion so the sphere never looks
+        // crowded on one side and empty on the other.
+        var cost = spherePathCost(transformed) + magnitude * 0.1 + magnitude * magnitude * 1.15;
         if (cost < bestCost) {
           bestCost = cost;
           bestBoost = boost;

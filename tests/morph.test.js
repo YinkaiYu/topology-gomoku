@@ -74,7 +74,7 @@ test("球面通关动画使用完整半球网格、圆形壳层与平滑参数�
   assert.match(game, /function drawCompletionSphereBoundary/);
   assert.match(game, /function drawSphereRails/);
   assert.match(game, /function drawCompletionSphereGrid/);
-  assert.match(game, /ctx\.quadraticCurveTo/);
+  assert.match(game, /ctx\.bezierCurveTo/);
   assert.match(game, /var sphereShellBlend/);
   assert.match(game, /ctx\.arc\(renderState\.width \* 0\.5, renderState\.height \* 0\.5, sphereRadius/);
 });
@@ -90,13 +90,40 @@ test("球面参数化覆盖单位球且按实际五连选择无折叠的共形�
   const cells = [[4, 1], [5, 0], [0, 6], [6, 1], [5, 2]].map(([x, y]) => y * 7 + x);
   const presentation = Morph.createPresentation("sphere", rules, cells);
   assert.equal(presentation.type, "sphere-path");
-  assert.ok(Math.hypot(...presentation.boost) <= 0.400001);
+  assert.ok(Math.hypot(...presentation.boost) <= 0.120001);
   [0.12, 0.38, 0.79].forEach((value) => {
     const top = Morph.applyPresentation(Morph.surfacePoint("sphere", value, 0), presentation);
     const left = Morph.applyPresentation(Morph.surfacePoint("sphere", 0, value), presentation);
     samePoint(top, left, "adaptive sphere seam");
     assert.ok(Math.abs(Math.hypot(...top) - 1) < 1e-7);
   });
+});
+
+test("球面棋盘参数化近似等面积且结算时弱化背面重叠网格", () => {
+  function localArea(u, v) {
+    const delta = 1e-5;
+    const left = Morph.surfacePoint("sphere", u - delta, v);
+    const right = Morph.surfacePoint("sphere", u + delta, v);
+    const top = Morph.surfacePoint("sphere", u, v - delta);
+    const bottom = Morph.surfacePoint("sphere", u, v + delta);
+    const du = right.map((value, axis) => (value - left[axis]) / (delta * 2));
+    const dv = bottom.map((value, axis) => (value - top[axis]) / (delta * 2));
+    return Math.hypot(
+      du[1] * dv[2] - du[2] * dv[1],
+      du[2] * dv[0] - du[0] * dv[2],
+      du[0] * dv[1] - du[1] * dv[0]
+    );
+  }
+  const samples = [[0.15, 0.08], [0.45, 0.12], [0.75, 0.18], [0.32, 0.24], [0.68, 0.47], [0.22, 0.37], [0.53, 0.74], [0.82, 0.91]];
+  const areas = samples.map(([u, v]) => localArea(u, v));
+  assert.ok(Math.max(...areas) / Math.min(...areas) < 1.002);
+
+  const game = fs.readFileSync(path.join(ROOT, "app", "assets", "game.js"), "utf8");
+  assert.match(game, /function strokeFrontFacingCompletionPath/);
+  assert.match(game, /function smoothCompletionSphereRail/);
+  assert.match(game, /index % anchorInterval === 0/);
+  assert.match(game, /var frontBlend = Morph\.smooth/);
+  assert.match(game, /var depthThreshold = -0\.012 \* morph/);
 });
 
 test("斜向跨缝使用真实边界交点且接缝两侧投影重合", () => {

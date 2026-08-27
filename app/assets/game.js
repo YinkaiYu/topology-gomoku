@@ -2120,14 +2120,71 @@
     if (points.length === 2) {
       ctx.lineTo(points[1].x, points[1].y);
     } else {
-      for (var index = 1; index < points.length - 1; index += 1) {
-        var midpointX = (points[index].x + points[index + 1].x) * 0.5;
-        var midpointY = (points[index].y + points[index + 1].y) * 0.5;
-        ctx.quadraticCurveTo(points[index].x, points[index].y, midpointX, midpointY);
+      // Interpolate every sampled surface point with a C1-continuous
+      // Catmull-Rom spline.  It still passes through the original chess-grid
+      // samples (including stone intersections), while rounding the harmless
+      // chart-derivative changes that would otherwise look like sharp folds.
+      for (var index = 0; index < points.length - 1; index += 1) {
+        var before = points[Math.max(0, index - 1)];
+        var from = points[index];
+        var to = points[index + 1];
+        var after = points[Math.min(points.length - 1, index + 2)];
+        ctx.bezierCurveTo(
+          from.x + (to.x - before.x) / 6,
+          from.y + (to.y - before.y) / 6,
+          to.x - (after.x - from.x) / 6,
+          to.y - (after.y - from.y) / 6,
+          to.x,
+          to.y
+        );
       }
-      ctx.lineTo(points[points.length - 1].x, points[points.length - 1].y);
     }
     ctx.stroke();
+  }
+
+  function completionDepthIntersection(from, to, threshold) {
+    var span = to.depth - from.depth;
+    var amount = Math.abs(span) < 1e-8 ? 0.5 : (threshold - from.depth) / span;
+    amount = clamp01(amount);
+    return {
+      x: from.x + (to.x - from.x) * amount,
+      y: from.y + (to.y - from.y) * amount,
+      depth: threshold
+    };
+  }
+
+  function strokeFrontFacingCompletionPath(ctx, points, threshold) {
+    var visible = [];
+    function finishVisibleRun() {
+      if (visible.length > 1) {
+        strokeSmoothCompletionPath(ctx, visible);
+      }
+      visible = [];
+    }
+    for (var index = 1; index < points.length; index += 1) {
+      var from = points[index - 1];
+      var to = points[index];
+      var fromVisible = from.depth >= threshold;
+      var toVisible = to.depth >= threshold;
+      if (fromVisible && toVisible) {
+        if (!visible.length) {
+          visible.push(from);
+        }
+        visible.push(to);
+      } else if (fromVisible) {
+        if (!visible.length) {
+          visible.push(from);
+        }
+        visible.push(completionDepthIntersection(from, to, threshold));
+        finishVisibleRun();
+      } else if (toVisible) {
+        visible.push(completionDepthIntersection(from, to, threshold));
+        visible.push(to);
+      } else {
+        finishVisibleRun();
+      }
+    }
+    finishVisibleRun();
   }
 
   function completionSphereRailPoint(u, v, morph, spin) {
@@ -2143,8 +2200,34 @@
     );
   }
 
+  function smoothCompletionSphereRail(points, anchorInterval) {
+    var smoothed = points.map(function cloneRailPoint(point) {
+      return { x: point.x, y: point.y, depth: point.depth };
+    });
+    for (var pass = 0; pass < 3; pass += 1) {
+      var previous = smoothed;
+      smoothed = previous.map(function smoothRailPoint(point, index) {
+        // Every board intersection is an anchor: smoothing may reshape the
+        // curve between intersections, but never detaches a stone from its
+        // original chess-grid crossing.
+        if (index === 0 || index === previous.length - 1 || index % anchorInterval === 0) {
+          return point;
+        }
+        return {
+          x: previous[index - 1].x * 0.24 + point.x * 0.52 + previous[index + 1].x * 0.24,
+          y: previous[index - 1].y * 0.24 + point.y * 0.52 + previous[index + 1].y * 0.24,
+          depth: previous[index - 1].depth * 0.24 + point.depth * 0.52 + previous[index + 1].depth * 0.24
+        };
+      });
+    }
+    return smoothed;
+  }
+
   function drawCompletionSphereGrid(ctx, morph, spin) {
     var samples = 72;
+    var anchorInterval = samples / Math.max(1, game.rules.width - 1);
+    var frontBlend = Morph.smooth((morph - 0.46) / 0.42);
+    var depthThreshold = -0.012 * morph;
     var firstU = 0.5 / game.rules.width;
     var lastU = (game.rules.width - 0.5) / game.rules.width;
     var firstV = 0.5 / game.rules.height;
@@ -2156,7 +2239,17 @@
         var verticalAmount = verticalSample / samples;
         vertical.push(completionSphereRailPoint(u, firstV + (lastV - firstV) * verticalAmount, morph, spin));
       }
+      vertical = smoothCompletionSphereRail(vertical, anchorInterval);
+      ctx.save();
+      ctx.globalAlpha *= 1 - frontBlend * 0.84;
       strokeSmoothCompletionPath(ctx, vertical);
+      ctx.restore();
+      if (frontBlend > 0) {
+        ctx.save();
+        ctx.globalAlpha *= frontBlend * 0.84;
+        strokeFrontFacingCompletionPath(ctx, vertical, depthThreshold);
+        ctx.restore();
+      }
     }
     for (var y = 0; y < game.rules.height; y += 1) {
       var v = (y + 0.5) / game.rules.height;
@@ -2165,7 +2258,17 @@
         var horizontalAmount = horizontalSample / samples;
         horizontal.push(completionSphereRailPoint(firstU + (lastU - firstU) * horizontalAmount, v, morph, spin));
       }
+      horizontal = smoothCompletionSphereRail(horizontal, anchorInterval);
+      ctx.save();
+      ctx.globalAlpha *= 1 - frontBlend * 0.84;
       strokeSmoothCompletionPath(ctx, horizontal);
+      ctx.restore();
+      if (frontBlend > 0) {
+        ctx.save();
+        ctx.globalAlpha *= frontBlend * 0.84;
+        strokeFrontFacingCompletionPath(ctx, horizontal, depthThreshold);
+        ctx.restore();
+      }
     }
   }
 
