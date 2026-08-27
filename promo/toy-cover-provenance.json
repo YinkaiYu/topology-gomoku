@@ -7,10 +7,19 @@
     "tool": "built-in image generation",
     "promptSummary": "Warm ivory handmade paper, faint topology arcs and sparse board intersections, calm left title space and right emblem space; no text, logo, watermark, neon, glossy 3D or gaming UI."
   },
+  "officialLogoSource": {
+    "document": "IOP.pdf",
+    "sha256": "8755E8B1949AE7196470150E89B37CD0A48D5E1289CFC552879CC5D8A43EB947",
+    "treatment": "Rendered from the vector PDF at 600 DPI, cropped to the original circular boundary, and exported with transparency; no generative alteration"
+  },
   "deterministicSources": [
     {
       "asset": "../app/assets/brand-icon.png",
       "role": "Exact project brand mark; no generative alteration"
+    },
+    {
+      "asset": "assets/iop-logo.png",
+      "role": "Official Institute of Physics, Chinese Academy of Sciences roundel extracted without generative alteration from the user-provided IOP.pdf"
     },
     {
       "asset": "C:/Windows/Fonts/STSONG.TTF",

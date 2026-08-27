@@ -9,6 +9,7 @@
   "output": "exports/topology-gomoku-toy-cover-4x3.png",
   "brandAssets": [
     "../app/assets/brand-icon.png",
+    "assets/iop-logo.png",
     "assets/toy-cover-background-v1.png",
     "assets/noto-serif-sc-institution-400.ttf"
   ],

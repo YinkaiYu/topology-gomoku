@@ -6,6 +6,7 @@ from PIL import Image, ImageDraw, ImageFont, ImageOps
 ROOT = Path(__file__).resolve().parents[1]
 BACKGROUND = ROOT / "promo" / "assets" / "toy-cover-background-v1.png"
 BRAND = ROOT / "app" / "assets" / "brand-icon.png"
+IOP_LOGO = ROOT / "promo" / "assets" / "iop-logo.png"
 OUTPUT = ROOT / "promo" / "exports" / "topology-gomoku-toy-cover-4x3.png"
 TITLE_FONT = Path("C:/Windows/Fonts/STSONG.TTF")
 INSTITUTION_FONT = ROOT / "promo" / "assets" / "noto-serif-sc-institution-400.ttf"
@@ -28,6 +29,10 @@ def main() -> None:
     brand_y = 174 + (500 - brand.height) // 2
     background.paste(brand, (brand_x, brand_y), brand)
 
+    iop_logo = Image.open(IOP_LOGO).convert("RGBA")
+    iop_logo.thumbnail((150, 150), Image.Resampling.LANCZOS)
+    background.paste(iop_logo, (53, 720), iop_logo)
+
     draw = ImageDraw.Draw(background)
     title_font = ImageFont.truetype(str(TITLE_FONT), 205)
     subtitle_font = ImageFont.truetype(str(TITLE_FONT), 52)
@@ -43,7 +48,7 @@ def main() -> None:
     draw.line((154, line_y, 194, line_y), fill=GOLD, width=5)
     draw.line((194, line_y, 223, line_y), fill=RED, width=5)
 
-    draw.text((53, 770), "中国科学院物理研究所", font=institution_font, fill="#58605a")
+    draw.text((225, 770), "中国科学院物理研究所", font=institution_font, fill="#58605a")
 
     OUTPUT.parent.mkdir(parents=True, exist_ok=True)
     background.save(OUTPUT, format="PNG", optimize=True)
