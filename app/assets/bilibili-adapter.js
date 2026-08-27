@@ -16,9 +16,17 @@
     return Number.isFinite(number) && number >= 0 ? number + "px" : "0px";
   }
 
-  function setViewportHeight() {
+  function setViewportHeight(hostHeight) {
+    var requestedHeight = Number(hostHeight);
+    var stateHeight = lastState && lastState.viewport ? Number(lastState.viewport.height) : NaN;
     var viewport = window.visualViewport;
-    var height = viewport && viewport.height ? viewport.height : window.innerHeight;
+    var height = Number.isFinite(requestedHeight) && requestedHeight > 0
+      ? requestedHeight
+      : Number.isFinite(stateHeight) && stateHeight > 0
+        ? stateHeight
+        : viewport && viewport.height
+          ? viewport.height
+          : window.innerHeight;
     if (Number.isFinite(height) && height > 0) {
       root.style.setProperty("--toy-viewport-height", Math.round(height) + "px");
     }
@@ -29,7 +37,9 @@
       return;
     }
     lastState = state;
+    var viewport = state.viewport || {};
     var safeArea = state.safeArea || {};
+    setViewportHeight(viewport.height);
     root.style.setProperty("--safe-area-inset-top", finitePixel(safeArea.top));
     root.style.setProperty("--safe-area-inset-right", finitePixel(safeArea.right));
     root.style.setProperty("--safe-area-inset-bottom", finitePixel(safeArea.bottom));

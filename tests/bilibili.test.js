@@ -12,7 +12,7 @@ test("Bilibili Toy SDK 通过独立 adapter 接入", () => {
   const adapter = fs.readFileSync(path.join(ROOT, "app", "assets", "bilibili-adapter.js"), "utf8");
   const game = fs.readFileSync(path.join(ROOT, "app", "assets", "game.js"), "utf8");
   assert.match(html, /\/\/s1\.hdslb\.com\/bfs\/seed\/toy\/app\/sdk\/toy-sdk\.js/);
-  assert.match(html, /\.\/assets\/bilibili-adapter\.js\?v=1\.35\.2-bili\.1/);
+  assert.match(html, /\.\/assets\/bilibili-adapter\.js\?v=1\.35\.2-bili\.3/);
   assert.match(adapter, /onContainerChange\(applyContainerState\)/);
   assert.match(adapter, /supports\("onContainerChange", "onContainerChange"\)/);
   assert.match(adapter, /supports\("getContainerState", "getContainerState"\)/);
@@ -80,8 +80,13 @@ test("沉浸切换不依赖容器状态监听能力", async () => {
 test("三档、动态视口、安全区和输入能力均有确定性适配", () => {
   const html = fs.readFileSync(path.join(ROOT, "app", "index.html"), "utf8");
   const style = fs.readFileSync(path.join(ROOT, "app", "assets", "style.css"), "utf8");
+  const adapter = fs.readFileSync(path.join(ROOT, "app", "assets", "bilibili-adapter.js"), "utf8");
   const game = fs.readFileSync(path.join(ROOT, "app", "assets", "game.js"), "utf8");
   assert.match(style, /height:\s*100dvh/);
+  assert.match(style, /html,\s*body\s*\{[^}]*overflow:\s*hidden[^}]*overscroll-behavior:\s*none/s);
+  assert.match(style, /html\s*\{[^}]*touch-action:\s*none/s);
+  assert.match(style, /body\s*\{[^}]*position:\s*fixed[^}]*inset:\s*0/s);
+  assert.match(adapter, /setViewportHeight\(viewport\.height\)/);
   assert.match(style, /--safe-right:/);
   assert.match(style, /--safe-left:/);
   assert.match(style, /@media \(min-width: 700px\) and \(max-width: 1099px\)/);
@@ -92,6 +97,54 @@ test("三档、动态视口、安全区和输入能力均有确定性适配", ()
   assert.match(game, /function onBoardKeyDown\(/);
   assert.match(game, /event\.key !== "Enter"/);
   assert.match(game, /window\.addEventListener\("toycontainerchange", resizeCanvas\)/);
+});
+
+test("B站宿主可用高度优先于 WebView 的视觉视口并持续锁定", async () => {
+  const vm = require("node:vm");
+  const adapter = fs.readFileSync(path.join(ROOT, "app", "assets", "bilibili-adapter.js"), "utf8");
+  const properties = new Map();
+  const root = {
+    dataset: {},
+    style: { setProperty(name, value) { properties.set(name, value); } }
+  };
+  const windowStub = {
+    innerHeight: 844,
+    visualViewport: {
+      height: 820,
+      addEventListener() {},
+      removeEventListener() {}
+    },
+    addEventListener() {},
+    removeEventListener() {},
+    dispatchEvent() {},
+    toy: {
+      async isSupport(ability) {
+        return ability === "onContainerChange";
+      },
+      onContainerChange(listener) {
+        listener({
+          viewport: { width: 390, height: 692 },
+          safeArea: { top: 24, right: 0, bottom: 18, left: 0 },
+          deviceType: "phone",
+          orientation: "portrait",
+          immersive: false,
+          changedFields: []
+        });
+        return function off() {};
+      }
+    }
+  };
+
+  vm.runInNewContext(adapter, {
+    window: windowStub,
+    document: { documentElement: root },
+    CustomEvent: function CustomEvent() {}
+  });
+
+  await windowStub.BilibiliToyPlatform.setImmersive(false);
+  assert.equal(properties.get("--toy-viewport-height"), "692px");
+  windowStub.BilibiliToyPlatform.refreshViewport();
+  assert.equal(properties.get("--toy-viewport-height"), "692px");
 });
 
 test("Toy 封面是可追溯的 1200x900 确定性导出", () => {

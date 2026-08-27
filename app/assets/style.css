@@ -70,13 +70,16 @@ body {
   height: 100%;
   min-height: 100%;
   overflow: hidden;
+  overscroll-behavior: none;
 }
 
 html {
-  touch-action: manipulation;
+  touch-action: none;
 }
 
 body {
+  position: fixed;
+  inset: 0;
   background: var(--paper);
   color: var(--ink);
   font-family: var(--display-font);
@@ -114,6 +117,7 @@ button,
   min-height: 0;
   overflow: hidden;
   overflow: clip;
+  overscroll-behavior: none;
   isolation: isolate;
   background:
     radial-gradient(circle at 88% 34%, rgba(69, 154, 139, 0.11), transparent 31%),
