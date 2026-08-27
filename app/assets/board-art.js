@@ -680,6 +680,140 @@
     ctx.restore();
   }
 
+  function completionFlatPointFromUV(game, layout, u, v) {
+    var xRatio = Morph.isPeriodicX(game.rules.type)
+      ? (u * game.rules.width - 0.5) / Math.max(1, game.rules.width - 1)
+      : u;
+    var yRatio = Morph.isPeriodicY(game.rules.type)
+      ? (v * game.rules.height - 0.5) / Math.max(1, game.rules.height - 1)
+      : v;
+    return {
+      x: layout.left + clamp01(xRatio) * (layout.right - layout.left),
+      y: layout.top + clamp01(yRatio) * (layout.bottom - layout.top)
+    };
+  }
+
+  function mappedCompletionPoint(game, layout, flat, uv, orientation) {
+    var projected = Morph.project(
+      game.level.topology,
+      uv.u,
+      uv.v,
+      layout.width,
+      layout.height,
+      orientation
+    );
+    var morph = orientation && Number.isFinite(orientation.morph)
+      ? clamp01(orientation.morph)
+      : 1;
+    return {
+      x: flat.x + (projected.x - flat.x) * morph,
+      y: flat.y + (projected.y - flat.y) * morph,
+      depth: projected.depth * morph
+    };
+  }
+
+  function appendCompletionSegment(points, game, layout, from, to, samples, orientation) {
+    for (var sample = points.length ? 1 : 0; sample <= samples; sample += 1) {
+      var amount = sample / samples;
+      points.push(mappedCompletionPoint(game, layout, {
+        x: from.flat.x + (to.flat.x - from.flat.x) * amount,
+        y: from.flat.y + (to.flat.y - from.flat.y) * amount
+      }, {
+        u: from.uv.u + (to.uv.u - from.uv.u) * amount,
+        v: from.uv.v + (to.uv.v - from.uv.v) * amount
+      }, orientation));
+    }
+  }
+
+  function completionEdgePoints(game, layout, fromCell, step, direction, orientation) {
+    var fromUV = Morph.stoneUV(game.rules, fromCell);
+    var toUV = Morph.stoneUV(game.rules, step.cell);
+    var from = { flat: cellCenter(game.rules, layout, fromCell), uv: fromUV };
+    var to = { flat: cellCenter(game.rules, layout, step.cell), uv: toUV };
+    var points = [];
+    var samples = game.level.topology === "sphere" ? 16 : 12;
+    if (!step.seam) {
+      appendCompletionSegment(points, game, layout, from, to, samples, orientation);
+      return points;
+    }
+    var vector = Engine.DIRECTIONS[direction];
+    var bridge = Morph.seamBridgeUV(
+      game.rules.type,
+      fromUV,
+      toUV,
+      vector,
+      Boolean(step.seam & Engine.SEAM_X),
+      Boolean(step.seam & Engine.SEAM_Y)
+    );
+    var source = {
+      flat: completionFlatPointFromUV(game, layout, bridge.source.u, bridge.source.v),
+      uv: bridge.source
+    };
+    var target = {
+      flat: completionFlatPointFromUV(game, layout, bridge.target.u, bridge.target.v),
+      uv: bridge.target
+    };
+    var seamSamples = game.level.topology === "sphere" ? 12 : 8;
+    appendCompletionSegment(points, game, layout, from, source, seamSamples, orientation);
+    points.push(mappedCompletionPoint(game, layout, target.flat, target.uv, orientation));
+    appendCompletionSegment(points, game, layout, target, to, seamSamples, orientation);
+    return points;
+  }
+
+  function drawCompletionWinningLine(ctx, game, layout, orientation, time) {
+    if (!game.winningMask) {
+      return;
+    }
+    var cells = Array.prototype.slice.call(game.winningMask.cells);
+    var reveal = Morph.smooth(clamp01((time - game.winAt - 180) / 820));
+    var direction = game.winningMask.direction;
+    ctx.save();
+    ctx.strokeStyle = "rgba(199, 146, 68," + (0.78 + Math.sin(time * 0.009) * 0.16) + ")";
+    ctx.shadowColor = "rgba(199, 146, 68,0.8)";
+    ctx.shadowBlur = 12;
+    ctx.lineWidth = Math.max(3.4, layout.cell * 0.12);
+    ctx.lineCap = "round";
+    ctx.lineJoin = "round";
+    for (var index = 0; index < cells.length - 1; index += 1) {
+      var segmentProgress = clamp01(reveal * (cells.length - 1) - index);
+      if (segmentProgress <= 0) {
+        continue;
+      }
+      var step = Engine.step(game.rules, cells[index], direction);
+      if (!step || step.cell !== cells[index + 1]) {
+        for (var candidate = 0; candidate < Engine.DIRECTIONS.length; candidate += 1) {
+          var candidateStep = Engine.step(game.rules, cells[index], candidate);
+          if (candidateStep && candidateStep.cell === cells[index + 1]) {
+            direction = candidate;
+            step = candidateStep;
+            break;
+          }
+        }
+      }
+      if (!step || step.cell !== cells[index + 1]) {
+        continue;
+      }
+      var points = completionEdgePoints(game, layout, cells[index], step, direction, orientation);
+      var visibleEnd = (points.length - 1) * segmentProgress;
+      ctx.beginPath();
+      ctx.moveTo(points[0].x, points[0].y);
+      for (var pointIndex = 1; pointIndex <= Math.floor(visibleEnd); pointIndex += 1) {
+        ctx.lineTo(points[pointIndex].x, points[pointIndex].y);
+      }
+      if (visibleEnd < points.length - 1) {
+        var whole = Math.floor(visibleEnd);
+        var fraction = visibleEnd - whole;
+        ctx.lineTo(
+          points[whole].x + (points[whole + 1].x - points[whole].x) * fraction,
+          points[whole].y + (points[whole + 1].y - points[whole].y) * fraction
+        );
+      }
+      ctx.stroke();
+      direction = step.direction;
+    }
+    ctx.restore();
+  }
+
   function drawCompletion(ctx, options) {
     var settings = options || {};
     var game = settings.game;
@@ -730,7 +864,13 @@
       stones.push({
         cell: cell,
         player: game.board[cell],
-        point: surfacePoint(game, layout, layout.width, layout.height, uv.u, uv.v, orientation)
+        point: mappedCompletionPoint(
+          game,
+          layout,
+          cellCenter(game.rules, layout, cell),
+          uv,
+          orientation
+        )
       });
     }
     stones.sort(function sortStones(a, b) { return a.point.depth - b.point.depth; });
@@ -745,24 +885,7 @@
       drawStoneFace(ctx, item.player, radius, item.cell === game.lastMove, 0);
       ctx.restore();
     });
-    if (game.winningMask) {
-      var cells = Array.prototype.slice.call(game.winningMask.cells);
-      ctx.save();
-      ctx.strokeStyle = "rgba(199, 146, 68, 0.88)";
-      ctx.shadowColor = "rgba(199, 146, 68, 0.7)";
-      ctx.shadowBlur = 10;
-      ctx.lineWidth = Math.max(3.4, layout.cell * 0.12);
-      ctx.lineCap = "round";
-      ctx.lineJoin = "round";
-      ctx.beginPath();
-      cells.forEach(function trace(cell, index) {
-        var uv = Morph.stoneUV(game.rules, cell);
-        var point = surfacePoint(game, layout, layout.width, layout.height, uv.u, uv.v, orientation);
-        if (index === 0) { ctx.moveTo(point.x, point.y); } else { ctx.lineTo(point.x, point.y); }
-      });
-      ctx.stroke();
-      ctx.restore();
-    }
+    drawCompletionWinningLine(ctx, game, layout, orientation, Number(settings.time) || 0);
   }
 
   function drawTopologyGlyph(ctx, topology, rect, options) {
