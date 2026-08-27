@@ -1579,7 +1579,7 @@
     drawDemoStones(ctx, time);
     drawWinningConnections(ctx, time);
     drawMappedGhost(ctx);
-    drawPlayerHints(ctx);
+    drawTacticalHints(ctx);
     drawMovePreview(ctx);
     drawStones(ctx, time);
   }
@@ -2275,11 +2275,36 @@
     ctx.restore();
   }
 
-  function drawPlayerHints(ctx) {
+  function tacticalHintPriority(hint) {
+    if (hint.player === HUMAN && hint.kind === "four") {
+      return 4;
+    }
+    if (hint.player === AI && hint.kind === "four") {
+      return 3;
+    }
+    if (hint.player === AI && hint.kind === "three") {
+      return 2;
+    }
+    return 1;
+  }
+
+  function drawTacticalHints(ctx) {
     if (!prefs.hints || !game || game.levelIndex === 0 || game.status !== "playing" || (game.demo && game.demo.active)) {
       return;
     }
-    var hints = Engine.findLineHints(game.board, game.rules, HUMAN);
+    var hintsByCell = Object.create(null);
+    [HUMAN, AI].forEach(function collectPlayerHints(player) {
+      Engine.findLineHints(game.board, game.rules, player).forEach(function rememberTacticalHint(hint) {
+        var candidate = { cell: hint.cell, kind: hint.kind, player: player };
+        var current = hintsByCell[hint.cell];
+        if (!current || tacticalHintPriority(candidate) > tacticalHintPriority(current)) {
+          hintsByCell[hint.cell] = candidate;
+        }
+      });
+    });
+    var hints = Object.keys(hintsByCell).map(function toTacticalHint(cell) {
+      return hintsByCell[cell];
+    });
     if (!hints.length) {
       return;
     }
@@ -2290,16 +2315,29 @@
       }
       var center = cellCenter(hint.cell);
       var urgent = hint.kind === "four";
+      var defensive = hint.player === AI;
       ctx.save();
-      ctx.strokeStyle = urgent ? "#c79244" : "#3f8c87";
-      ctx.fillStyle = urgent ? "rgba(199, 146, 68, 0.07)" : "rgba(63, 140, 135, 0.055)";
-      ctx.globalAlpha = urgent ? 0.9 : 0.72;
-      ctx.lineWidth = urgent ? 1.8 : 1.35;
-      ctx.setLineDash([Math.max(3, cellSize * 0.095), Math.max(3, cellSize * 0.09)]);
+      ctx.strokeStyle = defensive ? "#d95b4f" : (urgent ? "#c79244" : "#3f8c87");
+      ctx.fillStyle = defensive
+        ? (urgent ? "rgba(217, 91, 79, 0.085)" : "rgba(217, 91, 79, 0.04)")
+        : (urgent ? "rgba(199, 146, 68, 0.07)" : "rgba(63, 140, 135, 0.055)");
+      ctx.globalAlpha = urgent ? 0.92 : 0.72;
+      ctx.lineWidth = urgent ? 1.85 : 1.35;
+      ctx.setLineDash(defensive
+        ? [Math.max(2.2, cellSize * 0.06), Math.max(3.2, cellSize * 0.105)]
+        : [Math.max(3, cellSize * 0.095), Math.max(3, cellSize * 0.09)]);
       ctx.beginPath();
       ctx.arc(center.x, center.y, cellSize * 0.27, 0, Math.PI * 2);
       ctx.fill();
       ctx.stroke();
+      if (defensive) {
+        ctx.setLineDash([]);
+        ctx.globalAlpha = urgent ? 0.52 : 0.32;
+        ctx.fillStyle = "#d95b4f";
+        ctx.beginPath();
+        ctx.arc(center.x, center.y, urgent ? 2.15 : 1.55, 0, Math.PI * 2);
+        ctx.fill();
+      }
       ctx.restore();
     });
   }

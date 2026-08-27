@@ -325,16 +325,26 @@
         var first = board[cells[0]];
         var last = board[cells[cells.length - 1]];
         var middleThree = board[cells[1]] === player && board[cells[2]] === player && board[cells[3]] === player;
+        var ownCount = 0;
+        var opponentCount = 0;
+        var emptyCells = [];
+        for (var cellIndex = 0; cellIndex < cells.length; cellIndex += 1) {
+          var value = board[cells[cellIndex]];
+          if (value === player) {
+            ownCount += 1;
+          } else if (value === -player) {
+            opponentCount += 1;
+          } else {
+            emptyCells.push(cells[cellIndex]);
+          }
+        }
 
         if (first === EMPTY && last === EMPTY && middleThree) {
           rememberHint(cells[0], "three");
           rememberHint(cells[4], "three");
         }
-        if (first === EMPTY && board[cells[1]] === player && board[cells[2]] === player && board[cells[3]] === player && board[cells[4]] === player) {
-          rememberHint(cells[0], "four");
-        }
-        if (last === EMPTY && board[cells[0]] === player && board[cells[1]] === player && board[cells[2]] === player && board[cells[3]] === player) {
-          rememberHint(cells[4], "four");
+        if (ownCount === rules.target - 1 && opponentCount === 0 && emptyCells.length === 1) {
+          rememberHint(emptyCells[0], "four");
         }
       }
     }

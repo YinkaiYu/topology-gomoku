@@ -205,6 +205,14 @@ test("三维观赏的上下拖动与左右同样跟手且不受隐藏俯仰硬�
   assert.doesNotMatch(game, /Math\.max\(-1\.12, Math\.min\(1\.12, totalPitch\)\)/);
 });
 
+test("棋盘同时提示玩家进攻点与对手封堵点并保持克制配色", () => {
+  const game = fs.readFileSync(path.join(ROOT, "app", "assets", "game.js"), "utf8");
+  assert.match(game, /Engine\.findLineHints\(game\.board, game\.rules, player\)/);
+  assert.match(game, /\[HUMAN, AI\]\.forEach\(function collectPlayerHints/);
+  assert.match(game, /defensive \? "#d95b4f"/);
+  assert.match(game, /function tacticalHintPriority/);
+});
+
 test("高阶曲面的五子展示会自动朝前且始终附着于曲面交点", () => {
   const game = fs.readFileSync(path.join(ROOT, "app", "assets", "game.js"), "utf8");
   assert.match(game, /var yaw = -Math\.PI \+ yawIndex \/ 40 \* Math\.PI \* 2/);

@@ -169,6 +169,32 @@ test("单边四子只提示尚未封死的第五点", () => {
   assert.deepEqual(hints.filter((hint) => hint.kind === "four"), [{ cell: winningCell, kind: "four" }]);
 });
 
+test("五格路径中间缺一子时也提示唯一补点", () => {
+  const rules = Game.createRules({ type: "plane", width: 7, height: 7, target: 5 });
+  const board = Game.createBoard(rules);
+  put(board, rules, [[1, 3], [2, 3], [4, 3], [5, 3]], Game.HUMAN);
+
+  const gap = Game.toCell(rules, 3, 3);
+  const hints = Game.findLineHints(board, rules, Game.HUMAN);
+  assert.ok(hints.some((hint) => hint.cell === gap && hint.kind === "four"));
+});
+
+test("对手跨越拓扑边界的活三与五缺一使用同一提示计算", () => {
+  const rules = Game.createRules({ type: "cylinder", width: 7, height: 6, target: 5 });
+  const threeBoard = Game.createBoard(rules);
+  put(threeBoard, rules, [[6, 2], [0, 2], [1, 2]], Game.AI);
+  const threeHints = Game.findLineHints(threeBoard, rules, Game.AI);
+  assert.deepEqual(
+    threeHints.filter((hint) => hint.kind === "three").map((hint) => Game.toPoint(rules, hint.cell)),
+    [{ x: 2, y: 2 }, { x: 5, y: 2 }]
+  );
+
+  const fourBoard = Game.createBoard(rules);
+  put(fourBoard, rules, [[5, 2], [6, 2], [1, 2], [2, 2]], Game.AI);
+  const gap = Game.toCell(rules, 0, 2);
+  assert.ok(Game.findLineHints(fourBoard, rules, Game.AI).some((hint) => hint.cell === gap && hint.kind === "four"));
+});
+
 test("第一关教学提示从中心开始并沿玩家的连线继续延伸", () => {
   const rules = Game.createRules({ type: "plane", width: 7, height: 7, target: 5 });
   const board = Game.createBoard(rules);
