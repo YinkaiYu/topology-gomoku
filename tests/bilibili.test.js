@@ -12,11 +12,13 @@ test("Bilibili Toy SDK 通过独立 adapter 接入", () => {
   const adapter = fs.readFileSync(path.join(ROOT, "app", "assets", "bilibili-adapter.js"), "utf8");
   const game = fs.readFileSync(path.join(ROOT, "app", "assets", "game.js"), "utf8");
   assert.match(html, /\/\/s1\.hdslb\.com\/bfs\/seed\/toy\/app\/sdk\/toy-sdk\.js/);
-  assert.match(html, /\.\/assets\/bilibili-adapter\.js\?v=1\.35\.2/);
-  assert.match(adapter, /isSupport\("onContainerChange"\)/);
+  assert.match(html, /\.\/assets\/bilibili-adapter\.js\?v=1\.35\.2-bili\.1/);
   assert.match(adapter, /onContainerChange\(applyContainerState\)/);
-  assert.match(adapter, /requestContainerMode\(false\)/);
-  assert.match(adapter, /setContainerMode\(\{ orientation: "auto", immersive: enabled \}\)/);
+  assert.match(adapter, /supports\("onContainerChange", "onContainerChange"\)/);
+  assert.match(adapter, /supports\("getContainerState", "getContainerState"\)/);
+  assert.match(adapter, /supports\("setContainerMode", "setContainerMode"\)/);
+  assert.match(adapter, /setContainerMode\(\{ immersive: enabled \}\)/);
+  assert.doesNotMatch(adapter, /orientation: "auto"/);
   assert.doesNotMatch(adapter, /immersive: true/);
   assert.match(html, /id="immersiveSwitch"[\s\S]*aria-checked="false"/);
   assert.match(adapter, /setImmersive: function setImmersive\(enabled\)/);
@@ -25,6 +27,54 @@ test("Bilibili Toy SDK 通过独立 adapter 接入", () => {
   assert.match(game, /bindLiquidSwitch\(dom\.immersiveSwitch/);
   assert.match(adapter, /--safe-area-inset-left/);
   assert.match(adapter, /--toy-viewport-height/);
+});
+
+test("沉浸模式文案使用包含沉浸二字的本地字体子集", () => {
+  const html = fs.readFileSync(path.join(ROOT, "app", "index.html"), "utf8");
+  const style = fs.readFileSync(path.join(ROOT, "app", "assets", "style.css"), "utf8");
+  const font = fs.readFileSync(path.join(ROOT, "app", "assets", "fonts", "noto-serif-sc-immersive.woff2"));
+
+  assert.match(html, /class="setting-label setting-label-immersive">沉浸模式<\/span>/);
+  assert.match(style, /font-family:\s*"Topo Serif Immersive"/);
+  assert.match(style, /unicode-range:\s*U\+6C89, U\+6D78/);
+  assert.match(style, /noto-serif-sc-immersive\.woff2\?v=1\.35\.2-bili\.1/);
+  assert.equal(font.toString("ascii", 0, 4), "wOF2");
+  assert.ok(font.length > 2000);
+});
+
+test("沉浸切换不依赖容器状态监听能力", async () => {
+  const vm = require("node:vm");
+  const adapter = fs.readFileSync(path.join(ROOT, "app", "assets", "bilibili-adapter.js"), "utf8");
+  const requestedModes = [];
+  const root = { dataset: {}, style: { setProperty() {} } };
+  const windowStub = {
+    innerHeight: 844,
+    addEventListener() {},
+    removeEventListener() {},
+    dispatchEvent() {},
+    toy: {
+      async isSupport(ability) {
+        return ability === "setContainerMode";
+      },
+      async setContainerMode(mode) {
+        requestedModes.push(mode);
+      }
+    }
+  };
+
+  vm.runInNewContext(adapter, {
+    window: windowStub,
+    document: { documentElement: root },
+    CustomEvent: function CustomEvent() {}
+  });
+
+  const applied = await windowStub.BilibiliToyPlatform.setImmersive(true);
+  assert.equal(applied, true);
+  assert.equal(requestedModes.length, 1);
+  assert.equal(requestedModes[0].immersive, true);
+  assert.deepEqual(Object.keys(requestedModes[0]), ["immersive"]);
+  assert.equal(root.dataset.toyImmersiveRequested, "true");
+  assert.equal(root.dataset.toyContainer, "bilibili-app");
 });
 
 test("三档、动态视口、安全区和输入能力均有确定性适配", () => {

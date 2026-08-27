@@ -161,15 +161,15 @@ test("目录锁定整屏并使用本地内嵌的典雅中文字体", () => {
   assert.doesNotMatch(style, /\.home-scroll\s*\{[^}]*overflow-y:\s*auto/s);
 });
 
-test("终章标题作为同一字体文本运行且字体资源带版本缓存键", () => {
+test("终章标题作为同一字体文本运行且字体资源带平台修订缓存键", () => {
   const html = fs.readFileSync(path.join(ROOT, "app", "index.html"), "utf8");
   const style = fs.readFileSync(path.join(ROOT, "app", "assets", "style.css"), "utf8");
-  assert.match(html, /href="\.\/assets\/style\.css\?v=1\.35\.2"/);
+  assert.match(html, /href="\.\/assets\/style\.css\?v=1\.35\.2-bili\.1"/);
   assert.match(html, /<span class="level-name">归圆<\/span>/);
   assert.doesNotMatch(html, /optical-title-rise/);
   assert.match(style, /\.level-name\s*\{[^}]*font-weight:\s*700/s);
   ["400", "600", "700"].forEach((weight) => {
-    assert.match(style, new RegExp(`noto-serif-sc-${weight}\\.woff2\\?v=1\\.35\\.2`));
+    assert.match(style, new RegExp(`noto-serif-sc-${weight}\\.woff2\\?v=1\\.35\\.2-bili\\.1`));
   });
 });
 

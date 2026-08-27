@@ -59,9 +59,20 @@
       return false;
     }
     var enabled = Boolean(immersive);
-    await sdk.setContainerMode({ orientation: "auto", immersive: enabled });
+    await sdk.setContainerMode({ immersive: enabled });
     root.dataset.toyImmersiveRequested = String(enabled);
     return true;
+  }
+
+  async function supports(ability, method) {
+    if (!sdk || typeof sdk.isSupport !== "function" || typeof sdk[method] !== "function") {
+      return false;
+    }
+    try {
+      return Boolean(await sdk.isSupport(ability));
+    } catch (error) {
+      return false;
+    }
   }
 
   async function initializeSdk() {
@@ -71,21 +82,32 @@
       return;
     }
 
-    try {
-      var supportsContainer = await sdk.isSupport("onContainerChange");
-      if (!supportsContainer || typeof sdk.onContainerChange !== "function") {
-        root.dataset.toyContainer = "browser";
-        return;
-      }
-      var off = sdk.onContainerChange(applyContainerState);
-      if (typeof off === "function") {
-        cleanup.push(off);
-      }
+    var supportsContainerChanges = await supports("onContainerChange", "onContainerChange");
+    var supportsContainerState = await supports("getContainerState", "getContainerState");
+    supportsMode = await supports("setContainerMode", "setContainerMode");
 
-      supportsMode = Boolean(await sdk.isSupport("setContainerMode"));
-      await requestContainerMode(false);
-    } catch (error) {
-      root.dataset.toyContainer = lastState ? "bilibili-app" : "browser";
+    if (supportsContainerChanges) {
+      try {
+        // Register before requesting a mode so no state transition is missed.
+        var off = sdk.onContainerChange(applyContainerState);
+        if (typeof off === "function") {
+          cleanup.push(off);
+        }
+      } catch (error) {
+        supportsContainerChanges = false;
+      }
+    }
+
+    if (!supportsContainerChanges && supportsContainerState) {
+      try {
+        applyContainerState(await sdk.getContainerState());
+      } catch (error) {
+        // Mode control can still work when state observation is unavailable.
+      }
+    }
+
+    if (!lastState) {
+      root.dataset.toyContainer = supportsMode ? "bilibili-app" : "browser";
     }
   }
 
