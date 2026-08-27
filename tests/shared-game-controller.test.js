@@ -181,4 +181,7 @@ test("共享控制与美术模块不依赖 DOM、Web Storage 或微信宿主", (
     const source = fs.readFileSync(path.join(ROOT, "app", "assets", name), "utf8");
     assert.doesNotMatch(source, /\bdocument\b|\blocalStorage\b|\bwx\.|getBoundingClientRect|PointerEvent/);
   });
+  const boardArt = fs.readFileSync(path.join(ROOT, "app", "assets", "board-art.js"), "utf8");
+  assert.match(boardArt, /Engine\.step\(game\.rules, cells\[index\], direction\)/);
+  assert.match(boardArt, /Morph\.seamBridgeUV\(/);
 });
