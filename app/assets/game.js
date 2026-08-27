@@ -1587,6 +1587,20 @@
     }, 540);
   }
 
+  function animateLiquidSelection(control, movingElement, commitSelection) {
+    if (!movingElement.style.translate) {
+      movingElement.style.translate = window.getComputedStyle(movingElement).translate;
+    }
+    control.classList.remove("is-dragging", "is-settling");
+    commitSelection();
+    window.requestAnimationFrame(function releaseLiquidSelection() {
+      movingElement.style.removeProperty("translate");
+      movingElement.style.removeProperty("scale");
+      movingElement.style.removeProperty("transform-origin");
+      settleLiquidControl(control);
+    });
+  }
+
   function setDifficulty(difficulty) {
     if (!DIFFICULTIES[difficulty]) {
       return;
@@ -1613,6 +1627,17 @@
     syncSettingsUI();
     requestRender();
     sound.play("ui");
+  }
+
+  function detentProgress(progress, maximum) {
+    if (progress <= 0 || progress >= maximum) {
+      return progress;
+    }
+    var nearestStop = Math.round(progress);
+    var distance = progress - nearestStop;
+    var normalizedDistance = Math.min(1, Math.abs(distance) * 2);
+    var attractedDistance = Math.pow(normalizedDistance, 2.05) * 0.5;
+    return nearestStop + (distance < 0 ? -attractedDistance : attractedDistance);
   }
 
   function bindDifficultySlider() {
@@ -1656,8 +1681,7 @@
         return;
       }
       var metrics = geometry();
-      var targetButton = event.target.closest("[data-difficulty]");
-      var startIndex = targetButton ? difficultyIndex(targetButton.dataset.difficulty) : difficultyIndex(prefs.difficulty);
+      var startIndex = difficultyIndex(prefs.difficulty);
       drag = {
         pointerId: event.pointerId,
         startX: event.clientX,
@@ -1686,7 +1710,7 @@
       var visualProgress = drag.rawProgress < 0
         ? Math.max(-0.24, drag.rawProgress * 0.56)
         : (drag.rawProgress > 2 ? Math.min(2.24, 2 + (drag.rawProgress - 2) * 0.56) : drag.rawProgress);
-      paint(visualProgress, frameDelta);
+      paint(detentProgress(visualProgress, 2), frameDelta);
       event.preventDefault();
     });
 
@@ -1699,16 +1723,13 @@
         : Math.round(drag.moved ? drag.progress : indexAt(event.clientX, drag.metrics));
       try { control.releasePointerCapture(event.pointerId); } catch (error) { /* Capture may already be released. */ }
       drag = null;
-      control.classList.remove("is-dragging");
-      dom.difficultyThumb.style.removeProperty("translate");
-      dom.difficultyThumb.style.removeProperty("scale");
-      dom.difficultyThumb.style.removeProperty("transform-origin");
-      if (cancelled) {
-        syncSettingsUI();
-      } else {
-        setDifficulty(DIFFICULTY_ORDER[nextIndex]);
-        settleLiquidControl(control);
-      }
+      animateLiquidSelection(control, dom.difficultyThumb, function commitDifficultySelection() {
+        if (cancelled) {
+          syncSettingsUI();
+        } else {
+          setDifficulty(DIFFICULTY_ORDER[nextIndex]);
+        }
+      });
       window.setTimeout(function clearDifficultyPressOrigin() {
         control.style.removeProperty("--press-origin");
       }, 560);
@@ -1728,8 +1749,9 @@
       }
       var button = event.target.closest("[data-difficulty]");
       if (button) {
-        setDifficulty(button.dataset.difficulty);
-        settleLiquidControl(control);
+        animateLiquidSelection(control, dom.difficultyThumb, function commitKeyboardDifficulty() {
+          setDifficulty(button.dataset.difficulty);
+        });
       }
     });
   }
@@ -1788,7 +1810,7 @@
       var visualProgress = rawProgress < 0
         ? Math.max(-0.22, rawProgress * 0.58)
         : (rawProgress > 1 ? Math.min(1.22, 1 + (rawProgress - 1) * 0.58) : rawProgress);
-      paint(visualProgress, frameDelta, drag.travel);
+      paint(detentProgress(visualProgress, 1), frameDelta, drag.travel);
       event.preventDefault();
     });
 
@@ -1799,16 +1821,13 @@
       var nextValue = cancelled ? getValue() : (drag.moved ? drag.progress >= 0.5 : !drag.startProgress);
       try { control.releasePointerCapture(event.pointerId); } catch (error) { /* Capture may already be released. */ }
       drag = null;
-      control.classList.remove("is-dragging");
-      knob.style.removeProperty("translate");
-      knob.style.removeProperty("scale");
-      knob.style.removeProperty("transform-origin");
-      if (cancelled) {
-        syncSettingsUI();
-      } else {
-        setValue(Boolean(nextValue));
-        settleLiquidControl(control);
-      }
+      animateLiquidSelection(control, knob, function commitSwitchSelection() {
+        if (cancelled) {
+          syncSettingsUI();
+        } else {
+          setValue(Boolean(nextValue));
+        }
+      });
       window.setTimeout(function clearSwitchPressOrigin() {
         control.style.removeProperty("--press-origin");
       }, 560);
@@ -1826,8 +1845,9 @@
         event.preventDefault();
         return;
       }
-      setValue(!getValue());
-      settleLiquidControl(control);
+      animateLiquidSelection(control, knob, function commitKeyboardSwitch() {
+        setValue(!getValue());
+      });
     });
   }
 

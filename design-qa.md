@@ -107,3 +107,26 @@
 - [x] Responsive 390 × 844 visual check.
 
 final result: passed
+
+## 2026-08-28 — v1.36 liquid-control detents
+
+**Evidence**
+
+- Final settings state: `artifacts/qa-liquid-detents-v1360.png` at a 390 × 844 CSS viewport.
+- Browser: Codex in-app Browser, using the same local offline H5 files that are packaged for the mini-tool.
+
+**Interactions tested**
+
+- Clicked directly from the middle difficulty to both outer difficulty stops.
+- Dragged the difficulty thumb a partial step away from the active stop and released it.
+- Clicked the hint switch from on to off and observed the complete travel and settlement.
+- Checked the final settings layout, active labels, switch states, and browser console.
+
+**Findings**
+
+- Direct difficulty selection now travels continuously from the previous stop for about 540 ms instead of appearing at the destination in the pointer-up frame.
+- The selected thumb makes one controlled positional overshoot and returns to its exact resting stop; the switch uses the same two-stop motion language.
+- At the 390 px viewport, the strengthened curve maps a 27 px quarter-step pointer offset to about 13 px of target visual travel before the short drag transition, confirming stronger nonlinear detent attraction rather than one-to-one pointer tracking.
+- No clipping, alignment regression, unreadable state, or browser warning/error was observed at 390 × 844.
+
+final result: passed
