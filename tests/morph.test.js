@@ -197,6 +197,14 @@ test("胜负结算常驻棋盘且支持重玩，胜利曲面可以持续柔性�
   assert.match(game, /completion\.elastic\.velocityY \+= yawDelta/);
 });
 
+test("三维观赏的上下拖动与左右同样跟手且不受隐藏俯仰硬限位", () => {
+  const game = fs.readFileSync(path.join(ROOT, "app", "assets", "game.js"), "utf8");
+  assert.match(game, /var yawDelta = deltaX \* 0\.009;/);
+  assert.match(game, /var pitchDelta = deltaY \* 0\.009;/);
+  assert.match(game, /completion\.rotation\.x \+= pitchDelta;/);
+  assert.doesNotMatch(game, /Math\.max\(-1\.12, Math\.min\(1\.12, totalPitch\)\)/);
+});
+
 test("高阶曲面的五子展示会自动朝前且始终附着于曲面交点", () => {
   const game = fs.readFileSync(path.join(ROOT, "app", "assets", "game.js"), "utf8");
   assert.match(game, /var yaw = -Math\.PI \+ yawIndex \/ 40 \* Math\.PI \* 2/);

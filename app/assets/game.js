@@ -1493,11 +1493,6 @@
     if (Math.abs(completion.velocity.y) < 0.00001) {
       completion.velocity.y = 0;
     }
-    var totalPitch = completion.view.x + completion.rotation.x;
-    if (totalPitch < -1.12 || totalPitch > 1.12) {
-      completion.rotation.x = Math.max(-1.12, Math.min(1.12, totalPitch)) - completion.view.x;
-      completion.velocity.x *= -0.18;
-    }
     var elastic = completion.elastic;
     var targetElasticX = Math.max(-0.14, Math.min(0.14, completion.velocity.x * 20));
     var targetElasticY = Math.max(-0.15, Math.min(0.15, completion.velocity.y * 19));
@@ -2492,11 +2487,9 @@
       var deltaX = event.clientX - completion.lastX;
       var deltaY = event.clientY - completion.lastY;
       var yawDelta = deltaX * 0.009;
-      var pitchDelta = deltaY * 0.0072;
+      var pitchDelta = deltaY * 0.009;
       completion.rotation.y += yawDelta;
       completion.rotation.x += pitchDelta;
-      var totalPitch = completion.view.x + completion.rotation.x;
-      completion.rotation.x = Math.max(-1.12, Math.min(1.12, totalPitch)) - completion.view.x;
       completion.velocity.y = yawDelta / deltaTime;
       completion.velocity.x = pitchDelta / deltaTime;
       completion.elastic.velocityY += yawDelta * 0.18;
