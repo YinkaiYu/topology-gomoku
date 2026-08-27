@@ -131,11 +131,13 @@ test("前后台暂停会冻结 AI 截止时间而不是回前台立即落子", (
   controller.startLevel(1, { skipDemo: true }, 0);
   const humanCell = Engine.toCell(controller.game.rules, 3, 3);
   controller.performMove(humanCell, Engine.HUMAN, null, 100);
+  const lastMoveAt = controller.game.lastMoveAt;
   assert.equal(controller.nextScheduledAt(), 100 + Content.DIFFICULTIES.normal.wait);
   controller.pause(200);
   assert.equal(controller.nextScheduledAt(), null);
   controller.resume(1200);
   assert.equal(controller.nextScheduledAt(), 1100 + Content.DIFFICULTIES.normal.wait);
+  assert.equal(controller.game.lastMoveAt, lastMoveAt + 1000);
   controller.tick(1500);
   assert.equal(controller.game.moves.length, 1);
   controller.tick(1620);
