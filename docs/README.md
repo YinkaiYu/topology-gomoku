@@ -17,6 +17,7 @@
 | [`development/repository.md`](development/repository.md) | 分支职责、worktree、预览门禁、提升与发布流 |
 | [`development/environment.md`](development/environment.md) | Node、PowerShell、uv、Python 字体工具与依赖维护 |
 | [`development/documentation.md`](development/documentation.md) | 文档信息归属、变更触发矩阵与自动门禁 |
+| [`development/architecture.md`](development/architecture.md) | 共享游戏核心、Canvas 美术与平台 adapter 的职责边界 |
 | [`development/release.md`](development/release.md) | 维护者专属的 `dev → main → 三平台` 与统一版本流程 |
 
 ## 设计文档
