@@ -171,6 +171,10 @@ button,
   pointer-events: none;
 }
 
+.app-shell.is-navigating .home-screen {
+  transform: none;
+}
+
 .game-screen.is-shared-enter .board-stage {
   opacity: 0;
 }

@@ -195,8 +195,9 @@ test("顶部交互区在安全区缺失时仍避开宿主悬浮按钮", () => {
   assert.doesNotMatch(style, /\.hero::after/);
 });
 
-test("关卡卡片与棋盘使用可逆共享元素弹性过渡", () => {
+test("关卡卡片展开时目录保持原位并以液态弹性共享元素进入棋盘", () => {
   const game = fs.readFileSync(path.join(ROOT, "app", "assets", "game.js"), "utf8");
+  const style = fs.readFileSync(path.join(ROOT, "app", "assets", "style.css"), "utf8");
   assert.match(game, /startLevel\(index, \{ transitionCard: card \}\)/);
   assert.match(game, /function animateCardIntoBoard\(/);
   assert.match(game, /function animateBoardBackToCard\(/);
@@ -205,8 +206,15 @@ test("关卡卡片与棋盘使用可逆共享元素弹性过渡", () => {
   assert.match(game, /cardLayer\.classList\.add\("transition-card-content"\)/);
   assert.match(game, /REVERSIBLE_MOTION_DURATION\s*=\s*380/);
   assert.match(game, /REVERSIBLE_MOTION_EASING\s*=\s*"cubic-bezier\(0\.37, 0, 0\.63, 1\)"/);
-  assert.ok((game.match(/duration:\s*REVERSIBLE_MOTION_DURATION/g) || []).length >= 4);
-  assert.ok((game.match(/easing:\s*REVERSIBLE_MOTION_EASING/g) || []).length >= 4);
+  assert.ok((game.match(/duration:\s*REVERSIBLE_MOTION_DURATION/g) || []).length >= 3);
+  assert.ok((game.match(/easing:\s*REVERSIBLE_MOTION_EASING/g) || []).length >= 3);
+  assert.match(game, /LIQUID_CARD_ENTRY_DURATION\s*=\s*580/);
+  assert.match(game, /LIQUID_CARD_ENTRY_EASING\s*=\s*"linear"/);
+  assert.match(game, /offset:\s*0\.62[\s\S]*offset:\s*0\.8[\s\S]*offset:\s*0\.92/);
+  assert.match(game, /scale\(" \+ stretchX \+ ", " \+ stretchY/);
+  assert.match(game, /borderRadius:\s*"33px 27px 31px 26px"/);
+  assert.match(style, /\.app-shell\.is-navigating \.home-screen\s*\{[^}]*transform:\s*none/s);
+  assert.match(game, /if \(transition\) \{\s*dom\.appShell\.classList\.add\("is-navigating"\);\s*\}\s*dom\.gameScreen\.classList\.toggle\("is-shared-enter"/s);
   assert.match(game, /is-shared-return/);
   assert.match(game, /paintRealCardBelowTransition/);
   assert.match(game, /is-transition-ready/);
