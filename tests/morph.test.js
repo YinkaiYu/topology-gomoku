@@ -472,9 +472,10 @@ test("设置页使用液态玻璃层次且三个控件均支持连续拖动", ()
   assert.match(style, /\.switch\.is-dragging i/);
   assert.match(style, /\.segmented\.is-dragging\s*\{\s*transform: none/);
   assert.match(style, /\.switch\.is-dragging\s*\{\s*transform: none/);
-  assert.match(style, /--liquid-snap:\s*cubic-bezier\(0\.2, 1\.38, 0\.32, 1\)/);
-  assert.match(style, /\.segmented\.is-dragging \.segmented-glass-thumb\s*\{[\s\S]*transition:\s*translate 92ms var\(--liquid-drag\), scale 108ms var\(--liquid-drag\)/);
-  assert.match(style, /\.switch\.is-dragging i\s*\{[\s\S]*transition:\s*translate 82ms var\(--liquid-drag\), scale 98ms var\(--liquid-drag\)/);
+  assert.match(style, /--liquid-snap:\s*cubic-bezier\(0\.32, 0\.05, 0\.2, 1\.13\)/);
+  assert.match(style, /translate var\(--liquid-glide-duration, 800ms\) var\(--liquid-snap\)/);
+  assert.match(style, /\.segmented\.is-dragging \.segmented-glass-thumb\s*\{[\s\S]*transition:\s*translate 146ms var\(--liquid-drag\), scale 162ms var\(--liquid-drag\)/);
+  assert.match(style, /\.switch\.is-dragging i\s*\{[\s\S]*transition:\s*translate 136ms var\(--liquid-drag\), scale 152ms var\(--liquid-drag\)/);
   assert.match(style, /\.segmented\s*\{[\s\S]*overflow:\s*visible/);
   assert.match(style, /\.switch\s*\{[\s\S]*overflow:\s*visible/);
   assert.match(style, /\.switch\s*\{[\s\S]*width:\s*66px/);
@@ -492,7 +493,11 @@ test("设置页使用液态玻璃层次且三个控件均支持连续拖动", ()
   assert.equal((game.match(/style\.removeProperty\("scale"\)/g) || []).length, 1);
   assert.equal((game.match(/style\.translate = /g) || []).length, 3);
   assert.equal((game.match(/style\.removeProperty\("translate"\)/g) || []).length, 1);
-  assert.match(game, /function animateLiquidSelection\(control, movingElement, commitSelection\)/);
+  assert.match(game, /function liquidGlideDuration\(control, travelDistance, directSelection\)/);
+  assert.match(game, /if \(directSelection\) \{\s*return Math\.round\(540 \+ distance \* 100\)/);
+  assert.match(game, /return Math\.round\(680 \+ distance \* 120\)/);
+  assert.match(game, /function animateLiquidSelection\(control, movingElement, travelDistance, directSelection, commitSelection\)/);
+  assert.match(game, /--liquid-glide-duration/);
   assert.match(game, /requestAnimationFrame\(function releaseLiquidSelection/);
   assert.match(html, /class="segmented-lens-track"><b>随性<\/b><b>机敏<\/b><b>深思<\/b><\/span>/);
   assert.match(html, /class="switch-lens-track"/);
