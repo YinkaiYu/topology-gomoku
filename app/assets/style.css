@@ -903,6 +903,10 @@ button,
   display: none;
 }
 
+.endgame-review-tools [hidden] {
+  display: none;
+}
+
 .endgame-review-tools.is-reserved {
   visibility: hidden;
   pointer-events: none;

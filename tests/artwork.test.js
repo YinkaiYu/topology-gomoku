@@ -224,13 +224,13 @@ test("棋盘回合状态胶囊使用通透且克制折射的液态玻璃", () =>
   assert.match(style, /\.turn-status::after\s*\{[^}]*border:\s*1px solid rgba\(255, 255, 255, 0\.24\)/s);
 });
 
-test("第一关首次通关后自动以现有切关动效进入第二关", () => {
+test("第一关每次通关后都自动以现有切关动效进入第二关", () => {
   const game = fs.readFileSync(path.join(ROOT, "app", "assets", "game.js"), "utf8");
   const style = fs.readFileSync(path.join(ROOT, "app", "assets", "style.css"), "utf8");
-  assert.match(game, /firstTutorialCompletion\s*=\s*outcome === "win"/);
-  assert.match(game, /!prefs\.completed\[game\.levelIndex\]/);
+  assert.match(game, /firstLevelAutoAdvance\s*=\s*passed\s*&&\s*game\.levelIndex === 0/);
+  assert.doesNotMatch(game, /firstTutorialCompletion|!prefs\.completed\[game\.levelIndex\]/);
   assert.match(game, /TUTORIAL_AUTO_ADVANCE_DELAY\s*=\s*820/);
   assert.match(game, /transitionToLevel\(1, \{\}\)/);
-  assert.match(game, /game\.autoAdvancePending\s*=\s*firstTutorialCompletion/);
+  assert.match(game, /game\.autoAdvancePending\s*=\s*firstLevelAutoAdvance/);
   assert.match(style, /\.game-tools\.is-auto-advancing\s*\{[^}]*visibility:\s*hidden/s);
 });
