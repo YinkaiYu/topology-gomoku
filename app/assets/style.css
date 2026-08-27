@@ -34,6 +34,7 @@
   --red-dark: #bd493f;
   --teal: #3f8c87;
   --gold: #c79244;
+  --spatial: #8b7556;
   --violet: #7f6ca8;
   --shadow: 0 18px 45px rgba(57, 51, 42, 0.09);
   --spring: cubic-bezier(0.18, 1.22, 0.32, 1);
@@ -892,6 +893,12 @@ button,
   display: none;
 }
 
+.endgame-review-tools.is-reserved {
+  visibility: hidden;
+  pointer-events: none;
+  animation: none;
+}
+
 .endgame-review-tools.has-no-dimension {
   grid-template-columns: repeat(3, minmax(0, 1fr));
 }
@@ -899,6 +906,7 @@ button,
 .endgame-review-tools .tool-button {
   width: 100%;
   height: 50px;
+  color: var(--muted);
 }
 
 .endgame-review-tools .review-toggle-button {
@@ -906,12 +914,7 @@ button,
 }
 
 .endgame-review-tools .dimension-toggle-button {
-  color: #8b7556;
-}
-
-.endgame-review-tools.is-reviewing #reviewPreviousButton:not(:disabled),
-.endgame-review-tools.is-reviewing #reviewNextButton:not(:disabled) {
-  color: var(--ink);
+  color: var(--spatial);
 }
 
 @keyframes endgame-tools-arrive {
@@ -923,14 +926,10 @@ button,
   display: grid;
   flex: 0 0 auto;
   min-height: 52px;
-  grid-template-columns: 64px 1fr 64px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   align-items: center;
   gap: 8px;
   padding-top: 0;
-}
-
-.game-tools.is-ended {
-  grid-template-columns: repeat(3, minmax(0, 1fr));
 }
 
 .game-tools.is-basic-tutorial {
@@ -951,12 +950,11 @@ button,
 
 .game-tools.is-ended .tool-button {
   width: 100%;
-  color: var(--ink);
+  color: var(--muted);
 }
 
 .game-tools.is-ended .journey-button {
   grid-column: 1;
-  color: var(--muted);
 }
 
 .game-tools.is-ended .settled-replay-button {
@@ -998,8 +996,9 @@ button,
   height: 20px;
 }
 
+.boundary-demo-button,
 .boundary-demo-button.is-active {
-  color: var(--teal);
+  color: var(--spatial);
 }
 
 .boundary-demo-button.is-active svg {

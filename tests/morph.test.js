@@ -75,7 +75,7 @@ test("底部只保留无卡片的边界演示工具按钮", () => {
   assert.match(game, /function replayBoundaryLesson\(\)[\s\S]*transitionToLevel\(levelIndex, \{\s*introMode: "lesson",\s*lessonReturn: lessonReturn\s*\}\)/);
   assert.match(game, /dom\.boundaryDemoButton\.addEventListener\("click", replayBoundaryLesson\)/);
   assert.doesNotMatch(style, /\.rule-caption/);
-  assert.match(style, /\.boundary-demo-button\.is-active\s*\{\s*color:\s*var\(--teal\)/);
+  assert.match(style, /\.boundary-demo-button,[\s\S]*\.boundary-demo-button\.is-active\s*\{\s*color:\s*var\(--spatial\)/);
   assert.match(style, /\.game-tools > #restartButton\s*\{\s*grid-column:\s*3/);
   assert.match(style, /\.game-tools\.is-basic-tutorial\s*\{\s*grid-template-columns:\s*repeat\(3, minmax\(0, 1fr\)\)/);
 });
@@ -376,7 +376,8 @@ test("复盘与二维三维切换相互独立，曲面可以持续柔性拖动",
   assert.match(style, /\.game-tools\.is-ended \.next-level-button\s*\{[\s\S]*grid-column:\s*3/);
   assert.match(html, /id="journeyButton"[^>]+aria-label="返回旅程"/);
   assert.match(game, /dom\.journeyButton\.hidden = !ended;/);
-  assert.match(game, /dom\.nextLevelButton\.hidden = !ended \|\| !hasNextLevel;/);
+  assert.match(game, /dom\.nextLevelButton\.hidden = !ended;/);
+  assert.match(game, /dom\.nextLevelButton\.disabled = dimensionTransitioning \|\| !hasNextLevel;/);
   assert.match(game, /function handleJourney\(\) \{\s*if \(isEndedView\(\)\) \{\s*leaveGame\(\)/);
   assert.match(game, /journeyButton\.addEventListener\("click", handleJourney\)/);
   assert.doesNotMatch(game, /showResult\(/);
@@ -388,11 +389,24 @@ test("复盘与二维三维切换相互独立，曲面可以持续柔性拖动",
 });
 
 test("标题、状态、棋盘与两层操作区使用统一垂直节奏", () => {
+  const game = fs.readFileSync(path.join(ROOT, "app", "assets", "game.js"), "utf8");
   const style = fs.readFileSync(path.join(ROOT, "app", "assets", "style.css"), "utf8");
   assert.match(style, /\.game-screen\s*\{[\s\S]*--game-vertical-gap:\s*10px;[\s\S]*row-gap:\s*var\(--game-vertical-gap\)/);
   assert.match(style, /\.match-strip\s*\{[\s\S]*margin:\s*0 4px/);
   assert.match(style, /\.endgame-review-tools\s*\{[\s\S]*min-height:\s*52px;[\s\S]*padding-top:\s*0/);
-  assert.match(style, /\.game-tools\s*\{[\s\S]*flex:\s*0 0 auto;[\s\S]*min-height:\s*52px;[\s\S]*padding-top:\s*0/);
+  assert.match(style, /\.endgame-review-tools\.is-reserved\s*\{[\s\S]*visibility:\s*hidden;[\s\S]*pointer-events:\s*none/);
+  assert.match(style, /\.game-tools\s*\{[\s\S]*flex:\s*0 0 auto;[\s\S]*min-height:\s*52px;[\s\S]*grid-template-columns:\s*repeat\(3, minmax\(0, 1fr\)\);[\s\S]*padding-top:\s*0/);
+  assert.match(game, /dom\.endgameReviewTools\.hidden = false;[\s\S]*classList\.toggle\("is-reserved", !ended \|\| autoAdvancing\)/);
+});
+
+test("终局操作以中性色为底并只保留两组克制强调色", () => {
+  const style = fs.readFileSync(path.join(ROOT, "app", "assets", "style.css"), "utf8");
+  assert.match(style, /\.endgame-review-tools \.tool-button\s*\{[\s\S]*color:\s*var\(--muted\)/);
+  assert.match(style, /\.game-tools\.is-ended \.tool-button\s*\{[\s\S]*color:\s*var\(--muted\)/);
+  assert.match(style, /\.endgame-review-tools \.review-toggle-button\s*\{\s*color:\s*var\(--teal\)/);
+  assert.match(style, /\.game-tools\.is-ended \.next-level-button\s*\{[\s\S]*color:\s*var\(--teal\)/);
+  assert.match(style, /\.endgame-review-tools \.dimension-toggle-button\s*\{\s*color:\s*var\(--spatial\)/);
+  assert.match(style, /\.boundary-demo-button,[\s\S]*\.boundary-demo-button\.is-active\s*\{\s*color:\s*var\(--spatial\)/);
 });
 
 test("三维观赏的上下拖动与左右同样跟手且不受隐藏俯仰硬限位", () => {

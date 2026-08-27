@@ -1095,7 +1095,9 @@
     dom.gameTools.classList.toggle("has-next-level", ended && hasNextLevel);
     dom.gameTools.classList.toggle("is-auto-advancing", autoAdvancing);
     dom.gameTools.classList.toggle("is-basic-tutorial", !ended && game.levelIndex === 0);
-    dom.endgameReviewTools.hidden = !ended || autoAdvancing;
+    dom.endgameReviewTools.hidden = false;
+    dom.endgameReviewTools.classList.toggle("is-reserved", !ended || autoAdvancing);
+    dom.endgameReviewTools.setAttribute("aria-hidden", String(!ended || autoAdvancing));
     dom.endgameReviewTools.classList.toggle("is-reviewing", reviewing);
     dom.endgameReviewTools.classList.toggle("has-no-dimension", !canToggleDimension);
     dom.humanChip.hidden = false;
@@ -1114,7 +1116,7 @@
     dom.undoButton.hidden = ended;
     dom.journeyButton.hidden = !ended;
     dom.settledReplayButton.hidden = !ended;
-    dom.nextLevelButton.hidden = !ended || !hasNextLevel;
+    dom.nextLevelButton.hidden = !ended;
     dom.restartButton.hidden = ended;
 
     if (ended) {
@@ -1131,9 +1133,9 @@
       dom.settledReplayButton.setAttribute("aria-label", "再玩一次");
       dom.settledReplayButtonText.textContent = "再来";
       dom.settledReplayIconPath.setAttribute("d", "M20 7v5h-5M19 12a7 7 0 1 0-2 5");
-      dom.nextLevelButton.disabled = dimensionTransitioning;
+      dom.nextLevelButton.disabled = dimensionTransitioning || !hasNextLevel;
       dom.journeyButton.disabled = dimensionTransitioning;
-      dom.nextLevelButton.setAttribute("aria-label", "进入下一关");
+      dom.nextLevelButton.setAttribute("aria-label", hasNextLevel ? "进入下一关" : "下一关不可用");
       dom.nextLevelButtonText.textContent = "下一关";
       dom.nextLevelIconPath.setAttribute("d", "m9 6 6 6-6 6");
       dom.dimensionToggleButton.setAttribute("aria-label", surfaceVisible ? "查看二维棋盘" : "查看三维棋局");
