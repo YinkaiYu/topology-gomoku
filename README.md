@@ -5,7 +5,7 @@
   <p>
     <img alt="离线游戏" src="https://img.shields.io/badge/完全离线-27241F?style=flat-square" />
     <img alt="七种拓扑" src="https://img.shields.io/badge/拓扑世界-7-B85C38?style=flat-square" />
-    <img alt="三个平台" src="https://img.shields.io/badge/发布平台-3-5A7D6A?style=flat-square" />
+    <img alt="三个目标平台" src="https://img.shields.io/badge/目标平台-3-5A7D6A?style=flat-square" />
     <img alt="MIT License" src="https://img.shields.io/badge/license-MIT-4A6484?style=flat-square" />
   </p>
   <p>一个把五子棋放进圆柱、莫比乌斯带、环面与克莱因瓶的小游戏。</p>
@@ -42,18 +42,22 @@
 
 ## 正在前往更多地方
 
-- 小红书小工具：现有发行版本
-- Bilibili Toy：原生版本准备中
-- 微信小程序：原生版本准备中
+- 小红书小工具：当前 H5 基线与离线包发布目标
+- Bilibili Toy：已有专属 adapter 与发行分支，仍在适配验证
+- 微信小程序：已预留发行分支，原生适配尚未开始
 
 我们希望不同平台上的拓扑五子棋都像真正属于那里，而不是简单套上一层外壳。
+
+## 开发与文档
+
+项目的设计语言、环境管理、分支/worktree 流程和视觉 QA 均从 [docs/README.md](docs/README.md) 进入。参与开发前请先阅读 [CONTRIBUTING.md](CONTRIBUTING.md)；Agent 还必须遵守 [AGENTS.md](AGENTS.md)。
 
 ## 把你的想法放上棋盘
 
 想参与贡献？把下面这段话发给你的 Agent 就好：
 
 ```text
-请帮我参与开源项目“拓扑五子棋”：https://github.com/YinkaiYu/topology-gomoku 。请先读取仓库里的 Agent 协作说明和贡献约定，了解当前分支与 worktree；从 dev 开始选择一个合适的 Issue，或提出一个范围清晰的小创意，完成实现、必要测试和自检，然后为我准备一份可审查的 Pull Request。不要直接在 main 或平台发行分支上开发，也不要提交密钥、构建产物或与任务无关的改动。
+请帮我参与开源项目“拓扑五子棋”：https://github.com/YinkaiYu/topology-gomoku 。请先完整读取仓库里的 AGENTS.md 和贡献约定，确认当前分支与 worktree；从最新 dev 创建独立的 codex/<task> 分支和 worktree，选择一个范围清晰的 Issue 或小创意。完成实现、必要测试和自检后，在该任务 worktree 拉起本地预览交给我确认；得到我的明确确认前不要合并，确认后只向 dev 提交贡献。不要直接修改 main、dev 或三个平台发行 worktree，也不要提交密钥、构建产物或与任务无关的改动。dev 到 main 以及三个平台的发布同步由仓库维护者负责。
 ```
 
 <div align="center">
