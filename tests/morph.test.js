@@ -330,24 +330,32 @@ test("设置页使用液态玻璃层次且三个控件均支持连续拖动", ()
   assert.match(html, /id="difficultyThumb"/);
   assert.match(game, /function bindDifficultySlider\(\)/);
   assert.match(game, /function bindLiquidSwitch\(control, getValue, setValue\)/);
+  assert.doesNotMatch(game, /showToast\("对手 · "/);
   assert.match(game, /setPointerCapture\(event\.pointerId\)/);
   assert.match(game, /drag\.progress = Math\.max\(0, Math\.min\(1, drag\.startProgress \+ totalDelta \/ drag\.travel\)\)/);
-  assert.match(style, /\.settings-sheet\s*\{[\s\S]*background:[\s\S]*rgba\(237, 246, 241, 0\.025\)[\s\S]*backdrop-filter: blur\(6px\) saturate\(1\.52\) brightness\(1\.045\) contrast\(0\.97\)/);
-  assert.match(style, /\.settings-sheet::before\s*\{[\s\S]*mask-composite: exclude/);
-  assert.match(style, /\.settings-sheet::after\s*\{[\s\S]*inset: 5px[\s\S]*inset 1px 1px 3px/);
+  assert.match(style, /\.settings-sheet\s*\{[\s\S]*overflow:\s*visible[\s\S]*background:\s*transparent[\s\S]*backdrop-filter:\s*none/);
+  assert.match(style, /\.settings-sheet::before\s*\{[\s\S]*filter:\s*drop-shadow/);
+  assert.match(style, /\.settings-sheet::after\s*\{[\s\S]*inset:\s*1\.5px[\s\S]*backdrop-filter:\s*blur\(5px\) saturate\(1\.45\)/);
   assert.match(style, /\.segmented\.is-dragging \.segmented-glass-thumb/);
   assert.match(style, /\.switch\.is-dragging i/);
   assert.match(style, /\.segmented\.is-dragging\s*\{\s*transform: none/);
   assert.match(style, /\.switch\.is-dragging\s*\{\s*transform: none/);
   assert.match(style, /\.segmented\s*\{[\s\S]*overflow:\s*visible/);
   assert.match(style, /\.switch\s*\{[\s\S]*overflow:\s*visible/);
-  assert.match(game, /var lift = 1\.16 \+ energy \* 0\.1/);
-  assert.match(game, /var lift = 1\.3 \+ energy \* 0\.1/);
-  assert.match(style, /@keyframes liquid-thumb-settle\s*\{[\s\S]*scale:\s*1\.3 1\.22/);
-  assert.match(style, /@keyframes liquid-knob-settle\s*\{[\s\S]*scale:\s*1\.44 1\.34/);
+  assert.equal((game.match(/var lift = 1\.62 \+ energy \* 0\.08/g) || []).length, 2);
+  assert.match(style, /\.segmented\.is-dragging \.segmented-glass-thumb\s*\{[\s\S]*blur\(0\.22px\)[\s\S]*rgba\(255, 255, 255, 0\.18\)/);
+  assert.match(style, /\.switch\.is-dragging i\s*\{[\s\S]*blur\(0\.22px\)[\s\S]*rgba\(255, 255, 255, 0\.18\)/);
+  assert.match(style, /@keyframes liquid-thumb-settle\s*\{[\s\S]*scale:\s*1\.34 1\.58/);
+  assert.match(style, /@keyframes liquid-knob-settle\s*\{[\s\S]*scale:\s*1\.48 1\.58/);
   assert.match(style, /@keyframes liquid-thumb-settle/);
   assert.match(style, /@keyframes liquid-knob-settle/);
-  assert.match(style, /@keyframes liquid-control-glint/);
+  assert.doesNotMatch(style, /@keyframes liquid-control-glint/);
+  assert.equal((game.match(/style\.scale = stretch \+ " " \+ lift/g) || []).length, 2);
+  assert.equal((game.match(/style\.removeProperty\("scale"\)/g) || []).length, 2);
+  assert.equal((game.match(/style\.translate = /g) || []).length, 2);
+  assert.equal((game.match(/style\.removeProperty\("translate"\)/g) || []).length, 2);
+  assert.match(style, /\.segmented-glass-thumb::before\s*\{[\s\S]*inset:\s*36% 10%[\s\S]*border-radius:\s*999px/);
+  assert.match(style, /\.switch\.is-on\.is-dragging i::before\s*\{[\s\S]*background:\s*rgba\(28, 139, 112, 0\.43\)/);
 });
 
 test("目录卡片、棋盘与顶栏按钮共享通透液态玻璃语言", () => {
@@ -356,7 +364,18 @@ test("目录卡片、棋盘与顶栏按钮共享通透液态玻璃语言", () =>
   assert.match(style, /\.board-stage\s*\{[\s\S]*backdrop-filter: blur\(6px\) saturate\(1\.34\)/);
   assert.match(style, /\.board-stage::after/);
   assert.match(style, /\.icon-button\s*\{[\s\S]*backdrop-filter: blur\(4px\) saturate\(1\.48\)/);
-  assert.match(style, /\.icon-button:active\s*\{[\s\S]*scaleX\(0\.82\) scaleY\(0\.88\)/);
+  assert.match(style, /\.icon-button:active\s*\{[\s\S]*scaleX\(1\.12\) scaleY\(1\.1\)/);
+});
+
+test("所有可按压玻璃控件在手指按下时向外鼓起而非缩小", () => {
+  const style = fs.readFileSync(path.join(ROOT, "app", "assets", "style.css"), "utf8");
+  assert.match(style, /\.level-card:active\s*\{[\s\S]*scaleX\(1\.035\) scaleY\(1\.025\)/);
+  assert.match(style, /\.primary-button:active,[\s\S]*scaleX\(1\.035\) scaleY\(1\.07\)/);
+  assert.match(style, /\.tool-button:active\s*\{[\s\S]*scale\(1\.12\)/);
+  assert.match(style, /\.developer-fab:active\s*\{[\s\S]*scale\(1\.08\)/);
+  assert.match(style, /\.settings-sheet \.close-button:active\s*\{[\s\S]*scaleX\(1\.14\) scaleY\(1\.12\)/);
+  assert.match(style, /\.settings-sheet \.sheet-done:active\s*\{[\s\S]*scaleX\(1\.035\) scaleY\(1\.08\)/);
+  assert.match(style, /\.developer-reset:active\s*\{[\s\S]*scale\(1\.06\)/);
 });
 
 test("设置面板以可逆梯形软体层展开且支持抓住顶部下拉收回", () => {
@@ -365,16 +384,23 @@ test("设置面板以可逆梯形软体层展开且支持抓住顶部下拉收�
   const style = fs.readFileSync(path.join(ROOT, "app", "assets", "style.css"), "utf8");
   assert.match(html, /class="settings-softbody"/);
   assert.match(style, /--reversible-motion:\s*cubic-bezier\(0\.37, 0, 0\.63, 1\)/);
-  assert.match(style, /--reversible-duration:\s*460ms/);
-  assert.match(style, /\.sheet\.settings-sheet\s*\{[\s\S]*clip-path: polygon\(10% 0, 90% 0, 70% 100%, 30% 100%\)/);
+  assert.match(style, /--reversible-duration:\s*380ms/);
+  assert.doesNotMatch(style, /\.sheet\.settings-sheet\s*\{[^}]*clip-path/s);
   assert.match(style, /\.sheet\.settings-sheet\s*\{[\s\S]*transform var\(--reversible-duration\) var\(--reversible-motion\)/);
   assert.match(style, /\.sheet\.settings-sheet\.is-visible\s*\{[\s\S]*clip-path: polygon\(0 0, 100% 0, 100% 100%, 0 100%\)/);
-  assert.match(style, /\.settings-softbody\s*\{[\s\S]*scaleX\(0\.84\) scaleY\(0\.94\)[\s\S]*var\(--reversible-duration\) var\(--reversible-motion\)/);
+  assert.match(style, /\.settings-softbody\s*\{[\s\S]*translateY\(22px\) scaleY\(0\.94\)[\s\S]*var\(--reversible-duration\) var\(--reversible-motion\)/);
+  assert.doesNotMatch(style, /\.settings-softbody\s*\{[^}]*clip-path/s);
+  assert.match(style, /\.settings-softbody > \.sheet-head\s*\{\s*transform:\s*scaleX\(0\.74\)/);
+  assert.match(style, /\.settings-softbody > \.setting-row:nth-child\(5\)\s*\{\s*transform:\s*scaleX\(0\.48\)/);
+  assert.match(style, /\.settings-softbody > \.sheet-done\s*\{\s*transform:\s*scaleX\(0\.4\)/);
   assert.match(style, /\.settings-sheet\.is-visible::before,[\s\S]*\.settings-sheet\.is-visible::after/);
   assert.match(style, /\.sheet\.settings-sheet\.is-visible \.sheet-head,[\s\S]*animation:\s*none/);
   assert.match(game, /function bindSettingsSheetDismiss\(\)/);
   assert.match(game, /drag\.distance > 82 \|\| drag\.velocity > 0\.72/);
-  assert.match(game, /sheet\.style\.clipPath = "polygon\("/);
+  assert.doesNotMatch(game, /sheet\.style\.clipPath = "polygon\("/);
+  assert.match(game, /function paintSheetCollapse\(progress, distance\)/);
+  assert.match(game, /softLayers\.forEach\(function paintSoftLayer/);
+  assert.match(game, /--sheet-edge-bottom/);
   assert.match(game, /REVERSIBLE_MOTION_DURATION \+ 30/);
   assert.match(game, /bindSettingsSheetDismiss\(\);/);
 });

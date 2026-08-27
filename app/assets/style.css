@@ -39,7 +39,7 @@
   --spring: cubic-bezier(0.18, 1.22, 0.32, 1);
   --soft-out: cubic-bezier(0.16, 0.84, 0.24, 1);
   --reversible-motion: cubic-bezier(0.37, 0, 0.63, 1);
-  --reversible-duration: 460ms;
+  --reversible-duration: 380ms;
   --safe-top: var(--safe-area-inset-top, env(safe-area-inset-top, 0px));
   --safe-bottom: var(--safe-area-inset-bottom, env(safe-area-inset-bottom, 0px));
   --host-chrome-clearance: clamp(24px, 3.6vh, 32px);
@@ -280,12 +280,12 @@ button,
 
 .icon-button:active {
   border-radius: 54% 46% 51% 49%;
-  transform: scaleX(0.82) scaleY(0.88) rotate(-2deg);
-  background: rgba(255, 255, 255, 0.27);
+  transform: scaleX(1.12) scaleY(1.1) rotate(-1deg);
+  background: rgba(255, 255, 255, 0.11);
   box-shadow:
-    inset 0 2px 3px rgba(31, 75, 61, 0.12),
-    inset 0 -1px 1px rgba(255, 255, 255, 0.76),
-    0 3px 8px rgba(39, 69, 58, 0.05);
+    inset 0 1px 2px rgba(31, 75, 61, 0.06),
+    inset 0 -1px 1px rgba(255, 255, 255, 0.28),
+    0 10px 20px rgba(39, 69, 58, 0.11);
 }
 
 .icon-button svg,
@@ -480,11 +480,12 @@ button,
 
 .level-card:active {
   border-radius: 23px 19px 23px 19px;
-  transform: scaleX(0.955) scaleY(0.925) rotate(-0.35deg);
+  z-index: 4;
+  transform: scaleX(1.035) scaleY(1.025) rotate(-0.2deg);
   box-shadow:
-    inset 0 2px 3px rgba(47, 92, 76, 0.11),
-    inset 0 -1px 1px rgba(255, 255, 255, 0.72),
-    0 5px 13px rgba(43, 70, 58, 0.045);
+    inset 0 1px 2px rgba(47, 92, 76, 0.055),
+    inset 0 -1px 1px rgba(255, 255, 255, 0.28),
+    0 15px 30px rgba(43, 70, 58, 0.11);
 }
 
 .level-card.is-locked {
@@ -693,8 +694,8 @@ button,
 .primary-button:active,
 .secondary-button:active,
 .sheet-done:active {
-  transform: scale(0.94);
-  filter: brightness(0.96);
+  transform: scaleX(1.035) scaleY(1.07);
+  filter: brightness(1.02);
 }
 
 .primary-button {
@@ -976,8 +977,8 @@ button,
 
 .tool-button:active {
   color: var(--ink);
-  background: rgba(255, 255, 255, 0.5);
-  transform: scale(0.88) translateY(1px);
+  background: rgba(255, 255, 255, 0.18);
+  transform: scale(1.12) translateY(-1px);
 }
 
 .tool-button:disabled {
@@ -1096,8 +1097,8 @@ button,
 }
 
 .developer-fab:active {
-  filter: brightness(0.92);
-  transform: scale(0.94);
+  filter: brightness(1.03);
+  transform: scale(1.08);
 }
 
 .sheet {
@@ -1117,62 +1118,45 @@ button,
 
 .settings-sheet {
   isolation: isolate;
-  overflow: hidden;
+  overflow: visible;
   padding: 11px 20px 18px;
-  border: 1px solid rgba(255, 255, 255, 0.53);
+  border: 0;
   border-radius: 38px 38px 31px 31px / 35px 35px 29px 29px;
-  background:
-    linear-gradient(145deg, rgba(255, 255, 255, 0.095), rgba(230, 242, 236, 0.025) 44%, rgba(128, 190, 168, 0.045)),
-    rgba(237, 246, 241, 0.025);
-  -webkit-backdrop-filter: blur(6px) saturate(1.52) brightness(1.045) contrast(0.97);
-  backdrop-filter: blur(6px) saturate(1.52) brightness(1.045) contrast(0.97);
-  box-shadow:
-    0 28px 70px rgba(24, 38, 33, 0.19),
-    0 5px 16px rgba(27, 55, 45, 0.055),
-    inset 0 1px 0 rgba(255, 255, 255, 0.72),
-    inset 0 -1px 0 rgba(61, 114, 95, 0.11),
-    inset 1px 0 0 rgba(209, 255, 244, 0.2),
-    inset -1px 0 0 rgba(255, 232, 199, 0.12);
+  background: transparent;
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+  box-shadow: none;
 }
 
 .sheet.settings-sheet {
-  clip-path: polygon(10% 0, 90% 0, 70% 100%, 30% 100%);
   transform: translateY(calc(100% + 34px)) scaleX(0.78) scaleY(0.93);
   transform-origin: 50% 100%;
   transition:
     transform var(--reversible-duration) var(--reversible-motion),
-    clip-path var(--reversible-duration) var(--reversible-motion),
     border-radius var(--reversible-duration) var(--reversible-motion);
 }
 
 .sheet.settings-sheet.is-visible {
-  clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
   border-radius: 38px 38px 31px 31px / 35px 35px 29px 29px;
   transform: translateY(0) scaleX(1) scaleY(1);
 }
 
 .sheet.settings-sheet.is-dragging-sheet {
   transition: none;
-  will-change: transform, clip-path;
+  will-change: transform;
 }
 
 .sheet.settings-sheet.is-returning-sheet {
-  transition:
-    transform var(--reversible-duration) var(--reversible-motion),
-    clip-path var(--reversible-duration) var(--reversible-motion);
+  transition: transform var(--reversible-duration) var(--reversible-motion);
 }
 
 .settings-sheet::before,
 .settings-sheet::after {
   position: absolute;
-  z-index: -1;
   content: "";
   pointer-events: none;
   clip-path: polygon(10% 0, 90% 0, 70% 100%, 30% 100%);
-  transform: translateY(7px) scaleX(0.84) scaleY(0.94);
-  transform-origin: 50% 100%;
   transition:
-    transform var(--reversible-duration) var(--reversible-motion),
     clip-path var(--reversible-duration) var(--reversible-motion),
     border-radius var(--reversible-duration) var(--reversible-motion);
 }
@@ -1180,32 +1164,41 @@ button,
 .settings-sheet.is-visible::before,
 .settings-sheet.is-visible::after {
   clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
-  transform: translateY(0) scaleX(1) scaleY(1);
+}
+
+.settings-sheet.is-dragging-sheet::before,
+.settings-sheet.is-dragging-sheet::after {
+  clip-path: polygon(
+    var(--sheet-edge-top, 0%) 0,
+    calc(100% - var(--sheet-edge-top, 0%)) 0,
+    calc(100% - var(--sheet-edge-bottom, 0%)) 100%,
+    var(--sheet-edge-bottom, 0%) 100%
+  );
 }
 
 .settings-sheet::before {
+  z-index: -2;
   inset: 0;
-  padding: 1.5px;
   border-radius: inherit;
   background:
-    linear-gradient(119deg, rgba(255, 255, 255, 0.62), rgba(215, 255, 245, 0.25) 24%, rgba(255, 255, 255, 0.1) 53%, rgba(255, 228, 190, 0.21) 76%, rgba(118, 198, 176, 0.22));
-  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
-  -webkit-mask-composite: xor;
-  mask-composite: exclude;
-  box-shadow:
-    inset 0 1px 2px rgba(255, 255, 255, 0.24),
-    inset 0 -2px 4px rgba(30, 84, 66, 0.07);
+    linear-gradient(119deg, rgba(255, 255, 255, 0.52), rgba(215, 255, 245, 0.19) 24%, rgba(255, 255, 255, 0.08) 53%, rgba(255, 228, 190, 0.14) 76%, rgba(118, 198, 176, 0.16));
+  filter: drop-shadow(0 24px 34px rgba(24, 38, 33, 0.16));
 }
 
 .settings-sheet::after {
-  inset: 5px;
-  border: 1px solid rgba(245, 255, 251, 0.26);
-  border-radius: 33px 33px 26px 26px / 30px 30px 24px 24px;
-  background: transparent;
+  z-index: -1;
+  inset: 1.5px;
+  border-radius: 37px 37px 30px 30px / 34px 34px 28px 28px;
+  background:
+    linear-gradient(145deg, rgba(255, 255, 255, 0.08), rgba(230, 242, 236, 0.018) 44%, rgba(128, 190, 168, 0.032)),
+    rgba(237, 246, 241, 0.018);
+  -webkit-backdrop-filter: blur(5px) saturate(1.45) brightness(1.035) contrast(0.98);
+  backdrop-filter: blur(5px) saturate(1.45) brightness(1.035) contrast(0.98);
   box-shadow:
-    inset 1px 1px 3px rgba(255, 255, 255, 0.17),
-    inset -1px -1px 4px rgba(21, 75, 61, 0.055),
-    0 0 0 1px rgba(82, 152, 131, 0.04);
+    inset 0 1px 1px rgba(255, 255, 255, 0.46),
+    inset 0 -1px 2px rgba(32, 91, 71, 0.07),
+    inset 1px 0 1px rgba(205, 255, 242, 0.12),
+    inset -1px 0 1px rgba(255, 229, 193, 0.08);
 }
 
 .settings-sheet > * {
@@ -1214,21 +1207,41 @@ button,
 }
 
 .settings-softbody {
-  clip-path: polygon(8% 0, 92% 0, 76% 100%, 24% 100%);
   opacity: 0.2;
-  transform: translateY(22px) scaleX(0.84) scaleY(0.94);
+  transform: translateY(22px) scaleY(0.94);
   transform-origin: 50% 100%;
   transition:
     transform var(--reversible-duration) var(--reversible-motion),
-    clip-path var(--reversible-duration) var(--reversible-motion),
-    opacity 230ms linear;
-  will-change: transform, clip-path, opacity;
+    opacity 190ms linear;
+  will-change: transform, opacity;
 }
 
 .settings-sheet.is-visible .settings-softbody {
-  clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
   opacity: 1;
-  transform: translateY(0) scaleX(1) scaleY(1);
+  transform: translateY(0) scaleY(1);
+}
+
+.settings-softbody > .sheet-handle,
+.settings-softbody > .sheet-head,
+.settings-softbody > .setting-row,
+.settings-softbody > .sheet-done {
+  transform-origin: 50% 100%;
+  transition: transform var(--reversible-duration) var(--reversible-motion);
+  will-change: transform;
+}
+
+.settings-softbody > .sheet-handle { transform: scaleX(0.78); }
+.settings-softbody > .sheet-head { transform: scaleX(0.74); }
+.settings-softbody > .setting-row:nth-child(3) { transform: scaleX(0.64); }
+.settings-softbody > .setting-row:nth-child(4) { transform: scaleX(0.56); }
+.settings-softbody > .setting-row:nth-child(5) { transform: scaleX(0.48); }
+.settings-softbody > .sheet-done { transform: scaleX(0.4); }
+
+.settings-sheet.is-visible .settings-softbody > .sheet-handle,
+.settings-sheet.is-visible .settings-softbody > .sheet-head,
+.settings-sheet.is-visible .settings-softbody > .setting-row,
+.settings-sheet.is-visible .settings-softbody > .sheet-done {
+  transform: scaleX(1);
 }
 
 .settings-sheet .sheet-handle {
@@ -1255,8 +1268,8 @@ button,
 
 .settings-sheet .close-button:active {
   border-radius: 45% 55% 48% 52%;
-  background: rgba(255, 255, 255, 0.15);
-  transform: scaleX(0.82) scaleY(0.78);
+  background: rgba(255, 255, 255, 0.08);
+  transform: scaleX(1.14) scaleY(1.12);
 }
 
 .sheet[hidden] {
@@ -1382,38 +1395,55 @@ button,
   width: calc((100% - 14px) / 3);
   height: 36px;
   overflow: hidden;
-  border: 1px solid rgba(255, 255, 255, 0.78);
+  border: 1px solid rgba(255, 255, 255, 0.5);
   border-radius: 15px;
   background:
-    linear-gradient(138deg, rgba(255, 255, 255, 0.54), rgba(244, 255, 250, 0.21) 58%, rgba(119, 190, 166, 0.18));
-  -webkit-backdrop-filter: blur(2px) saturate(1.78) brightness(1.13) contrast(1.035);
-  backdrop-filter: blur(2px) saturate(1.78) brightness(1.13) contrast(1.035);
+    linear-gradient(138deg, rgba(255, 255, 255, 0.2), rgba(244, 255, 250, 0.075) 58%, rgba(119, 190, 166, 0.07));
+  -webkit-backdrop-filter: blur(0.8px) saturate(1.58) brightness(1.07) contrast(1.035);
+  backdrop-filter: blur(0.8px) saturate(1.58) brightness(1.07) contrast(1.035);
   box-shadow:
-    0 6px 16px rgba(27, 60, 48, 0.11),
-    inset 0 1px 1px rgba(255, 255, 255, 0.94),
-    inset 0 -1px 2px rgba(47, 118, 93, 0.16),
-    inset 1px 0 1px rgba(208, 255, 244, 0.45),
-    inset -1px 0 1px rgba(255, 231, 198, 0.26);
-  transform: translate3d(0, 0, 0);
-  transition: transform 520ms var(--spring), border-radius 280ms ease, box-shadow 280ms ease;
+    0 5px 14px rgba(27, 60, 48, 0.085),
+    inset 0 1px 1px rgba(255, 255, 255, 0.5),
+    inset 0 -1px 1px rgba(47, 118, 93, 0.1),
+    inset 1px 0 1px rgba(208, 255, 244, 0.18),
+    inset -1px 0 1px rgba(255, 231, 198, 0.11);
+  translate: 0 0;
+  transition: translate 520ms var(--spring), scale 520ms var(--spring), border-radius 280ms ease, box-shadow 280ms ease;
   pointer-events: none;
+}
+
+.segmented-glass-thumb::before {
+  position: absolute;
+  inset: 36% 10%;
+  border: 1px solid rgba(55, 105, 88, 0.18);
+  border-radius: 999px;
+  background: rgba(53, 103, 86, 0.12);
+  box-shadow:
+    inset 0 1px 1px rgba(255, 255, 255, 0.23),
+    inset 0 -1px 1px rgba(32, 90, 70, 0.11);
+  content: "";
+  opacity: 0;
+  transform: scale(1.08, 0.45);
+  filter: contrast(1.08);
+  transition: opacity 220ms ease, transform 440ms var(--spring);
 }
 
 .segmented-glass-thumb::after {
   position: absolute;
   inset: 1px 14% 48%;
   border-radius: 999px;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.78), transparent);
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.28), transparent);
   content: "";
-  opacity: 0.72;
+  opacity: 0.08;
+  transition: opacity 180ms ease;
 }
 
 .segmented[data-index="1"] .segmented-glass-thumb {
-  transform: translate3d(calc(100% + 3px), 0, 0);
+  translate: calc(100% + 3px) 0;
 }
 
 .segmented[data-index="2"] .segmented-glass-thumb {
-  transform: translate3d(calc(200% + 6px), 0, 0);
+  translate: calc(200% + 6px) 0;
 }
 
 .segmented button {
@@ -1438,19 +1468,31 @@ button,
 
 .segmented.is-dragging .segmented-glass-thumb {
   z-index: 2;
-  border: 1.5px solid rgba(255, 255, 255, 0.82);
+  border: 1px solid rgba(255, 255, 255, 0.3);
   border-radius: 18px 13px 18px 13px;
-  background:
-    linear-gradient(138deg, rgba(255, 255, 255, 0.46), rgba(229, 255, 247, 0.11) 53%, rgba(94, 185, 156, 0.09));
-  -webkit-backdrop-filter: blur(1.2px) saturate(1.92) brightness(1.16) contrast(1.055);
-  backdrop-filter: blur(1.2px) saturate(1.92) brightness(1.16) contrast(1.055);
+  background: rgba(232, 240, 235, 0.48);
+  -webkit-backdrop-filter: blur(0.22px) saturate(1.5) brightness(1.025) contrast(1.08);
+  backdrop-filter: blur(0.22px) saturate(1.5) brightness(1.025) contrast(1.08);
   box-shadow:
-    0 8px 19px rgba(38, 54, 47, 0.14),
-    inset 0 1px 1px rgba(255, 255, 255, 0.92),
-    inset 1.5px 0 1px rgba(173, 255, 236, 0.45),
-    inset -1.5px 0 1px rgba(255, 220, 164, 0.28),
-    0 0 0 0.7px rgba(76, 174, 147, 0.22);
+    0 8px 18px rgba(38, 54, 47, 0.075),
+    inset 0 1px 1px rgba(255, 255, 255, 0.18),
+    inset 2px 0 1px rgba(61, 241, 198, 0.23),
+    inset -2px 0 1px rgba(255, 174, 61, 0.19),
+    inset 0 2px 1px rgba(224, 255, 248, 0.2),
+    inset 0 -2px 1px rgba(57, 120, 100, 0.17),
+    -0.8px 0 0 rgba(35, 211, 176, 0.12),
+    0.8px 0 0 rgba(239, 175, 75, 0.1),
+    0 0 0 0.6px rgba(76, 174, 147, 0.18);
   transition: none;
+}
+
+.segmented.is-dragging .segmented-glass-thumb::before {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.segmented.is-dragging .segmented-glass-thumb::after {
+  opacity: 0.06;
 }
 
 .segmented.is-dragging {
@@ -1459,10 +1501,6 @@ button,
 
 .segmented.is-settling .segmented-glass-thumb {
   animation: liquid-thumb-settle 560ms cubic-bezier(0.18, 1.42, 0.3, 1) both;
-}
-
-.segmented.is-settling .segmented-glass-thumb::after {
-  animation: liquid-control-glint 520ms var(--spring) both;
 }
 
 .switch {
@@ -1492,26 +1530,44 @@ button,
   width: 26px;
   height: 26px;
   overflow: hidden;
-  border: 1px solid rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(255, 255, 255, 0.54);
   border-radius: 50%;
-  background: linear-gradient(145deg, rgba(255, 255, 255, 0.9), rgba(222, 244, 235, 0.54));
-  -webkit-backdrop-filter: blur(1.5px) saturate(1.78) brightness(1.15) contrast(1.04);
-  backdrop-filter: blur(1.5px) saturate(1.78) brightness(1.15) contrast(1.04);
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.3), rgba(222, 244, 235, 0.12));
+  -webkit-backdrop-filter: blur(0.7px) saturate(1.62) brightness(1.08) contrast(1.04);
+  backdrop-filter: blur(0.7px) saturate(1.62) brightness(1.08) contrast(1.04);
   box-shadow:
-    0 3px 9px rgba(31, 42, 36, 0.22),
-    inset 0 1px 1px rgba(255, 255, 255, 0.95);
-  transform: translate3d(0, 0, 0);
-  transition: transform 500ms var(--spring), border-radius 240ms ease, box-shadow 260ms ease;
+    0 4px 10px rgba(31, 42, 36, 0.15),
+    inset 0 1px 1px rgba(255, 255, 255, 0.5);
+  translate: 0 0;
+  transition: translate 500ms var(--spring), scale 500ms var(--spring), border-radius 240ms ease, box-shadow 260ms ease;
   pointer-events: none;
+}
+
+.switch i::before {
+  position: absolute;
+  inset: 36% 11%;
+  border: 1px solid rgba(46, 100, 81, 0.2);
+  border-radius: 999px;
+  background: rgba(45, 92, 76, 0.16);
+  box-shadow:
+    inset 0 1px 1px rgba(255, 255, 255, 0.2),
+    inset 0 -1px 1px rgba(31, 88, 68, 0.12);
+  content: "";
+  opacity: 0;
+  transform: scale(1.08, 0.42);
+  filter: contrast(1.1);
+  transition: opacity 210ms ease, transform 420ms var(--spring);
 }
 
 .switch i::after {
   position: absolute;
   inset: 2px 5px 55%;
   border-radius: 50%;
-  background: rgba(255, 255, 255, 0.9);
+  background: rgba(255, 255, 255, 0.32);
   content: "";
   filter: blur(0.4px);
+  opacity: 0.08;
+  transition: opacity 180ms ease;
 }
 
 .switch.is-on {
@@ -1524,24 +1580,41 @@ button,
 }
 
 .switch.is-on i {
-  transform: translate3d(22px, 0, 0);
+  translate: 22px 0;
 }
 
 .switch.is-dragging i {
   z-index: 2;
-  border: 1.5px solid rgba(255, 255, 255, 0.82);
+  border: 1px solid rgba(255, 255, 255, 0.3);
   border-radius: 58% 42% 44% 56% / 52% 48% 52% 48%;
-  background:
-    linear-gradient(145deg, rgba(255, 255, 255, 0.58), rgba(221, 255, 246, 0.19) 58%, rgba(255, 238, 206, 0.11));
-  -webkit-backdrop-filter: blur(1px) saturate(1.95) brightness(1.18) contrast(1.06);
-  backdrop-filter: blur(1px) saturate(1.95) brightness(1.18) contrast(1.06);
+  background: rgba(232, 240, 235, 0.46);
+  -webkit-backdrop-filter: blur(0.22px) saturate(1.52) brightness(1.025) contrast(1.09);
+  backdrop-filter: blur(0.22px) saturate(1.52) brightness(1.025) contrast(1.09);
   box-shadow:
-    0 5px 13px rgba(31, 42, 36, 0.21),
-    inset 0 1px 1px rgba(255, 255, 255, 0.9),
-    inset 1.5px 0 1px rgba(151, 255, 231, 0.55),
-    inset -1.5px 0 1px rgba(255, 210, 136, 0.4),
-    0 0 0 0.8px rgba(66, 178, 147, 0.28);
+    0 7px 16px rgba(31, 42, 36, 0.09),
+    inset 0 1px 1px rgba(255, 255, 255, 0.18),
+    inset 2px 0 1px rgba(55, 242, 196, 0.24),
+    inset -2px 0 1px rgba(255, 167, 48, 0.2),
+    inset 0 2px 1px rgba(224, 255, 248, 0.2),
+    inset 0 -2px 1px rgba(54, 123, 99, 0.18),
+    -0.8px 0 0 rgba(28, 211, 171, 0.13),
+    0.8px 0 0 rgba(241, 170, 65, 0.11),
+    0 0 0 0.6px rgba(66, 178, 147, 0.18);
   transition: none;
+}
+
+.switch.is-dragging i::before {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.switch.is-on.is-dragging i::before {
+  border-color: rgba(21, 119, 94, 0.24);
+  background: rgba(28, 139, 112, 0.43);
+}
+
+.switch.is-dragging i::after {
+  opacity: 0.06;
 }
 
 .switch.is-dragging {
@@ -1552,25 +1625,15 @@ button,
   animation: liquid-knob-settle 540ms cubic-bezier(0.18, 1.46, 0.3, 1) both;
 }
 
-.switch.is-settling i::after {
-  animation: liquid-control-glint 480ms var(--spring) both;
-}
-
-@keyframes liquid-control-glint {
-  0% { opacity: 0.5; transform: translateX(-8px) scaleX(0.7); }
-  54% { opacity: 1; transform: translateX(7px) scaleX(1.15); }
-  100% { opacity: 0.72; transform: none; }
-}
-
 @keyframes liquid-thumb-settle {
-  0% { scale: 1.3 1.22; }
+  0% { scale: 1.34 1.58; }
   42% { scale: 0.96 0.94; }
   72% { scale: 1.025 1.04; }
   100% { scale: 1; }
 }
 
 @keyframes liquid-knob-settle {
-  0% { scale: 1.44 1.34; }
+  0% { scale: 1.48 1.58; }
   44% { scale: 0.92 0.9; }
   72% { scale: 1.045 1.055; }
   100% { scale: 1; }
@@ -1600,9 +1663,9 @@ button,
 
 .settings-sheet .sheet-done:active {
   border-radius: 19px 15px 19px 15px;
-  filter: brightness(1.08);
-  transform: scaleX(0.94) scaleY(0.84);
-  box-shadow: 0 4px 12px rgba(34, 48, 43, 0.13), inset 0 1px 0 rgba(255, 255, 255, 0.18);
+  filter: brightness(1.035);
+  transform: scaleX(1.035) scaleY(1.08);
+  box-shadow: 0 12px 24px rgba(34, 48, 43, 0.14), inset 0 1px 0 rgba(255, 255, 255, 0.12);
 }
 
 /* Developer mode */
@@ -1696,7 +1759,7 @@ button,
 .developer-action-grid button:active,
 .developer-unlock-grid button:active,
 .developer-reset:active {
-  transform: scale(0.95);
+  transform: scale(1.06);
 }
 
 .developer-action-grid button:disabled,

@@ -187,7 +187,7 @@
   var activeSheet = null;
   var toastTimer = 0;
   var settledBoardAnimation = null;
-  var REVERSIBLE_MOTION_DURATION = 460;
+  var REVERSIBLE_MOTION_DURATION = 380;
   var REVERSIBLE_MOTION_EASING = "cubic-bezier(0.37, 0, 0.63, 1)";
   var developer = {
     aiPaused: false,
@@ -1228,7 +1228,6 @@
     prefs.difficulty = difficulty;
     savePreferences();
     syncSettingsUI();
-    showToast("对手 · " + DIFFICULTIES[difficulty].label);
     sound.play("ui");
   }
 
@@ -1272,10 +1271,13 @@
 
     function paint(progress, delta) {
       var energy = Math.min(1, Math.abs(delta) / 18);
-      var stretch = 1.18 + energy * 0.16;
-      var lift = 1.16 + energy * 0.1;
-      dom.difficultyThumb.style.transform = "translate3d(" + (progress * drag.metrics.step) + "px, 0, 0) scaleX(" + stretch + ") scaleY(" + lift + ")";
-      dom.difficultyThumb.style.transformOrigin = delta < 0 ? "right center" : "left center";
+      var stretch = 1.24 + energy * 0.12;
+      var lift = 1.62 + energy * 0.08;
+      var anchor = progress / 2;
+      var expansionOffset = drag.metrics.itemWidth * (stretch - 1) * anchor;
+      dom.difficultyThumb.style.translate = (progress * drag.metrics.step - expansionOffset) + "px 0";
+      dom.difficultyThumb.style.scale = stretch + " " + lift;
+      dom.difficultyThumb.style.transformOrigin = "left center";
       control.style.setProperty("--press-origin", ((progress / 2) * 100).toFixed(1) + "%");
       previewDifficulty(progress);
     }
@@ -1324,7 +1326,8 @@
       try { control.releasePointerCapture(event.pointerId); } catch (error) { /* Capture may already be released. */ }
       drag = null;
       control.classList.remove("is-dragging");
-      dom.difficultyThumb.style.removeProperty("transform");
+      dom.difficultyThumb.style.removeProperty("translate");
+      dom.difficultyThumb.style.removeProperty("scale");
       dom.difficultyThumb.style.removeProperty("transform-origin");
       if (cancelled) {
         syncSettingsUI();
@@ -1363,10 +1366,12 @@
 
     function paint(progress, delta, travel) {
       var energy = Math.min(1, Math.abs(delta) / 14);
-      var stretch = 1.36 + energy * 0.12;
-      var lift = 1.3 + energy * 0.1;
-      knob.style.transform = "translate3d(" + (progress * travel) + "px, 0, 0) scaleX(" + stretch + ") scaleY(" + lift + ")";
-      knob.style.transformOrigin = delta < 0 ? "right center" : "left center";
+      var stretch = 1.44 + energy * 0.1;
+      var lift = 1.62 + energy * 0.08;
+      var expansionOffset = knob.offsetWidth * (stretch - 1) * progress;
+      knob.style.translate = (progress * travel - expansionOffset) + "px 0";
+      knob.style.scale = stretch + " " + lift;
+      knob.style.transformOrigin = "left center";
       control.style.setProperty("--press-origin", (progress * 100).toFixed(1) + "%");
       control.classList.toggle("is-on", progress >= 0.5);
     }
@@ -1412,7 +1417,8 @@
       try { control.releasePointerCapture(event.pointerId); } catch (error) { /* Capture may already be released. */ }
       drag = null;
       control.classList.remove("is-dragging");
-      knob.style.removeProperty("transform");
+      knob.style.removeProperty("translate");
+      knob.style.removeProperty("scale");
       knob.style.removeProperty("transform-origin");
       if (cancelled) {
         syncSettingsUI();
@@ -1444,12 +1450,40 @@
 
   function bindSettingsSheetDismiss() {
     var sheet = dom.settingsSheet;
+    var softbody = sheet.querySelector(".settings-softbody");
+    var softLayers = [
+      { element: softbody.querySelector(".sheet-handle"), collapse: 0.22 },
+      { element: softbody.querySelector(".sheet-head"), collapse: 0.26 },
+      { element: softbody.querySelectorAll(".setting-row")[0], collapse: 0.36 },
+      { element: softbody.querySelectorAll(".setting-row")[1], collapse: 0.44 },
+      { element: softbody.querySelectorAll(".setting-row")[2], collapse: 0.52 },
+      { element: softbody.querySelector(".sheet-done"), collapse: 0.6 }
+    ];
     var drag = null;
 
     function clearSheetDragStyles() {
       sheet.style.removeProperty("transform");
-      sheet.style.removeProperty("clip-path");
+      sheet.style.removeProperty("--sheet-edge-top");
+      sheet.style.removeProperty("--sheet-edge-bottom");
+      softbody.style.removeProperty("transform");
+      softbody.style.removeProperty("opacity");
+      softLayers.forEach(function clearSoftLayerStyle(layer) {
+        layer.element.style.removeProperty("transform");
+      });
       dom.scrim.style.removeProperty("opacity");
+    }
+
+    function paintSheetCollapse(progress, distance) {
+      var topInset = progress * 4.5;
+      var bottomInset = progress * 15;
+      sheet.style.transform = "translate3d(0, " + distance + "px, 0) scaleX(" + (1 - progress * 0.1) + ") scaleY(" + (1 - progress * 0.035) + ")";
+      sheet.style.setProperty("--sheet-edge-top", topInset + "%");
+      sheet.style.setProperty("--sheet-edge-bottom", bottomInset + "%");
+      softbody.style.transform = "translateY(" + (progress * 22) + "px) scaleY(" + (1 - progress * 0.06) + ")";
+      softbody.style.opacity = String(1 - progress * 0.8);
+      softLayers.forEach(function paintSoftLayer(layer) {
+        layer.element.style.transform = "scaleX(" + (1 - progress * layer.collapse) + ")";
+      });
     }
 
     sheet.addEventListener("pointerdown", function beginSheetDismiss(event) {
@@ -1485,10 +1519,7 @@
       drag.lastAt = now;
       drag.distance = distance;
       var progress = Math.min(1, distance / Math.max(180, sheet.offsetHeight * 0.54));
-      var topInset = progress * 4.5;
-      var bottomInset = progress * 15;
-      sheet.style.transform = "translate3d(0, " + distance + "px, 0) scaleX(" + (1 - progress * 0.1) + ") scaleY(" + (1 - progress * 0.035) + ")";
-      sheet.style.clipPath = "polygon(" + topInset + "% 0, " + (100 - topInset) + "% 0, " + (100 - bottomInset) + "% 100%, " + bottomInset + "% 100%)";
+      paintSheetCollapse(progress, distance);
       dom.scrim.style.opacity = String(1 - progress * 0.68);
       event.preventDefault();
     });
@@ -1507,7 +1538,13 @@
       } else {
         sheet.classList.add("is-returning-sheet");
         sheet.style.transform = "translate3d(0, 0, 0) scaleX(1) scaleY(1)";
-        sheet.style.clipPath = "polygon(0 0, 100% 0, 100% 100%, 0 100%)";
+        sheet.style.setProperty("--sheet-edge-top", "0%");
+        sheet.style.setProperty("--sheet-edge-bottom", "0%");
+        softbody.style.transform = "translateY(0) scaleY(1)";
+        softbody.style.opacity = "1";
+        softLayers.forEach(function restoreSoftLayer(layer) {
+          layer.element.style.transform = "scaleX(1)";
+        });
         dom.scrim.style.removeProperty("opacity");
         window.setTimeout(function finishSheetReturn() {
           sheet.classList.remove("is-returning-sheet");

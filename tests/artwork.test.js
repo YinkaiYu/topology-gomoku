@@ -154,7 +154,7 @@ test("关卡卡片与棋盘使用可逆共享元素弹性过渡", () => {
   assert.match(game, /cloneNode\(true\)/);
   assert.match(game, /drawImage\(dom\.boardCanvas/);
   assert.match(game, /cardLayer\.classList\.add\("transition-card-content"\)/);
-  assert.match(game, /REVERSIBLE_MOTION_DURATION\s*=\s*460/);
+  assert.match(game, /REVERSIBLE_MOTION_DURATION\s*=\s*380/);
   assert.match(game, /REVERSIBLE_MOTION_EASING\s*=\s*"cubic-bezier\(0\.37, 0, 0\.63, 1\)"/);
   assert.ok((game.match(/duration:\s*REVERSIBLE_MOTION_DURATION/g) || []).length >= 4);
   assert.ok((game.match(/easing:\s*REVERSIBLE_MOTION_EASING/g) || []).length >= 4);
