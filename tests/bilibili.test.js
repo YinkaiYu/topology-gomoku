@@ -29,15 +29,15 @@ test("Bilibili Toy SDK 通过独立 adapter 接入", () => {
   assert.match(adapter, /--toy-viewport-height/);
 });
 
-test("沉浸模式文案使用包含沉浸二字的本地字体子集", () => {
+test("沉浸模式及兼容性备注使用完整的本地字体子集", () => {
   const html = fs.readFileSync(path.join(ROOT, "app", "index.html"), "utf8");
   const style = fs.readFileSync(path.join(ROOT, "app", "assets", "style.css"), "utf8");
   const font = fs.readFileSync(path.join(ROOT, "app", "assets", "fonts", "noto-serif-sc-immersive.woff2"));
 
-  assert.match(html, /class="setting-label setting-label-immersive">沉浸模式<\/span>/);
+  assert.match(html, /class="setting-label setting-label-immersive">[\s\S]*沉浸模式[\s\S]*class="setting-label-note">（仅新版B站APP支持）<\/small>/);
   assert.match(style, /font-family:\s*"Topo Serif Immersive"/);
-  assert.match(style, /unicode-range:\s*U\+6C89, U\+6D78/);
-  assert.match(style, /noto-serif-sc-immersive\.woff2\?v=1\.35\.2-bili\.1/);
+  assert.match(style, /\.setting-label-note\s*\{[^}]*color:\s*var\(--muted\)[^}]*font-size:\s*9px/s);
+  assert.match(style, /noto-serif-sc-immersive\.woff2\?v=1\.35\.2-bili\.2/);
   assert.equal(font.toString("ascii", 0, 4), "wOF2");
   assert.ok(font.length > 2000);
 });

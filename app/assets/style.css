@@ -24,11 +24,10 @@
 
 @font-face {
   font-family: "Topo Serif Immersive";
-  src: url("./fonts/noto-serif-sc-immersive.woff2?v=1.35.2-bili.1") format("woff2");
+  src: url("./fonts/noto-serif-sc-immersive.woff2?v=1.35.2-bili.2") format("woff2");
   font-style: normal;
   font-weight: 200 900;
   font-display: block;
-  unicode-range: U+6C89, U+6D78;
 }
 
 :root {
@@ -1325,7 +1324,17 @@ html[data-toy-container="bilibili-app"][data-toy-immersive="true"] {
 }
 
 .setting-label-immersive {
+  display: grid;
+  gap: 3px;
   font-family: "Topo Serif Immersive", var(--display-font);
+}
+
+.setting-label-note {
+  color: var(--muted);
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.025em;
+  line-height: 1.35;
 }
 
 .setting-stack {
