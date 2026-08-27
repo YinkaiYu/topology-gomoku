@@ -337,7 +337,7 @@ test("设置页使用液态玻璃层次且三个控件均支持连续拖动", ()
   assert.match(game, /Math\.max\(-0\.24, drag\.rawProgress \* 0\.56\)/);
   assert.match(game, /Math\.min\(1\.22, 1 \+ \(rawProgress - 1\) \* 0\.58\)/);
   assert.match(game, /function detentProgress\(progress, maximum\)/);
-  assert.match(game, /Math\.pow\(normalizedDistance, 1\.58\) \* 0\.5/);
+  assert.match(game, /Math\.pow\(normalizedDistance, 2\.05\) \* 0\.5/);
   assert.match(game, /paint\(detentProgress\(visualProgress, 2\), frameDelta\)/);
   assert.match(game, /paint\(detentProgress\(visualProgress, 1\), frameDelta, drag\.travel\)/);
   assert.match(game, /var startIndex = difficultyIndex\(prefs\.difficulty\);/);

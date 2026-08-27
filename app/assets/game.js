@@ -1302,7 +1302,7 @@
     var nearestStop = Math.round(progress);
     var distance = progress - nearestStop;
     var normalizedDistance = Math.min(1, Math.abs(distance) * 2);
-    var attractedDistance = Math.pow(normalizedDistance, 1.58) * 0.5;
+    var attractedDistance = Math.pow(normalizedDistance, 2.05) * 0.5;
     return nearestStop + (distance < 0 ? -attractedDistance : attractedDistance);
   }
 

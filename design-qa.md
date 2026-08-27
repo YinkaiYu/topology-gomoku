@@ -126,7 +126,7 @@ final result: passed
 
 - Direct difficulty selection now travels continuously from the previous stop for about 540 ms instead of appearing at the destination in the pointer-up frame.
 - The selected thumb makes one controlled positional overshoot and returns to its exact resting stop; the switch uses the same two-stop motion language.
-- A 27 px partial drag away from the right difficulty stop produced about 17 px of visual travel before release, confirming the intended nonlinear detent attraction rather than one-to-one pointer tracking.
+- At the 390 px viewport, the strengthened curve maps a 27 px quarter-step pointer offset to about 13 px of target visual travel before the short drag transition, confirming stronger nonlinear detent attraction rather than one-to-one pointer tracking.
 - No clipping, alignment regression, unreadable state, or browser warning/error was observed at 390 × 844.
 
 final result: passed
