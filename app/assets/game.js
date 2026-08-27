@@ -3,6 +3,7 @@
 
   var Engine = window.TopologyGomoku;
   var Morph = window.TopologyMorph;
+  var Replay = window.TopologyReplay;
   var STORAGE_KEY = "topology-gomoku:v1";
   var TUTORIAL_AUTO_ADVANCE_DELAY = 820;
   var TUTORIAL_PROMPTS = [
@@ -150,6 +151,8 @@
     undoButtonText: document.getElementById("undoButtonText"),
     undoIconPath: document.getElementById("undoIconPath"),
     settledReplayButton: document.getElementById("settledReplayButton"),
+    settledReplayButtonText: document.getElementById("settledReplayButtonText"),
+    settledReplayIconPath: document.getElementById("settledReplayIconPath"),
     restartButton: document.getElementById("restartButton"),
     restartButtonText: document.getElementById("restartButtonText"),
     restartIconPath: document.getElementById("restartIconPath"),
@@ -614,7 +617,8 @@
       autoAdvancePending: false,
       lastMove: -1,
       demo: null,
-      completion: null
+      completion: null,
+      review: null
     };
     game.board = Engine.createBoard(game.rules);
     renderState.hoverCell = -1;
@@ -683,14 +687,22 @@
   }
 
   function handleLeftTool() {
+    if (game && game.review) {
+      stepReplay(-1);
+      return;
+    }
     if (isEndedView()) {
-      leaveGame();
+      beginReplayReview();
       return;
     }
     undoMove();
   }
 
   function handleRightTool() {
+    if (game && game.review) {
+      stepReplay(1);
+      return;
+    }
     if (isEndedView()) {
       if (isVictoryView() && game.levelIndex < LEVELS.length - 1) {
         sound.play("ui");
@@ -701,6 +713,19 @@
       return;
     }
     restartGame();
+  }
+
+  function handleSettledAction() {
+    if (!game || !isEndedView()) {
+      return;
+    }
+    if (isVictoryView() && game.levelIndex < LEVELS.length - 1) {
+      restartGame();
+      return;
+    }
+    if (!game.completion && canPresentCompletion()) {
+      startCompletionPresentation(true);
+    }
   }
 
   function startBoundaryDemo() {
@@ -767,35 +792,97 @@
     return Boolean(game && game.status === "ended");
   }
 
+  function isReviewing() {
+    return Boolean(game && game.review && game.status === "ended");
+  }
+
+  function canPresentCompletion() {
+    return Boolean(game && game.levelIndex > 0 && Morph);
+  }
+
+  function resultMoveText() {
+    if (!game) {
+      return "";
+    }
+    if (Replay) {
+      return Replay.resultText(game.outcome, game.moves.length);
+    }
+    return game.moves.length + " 手";
+  }
+
   function syncGameTools() {
     if (!game) {
       return;
     }
     var ended = isEndedView();
     var victory = isVictoryView();
+    var reviewing = isReviewing();
     var autoAdvancing = ended && Boolean(game.autoAdvancePending);
     var hasNextLevel = victory && game.levelIndex < LEVELS.length - 1;
+    var completionReturning = Boolean(game.completion && game.completion.phase === "returning");
+    var canOfferThreeDimensional = ended
+      && !victory
+      && !game.completion
+      && canPresentCompletion();
+    var showSecondaryAction = hasNextLevel || canOfferThreeDimensional;
     dom.gameTools.classList.toggle("is-ended", ended);
-    dom.gameTools.classList.toggle("has-two-actions", ended && !hasNextLevel);
+    dom.gameTools.classList.toggle("is-reviewing", reviewing);
+    dom.gameTools.classList.toggle("has-two-actions", ended && !reviewing && !showSecondaryAction);
     dom.gameTools.classList.toggle("is-auto-advancing", autoAdvancing);
-    dom.ruleCaption.hidden = ended;
-    dom.settledReplayButton.hidden = !ended;
-    dom.restartButton.hidden = ended && !hasNextLevel;
+    dom.ruleCaption.hidden = ended && !reviewing;
+    dom.settledReplayButton.hidden = !ended || reviewing || !showSecondaryAction;
+    dom.settledReplayButton.classList.toggle("is-three-dimensional", canOfferThreeDimensional);
+    dom.restartButton.hidden = false;
+
+    if (reviewing) {
+      dom.undoButton.disabled = game.review.step <= 0;
+      dom.undoButton.setAttribute("aria-label", "上一步");
+      dom.undoButtonText.textContent = "上一步";
+      dom.undoIconPath.setAttribute("d", "m14 6-6 6 6 6");
+      dom.restartButton.disabled = game.review.step >= game.review.total;
+      dom.restartButton.setAttribute("aria-label", "下一步");
+      dom.restartButtonText.textContent = "下一步";
+      dom.restartIconPath.setAttribute("d", "m10 6 6 6-6 6");
+      dom.ruleCaptionTitle.textContent = Replay
+        ? Replay.progressTitle(game.review.step)
+        : "第 " + game.review.step + " 手";
+      dom.ruleCaptionText.textContent = Replay
+        ? Replay.progressText(game.review.step, game.review.total)
+        : game.review.step + " / " + game.review.total + " 手";
+      dom.boardStage.classList.remove("is-exploring", "is-settled", "is-dragging", "is-returning");
+      return;
+    }
+
     if (ended) {
-      var canExplore = Boolean(game.completion);
-      dom.undoButton.disabled = false;
-      dom.undoButton.setAttribute("aria-label", "返回旅程");
-      dom.undoButtonText.textContent = "旅程";
-      dom.undoIconPath.setAttribute("d", "M15 5 8 12l7 7");
-      dom.settledReplayButton.disabled = false;
+      var canExplore = Boolean(game.completion && game.completion.phase === "presenting");
+      var canReview = !game.completion || Boolean(game.completion.settled);
+      dom.undoButton.disabled = !canReview || completionReturning;
+      dom.undoButton.setAttribute("aria-label", "复盘棋局");
+      dom.undoButtonText.textContent = "复盘";
+      dom.undoIconPath.setAttribute("d", "M9 8H5V4M5 8c2-3 5-4 8-4 5 0 8 4 8 8s-3 8-8 8c-3 0-6-2-7-4");
+      dom.settledReplayButton.disabled = completionReturning;
+      if (canOfferThreeDimensional) {
+        dom.settledReplayButton.setAttribute("aria-label", "查看三维棋局");
+        dom.settledReplayButtonText.textContent = "三维";
+        dom.settledReplayIconPath.setAttribute("d", "M12 3 20 7.5v9L12 21l-8-4.5v-9L12 3Zm0 9 8-4.5M12 12 4 7.5M12 12v9");
+      } else {
+        dom.settledReplayButton.setAttribute("aria-label", "再玩一次");
+        dom.settledReplayButtonText.textContent = "再来";
+        dom.settledReplayIconPath.setAttribute("d", "M20 7v5h-5M19 12a7 7 0 1 0-2 5");
+      }
+      dom.restartButton.disabled = completionReturning;
       if (hasNextLevel) {
-        dom.restartButton.disabled = false;
         dom.restartButton.setAttribute("aria-label", "进入下一关");
         dom.restartButtonText.textContent = "下一关";
         dom.restartIconPath.setAttribute("d", "m9 6 6 6-6 6");
+      } else {
+        dom.restartButton.setAttribute("aria-label", "再玩一次");
+        dom.restartButtonText.textContent = "再来";
+        dom.restartIconPath.setAttribute("d", "M20 7v5h-5M19 12a7 7 0 1 0-2 5");
       }
       dom.boardStage.classList.toggle("is-exploring", canExplore);
       dom.boardStage.classList.toggle("is-settled", !canExplore);
+      dom.boardStage.classList.toggle("is-returning", completionReturning);
       return;
     }
 
@@ -812,7 +899,7 @@
     dom.ruleCaption.classList.toggle("is-draw-likely", drawLikely);
     dom.ruleCaptionTitle.textContent = drawLikely ? "和局亦胜" : game.level.ruleTitle;
     dom.ruleCaptionText.textContent = drawLikely ? "平局，也算通关" : game.level.ruleText;
-    dom.boardStage.classList.remove("is-exploring", "is-settled", "is-dragging");
+    dom.boardStage.classList.remove("is-exploring", "is-settled", "is-dragging", "is-returning");
   }
 
   function updateTurnUI() {
@@ -831,15 +918,17 @@
     dom.thinkingIndicator.classList.toggle("is-visible", aiActuallyThinking);
     dom.undoButton.disabled = game.moves.length === 0 || game.status !== "playing";
     if (completionActive) {
-      dom.turnStatus.textContent = game.completion.settled ? "拖动欣赏" : "边界合拢";
+      dom.turnStatus.textContent = game.completion.phase === "returning"
+        ? "回到棋盘"
+        : (game.completion.settled ? resultMoveText() : "边界合拢");
+    } else if (isReviewing()) {
+      dom.turnStatus.textContent = "复盘 · " + game.review.step + " / " + game.review.total;
     } else if (demoActive) {
       dom.turnStatus.textContent = "边界演示";
     } else if (game.status === "ended") {
       dom.turnStatus.textContent = game.autoAdvancePending
         ? "下一关"
-        : (game.outcome === "win"
-          ? "通关"
-          : (game.outcome === "lose" ? "对手连成五颗" : "棋盘已满"));
+        : resultMoveText();
     } else if (game.status === "forcing") {
       dom.turnStatus.textContent = "跨界连线";
     } else if (aiTurn && DEV_MODE && developer.aiPaused) {
@@ -1081,6 +1170,127 @@
     return best;
   }
 
+  function createCompletionState() {
+    if (!canPresentCompletion()) {
+      return null;
+    }
+    var startedAt = performance.now();
+    var winningMask = game.winningMask;
+    var presentation = winningMask
+      ? Morph.createPresentation(game.level.topology, game.rules, Array.prototype.slice.call(winningMask.cells))
+      : null;
+    return {
+      active: true,
+      phase: "presenting",
+      startedAt: startedAt,
+      lineStartedAt: renderState.winAt || startedAt,
+      duration: 3000,
+      settled: false,
+      view: chooseCompletionView(winningMask, presentation),
+      presentation: presentation,
+      rotation: { x: 0, y: 0, z: 0 },
+      velocity: { x: 0, y: 0 },
+      elastic: { x: 0, y: 0, velocityX: 0, velocityY: 0 },
+      dragging: false,
+      pointerId: null,
+      lastX: 0,
+      lastY: 0,
+      lastPointerAt: 0,
+      autoResumeAt: startedAt + 2450
+    };
+  }
+
+  function startCompletionPresentation(manual) {
+    if (!game || !isEndedView() || game.completion || !canPresentCompletion()) {
+      return;
+    }
+    if (Replay) {
+      game.board = Replay.boardAt(game.moves, game.rules.cellCount, game.moves.length, Engine.EMPTY);
+    }
+    game.review = null;
+    game.lastMove = game.moves.length ? game.moves[game.moves.length - 1].cell : -1;
+    game.completion = createCompletionState();
+    updateTurnUI();
+    if (manual) {
+      sound.play("ui");
+      window.setTimeout(function playRequestedMorph() {
+        if (game && game.completion && game.completion.phase === "presenting") {
+          sound.play("morph");
+        }
+      }, 120);
+    }
+    requestRender();
+  }
+
+  function setReplayStep(step, animateMove) {
+    if (!game || !game.review || !Replay) {
+      return false;
+    }
+    var previousStep = game.review.step;
+    var nextStep = Replay.clampStep(step, game.review.total);
+    if (nextStep === previousStep) {
+      return false;
+    }
+    game.review.step = nextStep;
+    game.board = Replay.boardAt(game.moves, game.rules.cellCount, nextStep, Engine.EMPTY);
+    game.lastMove = nextStep > 0 ? game.moves[nextStep - 1].cell : -1;
+    renderState.lastMoveAt = animateMove && nextStep > previousStep ? performance.now() : 0;
+    renderState.lastMoveFromPress = false;
+    renderState.winAt = nextStep === game.review.total && game.winningMask
+      ? (animateMove ? performance.now() : performance.now() - 800)
+      : 0;
+    updateTurnUI();
+    requestRender();
+    return true;
+  }
+
+  function activateReplayReview() {
+    if (!game || !isEndedView() || !Replay) {
+      return;
+    }
+    var total = game.moves.length;
+    game.completion = null;
+    game.review = { step: -1, total: total };
+    setReplayStep(total, false);
+  }
+
+  function beginReplayReview() {
+    if (!game || !isEndedView() || game.review) {
+      return;
+    }
+    if (game.completion) {
+      if (game.completion.phase !== "presenting" || !game.completion.settled) {
+        return;
+      }
+      game.completion.phase = "returning";
+      game.completion.startedAt = performance.now();
+      game.completion.duration = prefersReducedMotion() ? 1 : 1050;
+      game.completion.settled = false;
+      game.completion.dragging = false;
+      game.completion.pointerId = null;
+      game.completion.velocity.x = 0;
+      game.completion.velocity.y = 0;
+      game.completion.elastic.velocityX = 0;
+      game.completion.elastic.velocityY = 0;
+      dom.boardStage.classList.remove("is-dragging");
+      sound.play("ui");
+      updateTurnUI();
+      requestRender();
+      return;
+    }
+    sound.play("ui");
+    activateReplayReview();
+  }
+
+  function stepReplay(direction) {
+    if (!game || !game.review) {
+      return;
+    }
+    if (setReplayStep(game.review.step + direction, direction > 0)) {
+      sound.play("ui");
+    }
+  }
+
   function finishGame(outcome, winningMask, reason) {
     turnToken += 1;
     var finishedGame = game;
@@ -1093,29 +1303,11 @@
     game.turn = 0;
     game.winningMask = winningMask;
     game.winReason = reason || null;
+    game.review = null;
     game.autoAdvancePending = firstTutorialCompletion;
     renderState.winAt = performance.now();
     var shouldMorph = outcome === "win" && game.levelIndex > 0 && Boolean(Morph);
-    var completionPresentation = shouldMorph && winningMask
-      ? Morph.createPresentation(game.level.topology, game.rules, Array.prototype.slice.call(winningMask.cells))
-      : null;
-    game.completion = shouldMorph ? {
-      active: true,
-      startedAt: renderState.winAt,
-      duration: 3000,
-      settled: false,
-      view: chooseCompletionView(winningMask, completionPresentation),
-      presentation: completionPresentation,
-      rotation: { x: 0, y: 0, z: 0 },
-      velocity: { x: 0, y: 0 },
-      elastic: { x: 0, y: 0, velocityX: 0, velocityY: 0 },
-      dragging: false,
-      pointerId: null,
-      lastX: 0,
-      lastY: 0,
-      lastPointerAt: 0,
-      autoResumeAt: renderState.winAt + 2450
-    } : null;
+    game.completion = shouldMorph ? createCompletionState() : null;
     if (winningMask && winningMask.seam) {
       renderState.seamPulseAt = performance.now();
       renderState.seamPulseBits = winningMask.seam;
@@ -1748,6 +1940,7 @@
     game.outcome = null;
     game.winReason = null;
     game.completion = null;
+    game.review = null;
     game.lastMove = -1;
     renderState.lastMoveAt = 0;
     renderState.seamPulseAt = 0;
@@ -1789,6 +1982,7 @@
     game.winningMask = null;
     game.winReason = null;
     game.completion = null;
+    game.review = null;
     game.lastMove = path.cells[endIndex];
     developer.aiPaused = true;
     renderState.lastMoveAt = performance.now();
@@ -1916,6 +2110,12 @@
     }
     var completion = game.completion;
     var elapsed = time - completion.startedAt;
+    if (completion.phase === "returning") {
+      if (elapsed >= completion.duration) {
+        activateReplayReview();
+      }
+      return;
+    }
     if (!completion.settled && elapsed >= completion.duration) {
       completion.settled = true;
       updateTurnUI();
@@ -2541,7 +2741,7 @@
       return;
     }
     var cells = Array.prototype.slice.call(game.winningMask.cells);
-    var reveal = Morph.smooth((time - game.completion.startedAt - 1080) / 820);
+    var reveal = Morph.smooth((time - game.completion.lineStartedAt - 1080) / 820);
     var pulse = 0.78 + Math.sin(time * 0.009) * 0.16;
     ctx.save();
     ctx.lineCap = "round";
@@ -2665,18 +2865,24 @@
 
   function drawCompletionMorph(ctx, time) {
     var elapsed = time - game.completion.startedAt;
-    var progress = clamp01((elapsed - 80) / 2550);
-    var morph = Morph.spring(progress);
-    var viewBlend = Morph.smooth((elapsed - 100) / 1850);
-    var restingBounce = game.completion.settled && !game.completion.dragging
+    var returning = game.completion.phase === "returning";
+    var progress = returning
+      ? clamp01(elapsed / game.completion.duration)
+      : clamp01((elapsed - 80) / 2550);
+    var morph = returning ? 1 - Morph.smooth(progress) : Morph.spring(progress);
+    var viewBlend = returning ? morph : Morph.smooth((elapsed - 100) / 1850);
+    var rotationBlend = returning ? viewBlend : 1;
+    var restingBounce = !returning && game.completion.settled && !game.completion.dragging
       ? Math.sin(time * 0.00245) * 0.012
       : 0;
-    var jellyScale = 1 + Math.sin(progress * Math.PI * 2.35) * Math.pow(1 - progress, 1.85) * 0.048 + restingBounce * 0.42;
+    var jellyScale = returning
+      ? 1
+      : 1 + Math.sin(progress * Math.PI * 2.35) * Math.pow(1 - progress, 1.85) * 0.048 + restingBounce * 0.42;
     var sphereCompletion = game.level.topology === "sphere";
     var orientation = {
-      x: game.completion.view.x * viewBlend + game.completion.rotation.x,
-      y: game.completion.view.y * viewBlend + game.completion.rotation.y,
-      z: game.completion.view.z * viewBlend + game.completion.rotation.z,
+      x: game.completion.view.x * viewBlend + game.completion.rotation.x * rotationBlend,
+      y: game.completion.view.y * viewBlend + game.completion.rotation.y * rotationBlend,
+      z: game.completion.view.z * viewBlend + game.completion.rotation.z * rotationBlend,
       scale: jellyScale,
       shapeX: sphereCompletion ? 1 : 1 + ((Number(game.completion.view.shapeX) || 1) - 1) * viewBlend,
       shapeY: sphereCompletion ? 1 : 1 + ((Number(game.completion.view.shapeY) || 1) - 1) * viewBlend,
@@ -3149,10 +3355,21 @@
     });
   }
 
+  function activeWinningMask() {
+    if (!game || !game.winningMask) {
+      return null;
+    }
+    if (game.review && game.review.step < game.review.total) {
+      return null;
+    }
+    return game.winningMask;
+  }
+
   function winningCellSet() {
     var set = Object.create(null);
-    if (game && game.winningMask) {
-      Array.prototype.forEach.call(game.winningMask.cells, function rememberCell(cell) {
+    var winningMask = activeWinningMask();
+    if (winningMask) {
+      Array.prototype.forEach.call(winningMask.cells, function rememberCell(cell) {
         set[cell] = true;
       });
     }
@@ -3160,10 +3377,11 @@
   }
 
   function drawWinningConnections(ctx, time) {
-    if (!game.winningMask) {
+    var winningMask = activeWinningMask();
+    if (!winningMask) {
       return;
     }
-    var cells = game.winningMask.cells;
+    var cells = winningMask.cells;
     var progress = clamp01((time - renderState.winAt) / 620);
     ctx.save();
     ctx.strokeStyle = "rgba(199, 146, 68, " + (0.22 + progress * 0.55) + ")";
@@ -3184,6 +3402,7 @@
   }
 
   function drawStones(ctx, time) {
+    var winningMask = activeWinningMask();
     var winnerSet = winningCellSet();
     var radius = renderState.layout.cell * 0.37;
     var cell;
@@ -3210,7 +3429,7 @@
         }
       }
       var isWinning = Boolean(winnerSet[cell]);
-      var dimmed = game.winningMask && !isWinning;
+      var dimmed = winningMask && !isWinning;
 
       ctx.save();
       ctx.globalAlpha = dimmed ? 0.4 : 1;
@@ -3224,7 +3443,7 @@
       ctx.restore();
 
       if (isWinning) {
-        var winningIndex = Array.prototype.indexOf.call(game.winningMask.cells, cell);
+        var winningIndex = Array.prototype.indexOf.call(winningMask.cells, cell);
         var ringProgress = clamp01((time - renderState.winAt - winningIndex * 70) / 330);
         ctx.save();
         ctx.globalAlpha = ringProgress * 0.78;
@@ -3325,7 +3544,13 @@
   }
 
   function canExploreCompletion() {
-    return Boolean(game && game.completion && game.status === "ended" && !activeSheet);
+    return Boolean(
+      game
+      && game.completion
+      && game.completion.phase === "presenting"
+      && game.status === "ended"
+      && !activeSheet
+    );
   }
 
   function onBoardPointerDown(event) {
@@ -3468,7 +3693,7 @@
     dom.gameSettingsButton.addEventListener("click", openSettings);
     dom.backButton.addEventListener("click", leaveGame);
     dom.restartButton.addEventListener("click", handleRightTool);
-    dom.settledReplayButton.addEventListener("click", restartGame);
+    dom.settledReplayButton.addEventListener("click", handleSettledAction);
     dom.undoButton.addEventListener("click", handleLeftTool);
     dom.closeSettingsButton.addEventListener("click", function closeSettings() { closeActiveSheet(false); });
     dom.settingsDoneButton.addEventListener("click", function finishSettings() {

@@ -805,7 +805,11 @@ button,
 }
 
 .board-stage.is-settled canvas {
-  opacity: 0.84;
+  opacity: 0.94;
+}
+
+.board-stage.is-returning canvas {
+  cursor: default;
 }
 
 #boardCanvas {
@@ -883,6 +887,10 @@ button,
   grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
+.game-tools.is-ended.is-reviewing {
+  grid-template-columns: 64px 1fr 64px;
+}
+
 .game-tools.is-auto-advancing {
   visibility: hidden;
 }
@@ -896,8 +904,22 @@ button,
   color: var(--ink);
 }
 
-.game-tools.is-ended .settled-replay-button {
+.game-tools.is-ended:not(.is-reviewing) #undoButton {
   color: var(--teal);
+}
+
+.game-tools.is-ended .settled-replay-button.is-three-dimensional {
+  color: #8b7556;
+}
+
+.game-tools.is-ended.is-reviewing .tool-button {
+  width: 64px;
+  color: var(--muted);
+}
+
+.game-tools.is-reviewing .rule-caption strong,
+.game-tools.is-reviewing .rule-caption span {
+  font-variant-numeric: tabular-nums;
 }
 
 .tool-button {

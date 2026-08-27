@@ -282,16 +282,21 @@ test("通关曲面使用高密度采样，棋盘线沿曲面分段插值", () =>
   assert.doesNotMatch(game, /appendCompletionSegment\(points, sourceBoundary, targetBoundary/);
 });
 
-test("胜负结算常驻棋盘且支持重玩，胜利曲面可以持续柔性拖动", () => {
+test("胜负结算可进入二维复盘，胜利曲面可以持续柔性拖动", () => {
   const game = fs.readFileSync(path.join(ROOT, "app", "assets", "game.js"), "utf8");
   const html = fs.readFileSync(path.join(ROOT, "app", "index.html"), "utf8");
   assert.match(game, /if \(game\.completion\) \{\s*animate = true;/);
   assert.match(game, /function canExploreCompletion\(\)/);
   assert.match(game, /completion\.rotation\.y \+= yawDelta;/);
-  assert.match(game, /settledReplayButton\.addEventListener\("click", restartGame\)/);
+  assert.match(game, /settledReplayButton\.addEventListener\("click", handleSettledAction\)/);
+  assert.match(game, /function beginReplayReview\(\)/);
+  assert.match(game, /game\.completion\.phase = "returning";/);
+  assert.match(game, /function stepReplay\(direction\)/);
+  assert.match(game, /Replay\.boardAt\(game\.moves, game\.rules\.cellCount, nextStep, Engine\.EMPTY\)/);
+  assert.match(game, /canOfferThreeDimensional/);
   assert.doesNotMatch(game, /showResult\(/);
   assert.doesNotMatch(html, /id="resultSheet"/);
-  assert.match(game, /chooseCompletionView\(winningMask, completionPresentation\)/);
+  assert.match(game, /chooseCompletionView\(winningMask, presentation\)/);
   assert.match(game, /elastic:\s*\{ x: 0, y: 0, velocityX: 0, velocityY: 0 \}/);
   assert.match(game, /wobbleX: sphereCompletion \? game\.completion\.elastic\.x/);
   assert.match(game, /completion\.elastic\.velocityY \+= yawDelta/);
