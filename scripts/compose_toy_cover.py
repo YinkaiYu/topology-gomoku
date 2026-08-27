@@ -29,20 +29,21 @@ def main() -> None:
     background.paste(brand, (brand_x, brand_y), brand)
 
     draw = ImageDraw.Draw(background)
-    title_font = ImageFont.truetype(str(TITLE_FONT), 168)
-    subtitle_font = ImageFont.truetype(str(TITLE_FONT), 34)
-    institution_font = ImageFont.truetype(str(INSTITUTION_FONT), 22)
+    title_font = ImageFont.truetype(str(TITLE_FONT), 205)
+    subtitle_font = ImageFont.truetype(str(TITLE_FONT), 52)
+    institution_font = ImageFont.truetype(str(INSTITUTION_FONT), 52)
 
-    draw.text((55, 66), "拓扑", font=title_font, fill=INK, stroke_width=2, stroke_fill=INK)
-    draw.text((55, 232), "五子棋", font=title_font, fill=INK, stroke_width=2, stroke_fill=INK)
-    draw.text((63, 466), "边界之外，也能连成一线。", font=subtitle_font, fill=MUTED)
+    draw.text((42, 18), "拓扑", font=title_font, fill=INK, stroke_width=3, stroke_fill=INK)
+    draw.text((42, 211), "五子棋", font=title_font, fill=INK, stroke_width=3, stroke_fill=INK)
+    draw.text((53, 461), "世界之外，", font=subtitle_font, fill=MUTED, stroke_width=1, stroke_fill=MUTED)
+    draw.text((53, 521), "也能连成一线。", font=subtitle_font, fill=MUTED, stroke_width=1, stroke_fill=MUTED)
 
-    line_y = 529
-    draw.line((64, line_y, 146, line_y), fill=TEAL, width=4)
-    draw.line((146, line_y, 178, line_y), fill=GOLD, width=4)
-    draw.line((178, line_y, 201, line_y), fill=RED, width=4)
+    line_y = 603
+    draw.line((54, line_y, 154, line_y), fill=TEAL, width=5)
+    draw.line((154, line_y, 194, line_y), fill=GOLD, width=5)
+    draw.line((194, line_y, 223, line_y), fill=RED, width=5)
 
-    draw.text((64, 806), "中国科学院物理研究所", font=institution_font, fill="#767970")
+    draw.text((53, 770), "中国科学院物理研究所", font=institution_font, fill="#58605a")
 
     OUTPUT.parent.mkdir(parents=True, exist_ok=True)
     background.save(OUTPUT, format="PNG", optimize=True)
