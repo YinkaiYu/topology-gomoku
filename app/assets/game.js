@@ -1084,20 +1084,22 @@
     var passed = isPassedView();
     var reviewing = isReviewing();
     var lessonComplete = game.status === "lesson-complete";
+    var firstLevel = game.levelIndex === 0;
     var autoAdvancing = ended && Boolean(game.autoAdvancePending);
     var hasNextLevel = passed && game.levelIndex < LEVELS.length - 1;
     var canToggleDimension = ended && canPresentCompletion();
     var surfaceVisible = Boolean(game.completion && game.completion.phase === "presenting");
     var dimensionTransitioning = Boolean(game.completion && !game.completion.settled);
+    var reviewToolsHidden = !ended || autoAdvancing || firstLevel;
 
-    dom.gameScreen.classList.toggle("has-endgame-tools", ended && !autoAdvancing);
+    dom.gameScreen.classList.toggle("has-endgame-tools", ended && !autoAdvancing && !firstLevel);
     dom.gameTools.classList.toggle("is-ended", ended);
     dom.gameTools.classList.toggle("has-next-level", ended && hasNextLevel);
     dom.gameTools.classList.toggle("is-auto-advancing", autoAdvancing);
     dom.gameTools.classList.toggle("is-basic-tutorial", !ended && game.levelIndex === 0);
     dom.endgameReviewTools.hidden = false;
-    dom.endgameReviewTools.classList.toggle("is-reserved", !ended || autoAdvancing);
-    dom.endgameReviewTools.setAttribute("aria-hidden", String(!ended || autoAdvancing));
+    dom.endgameReviewTools.classList.toggle("is-reserved", reviewToolsHidden);
+    dom.endgameReviewTools.setAttribute("aria-hidden", String(reviewToolsHidden));
     dom.endgameReviewTools.classList.toggle("is-reviewing", reviewing);
     dom.endgameReviewTools.classList.toggle("has-no-dimension", !canToggleDimension);
     dom.humanChip.hidden = false;
@@ -1115,7 +1117,7 @@
     );
     dom.undoButton.hidden = ended;
     dom.journeyButton.hidden = !ended;
-    dom.settledReplayButton.hidden = !ended;
+    dom.settledReplayButton.hidden = !ended || firstLevel;
     dom.nextLevelButton.hidden = !ended;
     dom.restartButton.hidden = ended;
 
@@ -1659,9 +1661,8 @@
     turnToken += 1;
     var finishedGame = game;
     var passed = outcome === "win" || outcome === "draw";
-    var firstTutorialCompletion = outcome === "win"
+    var firstLevelAutoAdvance = passed
       && game.levelIndex === 0
-      && !prefs.completed[game.levelIndex]
       && LEVELS.length > 1;
     game.status = "ended";
     game.outcome = outcome;
@@ -1669,7 +1670,7 @@
     game.winningMask = winningMask;
     game.winReason = reason || null;
     game.review = null;
-    game.autoAdvancePending = firstTutorialCompletion;
+    game.autoAdvancePending = firstLevelAutoAdvance;
     renderState.winAt = performance.now();
     var shouldMorph = passed && game.levelIndex > 0 && Boolean(Morph);
     game.completion = shouldMorph ? createCompletionState() : null;
@@ -1698,8 +1699,8 @@
           }
         }, 260);
       }
-      if (firstTutorialCompletion) {
-        window.setTimeout(function enterFirstTopologyLevel() {
+      if (firstLevelAutoAdvance) {
+        window.setTimeout(function enterSecondLevel() {
           if (game !== finishedGame || game.status !== "ended" || !game.autoAdvancePending) {
             return;
           }

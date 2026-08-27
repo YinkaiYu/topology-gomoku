@@ -24,6 +24,7 @@ test("二维转三维脚本在游戏脚本之前以本地经典脚本加载", ()
 
 test("第一关每次进入都逐子教学、隐藏边界演示且仍无 AI 回合", () => {
   const game = fs.readFileSync(path.join(ROOT, "app", "assets", "game.js"), "utf8");
+  const style = fs.readFileSync(path.join(ROOT, "app", "assets", "style.css"), "utf8");
   assert.match(game, /topology:\s*"plane",\s*\n\s*tutorial:\s*true/);
   assert.match(game, /function introModeFor\(levelIndex, options\) \{\s*if \(levelIndex === 0\) \{\s*return "lesson";/);
   assert.match(game, /return hasLearnedLevel\(levelIndex\) \? "demo" : "lesson"/);
@@ -35,6 +36,9 @@ test("第一关每次进入都逐子教学、隐藏边界演示且仍无 AI 回�
   assert.match(game, /game\.level\.tutorial \|\| lessonActive \? 1 : \(game\.turn === AI/);
   assert.match(game, /var passed = outcome === "win" \|\| outcome === "draw";/);
   assert.match(game, /var shouldMorph = passed && game\.levelIndex > 0 && Boolean\(Morph\)/);
+  assert.match(game, /reviewToolsHidden = !ended \|\| autoAdvancing \|\| firstLevel/);
+  assert.match(game, /dom\.settledReplayButton\.hidden = !ended \|\| firstLevel/);
+  assert.match(style, /\.endgame-review-tools \[hidden\]\s*\{\s*display:\s*none/);
   assert.match(game, /"传统的五子棋",\s*"就是把五颗子",\s*"连成一条线",\s*"好无趣",\s*"好无聊"/s);
   assert.match(game, /TUTORIAL_PROMPTS\[Math\.min\(count, TUTORIAL_PROMPTS\.length - 1\)\]/);
   assert.match(game, /Engine\.suggestTutorialMove/);
@@ -399,7 +403,7 @@ test("标题、状态、棋盘与两层操作区使用统一垂直节奏", () =>
   assert.match(style, /\.endgame-review-tools\.is-reserved\s*\{[\s\S]*visibility:\s*hidden;[\s\S]*pointer-events:\s*none/);
   assert.match(style, /\.game-tools\s*\{[\s\S]*min-height:\s*0;[\s\S]*grid-template-columns:\s*repeat\(3, minmax\(0, 1fr\)\);[\s\S]*padding-top:\s*0/);
   assert.match(style, /@media \(max-height:\s*760px\)[\s\S]*--game-control-row-size:\s*44px/);
-  assert.match(game, /dom\.endgameReviewTools\.hidden = false;[\s\S]*classList\.toggle\("is-reserved", !ended \|\| autoAdvancing\)/);
+  assert.match(game, /dom\.endgameReviewTools\.hidden = false;[\s\S]*classList\.toggle\("is-reserved", reviewToolsHidden\)/);
 });
 
 test("终局操作以中性色为底并只保留两组克制强调色", () => {
