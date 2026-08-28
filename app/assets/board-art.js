@@ -208,7 +208,7 @@
     ctx.save();
     ctx.strokeStyle = color;
     ctx.fillStyle = color;
-    ctx.globalAlpha = 0.58 + pulse * 0.4;
+    ctx.globalAlpha *= 0.58 + pulse * 0.4;
     ctx.lineWidth = 2 + pulse * 2.2;
     ctx.lineCap = "round";
     ctx.shadowColor = color;
@@ -250,7 +250,7 @@
       ctx.save();
       ctx.strokeStyle = pair.color;
       ctx.fillStyle = pair.color;
-      ctx.globalAlpha = 0.58 + pair.pulse * 0.4;
+      ctx.globalAlpha *= 0.58 + pair.pulse * 0.4;
       ctx.lineWidth = 2 + pair.pulse * 2.2;
       ctx.lineCap = "round";
       ctx.shadowColor = pair.color;
@@ -380,7 +380,7 @@
       }
       var winning = Boolean(winnerSet[cell]);
       ctx.save();
-      ctx.globalAlpha = mask && !winning ? 0.4 : 1;
+      ctx.globalAlpha *= mask && !winning ? 0.4 : 1;
       ctx.translate(center.x, center.y);
       ctx.scale(scale, scale);
       ctx.shadowColor = player === Engine.HUMAN ? "rgba(24, 31, 29, 0.28)" : "rgba(65, 58, 48, 0.18)";
@@ -392,7 +392,7 @@
         var winningIndex = Array.prototype.indexOf.call(mask.cells, cell);
         var ringProgress = clamp01((time - game.winAt - winningIndex * 70) / 330);
         ctx.save();
-        ctx.globalAlpha = ringProgress * 0.78;
+        ctx.globalAlpha *= ringProgress * 0.78;
         ctx.strokeStyle = TOKENS.gold;
         ctx.lineWidth = 2;
         ctx.beginPath();
@@ -418,7 +418,7 @@
     var landing = 1 - Math.pow(1 - progress, 3);
     var scale = 0.72 + (1.16 - 0.72) * landing + Math.sin(progress * Math.PI) * 0.045;
     ctx.save();
-    ctx.globalAlpha = 0.46 + landing * 0.54;
+    ctx.globalAlpha *= 0.46 + landing * 0.54;
     ctx.translate(center.x, center.y + radius * (1 - landing) * -0.16);
     ctx.scale(scale, scale);
     ctx.shadowColor = "rgba(24, 31, 29, 0.24)";
@@ -462,7 +462,7 @@
       ctx.fillStyle = defensive
         ? (urgent ? "rgba(217, 91, 79, 0.085)" : "rgba(217, 91, 79, 0.04)")
         : (urgent ? "rgba(199, 146, 68, 0.07)" : "rgba(63, 140, 135, 0.055)");
-      ctx.globalAlpha = urgent ? 0.92 : 0.72;
+      ctx.globalAlpha *= urgent ? 0.92 : 0.72;
       ctx.lineWidth = urgent ? 1.85 : 1.35;
       if (ctx.setLineDash) {
         ctx.setLineDash(defensive
@@ -492,7 +492,7 @@
     var text = prompts[Math.min(game.lesson.step, prompts.length - 1)] || game.level.ruleText;
     var fontSize = Math.max(12, Math.min(14, layout.cell * 0.195));
     ctx.save();
-    ctx.globalAlpha = 0.52 + pulse * 0.24;
+    ctx.globalAlpha *= 0.52 + pulse * 0.24;
     ctx.strokeStyle = TOKENS.teal;
     ctx.fillStyle = "rgba(63, 140, 135, 0.08)";
     ctx.lineWidth = 1.5;
@@ -511,7 +511,7 @@
     if (textY - fontSize * 0.6 < layout.top) {
       textY = center.y + radius + fontSize * 1.2;
     }
-    ctx.globalAlpha = 0.74 + pulse * 0.22;
+    ctx.globalAlpha *= 0.74 + pulse * 0.22;
     ctx.lineWidth = 4.1;
     ctx.lineJoin = "round";
     ctx.strokeStyle = "rgba(251, 250, 246, 0.92)";
@@ -537,7 +537,7 @@
       }
       var center = cellCenter(game.rules, layout, demo.cells[index]);
       ctx.save();
-      ctx.globalAlpha = alpha * (0.52 + localProgress * 0.38);
+      ctx.globalAlpha *= alpha * (0.52 + localProgress * 0.38);
       ctx.translate(center.x, center.y);
       ctx.scale(easeOutBack(localProgress), easeOutBack(localProgress));
       ctx.shadowColor = "rgba(24, 31, 29, 0.2)";
@@ -850,7 +850,7 @@
     }
     if (morph < 0.98) {
       ctx.save();
-      ctx.globalAlpha = 1 - morph;
+      ctx.globalAlpha *= 1 - morph;
       drawTopologyRails(ctx, game, layout, Number(settings.time) || 0);
       ctx.restore();
     }
@@ -877,7 +877,7 @@
     var radius = layout.cell * (0.37 - morph * 0.07);
     stones.forEach(function drawSurfaceStone(item) {
       ctx.save();
-      ctx.globalAlpha = game.winningMask && !winnerSet[item.cell] ? 0.5 : 1;
+      ctx.globalAlpha *= game.winningMask && !winnerSet[item.cell] ? 0.5 : 1;
       ctx.translate(item.point.x, item.point.y);
       ctx.shadowColor = item.player === Engine.HUMAN ? "rgba(24, 31, 29, 0.3)" : "rgba(65, 58, 48, 0.2)";
       ctx.shadowBlur = radius * 0.48;
