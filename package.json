@@ -13,6 +13,7 @@
     "check": "npm test && npm run validate && npm run docs:check",
     "check:wechat": "npm run check && npm run build:wechat",
     "fonts:subset": "powershell -NoProfile -ExecutionPolicy Bypass -File ./scripts/subset-fonts.ps1",
+    "fonts:subset:wechat": "powershell -NoProfile -ExecutionPolicy Bypass -File ./scripts/subset-fonts.ps1 --text-root app --text-root wechat --output-dir wechat/assets/fonts --format ttf",
     "build": "npm run build:xiaohongshu",
     "build:xiaohongshu": "powershell -NoProfile -ExecutionPolicy Bypass -File ./scripts/build.ps1",
     "build:wechat": "powershell -NoProfile -ExecutionPolicy Bypass -File ./scripts/build-wechat.ps1",

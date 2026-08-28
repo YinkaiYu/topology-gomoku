@@ -83,9 +83,9 @@ foreach ($requiredPath in @(
   'game.js',
   'game.json',
   'project.config.json',
-  'assets/fonts/noto-serif-sc-400.woff2',
-  'assets/fonts/noto-serif-sc-600.woff2',
-  'assets/fonts/noto-serif-sc-700.woff2'
+  'assets/fonts/noto-serif-sc-400.ttf',
+  'assets/fonts/noto-serif-sc-600.ttf',
+  'assets/fonts/noto-serif-sc-700.ttf'
 )) {
   if ($relativePaths -cnotcontains $requiredPath) {
     $errors.Add("Missing required WeChat game entry with exact casing: $requiredPath")

@@ -46,7 +46,7 @@ const AUTHORITATIVE_COPIES = [
   ["brand-icon.png", "assets/brand-icon.png"],
 ];
 const PLATFORM_FONT_PATHS = [400, 600, 700]
-  .map((weight) => `assets/fonts/noto-serif-sc-${weight}.woff2`);
+  .map((weight) => `assets/fonts/noto-serif-sc-${weight}.ttf`);
 const ONE_PIXEL_PNG = Buffer.from(
   "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII=",
   "base64",
@@ -182,9 +182,15 @@ function createOfficialTemplate(root, overrides = {}) {
   writeFile(root, "images/custom-user.png", "unmanaged image\n");
 }
 
-test("package.json 暴露完整微信门禁且同步脚本不递归清空目标", () => {
+test("package.json 暴露完整微信门禁与独立字体命令，且同步不递归清空目标", () => {
   const packageJson = JSON.parse(fs.readFileSync(path.join(ROOT, "package.json"), "utf8"));
-  for (const command of ["validate:wechat", "check:wechat", "build:wechat", "sync:wechat"]) {
+  for (const command of [
+    "validate:wechat",
+    "check:wechat",
+    "build:wechat",
+    "sync:wechat",
+    "fonts:subset:wechat",
+  ]) {
     assert.equal(typeof packageJson.scripts[command], "string", `缺少 npm 命令 ${command}`);
   }
   const syncScript = fs.readFileSync(path.join(ROOT, "scripts", "sync-wechat.ps1"), "utf8");
