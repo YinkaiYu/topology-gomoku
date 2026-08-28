@@ -1,6 +1,6 @@
 @font-face {
   font-family: "Topo Serif";
-  src: url("./fonts/noto-serif-sc-400.woff2?v=1.37.1") format("woff2");
+  src: url("./fonts/noto-serif-sc-400.woff2?v=1.37.2") format("woff2");
   font-style: normal;
   font-weight: 400;
   font-display: swap;
@@ -8,7 +8,7 @@
 
 @font-face {
   font-family: "Topo Serif";
-  src: url("./fonts/noto-serif-sc-600.woff2?v=1.37.1") format("woff2");
+  src: url("./fonts/noto-serif-sc-600.woff2?v=1.37.2") format("woff2");
   font-style: normal;
   font-weight: 600;
   font-display: swap;
@@ -16,7 +16,7 @@
 
 @font-face {
   font-family: "Topo Serif";
-  src: url("./fonts/noto-serif-sc-700.woff2?v=1.37.1") format("woff2");
+  src: url("./fonts/noto-serif-sc-700.woff2?v=1.37.2") format("woff2");
   font-style: normal;
   font-weight: 700;
   font-display: swap;
@@ -1645,6 +1645,16 @@ button,
 
 .switch.is-settling i {
   animation: liquid-knob-settle var(--liquid-glide-duration, 760ms) cubic-bezier(0.22, 0.64, 0.2, 1) both;
+}
+
+@media (pointer: coarse) {
+  .segmented.is-dragging .segmented-glass-thumb {
+    transition: translate 176ms var(--liquid-drag), scale 192ms var(--liquid-drag);
+  }
+
+  .switch.is-dragging i {
+    transition: translate 160ms var(--liquid-drag), scale 178ms var(--liquid-drag);
+  }
 }
 
 @keyframes liquid-thumb-settle {
