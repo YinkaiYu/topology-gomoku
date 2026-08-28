@@ -1,6 +1,6 @@
 @font-face {
   font-family: "Topo Serif";
-  src: url("./fonts/noto-serif-sc-400.woff2?v=1.37.2") format("woff2");
+  src: url("./fonts/noto-serif-sc-400.woff2?v=1.37.3") format("woff2");
   font-style: normal;
   font-weight: 400;
   font-display: swap;
@@ -8,7 +8,7 @@
 
 @font-face {
   font-family: "Topo Serif";
-  src: url("./fonts/noto-serif-sc-600.woff2?v=1.37.2") format("woff2");
+  src: url("./fonts/noto-serif-sc-600.woff2?v=1.37.3") format("woff2");
   font-style: normal;
   font-weight: 600;
   font-display: swap;
@@ -16,7 +16,7 @@
 
 @font-face {
   font-family: "Topo Serif";
-  src: url("./fonts/noto-serif-sc-700.woff2?v=1.37.2") format("woff2");
+  src: url("./fonts/noto-serif-sc-700.woff2?v=1.37.3") format("woff2");
   font-style: normal;
   font-weight: 700;
   font-display: swap;
@@ -1491,7 +1491,8 @@ button,
     inset 1.5px 0 0.8px rgba(61, 221, 190, 0.14),
     inset -1.5px 0 0.8px rgba(255, 196, 100, 0.11),
     inset 0 -1.5px 0.8px rgba(49, 110, 90, 0.13);
-  transition: translate 146ms var(--liquid-drag), scale 162ms var(--liquid-drag);
+  transition: scale 162ms var(--liquid-drag);
+  will-change: translate, scale;
 }
 
 .segmented.is-dragging .segmented-lens-track {
@@ -1649,7 +1650,7 @@ button,
 
 @media (pointer: coarse) {
   .segmented.is-dragging .segmented-glass-thumb {
-    transition: translate 176ms var(--liquid-drag), scale 192ms var(--liquid-drag);
+    transition: scale 192ms var(--liquid-drag);
   }
 
   .switch.is-dragging i {

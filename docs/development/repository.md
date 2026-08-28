@@ -105,6 +105,8 @@ git worktree list
 
 维护者定期从 `dev` 选择稳定版本，经复验后提升到 `main`，再以同一 `main` 提交和同一 SemVer 更新三个发行分支。已有平台适配提交保留在各自发行分支，由本轮 `main` 同步更新共享基线。详细门禁、统一版本规则和平台检查见 [`release.md`](release.md)。
 
+执行稳定提升或发行分支整合前，必须完整阅读 [`merging.md`](merging.md)。冲突只能在独立提升/整合 worktree 中按文件职责解决；长期分支在确认后通过 `--ff-only` 接收已验证结果，不在长期 worktree 现场拼接冲突。
+
 建议保护 `main`、`dev` 和发行分支：要求 Pull Request、验证通过、预览或平台验收记录，并禁止强推。普通贡献者只需要面向 `dev` 发起 Pull Request。
 
 ## 命名约定

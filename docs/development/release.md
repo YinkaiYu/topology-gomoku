@@ -1,6 +1,6 @@
 # 稳定提升与全平台发布
 
-本文只适用于仓库所有者明确授权的维护者（包括维护者 Agent）。外部贡献者和普通开发 Agent 的职责终点是 `dev`，不执行本流程。
+本文只适用于仓库所有者明确授权的维护者（包括维护者 Agent）。外部贡献者和普通开发 Agent 的职责终点是 `dev`，不执行本流程。开始稳定提升或发行整合前，还必须完整阅读 [`merging.md`](merging.md)；本文定义发布门禁，合并方向、冲突分类和安全清理由该手册定义。
 
 ## 发布模型
 
@@ -74,9 +74,9 @@ npm run release:check-versions -- X.Y.Z
 
 该命令检查 `main` 和三个发行分支的 `package.json`。平台清单或宿主后台中的额外版本字段仍需在发布记录中逐项确认。
 
-## Bilibili 发行分支冲突处理
+## Bilibili 发行分支补充要求
 
-Bilibili 发行整合分支必须从长期 `bilibili` 分支新建，再把本轮稳定 `main` 合入。开始解决前先用 `git status --short` 和 `git diff --name-only --diff-filter=U` 列出冲突；不要对整批文件机械选择 `ours` 或 `theirs`。在这个合并方向中，`ours` 是既有 Bilibili 发行实现，`theirs` 是本轮 `main` 共享基线，但最终选择仍以文件职责为准。
+Bilibili 同样遵守 [`merging.md`](merging.md) 的通用发行整合流程。整合分支必须从长期 `bilibili` 分支新建，再把本轮稳定 `main` 合入；在这个合并方向中，`ours` 是既有 Bilibili 发行实现，`theirs` 是本轮 `main` 共享基线，但最终选择仍以文件职责为准。
 
 | 冲突内容 | 处理原则 |
 | --- | --- |
@@ -88,7 +88,7 @@ Bilibili 发行整合分支必须从长期 `bilibili` 分支新建，再把本�
 
 解决后先检查 `git diff --check` 和 `git status --short`，再运行共享检查、Bilibili 构建及 Toy 平台诊断。用 `toy` skill 生成预览并完成真机验收；用户明确确认前不得提交审核，也不得合入长期 `bilibili` 分支。
 
-如果冲突暴露的是共享缺陷、共享契约不完整或三个平台都需要的修复，停止在 Bilibili 分支内复制补丁：从 `dev` 新建共享任务，验证并重新完成稳定提升后，再重做本次发行整合。无法确定文件职责时同样先暂停，查阅对应 adapter 和平台文档，而不是凭 `ours` / `theirs` 猜测。
+如果冲突暴露的是共享缺陷、共享契约不完整或三个平台都需要的修复，按合并手册中止当前整合，从 `dev` 新建共享任务，验证并重新完成稳定提升后，再重做本次发行整合。无法确定文件职责时同样先暂停，查阅对应 adapter 和平台文档，而不是凭 `ours` / `theirs` 猜测。
 
 ## 受阻与修复
 

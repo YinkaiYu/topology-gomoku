@@ -19,6 +19,7 @@
 | [`development/documentation.md`](development/documentation.md) | 文档信息归属、变更触发矩阵与自动门禁 |
 | [`development/architecture.md`](development/architecture.md) | 共享游戏核心、Canvas 美术与平台 adapter 的职责边界 |
 | [`development/wechat-agent-workflow.md`](development/wechat-agent-workflow.md) | 基于官方 WeChatIDE skill 的小游戏构建、同步、模拟器调试与证据链 |
+| [`development/merging.md`](development/merging.md) | 维护者合并方向、冲突分类、平台整合验证与安全清理 |
 | [`development/release.md`](development/release.md) | 维护者专属的 `dev → main → 三平台` 与统一版本流程 |
 
 ## 设计文档
