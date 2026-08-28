@@ -12,10 +12,7 @@ $script:WechatAuthoritativeCopies = @(
   [pscustomobject]@{ Source = 'level-config.js'; Destination = 'js/shared/level-config.js'; Kind = 'shared-js' },
   [pscustomobject]@{ Source = 'game-controller.js'; Destination = 'js/shared/game-controller.js'; Kind = 'shared-js' },
   [pscustomobject]@{ Source = 'board-art.js'; Destination = 'js/shared/board-art.js'; Kind = 'shared-js' },
-  [pscustomobject]@{ Source = 'brand-icon.png'; Destination = 'assets/brand-icon.png'; Kind = 'derived-image' },
-  [pscustomobject]@{ Source = 'fonts/noto-serif-sc-400.woff2'; Destination = 'assets/fonts/noto-serif-sc-400.woff2'; Kind = 'asset' },
-  [pscustomobject]@{ Source = 'fonts/noto-serif-sc-600.woff2'; Destination = 'assets/fonts/noto-serif-sc-600.woff2'; Kind = 'asset' },
-  [pscustomobject]@{ Source = 'fonts/noto-serif-sc-700.woff2'; Destination = 'assets/fonts/noto-serif-sc-700.woff2'; Kind = 'asset' }
+  [pscustomobject]@{ Source = 'brand-icon.png'; Destination = 'assets/brand-icon.png'; Kind = 'derived-image' }
 )
 
 function Resolve-WechatPath {

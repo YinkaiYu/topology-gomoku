@@ -6,7 +6,6 @@ const zlib = require("node:zlib");
 
 const ROOT = path.resolve(__dirname, "..");
 const APP_ROOT = path.join(ROOT, "app");
-const WECHAT_ROOT = path.join(ROOT, "wechat");
 const FONT_ROOT = path.join(APP_ROOT, "assets", "fonts");
 const TEXT_EXTENSIONS = new Set([".html", ".css", ".js", ".json"]);
 const FONT_WEIGHTS = ["400", "600", "700"];
@@ -158,14 +157,12 @@ function appTextFiles(directory) {
 
 function requiredNonAsciiCodepoints() {
   const codepoints = new Set();
-  [APP_ROOT, WECHAT_ROOT].filter((root) => fs.existsSync(root)).forEach((root) => {
-    appTextFiles(root).forEach((file) => {
-      for (const character of fs.readFileSync(file, "utf8")) {
-        if (character.codePointAt(0) > 0x7f && !/\s/u.test(character)) {
-          codepoints.add(character.codePointAt(0));
-        }
+  appTextFiles(APP_ROOT).forEach((file) => {
+    for (const character of fs.readFileSync(file, "utf8")) {
+      if (character.codePointAt(0) > 0x7f && !/\s/u.test(character)) {
+        codepoints.add(character.codePointAt(0));
       }
-    });
+    }
   });
   return [...codepoints].sort((left, right) => left - right);
 }

@@ -44,10 +44,9 @@ const AUTHORITATIVE_COPIES = [
   ["game-controller.js", "js/shared/game-controller.js"],
   ["board-art.js", "js/shared/board-art.js"],
   ["brand-icon.png", "assets/brand-icon.png"],
-  ["fonts/noto-serif-sc-400.woff2", "assets/fonts/noto-serif-sc-400.woff2"],
-  ["fonts/noto-serif-sc-600.woff2", "assets/fonts/noto-serif-sc-600.woff2"],
-  ["fonts/noto-serif-sc-700.woff2", "assets/fonts/noto-serif-sc-700.woff2"],
 ];
+const PLATFORM_FONT_PATHS = [400, 600, 700]
+  .map((weight) => `assets/fonts/noto-serif-sc-${weight}.woff2`);
 const ONE_PIXEL_PNG = Buffer.from(
   "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII=",
   "base64",
@@ -144,6 +143,9 @@ function createNativeSource(root) {
   writeJson(root, "project.private.config.json", { appid: "private-source-value" });
   writeFile(root, "js/main.js", '"use strict";\nwx.createCanvas();\n');
   writeFile(root, "assets/board.bin", Buffer.from([0, 1, 2, 3, 4, 5]));
+  for (const fontPath of PLATFORM_FONT_PATHS) {
+    writeFile(root, fontPath, Buffer.from(`platform font fixture: ${fontPath}\n`));
+  }
   writeFile(root, "README.md", "# 拓扑五子棋微信小游戏\n");
 }
 
@@ -229,6 +231,12 @@ test("微信构建确定、排除私有配置并用 manifest 校验全部文件"
     } else {
       assert.equal(sha256(builtPath), sha256(path.join(sharedAssetsRoot, ...sourcePath.split("/"))));
     }
+  }
+  for (const fontPath of PLATFORM_FONT_PATHS) {
+    assert.equal(
+      sha256(path.join(outputRoot, ...fontPath.split("/"))),
+      sha256(path.join(sourceRoot, ...fontPath.split("/"))),
+    );
   }
 
   const secondBuild = runScript("build-wechat.ps1", args);

@@ -2,8 +2,7 @@
 
 Requires fontTools with Brotli support. Pass a full Noto Serif SC variable font
 with --source or set TOPO_SERIF_SOURCE. The generated subsets include printable
-ASCII plus every non-ASCII character present in shared H5 and native WeChat
-text sources.
+ASCII plus every non-ASCII character present in app text sources.
 """
 
 from __future__ import annotations
@@ -19,7 +18,6 @@ from fontTools.varLib.instancer import instantiateVariableFont
 
 ROOT = Path(__file__).resolve().parents[1]
 APP_ROOT = ROOT / "app"
-WECHAT_ROOT = ROOT / "wechat"
 FONT_ROOT = APP_ROOT / "assets" / "fonts"
 TEXT_EXTENSIONS = {".html", ".css", ".js", ".json"}
 WEIGHTS = (400, 600, 700)
@@ -28,13 +26,10 @@ DEFAULT_WINDOWS_SOURCE = Path(r"C:\Windows\Fonts\NotoSerifSC-VF.ttf")
 
 def required_codepoints() -> set[int]:
     codepoints = set(range(0x20, 0x7F))
-    for source_root in (APP_ROOT, WECHAT_ROOT):
-        if not source_root.exists():
+    for path in APP_ROOT.rglob("*"):
+        if not path.is_file() or path.suffix.lower() not in TEXT_EXTENSIONS:
             continue
-        for path in source_root.rglob("*"):
-            if not path.is_file() or path.suffix.lower() not in TEXT_EXTENSIONS:
-                continue
-            codepoints.update(ord(character) for character in path.read_text(encoding="utf-8") if ord(character) > 0x7F)
+        codepoints.update(ord(character) for character in path.read_text(encoding="utf-8") if ord(character) > 0x7F)
     return codepoints
 
 
