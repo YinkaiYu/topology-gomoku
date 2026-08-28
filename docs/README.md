@@ -32,7 +32,7 @@
 
 - 小红书 H5 与离线 ZIP：执行入口为 [`.codex/SKILL.md`](../.codex/SKILL.md)，具体约束位于 `.codex/references/`。
 - Bilibili Toy：专属适配文档随 `bilibili` 分支维护，并以官方 Toy 约束和仓库安装的 `toy` skill 为准。
-- 微信小程序：待适配开始并完成事实核验后，在 `wechat` 分支建立平台文档；不得凭记忆预写宿主 API。
+- 微信小游戏：原生单 Canvas 边界、构建同步与开发者工具/真机验收见 [`platforms/wechat.md`](platforms/wechat.md)。
 
 ## 维护规则
 

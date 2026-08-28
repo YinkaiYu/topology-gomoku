@@ -22,14 +22,14 @@
 - `main`：由维护者定期从 `dev` 选择并提升的稳定跨平台版本。
 - `xiaohongshu`：从 `main` 同步稳定版本后，由维护者完成小红书容器、JSBridge、ZIP 与发布验证。
 - `bilibili`：从 `main` 同步稳定版本后，由维护者完成 Bilibili Toy adapter、生命周期与发布验证。
-- `wechat`：从 `main` 同步稳定版本后，由维护者完成微信小程序 adapter、生命周期与发布验证。
+- `wechat`：从 `main` 同步稳定版本后，由维护者完成微信小游戏原生 adapter、生命周期、构建同步与发布验证。
 
 普通贡献只进入 `dev`。维护者选定稳定版本后将 `dev` 提升到 `main`，再以同一个 `main` 版本统一更新三个发行分支。平台分支里的通用修复必须先回流 `dev`，不要复制三份实现。
 
 ## 平台专属适配
 
 - Bilibili Toy API、生命周期、宿主资源和发布配置，可由维护者从 `bilibili` 新建独立任务分支/worktree，确认后合回 `bilibili`。
-- 微信小程序生命周期、组件、宿主 API 和发布配置，可由维护者从 `wechat` 新建独立任务分支/worktree，确认后合回 `wechat`。
+- 微信小游戏生命周期、Canvas 外壳、宿主 API 和发布配置，可由维护者从 `wechat` 新建独立任务分支/worktree，确认后合回 `wechat`。
 - `dev` 与 `main` 当前就是小红书 H5 的主要基线，因此小红书相关页面与通用 H5 能力通常仍从 `dev` 开始。只有容器、JSBridge、ZIP 或发布配置等无法进入共享基线的内容，才从 `xiaohongshu` 建平台任务。
 - 平台任务同样遵守：**独立分支/worktree → 实现与平台验证 → 本地/模拟器预览 → 用户明确确认 → 合回原发行分支**。不要把开发过程直接堆在长期发行 worktree。
 - 只要规则、AI、UI、资源或 adapter 契约能够跨平台复用，就必须另建 `dev` 任务实现；平台分支只保留真正的宿主边界。
@@ -48,8 +48,16 @@
 - `app/` 是当前可运行的共享游戏，也是小红书 H5 基线；在正式设计跨平台核心层前不要为了目录整齐而机械搬迁。
 - 修改小红书页面、能力或打包规则前，先完整阅读 `.codex/SKILL.md` 及它指定的相关 reference。
 - 修改 B 站版本前，使用已安装的 `toy` skill，并以 Bilibili 官方 Toy 约束为准。
-- 微信适配开始后，把确认过的平台约束写入仓库，不凭记忆臆造宿主 API。
+- 修改微信版本前，先完整阅读 `docs/platforms/wechat.md`，并以其中链接的微信小游戏官方文档为准；新确认的平台约束必须回写仓库，不凭记忆臆造宿主 API。
 - 平台能力应收敛在明确的 adapter/boundary 中；游戏规则不得直接散落宿主判断。
+
+## 微信小游戏生成与预览目录
+
+- `wechat/` 是微信小游戏原生外壳的仓库源码；共享规则、状态机和 Canvas 棋盘美术的权威来源仍在 `app/assets/`，构建时复制并校验，不在平台目录维护分叉副本。
+- 微信运行时使用首个 `wx.createCanvas()` 创建的显示 Canvas，并通过 `wx` 的触摸、前后台生命周期、安全区、存储、字体与音频能力接入宿主；不得引入 DOM、WebView 或浏览器存储作为运行前提。
+- 完成微信构建后，运行 `npm run sync:wechat`，将最新构建同步至 `%USERPROFILE%\Documents\Codex\miniprograms\topology-gomoku`。该目录是微信官方小游戏模板派生的**生成与开发者工具预览目录**，不是源码；不得在其中反向开发或手工修改清单托管文件。
+- 同步必须保护目标目录的 `project.config.json`、其中的 AppID 与 `project.private.config.json`。首次同步只允许覆盖脚本精确识别的官方示例模板；后续同步遇到托管文件外部改动时必须停止并报告冲突。
+- 微信平台任务同样不得修改游戏 SemVer。构建清单继承当前 `package.json` 版本，只有核心版本沿 `dev → main` 提升时才会变化。
 
 ## 视觉设计原则
 
@@ -64,8 +72,9 @@
 - 任务开始时按 `docs/development/documentation.md` 判断文档影响；实现改变产品行为、命令、依赖、架构、视觉语言或平台约束时，必须在同一任务分支更新对应文档。确实无影响时，在交接或 Pull Request 中说明理由。
 - 逻辑改动运行 `npm test`。
 - 小红书 H5 或包结构改动运行 `npm run validate`；发布改动再运行 `npm run build:xiaohongshu`。
+- 微信小游戏源码或包结构改动运行 `npm run validate:wechat`；完整集成检查运行 `npm run check:wechat`，交付预览前依次运行 `npm run build:wechat` 与 `npm run sync:wechat`。
 - 文档新增、移动或链接修改运行 `npm run docs:check`。
-- 新增或修改任何用户可见文本（包括 HTML、JavaScript 动态文案、Canvas 文字和 CSS `content`）后，必须运行 `npm test`，确认所有内嵌字体字重的 `cmap` 完整覆盖。缺字时运行 `npm run fonts:subset` 重建 400/600/700 三个子集，并同步更新字体 URL、样式表 URL 与包版本的缓存键；禁止依赖苹方等系统字体回退。
+- 新增或修改任何用户可见文本（包括 HTML、JavaScript 动态文案、Canvas 文字和 CSS `content`）后，必须运行 `npm test`，确认所有内嵌字体字重的 `cmap` 完整覆盖。缺字时运行 `npm run fonts:subset` 重建 400/600/700 三个子集。H5 字体文件变化要在下一次核心稳定提升中同步更新字体 URL、样式表 URL 与统一 SemVer 缓存键；微信小游戏代码包使用本地字体路径，并由构建清单 SHA-256 识别内容变化，不得为平台字体适配单独修改游戏 SemVer。禁止依赖苹方等系统字体回退。
 - 不直接调用系统 `python` 运行字体脚本：WindowsApps 启动器经常不可执行，Codex 捆绑 Python 也不保证包含 `fontTools`。统一使用 `npm run fonts:subset`；该命令通过 `uv run --locked` 使用仓库的 `.python-version`、`pyproject.toml` 与 `uv.lock` 自动同步隔离环境。Python 依赖只通过 `uv` 调整并提交锁文件，不手改 `.venv`。
 - 新的拓扑规则必须有确定性测试；视觉改动保留同视口 QA 证据。
 - 不提交 `release/*.zip`、依赖目录、密钥、签名、账号或本机私有配置。

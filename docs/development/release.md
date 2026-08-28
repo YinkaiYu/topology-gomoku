@@ -54,6 +54,16 @@
 - 运行共享检查、对应平台构建、模拟器和真机验收；构建产物不提交 Git。
 - 每个平台确认后再合入对应长期发行分支。
 
+微信发行整合分支还要执行：
+
+```powershell
+npm run check:wechat
+npm run build:wechat
+npm run sync:wechat
+```
+
+`sync:wechat` 把新构建同步至 `%USERPROFILE%\Documents\Codex\miniprograms\topology-gomoku`，该目录只用于微信官方模板派生的开发者工具预览，不是发行分支源码。确认同步没有改变目标的 AppID、`project.config.json` 或 `project.private.config.json`，随后完成小游戏模拟器与至少一台目标真机验收。平台 adapter 的本次变更不得单独递增游戏 SemVer；构建清单必须沿用本轮 `main` 确认的版本。完整清单见 [`../platforms/wechat.md`](../platforms/wechat.md)。
+
 ### 4. 一致性检查与发布记录
 
 三个长期发行分支同步完成后运行：

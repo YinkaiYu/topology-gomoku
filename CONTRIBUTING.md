@@ -37,7 +37,7 @@
 | `main` | 稳定的跨平台基线 | 只由维护者从稳定 `dev` 提升 |
 | `xiaohongshu` | 小红书发行版 | 维护者从 `main` 同步；仅承载容器、JSBridge、ZIP 等宿主专属改动 |
 | `bilibili` | Bilibili Toy 发行版 | 维护者从 `main` 同步，并承载 Toy 原生 adapter 与平台任务 |
-| `wechat` | 微信小程序发行版 | 维护者从 `main` 同步，并承载小程序原生 adapter 与平台任务 |
+| `wechat` | 微信小游戏发行版 | 维护者从 `main` 同步，并承载小游戏原生 Canvas adapter 与平台任务 |
 
 贡献者的职责边界是 `任务分支 → dev`。后续 `dev → main → 三个发行分支` 属于仓库维护流程，见 [docs/development/release.md](docs/development/release.md)。平台分支中发现的通用问题由维护者另建 `dev` 任务回流，再沿正常路径传播。
 
@@ -72,11 +72,16 @@
 | 同时涉及共享逻辑与 H5 | `npm run check` |
 | 文档新增、移动或链接修改 | `npm run docs:check` |
 | 小红书发布与构建 | `npm run build:xiaohongshu` |
+| 微信小游戏源码或包结构 | `npm run validate:wechat` |
+| 微信共享逻辑、文档与原生包集成 | `npm run check:wechat` |
+| 微信开发者工具预览目录更新 | `npm run build:wechat` 后运行 `npm run sync:wechat` |
 | 新拓扑规则 | 确定性测试 |
 | 视觉或交互 | 同视口前后证据 + 任务 worktree 本地预览 |
-| 平台原生适配 | 对应模拟器；具备条件时补至少一台真机记录 |
+| 微信平台原生适配 | 微信开发者工具小游戏模拟器 + 至少一台目标真机记录；无法真机验证时明确标记为未完成 |
 
 提交前还要运行 `git diff --check` 和 `git status --short`，确认只包含本任务文件。
+
+微信任务以仓库中的 `wechat/` 与 `app/assets/` 为源码。构建完成后用 `npm run sync:wechat` 更新 `%USERPROFILE%\Documents\Codex\miniprograms\topology-gomoku`；该目录只用于微信开发者工具生成与预览，不接受反向开发。同步流程必须保留目标的 AppID、`project.config.json` 和 `project.private.config.json`。完整平台边界与人工验收清单见 [docs/platforms/wechat.md](docs/platforms/wechat.md)。
 
 ## 文档影响
 

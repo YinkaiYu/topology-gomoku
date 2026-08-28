@@ -16,7 +16,8 @@
 | 色彩、材质、字体、动效或组件语言 | `docs/design/visual-language.md` |
 | 视觉验收方法、视口、证据或已知限制 | `docs/design/qa.md` |
 | 小红书容器、JSBridge 或 ZIP 规范 | `.codex/SKILL.md` 及其 references |
-| Bilibili / 微信宿主约束 | 对应发行分支的平台文档 |
+| Bilibili 宿主约束 | 对应发行分支的平台文档 |
+| 微信小游戏宿主、构建同步或验收约束 | `docs/platforms/wechat.md` |
 | 新增、移动或删除任意长期文档 | `docs/README.md` 索引及全部反向引用 |
 
 “必查”不等于每次都必须修改，但必须确认现有内容是否仍准确。若没有文档影响，在 Pull Request 中写明原因，不能只留空或默认忽略。
@@ -25,7 +26,7 @@
 
 1. **开始时**：根据上表列出本任务可能受影响的文档。
 2. **实现时**：代码、测试、资源与文档在同一任务分支演进，不另开“以后补文档”的尾项。
-3. **验证时**：运行 `npm run docs:check`；涉及代码和 H5 时运行 `npm run check`。
+3. **验证时**：运行 `npm run docs:check`；涉及代码和 H5 时运行 `npm run check`；涉及微信小游戏包时运行 `npm run check:wechat`。
 4. **预览时**：向用户或评审者同时展示行为结果和文档变化。
 5. **合并前**：PR 的“文档影响”必须列出更新路径，或写明无影响及理由。
 

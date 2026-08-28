@@ -33,7 +33,7 @@ bilibili ──▶ codex/bilibili-<task> worktree ──预览确认──▶ bi
 wechat   ──▶ codex/wechat-<task> worktree   ──预览确认──▶ wechat
 ```
 
-这条支线只处理无法进入共享基线的宿主 API、生命周期、组件、资源和发布配置。`dev/main` 当前天然对标小红书 H5，因此小红书工作通常仍从 `dev` 开始；只有容器、JSBridge、ZIP 和发布配置等纯宿主内容才从 `xiaohongshu` 建平台任务。
+这条支线只处理无法进入共享基线的宿主 API、生命周期、原生 Canvas 外壳、资源和发布配置。`dev/main` 当前天然对标小红书 H5，因此小红书工作通常仍从 `dev` 开始；只有容器、JSBridge、ZIP 和发布配置等纯宿主内容才从 `xiaohongshu` 建平台任务。
 
 ## 长期与短期 worktree
 
@@ -86,6 +86,8 @@ git worktree list
 4. 提供平台预览并获得明确确认后，合回原发行分支。
 5. 不修改游戏 SemVer。游戏版本只由核心 `dev → main` 稳定提升控制；平台宿主自己的构建号或审核批次不属于游戏版本。
 
+微信任务还必须把仓库任务 worktree 与开发者工具目录分开：`wechat/` 和 `app/assets/` 是源码，`dist/wechat/` 是临时构建输出，`%USERPROFILE%\Documents\Codex\miniprograms\topology-gomoku` 是微信官方小游戏模板派生的生成/预览目录。运行 `npm run build:wechat` 后以 `npm run sync:wechat` 更新该目录；不得在目标目录反向开发，同步不得覆盖其 AppID、`project.config.json` 或 `project.private.config.json`。平台细则见 [`../platforms/wechat.md`](../platforms/wechat.md)。
+
 ## 什么放在哪里
 
 | 内容 | 集成目标 |
@@ -93,7 +95,7 @@ git worktree list
 | 拓扑规则、AI、共享 UI、共享资源、通用测试 | `dev` |
 | 小红书容器能力、JSBridge、校验、ZIP 与发布配置 | 维护者发行同步时进入 `xiaohongshu` |
 | Bilibili Toy 生命周期、API、资源与发布配置 | 维护者发行同步时进入 `bilibili` |
-| 微信小程序生命周期、组件、资源与发布配置 | 维护者发行同步时进入 `wechat` |
+| 微信小游戏生命周期、`wx` API、原生 Canvas 外壳、资源与发布配置 | 维护者发行同步时进入 `wechat` |
 | 可复用 adapter 接口与跨平台行为契约 | `dev` |
 | 面向公众的说明、架构与贡献约定 | `dev`，稳定后提升到 `main` |
 

@@ -7,8 +7,9 @@
 | 工具 | 用途 | 约束 |
 | --- | --- | --- |
 | Node.js | 测试与 npm 任务 | `package.json` 要求 Node.js 18 或更高版本 |
-| PowerShell | H5 校验、构建与字体命令入口 | 使用仓库脚本，不复制临时命令 |
+| PowerShell | H5 与微信小游戏校验、构建、同步及字体命令入口 | 使用仓库脚本，不复制临时命令 |
 | uv | Python 版本、虚拟环境与依赖锁定 | 以 `.python-version`、`pyproject.toml`、`uv.lock` 为准 |
+| 微信开发者工具 | 微信小游戏模拟器、调试、预览与真机联调 | 导入同步后的生成目录，不直接打开仓库源码目录 |
 
 仓库没有运行时 npm 依赖；测试使用 Node.js 内置测试运行器。Python 环境由 `uv` 隔离在 `.venv/`，缓存放在 `.uv-cache/`，两者都不提交 Git。
 
@@ -19,14 +20,38 @@ npm test
 npm run validate
 npm run check
 npm run build:xiaohongshu
+npm run validate:wechat
+npm run check:wechat
+npm run build:wechat
+npm run sync:wechat
 npm run fonts:subset
 npm run release:check-versions -- X.Y.Z
 ```
 
 - `npm run check` 同时执行逻辑测试、H5 包校验和文档检查。
+- `npm run validate:wechat` 检查 `wechat/` 的小游戏入口、JSON、离线约束和包内路径；`npm run check:wechat` 在共享总检查后生成并验证微信包。
+- `npm run build:wechat` 从 `wechat/` 构建到 `dist/wechat/`，同时从 `app/assets/` 注入权威共享逻辑、美术与字体，生成带 SHA-256 的托管清单；构建产物不提交 Git。
+- `npm run sync:wechat` 会先执行一次全新构建，再把托管文件同步至 `%USERPROFILE%\Documents\Codex\miniprograms\topology-gomoku`。目标是微信官方小游戏模板派生的开发者工具生成/预览目录，不是源码；同步保留 AppID、`project.config.json`、`project.private.config.json` 及其他未托管文件。
 - `npm run fonts:subset` 通过 `uv run --locked` 自动创建或同步 `.venv`，无需激活虚拟环境。
 - `npm run release:check-versions -- X.Y.Z` 仅供维护者在稳定同步后检查 `main` 与三个发行分支的统一游戏版本。
 - 首次同步需要下载 `uv.lock` 中的依赖；之后会复用锁定环境与本地缓存。
+
+## 微信小游戏本地预览
+
+微信适配任务完成自动检查后依次运行：
+
+```powershell
+npm run build:wechat
+npm run sync:wechat
+```
+
+`sync:wechat` 为避免陈旧输出会再次构建。首次同步只接受脚本精确识别的微信官方示例小游戏模板；后续同步只替换清单托管文件，检测到目标中手工改动的托管文件时会拒绝覆盖。需要使用另一处模板时可显式传入目标：
+
+```powershell
+npm run sync:wechat -- -TargetRoot D:\path\to\wechat-game-preview
+```
+
+同步成功后用微信开发者工具以“小游戏”项目导入目标目录，完成模拟器检查，再进行真机预览或调试。具体检查项见 [`../platforms/wechat.md`](../platforms/wechat.md)。不要把开发者工具生成的私有配置、预览文件或目标目录内容复制回仓库。
 
 ## Python 环境
 
@@ -40,7 +65,7 @@ npm run release:check-versions -- X.Y.Z
 
 ## 字体子集
 
-`scripts/subset_display_fonts.py` 会收集 `app/` 内 HTML、CSS、JavaScript 与 JSON 的字符，并为 400/600/700 三个字重生成 WOFF2 子集。
+`scripts/subset_display_fonts.py` 会收集 `app/` 与 `wechat/` 内 HTML、CSS、JavaScript 与 JSON 的字符，并为 400/600/700 三个字重生成 WOFF2 子集。
 
 默认 Windows 源字体是 `C:\Windows\Fonts\NotoSerifSC-VF.ttf`。其他环境通过 `TOPO_SERIF_SOURCE` 或脚本 `--source` 参数指定合法的完整 Noto Serif SC 可变字体；完整源字体不提交仓库。
 
@@ -49,8 +74,8 @@ npm run release:check-versions -- X.Y.Z
 1. 修改所有静态与动态文案及相关回归测试。
 2. 运行 `npm test`，读取缺失字形报告。
 3. 如有缺字，运行 `npm run fonts:subset`。
-4. 同步更新三个字体 URL、`style.css` URL 与 `package.json` 版本缓存键。
-5. 再运行 `npm run check`，并在目标视口确认字形、字重与排版。
+4. H5 字体文件变化在下一次核心稳定提升中同步更新三个字体 URL、`style.css` URL 与统一 `package.json` SemVer 缓存键；微信小游戏从代码包本地路径加载字体，以构建清单 SHA-256 识别变化，不为平台适配单独升版。
+5. H5 运行 `npm run check`，微信小游戏运行 `npm run check:wechat`，并在各目标视口确认字形、字重与排版。
 
 字体许可见 [`licenses/OFL.txt`](../../licenses/OFL.txt)。
 
