@@ -185,3 +185,9 @@ test("共享控制与美术模块不依赖 DOM、Web Storage 或微信宿主", (
   assert.match(boardArt, /Engine\.step\(game\.rules, cells\[index\], direction\)/);
   assert.match(boardArt, /Morph\.seamBridgeUV\(/);
 });
+
+test("共享 Canvas 美术保留调用方透明度以支持对象交接", () => {
+  const boardArt = fs.readFileSync(path.join(ROOT, "app", "assets", "board-art.js"), "utf8");
+  assert.match(boardArt, /ctx\.globalAlpha \*=/);
+  assert.doesNotMatch(boardArt, /ctx\.globalAlpha\s*=(?!=)/);
+});
