@@ -23,7 +23,7 @@
 - 输入使用 [`wx.onTouchStart`](https://developers.weixin.qq.com/minigame/dev/api/device/touch-event/wx.onTouchStart.html)、[`wx.onTouchMove`](https://developers.weixin.qq.com/minigame/dev/api/device/touch-event/wx.onTouchMove.html) 和 [`wx.onTouchEnd`](https://developers.weixin.qq.com/minigame/dev/api/device/touch-event/wx.onTouchEnd.html)，统一处理点击、拖动棋盘提示、设置控件和曲面旋转。
 - [`wx.onHide`](https://developers.weixin.qq.com/minigame/dev/api/base/app/life-cycle/wx.onHide.html) 时暂停共享 controller、帧循环和音频，[`wx.onShow`](https://developers.weixin.qq.com/minigame/dev/api/base/app/life-cycle/wx.onShow.html) 时重新测量并恢复。AI、教学和自动切关使用逻辑截止时间，不能在后台继续推进。
 - 偏好和进度通过 [`wx.setStorageSync`](https://developers.weixin.qq.com/minigame/dev/api/storage/wx.setStorageSync.html) 持久化；只保存小型版本化 JSON，不在每帧或拖动过程中同步写入。
-- 字体只从代码包本地路径通过 [`wx.loadFont`](https://developers.weixin.qq.com/minigame/dev/api/render/font/wx.loadFont.html) 加载；加载失败必须保留可读的回退，而不是假定某台设备一定有苹方等系统字体。Canvas 文案同样受仓库字体覆盖测试约束；字体文件内容变化由构建清单 SHA-256 管理，不借用 H5 URL 缓存键，也不触发平台单独升版。
+- 字体只从代码包本地 TTF 路径通过 [`wx.loadFont`](https://developers.weixin.qq.com/minigame/dev/api/render/font/wx.loadFont.html) 加载；加载失败必须保留可读的回退，而不是假定某台设备一定有苹方等系统字体。`npm run fonts:subset:wechat` 同时扫描 `app/` 与 `wechat/`，生成与 H5 WOFF2 隔离的 400/600/700 TTF 子集。Canvas 文案同样受仓库字体覆盖测试约束；字体文件内容变化由构建清单 SHA-256 管理，不借用 H5 URL 缓存键，也不触发平台单独升版。
 - 程序化提示音优先使用 [`wx.createWebAudioContext`](https://developers.weixin.qq.com/minigame/dev/api/media/audio/wx.createWebAudioContext.html)；不可用时静默降级，不能因此阻断对局。音频启动、前后台恢复和静音开关必须在真机检查。
 - `project.config.json` 以微信官方[项目配置文件](https://developers.weixin.qq.com/miniprogram/dev/devtools/projectconfig.html)为准。仓库仅提供可复现的小游戏配置基线；本地 AppID 与开发者私有配置由预览目录持有，不进入同步托管范围。
 

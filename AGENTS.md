@@ -74,8 +74,8 @@
 - 小红书 H5 或包结构改动运行 `npm run validate`；发布改动再运行 `npm run build:xiaohongshu`。
 - 微信小游戏源码或包结构改动运行 `npm run validate:wechat`；完整集成检查运行 `npm run check:wechat`，交付预览前依次运行 `npm run build:wechat` 与 `npm run sync:wechat`。
 - 文档新增、移动或链接修改运行 `npm run docs:check`。
-- 新增或修改任何用户可见文本（包括 HTML、JavaScript 动态文案、Canvas 文字和 CSS `content`）后，必须运行 `npm test`，确认所有内嵌字体字重的 `cmap` 完整覆盖。缺字时运行 `npm run fonts:subset` 重建 400/600/700 三个子集。H5 字体文件变化要在下一次核心稳定提升中同步更新字体 URL、样式表 URL 与统一 SemVer 缓存键；微信小游戏代码包使用本地字体路径，并由构建清单 SHA-256 识别内容变化，不得为平台字体适配单独修改游戏 SemVer。禁止依赖苹方等系统字体回退。
-- 不直接调用系统 `python` 运行字体脚本：WindowsApps 启动器经常不可执行，Codex 捆绑 Python 也不保证包含 `fontTools`。统一使用 `npm run fonts:subset`；该命令通过 `uv run --locked` 使用仓库的 `.python-version`、`pyproject.toml` 与 `uv.lock` 自动同步隔离环境。Python 依赖只通过 `uv` 调整并提交锁文件，不手改 `.venv`。
+- 新增或修改任何用户可见文本（包括 HTML、JavaScript 动态文案、Canvas 文字和 CSS `content`）后，必须运行 `npm test`，确认所有内嵌字体字重的 `cmap` 完整覆盖。H5 缺字时运行 `npm run fonts:subset`；微信小游戏缺字时运行 `npm run fonts:subset:wechat`，重建与 H5 隔离的 400/600/700 TTF 子集。H5 字体文件变化要在下一次核心稳定提升中同步更新字体 URL、样式表 URL 与统一 SemVer 缓存键；微信小游戏代码包使用本地字体路径，并由构建清单 SHA-256 识别内容变化，不得为平台字体适配单独修改游戏 SemVer。禁止依赖苹方等系统字体回退。
+- 不直接调用系统 `python` 运行字体脚本：WindowsApps 启动器经常不可执行，Codex 捆绑 Python 也不保证包含 `fontTools`。H5 统一使用 `npm run fonts:subset`，微信统一使用 `npm run fonts:subset:wechat`；两个命令都通过 `uv run --locked` 使用仓库的 `.python-version`、`pyproject.toml` 与 `uv.lock` 自动同步隔离环境。Python 依赖只通过 `uv` 调整并提交锁文件，不手改 `.venv`。
 - 新的拓扑规则必须有确定性测试；视觉改动保留同视口 QA 证据。
 - 不提交 `release/*.zip`、依赖目录、密钥、签名、账号或本机私有配置。
 - 提交前检查 `git diff --check` 与 `git status --short`，只提交本任务范围内的文件。

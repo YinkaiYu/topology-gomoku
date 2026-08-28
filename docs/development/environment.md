@@ -25,6 +25,7 @@ npm run check:wechat
 npm run build:wechat
 npm run sync:wechat
 npm run fonts:subset
+npm run fonts:subset:wechat
 npm run release:check-versions -- X.Y.Z
 ```
 
@@ -32,7 +33,7 @@ npm run release:check-versions -- X.Y.Z
 - `npm run validate:wechat` 检查 `wechat/` 的小游戏入口、JSON、离线约束和包内路径；`npm run check:wechat` 在共享总检查后生成并验证微信包。
 - `npm run build:wechat` 从 `wechat/` 构建到 `dist/wechat/`，同时从 `app/assets/` 注入权威共享逻辑、美术与字体，生成带 SHA-256 的托管清单；构建产物不提交 Git。
 - `npm run sync:wechat` 会先执行一次全新构建，再把托管文件同步至 `%USERPROFILE%\Documents\Codex\miniprograms\topology-gomoku`。目标是微信官方小游戏模板派生的开发者工具生成/预览目录，不是源码；同步保留 AppID、`project.config.json`、`project.private.config.json` 及其他未托管文件。
-- `npm run fonts:subset` 通过 `uv run --locked` 自动创建或同步 `.venv`，无需激活虚拟环境。
+- `npm run fonts:subset` 重建 H5 WOFF2；`npm run fonts:subset:wechat` 同时扫描 `app/` 与 `wechat/`，重建隔离的微信本地 TTF。两者都通过 `uv run --locked` 自动创建或同步 `.venv`，无需激活虚拟环境。
 - `npm run release:check-versions -- X.Y.Z` 仅供维护者在稳定同步后检查 `main` 与三个发行分支的统一游戏版本。
 - 首次同步需要下载 `uv.lock` 中的依赖；之后会复用锁定环境与本地缓存。
 
@@ -70,7 +71,7 @@ npm run sync:wechat -- -TargetRoot D:\path\to\wechat-game-preview
 微信小游戏专用 TTF 同时扫描 `app/` 与 `wechat/`，并与共享 H5 字体隔离：
 
 ```powershell
-npm run fonts:subset -- --text-root app --text-root wechat --output-dir wechat/assets/fonts --format ttf
+npm run fonts:subset:wechat
 ```
 
 默认 Windows 源字体是 `C:\Windows\Fonts\NotoSerifSC-VF.ttf`。其他环境通过 `TOPO_SERIF_SOURCE` 或脚本 `--source` 参数指定合法的完整 Noto Serif SC 可变字体；完整源字体不提交仓库。
