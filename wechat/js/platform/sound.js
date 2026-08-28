@@ -10,17 +10,15 @@ export default class SoundEngine {
   constructor(enabled) {
     this.enabled = enabled !== false;
     this.context = null;
-    this.interrupted = false;
+    this.pauseReasons = new Set();
     if (typeof wx.onAudioInterruptionBegin === 'function') {
       wx.onAudioInterruptionBegin(() => {
-        this.interrupted = true;
-        this.pause();
+        this.pause('interruption');
       });
     }
     if (typeof wx.onAudioInterruptionEnd === 'function') {
       wx.onAudioInterruptionEnd(() => {
-        this.interrupted = false;
-        this.resume();
+        this.resume('interruption');
       });
     }
   }
@@ -32,7 +30,7 @@ export default class SoundEngine {
     if (!this.context && typeof wx.createWebAudioContext === 'function') {
       this.context = safeInvoke(() => wx.createWebAudioContext());
     }
-    if (!this.interrupted
+    if (!this.pauseReasons.size
         && this.context
         && this.context.state === 'suspended'
         && typeof this.context.resume === 'function') {
@@ -43,26 +41,32 @@ export default class SoundEngine {
   setEnabled(enabled) {
     this.enabled = Boolean(enabled);
     if (this.enabled) {
+      this.resume('disabled');
       this.unlock();
     } else {
-      this.pause();
+      this.pause('disabled');
     }
   }
 
-  pause() {
+  pause(reason = 'manual') {
+    this.pauseReasons.add(reason);
     if (this.context && typeof this.context.suspend === 'function') {
       safeInvoke(() => this.context.suspend());
     }
   }
 
-  resume() {
-    if (this.enabled && !this.interrupted && this.context && typeof this.context.resume === 'function') {
+  resume(reason = 'manual') {
+    this.pauseReasons.delete(reason);
+    if (this.enabled
+        && !this.pauseReasons.size
+        && this.context
+        && typeof this.context.resume === 'function') {
       safeInvoke(() => this.context.resume());
     }
   }
 
   tone(frequency, duration, delay, type, volume, endFrequency) {
-    if (!this.enabled || !this.context) {
+    if (!this.enabled || this.pauseReasons.size || !this.context) {
       return;
     }
     safeInvoke(() => {
@@ -85,7 +89,7 @@ export default class SoundEngine {
   }
 
   play(name) {
-    if (!this.enabled) {
+    if (!this.enabled || this.pauseReasons.size) {
       return;
     }
     this.unlock();

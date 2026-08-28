@@ -1,7 +1,7 @@
 const FONT_PATHS = {
-  400: 'assets/fonts/noto-serif-sc-400.woff2',
-  600: 'assets/fonts/noto-serif-sc-600.woff2',
-  700: 'assets/fonts/noto-serif-sc-700.woff2',
+  400: 'assets/fonts/noto-serif-sc-400.ttf',
+  600: 'assets/fonts/noto-serif-sc-600.ttf',
+  700: 'assets/fonts/noto-serif-sc-700.ttf',
 };
 
 function safeCall(callback, fallback) {
@@ -36,6 +36,7 @@ export default class WechatHost {
     this.context = canvas.getContext('2d');
     this.fonts = { 400: null, 600: null, 700: null };
     this.brandIcon = null;
+    this.screenAwake = null;
     this.metrics = null;
     this.resize();
   }
@@ -156,8 +157,13 @@ export default class WechatHost {
   }
 
   keepScreenAwake(enabled) {
+    const next = Boolean(enabled);
+    if (this.screenAwake === next) {
+      return;
+    }
+    this.screenAwake = next;
     if (typeof wx.setKeepScreenOn === 'function') {
-      safeCall(() => wx.setKeepScreenOn({ keepScreenOn: Boolean(enabled) }), null);
+      safeCall(() => wx.setKeepScreenOn({ keepScreenOn: next }), null);
     }
   }
 

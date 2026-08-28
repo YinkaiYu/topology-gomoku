@@ -66,6 +66,39 @@ test("原生目录保留图鉴揭示、三等分设置与液态开关语义", ()
   assert.match(main, /if \(this\.renderer\.transition \|\| this\.interaction\.touchId !== null\) \{/);
 });
 
+test("原生首页保留 H5 的品牌主视觉与旅程层级", () => {
+  const renderer = read("wechat/js/ui/scene-renderer.js");
+  const homeStart = renderer.indexOf("  drawHome(state, time) {");
+  const homeEnd = renderer.indexOf("  drawLevelCard(", homeStart);
+  const home = renderer.slice(homeStart, homeEnd);
+  assert.match(home, /contentWidth \* 0\.43/);
+  assert.match(home, /ctx\.rotate\(-5 \* Math\.PI \/ 180\)/);
+  assert.match(home, /text\(ctx, '拓扑'/);
+  assert.match(home, /text\(ctx, '五子棋'/);
+  assert.match(home, /text\(ctx, '旅程'/);
+  assert.doesNotMatch(home, /register\('settings'/);
+});
+
+test("共享对象转场保留源帧内容，端点无效时立即解锁", () => {
+  const renderer = read("wechat/js/ui/scene-renderer.js");
+  const primitives = read("wechat/js/ui/primitives.js");
+  assert.match(renderer, /function usableRect\(value\)/);
+  assert.match(renderer, /function drawSnapshotWithoutRect\(/);
+  assert.match(renderer, /snapshot = wx\.createCanvas\(\)/);
+  assert.match(renderer, /snapshot\.getContext\('2d'\)\.drawImage\(this\.host\.canvas, 0, 0\)/);
+  assert.match(renderer, /if \(!usableRect\(target\)\) \{\s*this\.transition = null;\s*return;/);
+  assert.match(renderer, /this\.transition\.kind === 'exit'[\s\S]*const targetAlpha = sharedTarget[\s\S]*this\.drawLevelCard/);
+  assert.match(renderer, /this\.transition && this\.transition\.kind === 'enter'/);
+  assert.match(renderer, /drawSnapshotWithoutRect\([\s\S]*transition\.snapshot/);
+  assert.match(renderer, /transitionTargetAlpha\(kind, time\)/);
+  assert.match(renderer, /softOut\(clamp01\(\(progress - 0\.72\) \/ 0\.28\)\)/);
+  assert.match(renderer, /ctx\.globalAlpha = 1 - this\.transitionTargetAlpha\(transition\.kind, time\)/);
+  assert.match(renderer, /from\.x \* dpr,[\s\S]*overlay\.width,[\s\S]*overlay\.height/);
+  assert.match(renderer, /const fromRadius = transition\.kind === 'enter' \? 21 : 29/);
+  assert.match(primitives, /ctx\.globalAlpha \*= alpha/);
+  assert.match(primitives, /ctx\.globalAlpha \*= options\.alpha/);
+});
+
 test("终局曲面使用正反形变、接缝胜线与 settled 输入锁", () => {
   const renderer = read("wechat/js/ui/scene-renderer.js");
   const boardArt = read("app/assets/board-art.js");
@@ -79,12 +112,18 @@ test("终局曲面使用正反形变、接缝胜线与 settled 输入锁", () =>
 
 test("帧循环在静止场景休眠，并嵌套冻结弹层与生命周期计时", () => {
   const main = read("wechat/js/main.js");
+  const renderer = read("wechat/js/ui/scene-renderer.js");
   const controller = read("app/assets/game-controller.js");
   assert.match(main, /const nextScheduledAt = this\.controller\.nextScheduledAt\(\)/);
   assert.match(main, /if \(this\.pauseReasons\.size\) \{\s*return null;/);
   assert.doesNotMatch(main, /state\.scene === ['"]home['"]\) \{\s*return true/);
   assert.match(main, /addPauseReason\('modal', now\)/);
   assert.match(main, /addPauseReason\('lifecycle', now\)/);
+  assert.match(main, /this\.renderer\.pauseGameTime\(time\)/);
+  assert.match(main, /this\.renderer\.resumeGameTime\(time\)/);
+  assert.match(main, /state\.game\.status !== 'ended'/);
+  assert.match(renderer, /surfaceAnimationDelay\(game, time\)/);
+  assert.match(renderer, /return moving \? 33 : 66/);
   assert.match(controller, /GameController\.prototype\.nextScheduledAt/);
 });
 
@@ -95,4 +134,10 @@ test("触摸结束只消费当前 identifier，音频响应系统中断", () => 
   assert.match(main, /if \(!released\) \{\s*return;/);
   assert.match(sound, /wx\.onAudioInterruptionBegin/);
   assert.match(sound, /wx\.onAudioInterruptionEnd/);
+  assert.match(sound, /this\.pauseReasons = new Set\(\)/);
+  assert.match(sound, /this\.pause\('interruption'\)/);
+  assert.match(sound, /this\.resume\('interruption'\)/);
+  assert.match(sound, /if \(!this\.enabled \|\| this\.pauseReasons\.size\) \{/);
+  assert.match(main, /this\.sound\.pause\('lifecycle'\)/);
+  assert.match(main, /this\.sound\.resume\('lifecycle'\)/);
 });

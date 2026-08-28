@@ -67,7 +67,7 @@ export function glassPanel(ctx, rect, options = {}) {
   const alpha = disabled ? 0.46 : 1;
 
   ctx.save();
-  ctx.globalAlpha = alpha;
+  ctx.globalAlpha *= alpha;
   ctx.shadowColor = pressed ? 'rgba(43, 65, 55, 0.12)' : 'rgba(57, 51, 42, 0.09)';
   ctx.shadowBlur = pressed ? 24 : 18;
   ctx.shadowOffsetY = pressed ? 7 : 10;
@@ -98,7 +98,7 @@ export function text(ctx, value, x, y, options = {}) {
   ctx.fillStyle = options.color || '#21302c';
   ctx.textAlign = options.align || 'left';
   ctx.textBaseline = options.baseline || 'middle';
-  ctx.globalAlpha = options.alpha === undefined ? 1 : options.alpha;
+  ctx.globalAlpha *= options.alpha === undefined ? 1 : options.alpha;
   if (options.maxWidth) {
     ctx.fillText(value, x, y, options.maxWidth);
   } else {

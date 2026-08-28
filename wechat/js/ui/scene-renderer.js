@@ -31,6 +31,16 @@ function copyRect(value) {
   return value ? rect(value.x, value.y, value.width, value.height) : null;
 }
 
+function usableRect(value) {
+  return Boolean(value
+    && Number.isFinite(value.x)
+    && Number.isFinite(value.y)
+    && Number.isFinite(value.width)
+    && Number.isFinite(value.height)
+    && value.width > 0
+    && value.height > 0);
+}
+
 function interpolateRect(from, to, amount) {
   return rect(
     lerp(from.x, to.x, amount),
@@ -38,6 +48,35 @@ function interpolateRect(from, to, amount) {
     lerp(from.width, to.width, amount),
     lerp(from.height, to.height, amount),
   );
+}
+
+function drawSnapshotWithoutRect(ctx, snapshot, source, dpr, width, height) {
+  const left = Math.max(0, Math.min(width, source.x));
+  const top = Math.max(0, Math.min(height, source.y));
+  const right = Math.max(left, Math.min(width, source.x + source.width));
+  const bottom = Math.max(top, Math.min(height, source.y + source.height));
+  const regions = [
+    rect(0, 0, width, top),
+    rect(0, bottom, width, height - bottom),
+    rect(0, top, left, bottom - top),
+    rect(right, top, width - right, bottom - top),
+  ];
+  regions.forEach((region) => {
+    if (region.width <= 0 || region.height <= 0) {
+      return;
+    }
+    ctx.drawImage(
+      snapshot,
+      region.x * dpr,
+      region.y * dpr,
+      region.width * dpr,
+      region.height * dpr,
+      region.x,
+      region.y,
+      region.width,
+      region.height,
+    );
+  });
 }
 
 export default class SceneRenderer {
@@ -64,10 +103,13 @@ export default class SceneRenderer {
     this.surfaceVelocity = { x: 0, y: 0 };
     this.surfaceElastic = { x: 0, y: 0, velocityX: 0, velocityY: 0 };
     this.surfaceAutoResumeAt = 0;
+    this.gamePausedAt = null;
   }
 
   resize(metrics) {
     this.metrics = metrics;
+    this.hits = [];
+    this.homeRects = {};
     this.boardRect = null;
     this.boardLayout = null;
   }
@@ -80,6 +122,35 @@ export default class SceneRenderer {
       x: leftInset + (safeWidth - contentWidth) / 2,
       width: contentWidth,
     };
+  }
+
+  gameTime(time) {
+    return this.gamePausedAt === null ? time : this.gamePausedAt;
+  }
+
+  pauseGameTime(time) {
+    if (this.gamePausedAt === null) {
+      this.gamePausedAt = time;
+    }
+  }
+
+  resumeGameTime(time) {
+    if (this.gamePausedAt === null) {
+      return;
+    }
+    const pausedAt = this.gamePausedAt;
+    const offset = Math.max(0, time - pausedAt);
+    const shiftMotion = (motion) => {
+      if (motion && motion.startedAt <= pausedAt) {
+        motion.startedAt += offset;
+      }
+    };
+    shiftMotion(this.completionMotion);
+    shiftMotion(this.transition);
+    if (Number.isFinite(this.surfaceAutoResumeAt) && this.surfaceAutoResumeAt > 0) {
+      this.surfaceAutoResumeAt += offset;
+    }
+    this.gamePausedAt = null;
   }
 
   setPressedKey(key) {
@@ -124,13 +195,40 @@ export default class SceneRenderer {
   }
 
   beginTransition(kind, sourceRect, levelIndex, time) {
+    if (!usableRect(sourceRect)) {
+      this.transition = null;
+      return false;
+    }
+    let snapshot = null;
+    try {
+      if (typeof wx.createCanvas === 'function' && this.host.canvas) {
+        snapshot = wx.createCanvas();
+        snapshot.width = this.host.canvas.width;
+        snapshot.height = this.host.canvas.height;
+        snapshot.getContext('2d').drawImage(this.host.canvas, 0, 0);
+      }
+    } catch (error) {
+      snapshot = null;
+    }
     this.transition = {
       kind,
       sourceRect: copyRect(sourceRect),
       levelIndex,
       startedAt: time,
       duration: kind === 'enter' ? 300 : 240,
+      snapshot,
+      snapshotDpr: this.metrics.pixelRatio || 1,
     };
+    return true;
+  }
+
+  transitionTargetAlpha(kind, time) {
+    const transition = this.transition;
+    if (!transition || transition.kind !== kind) {
+      return 1;
+    }
+    const progress = clamp01((time - transition.startedAt) / transition.duration);
+    return softOut(clamp01((progress - 0.72) / 0.28));
   }
 
   register(key, bounds, payload = {}, disabled = false) {
@@ -224,7 +322,13 @@ export default class SceneRenderer {
   }
 
   completionKey(game) {
-    return game ? `${game.levelIndex}:${game.winAt}:${game.outcome || ''}` : '';
+    if (!game) {
+      return '';
+    }
+    const winningCells = game.winningMask && game.winningMask.cells
+      ? Array.prototype.join.call(game.winningMask.cells, ',')
+      : '';
+    return `${game.levelIndex}:${game.outcome || ''}:${game.moves.length}:${winningCells}`;
   }
 
   resetCompletionMotion() {
@@ -266,6 +370,7 @@ export default class SceneRenderer {
   }
 
   completionPose(game, time) {
+    time = this.gameTime(time);
     if (!game || game.status !== 'ended' || !game.completionAvailable || game.review) {
       this.resetCompletionMotion();
       return null;
@@ -350,6 +455,7 @@ export default class SceneRenderer {
   }
 
   updateSurfaceMotion(game, time, delta, dragging) {
+    time = this.gameTime(time);
     const hadMotion = Boolean(this.completionMotion);
     const pose = this.completionPose(game, time);
     if (!pose) {
@@ -358,7 +464,7 @@ export default class SceneRenderer {
     if (!pose.settled) {
       return true;
     }
-    const frameDelta = Math.max(1, Math.min(34, delta || 16.67));
+    const frameDelta = Math.max(1, Math.min(67, delta || 16.67));
     const frameScale = Math.max(0.25, Math.min(2, frameDelta / 16.67));
     const friction = Math.pow(0.925, frameScale);
     if (!dragging) {
@@ -380,6 +486,18 @@ export default class SceneRenderer {
     this.surfaceElastic.x += this.surfaceElastic.velocityX * frameScale;
     this.surfaceElastic.y += this.surfaceElastic.velocityY * frameScale;
     return true;
+  }
+
+  surfaceAnimationDelay(game, time) {
+    const pose = this.completionPose(game, time);
+    if (!pose || !pose.settled) {
+      return 16;
+    }
+    const moving = Math.abs(this.surfaceVelocity.x) > 0.00008
+      || Math.abs(this.surfaceVelocity.y) > 0.00008
+      || Math.abs(this.surfaceElastic.velocityX) > 0.00008
+      || Math.abs(this.surfaceElastic.velocityY) > 0.00008;
+    return moving ? 33 : 66;
   }
 
   needsSurfaceFrames(game, time) {
@@ -445,45 +563,70 @@ export default class SceneRenderer {
     const contentWidth = content.width;
     const contentLeft = content.x;
     const headerY = topInset;
-    const iconSize = 54;
+    const compact = height - topInset - bottomInset < 680;
+    const heroHeight = compact ? 132 : 142;
+    const iconSize = Math.min(
+      compact ? 132 : 190,
+      Math.max(compact ? 116 : 146, contentWidth * 0.43),
+    );
+    const iconX = contentLeft + contentWidth - iconSize;
+    const iconY = headerY + (heroHeight - iconSize) / 2;
     if (this.host.brandIcon) {
       ctx.save();
-      roundedRectPath(ctx, contentLeft, headerY, iconSize, iconSize, 15);
-      ctx.clip();
-      ctx.drawImage(this.host.brandIcon, contentLeft, headerY, iconSize, iconSize);
+      ctx.translate(iconX + iconSize / 2, iconY + iconSize / 2);
+      ctx.rotate(-5 * Math.PI / 180);
+      ctx.shadowColor = 'rgba(33,48,44,0.13)';
+      ctx.shadowBlur = 18;
+      ctx.shadowOffsetY = 12;
+      ctx.drawImage(this.host.brandIcon, -iconSize / 2, -iconSize / 2, iconSize, iconSize);
       ctx.restore();
     } else {
-      glassPanel(ctx, rect(contentLeft, headerY, iconSize, iconSize), { radius: 15 });
-      ctx.save();
-      ctx.strokeStyle = COLORS.teal;
-      ctx.lineWidth = 2;
-      ctx.beginPath();
-      ctx.arc(contentLeft + iconSize / 2, headerY + iconSize / 2, 14, 0, Math.PI * 2);
-      ctx.stroke();
-      ctx.restore();
+      const fallbackRect = rect(iconX + 5, iconY + 5, iconSize - 10, iconSize - 10);
+      glassPanel(ctx, fallbackRect, {
+        radius: Math.min(38, iconSize * 0.24),
+        tint: 'rgba(251,250,246,0.34)',
+      });
+      if (state.levels[0]) {
+        GameGlobal.TopologyBoardArt.drawTopologyGlyph(
+          ctx,
+          state.levels[0].topology,
+          fallbackRect,
+          { locked: false },
+        );
+      }
     }
-    text(ctx, '拓扑五子棋', contentLeft + iconSize + 13, headerY + 18, {
-      font: this.host.font(700, 22),
+
+    const titleSize = Math.max(
+      compact ? 40 : 43,
+      Math.min(compact ? 48 : 57, contentWidth * 0.13),
+    );
+    const titleX = contentLeft + 2;
+    text(ctx, '拓扑', titleX, headerY + heroHeight * 0.29, {
+      font: this.host.font(600, titleSize),
       color: COLORS.ink,
     });
-    text(ctx, '边界之外，也能连成一线。', contentLeft + iconSize + 13, headerY + 43, {
-      font: this.host.font(400, 12),
+    text(ctx, '五子棋', titleX, headerY + heroHeight * 0.63, {
+      font: this.host.font(700, titleSize),
+      color: COLORS.ink,
+    });
+    text(ctx, '边界之外，也能连成一线。', titleX, headerY + heroHeight - 10, {
+      font: this.host.font(400, compact ? 10 : 12),
       color: COLORS.muted,
     });
 
-    const settingsRect = rect(contentLeft + contentWidth - 42, headerY + 62, 42, 42);
-    glassPanel(ctx, settingsRect, { radius: 15, pressed: this.pressedKey === 'settings' });
-    drawIcon(ctx, 'settings', settingsRect.x + 21, settingsRect.y + 21, 21);
-    this.register('settings', settingsRect, { action: 'settings' });
-
     const completed = state.preferences.completed.filter(Boolean).length;
-    const progressRect = rect(contentLeft, headerY + 70, 132, 28);
-    pill(ctx, progressRect, `${completed} / ${state.levels.length} 个世界`, {
-      font: this.host.font(600, 11),
-      color: COLORS.teal,
+    const journeyY = headerY + heroHeight + 14;
+    text(ctx, '旅程', contentLeft + 2, journeyY, {
+      font: this.host.font(600, 12),
+      color: COLORS.muted,
+    });
+    text(ctx, `${completed} / ${state.levels.length}`, contentLeft + contentWidth - 2, journeyY, {
+      font: this.host.font(600, 12),
+      color: COLORS.ink,
+      align: 'right',
     });
 
-    const cardTop = headerY + 116;
+    const cardTop = headerY + heroHeight + 36;
     const gap = 10;
     const columns = 2;
     const cardWidth = (contentWidth - gap) / columns;
@@ -500,7 +643,18 @@ export default class SceneRenderer {
         cardHeight,
       );
       this.homeRects[index] = copyRect(cardRect);
-      this.drawLevelCard(ctx, cardRect, level, index, state, time);
+      const sharedTarget = Boolean(
+        this.transition
+        && this.transition.kind === 'exit'
+        && this.transition.levelIndex === index
+      );
+      const targetAlpha = sharedTarget ? this.transitionTargetAlpha('exit', time) : 1;
+      if (targetAlpha > 0) {
+        ctx.save();
+        ctx.globalAlpha *= targetAlpha;
+        this.drawLevelCard(ctx, cardRect, level, index, state, time);
+        ctx.restore();
+      }
     });
   }
 
@@ -550,6 +704,7 @@ export default class SceneRenderer {
   drawGame(state, time, interaction) {
     const ctx = this.context;
     const game = state.game;
+    const gameTime = this.gameTime(time);
     const { height, topInset, bottomInset } = this.metrics;
     const content = this.contentBounds();
     const contentCenter = content.x + content.width / 2;
@@ -592,59 +747,65 @@ export default class SceneRenderer {
       boardSize,
       boardSize,
     );
-    glassPanel(ctx, this.boardRect, {
-      radius: 29,
-      tint: 'rgba(251,250,246,0.3)',
-      middle: 'rgba(251,250,246,0.2)',
-      bottom: 'rgba(232,226,215,0.22)',
-    });
+    const sharedTarget = Boolean(this.transition && this.transition.kind === 'enter');
+    const targetAlpha = sharedTarget ? this.transitionTargetAlpha('enter', time) : 1;
     this.boardLayout = GameGlobal.TopologyBoardArt.computeLayout(
       this.boardRect.width,
       this.boardRect.height,
       game.rules,
       { minimumMargin: 30, marginRatio: 0.105 },
     );
-    ctx.save();
-    ctx.translate(this.boardRect.x, this.boardRect.y);
-    const completionPose = this.completionPose(game, time);
-    if (completionPose && completionPose.draw) {
-      GameGlobal.TopologyBoardArt.drawCompletion(ctx, {
-        game,
-        layout: this.boardLayout,
-        time,
-        rotation: this.surfaceRotation,
-        presentation: this.presentationFor(game),
-        morph: completionPose.morph,
-        scale: completionPose.scale,
-        wobbleX: this.surfaceElastic.x,
-        wobbleY: this.surfaceElastic.y,
+    if (targetAlpha > 0) {
+      ctx.save();
+      ctx.globalAlpha *= targetAlpha;
+      glassPanel(ctx, this.boardRect, {
+        radius: 29,
+        tint: 'rgba(251,250,246,0.3)',
+        middle: 'rgba(251,250,246,0.2)',
+        bottom: 'rgba(232,226,215,0.22)',
       });
-    } else {
-      const boardInteraction = interaction.board
-        ? {
-            pressedCell: interaction.board.cell,
-            pressedAt: interaction.board.startedAt,
-            position: interaction.board.position
-              ? {
-                  x: interaction.board.position.x - this.boardRect.x,
-                  y: interaction.board.position.y - this.boardRect.y,
-                }
-              : null,
-          }
-        : null;
-      GameGlobal.TopologyBoardArt.drawBoard(ctx, {
-        game,
-        layout: this.boardLayout,
-        time,
-        preferences: state.preferences,
-        interaction: boardInteraction,
-        fontFamily: this.host.fonts[700] ? `'${this.host.fonts[700]}'` : 'serif',
-      });
+      ctx.translate(this.boardRect.x, this.boardRect.y);
+      const completionPose = this.completionPose(game, gameTime);
+      if (completionPose && completionPose.draw) {
+        GameGlobal.TopologyBoardArt.drawCompletion(ctx, {
+          game,
+          layout: this.boardLayout,
+          time: gameTime,
+          rotation: this.surfaceRotation,
+          presentation: this.presentationFor(game),
+          morph: completionPose.morph,
+          scale: completionPose.scale,
+          wobbleX: this.surfaceElastic.x,
+          wobbleY: this.surfaceElastic.y,
+        });
+      } else {
+        const boardInteraction = interaction.board
+          ? {
+              pressedCell: interaction.board.cell,
+              pressedAt: interaction.board.startedAt,
+              position: interaction.board.position
+                ? {
+                    x: interaction.board.position.x - this.boardRect.x,
+                    y: interaction.board.position.y - this.boardRect.y,
+                  }
+                : null,
+            }
+          : null;
+        GameGlobal.TopologyBoardArt.drawBoard(ctx, {
+          game,
+          layout: this.boardLayout,
+          time: gameTime,
+          preferences: state.preferences,
+          interaction: boardInteraction,
+          fontFamily: this.host.fonts[700] ? `'${this.host.fonts[700]}'` : 'serif',
+        });
+      }
+      ctx.restore();
     }
-    ctx.restore();
-
-    this.register('board', this.boardRect, { action: 'board' });
-    this.drawGameActions(state, time);
+    if (!sharedTarget) {
+      this.register('board', this.boardRect, { action: 'board' });
+    }
+    this.drawGameActions(state, gameTime);
   }
 
   drawGameActions(state, time) {
@@ -678,7 +839,9 @@ export default class SceneRenderer {
     }
 
     const reviewing = Boolean(game.review);
-    const completionReady = !game.completionAvailable || this.canToggleDimension(game, time);
+    const completionReady = reviewing
+      || !game.completionAvailable
+      || this.canToggleDimension(game, time);
     const firstRow = reviewing
       ? [
           { key: 'previous', label: '上一步', icon: 'previous', disabled: game.review.step <= 0 },
@@ -693,17 +856,17 @@ export default class SceneRenderer {
             icon: game.viewMode === 'surface' ? 'board' : 'surface',
             disabled: !this.canToggleDimension(game, time),
           },
-          { key: 'journey', label: '图鉴', icon: 'journey', disabled: false },
+          { key: 'journey', label: '图鉴', icon: 'journey', disabled: !completionReady },
         ];
     this.drawActionRow(firstRow, content.x, bottomY - rowHeight - gap, contentWidth, rowHeight, gap);
     const passed = game.outcome === 'win' || game.outcome === 'draw';
     const secondRow = [
-      { key: 'restart', label: '再来', icon: 'restart', disabled: false },
+      { key: 'restart', label: '再来', icon: 'restart', disabled: !completionReady },
       {
         key: 'next-level',
         label: '下一关',
         icon: 'next',
-        disabled: !passed || game.levelIndex >= state.levels.length - 1,
+        disabled: !completionReady || !passed || game.levelIndex >= state.levels.length - 1,
         accent: true,
       },
     ];
@@ -876,10 +1039,14 @@ export default class SceneRenderer {
   }
 
   drawTransition(time) {
-    if (!this.transition || !this.transition.sourceRect) {
+    if (!this.transition) {
       return;
     }
     const transition = this.transition;
+    if (!usableRect(transition.sourceRect)) {
+      this.transition = null;
+      return;
+    }
     const progress = clamp01((time - transition.startedAt) / transition.duration);
     let target = null;
     if (transition.kind === 'enter') {
@@ -887,24 +1054,58 @@ export default class SceneRenderer {
     } else {
       target = this.homeRects[transition.levelIndex];
     }
-    if (!target) {
+    if (!usableRect(target)) {
+      this.transition = null;
       return;
     }
     const amount = transition.kind === 'enter' ? springOut(progress) : softOut(progress);
     const from = transition.sourceRect;
     const to = target;
-    const overlay = transition.kind === 'enter'
-      ? interpolateRect(from, to, amount)
-      : interpolateRect(from, to, amount);
-    this.context.save();
-    this.context.globalAlpha = Math.sin(progress * Math.PI) * 0.76;
-    glassPanel(this.context, overlay, {
-      radius: lerp(21, transition.kind === 'enter' ? 29 : 21, amount),
+    const overlay = interpolateRect(from, to, amount);
+    const fromRadius = transition.kind === 'enter' ? 21 : 29;
+    const toRadius = transition.kind === 'enter' ? 29 : 21;
+    const overlayRadius = lerp(fromRadius, toRadius, amount);
+    const ctx = this.context;
+    if (transition.snapshot) {
+      const dpr = transition.snapshotDpr || 1;
+      ctx.save();
+      ctx.globalAlpha = 1 - softOut(progress);
+      drawSnapshotWithoutRect(
+        ctx,
+        transition.snapshot,
+        from,
+        dpr,
+        this.metrics.width,
+        this.metrics.height,
+      );
+      ctx.restore();
+
+      ctx.save();
+      roundedRectPath(ctx, overlay.x, overlay.y, overlay.width, overlay.height, overlayRadius);
+      ctx.clip();
+      ctx.globalAlpha = 1 - this.transitionTargetAlpha(transition.kind, time);
+      ctx.drawImage(
+        transition.snapshot,
+        from.x * dpr,
+        from.y * dpr,
+        from.width * dpr,
+        from.height * dpr,
+        overlay.x,
+        overlay.y,
+        overlay.width,
+        overlay.height,
+      );
+      ctx.restore();
+    }
+    ctx.save();
+    ctx.globalAlpha = Math.sin(progress * Math.PI) * 0.46;
+    glassPanel(ctx, overlay, {
+      radius: overlayRadius,
       tint: 'rgba(251,250,246,0.42)',
       middle: 'rgba(251,250,246,0.26)',
       bottom: 'rgba(232,226,215,0.24)',
     });
-    this.context.restore();
+    ctx.restore();
     if (progress >= 1) {
       this.transition = null;
     }

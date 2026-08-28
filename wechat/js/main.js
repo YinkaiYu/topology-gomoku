@@ -108,7 +108,7 @@ export default class Main {
       return;
     }
     const now = Date.now();
-    const delta = Math.max(1, Math.min(40, now - this.lastFrameAt));
+    const delta = Math.max(1, Math.min(67, now - this.lastFrameAt));
     this.lastFrameAt = now;
     this.updateInteractionMotion(delta);
     if (this.controller.tick(now)) {
@@ -124,6 +124,11 @@ export default class Main {
         this.interaction.mode === 'surface',
       );
     const animationDelay = this.animationDelay(state, now, surfaceAnimated);
+    this.host.keepScreenAwake(Boolean(
+      state.scene === 'game'
+      && state.game
+      && state.game.status !== 'ended'
+    ));
     if (this.dirty || animationDelay !== null) {
       this.renderer.render(now, this.interaction);
       this.lastRenderAt = now;
@@ -163,7 +168,7 @@ export default class Main {
       return 16;
     }
     if (surfaceAnimated) {
-      return 33;
+      return this.renderer.surfaceAnimationDelay(game, now);
     }
     return null;
   }
@@ -210,6 +215,7 @@ export default class Main {
     }
     if (!this.pauseReasons.size) {
       this.controller.pause(time);
+      this.renderer.pauseGameTime(time);
     }
     this.pauseReasons.add(reason);
   }
@@ -220,6 +226,7 @@ export default class Main {
     }
     if (!this.pauseReasons.size) {
       this.controller.resume(time);
+      this.renderer.resumeGameTime(time);
     }
   }
 
@@ -438,14 +445,12 @@ export default class Main {
         this.host.vibrate();
       } else {
         this.renderer.surfaceRotation = { x: 0, y: 0, z: 0 };
-        this.host.keepScreenAwake(true);
         this.renderer.beginTransition('enter', source, hit.payload.index, now);
       }
     } else if ((action === 'back' || action === 'journey') && game) {
       const source = copyBoardRect(this.renderer.boardRect);
       const levelIndex = game.levelIndex;
       this.controller.leaveGame();
-      this.host.keepScreenAwake(false);
       this.renderer.beginTransition('exit', source, levelIndex, now);
     } else if (action === 'undo') {
       this.controller.undo(now);
@@ -493,7 +498,7 @@ export default class Main {
     }
     this.timerId = 0;
     this.addPauseReason('lifecycle', now);
-    this.sound.pause();
+    this.sound.pause('lifecycle');
     this.host.keepScreenAwake(false);
     this.onTouchCancel({ changedTouches: [] });
   }
@@ -503,14 +508,14 @@ export default class Main {
     this.host.resize();
     this.renderer.resize(this.host.metrics);
     this.removePauseReason('lifecycle', now);
-    this.sound.resume();
-    this.host.keepScreenAwake(this.controller.getState().scene === 'game');
+    this.sound.resume('lifecycle');
     this.suspended = false;
     this.lastFrameAt = now;
     this.wake();
   }
 
   onResize() {
+    this.resetInteraction();
     this.host.resize();
     this.renderer.resize(this.host.metrics);
     this.dirty = true;
