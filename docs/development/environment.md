@@ -24,6 +24,7 @@ npm run validate:wechat
 npm run check:wechat
 npm run build:wechat
 npm run sync:wechat
+npm run prepare:wechat-agent
 npm run fonts:subset
 npm run fonts:subset:wechat
 npm run release:check-versions -- X.Y.Z
@@ -33,26 +34,26 @@ npm run release:check-versions -- X.Y.Z
 - `npm run validate:wechat` 检查 `wechat/` 的小游戏入口、JSON、离线约束和包内路径；`npm run check:wechat` 在共享总检查后生成并验证微信包。
 - `npm run build:wechat` 从 `wechat/` 构建到 `dist/wechat/`，同时从 `app/assets/` 注入权威共享逻辑、美术与字体，生成带 SHA-256 的托管清单；构建产物不提交 Git。
 - `npm run sync:wechat` 会先执行一次全新构建，再把托管文件同步至 `%USERPROFILE%\Documents\Codex\miniprograms\topology-gomoku`。目标是微信官方小游戏模板派生的开发者工具生成/预览目录，不是源码；同步保留 AppID、`project.config.json`、`project.private.config.json` 及其他未托管文件。
+- `npm run prepare:wechat-agent` 先执行共享检查，再调用自带 fresh build 的 `sync:wechat` 更新默认目录；它不会在同步前重复执行一次相同构建。同步后仍须完成模拟器刷新、截图、console 与画布交互验证。
 - `npm run fonts:subset` 重建 H5 WOFF2；`npm run fonts:subset:wechat` 同时扫描 `app/` 与 `wechat/`，重建隔离的微信本地 TTF。两者都通过 `uv run --locked` 自动创建或同步 `.venv`，无需激活虚拟环境。
 - `npm run release:check-versions -- X.Y.Z` 仅供维护者在稳定同步后检查 `main` 与三个发行分支的统一游戏版本。
 - 首次同步需要下载 `uv.lock` 中的依赖；之后会复用锁定环境与本地缓存。
 
 ## 微信小游戏本地预览
 
-微信适配任务完成自动检查后依次运行：
+微信适配任务交给开发者工具前运行：
 
 ```powershell
-npm run build:wechat
-npm run sync:wechat
+npm run prepare:wechat-agent
 ```
 
-`sync:wechat` 为避免陈旧输出会再次构建。首次同步只接受脚本精确识别的微信官方示例小游戏模板；后续同步只替换清单托管文件，检测到目标中手工改动的托管文件时会拒绝覆盖。需要使用另一处模板时可显式传入目标：
+该入口的仓库顺序是 `check → sync:wechat`；`sync:wechat` 内部固定执行 `fresh build → sync`，所以最终交给开发者工具的总是同一次新构建，同时不会无意义地双构建。首次同步只接受脚本精确识别的微信官方示例小游戏模板；后续同步只替换清单托管文件，检测到目标中手工改动的托管文件时会拒绝覆盖。需要使用另一处模板时可显式传入目标：
 
 ```powershell
 npm run sync:wechat -- -TargetRoot D:\path\to\wechat-game-preview
 ```
 
-同步成功后用微信开发者工具以“小游戏”项目导入目标目录，完成模拟器检查，再进行真机预览或调试。具体检查项见 [`../platforms/wechat.md`](../platforms/wechat.md)。不要把开发者工具生成的私有配置、预览文件或目标目录内容复制回仓库。
+同步成功后用微信开发者工具以“小游戏”项目打开目标目录。Agent 应按 [`wechat-agent-workflow.md`](wechat-agent-workflow.md) 使用官方 `wechatide-skill` 完成 initializer、compiler、debugger 和 automator 链路；业务工具只通过 PATH 中的 `wechatide` 调用，不使用 8.3 短路径或安装目录绝对入口。真机验收清单见 [`../platforms/wechat.md`](../platforms/wechat.md)。不要把开发者工具生成的私有配置、预览文件或目标目录内容复制回仓库。
 
 ## Python 环境
 

@@ -49,6 +49,23 @@
     return Math.max(0, Math.min(1, value));
   }
 
+  var CONTEXT_PIXEL_RATIOS = typeof WeakMap === "function" ? new WeakMap() : null;
+
+  function setContextPixelRatio(ctx, pixelRatio) {
+    var next = Math.max(1, Number(pixelRatio) || 1);
+    if (CONTEXT_PIXEL_RATIOS && ctx) {
+      CONTEXT_PIXEL_RATIOS.set(ctx, next);
+    } else if (ctx) {
+      ctx.__topologyPixelRatio = next;
+    }
+  }
+
+  function effectPixels(ctx, logicalPixels) {
+    var stored = CONTEXT_PIXEL_RATIOS && ctx ? CONTEXT_PIXEL_RATIOS.get(ctx) : null;
+    var pixelRatio = Math.max(1, Number(stored || (ctx && ctx.__topologyPixelRatio)) || 1);
+    return logicalPixels * pixelRatio;
+  }
+
   function easeOutBack(value) {
     var c1 = 1.45;
     var c3 = c1 + 1;
@@ -212,7 +229,7 @@
     ctx.lineWidth = 2 + pulse * 2.2;
     ctx.lineCap = "round";
     ctx.shadowColor = color;
-    ctx.shadowBlur = pulse * 16;
+    ctx.shadowBlur = effectPixels(ctx, pulse * 16);
     if (twisted && ctx.setLineDash) {
       ctx.setLineDash([5, 5]);
     }
@@ -254,7 +271,7 @@
       ctx.lineWidth = 2 + pair.pulse * 2.2;
       ctx.lineCap = "round";
       ctx.shadowColor = pair.color;
-      ctx.shadowBlur = pair.pulse * 16;
+      ctx.shadowBlur = effectPixels(ctx, pair.pulse * 16);
       pair.sides.forEach(function drawSide(side) {
         if (side === "top" || side === "bottom") {
           var y = side === "top" ? layout.top - offset : layout.bottom + offset;
@@ -384,8 +401,8 @@
       ctx.translate(center.x, center.y);
       ctx.scale(scale, scale);
       ctx.shadowColor = player === Engine.HUMAN ? "rgba(24, 31, 29, 0.28)" : "rgba(65, 58, 48, 0.18)";
-      ctx.shadowBlur = radius * (0.42 - compression * 0.16);
-      ctx.shadowOffsetY = radius * (0.2 - compression * 0.125);
+      ctx.shadowBlur = effectPixels(ctx, radius * (0.42 - compression * 0.16));
+      ctx.shadowOffsetY = effectPixels(ctx, radius * (0.2 - compression * 0.125));
       drawStoneFace(ctx, player, radius, cell === game.lastMove, compression);
       ctx.restore();
       if (winning) {
@@ -422,8 +439,8 @@
     ctx.translate(center.x, center.y + radius * (1 - landing) * -0.16);
     ctx.scale(scale, scale);
     ctx.shadowColor = "rgba(24, 31, 29, 0.24)";
-    ctx.shadowBlur = radius * (0.34 - landing * 0.08);
-    ctx.shadowOffsetY = radius * (0.18 - landing * 0.105);
+    ctx.shadowBlur = effectPixels(ctx, radius * (0.34 - landing * 0.08));
+    ctx.shadowOffsetY = effectPixels(ctx, radius * (0.18 - landing * 0.105));
     drawStoneFace(ctx, Engine.HUMAN, radius, false, landing);
     ctx.restore();
   }
@@ -486,11 +503,13 @@
       return;
     }
     var center = cellCenter(game.rules, layout, hintCell);
-    var pulse = Math.sin(time * 0.006) * 0.5 + 0.5;
+    var breath = Math.sin(time * 0.006);
+    var pulse = breath * 0.5 + 0.5;
     var radius = layout.cell * 0.25 + pulse * 2.2;
     var prompts = game.lesson.prompts || [];
     var text = prompts[Math.min(game.lesson.step, prompts.length - 1)] || game.level.ruleText;
     var fontSize = Math.max(12, Math.min(14, layout.cell * 0.195));
+    var floatY = -breath * 1.25;
     ctx.save();
     ctx.globalAlpha *= 0.52 + pulse * 0.24;
     ctx.strokeStyle = TOKENS.teal;
@@ -502,14 +521,23 @@
     ctx.fill();
     ctx.stroke();
     if (ctx.setLineDash) { ctx.setLineDash([]); }
+    ctx.restore();
+    ctx.save();
+    ctx.globalAlpha *= (0.52 + pulse * 0.24) * 0.72;
+    ctx.fillStyle = TOKENS.teal;
+    ctx.beginPath();
+    ctx.arc(center.x, center.y, 1.7 + pulse * 0.65, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.restore();
+    ctx.save();
     ctx.font = "700 " + fontSize + "px " + (fontFamily || "serif");
     ctx.textAlign = "center";
     ctx.textBaseline = "middle";
     var textWidth = ctx.measureText(text).width;
     var textX = Math.max(layout.left + textWidth * 0.5 + 7, Math.min(layout.right - textWidth * 0.5 - 7, center.x));
-    var textY = center.y - radius - fontSize * 1.15;
+    var textY = center.y - radius - fontSize * 1.15 + floatY;
     if (textY - fontSize * 0.6 < layout.top) {
-      textY = center.y + radius + fontSize * 1.2;
+      textY = center.y + radius + fontSize * 1.2 - floatY;
     }
     ctx.globalAlpha *= 0.74 + pulse * 0.22;
     ctx.lineWidth = 4.1;
@@ -521,6 +549,94 @@
     ctx.restore();
   }
 
+  function drawLessonSeamCue(ctx, game, lesson, index, from, to, color, pending, pulse, cell, time) {
+    var fromDirection = Engine.DIRECTIONS[lesson.directions[index - 1]];
+    var toDirection = Engine.DIRECTIONS[lesson.directions[index]];
+    var ray = cell * (pending ? 0.72 : 0.58);
+    var radius = cell * 0.37 + pulse * (pending ? 4 : 2);
+    var alpha = pending ? 0.5 + pulse * 0.34 : 0.34;
+    var fromEdge = { x: from.x + fromDirection.dx * ray, y: from.y + fromDirection.dy * ray };
+    var toEdge = { x: to.x - toDirection.dx * ray, y: to.y - toDirection.dy * ray };
+    ctx.save();
+    ctx.globalAlpha *= alpha;
+    ctx.strokeStyle = color;
+    ctx.fillStyle = color;
+    ctx.lineWidth = Math.max(1.4, cell * 0.04);
+    ctx.lineCap = "round";
+    if (ctx.setLineDash) { ctx.setLineDash(pending ? [cell * 0.11, cell * 0.09] : []); }
+    ctx.lineDashOffset = -time * 0.02;
+    ctx.beginPath();
+    ctx.moveTo(from.x, from.y);
+    ctx.lineTo(fromEdge.x, fromEdge.y);
+    ctx.moveTo(toEdge.x, toEdge.y);
+    ctx.lineTo(to.x, to.y);
+    ctx.stroke();
+    if (ctx.setLineDash) { ctx.setLineDash([]); }
+    [from, to].forEach(function drawLessonCrossingRing(point) {
+      ctx.beginPath();
+      ctx.arc(point.x, point.y, radius, 0, Math.PI * 2);
+      ctx.stroke();
+    });
+    if (pending) {
+      var travel = 0.2 + pulse * 0.64;
+      [
+        { start: from, end: fromEdge },
+        { start: toEdge, end: to }
+      ].forEach(function drawTravelDot(segment) {
+        ctx.beginPath();
+        ctx.arc(
+          segment.start.x + (segment.end.x - segment.start.x) * travel,
+          segment.start.y + (segment.end.y - segment.start.y) * travel,
+          Math.max(2, cell * 0.055),
+          0,
+          Math.PI * 2
+        );
+        ctx.fill();
+      });
+    }
+    ctx.restore();
+  }
+
+  function drawLessonSegment(ctx, game, layout, lesson, index, pending, pulse, cell, time) {
+    var from = cellCenter(game.rules, layout, lesson.cells[index - 1]);
+    var to = cellCenter(game.rules, layout, lesson.cells[index]);
+    var seam = lesson.seams[index - 1];
+    var color = seam & Engine.SEAM_TWIST ? TOKENS.gold : TOKENS.teal;
+    if (seam) {
+      drawLessonSeamCue(ctx, game, lesson, index, from, to, color, pending, pulse, cell, time);
+      return;
+    }
+    ctx.save();
+    ctx.globalAlpha *= pending ? 0.3 + pulse * 0.2 : 0.34;
+    ctx.strokeStyle = color;
+    ctx.lineWidth = Math.max(1.5, cell * 0.045);
+    ctx.lineCap = "round";
+    if (pending && ctx.setLineDash) {
+      ctx.setLineDash([cell * 0.12, cell * 0.1]);
+      ctx.lineDashOffset = -time * 0.018;
+    }
+    ctx.beginPath();
+    ctx.moveTo(from.x, from.y);
+    ctx.lineTo(to.x, to.y);
+    ctx.stroke();
+    ctx.restore();
+  }
+
+  function drawLessonConnections(ctx, game, layout, time) {
+    if (!game.lesson || !game.lesson.active || game.level.tutorial || game.lesson.step < 1) {
+      return;
+    }
+    var lesson = game.lesson;
+    var pulse = Math.sin(time * 0.0055) * 0.5 + 0.5;
+    var cell = layout.cell;
+    for (var index = 1; index < lesson.step; index += 1) {
+      drawLessonSegment(ctx, game, layout, lesson, index, false, pulse, cell, time);
+    }
+    if (lesson.step < lesson.cells.length) {
+      drawLessonSegment(ctx, game, layout, lesson, lesson.step, true, pulse, cell, time);
+    }
+  }
+
   function drawDemo(ctx, game, layout, time) {
     if (!game.demo || !game.demo.active) {
       return;
@@ -530,6 +646,29 @@
     var fadeStartsAt = (demo.cells.length - 1) * demo.dropInterval + demo.hold;
     var alpha = 1 - clamp01((elapsed - fadeStartsAt) / demo.fade);
     var radius = layout.cell * 0.34;
+
+    ctx.save();
+    ctx.globalAlpha *= alpha * 0.45;
+    ctx.strokeStyle = TOKENS.teal;
+    ctx.lineWidth = Math.max(2, layout.cell * 0.07);
+    ctx.lineCap = "round";
+    for (var lineIndex = 1; lineIndex < demo.cells.length; lineIndex += 1) {
+      var lineProgress = clamp01((elapsed - lineIndex * demo.dropInterval + 130) / 210);
+      if (lineProgress <= 0 || demo.seams[lineIndex - 1]) {
+        continue;
+      }
+      var lineFrom = cellCenter(game.rules, layout, demo.cells[lineIndex - 1]);
+      var lineTo = cellCenter(game.rules, layout, demo.cells[lineIndex]);
+      ctx.beginPath();
+      ctx.moveTo(lineFrom.x, lineFrom.y);
+      ctx.lineTo(
+        lineFrom.x + (lineTo.x - lineFrom.x) * lineProgress,
+        lineFrom.y + (lineTo.y - lineFrom.y) * lineProgress
+      );
+      ctx.stroke();
+    }
+    ctx.restore();
+
     for (var index = 0; index < demo.cells.length; index += 1) {
       var localProgress = clamp01((elapsed - index * demo.dropInterval) / 185);
       if (localProgress <= 0) {
@@ -541,8 +680,8 @@
       ctx.translate(center.x, center.y);
       ctx.scale(easeOutBack(localProgress), easeOutBack(localProgress));
       ctx.shadowColor = "rgba(24, 31, 29, 0.2)";
-      ctx.shadowBlur = radius * 0.38;
-      ctx.shadowOffsetY = radius * 0.16;
+      ctx.shadowBlur = effectPixels(ctx, radius * 0.38);
+      ctx.shadowOffsetY = effectPixels(ctx, radius * 0.16);
       drawStoneFace(ctx, Engine.HUMAN, radius, false, 0);
       ctx.shadowColor = "transparent";
       ctx.strokeStyle = "rgba(93, 176, 167, 0.9)";
@@ -552,6 +691,30 @@
       ctx.stroke();
       ctx.restore();
     }
+
+    demo.seams.forEach(function drawDemoCrossing(seam, index) {
+      if (!seam) {
+        return;
+      }
+      var crossingAt = (index + 1) * demo.dropInterval;
+      var pulseProgress = (elapsed - crossingAt) / 600;
+      if (pulseProgress < 0 || pulseProgress > 1) {
+        return;
+      }
+      var pulse = Math.sin(pulseProgress * Math.PI);
+      var from = cellCenter(game.rules, layout, demo.cells[index]);
+      var to = cellCenter(game.rules, layout, demo.cells[index + 1]);
+      ctx.save();
+      ctx.globalAlpha *= alpha * pulse * 0.82;
+      ctx.strokeStyle = seam & Engine.SEAM_TWIST ? TOKENS.gold : TOKENS.teal;
+      ctx.lineWidth = 1.5 + pulse;
+      [from, to].forEach(function drawCrossingRing(point) {
+        ctx.beginPath();
+        ctx.arc(point.x, point.y, radius + 5 + pulse * 6, 0, Math.PI * 2);
+        ctx.stroke();
+      });
+      ctx.restore();
+    });
   }
 
   function drawBoard(ctx, options) {
@@ -565,10 +728,11 @@
     drawPaperTexture(ctx, layout.width, layout.height);
     drawTopologyRails(ctx, game, layout, time);
     drawGrid(ctx, game, layout);
-    drawDemo(ctx, game, layout, time);
-    drawTacticalHints(ctx, game, layout, settings.preferences || {});
+    drawLessonConnections(ctx, game, layout, time);
     drawLessonGuide(ctx, game, layout, time, settings.fontFamily);
+    drawDemo(ctx, game, layout, time);
     drawWinningConnections(ctx, game, layout, time);
+    drawTacticalHints(ctx, game, layout, settings.preferences || {});
     drawMovePreview(ctx, game, layout, time, settings.interaction);
     drawStones(ctx, game, layout, time);
   }
@@ -665,7 +829,7 @@
     ctx.lineWidth = 1.8;
     ctx.lineCap = "round";
     ctx.shadowColor = color;
-    ctx.shadowBlur = 5;
+    ctx.shadowBlur = effectPixels(ctx, 5);
     [0, 1].forEach(function drawEdge(edge) {
       ctx.beginPath();
       for (var sample = 0; sample <= samples; sample += 1) {
@@ -770,7 +934,7 @@
     ctx.save();
     ctx.strokeStyle = "rgba(199, 146, 68," + (0.78 + Math.sin(time * 0.009) * 0.16) + ")";
     ctx.shadowColor = "rgba(199, 146, 68,0.8)";
-    ctx.shadowBlur = 12;
+    ctx.shadowBlur = effectPixels(ctx, 12);
     ctx.lineWidth = Math.max(3.4, layout.cell * 0.12);
     ctx.lineCap = "round";
     ctx.lineJoin = "round";
@@ -822,17 +986,18 @@
       return;
     }
     var base = DEFAULT_VIEWS[game.level.topology] || { x: 0.5, y: -0.4, z: 0, scale: 1 };
+    var view = settings.view || base;
     var rotation = settings.rotation || { x: 0, y: 0, z: 0 };
     var morph = settings.morph === undefined ? 1 : clamp01(Number(settings.morph) || 0);
     var viewBlend = Morph.smooth(morph);
     var orientation = {
-      x: (base.x + (rotation.x || 0)) * viewBlend,
-      y: (base.y + (rotation.y || 0)) * viewBlend,
-      z: (base.z + (rotation.z || 0)) * viewBlend,
+      x: ((Number(view.x) || 0) + (rotation.x || 0)) * viewBlend,
+      y: ((Number(view.y) || 0) + (rotation.y || 0)) * viewBlend,
+      z: ((Number(view.z) || 0) + (rotation.z || 0)) * viewBlend,
       scale: Number(settings.scale) || 1,
-      shapeX: 1,
-      shapeY: 1,
-      shapeZ: 1,
+      shapeX: 1 + ((Number(view.shapeX) || 1) - 1) * viewBlend,
+      shapeY: 1 + ((Number(view.shapeY) || 1) - 1) * viewBlend,
+      shapeZ: 1 + ((Number(view.shapeZ) || 1) - 1) * viewBlend,
       wobbleX: Number(settings.wobbleX) || 0,
       wobbleY: Number(settings.wobbleY) || 0,
       morph: morph,
@@ -842,12 +1007,16 @@
     };
     drawSurface(ctx, game, layout, layout.width, layout.height, orientation);
     drawSurfaceGrid(ctx, game, layout, layout.width, layout.height, orientation);
+    var boundaryFade = 1 - Morph.smooth((morph - 0.72) / 0.28);
+    ctx.save();
+    ctx.globalAlpha *= (0.36 + morph * 0.5) * boundaryFade;
     if (game.level.xConnection || game.level.topology === "sphere") {
       drawSurfaceBoundary(ctx, game, layout, layout.width, layout.height, orientation, "x", "rgba(63,140,135,0.78)");
     }
     if (game.level.yConnection || game.level.topology === "sphere") {
       drawSurfaceBoundary(ctx, game, layout, layout.width, layout.height, orientation, "y", "rgba(199,146,68,0.76)");
     }
+    ctx.restore();
     if (morph < 0.98) {
       ctx.save();
       ctx.globalAlpha *= 1 - morph;
@@ -880,8 +1049,8 @@
       ctx.globalAlpha *= game.winningMask && !winnerSet[item.cell] ? 0.5 : 1;
       ctx.translate(item.point.x, item.point.y);
       ctx.shadowColor = item.player === Engine.HUMAN ? "rgba(24, 31, 29, 0.3)" : "rgba(65, 58, 48, 0.2)";
-      ctx.shadowBlur = radius * 0.48;
-      ctx.shadowOffsetY = radius * 0.2;
+      ctx.shadowBlur = effectPixels(ctx, radius * 0.48);
+      ctx.shadowOffsetY = effectPixels(ctx, radius * 0.2);
       drawStoneFace(ctx, item.player, radius, item.cell === game.lastMove, 0);
       ctx.restore();
     });
@@ -960,8 +1129,8 @@
     ctx.lineWidth = 1;
     ctx.lineJoin = "round";
     ctx.shadowColor = settings.shadowColor || "rgba(28,40,36,0.2)";
-    ctx.shadowBlur = Math.max(4, width * 0.065);
-    ctx.shadowOffsetY = Math.max(2, height * 0.055);
+    ctx.shadowBlur = effectPixels(ctx, Math.max(4, width * 0.065));
+    ctx.shadowOffsetY = effectPixels(ctx, Math.max(2, height * 0.055));
     patches.forEach(function drawPatch(patch) {
       ctx.beginPath();
       ctx.moveTo(patch.points[0].x, patch.points[0].y);
@@ -978,6 +1147,7 @@
 
   return {
     TOKENS: TOKENS,
+    setContextPixelRatio: setContextPixelRatio,
     computeLayout: computeLayout,
     cellCenter: cellCenter,
     hitTestCell: hitTestCell,

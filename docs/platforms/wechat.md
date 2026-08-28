@@ -15,11 +15,14 @@
 
 视觉上继续遵守 [`../design/visual-language.md`](../design/visual-language.md)：同一套比例、留白、字体层级、颜色、液态玻璃、接缝轨道、棋子和曲面表达，不为“平台感”改写核心玩法或另造美术方言。
 
+Agent 的开发者工具操作统一遵循 [`../development/wechat-agent-workflow.md`](../development/wechat-agent-workflow.md)：以官方 `wechatide-skill` 分场景完成状态门禁、开窗、小游戏模拟器刷新、官方截图/日志和画布坐标自动化，不把小程序 selector/WXML/WXSS 路线误用于小游戏。
+
 ## 已核验的宿主约束
 
 - 小游戏运行环境不是浏览器；平台不会自动提供完整 DOM/BOM。入口与 adapter 不依赖 `document`、`window`、Web Storage 或 WebView。参见微信官方的[小游戏运行环境](https://developers.weixin.qq.com/minigame/dev/guide/runtime/adapter.html)与[开发入门](https://developers.weixin.qq.com/minigame/dev/guide/develop/develop.html)。
 - 首次调用 [`wx.createCanvas()`](https://developers.weixin.qq.com/minigame/dev/api/render/canvas/wx.createCanvas.html) 得到上屏 Canvas，后续调用才是离屏 Canvas；因此显示画布必须在任何辅助画布之前创建。当前版本保持单一显示 Canvas，由场景 renderer 统一绘制。
-- 视口优先读取 [`wx.getWindowInfo()`](https://developers.weixin.qq.com/minigame/dev/api/base/system/wx.getWindowInfo.html)，用 `pixelRatio` 设置物理像素，并把触摸映射回逻辑坐标。布局避让 `safeArea` 与 [`wx.getMenuButtonBoundingClientRect()`](https://developers.weixin.qq.com/minigame/dev/api/ui/menu/wx.getMenuButtonBoundingClientRect.html) 返回的胶囊区域；低基础库仅在 adapter 内提供兼容读取。
+- 视口优先读取 [`wx.getWindowInfo()`](https://developers.weixin.qq.com/minigame/dev/api/base/system/wx.getWindowInfo.html)，用 `pixelRatio` 设置物理像素，并把触摸映射回逻辑坐标。手机视口最高使用 3×，大视口按每张全尺寸 Canvas 3,750,000 物理像素预算平滑降低倍率，避免主画布、设置快照和转场快照叠加放大内存。Canvas 的 `shadowBlur`、阴影偏移与 `filter: blur()` 在微信运行时按物理像素计算，原生 renderer 必须用当前倍率补偿逻辑半径；3× 图鉴资产保留权威 SVG 的原始宽高比，不能先强制成方形再二次 `contain`。
+- 顶部布局同时避让 `safeArea` 与 [`wx.getMenuButtonBoundingClientRect()`](https://developers.weixin.qq.com/minigame/dev/api/ui/menu/wx.getMenuButtonBoundingClientRect.html) 返回的胶囊实际矩形。有效胶囊必须满足 `0 < top < bottom <= viewportHeight`；有有效矩形时基础 `topInset = max(68, menu.bottom + 22)`，无有效矩形时保守回退为 `max(68, safeTop + clamp(24, 3.6vh, 32) + 22)`。22 个逻辑像素是留给品牌图形呼吸/旋转和顶栏控件的视觉缓冲，不能在 API 可用时用设备型号估算替代实际 `menu.bottom`；低基础库兼容只收敛在 adapter 内。
 - 输入使用 [`wx.onTouchStart`](https://developers.weixin.qq.com/minigame/dev/api/device/touch-event/wx.onTouchStart.html)、[`wx.onTouchMove`](https://developers.weixin.qq.com/minigame/dev/api/device/touch-event/wx.onTouchMove.html) 和 [`wx.onTouchEnd`](https://developers.weixin.qq.com/minigame/dev/api/device/touch-event/wx.onTouchEnd.html)，统一处理点击、拖动棋盘提示、设置控件和曲面旋转。
 - [`wx.onHide`](https://developers.weixin.qq.com/minigame/dev/api/base/app/life-cycle/wx.onHide.html) 时暂停共享 controller、帧循环和音频，[`wx.onShow`](https://developers.weixin.qq.com/minigame/dev/api/base/app/life-cycle/wx.onShow.html) 时重新测量并恢复。AI、教学和自动切关使用逻辑截止时间，不能在后台继续推进。
 - 偏好和进度通过 [`wx.setStorageSync`](https://developers.weixin.qq.com/minigame/dev/api/storage/wx.setStorageSync.html) 持久化；只保存小型版本化 JSON，不在每帧或拖动过程中同步写入。
@@ -32,16 +35,14 @@
 日常实现先运行源包校验；交付前运行完整共享检查和微信构建：
 
 ```powershell
-npm run validate:wechat
-npm run check:wechat
-npm run build:wechat
-npm run sync:wechat
+npm run prepare:wechat-agent
 ```
 
 - `validate:wechat` 检查必需入口、JSON、路径大小写、离线约束与平台配置。
 - `check:wechat` 运行共享测试、H5 校验、文档检查，再生成并验证微信包。
 - `build:wechat` 只替换带有有效旧清单、哈希未被修改且不含未托管文件的 `dist/wechat/`，再从 `app/assets/` 注入权威共享脚本、256px 平台图标与三个本地字体字重，逐文件校验 SHA-256 并写入 `.topology-gomoku-manifest.json`。
 - `sync:wechat` 为避免陈旧产物会再次执行全新构建，然后更新默认预览目录 `%USERPROFILE%\Documents\Codex\miniprograms\topology-gomoku`。因此“构建后同步”是固定流程，不能用手工复制替代。
+- `prepare:wechat-agent` 执行共享检查后调用 `sync:wechat`；后者内部先做一次 fresh build 再同步，因此不会为同一源码重复构建。它是进入官方 WeChatIDE skill 场景链的统一仓库入口；单项命令仍可用于局部诊断。
 
 首次同步只接受脚本精确识别的微信官方示例小游戏模板，并用拓扑五子棋托管文件替换飞机示例。后续同步依据上一次清单增删托管文件；若目标中的托管文件被手工修改，会拒绝覆盖并报告冲突。同步始终保护：
 
@@ -59,10 +60,10 @@ npm run sync:wechat -- -TargetRoot D:\path\to\wechat-game-preview
 
 ## 开发者工具验收
 
-同步成功后，在微信开发者工具中以“小游戏”导入预览目录。至少完成以下模拟器检查，并把版本、基础库、设备档位和结果写入任务 QA/PR：
+同步成功后，在微信开发者工具中以“小游戏”打开预览目录。Agent 只通过 PATH 注册的 `wechatide` 命令使用官方 skill，不以 Windows 8.3 短路径或安装目录绝对入口执行任何业务工具；随后按 `initializer → compiler → debugger → automator` 链路验收。小游戏交互只用截图/画布坐标，不用 selector、页面导航、page data 或 WXML/WXSS 单文件编译。至少完成以下模拟器检查，并把版本、基础库、设备档位和结果写入任务 QA/PR：
 
 - 项目以 `compileType: "game"` 启动，无模块、资源、网络或运行时错误；飞机示例资源已被托管清单替换。
-- 首屏只使用一个上屏 Canvas；胶囊、安全区、刘海和不同宽高比下没有遮挡或裁切。
+- 首屏只使用一个上屏 Canvas；胶囊、安全区、刘海和不同宽高比下没有遮挡或裁切。顶部证据必须包含完整宿主胶囊与首个内容层，记录实际 `menu.bottom`、`topInset` 和视觉缓冲；只截取 Canvas 内容不能证明通过。
 - 七关入口、锁定状态、教学、落子、边界演示、AI、悔棋、胜负/封锁/和棋、复盘、曲面拖动和下一关路径可完成。
 - 触摸点击与拖动不串手势；棋盘边缘、滑块、开关、设置浮层和曲面旋转的按下/移动/释放反馈一致。
 - 切后台后 AI、教学和自动切关不偷跑；回前台尺寸、帧循环和声音正确恢复。
@@ -70,12 +71,14 @@ npm run sync:wechat -- -TargetRoot D:\path\to\wechat-game-preview
 - 字体 400/600/700 字重、中文标点、Canvas 文案与程序化提示音无明显缺失或回退异常。
 - 用与 H5 基线相同的视口、内容和交互状态保存视觉对比证据，并记录到 [`../design/qa.md`](../design/qa.md)。
 
+本地 UI 验收不包含发布权限：未经用户对具体动作另行明确授权，不调用手机自动预览、预览二维码或上传体验版。
+
 ## 真机验收
 
 模拟器通过不等于平台完成。平台任务至少记录一台目标真机；发布前应尽量各覆盖一台 iOS 与 Android 设备。无法获得真机时，把这一项明确标记为未完成，不能写成已验证。
 
 - 首次启动、冷启动、长时间前后台切换与锁屏恢复；
-- 高 DPR、全面屏、刘海/灵动岛类安全区和胶囊避让；
+- 高 DPR、全面屏、刘海/灵动岛类安全区和胶囊避让；记录实际 `menu.bottom`、计算后的 `topInset` 与可见分隔，不能把模拟器结论冒充真机结论；
 - 连续快速落子、棋盘边缘命中、设置拖动和三维曲面长拖；
 - 字体实际加载、音频首次解锁、静音、系统打断与恢复；
 - 至少完整通关一局，并检查持久化、发热、帧率、内存和异常日志；

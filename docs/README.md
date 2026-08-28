@@ -18,6 +18,7 @@
 | [`development/environment.md`](development/environment.md) | Node、PowerShell、uv、Python 字体工具与依赖维护 |
 | [`development/documentation.md`](development/documentation.md) | 文档信息归属、变更触发矩阵与自动门禁 |
 | [`development/architecture.md`](development/architecture.md) | 共享游戏核心、Canvas 美术与平台 adapter 的职责边界 |
+| [`development/wechat-agent-workflow.md`](development/wechat-agent-workflow.md) | 基于官方 WeChatIDE skill 的小游戏构建、同步、模拟器调试与证据链 |
 | [`development/release.md`](development/release.md) | 维护者专属的 `dev → main → 三平台` 与统一版本流程 |
 
 ## 设计文档
@@ -32,7 +33,7 @@
 
 - 小红书 H5 与离线 ZIP：执行入口为 [`.codex/SKILL.md`](../.codex/SKILL.md)，具体约束位于 `.codex/references/`。
 - Bilibili Toy：专属适配文档随 `bilibili` 分支维护，并以官方 Toy 约束和仓库安装的 `toy` skill 为准。
-- 微信小游戏：原生单 Canvas 边界、构建同步与开发者工具/真机验收见 [`platforms/wechat.md`](platforms/wechat.md)。
+- 微信小游戏：原生单 Canvas 与宿主边界见 [`platforms/wechat.md`](platforms/wechat.md)；Agent 构建、同步、开发者工具调试与证据链见 [`development/wechat-agent-workflow.md`](development/wechat-agent-workflow.md)。
 
 ## 维护规则
 

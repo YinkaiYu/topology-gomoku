@@ -12,6 +12,7 @@
     "release:check-versions": "powershell -NoProfile -ExecutionPolicy Bypass -File ./scripts/validate-release-versions.ps1",
     "check": "npm test && npm run validate && npm run docs:check",
     "check:wechat": "npm run check && npm run build:wechat",
+    "prepare:wechat-agent": "npm run check && npm run sync:wechat",
     "fonts:subset": "powershell -NoProfile -ExecutionPolicy Bypass -File ./scripts/subset-fonts.ps1",
     "fonts:subset:wechat": "powershell -NoProfile -ExecutionPolicy Bypass -File ./scripts/subset-fonts.ps1 --text-root app --text-root wechat --output-dir wechat/assets/fonts --format ttf",
     "build": "npm run build:xiaohongshu",

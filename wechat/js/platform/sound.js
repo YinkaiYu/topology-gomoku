@@ -11,15 +11,19 @@ export default class SoundEngine {
     this.enabled = enabled !== false;
     this.context = null;
     this.pauseReasons = new Set();
-    if (typeof wx.onAudioInterruptionBegin === 'function') {
-      wx.onAudioInterruptionBegin(() => {
+    this.interruptionListeners = {
+      begin: () => {
         this.pause('interruption');
-      });
+      },
+      end: () => {
+        this.resume('interruption');
+      },
+    };
+    if (typeof wx.onAudioInterruptionBegin === 'function') {
+      wx.onAudioInterruptionBegin(this.interruptionListeners.begin);
     }
     if (typeof wx.onAudioInterruptionEnd === 'function') {
-      wx.onAudioInterruptionEnd(() => {
-        this.resume('interruption');
-      });
+      wx.onAudioInterruptionEnd(this.interruptionListeners.end);
     }
   }
 
@@ -63,6 +67,23 @@ export default class SoundEngine {
         && typeof this.context.resume === 'function') {
       safeInvoke(() => this.context.resume());
     }
+  }
+
+  destroy() {
+    this.pause('destroy');
+    if (this.interruptionListeners) {
+      if (typeof wx.offAudioInterruptionBegin === 'function') {
+        wx.offAudioInterruptionBegin(this.interruptionListeners.begin);
+      }
+      if (typeof wx.offAudioInterruptionEnd === 'function') {
+        wx.offAudioInterruptionEnd(this.interruptionListeners.end);
+      }
+    }
+    this.interruptionListeners = null;
+    if (this.context && typeof this.context.close === 'function') {
+      safeInvoke(() => this.context.close());
+    }
+    this.context = null;
   }
 
   tone(frequency, duration, delay, type, volume, endFrequency) {

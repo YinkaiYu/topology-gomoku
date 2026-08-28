@@ -1,5 +1,6 @@
 import WechatHost from './platform/wechat-host';
 import SoundEngine from './platform/sound';
+import { beginReplayPreservingView } from './platform/wechat-ui-parity';
 import SceneRenderer from './ui/scene-renderer';
 
 function touchCoordinate(touch) {
@@ -34,10 +35,19 @@ function emptyInteraction() {
     lastAt: 0,
     board: null,
     previewDifficulty: undefined,
+    previewDifficultyProgress: undefined,
     previewSwitch: undefined,
+    previewSwitchProgress: undefined,
     switchStartValue: undefined,
     switchMoved: false,
+    controlMoved: false,
+    controlFrameDeltaX: 0,
+    controlClampedProgress: undefined,
+    controlStartProgress: undefined,
+    controlGrabOffset: 0,
+    pressedMovable: false,
     sheetOffset: 0,
+    sheetVelocity: 0,
   };
 }
 
@@ -59,24 +69,26 @@ export default class Main {
     this.lastRenderAt = 0;
 
     this.host.loadFonts();
-    this.host.loadBrandIcon(() => this.wake());
+    this.host.loadVisualAssets(() => this.wake());
     this.host.keepScreenAwake(false);
     this.bindHostEvents();
     this.startLoop();
   }
 
   bindHostEvents() {
-    this.host.bindInput({
+    this.inputListeners = {
       start: (event) => { this.onTouchStart(event); this.wake(); },
       move: (event) => { this.onTouchMove(event); this.wake(); },
       end: (event) => { this.onTouchEnd(event); this.wake(); },
       cancel: (event) => { this.onTouchCancel(event); this.wake(); },
-    });
-    this.host.bindLifecycle({
+    };
+    this.lifecycleListeners = {
       hide: () => this.onHide(),
       show: () => this.onShow(),
       resize: () => { this.onResize(); this.wake(); },
-    });
+    };
+    this.host.bindInput(this.inputListeners);
+    this.host.bindLifecycle(this.lifecycleListeners);
   }
 
   wake() {
@@ -145,7 +157,11 @@ export default class Main {
   }
 
   animationDelay(state, now, surfaceAnimated) {
-    if (this.interaction.mode || this.renderer.transition || this.renderer.sheetMotion) {
+    if (this.interaction.mode
+        || this.renderer.transition
+        || this.renderer.sheetMotion
+        || this.renderer.levelShake
+        || this.renderer.hasControlMotion(now)) {
       return 16;
     }
     if (this.pauseReasons.size) {
@@ -257,7 +273,6 @@ export default class Main {
     const state = this.controller.getState();
     const action = hit.payload.action;
     if (hit.disabled) {
-      this.host.vibrate();
       this.resetInteraction();
       return;
     }
@@ -295,13 +310,41 @@ export default class Main {
       return;
     }
     if (action === 'difficulty') {
+      const order = GameGlobal.TopologyGameContent.DIFFICULTY_ORDER;
+      const startProgress = Math.max(0, order.indexOf(state.preferences.difficulty));
       this.interaction.mode = 'difficulty';
-      this.interaction.previewDifficulty = this.renderer.difficultyAt(point.x);
+      this.interaction.controlStartProgress = startProgress;
+      this.interaction.controlClampedProgress = startProgress;
+      this.interaction.pressedMovable = this.renderer.difficultyThumbContains(
+        point.x,
+        point.y,
+        startProgress,
+      );
+      this.interaction.controlGrabOffset = this.interaction.pressedMovable
+        ? point.x - this.renderer.difficultyThumbCenter(startProgress)
+        : 0;
+      this.interaction.previewDifficultyProgress = startProgress;
+      this.interaction.previewDifficulty = Math.max(
+        0,
+        Math.min(2, Math.round(this.interaction.previewDifficultyProgress)),
+      );
     } else if (action === 'switch') {
       this.interaction.mode = `switch:${hit.payload.key}`;
       this.interaction.key = hit.payload.key;
       this.interaction.switchStartValue = Boolean(state.preferences[hit.payload.key]);
       this.interaction.previewSwitch = this.interaction.switchStartValue;
+      this.interaction.controlStartProgress = this.interaction.switchStartValue ? 1 : 0;
+      this.interaction.controlClampedProgress = this.interaction.controlStartProgress;
+      this.interaction.previewSwitchProgress = this.interaction.controlStartProgress;
+      this.interaction.pressedMovable = this.renderer.switchKnobContains(
+        hit.payload.key,
+        point.x,
+        point.y,
+        this.interaction.controlStartProgress,
+      );
+      this.interaction.controlGrabOffset = this.interaction.pressedMovable
+        ? point.x - this.renderer.switchKnobCenter(hit.payload.key, this.interaction.controlStartProgress)
+        : 0;
     } else if (action === 'sheet-handle') {
       this.interaction.mode = 'sheet';
     } else {
@@ -333,16 +376,38 @@ export default class Main {
     } else if (this.interaction.mode === 'surface') {
       this.renderer.dragSurface(deltaX, deltaY, now - this.interaction.lastAt);
     } else if (this.interaction.mode === 'difficulty') {
-      this.interaction.previewDifficulty = this.renderer.difficultyAt(point.x);
+      if (Math.abs(point.x - this.interaction.startX) > 3) {
+        this.interaction.controlMoved = true;
+      }
+      this.interaction.controlFrameDeltaX = deltaX;
+      const dragState = this.renderer.difficultyDragState(
+        this.interaction.controlStartProgress,
+        point.x - this.interaction.startX,
+      );
+      this.interaction.controlClampedProgress = dragState.clamped;
+      this.interaction.previewDifficultyProgress = dragState.visual;
+      this.interaction.previewDifficulty = Math.max(
+        0,
+        Math.min(2, Math.round(this.interaction.previewDifficultyProgress)),
+      );
     } else if (this.interaction.mode && this.interaction.mode.indexOf('switch:') === 0) {
       if (Math.abs(point.x - this.interaction.startX) > 3) {
         this.interaction.switchMoved = true;
       }
       if (this.interaction.switchMoved) {
-        this.interaction.previewSwitch = this.renderer.switchValueAt(this.interaction.key, point.x);
+        this.interaction.controlFrameDeltaX = deltaX;
+        const dragState = this.renderer.switchDragState(
+          this.interaction.key,
+          this.interaction.controlStartProgress,
+          point.x - this.interaction.startX,
+        );
+        this.interaction.controlClampedProgress = dragState.clamped;
+        this.interaction.previewSwitchProgress = dragState.visual;
+        this.interaction.previewSwitch = this.interaction.previewSwitchProgress >= 0.5;
       }
     } else if (this.interaction.mode === 'sheet') {
       this.interaction.sheetOffset = Math.max(0, point.y - this.interaction.startY);
+      this.interaction.sheetVelocity = deltaY / Math.max(8, now - this.interaction.lastAt);
       this.renderer.setSheetDrag(this.interaction.sheetOffset);
     } else if (this.interaction.mode === 'action') {
       const hit = this.renderer.hitTest(point.x, point.y);
@@ -379,22 +444,53 @@ export default class Main {
     } else if (mode === 'surface') {
       this.renderer.endSurfaceDrag(now);
     } else if (mode === 'difficulty') {
-      const index = this.interaction.previewDifficulty;
+      const visualProgress = this.interaction.previewDifficultyProgress === undefined
+        ? this.interaction.controlStartProgress
+        : this.interaction.previewDifficultyProgress;
+      const directSelection = !this.interaction.controlMoved;
+      const index = directSelection
+        ? this.renderer.difficultyAt(point.x)
+        : Math.max(0, Math.min(2, Math.round(this.interaction.controlClampedProgress)));
+      const fromProgress = directSelection
+        ? this.interaction.controlStartProgress
+        : visualProgress;
       const difficulty = GameGlobal.TopologyGameContent.DIFFICULTY_ORDER[index];
       this.controller.setDifficulty(difficulty);
+      this.renderer.settleControl(
+        'difficulty',
+        null,
+        fromProgress,
+        index,
+        now,
+        this.interaction.pressedMovable,
+        directSelection,
+        this.interaction.controlClampedProgress,
+      );
     } else if (mode && mode.indexOf('switch:') === 0) {
       const nextValue = this.interaction.switchMoved
-        ? this.interaction.previewSwitch
+        ? this.interaction.controlClampedProgress >= 0.5
         : !this.interaction.switchStartValue;
+      const fromProgress = this.interaction.switchMoved
+        ? this.interaction.previewSwitchProgress
+        : this.interaction.controlStartProgress;
       if (this.interaction.key === 'hints') {
         this.controller.setHints(nextValue);
       } else if (this.interaction.key === 'sound') {
         this.controller.setSound(nextValue);
       }
+      this.renderer.settleControl(
+        'switch',
+        this.interaction.key,
+        fromProgress,
+        nextValue ? 1 : 0,
+        now,
+        this.interaction.pressedMovable,
+        !this.interaction.switchMoved,
+        this.interaction.controlClampedProgress,
+      );
     } else if (mode === 'sheet') {
-      const elapsed = Math.max(1, now - this.interaction.lastAt);
-      const velocity = Math.max(0, point.y - this.interaction.lastY) / elapsed;
-      const dismiss = this.interaction.sheetOffset > 92 || velocity > 0.75;
+      const velocity = this.interaction.sheetVelocity;
+      const dismiss = this.interaction.sheetOffset > 82 || velocity > 0.72;
       this.renderer.settleSheetDrag(now, dismiss);
       if (dismiss) {
         this.removePauseReason('modal', now);
@@ -423,6 +519,28 @@ export default class Main {
       this.renderer.settleSheetDrag(Date.now(), false);
     } else if (this.interaction.mode === 'surface') {
       this.renderer.endSurfaceDrag(Date.now());
+    } else if (this.interaction.mode === 'difficulty') {
+      this.renderer.settleControl(
+        'difficulty',
+        null,
+        this.interaction.previewDifficultyProgress,
+        this.interaction.controlStartProgress,
+        Date.now(),
+        this.interaction.pressedMovable,
+        false,
+        this.interaction.controlClampedProgress,
+      );
+    } else if (this.interaction.mode && this.interaction.mode.indexOf('switch:') === 0) {
+      this.renderer.settleControl(
+        'switch',
+        this.interaction.key,
+        this.interaction.previewSwitchProgress,
+        this.interaction.controlStartProgress,
+        Date.now(),
+        this.interaction.pressedMovable,
+        false,
+        this.interaction.controlClampedProgress,
+      );
     }
     this.resetInteraction();
   }
@@ -442,6 +560,7 @@ export default class Main {
     } else if (action === 'level') {
       const source = this.renderer.hitRect(hit.key);
       if (hit.payload.locked || !this.controller.selectLevel(hit.payload.index, now)) {
+        this.renderer.shakeLevel(hit.payload.index, now);
         this.host.vibrate();
       } else {
         this.renderer.surfaceRotation = { x: 0, y: 0, z: 0 };
@@ -473,7 +592,7 @@ export default class Main {
       if (game && game.review) {
         this.controller.endReplay();
       } else {
-        this.controller.beginReplay();
+        beginReplayPreservingView(this.controller, game);
       }
     } else if (action === 'previous') {
       this.controller.stepReplay(-1, now);
@@ -512,6 +631,22 @@ export default class Main {
     this.suspended = false;
     this.lastFrameAt = now;
     this.wake();
+  }
+
+  destroy() {
+    this.suspended = true;
+    if (this.frameId && typeof cancelAnimationFrame === 'function') {
+      cancelAnimationFrame(this.frameId);
+    }
+    this.frameId = 0;
+    if (this.timerId) {
+      clearTimeout(this.timerId);
+    }
+    this.timerId = 0;
+    this.host.unbindInput(this.inputListeners);
+    this.host.unbindLifecycle(this.lifecycleListeners);
+    this.host.keepScreenAwake(false);
+    this.sound.destroy();
   }
 
   onResize() {

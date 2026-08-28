@@ -32,6 +32,7 @@
 - 静止、按下、拖动、释放、禁用状态首尾准确。
 - 位移、形变与折射连续，无跳帧、闪烁、重复图像或残留状态。
 - 触摸目标、滚动、安全区与宿主浮层在目标设备上可用。
+- 涉及微信宿主顶栏时，证据包含完整胶囊与首个内容层，并记录实际 `menu.bottom`、基础 `topInset` 和视觉缓冲；裁掉宿主栏的 Canvas 截图不能作为胶囊避让证据。
 
 ### 证据质量
 
@@ -57,12 +58,18 @@
 | 关卡卡片进入棋盘 | [`进入前`](../../artifacts/qa-level-card-entry-before-v1361.png)、[`回弹中`](../../artifacts/qa-level-card-entry-mid-v1361.png)、[`稳定态`](../../artifacts/qa-level-card-entry-settled-v1361.png) |
 | 棋盘返回关卡卡片 | [`收束中`](../../artifacts/qa-level-card-return-mid-v1361.png)、[`稳定态`](../../artifacts/qa-level-card-return-settled-v1361.png) |
 | AI 难度文案与内嵌字体 | [`artifacts/qa-ai-difficulty-labels-v1363.png`](../../artifacts/qa-ai-difficulty-labels-v1363.png) |
+| 微信原生首页、宿主胶囊与图鉴间距 | [`H5 / WeChatIDE 同视口对照`](../../artifacts/ui-parity/comparison-h5-wechatide-home-capsule-annotation-fixed-780x843-final.png) |
+| 微信原生对局与宿主胶囊 | [`H5 / WeChatIDE 同视口对照`](../../artifacts/ui-parity/comparison-h5-wechatide-game-playing-capsule-780x843-final.png) |
+| 微信原生设置液态玻璃 | [`H5 / WeChatIDE 同视口对照`](../../artifacts/ui-parity/comparison-h5-wechatide-settings-capsule-780x843-final.png) |
+| 微信原生边界辅助线 | [`圆柱边界演示`](../../artifacts/ui-parity/wechatide-boundary-helper-capsule-390x844-final.jpg) |
 
 较早截图只用于回归和问题溯源，不自动成为新设计的视觉真相。出现冲突时，以最新已确认实现、视觉设计语言和同状态实机/预览证据为准。
 
 关卡卡片共享转场已在 390 × 844 视口完成双向验收：进入采用 300 ms 的统一等比低阻尼回弹，返回采用 240 ms 的合成器变换；真实卡片与过渡外壳交叠交接，棋盘内容保持等比，最终边界、29 px 圆角和静态可见性均准确，无裁切、闪烁或控制台异常。长期实现约束见 [`shared-transitions.md`](shared-transitions.md)。
 
 液态滑块与开关惯性在 390 × 844 视口完成点击、连续拖动和释放验收：拖动保持柔性追随，直接点击采用独立的距离感知节奏；桌面跨两档点击为 740 ms，修改前同一操作在 220 ms 已越过目标停靠点，优化后仍保留可见滑行并最终准确停靠。触摸与手写笔使用更重的跟随和停靠节奏；点击轨道或目标档位只产生惯性位移，只有直接按住可移动玻璃体才出现挤压与折射。桌面本地预览与 Bilibili Toy 手机预览均于 2026-08-28 获得明确确认，自动检查、包结构校验和控制台检查均通过。
+
+微信小游戏原生适配于 2026-08-28 使用 WeChatIDE skill 0.3.10、iPhone 12/13 模拟档、390 × 844 逻辑视口和 3× 画布完成复核。运行时 `safeArea` 为 `top=47`、`bottom=810`；该模拟器会话返回的胶囊矩形为非有限值，因此 adapter 使用 `topInset=99.384`、`bottomInset=46` 的保守回退。完整宿主截图中胶囊可见底边约为 76 个逻辑像素，内容起点仍保留约 23 个逻辑像素分隔。图鉴在宿主安全区压缩后保持原版图案尺度，并为图案/剪影、类型注释和关卡名划分独立空间；“瓶界”“双生”等高轮廓图案及其地影均不再压住注释。可见模拟器同时验证了等比关卡转场、禁用悔棋静默忽略、圆柱边界辅助线和设置面板；此结论只代表官方模拟器，不替代 iOS/Android 真机胶囊检查。
 
 ## 新证据记录模板
 
@@ -73,6 +80,7 @@
 基线证据：
 结果证据：
 交互状态：
+宿主几何（如适用）：menu.bottom / topInset / visual buffer
 自动验证：
 发现与限制：
 预览确认：
