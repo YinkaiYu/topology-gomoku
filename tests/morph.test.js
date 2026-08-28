@@ -474,7 +474,8 @@ test("设置页使用液态玻璃层次且三个控件均支持连续拖动", ()
   assert.match(style, /\.switch\.is-dragging\s*\{\s*transform: none/);
   assert.match(style, /--liquid-snap:\s*cubic-bezier\(0\.32, 0\.05, 0\.2, 1\.13\)/);
   assert.match(style, /translate var\(--liquid-glide-duration, 800ms\) var\(--liquid-snap\)/);
-  assert.match(style, /\.segmented\.is-dragging \.segmented-glass-thumb\s*\{[\s\S]*transition:\s*translate 146ms var\(--liquid-drag\), scale 162ms var\(--liquid-drag\)/);
+  assert.match(style, /\.segmented\.is-dragging \.segmented-glass-thumb\s*\{[\s\S]*transition:\s*scale 162ms var\(--liquid-drag\);[\s\S]*will-change:\s*translate, scale/);
+  assert.doesNotMatch(style, /\.segmented\.is-dragging \.segmented-glass-thumb\s*\{[^}]*transition:[^;}]*translate/);
   assert.match(style, /\.switch\.is-dragging i\s*\{[\s\S]*transition:\s*translate 136ms var\(--liquid-drag\), scale 152ms var\(--liquid-drag\)/);
   assert.match(style, /\.segmented\s*\{[\s\S]*overflow:\s*visible/);
   assert.match(style, /\.switch\s*\{[\s\S]*overflow:\s*visible/);
@@ -521,7 +522,7 @@ test("设置页使用液态玻璃层次且三个控件均支持连续拖动", ()
   assert.match(style, /\.segmented\.is-dragging \.segmented-glass-thumb::after\s*\{\s*opacity:\s*0\.9/);
   assert.match(style, /\.segmented\.is-dragging \.segmented-lens-track\s*\{\s*opacity:\s*0\.92/);
   assert.match(style, /\.switch\.is-dragging \.switch-lens-track\s*\{\s*opacity:\s*0\.9/);
-  assert.match(style, /@media \(pointer: coarse\)\s*\{[\s\S]*translate 176ms var\(--liquid-drag\), scale 192ms var\(--liquid-drag\)[\s\S]*translate 160ms var\(--liquid-drag\), scale 178ms var\(--liquid-drag\)/);
+  assert.match(style, /@media \(pointer: coarse\)\s*\{[\s\S]*\.segmented\.is-dragging \.segmented-glass-thumb\s*\{\s*transition:\s*scale 192ms var\(--liquid-drag\)[\s\S]*translate 160ms var\(--liquid-drag\), scale 178ms var\(--liquid-drag\)/);
 });
 
 test("测试控制台沿用设置页液态玻璃风格且双项落子控制对齐", () => {
