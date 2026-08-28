@@ -1915,16 +1915,25 @@
     }
   }
 
-  function liquidGlideDuration(control, travelDistance, directSelection) {
+  function liquidGlideDuration(control, travelDistance, directSelection, touchInput) {
     var distance = Math.max(0, Math.min(2, Math.abs(travelDistance || 0)));
     if (control === dom.difficultyControl) {
       if (directSelection) {
+        if (touchInput) {
+          return Math.round(660 + distance * 140);
+        }
         return Math.round(540 + distance * 100);
+      }
+      if (touchInput) {
+        return Math.round(720 + distance * 140);
       }
       return Math.round(680 + distance * 120);
     }
     if (directSelection) {
-      return 660;
+      return touchInput ? 820 : 660;
+    }
+    if (touchInput) {
+      return Math.round(720 + Math.min(1, distance) * 120);
     }
     return Math.round(660 + Math.min(1, distance) * 100);
   }
@@ -1939,11 +1948,21 @@
     }, duration);
   }
 
-  function animateLiquidSelection(control, movingElement, travelDistance, directSelection, commitSelection) {
+  function finishLiquidGlide(control, duration, pressedMovingElement) {
+    if (pressedMovingElement) {
+      settleLiquidControl(control, duration);
+      return;
+    }
+    window.setTimeout(function finishUnpressedLiquidGlide() {
+      control.style.removeProperty("--liquid-glide-duration");
+    }, duration);
+  }
+
+  function animateLiquidSelection(control, movingElement, travelDistance, directSelection, touchInput, pressedMovingElement, commitSelection) {
     if (!movingElement.style.translate) {
       movingElement.style.translate = window.getComputedStyle(movingElement).translate;
     }
-    var duration = liquidGlideDuration(control, travelDistance, directSelection);
+    var duration = liquidGlideDuration(control, travelDistance, directSelection, touchInput);
     control.style.setProperty("--liquid-glide-duration", duration + "ms");
     control.classList.remove("is-dragging", "is-settling");
     commitSelection();
@@ -1951,8 +1970,14 @@
       movingElement.style.removeProperty("translate");
       movingElement.style.removeProperty("scale");
       movingElement.style.removeProperty("transform-origin");
-      settleLiquidControl(control, duration);
+      finishLiquidGlide(control, duration, pressedMovingElement);
     });
+  }
+
+  function pointerHitsElement(event, element) {
+    var rect = element.getBoundingClientRect();
+    return event.clientX >= rect.left && event.clientX <= rect.right
+      && event.clientY >= rect.top && event.clientY <= rect.bottom;
   }
 
   function setDifficulty(difficulty) {
@@ -2013,16 +2038,21 @@
       return Math.max(0, Math.min(2, (clientX - firstCenter) / metrics.step));
     }
 
-    function paint(progress, delta) {
+    function paint(progress, delta, pressedThumb) {
       var energy = Math.min(1, Math.abs(delta) / 18);
-      var stretch = 1.24 + energy * 0.12;
-      var lift = 1.62 + energy * 0.08;
+      var stretch = pressedThumb ? 1.24 + energy * 0.12 : 1;
+      var lift = pressedThumb ? 1.62 + energy * 0.08 : 1;
       var anchor = progress / 2;
       var expansionOffset = drag.metrics.itemWidth * (stretch - 1) * anchor * 0.6;
       var thumbTranslation = progress * drag.metrics.step - expansionOffset;
       dom.difficultyThumb.style.translate = thumbTranslation + "px 0";
-      dom.difficultyThumb.style.scale = stretch + " " + lift;
-      dom.difficultyThumb.style.transformOrigin = "left center";
+      if (pressedThumb) {
+        dom.difficultyThumb.style.scale = stretch + " " + lift;
+        dom.difficultyThumb.style.transformOrigin = "left center";
+      } else {
+        dom.difficultyThumb.style.removeProperty("scale");
+        dom.difficultyThumb.style.removeProperty("transform-origin");
+      }
       dom.difficultyThumb.style.setProperty("--lens-track-width", drag.metrics.rect.width + "px");
       dom.difficultyThumb.style.setProperty("--lens-track-offset", (-4 - thumbTranslation) + "px");
       dom.difficultyThumb.style.setProperty("--lens-origin-x", (4 + thumbTranslation + drag.metrics.itemWidth / 2) + "px");
@@ -2043,11 +2073,13 @@
         rawProgress: startIndex,
         progress: startIndex,
         moved: false,
+        pressedThumb: pointerHitsElement(event, dom.difficultyThumb),
+        touchInput: event.pointerType === "touch" || event.pointerType === "pen",
         metrics: metrics
       };
-      control.classList.add("is-dragging");
+      control.classList.toggle("is-dragging", drag.pressedThumb);
       try { control.setPointerCapture(event.pointerId); } catch (error) { /* Pointer capture is an enhancement. */ }
-      paint(startIndex, 0);
+      paint(startIndex, 0, drag.pressedThumb);
       event.preventDefault();
     });
 
@@ -2064,7 +2096,7 @@
       var visualProgress = drag.rawProgress < 0
         ? Math.max(-0.24, drag.rawProgress * 0.56)
         : (drag.rawProgress > 2 ? Math.min(2.24, 2 + (drag.rawProgress - 2) * 0.56) : drag.rawProgress);
-      paint(detentProgress(visualProgress, 2), frameDelta);
+      paint(detentProgress(visualProgress, 2), frameDelta, drag.pressedThumb);
       event.preventDefault();
     });
 
@@ -2077,9 +2109,11 @@
         : Math.round(drag.moved ? drag.progress : indexAt(event.clientX, drag.metrics));
       var travelDistance = Math.abs(nextIndex - drag.progress);
       var directSelection = !cancelled && !drag.moved;
+      var touchInput = drag.touchInput;
+      var pressedThumb = drag.pressedThumb;
       try { control.releasePointerCapture(event.pointerId); } catch (error) { /* Capture may already be released. */ }
       drag = null;
-      animateLiquidSelection(control, dom.difficultyThumb, travelDistance, directSelection, function commitDifficultySelection() {
+      animateLiquidSelection(control, dom.difficultyThumb, travelDistance, directSelection, touchInput, pressedThumb, function commitDifficultySelection() {
         if (cancelled) {
           syncSettingsUI();
         } else {
@@ -2106,7 +2140,7 @@
       var button = event.target.closest("[data-difficulty]");
       if (button) {
         var targetIndex = difficultyIndex(button.dataset.difficulty);
-        animateLiquidSelection(control, dom.difficultyThumb, Math.abs(targetIndex - difficultyIndex(prefs.difficulty)), true, function commitKeyboardDifficulty() {
+        animateLiquidSelection(control, dom.difficultyThumb, Math.abs(targetIndex - difficultyIndex(prefs.difficulty)), true, false, false, function commitKeyboardDifficulty() {
           setDifficulty(button.dataset.difficulty);
         });
       }
@@ -2117,16 +2151,21 @@
     var knob = control.querySelector("i");
     var drag = null;
 
-    function paint(progress, delta, travel) {
+    function paint(progress, delta, travel, pressedKnob) {
       var energy = Math.min(1, Math.abs(delta) / 14);
-      var stretch = 1.72 + energy * 0.12;
-      var lift = 1.5 + energy * 0.06;
+      var stretch = pressedKnob ? 1.72 + energy * 0.12 : 1;
+      var lift = pressedKnob ? 1.5 + energy * 0.06 : 1;
       var anchor = Math.max(0, Math.min(1, progress));
       var expansionOffset = knob.offsetWidth * (stretch - 1) * anchor * 0.45;
       var knobTranslation = progress * travel - expansionOffset;
       knob.style.translate = knobTranslation + "px 0";
-      knob.style.scale = stretch + " " + lift;
-      knob.style.transformOrigin = "left center";
+      if (pressedKnob) {
+        knob.style.scale = stretch + " " + lift;
+        knob.style.transformOrigin = "left center";
+      } else {
+        knob.style.removeProperty("scale");
+        knob.style.removeProperty("transform-origin");
+      }
       knob.style.setProperty("--lens-track-width", control.clientWidth + "px");
       knob.style.setProperty("--lens-track-offset", (-3 - knobTranslation) + "px");
       knob.style.setProperty("--lens-origin-x", (3 + knobTranslation + knob.offsetWidth / 2) + "px");
@@ -2146,11 +2185,13 @@
         startProgress: getValue() ? 1 : 0,
         progress: getValue() ? 1 : 0,
         travel: travel,
-        moved: false
+        moved: false,
+        pressedKnob: pointerHitsElement(event, knob),
+        touchInput: event.pointerType === "touch" || event.pointerType === "pen"
       };
-      control.classList.add("is-dragging");
+      control.classList.toggle("is-dragging", drag.pressedKnob);
       try { control.setPointerCapture(event.pointerId); } catch (error) { /* Pointer capture is an enhancement. */ }
-      paint(drag.progress, 0, drag.travel);
+      paint(drag.progress, 0, drag.travel, drag.pressedKnob);
       event.preventDefault();
     });
 
@@ -2167,7 +2208,7 @@
       var visualProgress = rawProgress < 0
         ? Math.max(-0.22, rawProgress * 0.58)
         : (rawProgress > 1 ? Math.min(1.22, 1 + (rawProgress - 1) * 0.58) : rawProgress);
-      paint(detentProgress(visualProgress, 1), frameDelta, drag.travel);
+      paint(detentProgress(visualProgress, 1), frameDelta, drag.travel, drag.pressedKnob);
       event.preventDefault();
     });
 
@@ -2178,9 +2219,11 @@
       var nextValue = cancelled ? getValue() : (drag.moved ? drag.progress >= 0.5 : !drag.startProgress);
       var travelDistance = Math.abs((nextValue ? 1 : 0) - drag.progress);
       var directSelection = !cancelled && !drag.moved;
+      var touchInput = drag.touchInput;
+      var pressedKnob = drag.pressedKnob;
       try { control.releasePointerCapture(event.pointerId); } catch (error) { /* Capture may already be released. */ }
       drag = null;
-      animateLiquidSelection(control, knob, travelDistance, directSelection, function commitSwitchSelection() {
+      animateLiquidSelection(control, knob, travelDistance, directSelection, touchInput, pressedKnob, function commitSwitchSelection() {
         if (cancelled) {
           syncSettingsUI();
         } else {
@@ -2204,7 +2247,7 @@
         event.preventDefault();
         return;
       }
-      animateLiquidSelection(control, knob, 1, true, function commitKeyboardSwitch() {
+      animateLiquidSelection(control, knob, 1, true, false, false, function commitKeyboardSwitch() {
         setValue(!getValue());
       });
     });
