@@ -58,7 +58,12 @@ test("原生目录保留图鉴揭示、三等分设置与液态开关语义", ()
   assert.match(renderer, /drawTopologySilhouette/);
   assert.match(renderer, /Math\.floor\(local \* 3\)/);
   assert.match(renderer, /this\.register\('settings-sheet', this\.sheetRect, \{ action: 'none' \}\)/);
+  assert.match(renderer, /contentBounds\(maxWidth = 520\)/);
+  assert.match(renderer, /const boardSize = Math\.min\(520, content\.width, availableBoardHeight\)/);
+  assert.match(renderer, /if \(game\.autoAdvancePending\) \{\s*return;/s);
+  assert.match(renderer, /disabled: game\.status !== 'playing'[\s\S]*game\.demo && game\.demo\.active/);
   assert.match(main, /this\.interaction\.switchMoved\s*\?\s*this\.interaction\.previewSwitch\s*:\s*!this\.interaction\.switchStartValue/s);
+  assert.match(main, /if \(this\.renderer\.transition \|\| this\.interaction\.touchId !== null\) \{/);
 });
 
 test("终局曲面使用正反形变、接缝胜线与 settled 输入锁", () => {

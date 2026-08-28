@@ -224,7 +224,7 @@ export default class Main {
   }
 
   onTouchStart(event) {
-    if (this.interaction.touchId !== null) {
+    if (this.renderer.transition || this.interaction.touchId !== null) {
       return;
     }
     const point = touchCoordinate((event.changedTouches || event.touches || [])[0]);

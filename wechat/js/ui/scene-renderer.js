@@ -72,6 +72,16 @@ export default class SceneRenderer {
     this.boardLayout = null;
   }
 
+  contentBounds(maxWidth = 520) {
+    const { width, leftInset, rightInset } = this.metrics;
+    const safeWidth = Math.max(1, width - leftInset - rightInset);
+    const contentWidth = Math.min(maxWidth, safeWidth);
+    return {
+      x: leftInset + (safeWidth - contentWidth) / 2,
+      width: contentWidth,
+    };
+  }
+
   setPressedKey(key) {
     this.pressedKey = key || null;
   }
@@ -430,42 +440,44 @@ export default class SceneRenderer {
 
   drawHome(state, time) {
     const ctx = this.context;
-    const { width, height, topInset, leftInset, rightInset, bottomInset } = this.metrics;
-    const contentWidth = width - leftInset - rightInset;
+    const { height, topInset, bottomInset } = this.metrics;
+    const content = this.contentBounds();
+    const contentWidth = content.width;
+    const contentLeft = content.x;
     const headerY = topInset;
     const iconSize = 54;
     if (this.host.brandIcon) {
       ctx.save();
-      roundedRectPath(ctx, leftInset, headerY, iconSize, iconSize, 15);
+      roundedRectPath(ctx, contentLeft, headerY, iconSize, iconSize, 15);
       ctx.clip();
-      ctx.drawImage(this.host.brandIcon, leftInset, headerY, iconSize, iconSize);
+      ctx.drawImage(this.host.brandIcon, contentLeft, headerY, iconSize, iconSize);
       ctx.restore();
     } else {
-      glassPanel(ctx, rect(leftInset, headerY, iconSize, iconSize), { radius: 15 });
+      glassPanel(ctx, rect(contentLeft, headerY, iconSize, iconSize), { radius: 15 });
       ctx.save();
       ctx.strokeStyle = COLORS.teal;
       ctx.lineWidth = 2;
       ctx.beginPath();
-      ctx.arc(leftInset + iconSize / 2, headerY + iconSize / 2, 14, 0, Math.PI * 2);
+      ctx.arc(contentLeft + iconSize / 2, headerY + iconSize / 2, 14, 0, Math.PI * 2);
       ctx.stroke();
       ctx.restore();
     }
-    text(ctx, '拓扑五子棋', leftInset + iconSize + 13, headerY + 18, {
+    text(ctx, '拓扑五子棋', contentLeft + iconSize + 13, headerY + 18, {
       font: this.host.font(700, 22),
       color: COLORS.ink,
     });
-    text(ctx, '边界之外，也能连成一线。', leftInset + iconSize + 13, headerY + 43, {
+    text(ctx, '边界之外，也能连成一线。', contentLeft + iconSize + 13, headerY + 43, {
       font: this.host.font(400, 12),
       color: COLORS.muted,
     });
 
-    const settingsRect = rect(width - rightInset - 42, headerY + 62, 42, 42);
+    const settingsRect = rect(contentLeft + contentWidth - 42, headerY + 62, 42, 42);
     glassPanel(ctx, settingsRect, { radius: 15, pressed: this.pressedKey === 'settings' });
     drawIcon(ctx, 'settings', settingsRect.x + 21, settingsRect.y + 21, 21);
     this.register('settings', settingsRect, { action: 'settings' });
 
     const completed = state.preferences.completed.filter(Boolean).length;
-    const progressRect = rect(leftInset, headerY + 70, 132, 28);
+    const progressRect = rect(contentLeft, headerY + 70, 132, 28);
     pill(ctx, progressRect, `${completed} / ${state.levels.length} 个世界`, {
       font: this.host.font(600, 11),
       color: COLORS.teal,
@@ -476,13 +488,13 @@ export default class SceneRenderer {
     const columns = 2;
     const cardWidth = (contentWidth - gap) / columns;
     const available = height - cardTop - bottomInset;
-    const cardHeight = Math.max(66, Math.min(92, (available - gap * 3) / 4));
+    const cardHeight = Math.max(66, (available - gap * 3) / 4);
     state.levels.forEach((level, index) => {
       const final = index === state.levels.length - 1;
       const row = final ? 3 : Math.floor(index / 2);
       const column = final ? 0 : index % 2;
       const cardRect = rect(
-        leftInset + column * (cardWidth + gap),
+        contentLeft + column * (cardWidth + gap),
         cardTop + row * (cardHeight + gap),
         final ? contentWidth : cardWidth,
         cardHeight,
@@ -538,10 +550,12 @@ export default class SceneRenderer {
   drawGame(state, time, interaction) {
     const ctx = this.context;
     const game = state.game;
-    const { width, height, topInset, leftInset, rightInset, bottomInset } = this.metrics;
+    const { height, topInset, bottomInset } = this.metrics;
+    const content = this.contentBounds();
+    const contentCenter = content.x + content.width / 2;
     const topButton = 42;
-    const backRect = rect(leftInset, topInset, topButton, topButton);
-    const settingsRect = rect(width - rightInset - topButton, topInset, topButton, topButton);
+    const backRect = rect(content.x, topInset, topButton, topButton);
+    const settingsRect = rect(content.x + content.width - topButton, topInset, topButton, topButton);
     glassPanel(ctx, backRect, { radius: 15, pressed: this.pressedKey === 'back' });
     drawIcon(ctx, 'back', backRect.x + 21, backRect.y + 21, 20);
     this.register('back', backRect, { action: 'back' });
@@ -549,19 +563,19 @@ export default class SceneRenderer {
     drawIcon(ctx, 'settings', settingsRect.x + 21, settingsRect.y + 21, 20);
     this.register('settings', settingsRect, { action: 'settings' });
 
-    text(ctx, game.level.name, width / 2, topInset + 13, {
+    text(ctx, game.level.name, contentCenter, topInset + 13, {
       font: this.host.font(700, 19),
       color: COLORS.ink,
       align: 'center',
     });
-    text(ctx, game.level.typeName, width / 2, topInset + 34, {
+    text(ctx, game.level.typeName, contentCenter, topInset + 34, {
       font: this.host.font(400, 10),
       color: COLORS.muted,
       align: 'center',
     });
 
     const statusText = this.controller.statusText();
-    const statusRect = rect(width / 2 - 67, topInset + 49, 134, 28);
+    const statusRect = rect(contentCenter - 67, topInset + 49, 134, 28);
     pill(ctx, statusRect, statusText, {
       font: this.host.font(600, 11),
       color: game.turn === GameGlobal.TopologyGomoku.AI ? COLORS.gold : COLORS.teal,
@@ -570,8 +584,14 @@ export default class SceneRenderer {
     const actionAreaHeight = game.status === 'ended' ? 120 : 66;
     const boardTop = topInset + 88;
     const boardBottom = height - bottomInset - actionAreaHeight - 12;
-    const boardHeight = Math.max(220, boardBottom - boardTop);
-    this.boardRect = rect(leftInset, boardTop, width - leftInset - rightInset, boardHeight);
+    const availableBoardHeight = Math.max(1, boardBottom - boardTop);
+    const boardSize = Math.min(520, content.width, availableBoardHeight);
+    this.boardRect = rect(
+      content.x + (content.width - boardSize) / 2,
+      boardTop + (availableBoardHeight - boardSize) / 2,
+      boardSize,
+      boardSize,
+    );
     glassPanel(ctx, this.boardRect, {
       radius: 29,
       tint: 'rgba(251,250,246,0.3)',
@@ -629,19 +649,31 @@ export default class SceneRenderer {
 
   drawGameActions(state, time) {
     const game = state.game;
-    const { width, leftInset, rightInset, bottomInset, height } = this.metrics;
+    const { bottomInset, height } = this.metrics;
+    const content = this.contentBounds();
     const gap = 9;
-    const contentWidth = width - leftInset - rightInset;
+    const contentWidth = content.width;
     const rowHeight = 48;
     const bottomY = height - bottomInset - rowHeight;
     if (game.status !== 'ended') {
       const actions = [];
       if (game.levelIndex > 0) {
-        actions.push({ key: 'boundary', label: '边界演示', icon: 'boundary', disabled: Boolean(game.lesson && game.lesson.active) });
+        actions.push({
+          key: 'boundary',
+          label: '边界演示',
+          icon: 'boundary',
+          disabled: game.status !== 'playing'
+            || Boolean(game.lesson && game.lesson.active)
+            || Boolean(game.demo && game.demo.active),
+        });
       }
       actions.push({ key: 'undo', label: '悔棋', icon: 'undo', disabled: !game.moves.length || game.status !== 'playing' });
       actions.push({ key: 'restart', label: '重来', icon: 'restart', disabled: false });
-      this.drawActionRow(actions, leftInset, bottomY, contentWidth, rowHeight, gap);
+      this.drawActionRow(actions, content.x, bottomY, contentWidth, rowHeight, gap);
+      return;
+    }
+
+    if (game.autoAdvancePending) {
       return;
     }
 
@@ -663,7 +695,7 @@ export default class SceneRenderer {
           },
           { key: 'journey', label: '图鉴', icon: 'journey', disabled: false },
         ];
-    this.drawActionRow(firstRow, leftInset, bottomY - rowHeight - gap, contentWidth, rowHeight, gap);
+    this.drawActionRow(firstRow, content.x, bottomY - rowHeight - gap, contentWidth, rowHeight, gap);
     const passed = game.outcome === 'win' || game.outcome === 'draw';
     const secondRow = [
       { key: 'restart', label: '再来', icon: 'restart', disabled: false },
@@ -675,7 +707,7 @@ export default class SceneRenderer {
         accent: true,
       },
     ];
-    this.drawActionRow(secondRow, leftInset, bottomY, contentWidth, rowHeight, gap);
+    this.drawActionRow(secondRow, content.x, bottomY, contentWidth, rowHeight, gap);
   }
 
   drawActionRow(actions, x, y, width, height, gap) {
@@ -702,7 +734,8 @@ export default class SceneRenderer {
 
   drawSettings(state, time, interaction) {
     const ctx = this.context;
-    const { width, height, leftInset, rightInset, bottomInset } = this.metrics;
+    const { width, height, bottomInset } = this.metrics;
+    const content = this.contentBounds();
     let progress = 1;
     let dragOffset = 0;
     if (this.sheetMotion) {
@@ -737,7 +770,7 @@ export default class SceneRenderer {
     const sheetHeight = Math.min(356, Math.max(324, height - bottomInset - 88));
     const settledY = height - bottomInset - sheetHeight;
     const sheetY = lerp(height + 18, settledY, clamp01(progress)) + dragOffset;
-    this.sheetRect = rect(leftInset, sheetY, width - leftInset - rightInset, sheetHeight);
+    this.sheetRect = rect(content.x, sheetY, content.width, sheetHeight);
     glassPanel(ctx, this.sheetRect, {
       radius: 29,
       tint: 'rgba(255,255,255,0.78)',
