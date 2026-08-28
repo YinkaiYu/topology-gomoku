@@ -1,3 +1,9 @@
+[CmdletBinding()]
+param(
+  [Parameter(ValueFromRemainingArguments = $true)]
+  [string[]]$SubsetArgs
+)
+
 $ErrorActionPreference = 'Stop'
 
 $projectRoot = Split-Path -Parent $PSScriptRoot
@@ -6,7 +12,7 @@ $subsetScript = Join-Path $PSScriptRoot 'subset_display_fonts.py'
 
 Push-Location $projectRoot
 try {
-  & uv run --locked python $subsetScript
+  & uv run --locked python $subsetScript @SubsetArgs
   if ($LASTEXITCODE -ne 0) {
     throw "Font subset generation failed with exit code $LASTEXITCODE."
   }
