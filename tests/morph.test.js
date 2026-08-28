@@ -462,8 +462,8 @@ test("设置页使用液态玻璃层次且四个控件均支持连续拖动", ()
   assert.match(game, /Math\.min\(1\.22, 1 \+ \(rawProgress - 1\) \* 0\.58\)/);
   assert.match(game, /function detentProgress\(progress, maximum\)/);
   assert.match(game, /Math\.pow\(normalizedDistance, 2\.05\) \* 0\.5/);
-  assert.match(game, /paint\(detentProgress\(visualProgress, 2\), frameDelta\)/);
-  assert.match(game, /paint\(detentProgress\(visualProgress, 1\), frameDelta, drag\.travel\)/);
+  assert.match(game, /paint\(detentProgress\(visualProgress, 2\), frameDelta, drag\.pressedThumb\)/);
+  assert.match(game, /paint\(detentProgress\(visualProgress, 1\), frameDelta, drag\.travel, drag\.pressedKnob\)/);
   assert.match(game, /var startIndex = difficultyIndex\(prefs\.difficulty\);/);
   assert.doesNotMatch(game, /targetButton \? difficultyIndex\(targetButton\.dataset\.difficulty\)/);
   assert.match(style, /\.settings-sheet\s*\{[\s\S]*overflow:\s*visible[\s\S]*background:\s*transparent[\s\S]*backdrop-filter:\s*none/);
@@ -481,8 +481,8 @@ test("设置页使用液态玻璃层次且四个控件均支持连续拖动", ()
   assert.match(style, /\.switch\s*\{[\s\S]*overflow:\s*visible/);
   assert.match(style, /\.switch\s*\{[\s\S]*width:\s*66px/);
   assert.match(style, /\.switch\.is-on i\s*\{\s*translate:\s*34px 0/);
-  assert.equal((game.match(/var lift = 1\.62 \+ energy \* 0\.08/g) || []).length, 1);
-  assert.match(game, /var stretch = 1\.72 \+ energy \* 0\.12[\s\S]*var lift = 1\.5 \+ energy \* 0\.06/);
+  assert.match(game, /var stretch = pressedThumb \? 1\.24 \+ energy \* 0\.12 : 1;[\s\S]*var lift = pressedThumb \? 1\.62 \+ energy \* 0\.08 : 1/);
+  assert.match(game, /var stretch = pressedKnob \? 1\.72 \+ energy \* 0\.12 : 1;[\s\S]*var lift = pressedKnob \? 1\.5 \+ energy \* 0\.06 : 1/);
   assert.match(style, /\.segmented\.is-dragging \.segmented-glass-thumb\s*\{[\s\S]*border:\s*1px solid rgba\(255, 255, 255, 0\.18\)[\s\S]*backdrop-filter:\s*none/);
   assert.match(style, /\.switch\.is-dragging i\s*\{[\s\S]*border:\s*1px solid rgba\(255, 255, 255, 0\.18\)[\s\S]*backdrop-filter:\s*none/);
   assert.match(style, /@keyframes liquid-thumb-settle\s*\{[\s\S]*scale:\s*1\.34 1\.58/);
@@ -491,13 +491,22 @@ test("设置页使用液态玻璃层次且四个控件均支持连续拖动", ()
   assert.match(style, /@keyframes liquid-knob-settle/);
   assert.doesNotMatch(style, /@keyframes liquid-control-glint/);
   assert.equal((game.match(/style\.scale = stretch \+ " " \+ lift/g) || []).length, 2);
-  assert.equal((game.match(/style\.removeProperty\("scale"\)/g) || []).length, 1);
+  assert.match(game, /pressedThumb: pointerHitsElement\(event, dom\.difficultyThumb\)/);
+  assert.match(game, /pressedKnob: pointerHitsElement\(event, knob\)/);
+  assert.match(game, /classList\.toggle\("is-dragging", drag\.pressedThumb\)/);
+  assert.match(game, /classList\.toggle\("is-dragging", drag\.pressedKnob\)/);
+  assert.match(game, /function finishLiquidGlide\(control, duration, pressedMovingElement\)/);
+  assert.match(game, /if \(pressedMovingElement\) \{\s*settleLiquidControl\(control, duration\)/);
+  assert.equal((game.match(/style\.removeProperty\("scale"\)/g) || []).length, 3);
   assert.equal((game.match(/style\.translate = /g) || []).length, 3);
   assert.equal((game.match(/style\.removeProperty\("translate"\)/g) || []).length, 1);
-  assert.match(game, /function liquidGlideDuration\(control, travelDistance, directSelection\)/);
-  assert.match(game, /if \(directSelection\) \{\s*return Math\.round\(540 \+ distance \* 100\)/);
+  assert.match(game, /function liquidGlideDuration\(control, travelDistance, directSelection, touchInput\)/);
+  assert.match(game, /if \(touchInput\) \{\s*return Math\.round\(660 \+ distance \* 140\)/);
+  assert.match(game, /return Math\.round\(540 \+ distance \* 100\)/);
+  assert.match(game, /return touchInput \? 820 : 660/);
   assert.match(game, /return Math\.round\(680 \+ distance \* 120\)/);
-  assert.match(game, /function animateLiquidSelection\(control, movingElement, travelDistance, directSelection, commitSelection\)/);
+  assert.match(game, /event\.pointerType === "touch" \|\| event\.pointerType === "pen"/);
+  assert.match(game, /function animateLiquidSelection\(control, movingElement, travelDistance, directSelection, touchInput, pressedMovingElement, commitSelection\)/);
   assert.match(game, /--liquid-glide-duration/);
   assert.match(game, /requestAnimationFrame\(function releaseLiquidSelection/);
   assert.match(html, /class="segmented-lens-track"><b>随性<\/b><b>机敏<\/b><b>深思<\/b><\/span>/);
@@ -513,6 +522,7 @@ test("设置页使用液态玻璃层次且四个控件均支持连续拖动", ()
   assert.match(style, /\.segmented\.is-dragging \.segmented-glass-thumb::after\s*\{\s*opacity:\s*0\.9/);
   assert.match(style, /\.segmented\.is-dragging \.segmented-lens-track\s*\{\s*opacity:\s*0\.92/);
   assert.match(style, /\.switch\.is-dragging \.switch-lens-track\s*\{\s*opacity:\s*0\.9/);
+  assert.match(style, /@media \(pointer: coarse\)\s*\{[\s\S]*translate 176ms var\(--liquid-drag\), scale 192ms var\(--liquid-drag\)[\s\S]*translate 160ms var\(--liquid-drag\), scale 178ms var\(--liquid-drag\)/);
 });
 
 test("测试控制台沿用设置页液态玻璃风格且双项落子控制对齐", () => {

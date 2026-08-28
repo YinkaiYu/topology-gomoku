@@ -30,7 +30,7 @@
 - 平台原生适配、adapter 修复和宿主配置变化不修改游戏 SemVer，也不触发一次核心版本提升；发行分支在下一轮 `main` 同步时接收新的统一版本号。
 - 宿主强制要求的构建号、审核批次或渠道修订号可以按平台规则独立维护，但它们不是游戏 SemVer，不能写回共享版本字段。
 - 三个平台可以因审核或宿主限制在不同日期上线，但不能因此产生三个 SemVer。
-- 发布标签带平台前缀但共享数字，例如 `xiaohongshu-v1.37.1`、`bilibili-v1.37.1`、`wechat-v1.37.1`。
+- 发布标签带平台前缀但共享数字，例如 `xiaohongshu-v1.37.2`、`bilibili-v1.37.2`、`wechat-v1.37.2`。
 
 ## 发布步骤
 
@@ -63,6 +63,22 @@ npm run release:check-versions -- X.Y.Z
 ```
 
 该命令检查 `main` 和三个发行分支的 `package.json`。平台清单或宿主后台中的额外版本字段仍需在发布记录中逐项确认。
+
+## Bilibili 发行分支冲突处理
+
+Bilibili 发行整合分支必须从长期 `bilibili` 分支新建，再把本轮稳定 `main` 合入。开始解决前先用 `git status --short` 和 `git diff --name-only --diff-filter=U` 列出冲突；不要对整批文件机械选择 `ours` 或 `theirs`。在这个合并方向中，`ours` 是既有 Bilibili 发行实现，`theirs` 是本轮 `main` 共享基线，但最终选择仍以文件职责为准。
+
+| 冲突内容 | 处理原则 |
+| --- | --- |
+| 游戏规则、通用 UI、共享资源、共享测试 | 接收 `main` 的稳定实现；若 Bilibili 也需要差异，差异只能进入明确的 adapter/boundary |
+| Toy API、生命周期、宿主资源路径、Toy 清单与平台构建配置 | 保留 Bilibili 平台语义，再手工适配 `main` 的最新共享契约 |
+| `package.json`、缓存键与游戏 SemVer | 接收本轮 `main` 的统一版本号，同时保留 Bilibili 专属命令和平台依赖 |
+| 同时包含共享逻辑与 Toy 适配的混合文件 | 逐段手工合并；先恢复共享行为，再重新接上 adapter，不能整文件覆盖 |
+| 共享发布文档与 Bilibili 平台文档 | 通用流程留在共享文档，Toy 宿主事实留在 `bilibili` 分支的平台文档，并保证两边链接和版本口径一致 |
+
+解决后先检查 `git diff --check` 和 `git status --short`，再运行共享检查、Bilibili 构建及 Toy 平台诊断。用 `toy` skill 生成预览并完成真机验收；用户明确确认前不得提交审核，也不得合入长期 `bilibili` 分支。
+
+如果冲突暴露的是共享缺陷、共享契约不完整或三个平台都需要的修复，停止在 Bilibili 分支内复制补丁：从 `dev` 新建共享任务，验证并重新完成稳定提升后，再重做本次发行整合。无法确定文件职责时同样先暂停，查阅对应 adapter 和平台文档，而不是凭 `ours` / `theirs` 猜测。
 
 ## 受阻与修复
 
