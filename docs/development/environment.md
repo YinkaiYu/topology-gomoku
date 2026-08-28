@@ -65,7 +65,13 @@ npm run sync:wechat -- -TargetRoot D:\path\to\wechat-game-preview
 
 ## 字体子集
 
-`scripts/subset_display_fonts.py` 会收集 `app/` 与 `wechat/` 内 HTML、CSS、JavaScript 与 JSON 的字符，并为 400/600/700 三个字重生成 WOFF2 子集。
+`scripts/subset_display_fonts.py` 默认收集 `app/` 内 HTML、CSS、JavaScript 与 JSON 的字符，并为 400/600/700 三个字重生成 WOFF2 子集。平台构建可以重复传入 `--text-root` 合并多个文本目录，通过 `--output-dir` 隔离产物，并用 `--format ttf` 生成宿主需要的 TTF；只要不传这些参数，H5 的扫描范围、目录和格式保持不变。相对路径均按仓库根目录解析。
+
+微信小游戏专用 TTF 同时扫描 `app/` 与 `wechat/`，并与共享 H5 字体隔离：
+
+```powershell
+npm run fonts:subset -- --text-root app --text-root wechat --output-dir wechat/assets/fonts --format ttf
+```
 
 默认 Windows 源字体是 `C:\Windows\Fonts\NotoSerifSC-VF.ttf`。其他环境通过 `TOPO_SERIF_SOURCE` 或脚本 `--source` 参数指定合法的完整 Noto Serif SC 可变字体；完整源字体不提交仓库。
 

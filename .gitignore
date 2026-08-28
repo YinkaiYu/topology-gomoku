@@ -1,6 +1,8 @@
 node_modules/
 .venv/
 .uv-cache/
+__pycache__/
+*.py[cod]
 .tmp/
 .worktrees/
 coverage/
