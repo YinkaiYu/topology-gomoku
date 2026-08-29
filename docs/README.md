@@ -34,6 +34,12 @@
 | --- | --- |
 | [`superpowers/specs/2026-08-30-seven-realms-pv-design.md`](superpowers/specs/2026-08-30-seven-realms-pv-design.md) | 《拓扑五子棋》章节预告 PV—「足迹回环」的叙事、视听、工程与验收规格 |
 
+## 实施计划
+
+| 文档 | 内容 |
+| --- | --- |
+| [`superpowers/plans/2026-08-30-footsteps-return-pv.md`](superpowers/plans/2026-08-30-footsteps-return-pv.md) | 《拓扑五子棋》章节预告 PV—「足迹回环」的实机采集、画面、旁白、字幕、原创配乐、渲染与验收计划 |
+
 ## 平台规范
 
 - 小红书 H5 与离线 ZIP：执行入口为 [`.codex/SKILL.md`](../.codex/SKILL.md)，具体约束位于 `.codex/references/`。
