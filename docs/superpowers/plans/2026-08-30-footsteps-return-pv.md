@@ -83,10 +83,10 @@
 - [ ] Run `node --test tests/pv-game-render.test.js` and confirm it fails before the adapter exists.
 - [ ] Inject a PV-only hook while loading the unchanged app source. Disable Canvas paper dots and only the known lesson prompt `fillText`/`strokeText`; preserve the real grid, stones, winning line, lesson connections and topology morph.
 - [ ] Expose `selectShot`, `render(state)` and `renderReady`. No wall clock or iframe autoplay may advance pixels after readiness.
-- [ ] Drive one persistent iframe/Canvas per chapter through a monotonic timeline: board establish → drops 1–5 → winning-five hold → morph 0–1 → settled hold → rotation reveal. Do not stitch clips or reset at phase boundaries.
+- [ ] Drive one persistent iframe/Canvas per chapter through a monotonic timeline: board establish → drops 1–5 → winning-five hold → morph 0–1 → settled hold → rotation reveal. Every `render(state)` must also be reversible from explicit state without reloading. Do not stitch clips or reset at phase boundaries; Klein switches both native lesson paths inside the same instance.
 - [ ] Before every declared seam crossing, hold the interactive lesson's extended breathing cue, then place the crossing stone; finish all five moves. Klein's preserved and reflected paths each run 1→5 independently.
 - [ ] Keep the fifth-stone/win/morph-0 and morph-1/rotation-0 handoffs continuous. Morph and rotation are independent explicit parameters.
-- [ ] Chromium verification must prove four-corner alpha 0, no prompt draws, breathing strokes present, identical-state pixel hashes equal, idle pixels frozen, morph 0/.5/1 distinct, and rotation distinct.
+- [ ] Chromium verification must prove all seven chapters/eight native lesson paths and every declared seam cue, four-corner alpha 0, no prompt draws, bounded RAF state, arbitrary-order pixel determinism, and idle pixels frozen. The plane's app morph is intentionally identity; the other six require distinct morph 0/.5/1 and rotation states.
 - [ ] Run `npm run pv:game-render:verify`, `npm test`, and `npm run docs:check`.
 - [ ] Commit as `feat: add deterministic real-game render adapter`.
 
@@ -150,9 +150,9 @@
 - [ ] Run `node --test tests/pv-chapters.test.js` and confirm failure.
 - [ ] Reuse the game topology definitions and existing topology SVGs. Copy only required visual assets; record them in provenance.
 - [ ] Mount `render-game.html` full-frame within a consistent cinematic stage and drive its single continuous chapter progress. Do not splice helper/morph clips, introduce device frames, crop the board, or overlay explanatory microcopy.
-- [ ] Build high-density Three.js surfaces for the seven morphs with offline-quality antialiasing, depth of field, motion blur, volumetric light, and restrained particles. Effects must remain subordinate to the rule evidence.
+- [ ] Build high-density Three.js surfaces for the six non-plane morphs with offline-quality antialiasing, depth of field, motion blur, volumetric light, and restrained particles. The plane remains the real flat app board and receives only HyperFrames camera lift/tilt; effects must remain subordinate to the rule evidence.
 - [ ] Implement: plane suspension; cylinder side closure; torus second closure; Möbius half-turn; Klein dual preserved/reflected paths; projective mirrored edge convergence; sphere adjacent-edge closure.
-- [ ] End every chapter on the representative cross-boundary five, morph the board into its surface, and occlude the camera with geometry or shadow. Begin the next title card after a short black/match cut.
+- [ ] End every chapter on the representative five. For six non-plane chapters, morph the board into its native surface; for plane, preserve the identity board and lift/tilt it with the HyperFrames camera. Then occlude with geometry or shadow and begin the next title card after a short black/match cut.
 - [ ] Render one rule-evidence frame and one morph hero frame per chapter; inspect all fourteen frames in a single contact sheet.
 - [ ] Run chapter tests plus `npm run pv:inspect` and correct timeline overlaps, dead zones, off-canvas objects, and invisible animated elements.
 - [ ] Commit as `feat: animate seven topology chapters`.

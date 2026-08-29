@@ -11,16 +11,23 @@ const ROOT = path.resolve(__dirname, "..");
 const imp = (file) => import(new URL(`../${file}`, `file://${__filename}`).href);
 
 test("七章实时渲染镜头复用真实拓扑路径", async () => {
-  const { gameRenderShots } = await imp("video/footsteps-return/src/data/game-render-shots.js");
+  const { gameRenderShots, findGameRenderShot } = await imp("video/footsteps-return/src/data/game-render-shots.js");
   assert.deepEqual(gameRenderShots.map(({ id }) => id), ["plane", "cylinder", "torus", "mobius", "klein", "projective", "sphere"]);
   for (const shot of gameRenderShots) {
     for (const demo of shot.demos) {
       const rules = Game.createRules({ type: shot.topology, width: shot.board.width, height: shot.board.height, target: 5 });
       const traced = Game.tracePath(rules, Game.toCell(rules, ...demo.start), demo.direction, 5);
       assert.deepEqual(traced.cells.map((cell) => { const p = Game.toPoint(rules, cell); return [p.x, p.y]; }), demo.points, `${shot.id}/${demo.id}`);
+      assert.deepEqual(traced.seams, demo.seams, `${shot.id}/${demo.id} seam states`);
       assert.deepEqual(demo.crossings, traced.seams.map((seam, index) => seam ? index + 2 : null).filter(Boolean), `${shot.id}/${demo.id} crossings`);
     }
   }
+  assert.deepEqual(gameRenderShots.flatMap((shot) => shot.demos.map((demo) => [shot.id, demo.id, demo.sourcePathIndex])), [
+    ["plane", "ordinary-five", 0], ["cylinder", "horizontal-wrap", 0], ["torus", "two-seam-diagonal", 1],
+    ["mobius", "reflected-crossing", 0], ["klein", "preserved-crossing", 0], ["klein", "reflected-crossing", 1],
+    ["projective", "mirrored-crossings", 1], ["sphere", "adjacent-edge-turn", 0]
+  ]);
+  assert.throws(() => findGameRenderShot("torus", "missing-demo"), /Unknown demo/);
 });
 
 test("每条 helper 演示完整覆盖落子 1..5、所有跨界和最终五连", async () => {
@@ -54,6 +61,20 @@ test("单调章节时间线保持第五颗→胜利→形变→旋转的连续�
     assert.ok(last("morph").morphProgress > .999, `${definition.id}/${demo.id} morph ends formed`);
     assert.ok(Object.values(first("rotation").rotation).every((value) => Math.abs(value) < .001), `${definition.id}/${demo.id} rotation starts still`);
   }
+  assert.equal(gameRenderShots[0].morphMode, "identity");
+  gameRenderShots.slice(1).forEach((shot) => assert.equal(shot.morphMode, "native"));
+});
+
+test("适配器契约要求可逆重建、单次刷新、字体就绪与静态 iframe", async () => {
+  const adapter = fs.readFileSync(path.join(ROOT, "video/footsteps-return/src/game-render/adapter.js"), "utf8");
+  assert.match(adapter, /rebuild:function/);
+  assert.doesNotMatch(adapter, /lastStep|\.flush\(/);
+  assert.match(adapter, /document\.fonts\.ready/);
+  assert.match(adapter, /animation:none!important;transition:none!important/);
+  assert.match(adapter, /sourcePathIndex/);
+  const hook = fs.readFileSync(path.join(ROOT, "video/footsteps-return/src/game-render/hook.js"), "utf8");
+  assert.match(hook, /queueSize/);
+  assert.doesNotMatch(hook, /callbacks\.forEach/);
 });
 
 test("PV 页面声明透明承载层并挂载实时适配器", () => {

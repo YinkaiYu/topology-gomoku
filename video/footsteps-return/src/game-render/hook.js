@@ -1,9 +1,13 @@
 (function installPvRenderHook() {
   "use strict";
   var control = window.__PV_CONTROL__ = {
+    instanceId: typeof crypto.randomUUID === "function" ? crypto.randomUUID() : String(performance.timeOrigin),
     mode: "setup", morph: null, rotation: { x: 0, y: 0, z: 0 }, frozen: false,
-    queuedFrames: [], suppressedTextCalls: 0, visiblePromptCalls: 0, lessonStrokeCalls: 0, paperDots: 0
+    queuedFrame: null, rafRequests: 0, explicitRenders: 0,
+    suppressedTextCalls: 0, visiblePromptCalls: 0, lessonStrokeCalls: 0,
+    lessonSeamCues: [], paperDots: 0
   };
+  control.queueSize = function () { return control.queuedFrame ? 1 : 0; };
   var prompts = new Set([
     "传统的五子棋","就是把五颗子","连成一条线","好无趣","好无聊",
     "从右侧开始","走到边界","越过右边，从左边回来","两侧其实相接","补上第五颗","再试一条斜线","斜着走向右边","越界后从左边接回","方向没有改变","斜线也能五连",
@@ -14,17 +18,17 @@
   var nativeRaf = window.requestAnimationFrame.bind(window);
   var nativeSetTimeout = window.setTimeout.bind(window);
   window.setTimeout = function (callback, delay) {
+    var args = Array.prototype.slice.call(arguments, 2);
     if (control.frozen) return -1;
-    return nativeSetTimeout.apply(window, arguments);
+    return nativeSetTimeout(function () { if (!control.frozen) callback.apply(window, args); }, delay);
   };
   window.requestAnimationFrame = function (callback) {
-    if (!control.frozen) return nativeRaf(callback);
-    control.queuedFrames.push(callback);
-    return control.queuedFrames.length;
-  };
-  control.flush = function (time) {
-    var callbacks = control.queuedFrames.splice(0);
-    callbacks.forEach(function (callback) { callback(time); });
+    control.rafRequests += 1;
+    if (control.frozen) { control.queuedFrame = callback; return 1; }
+    return nativeRaf(function (time) {
+      if (control.frozen) control.queuedFrame = callback;
+      else callback(time);
+    });
   };
   var nativeFillRect = CanvasRenderingContext2D.prototype.fillRect;
   CanvasRenderingContext2D.prototype.fillRect = function (x, y, width, height) {
@@ -54,9 +58,10 @@
       ["project", "projectPoint"].forEach(function (name) {
         var native = value[name];
         value[name] = function () {
-          var args = Array.from(arguments); var index = name === "project" ? 5 : 4;
-          var orientation = Object.assign({}, args[index] || {}, control.rotation, { wobbleX: 0, wobbleY: 0 });
-          args[index] = orientation; return native.apply(value, args);
+          var args = Array.from(arguments);
+          var index = name === "project" ? 5 : 4;
+          args[index] = Object.assign({}, args[index] || {}, control.rotation, { wobbleX: 0, wobbleY: 0 });
+          return native.apply(value, args);
         };
       });
       morphValue = value;
