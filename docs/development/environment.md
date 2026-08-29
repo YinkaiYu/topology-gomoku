@@ -10,7 +10,7 @@
 | PowerShell | H5 校验、构建与字体命令入口 | 使用仓库脚本，不复制临时命令 |
 | uv | Python 版本、虚拟环境与依赖锁定 | 以 `.python-version`、`pyproject.toml`、`uv.lock` 为准 |
 
-仓库没有运行时 npm 依赖；测试使用 Node.js 内置测试运行器。Python 环境由 `uv` 隔离在 `.venv/`，缓存放在 `.uv-cache/`，两者都不提交 Git。
+游戏运行时没有 npm 依赖；测试使用 Node.js 内置测试运行器。PV 制作工具链锁定在 `package-lock.json`：HyperFrames、shader transitions、Playwright、Three.js、Tone 与 MIDI 解析库均由本地 npm 依赖提供。Python 环境由 `uv` 隔离在 `.venv/`，缓存放在 `.uv-cache/`，两者都不提交 Git。
 
 ## 常用命令
 
@@ -21,11 +21,18 @@ npm run check
 npm run build:xiaohongshu
 npm run fonts:subset
 npm run release:check-versions -- X.Y.Z
+npm run pv:doctor
+npm run pv:lint
+npm run pv:validate
+npm run pv:inspect
+npm run pv:preview
 ```
 
 - `npm run check` 同时执行逻辑测试、H5 包校验和文档检查。
 - `npm run fonts:subset` 通过 `uv run --locked` 自动创建或同步 `.venv`，无需激活虚拟环境。
 - `npm run release:check-versions -- X.Y.Z` 仅供维护者在稳定同步后检查 `main` 与三个发行分支的统一游戏版本。
+- `npm run pv:doctor` 检查 PV 所需的 Node.js 22、FFmpeg、eSpeak NG、MuseScore 4 与仓库字体/拓扑资产；`pv:lint`、`pv:validate`、`pv:inspect` 依次执行合成静态、综合运行时质量门与布局检查。
+- `npm run pv:capture -- <URL>`、`npm run pv:voice -- <文字或文本文件> --output <路径>`、`npm run pv:score -- <score.mscz>` 分别转发到 HyperFrames 网站采集、TTS 和本机 MuseScore 4。渲染使用 `pv:render:draft`、`pv:render:4k` 或 `pv:render:1080`。
 - 首次同步需要下载 `uv.lock` 中的依赖；之后会复用锁定环境与本地缓存。
 
 ## Python 环境
@@ -60,3 +67,17 @@ npm run release:check-versions -- X.Y.Z
 - 依赖变更必须包含用途说明、锁文件、验证结果和可回滚提交。
 - 不提交全局环境、账号、令牌、机器私有配置、`.venv/`、缓存或下载产物。
 - 新工具要提供稳定的仓库命令入口，避免要求协作者记忆解释器绝对路径。
+
+## PV 制作工具链
+
+《足音回归》PV 位于 `video/footsteps-return/`，母版为 3840×2160、60fps。先运行 `npm install` 安装锁定的本地依赖，再运行 `npm run pv:doctor`。
+
+Windows 上缺少系统制作工具时，使用以下命令安装：
+
+```powershell
+winget install Gyan.FFmpeg
+winget install eSpeak-NG.eSpeak-NG
+winget install Musescore.Musescore
+```
+
+安装完成后重新打开终端，再运行 `npm run pv:doctor`。PV 的 `captures/`、`renders/`、`.hyperframes/`、生成的 WAV 与帧序列均被 Git 忽略；只提交制作说明、源代码、配置与依赖锁文件。

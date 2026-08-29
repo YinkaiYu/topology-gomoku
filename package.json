@@ -12,9 +12,28 @@
     "check": "npm test && npm run validate && npm run docs:check",
     "fonts:subset": "powershell -NoProfile -ExecutionPolicy Bypass -File ./scripts/subset-fonts.ps1",
     "build": "npm run build:xiaohongshu",
-    "build:xiaohongshu": "powershell -NoProfile -ExecutionPolicy Bypass -File ./scripts/build.ps1"
+    "build:xiaohongshu": "powershell -NoProfile -ExecutionPolicy Bypass -File ./scripts/build.ps1",
+    "pv:doctor": "node ./video/footsteps-return/scripts/doctor.mjs",
+    "pv:lint": "hyperframes lint ./video/footsteps-return",
+    "pv:validate": "hyperframes check ./video/footsteps-return",
+    "pv:inspect": "hyperframes check ./video/footsteps-return",
+    "pv:preview": "hyperframes preview ./video/footsteps-return --no-open",
+    "pv:capture": "hyperframes capture",
+    "pv:voice": "hyperframes tts",
+    "pv:score": "node ./video/footsteps-return/scripts/doctor.mjs --musescore",
+    "pv:render:draft": "hyperframes render ./video/footsteps-return --fps 60 --quality draft --output ./video/footsteps-return/renders/footsteps-return-draft.mp4",
+    "pv:render:4k": "hyperframes render ./video/footsteps-return --fps 60 --quality high --resolution landscape-4k --output ./video/footsteps-return/renders/footsteps-return-4k.mp4",
+    "pv:render:1080": "hyperframes render ./video/footsteps-return --fps 60 --quality high --resolution landscape --output ./video/footsteps-return/renders/footsteps-return-1080.mp4"
   },
   "engines": {
     "node": ">=18"
+  },
+  "dependencies": {
+    "@hyperframes/shader-transitions": "0.8.18",
+    "@tonejs/midi": "2.0.28",
+    "hyperframes": "0.8.18",
+    "playwright": "1.62.1",
+    "three": "0.185.1",
+    "tone": "15.1.22"
   }
 }

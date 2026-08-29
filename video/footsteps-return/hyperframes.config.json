@@ -1,0 +1,12 @@
+{
+  "name": "footsteps-return",
+  "entry": "index.html",
+  "width": 3840,
+  "height": 2160,
+  "fps": 60,
+  "generatedDirectories": [
+    "captures",
+    "renders",
+    ".hyperframes"
+  ]
+}

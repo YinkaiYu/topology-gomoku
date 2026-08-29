@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=3840, height=2160" />
+    <link rel="stylesheet" href="./src/styles.css" />
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+    <title>Footsteps Return PV</title>
+  </head>
+  <body>
+    <main
+      id="footsteps-return-root"
+      data-composition-id="footsteps-return"
+      data-start="0"
+      data-duration="1"
+      data-width="3840"
+      data-height="2160"
+      data-fps="60"
+      aria-label="Footsteps Return PV composition scaffold"
+    ></main>
+    <script type="module">
+      import { createCompositionTimeline, composition } from "./src/bootstrap.js";
+
+      window.__timelines = window.__timelines || {};
+      const timeline = createCompositionTimeline(window.gsap);
+      window.__timelines[composition.id] = timeline;
+    </script>
+  </body>
+</html>

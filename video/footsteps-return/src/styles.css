@@ -1,0 +1,17 @@
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+[data-composition-id="footsteps-return"] {
+  width: 3840px;
+  height: 2160px;
+  margin: 0;
+  overflow: hidden;
+}
+
+body {
+  background: #f2efe7;
+  color: #21302c;
+}

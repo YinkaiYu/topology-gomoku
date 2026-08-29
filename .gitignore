@@ -12,3 +12,8 @@ Thumbs.db
 *.log
 *.tgz
 release/*.zip
+video/footsteps-return/captures/
+video/footsteps-return/renders/
+video/footsteps-return/.hyperframes/
+video/footsteps-return/**/*.wav
+video/footsteps-return/**/*.png
