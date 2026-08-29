@@ -4,7 +4,7 @@
 
 **Goal:** 制作可复现、可逐帧检查的 16:9 章节预告 PV，以真实游戏规则演示串联七种拓扑流形，并交付 4K/60fps 成片、原创配乐和完整工程。
 
-**Architecture:** 在 `video/footsteps-return/` 建立独立 HyperFrames 工程。游戏画面由 Playwright 驱动现有 `app/`，用虚拟时钟确定性采集；章节、三维流形、字幕和片尾在 HyperFrames 中合成；旁白、MusicXML 配乐和音效由仓库脚本生成后统一交给 FFmpeg 混音。主时间轴只消费经过校验的 manifest，不把制作控制逻辑写入玩家版本。
+**Architecture:** 在 `video/footsteps-return/` 建立独立 HyperFrames 工程。真实游戏由 PV-only 同源 HTML adapter 挂载现有 `app/`，以透明、持久的 iframe/Canvas 和显式逐帧状态 API 直接参与合成；章节、字幕和片尾在 HyperFrames 中编排。制作控制逻辑不进入玩家版本。
 
 **Tech Stack:** HyperFrames 0.8.18、GSAP 3.14.2、Three.js 0.185.1、Playwright 1.62.1、Tone.js 15.1.22、`@tonejs/midi` 2.0.28、Node.js 24、FFmpeg 9、eSpeak NG 1.52、MuseScore 4、Node 内置测试运行器。
 
@@ -13,7 +13,7 @@
 ## Implementation constraints
 
 - [ ] Keep game SemVer at `1.37.2`; this production task does not create a game release.
-- [ ] Use only real game captures for rule evidence. Do not redraw the board in the PV layer.
+- [ ] Use only the real game render adapter for rule evidence. Do not redraw the board in the PV layer.
 - [ ] Keep all captions single-line, white with black outline, without a full stop, card, shadow, glow, or word-by-word animation.
 - [ ] Never narrate chapter cards. Each card must show `ACT.` line, chapter name, and topology name.
 - [ ] Use camera occlusion, surface morphs, short black, and match cuts for transitions; do not use wipes, cross-screen connector lines, or slide transitions.
@@ -38,7 +38,7 @@
 - [ ] Write `tests/pv-toolchain.test.js` first. Assert exact npm dependency versions, required PV scripts, the presence of `DESIGN.md`, a 3840×2160/60fps composition configuration, and ignored generated directories.
 - [ ] Run `node --test tests/pv-toolchain.test.js` and confirm it fails because the scaffold is absent.
 - [ ] Install local packages with exact versions: `hyperframes@0.8.18`, `@hyperframes/shader-transitions@0.8.18`, `playwright@1.62.1`, `three@0.185.1`, `tone@15.1.22`, and `@tonejs/midi@2.0.28`. Commit the resulting lock file.
-- [ ] Add repository commands: `pv:doctor`, `pv:lint`, `pv:validate`, `pv:inspect`, `pv:preview`, `pv:capture`, `pv:voice`, `pv:score`, `pv:render:draft`, and `pv:render:4k`.
+- [ ] Add repository commands: `pv:doctor`, `pv:lint`, `pv:validate`, `pv:inspect`, `pv:preview`, `pv:game-render:verify`, `pv:voice`, `pv:score`, `pv:render:draft`, and `pv:render:4k`.
 - [ ] Add `captures/`, `renders/`, `.hyperframes/`, generated narration WAVs, generated score WAVs, and frame sequences below `video/footsteps-return/` to `.gitignore`.
 - [ ] Write `DESIGN.md` before adding visual composition code. Inherit the existing visual-language document and fix the palette, typography, safe areas, chapter light colors, camera rules, motion rules, subtitle style, and prohibited effects.
 - [ ] Implement `doctor.mjs` to fail with actionable messages unless Node ≥22, FFmpeg, eSpeak NG, and MuseScore 4 are callable and required fonts/assets exist.
@@ -67,25 +67,28 @@
 - [ ] Run `node --test tests/pv-manifest.test.js` and `npm run pv:validate`.
 - [ ] Commit as `feat: define pv narrative and timeline contract`.
 
-## Task 3: Build deterministic real-game capture
+## Task 3: Build deterministic real-game render adapter
 
 **Files:**
 - Create: `video/footsteps-return/scripts/serve-app.mjs`
-- Create: `video/footsteps-return/scripts/capture-game.mjs`
-- Create: `video/footsteps-return/src/data/capture-shots.js`
-- Create: `video/footsteps-return/captures/.gitkeep`
-- Test: `tests/pv-capture.test.js`
+- Create: `video/footsteps-return/render-game.html`
+- Create: `video/footsteps-return/src/game-render/adapter.js`
+- Create: `video/footsteps-return/src/game-render/hook.js`
+- Create: `video/footsteps-return/src/data/game-render-shots.js`
+- Create: `video/footsteps-return/scripts/verify-game-render.mjs`
+- Test: `tests/pv-game-render.test.js`
 
 - [ ] Write tests for seven shot definitions and their deterministic topology paths. Reuse the same start cell and direction semantics already verified by `tests/topology.test.js`.
 - [ ] Require the plane shot to show an ordinary five, cylinder one horizontal wrap, torus a two-seam diagonal, Möbius one reflected crossing, Klein one preserved and one reflected crossing, projective two mirrored crossings, and sphere an adjacent-edge turn.
-- [ ] Run `node --test tests/pv-capture.test.js` and confirm it fails before the capture manifest exists.
-- [ ] Implement a local static server for `app/`; launch Chromium with a fixed viewport, device scale factor, color scheme, locale, and font readiness check.
-- [ ] Before loading a level, seed `topology-gomoku:v1` with all levels unlocked and enable `?dev=1`. Select levels through `[data-level]` and trigger the existing boundary demo or developer win controls.
-- [ ] Install Playwright Clock, advance it in exact frame increments at 60fps, and capture the complete `#boardStage` without cropping its contents. Keep the board viewport identical across all chapters.
-- [ ] Capture both the clearest auxiliary-line frame range and the completion/morph range. Assemble lossless or visually lossless intermediate clips with FFmpeg; emit a JSON capture manifest containing frame count, dimensions, source commit, level, path, and SHA-256.
-- [ ] Fail if any frame changes dimensions, fonts are not ready, expected helper lines never appear, or the captured source commit differs from the manifest.
-- [ ] Run `npm run pv:capture -- --verify`, inspect the generated contact sheet, then run `npm test`.
-- [ ] Commit as `feat: add deterministic game capture pipeline`.
+- [ ] Run `node --test tests/pv-game-render.test.js` and confirm it fails before the adapter exists.
+- [ ] Inject a PV-only hook while loading the unchanged app source. Disable Canvas paper dots and only the known lesson prompt `fillText`/`strokeText`; preserve the real grid, stones, winning line, lesson connections and topology morph.
+- [ ] Expose `selectShot`, `render(state)` and `renderReady`. No wall clock or iframe autoplay may advance pixels after readiness.
+- [ ] Drive one persistent iframe/Canvas per chapter through a monotonic timeline: board establish → drops 1–5 → winning-five hold → morph 0–1 → settled hold → rotation reveal. Do not stitch clips or reset at phase boundaries.
+- [ ] Before every declared seam crossing, hold the interactive lesson's extended breathing cue, then place the crossing stone; finish all five moves. Klein's preserved and reflected paths each run 1→5 independently.
+- [ ] Keep the fifth-stone/win/morph-0 and morph-1/rotation-0 handoffs continuous. Morph and rotation are independent explicit parameters.
+- [ ] Chromium verification must prove four-corner alpha 0, no prompt draws, breathing strokes present, identical-state pixel hashes equal, idle pixels frozen, morph 0/.5/1 distinct, and rotation distinct.
+- [ ] Run `npm run pv:game-render:verify`, `npm test`, and `npm run docs:check`.
+- [ ] Commit as `feat: add deterministic real-game render adapter`.
 
 ## Task 4: Implement the composition shell and chapter-card system
 
@@ -142,11 +145,11 @@
 - Create: `video/footsteps-return/assets/topology/` copies of required SVGs
 - Test: `tests/pv-chapters.test.js`
 
-- [ ] Write chapter tests first. Assert every chapter binds one approved capture, one distinct surface mapping, one color identity, one camera path, one entry transition, and one exit occlusion.
+- [ ] Write chapter tests first. Assert every chapter binds one approved live render definition, one color identity, one camera path, one entry transition, and one exit occlusion.
 - [ ] Encode differentiating evidence as testable metadata: finite plane, one cylinder cycle, two torus cycles, Möbius half-twist, Klein preserved/reflected pair, projective all-edge reflection, sphere adjacent-edge continuation.
 - [ ] Run `node --test tests/pv-chapters.test.js` and confirm failure.
 - [ ] Reuse the game topology definitions and existing topology SVGs. Copy only required visual assets; record them in provenance.
-- [ ] Place each real capture full-frame within a consistent cinematic stage. Do not introduce phone/tablet frames, crop the board, or overlay explanatory microcopy.
+- [ ] Mount `render-game.html` full-frame within a consistent cinematic stage and drive its single continuous chapter progress. Do not splice helper/morph clips, introduce device frames, crop the board, or overlay explanatory microcopy.
 - [ ] Build high-density Three.js surfaces for the seven morphs with offline-quality antialiasing, depth of field, motion blur, volumetric light, and restrained particles. Effects must remain subordinate to the rule evidence.
 - [ ] Implement: plane suspension; cylinder side closure; torus second closure; Möbius half-turn; Klein dual preserved/reflected paths; projective mirrored edge convergence; sphere adjacent-edge closure.
 - [ ] End every chapter on the representative cross-boundary five, morph the board into its surface, and occlude the camera with geometry or shadow. Begin the next title card after a short black/match cut.
@@ -228,7 +231,7 @@
 - [ ] Integrate measured cue durations, chapter cards, seven scenes, gallery, and final card into one deterministic master timeline.
 - [ ] Mix narration in the center, keep score width controlled under speech, and automate SFX rather than leaving a continuous low-frequency bed. Use FFmpeg loudness analysis and true-peak limiting; record measured integrated loudness and peak in `mix.json`.
 - [ ] Target clear speech and a distribution-safe master near −14 LUFS integrated with true peak no higher than −1 dBTP; adjust by listening if the sparse score makes the numerical target inappropriate, and document the final measured choice.
-- [ ] Add explicit render-readiness checks for fonts, captures, narration, score, SFX, and WebGL surfaces.
+- [ ] Add explicit render-readiness checks for fonts, the live game adapter, narration, score, SFX, and WebGL surfaces.
 - [ ] Run audio tests, `npm run pv:lint`, `npm run pv:validate`, `npm run pv:inspect`, and export the draft master.
 - [ ] Commit as `feat: integrate pv picture and final mix`.
 

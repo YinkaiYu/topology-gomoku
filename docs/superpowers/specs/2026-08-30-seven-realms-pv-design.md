@@ -222,14 +222,20 @@ video/footsteps-return/
     score/
     sfx/
   scripts/
-    capture-game.mjs
+    verify-game-render.mjs
     build-score.mjs
+  render-game.html
+  src/game-render/
   renders/
 ```
 
-`index.html` 只负责总时间轴和音轨编排；序幕、章节牌、七章、七界显现和片尾各自保持单一职责。真实游戏捕获脚本使用现有关卡定义和教学路径生成确定性棋局。三维预渲染层复用现有拓扑映射，不重新发明一套与游戏不一致的曲面规则。
+`index.html` 只负责总时间轴和音轨编排；序幕、章节牌、七章、七界显现和片尾各自保持单一职责。`render-game.html` 以透明背景挂载未改写的真实游戏，并由 PV-only adapter 复用现有关卡、教学路径、Canvas 绘制与拓扑形变；不得重画棋盘或另造规则层。
 
-如捕获需要专用入口，将其隔离在 PV 工程中；不得让制作控制、固定棋局或渲染参数进入正常玩家流程。共享源码只在确有必要且有测试覆盖时修改。
+每章使用同一个持久 iframe、Canvas 和棋局状态，由 HyperFrames 的单一单调时间线显式驱动：空棋盘建立、落子 1→5、五连停留、形变 0→1、成形停留、旋转揭示。跨界落子前完整展示对应教学路径的延长呼吸线；有两次 crossing 的路径两次都展示，Klein 保持方向与翻转方向两条路径分别完整 1→5。教学 prompt 的 Canvas 文字调用在 PV 模式精确抑制，棋盘、棋子、连接和路径不受影响。
+
+渲染层只在 `render(state)` 时推进；morph progress 与 rotation 独立，阶段交接不重载、不换 Canvas、不拼接素材。第五颗后的胜利线直接进入 morph=0，morph=1 直接进入 rotation=0。透明区由 HyperFrames 绘制电影化背景，PV Canvas 禁用纸张点状纹理。
+
+专用入口与 instrumentation 隔离在 PV 工程中；不得让制作控制、固定棋局或渲染参数进入正常玩家流程。共享源码只在确有必要且有测试覆盖时修改。
 
 HyperFrames、音频和渲染依赖在实施计划中确定并锁定版本。新增命令、Node 版本要求、FFmpeg、字体或音乐工具后，同步更新 `package.json`、锁文件和 [`../../development/environment.md`](../../development/environment.md)。
 
@@ -241,7 +247,7 @@ HyperFrames、音频和渲染依赖在实施计划中确定并锁定版本。新
 
 1. `npm test`，确认游戏规则和字体覆盖没有回归；
 2. `npm run docs:check`，确认文档索引和链接有效；
-3. HyperFrames lint、validate 和 inspect；
+3. `npm run pv:game-render:verify` 的 Chromium 透明度、确定性和阶段检查，以及 HyperFrames lint、validate 和 inspect；
 4. 动画时间图检查，逐项处理冲突、死区、越界和不可见元素；
 5. 序幕、七个章节牌、七章英雄帧、七界显现和片尾的关键帧联系表；
 6. 4K/60fps 成片完整观看，检查字幕单行、无句号、同步、描边、黑场、运动模糊和色带；

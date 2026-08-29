@@ -18,7 +18,7 @@
     "pv:validate": "node ./video/footsteps-return/scripts/validate-manifest.mjs && hyperframes check ./video/footsteps-return",
     "pv:inspect": "hyperframes check ./video/footsteps-return",
     "pv:preview": "hyperframes preview ./video/footsteps-return --no-open",
-    "pv:capture": "node ./video/footsteps-return/scripts/capture.mjs",
+    "pv:game-render:verify": "node ./video/footsteps-return/scripts/verify-game-render.mjs",
     "pv:voice": "node ./video/footsteps-return/scripts/voice.mjs",
     "pv:score": "node ./video/footsteps-return/scripts/doctor.mjs --musescore",
     "pv:render:draft": "hyperframes render ./video/footsteps-return --fps 60 --quality draft --output ./video/footsteps-return/renders/footsteps-return-draft.mp4",

@@ -32,7 +32,8 @@ npm run pv:preview
 - `npm run fonts:subset` 通过 `uv run --locked` 自动创建或同步 `.venv`，无需激活虚拟环境。
 - `npm run release:check-versions -- X.Y.Z` 仅供维护者在稳定同步后检查 `main` 与三个发行分支的统一游戏版本。
 - `npm run pv:doctor` 检查 PV 所需的 Node.js 22、FFmpeg、eSpeak NG、MuseScore 4 与仓库字体/拓扑资产；`pv:lint`、`pv:validate`、`pv:inspect` 依次执行合成静态、综合运行时质量门与布局检查。
-- `npm run pv:capture -- <URL>` 与 `npm run pv:voice -- <文字或文本文件>` 分别转发到 HyperFrames 网站采集和 TTS，并强制将媒体写入被忽略的 PV 采集目录；`npm run pv:score -- <score.mscz>` 转发到本机 MuseScore 4。渲染只使用 `pv:render:draft` 与 `pv:render:4k`，输出固定为 4K/60fps。
+- `npm run pv:game-render:verify` 在 Chromium 中验证 PV 专用的透明真实游戏渲染层：四角 alpha、教学文字抑制、纸张纹理禁用、相同状态像素哈希、形变与旋转差异。HyperFrames 通过同源 `render-game.html` 的 `gameRender.selectShot()` 与显式 `gameRender.render(state)` 驱动同一个持久 iframe/Canvas；它不会按墙钟自行播放，也不生成逐帧图片或中间视频。
+- `npm run pv:voice -- <文字或文本文件>` 强制将 TTS 媒体写入被忽略的 PV 采集目录；`npm run pv:score -- <score.mscz>` 转发到本机 MuseScore 4。渲染只使用 `pv:render:draft` 与 `pv:render:4k`，输出固定为 4K/60fps。
 - 首次同步需要下载 `uv.lock` 中的依赖；之后会复用锁定环境与本地缓存。
 
 ## Python 环境

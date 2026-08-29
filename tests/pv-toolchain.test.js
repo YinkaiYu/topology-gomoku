@@ -33,13 +33,14 @@ test("PV 工具链锁定所需的精确 npm 依赖与仓库命令", () => {
   assert.equal(lockfile.packages["node_modules/gsap"].version, "3.14.2");
   [
     "pv:doctor", "pv:lint", "pv:validate", "pv:inspect", "pv:preview",
-    "pv:capture", "pv:voice", "pv:score", "pv:render:draft", "pv:render:4k"
+    "pv:game-render:verify", "pv:voice", "pv:score", "pv:render:draft", "pv:render:4k"
   ].forEach((scriptName) => {
     assert.equal(typeof packageJson.scripts[scriptName], "string", `${scriptName} must be a repository command`);
   });
   assert.match(packageJson.scripts["pv:validate"], /^node \.\/video\/footsteps-return\/scripts\/validate-manifest\.mjs && hyperframes check /);
   assert.match(packageJson.scripts["pv:inspect"], /^hyperframes check /);
-  assert.match(packageJson.scripts["pv:capture"], /capture\.mjs$/);
+  assert.equal(packageJson.scripts["pv:capture"], undefined);
+  assert.match(packageJson.scripts["pv:game-render:verify"], /verify-game-render\.mjs$/);
   assert.match(packageJson.scripts["pv:voice"], /voice\.mjs$/);
   assert.equal(packageJson.scripts["pv:render:1080"], undefined, "1080p delivery must remain absent");
 });
@@ -97,19 +98,13 @@ test("PV 合成从锁定的本地 GSAP 副本加载，不依赖 CDN", () => {
   assert.match(fs.readFileSync(localGsap, "utf8"), /GSAP 3\.14\.2/);
 });
 
-test("PV 媒体包装器强制将采集与配音输出写入忽略目录", async () => {
-  const capture = await import(toImportUrl("video/footsteps-return/scripts/capture.mjs"));
+test("PV 配音包装器强制将输出写入忽略目录", async () => {
   const voice = await import(toImportUrl("video/footsteps-return/scripts/voice.mjs"));
 
-  assert.deepEqual(capture.buildCaptureArgs(["https://example.test"]), [
-    "capture", "https://example.test", "--output", "video/footsteps-return/captures/website"
-  ]);
   assert.deepEqual(voice.buildVoiceArgs(["拓扑五子棋"]), [
     "tts", "拓扑五子棋", "--output", "video/footsteps-return/captures/narration.wav"
   ]);
-  assert.throws(() => capture.buildCaptureArgs(["https://example.test", "--output", "outside"]), /output/);
   assert.throws(() => voice.buildVoiceArgs(["拓扑五子棋", "--output=outside.wav"]), /output/);
-  assert.throws(() => capture.buildCaptureArgs(["https://example.test", "--"]), /--/);
   assert.throws(() => voice.buildVoiceArgs(["拓扑五子棋", "--"]), /--/);
 });
 
