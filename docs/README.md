@@ -28,6 +28,12 @@
 | [`design/shared-transitions.md`](design/shared-transitions.md) | 液态玻璃共享元素转场的分层、生命周期与动效基线 |
 | [`design/qa.md`](design/qa.md) | 同视口视觉验收、证据索引和记录模板 |
 
+## 项目规格
+
+| 文档 | 内容 |
+| --- | --- |
+| [`superpowers/specs/2026-08-30-seven-realms-pv-design.md`](superpowers/specs/2026-08-30-seven-realms-pv-design.md) | 《拓扑五子棋》宣传 PV「七界足迹」的叙事、视听、工程与验收规格 |
+
 ## 平台规范
 
 - 小红书 H5 与离线 ZIP：执行入口为 [`.codex/SKILL.md`](../.codex/SKILL.md)，具体约束位于 `.codex/references/`。
