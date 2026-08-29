@@ -1,6 +1,8 @@
 import { chapters } from "../data/chapters.js";
 import { masterTimeline as timelineDefinition } from "../data/timeline.js";
 import { addChapterTitleReveal, createChapterTitleScene } from "../../compositions/chapter-titles.js";
+import { addEndCardReveal, createEndCardScene } from "../../compositions/end-card.js";
+import { addIntroReveal, createIntroScene } from "../../compositions/intro.js";
 import { createPlaceholderScene, createSceneRegistry } from "../../compositions/shared/scene.js";
 
 const TRANSITION_DURATION = 0.62;
@@ -14,9 +16,13 @@ export function buildMasterTimeline({ document: documentRef, gsap, stage, sceneF
   const registry = createSceneRegistry(stage);
   const scenePairs = timelineDefinition.scenes.map((definition) => {
     const chapter = chapterById.get(definition.chapterId);
-    const defaultFactory = definition.kind === "chapter-card"
-      ? ({ document, definition: scene, chapter: sceneChapter }) => createChapterTitleScene(document, scene, sceneChapter)
-      : ({ document, definition: scene }) => createPlaceholderScene(document, scene);
+    const defaultFactories = {
+      "chapter-card": ({ document, definition: scene, chapter: sceneChapter }) => createChapterTitleScene(document, scene, sceneChapter),
+      "end-card": ({ document, definition: scene }) => createEndCardScene(document, scene),
+      intro: ({ document, definition: scene }) => createIntroScene(document, scene)
+    };
+    const defaultFactory = defaultFactories[definition.kind]
+      ?? (({ document, definition: scene }) => createPlaceholderScene(document, scene));
     const factory = sceneFactories[definition.kind] ?? defaultFactory;
     const element = factory({ document: documentRef, definition, chapter });
     registry.register(definition, element);
@@ -44,6 +50,10 @@ export function buildMasterTimeline({ document: documentRef, gsap, stage, sceneF
 
     if (definition.kind === "chapter-card" && element.querySelector("[data-chapter-card]")) {
       addChapterTitleReveal(timeline, element, definition.start);
+    } else if (definition.kind === "intro" && element.querySelector("[data-intro-board-edge]")) {
+      addIntroReveal(timeline, element, definition.start);
+    } else if (definition.kind === "end-card" && element.querySelector("[data-game-title-mark]")) {
+      addEndCardReveal(timeline, element, definition.start);
     } else {
       const atmosphere = element.querySelector("[data-scene-atmosphere]");
       if (atmosphere) {

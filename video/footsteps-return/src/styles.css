@@ -212,3 +212,192 @@ body {
   text-align: center;
   white-space: nowrap;
 }
+
+.intro-composition,
+.end-card {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background-color: #060908;
+}
+
+.intro-composition__darkness {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at 71% 49%, rgba(63, 140, 135, 0.075), rgba(6, 9, 8, 0) 43%);
+}
+
+.intro-board-edge,
+.intro-hidden-adjacency {
+  position: absolute;
+  right: -310px;
+  bottom: -490px;
+  width: 3000px;
+  height: 1850px;
+  transform: rotate(-8deg) skewX(-2deg);
+  transform-origin: 64% 61%;
+}
+
+.intro-board-edge {
+  overflow: hidden;
+  border: 1px solid rgba(242, 239, 231, 0.16);
+  border-radius: 88px 24px 0 0;
+  box-shadow: -90px -60px 180px rgba(0, 0, 0, 0.74), inset 0 1px rgba(242, 239, 231, 0.11);
+  opacity: 0;
+  perspective: 1800px;
+}
+
+.intro-board-edge__surface {
+  position: absolute;
+  inset: -60px;
+  background-color: #111916;
+  background-image:
+    repeating-linear-gradient(0deg, rgba(242, 239, 231, 0.12) 0 2px, rgba(17, 25, 22, 0) 2px 164px),
+    repeating-linear-gradient(90deg, rgba(242, 239, 231, 0.12) 0 2px, rgba(17, 25, 22, 0) 2px 164px),
+    radial-gradient(circle at 45% 18%, rgba(63, 140, 135, 0.08), rgba(17, 25, 22, 0) 54%);
+  opacity: 0.82;
+  transform: rotateX(7deg) scale(1.02);
+  transform-origin: center bottom;
+}
+
+.intro-board-edge__boundary {
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 22px;
+  background: linear-gradient(90deg, rgba(242, 239, 231, 0.04), rgba(63, 140, 135, 0.28), rgba(6, 9, 8, 0));
+  box-shadow: 8px 0 48px rgba(63, 140, 135, 0.12);
+}
+
+.intro-board-edge__stones {
+  position: absolute;
+  inset: 0;
+}
+
+.intro-board-edge__stone {
+  position: absolute;
+  left: calc(260px + var(--stone-index) * 164px);
+  top: calc(1050px - var(--stone-index) * 164px);
+  width: 92px;
+  height: 92px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 34% 30%, #f2efe7, #b8b6ae 48%, #817f77 100%);
+  box-shadow: 0 24px 34px rgba(0, 0, 0, 0.45);
+  opacity: calc(0.54 + var(--stone-index) * 0.08);
+}
+
+.intro-hidden-adjacency {
+  z-index: 2;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.intro-hidden-adjacency__aperture {
+  position: absolute;
+  top: 590px;
+  width: 340px;
+  height: 480px;
+  border-radius: 50%;
+  background: radial-gradient(ellipse, rgba(63, 140, 135, 0.22), rgba(63, 140, 135, 0.045) 38%, rgba(63, 140, 135, 0) 70%);
+  opacity: 0.76;
+}
+
+.intro-hidden-adjacency__aperture--left {
+  left: -70px;
+}
+
+.intro-hidden-adjacency__aperture--right {
+  right: -30px;
+}
+
+.intro-hidden-adjacency__refraction {
+  position: absolute;
+  left: -120px;
+  right: -120px;
+  top: 786px;
+  height: 116px;
+  border-top: 2px solid rgba(242, 239, 231, 0.22);
+  border-bottom: 1px solid rgba(63, 140, 135, 0.2);
+  border-radius: 50%;
+  background: radial-gradient(ellipse at center, rgba(63, 140, 135, 0.16), rgba(63, 140, 135, 0) 64%);
+  opacity: 0.72;
+}
+
+.end-card {
+  display: flex;
+  align-items: center;
+  padding: var(--safe-top) 360px var(--safe-bottom);
+}
+
+.end-card__glow {
+  position: absolute;
+  right: -420px;
+  top: -520px;
+  width: 1900px;
+  height: 1900px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(63, 140, 135, 0.09), rgba(6, 9, 8, 0) 68%);
+}
+
+.end-card__identity {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 1px 520px;
+  width: 100%;
+  align-items: center;
+  gap: 152px;
+}
+
+.end-card__copy {
+  display: flex;
+  flex-direction: column;
+  gap: 66px;
+}
+
+.end-card__title,
+.end-card__subtitle {
+  margin: 0;
+  white-space: nowrap;
+}
+
+.end-card__title {
+  color: #f2efe7;
+  font-size: 286px;
+  font-weight: 700;
+  line-height: 1.08;
+  letter-spacing: 0.045em;
+}
+
+.end-card__subtitle {
+  color: #b8b6ae;
+  font-size: 72px;
+  font-weight: 400;
+  line-height: 1.34;
+  letter-spacing: 0.09em;
+}
+
+.end-card__divider {
+  width: 1px;
+  height: 580px;
+  background-color: rgba(242, 239, 231, 0.2);
+  transform-origin: center;
+}
+
+.end-card__institute {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 520px;
+  height: 520px;
+}
+
+.end-card__iop-logo {
+  display: block;
+  width: 480px;
+  height: 480px;
+  object-fit: cover;
+  border-radius: 50%;
+  clip-path: circle(49.6% at 50% 50%);
+  filter: saturate(0.84) brightness(0.94);
+}

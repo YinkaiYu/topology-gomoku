@@ -1,0 +1,22 @@
+[
+  {
+    "id": "topology-gomoku-brand",
+    "sourceType": "repository-copy",
+    "sourceDescription": "仓库内游戏品牌源资产",
+    "originalFilename": "brand-icon.png",
+    "rightsBasis": "项目自有品牌资产，用于本项目 PV 制作与溯源",
+    "copiedDate": "2026-08-30",
+    "sha256": "f41f91e2fdfc0cb69442af7993d828081803cf061586037e49fced0bf3cc0f52",
+    "destination": "video/footsteps-return/assets/brand/topology-gomoku.png"
+  },
+  {
+    "id": "iop-logo",
+    "sourceType": "user-provided",
+    "sourceDescription": "用户提供的 IOP.pdf 派生资产",
+    "originalFilename": "iop-logo.png",
+    "rightsBasis": "用户提供并授权用于本项目片尾机构标识",
+    "copiedDate": "2026-08-30",
+    "sha256": "007a43108cc6c5e8139f013d192443c3e899fdc4a18a81ecba4a163ba1cd81f7",
+    "destination": "video/footsteps-return/assets/brand/iop-logo.png"
+  }
+]
