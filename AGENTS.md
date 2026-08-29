@@ -22,14 +22,14 @@
 - `main`：由维护者定期从 `dev` 选择并提升的稳定跨平台版本。
 - `xiaohongshu`：从 `main` 同步稳定版本后，由维护者完成小红书容器、JSBridge、ZIP 与发布验证。
 - `bilibili`：从 `main` 同步稳定版本后，由维护者完成 Bilibili Toy adapter、生命周期与发布验证。
-- `wechat`：从 `main` 同步稳定版本后，由维护者完成微信小程序 adapter、生命周期与发布验证。
+- `wechat`：从 `main` 同步稳定版本后，由维护者完成微信小游戏原生 adapter、生命周期与发布验证。
 
 普通贡献只进入 `dev`。维护者选定稳定版本后将 `dev` 提升到 `main`，再以同一个 `main` 版本统一更新三个发行分支。平台分支里的通用修复必须先回流 `dev`，不要复制三份实现。
 
 ## 平台专属适配
 
 - Bilibili Toy API、生命周期、宿主资源和发布配置，可由维护者从 `bilibili` 新建独立任务分支/worktree，确认后合回 `bilibili`。
-- 微信小程序生命周期、组件、宿主 API 和发布配置，可由维护者从 `wechat` 新建独立任务分支/worktree，确认后合回 `wechat`。
+- 微信小游戏 Canvas、生命周期、宿主 API 和发布配置，可由维护者从 `wechat` 新建独立任务分支/worktree，确认后合回 `wechat`。
 - `dev` 与 `main` 当前就是小红书 H5 的主要基线，因此小红书相关页面与通用 H5 能力通常仍从 `dev` 开始。只有容器、JSBridge、ZIP 或发布配置等无法进入共享基线的内容，才从 `xiaohongshu` 建平台任务。
 - 平台任务同样遵守：**独立分支/worktree → 实现与平台验证 → 本地/模拟器预览 → 用户明确确认 → 合回原发行分支**。不要把开发过程直接堆在长期发行 worktree。
 - 只要规则、AI、UI、资源或 adapter 契约能够跨平台复用，就必须另建 `dev` 任务实现；平台分支只保留真正的宿主边界。

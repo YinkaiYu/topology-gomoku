@@ -30,9 +30,11 @@
 
 ## 平台规范
 
-- 小红书 H5 与离线 ZIP：执行入口为 [`.codex/SKILL.md`](../.codex/SKILL.md)，具体约束位于 `.codex/references/`。
-- Bilibili Toy：专属适配文档随 `bilibili` 分支维护，并以官方 Toy 约束和仓库安装的 `toy` skill 为准。
-- 微信小程序：待适配开始并完成事实核验后，在 `wechat` 分支建立平台文档；不得凭记忆预写宿主 API。
+- 小红书小工具：已发布 H5 与完全离线 ZIP；执行入口为 [`.codex/SKILL.md`](../.codex/SKILL.md)，具体约束位于 `.codex/references/`。
+- Bilibili Toy：已发布专属 adapter 与多设备适配；平台规范随 `bilibili` 分支的 `docs/platforms/bilibili.md` 和 `docs/platforms/bilibili-responsive-guide.md` 维护，并以官方 Toy 约束和仓库安装的 `toy` skill 为准。
+- 微信小游戏：已发布原生单 Canvas 版本；平台规范随 `wechat` 分支的 `docs/platforms/wechat.md` 维护，构建、同步与 WeChatIDE 验收流程见该分支的 `docs/development/wechat-agent-workflow.md`。
+
+根文档只记录全平台共享状态与入口。宿主 API、构建、模拟器、真机和发布约束继续保留在对应发行分支，不能因为三个平台已经发布而跳过每一版本的平台复验。
 
 ## 维护规则
 

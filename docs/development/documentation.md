@@ -16,7 +16,7 @@
 | 色彩、材质、字体、动效或组件语言 | `docs/design/visual-language.md` |
 | 视觉验收方法、视口、证据或已知限制 | `docs/design/qa.md` |
 | 小红书容器、JSBridge 或 ZIP 规范 | `.codex/SKILL.md` 及其 references |
-| Bilibili / 微信宿主约束 | 对应发行分支的平台文档 |
+| Bilibili Toy / 微信小游戏宿主约束 | 对应发行分支的平台文档 |
 | 新增、移动或删除任意长期文档 | `docs/README.md` 索引及全部反向引用 |
 
 “必查”不等于每次都必须修改，但必须确认现有内容是否仍准确。若没有文档影响，在 Pull Request 中写明原因，不能只留空或默认忽略。

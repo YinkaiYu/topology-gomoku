@@ -36,8 +36,8 @@
 | `dev` | 外部贡献与日常开发的唯一集成目标 | 经预览确认的玩法、测试、设计、文档与可复用平台抽象 |
 | `main` | 稳定的跨平台基线 | 只由维护者从稳定 `dev` 提升 |
 | `xiaohongshu` | 小红书发行版 | 维护者从 `main` 同步；仅承载容器、JSBridge、ZIP 等宿主专属改动 |
-| `bilibili` | Bilibili Toy 发行版 | 维护者从 `main` 同步，并承载 Toy 原生 adapter 与平台任务 |
-| `wechat` | 微信小程序发行版 | 维护者从 `main` 同步，并承载小程序原生 adapter 与平台任务 |
+| `bilibili` | Bilibili Toy 发行版 | 维护者从 `main` 同步，并承载 Toy 专属 adapter 与平台任务 |
+| `wechat` | 微信小游戏发行版 | 维护者从 `main` 同步，并承载小游戏原生 adapter 与平台任务 |
 
 贡献者的职责边界是 `任务分支 → dev`。后续 `dev → main → 三个发行分支` 属于仓库维护流程，见 [docs/development/release.md](docs/development/release.md)。平台分支中发现的通用问题由维护者另建 `dev` 任务回流，再沿正常路径传播。
 

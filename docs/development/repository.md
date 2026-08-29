@@ -93,7 +93,7 @@ git worktree list
 | 拓扑规则、AI、共享 UI、共享资源、通用测试 | `dev` |
 | 小红书容器能力、JSBridge、校验、ZIP 与发布配置 | 维护者发行同步时进入 `xiaohongshu` |
 | Bilibili Toy 生命周期、API、资源与发布配置 | 维护者发行同步时进入 `bilibili` |
-| 微信小程序生命周期、组件、资源与发布配置 | 维护者发行同步时进入 `wechat` |
+| 微信小游戏 Canvas、生命周期、宿主 API、资源与发布配置 | 维护者发行同步时进入 `wechat` |
 | 可复用 adapter 接口与跨平台行为契约 | `dev` |
 | 面向公众的说明、架构与贡献约定 | `dev`，稳定后提升到 `main` |
 
