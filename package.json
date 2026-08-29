@@ -15,7 +15,7 @@
     "build:xiaohongshu": "powershell -NoProfile -ExecutionPolicy Bypass -File ./scripts/build.ps1",
     "pv:doctor": "node ./video/footsteps-return/scripts/doctor.mjs",
     "pv:lint": "hyperframes lint ./video/footsteps-return",
-    "pv:validate": "hyperframes check ./video/footsteps-return",
+    "pv:validate": "node ./video/footsteps-return/scripts/validate-manifest.mjs && hyperframes check ./video/footsteps-return",
     "pv:inspect": "hyperframes check ./video/footsteps-return",
     "pv:preview": "hyperframes preview ./video/footsteps-return --no-open",
     "pv:capture": "node ./video/footsteps-return/scripts/capture.mjs",

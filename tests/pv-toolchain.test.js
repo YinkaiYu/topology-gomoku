@@ -37,7 +37,7 @@ test("PV 工具链锁定所需的精确 npm 依赖与仓库命令", () => {
   ].forEach((scriptName) => {
     assert.equal(typeof packageJson.scripts[scriptName], "string", `${scriptName} must be a repository command`);
   });
-  assert.match(packageJson.scripts["pv:validate"], /^hyperframes check /);
+  assert.match(packageJson.scripts["pv:validate"], /^node \.\/video\/footsteps-return\/scripts\/validate-manifest\.mjs && hyperframes check /);
   assert.match(packageJson.scripts["pv:inspect"], /^hyperframes check /);
   assert.match(packageJson.scripts["pv:capture"], /capture\.mjs$/);
   assert.match(packageJson.scripts["pv:voice"], /voice\.mjs$/);
