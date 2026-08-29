@@ -182,8 +182,14 @@ export class GameRenderAdapter {
     };
   }
 
-  async render(value = {}) {
-    await this.ready;
+  render(value = {}) {
+    if (this.renderReady().ready) {
+      return this.renderNow(value);
+    }
+    return this.ready.then(() => this.renderNow(value));
+  }
+
+  renderNow(value = {}) {
     if (!this.definition) throw new Error("selectShot must run before render");
     const requestedDemoId = value.demo || this.demo.id;
     const { demo } = findGameRenderShot(this.definition.id, requestedDemoId);

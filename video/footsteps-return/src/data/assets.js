@@ -16,11 +16,24 @@ const userProvidedCopy = (id, path, provenanceFile) => Object.freeze({
   provenance: Object.freeze({ type: "user-provided", source: provenanceFile })
 });
 
+const packageCopy = (id, path, source) => Object.freeze({
+  id,
+  path,
+  provenance: Object.freeze({ type: "package-copy", source })
+});
+
 export const assets = Object.freeze([
   projectCopy("font-topo-serif-400", "video/footsteps-return/assets/fonts/noto-serif-sc-400.woff2", "app/assets/fonts/noto-serif-sc-400.woff2"),
   projectCopy("font-topo-serif-600", "video/footsteps-return/assets/fonts/noto-serif-sc-600.woff2", "app/assets/fonts/noto-serif-sc-600.woff2"),
   projectCopy("font-topo-serif-700", "video/footsteps-return/assets/fonts/noto-serif-sc-700.woff2", "app/assets/fonts/noto-serif-sc-700.woff2"),
   projectCopy("topology-plane", "video/footsteps-return/assets/topologies/plane.svg", "app/assets/topologies/plane.svg"),
+  projectCopy("chapter-topology-plane", "video/footsteps-return/assets/topology/plane.svg", "app/assets/topologies/plane.svg"),
+  projectCopy("chapter-topology-cylinder", "video/footsteps-return/assets/topology/cylinder.svg", "app/assets/topologies/cylinder.svg"),
+  projectCopy("chapter-topology-torus", "video/footsteps-return/assets/topology/torus.svg", "app/assets/topologies/torus.svg"),
+  projectCopy("chapter-topology-mobius", "video/footsteps-return/assets/topology/mobius.svg", "app/assets/topologies/mobius.svg"),
+  projectCopy("chapter-topology-klein", "video/footsteps-return/assets/topology/klein.svg", "app/assets/topologies/klein.svg"),
+  projectCopy("chapter-topology-projective", "video/footsteps-return/assets/topology/projective.svg", "app/assets/topologies/projective.svg"),
+  projectCopy("chapter-topology-sphere", "video/footsteps-return/assets/topology/sphere.svg", "app/assets/topologies/sphere.svg"),
   repositoryAsset("topology-cylinder", "app/assets/topologies/cylinder.svg"),
   repositoryAsset("topology-torus", "app/assets/topologies/torus.svg"),
   repositoryAsset("topology-mobius", "app/assets/topologies/mobius.svg"),
@@ -58,5 +71,7 @@ export const assets = Object.freeze([
   projectCopy("intro-game-silhouette-mobius", "video/footsteps-return/assets/game-source/assets/silhouettes/mobius.svg", "app/assets/silhouettes/mobius.svg"),
   projectCopy("intro-game-silhouette-klein", "video/footsteps-return/assets/game-source/assets/silhouettes/klein.svg", "app/assets/silhouettes/klein.svg"),
   projectCopy("intro-game-silhouette-projective", "video/footsteps-return/assets/game-source/assets/silhouettes/projective.svg", "app/assets/silhouettes/projective.svg"),
-  projectCopy("intro-game-silhouette-sphere", "video/footsteps-return/assets/game-source/assets/silhouettes/sphere.svg", "app/assets/silhouettes/sphere.svg")
+  projectCopy("intro-game-silhouette-sphere", "video/footsteps-return/assets/game-source/assets/silhouettes/sphere.svg", "app/assets/silhouettes/sphere.svg"),
+  packageCopy("three-runtime", "video/footsteps-return/src/vendor/three.module.min.js", "three@0.185.1/build/three.module.min.js"),
+  packageCopy("three-core-runtime", "video/footsteps-return/src/vendor/three.core.min.js", "three@0.185.1/build/three.core.min.js")
 ]);

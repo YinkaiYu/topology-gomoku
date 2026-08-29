@@ -84,6 +84,90 @@ body {
   background: radial-gradient(circle at 58% 42%, rgba(63, 140, 135, 0.035), rgba(6, 9, 8, 0) 42%);
 }
 
+.chapter-composition {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background-color: #060908;
+  perspective: 7200px;
+}
+
+.chapter-composition__atmosphere {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse at 50% 48%, color-mix(in srgb, var(--chapter-light) 7%, rgba(6, 9, 8, 0)), rgba(6, 9, 8, 0) 44%),
+    radial-gradient(ellipse at 50% 92%, rgba(242, 239, 231, 0.025), rgba(6, 9, 8, 0) 43%);
+  transform-origin: center;
+}
+
+.chapter-surface-layer {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.chapter-surface-layer__canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  filter: blur(1.2px) saturate(0.72);
+}
+
+.chapter-board {
+  position: absolute;
+  z-index: 2;
+  left: 50%;
+  top: 50%;
+  width: 640px;
+  height: 640px;
+  overflow: visible;
+  opacity: 1;
+  transform: translate(-50%, -50%) scale(2.4192);
+  transform-origin: center;
+  transform-style: preserve-3d;
+  will-change: transform, opacity, filter;
+}
+
+.chapter-board__game-render {
+  display: block;
+  width: 640px;
+  height: 640px;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  pointer-events: none;
+}
+
+.chapter-exit-occlusion {
+  position: absolute;
+  z-index: 4;
+  inset: -10%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  background-color: rgba(6, 9, 8, 0.94);
+  opacity: 0;
+  pointer-events: none;
+  transform: scale(0.94);
+  transform-origin: center;
+}
+
+.chapter-exit-occlusion__shape {
+  display: block;
+  width: 78%;
+  height: 78%;
+  object-fit: contain;
+  opacity: 0.2;
+  filter: brightness(0.16) saturate(0.45) contrast(1.2);
+  transform: scale(1.36);
+}
+
 .chapter-card {
   position: relative;
   display: flex;

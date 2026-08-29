@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" role="img" shape-rendering="geometricPrecision" data-model="hand-drawn-spherical-quotient" data-style="hand-drawn-cel-silhouette">
+  <desc>S(u,0)=S(0,u), S(u,1)=S(1,u); two triangular square charts map to opposite hemispheres</desc>
+  <defs>
+    <clipPath id="sphereClip"><circle cx="128" cy="128" r="91"/></clipPath>
+  </defs>
+  <g>
+    <path d="M128 37 C177 36 218 75 219 124 C221 175 183 217 133 219 C82 221 40 185 37 135 C34 85 74 39 128 37 Z" fill="#f4f2ea" stroke="#f4f2ea" stroke-width="1.5" stroke-linejoin="round"/>
+    <path d="M128 37 C178 38 217 77 219 124 C207 97 183 77 153 70 C115 61 77 73 48 104 C58 64 88 39 128 37 Z" fill="#fbf9f2" stroke="#fbf9f2" stroke-width="1.5"/>
+    <path d="M219 124 C221 175 183 217 133 219 C98 220 68 202 50 176 C85 194 126 195 162 178 C190 165 207 146 219 124 Z" fill="#d1cec4" stroke="#d1cec4" stroke-width="1.5"/>
+    <path d="M196 74 C214 93 222 121 217 148 C204 183 174 209 137 216 C167 185 182 143 177 105 C175 87 168 69 157 53 C172 57 184 64 196 74 Z" fill="#d6d2c7" stroke="#d6d2c7" stroke-width="1.5"/>
+  </g>
+  <path d="M128 37 C177 36 218 75 219 124 C221 175 183 217 133 219 C82 221 40 185 37 135 C34 85 74 39 128 37 Z" fill="none" stroke="#282522" stroke-width="1.76" stroke-opacity="0.96" stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke" data-ink-layer="gesture"/>
+  <path d="M128 37 C177 36 218 75 219 124 C221 175 183 217 133 219 C82 221 40 185 37 135 C34 85 74 39 128 37 Z" fill="none" stroke="#282522" pathLength="100" stroke-width="2.32" stroke-opacity="0.88" stroke-dasharray="19 12 7 17 26 31" stroke-dashoffset="9" stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke" data-ink-layer="pressure"/>
+  <g clip-path="url(#sphereClip)" fill="none" stroke="#282522" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M39 129 C67 109 101 102 129 103 C163 103 193 113 218 130" stroke-width="1.48" stroke-opacity="0.94" vector-effect="non-scaling-stroke" data-ink-layer="gesture"/>
+    <path d="M48 173 C75 160 101 155 129 156 C160 156 188 164 207 178" stroke-width="1.48" stroke-opacity="0.94" vector-effect="non-scaling-stroke" data-ink-layer="gesture"/>
+    <path d="M128 38 C102 60 91 94 92 128 C93 165 105 196 133 218" stroke-width="1.48" stroke-opacity="0.94" vector-effect="non-scaling-stroke" data-ink-layer="gesture"/>
+    <path d="M128 38 C157 60 169 93 168 128 C167 165 157 196 133 218" stroke-width="1.48" stroke-opacity="0.94" vector-effect="non-scaling-stroke" data-ink-layer="gesture"/>
+    <path d="M39 129 C67 109 101 102 129 103 C163 103 193 113 218 130" pathLength="100" stroke-width="2.04" stroke-opacity="0.88" stroke-dasharray="16 9 8 15 21 34" stroke-dashoffset="4" vector-effect="non-scaling-stroke" data-ink-layer="pressure"/>
+    <path d="M48 173 C75 160 101 155 129 156 C160 156 188 164 207 178" pathLength="100" stroke-width="2.04" stroke-opacity="0.88" stroke-dasharray="21 14 5 19 24 27" stroke-dashoffset="17" vector-effect="non-scaling-stroke" data-ink-layer="pressure"/>
+    <path d="M128 38 C102 60 91 94 92 128 C93 165 105 196 133 218" pathLength="100" stroke-width="2.04" stroke-opacity="0.88" stroke-dasharray="14 11 9 13 29 32" stroke-dashoffset="29" vector-effect="non-scaling-stroke" data-ink-layer="pressure"/>
+    <path d="M128 38 C157 60 169 93 168 128 C167 165 157 196 133 218" pathLength="100" stroke-width="2.04" stroke-opacity="0.88" stroke-dasharray="18 13 6 21 20 30" stroke-dashoffset="36" vector-effect="non-scaling-stroke" data-ink-layer="pressure"/>
+  </g>
+</svg>

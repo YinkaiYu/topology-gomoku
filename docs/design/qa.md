@@ -60,6 +60,7 @@
 | AI 难度文案与内嵌字体 | [`artifacts/qa-ai-difficulty-labels-v1363.png`](../../artifacts/qa-ai-difficulty-labels-v1363.png) |
 | 《足音回归》4K 章节牌两阶段 | [`空母版基线`](../../artifacts/pv-chapter-card-before-4k.png)、[`方庭 A：ACT + 关卡名`](../../artifacts/pv-chapter-card-phases/frame-00-at-20.04s.png)、[`方庭 B：流形名 + 关卡名`](../../artifacts/pv-chapter-card-phases/frame-01-at-20.95s.png)、[`扭带 A：ACT + 关卡名`](../../artifacts/pv-chapter-card-phases/frame-02-at-68.04s.png)、[`扭带 B：流形名 + 关卡名`](../../artifacts/pv-chapter-card-phases/frame-03-at-68.95s.png)、[`A/B 联系表`](../../artifacts/pv-chapter-card-phases/contact-sheet.jpg)；其余五章由 Task 11 统一输出联系表 |
 | 《足音回归》4K 片头与片尾身份 | [`空母版基线`](../../artifacts/pv-chapter-card-before-4k.png)、[`片头邻接回返`](../../artifacts/pv-intro-hero-4k.png)、[`片尾文字标题与单一 IOP 标识`](../../artifacts/pv-end-card-hero-4k.png)；3840 × 2160、60fps 时间线，分别取 14.20s 与 163.65s |
+| 《足音回归》七章规则与曲面连续性 | [`同视口空母版基线`](../../artifacts/pv-chapter-scenes-task6-baseline-1920x1080.png)、[`七章规则证据 / morph hero 14 帧联系表`](../../artifacts/pv-chapter-scenes-task6-contact-sheet.png)；均为 1920 × 1080 审片代理，源合成仍固定 3840 × 2160、60fps。运行 `node ./video/footsteps-return/scripts/capture-chapter-evidence.mjs` 可从确定性时间线重建 14 张原始帧与联系表；Task 11 统一输出最终 4K 证据。联系表 SHA-256：`84f0bbab35e9651b93dd5349fa21deac33496363acd01b80d7e2203e486eb0f6` |
 
 较早截图只用于回归和问题溯源，不自动成为新设计的视觉真相。出现冲突时，以最新已确认实现、视觉设计语言和同状态实机/预览证据为准。
 
