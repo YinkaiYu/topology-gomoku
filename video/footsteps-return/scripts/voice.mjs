@@ -12,6 +12,9 @@ export function buildVoiceArgs(args) {
   if (args.length === 0) {
     throw new Error("Narration text or a text file is required. Use: npm run pv:voice -- <text-or-file>");
   }
+  if (args.includes("--")) {
+    throw new Error("The literal -- is not allowed because it can bypass the fixed PV narration output path.");
+  }
   if (hasOutputArgument(args)) {
     throw new Error("Narration output is fixed under video/footsteps-return/captures/.");
   }

@@ -12,6 +12,9 @@ export function buildCaptureArgs(args) {
   if (args.length === 0) {
     throw new Error("A URL is required. Use: npm run pv:capture -- <URL>");
   }
+  if (args.includes("--")) {
+    throw new Error("The literal -- is not allowed because it can bypass the fixed PV capture output path.");
+  }
   if (hasOutputArgument(args)) {
     throw new Error("Capture output is fixed under video/footsteps-return/captures/.");
   }

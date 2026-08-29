@@ -41,6 +41,7 @@ test("PV 工具链锁定所需的精确 npm 依赖与仓库命令", () => {
   assert.match(packageJson.scripts["pv:inspect"], /^hyperframes check /);
   assert.match(packageJson.scripts["pv:capture"], /capture\.mjs$/);
   assert.match(packageJson.scripts["pv:voice"], /voice\.mjs$/);
+  assert.equal(packageJson.scripts["pv:render:1080"], undefined, "1080p delivery must remain absent");
 });
 
 test("PV 合成底座固定为 4K 60fps，并先具有视觉设计契约", () => {
@@ -108,6 +109,8 @@ test("PV 媒体包装器强制将采集与配音输出写入忽略目录", async
   ]);
   assert.throws(() => capture.buildCaptureArgs(["https://example.test", "--output", "outside"]), /output/);
   assert.throws(() => voice.buildVoiceArgs(["拓扑五子棋", "--output=outside.wav"]), /output/);
+  assert.throws(() => capture.buildCaptureArgs(["https://example.test", "--"]), /--/);
+  assert.throws(() => voice.buildVoiceArgs(["拓扑五子棋", "--"]), /--/);
 });
 
 test("PV doctor 拒绝 MuseScore 3，并接受注入的 MuseScore 4 探测结果", async () => {
