@@ -448,3 +448,79 @@ body {
   filter: saturate(0.84) brightness(0.94) blur(12px);
   transform: scale(0.94);
 }
+
+.pv-transition-layer {
+  display: block;
+  overflow: hidden;
+  contain: strict;
+  will-change: opacity;
+}
+
+.seven-world-gallery {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: #060908;
+  isolation: isolate;
+}
+
+.seven-world-gallery__field {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse at 50% 48%, rgba(242, 239, 231, 0.025), rgba(6, 9, 8, 0) 44%),
+    radial-gradient(ellipse at 50% 100%, rgba(63, 140, 135, 0.035), rgba(6, 9, 8, 0) 58%);
+}
+
+.seven-world-gallery__camera {
+  position: absolute;
+  inset: 0;
+  transform-origin: center;
+  will-change: transform, filter;
+}
+
+.seven-world-gallery__shape {
+  position: absolute;
+  width: 720px;
+  height: 720px;
+  margin: -360px 0 0 -360px;
+  opacity: 0;
+  transform: scale(0.92);
+  transform-origin: center;
+  filter: blur(5px);
+  isolation: isolate;
+}
+
+.seven-world-gallery__shape::after {
+  position: absolute;
+  inset: 15%;
+  z-index: -1;
+  border-radius: 50%;
+  background: radial-gradient(circle, color-mix(in srgb, var(--gallery-light) 8%, rgba(6, 9, 8, 0)), rgba(6, 9, 8, 0) 69%);
+  content: "";
+  pointer-events: none;
+}
+
+.seven-world-gallery__surface {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  opacity: 0.72;
+  filter: brightness(0.78) saturate(0.76) contrast(1.06);
+}
+
+.seven-world-gallery__paths {
+  position: absolute;
+  inset: 14%;
+  width: 72%;
+  height: 72%;
+  overflow: visible;
+  pointer-events: none;
+}
+
+.seven-world-gallery__paths [data-gallery-path] {
+  opacity: 0;
+  filter: drop-shadow(0 0 8px color-mix(in srgb, var(--gallery-light) 28%, transparent));
+}

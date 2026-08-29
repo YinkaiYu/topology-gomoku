@@ -4,10 +4,10 @@ import { addChapterTitleReveal, createChapterTitleScene } from "../../compositio
 import { addEndCardReveal, createEndCardScene } from "../../compositions/end-card.js";
 import { addIntroReveal, createIntroScene } from "../../compositions/intro.js";
 import { createChapterScene } from "../../compositions/chapters/index.js";
+import { createSevenWorldGalleryScene, addSevenWorldGalleryMotion } from "../../compositions/seven-worlds.js";
 import { createPlaceholderScene, createSceneRegistry } from "../../compositions/shared/scene.js";
 import { addTopologyChapterMotion } from "./topology-surfaces.js";
-
-const TRANSITION_DURATION = 0.62;
+import { addCinematicTransition, getTransitionContract, TRANSITION_DURATION, validateTransitionContracts } from "./transitions.js";
 
 export function buildMasterTimeline({ document: documentRef, gsap, stage, sceneFactories = {} }) {
   if (!gsap?.timeline) {
@@ -22,7 +22,8 @@ export function buildMasterTimeline({ document: documentRef, gsap, stage, sceneF
       "chapter-card": ({ document, definition: scene, chapter: sceneChapter }) => createChapterTitleScene(document, scene, sceneChapter),
       chapter: ({ document, definition: scene }) => createChapterScene(document, scene),
       "end-card": ({ document, definition: scene }) => createEndCardScene(document, scene),
-      intro: ({ document, definition: scene }) => createIntroScene(document, scene)
+      intro: ({ document, definition: scene }) => createIntroScene(document, scene),
+      "seven-world-gallery": ({ document, definition: scene }) => createSevenWorldGalleryScene(document, scene)
     };
     const defaultFactory = defaultFactories[definition.kind]
       ?? (({ document, definition: scene }) => createPlaceholderScene(document, scene));
@@ -31,6 +32,8 @@ export function buildMasterTimeline({ document: documentRef, gsap, stage, sceneF
     registry.register(definition, element);
     return { definition, element };
   });
+
+  validateTransitionContracts(timelineDefinition.scenes);
 
   const timeline = gsap.timeline({ paused: true });
   const elements = scenePairs.map(({ element }) => element);
@@ -42,13 +45,16 @@ export function buildMasterTimeline({ document: documentRef, gsap, stage, sceneF
     if (index > 0) {
       const transitionStart = Math.max(0, definition.start - TRANSITION_DURATION);
       const previous = scenePairs[index - 1].element;
-      timeline.to(previous, { opacity: 0, duration: TRANSITION_DURATION, ease: "sine.inOut" }, transitionStart);
-      timeline.fromTo(element, { opacity: 0 }, {
-        opacity: 1,
-        duration: TRANSITION_DURATION,
-        ease: "sine.inOut",
-        immediateRender: false
-      }, transitionStart);
+      const contract = getTransitionContract(timelineDefinition.scenes[index - 1].id, definition.id);
+      addCinematicTransition(timeline, {
+        document: documentRef,
+        stage,
+        from: previous,
+        to: element,
+        contract,
+        start: transitionStart,
+        duration: TRANSITION_DURATION
+      });
     }
 
     if (definition.kind === "chapter-card" && element.querySelector("[data-chapter-card]")) {
@@ -57,6 +63,8 @@ export function buildMasterTimeline({ document: documentRef, gsap, stage, sceneF
       addIntroReveal(timeline, element, definition.start);
     } else if (definition.kind === "chapter" && element.querySelector("[data-chapter-board]")) {
       addTopologyChapterMotion(timeline, element, definition.start, definition.duration);
+    } else if (definition.kind === "seven-world-gallery" && element.querySelector("[data-seven-world-gallery]")) {
+      addSevenWorldGalleryMotion(timeline, element, definition.start, definition.duration);
     } else if (definition.kind === "end-card" && element.querySelector("[data-game-title-mark]")) {
       addEndCardReveal(timeline, element, definition.start);
     } else {
