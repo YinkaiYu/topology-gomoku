@@ -111,7 +111,8 @@ body {
   height: 1660px;
   border-radius: 50%;
   background: radial-gradient(ellipse at center, color-mix(in srgb, var(--chapter-light) 12%, rgba(6, 9, 8, 0)), rgba(6, 9, 8, 0) 66%);
-  opacity: 0.5;
+  opacity: 0;
+  transform: scale(0.96);
   transform-origin: 43% 50%;
 }
 
@@ -123,13 +124,10 @@ body {
   height: 1840px;
   object-fit: contain;
   object-position: center;
-  opacity: 0.24;
+  opacity: 0;
   filter: brightness(0.62) saturate(0.7);
+  transform: scale(0.985);
   transform-origin: center;
-}
-
-[data-chapter-card="plane"] .chapter-card__silhouette {
-  opacity: 0.075;
 }
 
 .chapter-card__copy {
@@ -152,6 +150,8 @@ body {
   font-weight: 600;
   line-height: 1.16;
   letter-spacing: 0.18em;
+  opacity: 0;
+  transform: translateY(18px);
   white-space: nowrap;
 }
 
@@ -162,6 +162,8 @@ body {
   font-weight: 700;
   line-height: 1.03;
   letter-spacing: 0.035em;
+  opacity: 0;
+  transform: translateY(24px);
   white-space: nowrap;
 }
 
@@ -172,6 +174,8 @@ body {
   font-weight: 400;
   line-height: 1.25;
   letter-spacing: 0.12em;
+  opacity: 0;
+  transform: translateY(14px);
   white-space: nowrap;
 }
 

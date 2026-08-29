@@ -5,7 +5,7 @@ import { createPlaceholderScene, createSceneRegistry } from "../../compositions/
 
 const TRANSITION_DURATION = 0.62;
 
-export function buildMasterTimeline({ document: documentRef, gsap, stage }) {
+export function buildMasterTimeline({ document: documentRef, gsap, stage, sceneFactories = {} }) {
   if (!gsap?.timeline) {
     throw new TypeError("GSAP is required to build the master timeline");
   }
@@ -13,9 +13,12 @@ export function buildMasterTimeline({ document: documentRef, gsap, stage }) {
   const chapterById = new Map(chapters.map((chapter) => [chapter.id, chapter]));
   const registry = createSceneRegistry(stage);
   const scenePairs = timelineDefinition.scenes.map((definition) => {
-    const element = definition.kind === "chapter-card"
-      ? createChapterTitleScene(documentRef, definition, chapterById.get(definition.chapterId))
-      : createPlaceholderScene(documentRef, definition);
+    const chapter = chapterById.get(definition.chapterId);
+    const defaultFactory = definition.kind === "chapter-card"
+      ? ({ document, definition: scene, chapter: sceneChapter }) => createChapterTitleScene(document, scene, sceneChapter)
+      : ({ document, definition: scene }) => createPlaceholderScene(document, scene);
+    const factory = sceneFactories[definition.kind] ?? defaultFactory;
+    const element = factory({ document: documentRef, definition, chapter });
     registry.register(definition, element);
     return { definition, element };
   });
@@ -39,18 +42,23 @@ export function buildMasterTimeline({ document: documentRef, gsap, stage }) {
       }, transitionStart);
     }
 
-    if (definition.kind === "chapter-card") {
+    if (definition.kind === "chapter-card" && element.querySelector("[data-chapter-card]")) {
       addChapterTitleReveal(timeline, element, definition.start);
     } else {
-      timeline.from(element.querySelector("[data-scene-atmosphere]"), {
-        opacity: 0,
-        scale: 0.995,
-        duration: 0.8,
-        ease: "power1.out",
-        immediateRender: false
-      }, definition.start + 0.18);
+      const atmosphere = element.querySelector("[data-scene-atmosphere]");
+      if (atmosphere) {
+        timeline.from(atmosphere, {
+          opacity: 0,
+          scale: 0.995,
+          duration: 0.8,
+          ease: "power1.out",
+          immediateRender: false
+        }, definition.start + 0.18);
+      }
     }
   });
+
+  timeline.set(stage, { opacity: 1 }, timelineDefinition.duration);
 
   return Object.freeze({ timeline, registry: registry.scenes });
 }

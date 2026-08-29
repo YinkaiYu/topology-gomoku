@@ -1,7 +1,7 @@
 import { createSceneElement } from "./shared/scene.js";
 
 const chapterAppearance = Object.freeze({
-  plane: Object.freeze({ light: "#f2efe7", silhouette: "plane.svg" }),
+  plane: Object.freeze({ light: "#21302c", silhouette: "plane.svg" }),
   cylinder: Object.freeze({ light: "#3f8c87", silhouette: "cylinder.svg" }),
   torus: Object.freeze({ light: "#3f8c87", silhouette: "torus.svg" }),
   mobius: Object.freeze({ light: "#d95b4f", silhouette: "mobius.svg" }),
@@ -32,12 +32,14 @@ export function createChapterTitleScene(documentRef, sceneDefinition, chapter) {
   const volume = documentRef.createElement("div");
   volume.className = "chapter-card__volume";
   volume.dataset.chapterVolume = "";
+  volume.dataset.revealOpacity = "0.5";
   volume.dataset.layoutIgnore = "";
   volume.setAttribute("aria-hidden", "true");
 
   const silhouette = documentRef.createElement("img");
   silhouette.className = "chapter-card__silhouette";
   silhouette.dataset.chapterSilhouette = "";
+  silhouette.dataset.revealOpacity = chapter.id === "plane" ? "0.075" : "0.24";
   silhouette.dataset.layoutIgnore = "";
   silhouette.src = `/assets/topologies/${appearance.silhouette}`;
   silhouette.alt = "";
@@ -65,9 +67,9 @@ export function addChapterTitleReveal(timeline, scene, start) {
   const chapter = scene.querySelector("[data-chapter-name]");
   const topology = scene.querySelector("[data-topology-name]");
 
-  timeline.from(volume, { opacity: 0, scale: 0.96, duration: 1.15, ease: "sine.out", immediateRender: false }, start + 0.14);
-  timeline.from(silhouette, { opacity: 0, scale: 0.985, duration: 0.92, ease: "power1.out", immediateRender: false }, start + 0.2);
-  timeline.from(act, { opacity: 0, y: 18, duration: 0.54, ease: "power2.out", immediateRender: false }, start + 0.34);
-  timeline.from(chapter, { opacity: 0, y: 24, duration: 0.72, ease: "power3.out", immediateRender: false }, start + 0.43);
-  timeline.from(topology, { opacity: 0, y: 14, duration: 0.62, ease: "sine.out", immediateRender: false }, start + 0.58);
+  timeline.to(volume, { opacity: Number(volume.dataset.revealOpacity), scale: 1, duration: 1.15, ease: "sine.out" }, start + 0.14);
+  timeline.to(silhouette, { opacity: Number(silhouette.dataset.revealOpacity), scale: 1, duration: 0.92, ease: "power1.out" }, start + 0.2);
+  timeline.to(act, { opacity: 1, y: 0, duration: 0.54, ease: "power2.out" }, start + 0.34);
+  timeline.to(chapter, { opacity: 1, y: 0, duration: 0.72, ease: "power3.out" }, start + 0.43);
+  timeline.to(topology, { opacity: 1, y: 0, duration: 0.62, ease: "sine.out" }, start + 0.58);
 }

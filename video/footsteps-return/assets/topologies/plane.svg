@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" role="img" shape-rendering="geometricPrecision" data-model="shaded-bounded-plane" data-style="hand-drawn-cel-silhouette">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" role="img" shape-rendering="geometricPrecision" data-model="shaded-bounded-plane" data-style="hand-drawn-cel-silhouette" data-source-href="app/assets/topologies/plane.svg">
   <desc>P(u,v)=(u,v,0), -1≤u,v≤1</desc>
   <g>
     <path d="M 26.71 119.95 L 168.99 221.57 L 230.41 135.31 L 88.39 33.67 Z" fill="#f4f2ea" stroke="#f4f2ea" stroke-width="1.50" stroke-linejoin="round" vector-effect="non-scaling-stroke"/>

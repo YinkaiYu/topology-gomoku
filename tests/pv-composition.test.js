@@ -2,6 +2,7 @@
 
 const test = require("node:test");
 const assert = require("node:assert/strict");
+const fs = require("node:fs");
 const path = require("node:path");
 const { chromium } = require("playwright");
 
@@ -27,13 +28,13 @@ const expectedSceneIds = [
   "end-card"
 ];
 const expectedChapterCards = [
-  { id: "plane", act: "ACT. PROLOGUE", chapter: "方庭", topology: "平面" },
-  { id: "cylinder", act: "ACT. I", chapter: "回廊", topology: "圆柱面" },
-  { id: "torus", act: "ACT. II", chapter: "环游", topology: "环面" },
-  { id: "mobius", act: "ACT. III", chapter: "扭带", topology: "莫比乌斯环" },
-  { id: "klein", act: "ACT. IV", chapter: "瓶界", topology: "克莱因瓶" },
-  { id: "projective", act: "ACT. V", chapter: "双生", topology: "实射影平面" },
-  { id: "sphere", act: "ACT. VI", chapter: "归圆", topology: "球面" }
+  { id: "plane", act: "ACT. PROLOGUE", chapter: "方庭", topology: "平面", light: "#21302c" },
+  { id: "cylinder", act: "ACT. I", chapter: "回廊", topology: "圆柱面", light: "#3f8c87" },
+  { id: "torus", act: "ACT. II", chapter: "环游", topology: "环面", light: "#3f8c87" },
+  { id: "mobius", act: "ACT. III", chapter: "扭带", topology: "莫比乌斯环", light: "#d95b4f" },
+  { id: "klein", act: "ACT. IV", chapter: "瓶界", topology: "克莱因瓶", light: "#7f6ca8" },
+  { id: "projective", act: "ACT. V", chapter: "双生", topology: "实射影平面", light: "#8b7556" },
+  { id: "sphere", act: "ACT. VI", chapter: "归圆", topology: "球面", light: "#c79244" }
 ];
 
 let browser;
@@ -66,6 +67,7 @@ test("4K master stage synchronously registers every scene on one paused timeline
       fps: root?.dataset.fps,
       duration: root?.dataset.duration,
       paused: timeline?.paused(),
+      timelineDuration: timeline?.duration(),
       registryIds: Object.keys(window.__pvSceneRegistry ?? {}),
       domSceneIds: [...document.querySelectorAll("[data-scene-id]")].map((node) => node.dataset.sceneId),
       hasInfiniteRepeat: timeline?.getChildren(true, true, true).some((child) => child.repeat?.() === -1),
@@ -81,6 +83,7 @@ test("4K master stage synchronously registers every scene on one paused timeline
     fps: "60",
     duration: "165",
     paused: true,
+    timelineDuration: 165,
     registryIds: expectedSceneIds,
     domSceneIds: expectedSceneIds,
     hasInfiniteRepeat: false,
@@ -150,10 +153,73 @@ test("seven chapter cards preserve the approved title triples", async () => {
     id: card.dataset.chapterCard,
     act: card.querySelector("[data-chapter-act]")?.textContent.trim(),
     chapter: card.querySelector("[data-chapter-name]")?.textContent.trim(),
-    topology: card.querySelector("[data-topology-name]")?.textContent.trim()
+    topology: card.querySelector("[data-topology-name]")?.textContent.trim(),
+    light: getComputedStyle(card).getPropertyValue("--chapter-light").trim()
   })));
 
   assert.deepEqual(snapshots, expectedChapterCards);
+});
+
+test("chapter-card children stay hidden before reveal and resolve visibly without flashing", async () => {
+  const samples = await page.evaluate(() => {
+    const timeline = window.__timelines["footsteps-return"];
+    const cards = [...document.querySelectorAll("[data-chapter-card]")];
+    const selectors = [
+      "[data-chapter-volume]",
+      "[data-chapter-silhouette]",
+      "[data-chapter-act]",
+      "[data-chapter-name]",
+      "[data-topology-name]"
+    ];
+    return cards.map((card) => {
+      const scene = card.closest("[data-scene-id]");
+      const start = Number(scene.dataset.sceneStart);
+      const sampleAt = (time) => {
+        timeline.time(time, false).pause();
+        return selectors.map((selector) => Number(getComputedStyle(card.querySelector(selector)).opacity));
+      };
+      return {
+        id: card.dataset.chapterCard,
+        before: sampleAt(start - 0.01),
+        start: sampleAt(start),
+        during: sampleAt(start + 0.72),
+        after: sampleAt(start + 1.45)
+      };
+    });
+  });
+
+  samples.forEach(({ id, before, start, during, after }) => {
+    assert.deepEqual(before, [0, 0, 0, 0, 0], `${id} children must be authored hidden before reveal`);
+    assert.deepEqual(start, [0, 0, 0, 0, 0], `${id} children must remain hidden at chapter start`);
+    during.forEach((opacity) => assert.ok(opacity > 0, `${id} child should be visible during reveal`));
+    after.forEach((opacity) => assert.ok(opacity > 0, `${id} child should remain visible after reveal`));
+  });
+});
+
+test("master scene factories can inject a real chapter renderer", async () => {
+  const result = await page.evaluate(async () => {
+    const { buildMasterTimeline } = await import("/src/runtime/master-timeline.js");
+    const stage = document.createElement("div");
+    const runtime = buildMasterTimeline({
+      document,
+      gsap: window.gsap,
+      stage,
+      sceneFactories: {
+        chapter({ document: documentRef, definition }) {
+          const scene = documentRef.createElement("section");
+          scene.dataset.sceneId = definition.id;
+          scene.dataset.sceneKind = definition.kind;
+          scene.dataset.injectedRenderer = "true";
+          return scene;
+        }
+      }
+    });
+    const chapters = Object.values(runtime.registry).filter((scene) => scene.dataset.sceneKind === "chapter");
+    runtime.timeline.kill();
+    return { count: chapters.length, injected: chapters.every((scene) => scene.dataset.injectedRenderer === "true") };
+  });
+
+  assert.deepEqual(result, { count: 7, injected: true });
 });
 
 test("every ACT line remains a single unclipped line at the sole 4K target", async () => {
@@ -173,5 +239,35 @@ test("every ACT line remains a single unclipped line at the sole 4K target", asy
     assert.equal(measurement.whiteSpace, "nowrap", `${measurement.text} must not wrap`);
     assert.ok(measurement.height <= measurement.lineHeight + 1, `${measurement.text} must occupy one line`);
     assert.equal(measurement.fitsWidth, true, `${measurement.text} must fit its title column`);
+  });
+});
+
+test("project-local chapter assets preserve repository provenance", async () => {
+  const { assets } = await import("../video/footsteps-return/src/data/assets.js");
+  const copies = assets.filter(({ provenance }) => provenance.type === "repository-copy");
+  assert.deepEqual(copies.map(({ path: assetPath, provenance }) => [assetPath, provenance.source]), [
+    ["video/footsteps-return/assets/fonts/noto-serif-sc-400.woff2", "app/assets/fonts/noto-serif-sc-400.woff2"],
+    ["video/footsteps-return/assets/fonts/noto-serif-sc-600.woff2", "app/assets/fonts/noto-serif-sc-600.woff2"],
+    ["video/footsteps-return/assets/fonts/noto-serif-sc-700.woff2", "app/assets/fonts/noto-serif-sc-700.woff2"],
+    ["video/footsteps-return/assets/topologies/plane.svg", "app/assets/topologies/plane.svg"],
+    ["video/footsteps-return/assets/topologies/cylinder.svg", "app/assets/silhouettes/cylinder.svg"],
+    ["video/footsteps-return/assets/topologies/torus.svg", "app/assets/silhouettes/torus.svg"],
+    ["video/footsteps-return/assets/topologies/mobius.svg", "app/assets/silhouettes/mobius.svg"],
+    ["video/footsteps-return/assets/topologies/klein.svg", "app/assets/silhouettes/klein.svg"],
+    ["video/footsteps-return/assets/topologies/projective.svg", "app/assets/silhouettes/projective.svg"],
+    ["video/footsteps-return/assets/topologies/sphere.svg", "app/assets/silhouettes/sphere.svg"]
+  ]);
+
+  copies.forEach(({ path: assetPath, provenance }) => {
+    const copied = fs.readFileSync(path.join(ROOT, assetPath));
+    const source = fs.readFileSync(path.join(ROOT, provenance.source));
+    if (assetPath.endsWith(".woff2")) {
+      assert.deepEqual(copied, source, `${assetPath} must be a byte-identical font copy`);
+      return;
+    }
+    const markup = copied.toString("utf8");
+    assert.match(markup, new RegExp(`data-source-href="${provenance.source.replaceAll("/", "\\/")}"`));
+    const withoutSource = (value) => value.toString("utf8").replace(/\sdata-source-href="[^"]*"/, "");
+    assert.equal(withoutSource(copied), withoutSource(source), `${assetPath} may only change source metadata`);
   });
 });
