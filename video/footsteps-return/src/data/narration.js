@@ -7,7 +7,9 @@ const freezeCue = (id, semanticGroup, estimatedDuration, spokenText, visibleText
   subtitle: Object.freeze({ visibleText, terminalPunctuation })
 });
 
-// spokenText is the approved voiceover source. Subtitle presentation stays a later task.
+// spokenText is the approved voiceover source. Chapter-card labels are never added as
+// title announcements, but approved prose may naturally use the same word (for example 方庭).
+// Subtitle presentation stays a later task.
 export const narrationCues = Object.freeze([
   freezeCue("intro-boundary", "intro", 4, "人们总把棋盘的边缘视作尽头。", "人们总把棋盘的边缘视作尽头", "。"),
   freezeCue("intro-roads", "intro", 8, "可那些消失在边界上的道路并未中断。它们在另一处接缝后延续，将遥远的落点重新变为近邻。", "可那些消失在边界上的道路并未中断。它们在另一处接缝后延续，将遥远的落点重新变为近邻", "。"),

@@ -3,7 +3,7 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { assets } from "../src/data/assets.js";
 import { chapters } from "../src/data/chapters.js";
-import { narrationCueById, narrationCues } from "../src/data/narration.js";
+import { narrationCues } from "../src/data/narration.js";
 import { masterTimeline } from "../src/data/timeline.js";
 
 const repositoryRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..", "..", "..");
@@ -43,9 +43,9 @@ export function validateAssets(assetList, root = repositoryRoot) {
   }
 }
 
-function validateNarration() {
+function validateNarration(narrationCueList) {
   const ids = new Set();
-  narrationCues.forEach((cue) => {
+  narrationCueList.forEach((cue) => {
     if (!cue.id || ids.has(cue.id)) fail(`invalid narration cue id ${cue.id}`);
     ids.add(cue.id);
     if (cue.speakerRole !== "narrator") fail(`narration cue ${cue.id} must use narrator role`);
@@ -54,16 +54,31 @@ function validateNarration() {
   });
 }
 
-export function validateTimeline(timeline) {
+function collectNarrationCueIds(narrationCueList) {
+  if (!Array.isArray(narrationCueList)) fail("narration cue list must be an array");
+  const cueIds = new Set();
+  narrationCueList.forEach((cue) => {
+    if (!cue || typeof cue.id !== "string" || !cue.id || cueIds.has(cue.id)) fail("narration cue list needs unique stable ids");
+    cueIds.add(cue.id);
+  });
+  return cueIds;
+}
+
+export function validateTimeline(timeline, narrationCueList) {
   if (!timeline || !(timeline.duration >= 0)) fail("master timeline needs a non-negative duration");
+  const knownCueIds = collectNarrationCueIds(narrationCueList);
   const narration = Array.isArray(timeline.narration) ? timeline.narration : [];
   const audio = Array.isArray(timeline.audio) ? timeline.audio : [];
   const subtitleGroups = [...narration].sort((a, b) => a.start - b.start || a.duration - b.duration);
+  const scheduledCueIds = new Set();
   let lastSubtitleEnd = 0;
   let lastSubtitleId;
   let lastAudioEnd = 0;
   for (const cue of subtitleGroups) {
     if (!(cue.start >= 0 && cue.duration > 0) || !cue.cueId || !cue.subtitleGroupId) fail("narration timeline entries need cue, subtitle group, start, and positive duration");
+    if (!knownCueIds.has(cue.cueId)) fail(`unknown narration cue ${cue.cueId}`);
+    if (scheduledCueIds.has(cue.cueId)) fail(`duplicate narration cue ${cue.cueId}`);
+    scheduledCueIds.add(cue.cueId);
     if (cue.start < lastSubtitleEnd) fail(`subtitle groups overlap: ${lastSubtitleId} and ${cue.subtitleGroupId}`);
     lastSubtitleEnd = cue.start + cue.duration;
     lastSubtitleId = cue.subtitleGroupId;
@@ -73,13 +88,17 @@ export function validateTimeline(timeline) {
     if (!(cue.start >= 0 && cue.duration >= 0)) fail(`audio cue ${cue.id ?? "unknown"} needs a non-negative range`);
     lastAudioEnd = Math.max(lastAudioEnd, cue.start + cue.duration);
   }
+  for (const cueId of knownCueIds) {
+    if (!scheduledCueIds.has(cueId)) fail(`missing narration cue ${cueId}`);
+  }
   if (timeline.duration < lastAudioEnd) fail(`master timeline is shorter than the last narration/audio cue (${lastAudioEnd}s)`);
 }
 
-function validateScenes() {
+function validateScenes(timeline, chapterList, narrationCueList) {
   const sceneIds = new Set();
-  const chapterIds = new Set(chapters.map(({ id }) => id));
-  masterTimeline.scenes.forEach((scene) => {
+  const chapterIds = new Set(chapterList.map(({ id }) => id));
+  const narrationIds = collectNarrationCueIds(narrationCueList);
+  timeline.scenes.forEach((scene) => {
     if (!scene.id || sceneIds.has(scene.id)) fail(`invalid scene id ${scene.id}`);
     sceneIds.add(scene.id);
     if (!(scene.start >= 0 && scene.duration >= 0)) fail(`scene ${scene.id} needs a non-negative duration`);
@@ -87,17 +106,17 @@ function validateScenes() {
     if (scene.chapterId && !chapterIds.has(scene.chapterId)) fail(`scene ${scene.id} references an unknown chapter`);
     if (scene.kind === "chapter-card" && scene.narrationCueIds.length !== 0) fail(`chapter card ${scene.id} cannot contain narration`);
     scene.narrationCueIds.forEach((cueId) => {
-      if (!narrationCueById[cueId]) fail(`scene ${scene.id} references unknown narration ${cueId}`);
+      if (!narrationIds.has(cueId)) fail(`scene ${scene.id} references unknown narration ${cueId}`);
     });
-    if (scene.start + scene.duration > masterTimeline.duration) fail(`scene ${scene.id} exceeds the master duration`);
+    if (scene.start + scene.duration > timeline.duration) fail(`scene ${scene.id} exceeds the master duration`);
   });
 }
 
 export function validateManifest({ root = repositoryRoot } = {}) {
   validateAssets(assets, root);
-  validateNarration();
-  validateScenes();
-  validateTimeline(masterTimeline);
+  validateNarration(narrationCues);
+  validateScenes(masterTimeline, chapters, narrationCues);
+  validateTimeline(masterTimeline, narrationCues);
 }
 
 if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {

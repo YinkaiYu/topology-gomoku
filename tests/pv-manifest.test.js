@@ -60,7 +60,7 @@ test("PV manifest orders one intro, seven chapters, a gallery, and an end card",
   assert.equal(masterTimeline.scenes.filter(({ kind }) => kind === "end-card").length, 1);
 });
 
-test("PV narration preserves approved copy and keeps visible punctuation as metadata", async () => {
+test("PV narration preserves approved copy, including ordinary prose that naturally says 方庭", async () => {
   const { narrationCues } = await load("video/footsteps-return/src/data/narration.js");
   assert.deepEqual(narrationCues.map(({ spokenText }) => spokenText), approvedNarration);
 
@@ -74,6 +74,7 @@ test("PV narration preserves approved copy and keeps visible punctuation as meta
     assert.equal(cue.subtitle.visibleText.endsWith(cue.subtitle.terminalPunctuation), false);
   });
   assert.equal(narrationCues.some(({ spokenText }) => /ACT\. (?:PROLOGUE|[IVX]+)/.test(spokenText)), false);
+  assert.equal(narrationCues.some(({ spokenText }) => spokenText.includes("方庭以有限的秩序收容第一条五连")), true);
 });
 
 test("PV timeline is editable duration data with non-overlapping subtitle groups", async () => {
@@ -99,6 +100,17 @@ test("PV validator rejects invalid asset paths and timeline audio collisions", a
   assert.throws(() => validator.validateAssets([{ id: "missing", path: "app/assets/topologies/nope.svg" }], ROOT), /missing/);
   assert.throws(() => validator.validateAssets([{ id: "output", path: "video/footsteps-return/renders/final.mp4" }], ROOT), /generated-output/);
   assert.throws(() => validator.validateAssets([{ id: "remote", path: "app/assets/topologies/plane.svg", sourceUrl: "https://example.test/source" }], ROOT), /provenance/);
-  assert.throws(() => validator.validateTimeline({ duration: 10, narration: [{ cueId: "a", start: 0, duration: 6, subtitleGroupId: "one" }, { cueId: "b", start: 5, duration: 2, subtitleGroupId: "two" }], audio: [] }), /overlap/);
-  assert.throws(() => validator.validateTimeline({ duration: 5, narration: [{ cueId: "a", start: 0, duration: 6, subtitleGroupId: "one" }], audio: [] }), /shorter/);
+  const cueList = [{ id: "a" }, { id: "b" }];
+  assert.throws(() => validator.validateTimeline({ duration: 10, narration: [{ cueId: "a", start: 0, duration: 6, subtitleGroupId: "one" }, { cueId: "b", start: 5, duration: 2, subtitleGroupId: "two" }], audio: [] }, cueList), /overlap/);
+  assert.throws(() => validator.validateTimeline({ duration: 5, narration: [{ cueId: "a", start: 0, duration: 6, subtitleGroupId: "one" }, { cueId: "b", start: 6, duration: 1, subtitleGroupId: "two" }], audio: [] }, cueList), /shorter/);
+});
+
+test("PV timeline requires one scheduled entry for every known narration cue", async () => {
+  const validator = await load("video/footsteps-return/scripts/validate-manifest.mjs");
+  const cueList = [{ id: "known-a" }, { id: "known-b" }];
+  const singleEntry = (cueId, start = 0) => ({ cueId, start, duration: 2, subtitleGroupId: `${cueId}-${start}` });
+
+  assert.throws(() => validator.validateTimeline({ duration: 4, narration: [singleEntry("unknown")], audio: [] }, cueList), /unknown narration cue/);
+  assert.throws(() => validator.validateTimeline({ duration: 4, narration: [singleEntry("known-a")], audio: [] }, cueList), /missing narration cue/);
+  assert.throws(() => validator.validateTimeline({ duration: 4, narration: [singleEntry("known-a"), singleEntry("known-a", 2), singleEntry("known-b", 4)], audio: [] }, cueList), /duplicate narration cue/);
 });
