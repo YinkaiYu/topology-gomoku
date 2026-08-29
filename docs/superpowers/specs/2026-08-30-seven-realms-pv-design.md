@@ -1,4 +1,4 @@
-# 《拓扑五子棋》宣传 PV「七界足迹」设计规格
+# 《拓扑五子棋》章节预告 PV—「足迹回环」设计规格
 
 ## 状态
 
@@ -194,7 +194,7 @@ PV 为离线预渲染，不受实机帧率和移动设备性能约束。可以�
 
 ## 视觉身份
 
-HyperFrames 工程必须在编写任何合成 HTML 前创建 `video/seven-footprints/DESIGN.md`。该文件继承 [`../../design/visual-language.md`](../../design/visual-language.md) 的简约、典雅、克制原则，并补充 PV 专属颜色、字体、章节光色、摄影、运动和禁止事项。
+HyperFrames 工程必须在编写任何合成 HTML 前创建 `video/footsteps-return/DESIGN.md`。该文件继承 [`../../design/visual-language.md`](../../design/visual-language.md) 的简约、典雅、克制原则，并补充 PV 专属颜色、字体、章节光色、摄影、运动和禁止事项。
 
 片头不出现中国科学院物理研究所标识，以保持沉浸。片尾呈现「拓扑五子棋」和较醒目的中国科学院物理研究所 Logo；不添加下载二维码、平台按钮或版本号。
 
@@ -203,7 +203,7 @@ HyperFrames 工程必须在编写任何合成 HTML 前创建 `video/seven-footpr
 计划中的工程目录为：
 
 ```text
-video/seven-footprints/
+video/footsteps-return/
   DESIGN.md
   index.html
   compositions/
@@ -251,4 +251,3 @@ HyperFrames、音频和渲染依赖在实施计划中确定并锁定版本。新
 ## Git 与生成资产
 
 源工程、脚本、设计文件、字幕、轻量音频工程和许可记录纳入 Git。逐帧图片、缓存、高码率中间文件以及 4K/1080p 成片放入忽略目录并单独交付，避免仓库膨胀。提交保持小而可回滚，设计、画面、声音和验证记录分阶段提交。
-

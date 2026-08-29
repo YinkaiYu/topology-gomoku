@@ -32,7 +32,7 @@
 
 | 文档 | 内容 |
 | --- | --- |
-| [`superpowers/specs/2026-08-30-seven-realms-pv-design.md`](superpowers/specs/2026-08-30-seven-realms-pv-design.md) | 《拓扑五子棋》宣传 PV「七界足迹」的叙事、视听、工程与验收规格 |
+| [`superpowers/specs/2026-08-30-seven-realms-pv-design.md`](superpowers/specs/2026-08-30-seven-realms-pv-design.md) | 《拓扑五子棋》章节预告 PV—「足迹回环」的叙事、视听、工程与验收规格 |
 
 ## 平台规范
 
