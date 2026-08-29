@@ -12,18 +12,25 @@
       id="footsteps-return-root"
       data-composition-id="footsteps-return"
       data-start="0"
-      data-duration="1"
+      data-duration="165"
       data-width="3840"
       data-height="2160"
       data-fps="60"
-      aria-label="Footsteps Return PV composition scaffold"
-    ></main>
+      aria-label="Footsteps Return PV composition"
+    >
+      <div class="master-stage" data-master-stage>
+        <div class="scene-layer" data-scene-layer></div>
+        <div class="caption-group" data-caption-group aria-live="off">
+          <p class="caption-group__text" data-caption-text></p>
+        </div>
+      </div>
+    </main>
     <script type="module">
-      import { createCompositionTimeline, composition } from "./src/bootstrap.js";
+      import { bootstrapComposition } from "./src/bootstrap.js";
 
+      const runtime = bootstrapComposition();
       window.__timelines = window.__timelines || {};
-      const timeline = createCompositionTimeline(window.gsap);
-      window.__timelines[composition.id] = timeline;
+      window.__timelines["footsteps-return"] = runtime.timeline;
     </script>
   </body>
 </html>

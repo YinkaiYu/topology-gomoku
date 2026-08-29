@@ -1,3 +1,27 @@
+@font-face {
+  font-family: "Topo Serif";
+  src: url("/assets/fonts/noto-serif-sc-400.woff2") format("woff2");
+  font-style: normal;
+  font-weight: 400;
+  font-display: block;
+}
+
+@font-face {
+  font-family: "Topo Serif";
+  src: url("/assets/fonts/noto-serif-sc-600.woff2") format("woff2");
+  font-style: normal;
+  font-weight: 600;
+  font-display: block;
+}
+
+@font-face {
+  font-family: "Topo Serif";
+  src: url("/assets/fonts/noto-serif-sc-700.woff2") format("woff2");
+  font-style: normal;
+  font-weight: 700;
+  font-display: block;
+}
+
 * {
   box-sizing: border-box;
 }
@@ -12,6 +36,165 @@ body,
 }
 
 body {
-  background: #f2efe7;
-  color: #21302c;
+  background: #060908;
+  color: #f2efe7;
+  font-family: "Topo Serif";
+}
+
+[data-composition-id="footsteps-return"] {
+  --safe-left: 192px;
+  --safe-right: 192px;
+  --safe-top: 144px;
+  --safe-bottom: 180px;
+  position: relative;
+  isolation: isolate;
+  background-color: #060908;
+}
+
+.master-stage,
+.scene-layer,
+.pv-scene {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.master-stage,
+.pv-scene {
+  overflow: hidden;
+}
+
+.scene-layer {
+  z-index: 1;
+}
+
+.pv-scene {
+  background-color: #060908;
+  opacity: 0;
+}
+
+.pv-scene:first-child {
+  opacity: 1;
+}
+
+.pv-scene__atmosphere {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 58% 42%, rgba(63, 140, 135, 0.035), rgba(6, 9, 8, 0) 42%);
+}
+
+.chapter-card {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+  padding: var(--safe-top) var(--safe-right) var(--safe-bottom) var(--safe-left);
+  overflow: hidden;
+  background-color: #060908;
+}
+
+.chapter-card::after {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 39% 47%, color-mix(in srgb, var(--chapter-light) 8%, rgba(6, 9, 8, 0)), rgba(6, 9, 8, 0) 36%);
+  content: "";
+  pointer-events: none;
+}
+
+.chapter-card__volume {
+  position: absolute;
+  left: -120px;
+  top: 250px;
+  width: 2460px;
+  height: 1660px;
+  border-radius: 50%;
+  background: radial-gradient(ellipse at center, color-mix(in srgb, var(--chapter-light) 12%, rgba(6, 9, 8, 0)), rgba(6, 9, 8, 0) 66%);
+  opacity: 0.5;
+  transform-origin: 43% 50%;
+}
+
+.chapter-card__silhouette {
+  position: absolute;
+  right: 170px;
+  top: 150px;
+  width: 1900px;
+  height: 1840px;
+  object-fit: contain;
+  object-position: center;
+  opacity: 0.24;
+  filter: brightness(0.62) saturate(0.7);
+  transform-origin: center;
+}
+
+[data-chapter-card="plane"] .chapter-card__silhouette {
+  opacity: 0.075;
+}
+
+.chapter-card__copy {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  width: 1520px;
+  min-height: 760px;
+  margin-left: 260px;
+  gap: 34px;
+  text-wrap: balance;
+}
+
+.chapter-card__act {
+  width: 100%;
+  color: var(--chapter-light);
+  font-size: 52px;
+  font-weight: 600;
+  line-height: 1.16;
+  letter-spacing: 0.18em;
+  white-space: nowrap;
+}
+
+.chapter-card__chapter {
+  width: 100%;
+  color: #f2efe7;
+  font-size: 260px;
+  font-weight: 700;
+  line-height: 1.03;
+  letter-spacing: 0.035em;
+  white-space: nowrap;
+}
+
+.chapter-card__topology {
+  width: 100%;
+  color: #b8b6ae;
+  font-size: 82px;
+  font-weight: 400;
+  line-height: 1.25;
+  letter-spacing: 0.12em;
+  white-space: nowrap;
+}
+
+.caption-group {
+  position: absolute;
+  z-index: 3;
+  left: var(--safe-left);
+  right: var(--safe-right);
+  bottom: var(--safe-bottom);
+  display: flex;
+  min-height: 112px;
+  align-items: flex-end;
+  justify-content: center;
+  pointer-events: none;
+}
+
+.caption-group__text {
+  max-width: 100%;
+  margin: 0;
+  color: #f2efe7;
+  font-size: 88px;
+  font-weight: 400;
+  line-height: 1.2;
+  text-align: center;
+  white-space: nowrap;
 }
