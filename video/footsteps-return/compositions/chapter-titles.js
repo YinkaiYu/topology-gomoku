@@ -48,7 +48,7 @@ export function createChapterTitleScene(documentRef, sceneDefinition, chapter) {
   silhouette.dataset.chapterSilhouette = "";
   silhouette.dataset.revealOpacity = chapter.id === "plane" ? "0.075" : "0.24";
   silhouette.dataset.layoutIgnore = "";
-  silhouette.src = `/assets/topologies/${appearance.silhouette}`;
+  silhouette.src = `./assets/topologies/${appearance.silhouette}`;
   silhouette.alt = "";
   silhouette.setAttribute("aria-hidden", "true");
 

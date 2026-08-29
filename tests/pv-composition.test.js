@@ -43,7 +43,7 @@ let server;
 
 test.before(async () => {
   const { startStaticServer } = await import("../video/footsteps-return/scripts/serve-app.mjs");
-  server = await startStaticServer({ root: path.join(ROOT, "video/footsteps-return") });
+  server = await startStaticServer({ root: path.join(ROOT, "video", "footsteps-return") });
   browser = await chromium.launch({ headless: true });
   page = await browser.newPage({ viewport: { width: 3840, height: 2160 }, deviceScaleFactor: 1 });
   await page.goto(`${server.url}/index.html`, { waitUntil: "networkidle" });
@@ -361,14 +361,38 @@ test("project-local chapter assets preserve repository provenance", async () => 
     ["video/footsteps-return/assets/topologies/mobius.svg", "app/assets/silhouettes/mobius.svg"],
     ["video/footsteps-return/assets/topologies/klein.svg", "app/assets/silhouettes/klein.svg"],
     ["video/footsteps-return/assets/topologies/projective.svg", "app/assets/silhouettes/projective.svg"],
-    ["video/footsteps-return/assets/topologies/sphere.svg", "app/assets/silhouettes/sphere.svg"]
+    ["video/footsteps-return/assets/topologies/sphere.svg", "app/assets/silhouettes/sphere.svg"],
+    ["video/footsteps-return/assets/brand/topology-gomoku.png", "app/assets/brand-icon.png"],
+    ["video/footsteps-return/assets/game-source/index.html", "app/index.html"],
+    ["video/footsteps-return/assets/game-source/assets/style.css", "app/assets/style.css"],
+    ["video/footsteps-return/assets/game-source/assets/topology.js", "app/assets/topology.js"],
+    ["video/footsteps-return/assets/game-source/assets/topology-morph.js", "app/assets/topology-morph.js"],
+    ["video/footsteps-return/assets/game-source/assets/game-replay.js", "app/assets/game-replay.js"],
+    ["video/footsteps-return/assets/game-source/assets/game.js", "app/assets/game.js"],
+    ["video/footsteps-return/assets/game-source/assets/fonts/noto-serif-sc-400.woff2", "app/assets/fonts/noto-serif-sc-400.woff2"],
+    ["video/footsteps-return/assets/game-source/assets/fonts/noto-serif-sc-600.woff2", "app/assets/fonts/noto-serif-sc-600.woff2"],
+    ["video/footsteps-return/assets/game-source/assets/fonts/noto-serif-sc-700.woff2", "app/assets/fonts/noto-serif-sc-700.woff2"],
+    ["video/footsteps-return/assets/game-source/assets/brand-icon.png", "app/assets/brand-icon.png"],
+    ["video/footsteps-return/assets/game-source/assets/topologies/plane.svg", "app/assets/topologies/plane.svg"],
+    ["video/footsteps-return/assets/game-source/assets/topologies/cylinder.svg", "app/assets/topologies/cylinder.svg"],
+    ["video/footsteps-return/assets/game-source/assets/topologies/torus.svg", "app/assets/topologies/torus.svg"],
+    ["video/footsteps-return/assets/game-source/assets/topologies/mobius.svg", "app/assets/topologies/mobius.svg"],
+    ["video/footsteps-return/assets/game-source/assets/topologies/klein.svg", "app/assets/topologies/klein.svg"],
+    ["video/footsteps-return/assets/game-source/assets/topologies/projective.svg", "app/assets/topologies/projective.svg"],
+    ["video/footsteps-return/assets/game-source/assets/topologies/sphere.svg", "app/assets/topologies/sphere.svg"],
+    ["video/footsteps-return/assets/game-source/assets/silhouettes/cylinder.svg", "app/assets/silhouettes/cylinder.svg"],
+    ["video/footsteps-return/assets/game-source/assets/silhouettes/torus.svg", "app/assets/silhouettes/torus.svg"],
+    ["video/footsteps-return/assets/game-source/assets/silhouettes/mobius.svg", "app/assets/silhouettes/mobius.svg"],
+    ["video/footsteps-return/assets/game-source/assets/silhouettes/klein.svg", "app/assets/silhouettes/klein.svg"],
+    ["video/footsteps-return/assets/game-source/assets/silhouettes/projective.svg", "app/assets/silhouettes/projective.svg"],
+    ["video/footsteps-return/assets/game-source/assets/silhouettes/sphere.svg", "app/assets/silhouettes/sphere.svg"]
   ]);
 
   copies.forEach(({ path: assetPath, provenance }) => {
     const copied = fs.readFileSync(path.join(ROOT, assetPath));
     const source = fs.readFileSync(path.join(ROOT, provenance.source));
-    if (assetPath.endsWith(".woff2")) {
-      assert.deepEqual(copied, source, `${assetPath} must be a byte-identical font copy`);
+    if (!assetPath.endsWith(".svg") || copied.equals(source)) {
+      assert.deepEqual(copied, source, `${assetPath} must be a byte-identical repository copy`);
       return;
     }
     const markup = copied.toString("utf8");

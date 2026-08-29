@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" role="img" shape-rendering="geometricPrecision" data-model="shaded-bounded-plane" data-style="hand-drawn-cel-silhouette">
+  <desc>P(u,v)=(u,v,0), -1≤u,v≤1</desc>
+  <g>
+    <path d="M 26.71 119.95 L 168.99 221.57 L 230.41 135.31 L 88.39 33.67 Z" fill="#f4f2ea" stroke="#f4f2ea" stroke-width="1.50" stroke-linejoin="round" vector-effect="non-scaling-stroke"/>
+  </g>
+  <path d="M 26.71 119.95 L 88.39 33.67 L 230.41 135.31 L 168.99 221.57 Z" fill="none" stroke="#282522" stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke" stroke-width="1.76" stroke-opacity="0.96" data-ink-layer="gesture"/>
+  <path d="M 26.71 119.95 L 88.39 33.67 L 230.41 135.31 L 168.99 221.57 Z" fill="none" stroke="#282522" stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke" pathLength="100" stroke-width="2.32" stroke-opacity="0.88" stroke-dasharray="21.2 14.3 6.5 17.3 23.4 23.2" stroke-dashoffset="13.29" data-ink-layer="pressure"/>
+  <g>
+  </g>
+</svg>

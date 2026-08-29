@@ -128,7 +128,7 @@
 - [ ] Copy the existing game brand icon and the user-provided IOP logo into the PV asset directory without altering the originals. Record the user-provided origin in `provenance.json` without storing a machine-local absolute path.
 - [ ] Build the intro around a dark board edge, a disappearing auxiliary path, and a slow reveal of hidden adjacency. Do not show title, logo, chapter label, or institute identity.
 - [ ] Build the final card with the title `拓扑五子棋`, subtitle `章节预告 PV—「足迹回环」`, and a visually substantial but subordinate IOP logo lockup. Do not add a QR code, store badge, platform name, or version.
-- [ ] Run brand tests and render intro/end-card hero frames at both output sizes.
+- [ ] Run brand tests and render the intro/end-card hero frames at the sole 3840×2160, 60fps output target.
 - [ ] Commit as `feat: create pv opening and final identity`.
 
 ## Task 6: Implement the seven differentiated chapter scenes

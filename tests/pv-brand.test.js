@@ -17,7 +17,7 @@ const expectedAssets = [
   },
   {
     id: "iop-logo",
-    originalFilename: "iop-logo.png",
+    originalFilename: "IOP.pdf",
     destination: "video/footsteps-return/assets/brand/iop-logo.png"
   }
 ];
@@ -42,28 +42,60 @@ test.after(async () => {
   await server?.close();
 });
 
-test("the opening uses only a real board edge and a reversible hidden-adjacency reveal", async () => {
+test("the opening is sourced from one ready, frozen plane GameRenderAdapter canvas", async () => {
   const result = await page.evaluate(async () => {
     const { introTiming } = await import("/compositions/intro.js");
     const scene = document.querySelector('[data-scene-id="intro"]');
     const timeline = window.__timelines["footsteps-return"];
+    const frame = scene.querySelector("iframe[data-intro-game-render]");
+    const adapter = frame?.contentWindow?.gameRender;
+    const canvas = adapter?.frame?.contentDocument?.querySelector("#boardCanvas");
+    if (!frame || !adapter || !canvas) {
+      return {
+        frameCount: scene.querySelectorAll("iframe[data-intro-game-render]").length,
+        adapterReady: false
+      };
+    }
+    const hashCanvas = () => {
+      const bytes = canvas.getContext("2d").getImageData(0, 0, canvas.width, canvas.height).data;
+      let hash = 2166136261;
+      for (let index = 0; index < bytes.length; index += 1) {
+        hash ^= bytes[index];
+        hash = Math.imul(hash, 16777619);
+      }
+      return hash >>> 0;
+    };
     const sample = (time) => {
       timeline.time(time, false).pause();
-      const path = scene.querySelector("[data-intro-hidden-adjacency]");
+      const veil = scene.querySelector("[data-intro-hidden-adjacency]");
       return {
-        pathOpacity: Number(getComputedStyle(path).opacity),
-        edgeOpacity: Number(getComputedStyle(scene.querySelector("[data-intro-board-edge]")).opacity)
+        veilOpacity: Number(getComputedStyle(veil).opacity),
+        edgeOpacity: Number(getComputedStyle(scene.querySelector("[data-intro-board-edge]")).opacity),
+        canvasHash: hashCanvas()
       };
     };
     const hidden = sample(introTiming.hiddenHeroAt);
     const revealed = sample(introTiming.revealHeroAt);
     const hiddenAgain = sample(introTiming.hiddenHeroAt);
     return {
-      boardSource: scene.querySelector("[data-intro-board-edge]")?.dataset.boardSource,
+      frameCount: scene.querySelectorAll("iframe[data-intro-game-render]").length,
+      frameSource: frame.getAttribute("src"),
+      framePath: new URL(frame.src).pathname,
+      topology: adapter.definition?.id,
+      renderReady: adapter.renderReady(),
+      canvasSize: [canvas.width, canvas.height],
       boardEdges: scene.querySelectorAll("[data-intro-board-edge]").length,
       hiddenPaths: scene.querySelectorAll("[data-intro-hidden-adjacency]").length,
+      syntheticBoardParts: scene.querySelectorAll(".intro-board-edge__surface, .intro-board-edge__stone").length,
       marks: scene.querySelectorAll("img, [data-game-title-mark], [data-iop-mark]").length,
       visibleText: scene.innerText.trim(),
+      remoteResources: performance.getEntriesByType("resource")
+        .map(({ name }) => new URL(name))
+        .filter((url) => url.origin !== location.origin)
+        .map((url) => url.href),
+      gameSourceRequests: frame.contentWindow.performance.getEntriesByType("resource")
+        .map(({ name }) => new URL(name).pathname)
+        .filter((pathname) => pathname.includes("/assets/game-source/")),
       paused: timeline.paused(),
       hidden,
       revealed,
@@ -71,16 +103,30 @@ test("the opening uses only a real board edge and a reversible hidden-adjacency 
     };
   });
 
-  assert.equal(result.boardSource, "real-html-board");
+  assert.equal(result.frameCount, 1);
+  assert.notEqual(result.adapterReady, false);
+  assert.equal(result.frameSource, "./render-game.html?sourceRoot=./assets/game-source");
+  assert.equal(result.framePath, "/render-game.html");
+  assert.equal(result.topology, "plane");
+  assert.equal(result.renderReady.ready, true);
+  assert.equal(result.renderReady.status.lessonStep, 5);
+  assert.ok(result.renderReady.status.queueSize <= 1);
+  assert.ok(result.canvasSize.every((size) => size >= 640));
   assert.equal(result.boardEdges, 1);
   assert.equal(result.hiddenPaths, 1);
+  assert.equal(result.syntheticBoardParts, 0);
   assert.equal(result.marks, 0);
   assert.equal(result.visibleText, "");
+  assert.deepEqual(result.remoteResources, []);
+  assert.ok(result.gameSourceRequests.some((pathname) => pathname.endsWith("/assets/game-source/index.html")));
+  assert.ok(result.gameSourceRequests.some((pathname) => pathname.endsWith("/assets/game-source/assets/game.js")));
+  assert.equal(result.gameSourceRequests.some((pathname) => pathname.startsWith("/app/")), false);
   assert.equal(result.paused, true);
-  assert.ok(result.hidden.pathOpacity < 0.05, "auxiliary adjacency must genuinely disappear");
-  assert.ok(result.revealed.pathOpacity > 0.7, "hidden adjacency must slowly return");
+  assert.ok(result.hidden.veilOpacity > 0.8, "the real canvas path must be obscured at the hidden hero frame");
+  assert.ok(result.revealed.veilOpacity < 0.1, "the real canvas path must slowly return as the veil clears");
   assert.ok(result.revealed.edgeOpacity > 0.7, "the real board edge must anchor the reveal");
   assert.deepEqual(result.hiddenAgain, result.hidden, "backward seek must reconstruct the same hidden state");
+  assert.equal(result.hidden.canvasHash, result.revealed.canvasHash, "GSAP seek must not advance real game pixels");
 });
 
 test("the final card has one text title and one substantial IOP mark without extra commerce or platform marks", async () => {
@@ -97,7 +143,7 @@ test("the final card has one text title and one substantial IOP mark without ext
       titles: [...scene.querySelectorAll("[data-game-title-mark]")].map((node) => node.textContent.trim()),
       subtitles: [...scene.querySelectorAll("[data-end-card-subtitle]")].map((node) => node.textContent.trim()),
       iopCount: scene.querySelectorAll("img[data-iop-mark]").length,
-      iopSrc: logo.getAttribute("src"),
+      iopSrc: new URL(logo.src).pathname,
       iopAlt: logo.getAttribute("alt"),
       gameGraphicCount: scene.querySelectorAll('img[src*="topology-gomoku"]').length,
       forbiddenCopy: /二维码|商店|小红书|哔哩哔哩|微信|版本|v\d/i.test(scene.innerText),
@@ -120,6 +166,47 @@ test("the final card has one text title and one substantial IOP mark without ext
   assert.ok(result.logoWidth < result.titleWidth, "IOP mark must remain subordinate to the game title");
 });
 
+test("the final identity stays authored-hidden through pre-roll and reveals reversibly in sequence", async () => {
+  const samples = await page.evaluate(() => {
+    const timeline = window.__timelines["footsteps-return"];
+    const scene = document.querySelector('[data-scene-id="end-card"]');
+    const read = (time) => {
+      timeline.time(time, false).pause();
+      const opacity = (selector) => Number(getComputedStyle(scene.querySelector(selector)).opacity);
+      return {
+        time,
+        scene: Number(getComputedStyle(scene).opacity),
+        rule: opacity("[data-end-card-rule]"),
+        title: opacity("[data-game-title-mark]"),
+        subtitle: opacity("[data-end-card-subtitle]"),
+        logo: opacity("[data-iop-mark]")
+      };
+    };
+    const forward = [160.5, 161, 161.17, 161.55, 162.1, 164.8].map(read);
+    const rewind = read(160.5);
+    return { forward, rewind };
+  });
+
+  const [preRoll, start, beforeFirstReveal, titleBuild, sequenceBuild, resolved] = samples.forward;
+  for (const sample of [preRoll, start, beforeFirstReveal, samples.rewind]) {
+    assert.deepEqual(
+      { rule: sample.rule, title: sample.title, subtitle: sample.subtitle, logo: sample.logo },
+      { rule: 0, title: 0, subtitle: 0, logo: 0 },
+      `identity content must stay hidden at ${sample.time}s`
+    );
+  }
+  assert.ok(preRoll.scene > 0 && preRoll.scene < 1, "the parent scene should be crossfading during pre-roll");
+  assert.ok(titleBuild.rule > 0 && titleBuild.title > 0, "rule and title should begin the formal sequence first");
+  assert.equal(titleBuild.subtitle, 0);
+  assert.equal(titleBuild.logo, 0);
+  assert.ok(sequenceBuild.title > sequenceBuild.subtitle && sequenceBuild.subtitle > sequenceBuild.logo, "copy and logo must reveal in hierarchy order");
+  assert.deepEqual(
+    { rule: resolved.rule, title: resolved.title, subtitle: resolved.subtitle, logo: resolved.logo },
+    { rule: 1, title: 1, subtitle: 1, logo: 1 }
+  );
+  assert.deepEqual(samples.rewind, preRoll, "rewinding from the resolved card must restore the exact pre-roll state");
+});
+
 test("copied brand assets are byte-identical and have portable provenance", () => {
   const provenancePath = path.join(PROJECT, "assets", "provenance.json");
   assert.equal(fs.existsSync(provenancePath), true, "brand provenance must exist");
@@ -140,5 +227,27 @@ test("copied brand assets are byte-identical and have portable provenance", () =
   const gameCopy = fs.readFileSync(path.join(PROJECT, "assets", "brand", "topology-gomoku.png"));
   const gameSource = fs.readFileSync(path.join(ROOT, "app", "assets", "brand-icon.png"));
   assert.deepEqual(gameCopy, gameSource);
-  assert.equal(provenance.find(({ id }) => id === "iop-logo").sourceDescription, "用户提供的 IOP.pdf 派生资产");
+  const iop = provenance.find(({ id }) => id === "iop-logo");
+  assert.equal(iop.sourceDocument, "IOP.pdf");
+  assert.equal(iop.derivedFilename, "iop-logo.png");
+  assert.equal(iop.sourceDescription, "用户提供的 IOP.pdf 派生资产");
+});
+
+test("both copied brand files are registered in the unified PV asset manifest", async () => {
+  const { assets } = await import("../video/footsteps-return/src/data/assets.js");
+  assert.deepEqual(
+    assets.filter(({ id }) => ["brand-topology-gomoku", "brand-iop-logo"].includes(id)),
+    [
+      {
+        id: "brand-topology-gomoku",
+        path: "video/footsteps-return/assets/brand/topology-gomoku.png",
+        provenance: { type: "repository-copy", source: "app/assets/brand-icon.png" }
+      },
+      {
+        id: "brand-iop-logo",
+        path: "video/footsteps-return/assets/brand/iop-logo.png",
+        provenance: { type: "user-provided", source: "video/footsteps-return/assets/provenance.json" }
+      }
+    ]
+  );
 });

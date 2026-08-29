@@ -46,7 +46,7 @@ export function createEndCardScene(documentRef, sceneDefinition) {
   const logo = documentRef.createElement("img");
   logo.className = "end-card__iop-logo";
   logo.dataset.iopMark = "";
-  logo.src = "/assets/brand/iop-logo.png";
+  logo.src = "./assets/brand/iop-logo.png";
   logo.alt = "中国科学院物理研究所标识";
   institute.append(logo);
 
@@ -62,33 +62,30 @@ export function addEndCardReveal(timeline, scene, start) {
   const logo = scene.querySelector("[data-iop-mark]");
   const timing = endCardTiming;
 
-  timeline.from(rule, {
-    scaleY: 0,
+  timeline.to(rule, {
+    opacity: 1,
+    scaleY: 1,
     duration: timing.ruleDuration,
-    ease: "power1.out",
-    immediateRender: false
+    ease: "power1.out"
   }, start + timing.ruleAt);
-  timeline.from(title, {
-    opacity: 0,
-    y: 30,
-    filter: "blur(10px)",
+  timeline.to(title, {
+    opacity: 1,
+    y: 0,
+    filter: "blur(0px)",
     duration: timing.titleDuration,
-    ease: "power3.out",
-    immediateRender: false
+    ease: "power3.out"
   }, start + timing.titleAt);
-  timeline.from(subtitle, {
-    opacity: 0,
-    y: 18,
+  timeline.to(subtitle, {
+    opacity: 1,
+    y: 0,
     duration: timing.subtitleDuration,
-    ease: "sine.out",
-    immediateRender: false
+    ease: "sine.out"
   }, start + timing.subtitleAt);
-  timeline.from(logo, {
-    opacity: 0,
-    scale: 0.94,
-    filter: "blur(12px)",
+  timeline.to(logo, {
+    opacity: 1,
+    scale: 1,
+    filter: "saturate(0.84) brightness(0.94) blur(0px)",
     duration: timing.logoDuration,
-    ease: "power2.out",
-    immediateRender: false
+    ease: "power2.out"
   }, start + timing.logoAt);
 }

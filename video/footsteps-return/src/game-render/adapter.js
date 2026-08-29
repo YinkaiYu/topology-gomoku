@@ -138,13 +138,19 @@ export class GameRenderAdapter {
     this.definition = definition;
     this.demo = demo;
     this.ready = (async () => {
-      const [htmlResponse, gameResponse] = await Promise.all([fetch("/app/index.html"), fetch("/app/assets/game.js")]);
+      const configuredRoot = new URLSearchParams(window.location.search).get("sourceRoot") || "/app";
+      const sourceRoot = new URL(`${configuredRoot.replace(/\/$/, "")}/`, window.location.href);
+      const hookUrl = new URL("./src/game-render/hook.js", window.location.href);
+      const [htmlResponse, gameResponse] = await Promise.all([
+        fetch(new URL("index.html", sourceRoot)),
+        fetch(new URL("assets/game.js", sourceRoot))
+      ]);
       if (!htmlResponse.ok || !gameResponse.ok) throw new Error("Unable to load real game source");
       const [html, game] = await Promise.all([htmlResponse.text(), gameResponse.text()]);
       const css = `<style>*,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}html,body,.app-shell,.screens,.screen,.game-screen,#boardStage{background:transparent!important;box-shadow:none!important}body{overflow:hidden}.ambient,.topbar,.match-strip,.game-action-deck,.developer-fab,.sheet,.scrim{display:none!important}.game-screen{padding:0!important}#boardStage{position:fixed!important;inset:0!important;width:640px!important;height:640px!important;max-width:none!important;border:0!important}#boardStage::after{display:none!important}</style>`;
       const gameScript = instrumentGameSource(game).replace(/<\/script/gi, "<\\/script");
       const source = html
-        .replace("<head>", `<head><base href="/app/">${css}<script src="/video/footsteps-return/src/game-render/hook.js"></script>`)
+        .replace("<head>", `<head><base href="${sourceRoot.href}">${css}<script src="${hookUrl.href}"></script>`)
         .replace('<script src="./assets/game.js"></script>', `<script>${gameScript}</script>`);
       const loaded = new Promise((resolve) => this.frame.addEventListener("load", resolve, { once: true }));
       this.frame.srcdoc = source;

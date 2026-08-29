@@ -1,4 +1,5 @@
 import { masterTimeline } from "./data/timeline.js";
+import { prepareIntroScene } from "../compositions/intro.js";
 import { fitCompositionText } from "./runtime/fit-text.js";
 import { buildMasterTimeline } from "./runtime/master-timeline.js";
 
@@ -34,7 +35,8 @@ export function bootstrapComposition({
   hostWindow.__pvSceneRegistry = registry;
 
   const fontsReady = documentRef.fonts?.ready ?? Promise.resolve();
-  hostWindow.__renderReady = Promise.resolve(fontsReady).then(() => {
+  const introReady = prepareIntroScene(registry.intro);
+  hostWindow.__renderReady = Promise.all([fontsReady, introReady]).then(() => {
     fitCompositionText(root);
     documentRef.documentElement.dataset.renderReady = "true";
     return Object.freeze({ composition, sceneIds: Object.keys(registry) });
