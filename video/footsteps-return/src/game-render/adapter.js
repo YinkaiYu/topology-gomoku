@@ -2,6 +2,7 @@ import { findGameRenderShot } from "../data/game-render-shots.js";
 
 export const RENDER_API_METHODS = Object.freeze(["selectShot", "render", "renderReady"]);
 const clamp = (value) => Math.max(0, Math.min(1, Number(value) || 0));
+const COMPLETION_HANDOFF_END = 0.4;
 
 export function normalizeRenderState(value = {}) {
   return Object.freeze({
@@ -131,12 +132,14 @@ export class GameRenderAdapter {
     this.frame = frame;
     this.ready = Promise.resolve();
     this.time = 10000;
+    this.buffers = new Map();
   }
 
   async selectShot(topology, options = {}) {
     const { definition, demo } = findGameRenderShot(topology, options.demo);
     this.definition = definition;
     this.demo = demo;
+    this.buffers.clear();
     this.ready = (async () => {
       const configuredRoot = new URLSearchParams(window.location.search).get("sourceRoot") || "/app";
       const sourceRoot = new URL(`${configuredRoot.replace(/\/$/, "")}/`, window.location.href);
@@ -191,6 +194,7 @@ export class GameRenderAdapter {
 
   renderNow(value = {}) {
     if (!this.definition) throw new Error("selectShot must run before render");
+    if (value.pairedMemory) return this.renderPairedMemory(value.pairedMemory);
     const requestedDemoId = value.demo || this.demo.id;
     const { demo } = findGameRenderShot(this.definition.id, requestedDemoId);
     let state = normalizeRenderState({ ...value, topology: this.definition.id, demo: demo.id });
@@ -199,10 +203,106 @@ export class GameRenderAdapter {
     const targetStep = winning ? 5 : Math.min(5, state.lessonStep + (state.dropProgress > 0 ? 1 : 0));
     this.time = 10000 + state.breathPhase * 1200 + state.dropProgress * 320 + state.morphProgress * 2550;
     const api = this.frame.contentWindow.__PV_GAME__;
+    if (winning) return this.renderWinningState(api, demo, state);
     api.rebuild({ sourcePathIndex: demo.sourcePathIndex, targetStep, dropProgress: state.dropProgress, winning, morphProgress: state.morphProgress, rotation: state.rotation, time: this.time });
     api.renderAt(this.time);
     this.demo = demo;
     return { state, ...api.status() };
+  }
+
+  boardCanvas() {
+    const canvas = this.frame.contentDocument?.querySelector("#boardCanvas");
+    if (!canvas) throw new Error("real game board Canvas is unavailable");
+    return canvas;
+  }
+
+  buffer(name) {
+    const source = this.boardCanvas();
+    let canvas = this.buffers.get(name);
+    if (!canvas) {
+      canvas = this.frame.contentDocument.createElement("canvas");
+      this.buffers.set(name, canvas);
+    }
+    if (canvas.width !== source.width || canvas.height !== source.height) {
+      canvas.width = source.width;
+      canvas.height = source.height;
+    }
+    return canvas;
+  }
+
+  capture(name) {
+    const source = this.boardCanvas();
+    const target = this.buffer(name);
+    const context = target.getContext("2d", { willReadFrequently: true });
+    context.clearRect(0, 0, target.width, target.height);
+    context.drawImage(source, 0, 0);
+    return target;
+  }
+
+  composite(from, to, progress) {
+    const amount = clamp(progress);
+    const output = this.boardCanvas();
+    const context = output.getContext("2d");
+    if (amount <= 0 || amount >= 1) {
+      context.clearRect(0, 0, output.width, output.height);
+      context.drawImage(amount <= 0 ? from : to, 0, 0);
+      return;
+    }
+    const fromPixels = from.getContext("2d", { willReadFrequently: true }).getImageData(0, 0, output.width, output.height).data;
+    const toPixels = to.getContext("2d", { willReadFrequently: true }).getImageData(0, 0, output.width, output.height).data;
+    const blended = context.createImageData(output.width, output.height);
+    for (let index = 0; index < blended.data.length; index += 1) {
+      blended.data[index] = Math.round(fromPixels[index] + (toPixels[index] - fromPixels[index]) * amount);
+    }
+    context.putImageData(blended, 0, 0);
+  }
+
+  renderCanonicalFive(api, demo) {
+    const canonicalTime = 10320;
+    api.rebuild({ sourcePathIndex: demo.sourcePathIndex, targetStep: 5, dropProgress: 1, winning: false, morphProgress: 0, rotation: { x: 0, y: 0, z: 0 }, time: canonicalTime });
+    api.renderAt(canonicalTime);
+    return this.capture("canonical-five");
+  }
+
+  renderWinningState(api, demo, state) {
+    const flatFive = this.renderCanonicalFive(api, demo);
+    if (this.definition.morphMode === "identity") {
+      this.demo = demo;
+      return { state, handoffProgress: 0, ...api.status() };
+    }
+    api.rebuild({ sourcePathIndex: demo.sourcePathIndex, targetStep: 5, dropProgress: 0, winning: true, morphProgress: state.morphProgress, rotation: state.rotation, time: this.time });
+    api.renderAt(this.time);
+    const completion = this.capture("native-completion");
+    const handoffProgress = clamp(state.morphProgress / COMPLETION_HANDOFF_END);
+    this.composite(flatFive, completion, handoffProgress);
+    this.demo = demo;
+    return { state, handoffProgress, ...api.status() };
+  }
+
+  renderPairedMemory(transition) {
+    const { demo: fromDemo } = findGameRenderShot(this.definition.id, transition.fromDemo);
+    const { demo: toDemo } = findGameRenderShot(this.definition.id, transition.toDemo);
+    const memoryProgress = clamp(transition.progress);
+    const api = this.frame.contentWindow.__PV_GAME__;
+    const preservedFive = this.renderCanonicalFive(api, fromDemo);
+    const establishTime = 10000;
+    api.rebuild({ sourcePathIndex: toDemo.sourcePathIndex, targetStep: 0, dropProgress: 0, winning: false, morphProgress: 0, rotation: { x: 0, y: 0, z: 0 }, time: establishTime });
+    api.renderAt(establishTime);
+    const reflectedEstablish = this.capture("paired-establish");
+    this.composite(preservedFive, reflectedEstablish, memoryProgress);
+    this.demo = toDemo;
+    const state = Object.freeze({
+      phase: "paired-memory",
+      topology: this.definition.id,
+      demo: "paired-memory",
+      memoryProgress,
+      memoryDemos: Object.freeze([fromDemo.id, toDemo.id]),
+      lessonStep: memoryProgress < 1 ? 5 : 0,
+      winningFive: false,
+      morphProgress: 0,
+      rotation: Object.freeze({ x: 0, y: 0, z: 0 })
+    });
+    return { state, memoryProgress, ...api.status() };
   }
 }
 

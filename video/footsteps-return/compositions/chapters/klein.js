@@ -4,7 +4,7 @@ export const kleinChapter = defineChapterScene({
   id: "klein",
   liveRender: { adapter: "GameRenderAdapter", source: "./render-game.html?sourceRoot=./assets/game-source", topology: "klein", demos: ["preserved-crossing", "reflected-crossing"], canvas: "single-persistent", alpha: true, approved: true },
   identity: { light: "#7f6ca8", cameraPath: "paired-memory-orbit" },
-  evidence: { kind: "preserved-reflected-pair", pathActions: ["preserved", "reflected"], edgeAction: "mixed" },
+  evidence: { kind: "preserved-reflected-pair", pathActions: ["preserved", "reflected"], edgeAction: "mixed", handoff: "paired-memory" },
   entryTransition: { kind: "match-cut" },
   exitOcclusion: { kind: "surface-occlusion", geometry: "klein-neck" },
   morphMode: "native",

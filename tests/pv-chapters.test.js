@@ -2,6 +2,7 @@
 
 const test = require("node:test");
 const assert = require("node:assert/strict");
+const fs = require("node:fs");
 const path = require("node:path");
 const { chromium } = require("playwright");
 
@@ -35,7 +36,7 @@ const EXPECTED = Object.freeze({
     exit: "cylinder-wall"
   },
   torus: {
-    light: "#3f8c87",
+    light: "#385f78",
     camera: "dual-axis-orbit",
     evidence: { kind: "double-cycle", cycles: 2, edgeAction: "both-opposite-pairs-preserved" },
     demos: ["two-seam-diagonal"],
@@ -53,7 +54,7 @@ const EXPECTED = Object.freeze({
   klein: {
     light: "#7f6ca8",
     camera: "paired-memory-orbit",
-    evidence: { kind: "preserved-reflected-pair", pathActions: ["preserved", "reflected"], edgeAction: "mixed" },
+    evidence: { kind: "preserved-reflected-pair", pathActions: ["preserved", "reflected"], edgeAction: "mixed", handoff: "paired-memory" },
     demos: ["preserved-crossing", "reflected-crossing"],
     morph: "native",
     exit: "klein-neck"
@@ -139,6 +140,9 @@ test("seven chapters bind the approved real renderer and differentiated topology
   }
 
   assert.equal(new Set(definitions.map(({ identity }) => identity.cameraPath)).size, 7, "camera paths must not collapse into one generic move");
+  assert.equal(new Set(definitions.map(({ identity }) => identity.light)).size, 7, "every realm needs an exact, distinguishable PV light token");
+  assert.equal(EXPECTED.cylinder.light, "#3f8c87");
+  assert.equal(EXPECTED.torus.light, "#385f78");
 });
 
 test("the master mounts seven centered, uncropped, frameless persistent game canvases without microcopy", async () => {
@@ -154,6 +158,7 @@ test("the master mounts seven centered, uncropped, frameless persistent game can
     const boardStyle = getComputedStyle(board);
     const gameFrame = frame.contentDocument.querySelector("#game-render-frame");
     const innerStage = gameFrame?.contentDocument.querySelector("#boardStage")?.getBoundingClientRect();
+    const surfaceCanvas = scene.querySelector("canvas[data-chapter-surface-canvas]");
     return {
       id: controller.definition.id,
       iframeCount: scene.querySelectorAll("iframe[data-chapter-game-render]").length,
@@ -174,6 +179,7 @@ test("the master mounts seven centered, uncropped, frameless persistent game can
       },
       boardOverflow: boardStyle.overflow,
       innerStage: innerStage ? { width: innerStage.width, height: innerStage.height } : null,
+      surfaceBacking: surfaceCanvas ? { width: surfaceCanvas.width, height: surfaceCanvas.height } : null,
       deviceShells: scene.querySelectorAll(".phone,.tablet,.device-frame,[data-device-frame]").length
     };
   }));
@@ -189,6 +195,7 @@ test("the master mounts seven centered, uncropped, frameless persistent game can
     assert.deepEqual(snapshot.frameStyle, { border: "0px", radius: "0px", shadow: "none", background: "rgba(0, 0, 0, 0)" });
     assert.equal(snapshot.boardOverflow, "visible");
     assert.deepEqual(snapshot.innerStage, { width: 640, height: 640 });
+    assert.deepEqual(snapshot.surfaceBacking, snapshot.id === "plane" ? null : { width: 3840, height: 2160 }, `${snapshot.id} photographic surface must use a true 4K backing store`);
     assert.equal(snapshot.deviceShells, 0);
   });
 });
@@ -248,6 +255,168 @@ test("real Chromium renders all eight helper paths through 1..5, every crossing 
     if (chapterId === "plane") morph.forEach(({ snapshot }) => assert.equal(snapshot.surfaceProgress, 0, "plane morph is identity; only the camera may lift"));
     else assert.ok(morph.at(-1).snapshot.surfaceProgress > 0.99, `${chapterId} native surface must form with the real app morph`);
   }
+
+  const kleinMemory = results.klein.rendered.filter(({ sample }) => sample.phase === "paired-memory");
+  assert.deepEqual(kleinMemory.map(({ sample }) => sample.memoryProgress), [0, 0.5, 1], "Klein needs an explicit settled-memory-clear state between paths");
+  kleinMemory.forEach(({ snapshot, sample }) => {
+    assert.equal(snapshot.state.phase, "paired-memory");
+    assert.equal(snapshot.state.memoryProgress, sample.memoryProgress);
+    assert.deepEqual(snapshot.state.memoryDemos, ["preserved-crossing", "reflected-crossing"]);
+  });
+});
+
+test("real Canvas stays continuous from fifth stone through morph zero and changes smoothly afterward", async () => {
+  await page.evaluate(() => window.__renderReady);
+  const observations = await page.evaluate(async () => {
+    const { chapterFrameAt } = await import("./src/runtime/topology-surfaces.js");
+    const ids = ["cylinder", "torus", "mobius", "klein", "projective", "sphere"];
+    const pixels = (controller) => {
+      const canvas = controller.adapter.frame.contentDocument.querySelector("#boardCanvas");
+      return canvas.getContext("2d", { willReadFrequently: true }).getImageData(0, 0, canvas.width, canvas.height).data.slice();
+    };
+    const difference = (from, to, threshold = 8) => {
+      let changed = 0;
+      let totalDelta = 0;
+      for (let index = 0; index < from.length; index += 4) {
+        const delta = Math.max(
+          Math.abs(from[index] - to[index]),
+          Math.abs(from[index + 1] - to[index + 1]),
+          Math.abs(from[index + 2] - to[index + 2]),
+          Math.abs(from[index + 3] - to[index + 3])
+        );
+        if (delta > 8) changed += 1;
+        totalDelta += delta;
+      }
+      const count = from.length / 4;
+      return { changedRatio: changed / count, meanDelta: totalDelta / count / 255 };
+    };
+    const transition = (controller, fromPhase, toPhase, minimum = 0) => {
+      let previousProgress = minimum;
+      let previous = chapterFrameAt(controller.definition, minimum);
+      for (let index = Math.ceil(minimum * 100000) + 1; index <= 100000; index += 1) {
+        const progress = index / 100000;
+        const frame = chapterFrameAt(controller.definition, progress);
+        if (previous.phase === fromPhase && frame.phase === toPhase) {
+          let low = previousProgress;
+          let high = progress;
+          for (let pass = 0; pass < 42; pass += 1) {
+            const middle = (low + high) / 2;
+            if (chapterFrameAt(controller.definition, middle).phase === fromPhase) low = middle;
+            else high = middle;
+          }
+          return { low, high };
+        }
+        previousProgress = progress;
+        previous = frame;
+      }
+      throw new Error(`missing ${fromPhase} -> ${toPhase} transition for ${controller.definition.id}`);
+    };
+    const captureAt = async (controller, progress) => {
+      const frame = await controller.renderProgress(progress);
+      return { frame, pixels: pixels(controller) };
+    };
+    const output = {};
+    for (const id of ids) {
+      const controller = window.__pvChapterControllers[id];
+      const minimum = id === "klein" ? 0.5 : 0;
+      const dropHold = transition(controller, "drop", "win-hold", minimum);
+      const holdMorph = transition(controller, "win-hold", "morph", minimum);
+      const morphSettled = transition(controller, "morph", "settled", minimum);
+      const frameDelta = 1 / (Math.max(1, controller.sceneDuration - 1.18) * 60);
+      const drop = await captureAt(controller, dropHold.low);
+      const hold = await captureAt(controller, dropHold.high);
+      const holdEnd = await captureAt(controller, holdMorph.low);
+      const morphZero = await captureAt(controller, holdMorph.high);
+      const morphFirst = await captureAt(controller, Math.min(morphSettled.low, holdMorph.high + frameDelta));
+      const morphSpan = morphSettled.low - holdMorph.high;
+      const adjacentMorphPair = async (fraction) => {
+        const checkpoint = holdMorph.high + morphSpan * fraction;
+        return [await captureAt(controller, checkpoint), await captureAt(controller, Math.min(morphSettled.low, checkpoint + frameDelta))];
+      };
+      const morphPairs = [];
+      for (const fraction of [0.25, 0.5, 0.75, 0.9]) morphPairs.push(await adjacentMorphPair(fraction));
+      output[id] = {
+        dropToHold: difference(drop.pixels, hold.pixels),
+        holdToMorphZero: difference(holdEnd.pixels, morphZero.pixels),
+        morphZeroToFirst: difference(morphZero.pixels, morphFirst.pixels),
+        morphSteps: morphPairs.map(([from, to]) => difference(from.pixels, to.pixels)),
+        morphProgress: [morphZero.frame.morphProgress, morphFirst.frame.morphProgress],
+        handoffProgress: [morphZero.frame.handoffProgress, morphFirst.frame.handoffProgress]
+      };
+    }
+    return output;
+  });
+
+  for (const [id, observation] of Object.entries(observations)) {
+    assert.ok(observation.dropToHold.changedRatio < 0.035, `${id} fifth stone -> hold changed ${(observation.dropToHold.changedRatio * 100).toFixed(2)}% pixels`);
+    assert.ok(observation.holdToMorphZero.changedRatio < 0.01, `${id} hold -> morph zero changed ${(observation.holdToMorphZero.changedRatio * 100).toFixed(2)}% pixels`);
+    assert.ok(observation.morphZeroToFirst.changedRatio > 0, `${id} first non-zero morph frame must begin changing pixels`);
+    assert.ok(observation.morphZeroToFirst.changedRatio < 0.08, `${id} first morph frame changed ${(observation.morphZeroToFirst.changedRatio * 100).toFixed(2)}% pixels`);
+    assert.equal(observation.morphProgress[0] < 1e-8, true, `${id} handoff must begin at morph zero`);
+    assert.ok(observation.morphProgress[1] > 0, `${id} following frame must advance morph`);
+    assert.equal(observation.handoffProgress[0] < 1e-8, true, `${id} completion renderer must start at zero blend`);
+    assert.ok(observation.handoffProgress[1] > 0, `${id} completion renderer must blend in deterministically`);
+    observation.morphSteps.forEach((step, index) => {
+      assert.ok(step.changedRatio > 0, `${id} adjacent morph checkpoint ${index + 1} must keep changing`);
+    });
+  }
+});
+
+test("Klein preserved five fades through paired memory before reflected establish without a pixel jump", async () => {
+  await page.evaluate(() => window.__renderReady);
+  const observation = await page.evaluate(async () => {
+    const { chapterFrameAt } = await import("./src/runtime/topology-surfaces.js");
+    const controller = window.__pvChapterControllers.klein;
+    const canvas = controller.adapter.frame.contentDocument.querySelector("#boardCanvas");
+    const pixels = () => canvas.getContext("2d", { willReadFrequently: true }).getImageData(0, 0, canvas.width, canvas.height).data.slice();
+    const difference = (from, to, threshold = 8) => {
+      let changed = 0;
+      for (let index = 0; index < from.length; index += 4) {
+        if (Math.max(
+          Math.abs(from[index] - to[index]), Math.abs(from[index + 1] - to[index + 1]),
+          Math.abs(from[index + 2] - to[index + 2]), Math.abs(from[index + 3] - to[index + 3])
+        ) > threshold) changed += 1;
+      }
+      return changed / (from.length / 4);
+    };
+    const boundaries = [];
+    let previous = chapterFrameAt(controller.definition, 0);
+    let previousProgress = 0;
+    for (let index = 1; index <= 100000; index += 1) {
+      const progress = index / 100000;
+      const frame = chapterFrameAt(controller.definition, progress);
+      if (previous.phase !== frame.phase && (previous.phase === "win-hold" || frame.phase === "establish" || previous.phase === "paired-memory" || frame.phase === "paired-memory")) {
+        boundaries.push({ from: previous.phase, to: frame.phase, low: previousProgress, high: progress });
+      }
+      previous = frame;
+      previousProgress = progress;
+    }
+    const first = boundaries.find((item) => item.from === "win-hold" && item.to === "paired-memory");
+    const second = boundaries.find((item) => item.from === "paired-memory" && item.to === "establish");
+    if (!first || !second) return { phases: boundaries.map(({ from, to }) => `${from}->${to}`) };
+    const frameDelta = 1 / (Math.max(1, controller.sceneDuration - 1.18) * 60);
+    const render = async (progress) => { const state = await controller.renderProgress(progress); return { state, data: pixels() }; };
+    const beforeFirst = await render(first.low);
+    const afterFirst = await render(first.high);
+    const afterFirstFrame = await render(Math.min(second.low, first.high + frameDelta));
+    const beforeSecond = await render(second.low);
+    const afterSecond = await render(second.high);
+    return {
+      phases: boundaries.map(({ from, to }) => `${from}->${to}`),
+      firstBoundary: difference(beforeFirst.data, afterFirst.data),
+      firstFrame: difference(afterFirst.data, afterFirstFrame.data),
+      firstFrameAny: difference(afterFirst.data, afterFirstFrame.data, 0),
+      secondBoundary: difference(beforeSecond.data, afterSecond.data),
+      memoryProgress: [afterFirst.state.state.memoryProgress, afterFirstFrame.state.state.memoryProgress, beforeSecond.state.state.memoryProgress]
+    };
+  });
+
+  assert.deepEqual(observation.phases.filter((phase) => phase.includes("paired-memory")), ["win-hold->paired-memory", "paired-memory->establish"]);
+  assert.ok(observation.firstBoundary < 0.035, `Klein memory entrance changed ${(observation.firstBoundary * 100).toFixed(2)}% pixels`);
+  assert.ok(observation.firstFrameAny > 0, "Klein paired memory must start fading on its first non-zero frame");
+  assert.ok(observation.firstFrame < 0.08, `Klein first memory frame changed ${(observation.firstFrame * 100).toFixed(2)}% pixels`);
+  assert.ok(observation.secondBoundary < 0.035, `Klein reflected establish changed ${(observation.secondBoundary * 100).toFixed(2)}% pixels`);
+  assert.ok(observation.memoryProgress[0] < 0.001 && observation.memoryProgress[1] > 0 && observation.memoryProgress[2] > 0.999);
 });
 
 test("chapter seeking is reversible on the same iframe and every exit exposes a geometry-occlusion handoff", async () => {
@@ -289,8 +458,38 @@ test("chapter seeking is reversible on the same iframe and every exit exposes a 
   });
 });
 
-test("chapter QA capture plan names one evidence and one hero frame per realm", async () => {
+test("chapter QA manifest names every crossing proof and morph hero with committed non-empty PNGs", async () => {
   const { chapterCapturePlan } = await import("../video/footsteps-return/scripts/capture-chapter-evidence.mjs");
-  assert.deepEqual(chapterCapturePlan.map(({ id, kind }) => [id, kind]), CHAPTER_IDS.flatMap((id) => [[id, "evidence"], [id, "hero"]]));
-  assert.equal(new Set(chapterCapturePlan.map(({ filename }) => filename)).size, 14);
+  const evidence = chapterCapturePlan.filter(({ kind }) => kind === "evidence");
+  const heroes = chapterCapturePlan.filter(({ kind }) => kind === "hero");
+  assert.deepEqual(evidence.map(({ id, demo, crossingIndex }) => [id, demo, crossingIndex]), [
+    ["plane", "ordinary-five", null],
+    ["cylinder", "horizontal-wrap", 0],
+    ["torus", "two-seam-diagonal", 0],
+    ["torus", "two-seam-diagonal", 1],
+    ["mobius", "reflected-crossing", 0],
+    ["klein", "preserved-crossing", 0],
+    ["klein", "reflected-crossing", 1],
+    ["projective", "mirrored-crossings", 0],
+    ["projective", "mirrored-crossings", 1],
+    ["sphere", "adjacent-edge-turn", 0]
+  ]);
+  assert.deepEqual(heroes.map(({ id, demo, crossingIndex }) => [id, demo, crossingIndex]), [
+    ["plane", "ordinary-five", null], ["cylinder", "horizontal-wrap", null],
+    ["torus", "two-seam-diagonal", null], ["mobius", "reflected-crossing", null],
+    ["klein", "reflected-crossing", null], ["projective", "mirrored-crossings", null],
+    ["sphere", "adjacent-edge-turn", null]
+  ]);
+  assert.equal(new Set(chapterCapturePlan.map(({ path: artifactPath }) => artifactPath)).size, 17);
+  chapterCapturePlan.forEach((item) => {
+    assert.equal(typeof item.shot, "string");
+    assert.ok(item.shot.length > 0);
+    assert.equal(path.basename(item.path), item.filename);
+    const absolutePath = path.join(ROOT, item.path);
+    const png = fs.readFileSync(absolutePath);
+    assert.ok(png.length > 10000, `${item.path} must be a non-empty evidence PNG`);
+    assert.deepEqual([...png.subarray(0, 8)], [137, 80, 78, 71, 13, 10, 26, 10]);
+    assert.equal(png.readUInt32BE(16), 1920, `${item.path} width`);
+    assert.equal(png.readUInt32BE(20), 1080, `${item.path} height`);
+  });
 });

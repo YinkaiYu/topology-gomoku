@@ -51,17 +51,40 @@ function chapterSegments(definition) {
   }
   const firstDemo = findGameRenderShot(definition.id, demos[0]).demo;
   return [
-    { demo: demos[0], start: 0, end: 0.44, localEnd: winningHoldProgress(firstDemo), final: false },
-    { demo: demos[1], start: 0.44, end: 1, localEnd: 1, final: true }
+    { kind: "path", demo: demos[0], start: 0, end: 0.38, localEnd: winningHoldProgress(firstDemo), final: false },
+    { kind: "paired-memory", fromDemo: demos[0], toDemo: demos[1], demo: "paired-memory", start: 0.38, end: 0.5, final: false },
+    { kind: "path", demo: demos[1], start: 0.5, end: 1, localEnd: 1, final: true }
   ];
 }
 
 export function chapterFrameAt(definition, progress) {
   const amount = clamp(progress);
   const segments = chapterSegments(definition);
-  const segment = segments.find((candidate, index) => amount < candidate.end || index === segments.length - 1);
+  const segment = segments.find((candidate, index) => amount < candidate.end || (candidate.kind === "paired-memory" && amount <= candidate.end) || index === segments.length - 1);
   const span = segment.end - segment.start;
-  const local = clamp((amount - segment.start) / span) * segment.localEnd;
+  const segmentProgress = clamp((amount - segment.start) / span);
+  if (segment.kind === "paired-memory") {
+    return freeze({
+      phase: "paired-memory",
+      lessonStep: segmentProgress < 1 ? 5 : 0,
+      pendingStep: 0,
+      dropProgress: 0,
+      breathPhase: 0,
+      winningFive: false,
+      morphProgress: 0,
+      rotation: freeze({ x: 0, y: 0, z: 0 }),
+      topology: definition.id,
+      demo: "paired-memory",
+      memoryDemos: freeze([segment.fromDemo, segment.toDemo]),
+      memoryProgress: segmentProgress,
+      crossings: freeze([]),
+      chapterProgress: amount,
+      pathProgress: 0,
+      surfaceProgress: 0,
+      finalPath: false
+    });
+  }
+  const local = segmentProgress * segment.localEnd;
   const { definition: shot, demo } = findGameRenderShot(definition.id, segment.demo);
   const state = chapterStateAt(shot, demo, local);
   return freeze({
@@ -120,6 +143,12 @@ export function buildChapterSamples(definition) {
       samples.push(closestSample(demoCandidates, (frame) => frame.phase === "rotation", (frame) => Math.abs(frame.pathProgress - 1)));
     }
   }
+  if (definition.liveRender.demos.length > 1) {
+    for (const target of [0, 0.5, 1]) {
+      const sample = closestSample(candidates, (frame) => frame.phase === "paired-memory", (frame) => Math.abs(frame.memoryProgress - target));
+      samples.push(freeze({ ...sample, demo: "paired-memory", memoryProgress: target }));
+    }
+  }
   return freeze(samples);
 }
 
@@ -165,7 +194,7 @@ function createThreeSurface(layer, definition) {
   const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true, powerPreference: "high-performance", preserveDrawingBuffer: true });
   renderer.setClearColor(0x000000, 0);
   renderer.setPixelRatio(1);
-  renderer.setSize(1280, 720, false);
+  renderer.setSize(3840, 2160, false);
   renderer.outputColorSpace = THREE.SRGBColorSpace;
   renderer.domElement.className = "chapter-surface-layer__canvas";
   renderer.domElement.dataset.chapterSurfaceCanvas = definition.id;
@@ -314,7 +343,9 @@ export class TopologyChapterController {
   renderProgress(progress) {
     if (!this.adapter) throw new Error(`${this.definition.id} chapter controller is not ready`);
     const frame = chapterFrameAt(this.definition, progress);
-    const rendered = this.adapter.render({ chapterProgress: frame.pathProgress, topology: this.definition.id, demo: frame.demo });
+    const rendered = frame.phase === "paired-memory"
+      ? this.adapter.render({ pairedMemory: { fromDemo: frame.memoryDemos[0], toDemo: frame.memoryDemos[1], progress: frame.memoryProgress } })
+      : this.adapter.render({ chapterProgress: frame.pathProgress, topology: this.definition.id, demo: frame.demo });
     const finish = (result) => {
       applyCamera(this.board, this.definition, frame);
       const surfaceProgress = this.surface.render(frame);

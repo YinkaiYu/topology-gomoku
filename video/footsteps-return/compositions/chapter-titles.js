@@ -3,7 +3,7 @@ import { createSceneElement } from "./shared/scene.js";
 const chapterAppearance = Object.freeze({
   plane: Object.freeze({ light: "#21302c", silhouette: "plane.svg" }),
   cylinder: Object.freeze({ light: "#3f8c87", silhouette: "cylinder.svg" }),
-  torus: Object.freeze({ light: "#3f8c87", silhouette: "torus.svg" }),
+  torus: Object.freeze({ light: "#385f78", silhouette: "torus.svg" }),
   mobius: Object.freeze({ light: "#d95b4f", silhouette: "mobius.svg" }),
   klein: Object.freeze({ light: "#7f6ca8", silhouette: "klein.svg" }),
   projective: Object.freeze({ light: "#8b7556", silhouette: "projective.svg" }),

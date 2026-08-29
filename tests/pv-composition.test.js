@@ -30,7 +30,7 @@ const expectedSceneIds = [
 const expectedChapterCards = [
   { id: "plane", act: "ACT. PROLOGUE", chapter: "方庭", topology: "平面", light: "#21302c" },
   { id: "cylinder", act: "ACT. I", chapter: "回廊", topology: "圆柱面", light: "#3f8c87" },
-  { id: "torus", act: "ACT. II", chapter: "环游", topology: "环面", light: "#3f8c87" },
+  { id: "torus", act: "ACT. II", chapter: "环游", topology: "环面", light: "#385f78" },
   { id: "mobius", act: "ACT. III", chapter: "扭带", topology: "莫比乌斯环", light: "#d95b4f" },
   { id: "klein", act: "ACT. IV", chapter: "瓶界", topology: "克莱因瓶", light: "#7f6ca8" },
   { id: "projective", act: "ACT. V", chapter: "双生", topology: "实射影平面", light: "#8b7556" },

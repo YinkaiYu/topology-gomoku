@@ -3,7 +3,7 @@ import { createTopologyChapterScene, defineChapterScene } from "../../src/runtim
 export const torusChapter = defineChapterScene({
   id: "torus",
   liveRender: { adapter: "GameRenderAdapter", source: "./render-game.html?sourceRoot=./assets/game-source", topology: "torus", demos: ["two-seam-diagonal"], canvas: "single-persistent", alpha: true, approved: true },
-  identity: { light: "#3f8c87", cameraPath: "dual-axis-orbit" },
+  identity: { light: "#385f78", cameraPath: "dual-axis-orbit" },
   evidence: { kind: "double-cycle", cycles: 2, edgeAction: "both-opposite-pairs-preserved" },
   entryTransition: { kind: "match-cut" },
   exitOcclusion: { kind: "surface-occlusion", geometry: "torus-aperture" },
