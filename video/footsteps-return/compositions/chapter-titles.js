@@ -10,6 +10,13 @@ const chapterAppearance = Object.freeze({
   sphere: Object.freeze({ light: "#c79244", silhouette: "sphere.svg" })
 });
 
+export const chapterTitleTiming = Object.freeze({
+  ambient: Object.freeze({ volumeAt: 0.14, volumeDuration: 1.15, silhouetteAt: 0.2, silhouetteDuration: 0.92 }),
+  phaseA: Object.freeze({ actAt: 0.24, actDuration: 0.42, chapterAt: 0.3, chapterDuration: 0.58, heroAt: 1.04 }),
+  swap: Object.freeze({ at: 1.34, duration: 0.34, blur: 3 }),
+  phaseB: Object.freeze({ heroAt: 1.95, readableUntil: 2.38 })
+});
+
 function textElement(documentRef, className, attribute, text) {
   const element = documentRef.createElement("div");
   element.className = className;
@@ -47,6 +54,9 @@ export function createChapterTitleScene(documentRef, sceneDefinition, chapter) {
 
   const copy = documentRef.createElement("div");
   copy.className = "chapter-card__copy";
+  const topSlot = documentRef.createElement("div");
+  topSlot.className = "chapter-card__top-slot";
+  topSlot.dataset.chapterTopSlot = "";
   const act = textElement(documentRef, "chapter-card__act", "chapterAct", chapter.title.act);
   const chapterName = textElement(documentRef, "chapter-card__chapter", "chapterName", chapter.title.chapter);
   const topology = textElement(documentRef, "chapter-card__topology", "topologyName", chapter.title.topology);
@@ -54,7 +64,8 @@ export function createChapterTitleScene(documentRef, sceneDefinition, chapter) {
   chapterName.dataset.maxWidth = "1520";
   topology.dataset.fitText = "";
   topology.dataset.maxWidth = "1520";
-  copy.append(act, chapterName, topology);
+  topSlot.append(act, topology);
+  copy.append(topSlot, chapterName);
 
   card.append(volume, silhouette, copy);
   return createSceneElement(documentRef, sceneDefinition, card);
@@ -67,9 +78,11 @@ export function addChapterTitleReveal(timeline, scene, start) {
   const chapter = scene.querySelector("[data-chapter-name]");
   const topology = scene.querySelector("[data-topology-name]");
 
-  timeline.to(volume, { opacity: Number(volume.dataset.revealOpacity), scale: 1, duration: 1.15, ease: "sine.out" }, start + 0.14);
-  timeline.to(silhouette, { opacity: Number(silhouette.dataset.revealOpacity), scale: 1, duration: 0.92, ease: "power1.out" }, start + 0.2);
-  timeline.to(act, { opacity: 1, y: 0, duration: 0.54, ease: "power2.out" }, start + 0.34);
-  timeline.to(chapter, { opacity: 1, y: 0, duration: 0.72, ease: "power3.out" }, start + 0.43);
-  timeline.to(topology, { opacity: 1, y: 0, duration: 0.62, ease: "sine.out" }, start + 0.58);
+  const { ambient, phaseA, swap } = chapterTitleTiming;
+  timeline.to(volume, { opacity: Number(volume.dataset.revealOpacity), scale: 1, duration: ambient.volumeDuration, ease: "sine.out" }, start + ambient.volumeAt);
+  timeline.to(silhouette, { opacity: Number(silhouette.dataset.revealOpacity), scale: 1, duration: ambient.silhouetteDuration, ease: "power1.out" }, start + ambient.silhouetteAt);
+  timeline.to(act, { opacity: 1, y: 0, duration: phaseA.actDuration, ease: "power2.out" }, start + phaseA.actAt);
+  timeline.to(chapter, { opacity: 1, y: 0, duration: phaseA.chapterDuration, ease: "power3.out" }, start + phaseA.chapterAt);
+  timeline.to(act, { opacity: 0, filter: `blur(${swap.blur}px)`, duration: swap.duration, ease: "sine.inOut" }, start + swap.at);
+  timeline.to(topology, { opacity: 1, filter: "blur(0px)", duration: swap.duration, ease: "sine.inOut" }, start + swap.at);
 }

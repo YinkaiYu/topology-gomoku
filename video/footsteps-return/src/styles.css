@@ -88,6 +88,7 @@ body {
   position: relative;
   display: flex;
   align-items: center;
+  justify-content: center;
   width: 100%;
   height: 100%;
   padding: var(--safe-top) var(--safe-right) var(--safe-bottom) var(--safe-left);
@@ -138,12 +139,20 @@ body {
   justify-content: center;
   width: 1520px;
   min-height: 760px;
-  margin-left: 260px;
-  gap: 34px;
+  gap: 48px;
+  text-align: center;
   text-wrap: balance;
 }
 
+.chapter-card__top-slot {
+  display: grid;
+  width: 100%;
+  min-height: 108px;
+  align-items: center;
+}
+
 .chapter-card__act {
+  grid-area: 1 / 1;
   width: 100%;
   color: var(--chapter-light);
   font-size: 52px;
@@ -168,6 +177,7 @@ body {
 }
 
 .chapter-card__topology {
+  grid-area: 1 / 1;
   width: 100%;
   color: #b8b6ae;
   font-size: 82px;
@@ -175,7 +185,7 @@ body {
   line-height: 1.25;
   letter-spacing: 0.12em;
   opacity: 0;
-  transform: translateY(14px);
+  filter: blur(3px);
   white-space: nowrap;
 }
 

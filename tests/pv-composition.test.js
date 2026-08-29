@@ -148,51 +148,157 @@ test("render readiness waits for all three local Topo Serif weights", async () =
   assert.deepEqual(result.remoteResources, []);
 });
 
-test("seven chapter cards preserve the approved title triples", async () => {
+test("seven chapter cards preserve the approved copy in one swapping top slot and one anchored title", async () => {
   const snapshots = await page.evaluate(() => [...document.querySelectorAll("[data-chapter-card]")].map((card) => ({
     id: card.dataset.chapterCard,
     act: card.querySelector("[data-chapter-act]")?.textContent.trim(),
     chapter: card.querySelector("[data-chapter-name]")?.textContent.trim(),
     topology: card.querySelector("[data-topology-name]")?.textContent.trim(),
-    light: getComputedStyle(card).getPropertyValue("--chapter-light").trim()
+    light: getComputedStyle(card).getPropertyValue("--chapter-light").trim(),
+    topSlotShared: card.querySelector("[data-chapter-act]")?.parentElement === card.querySelector("[data-topology-name]")?.parentElement,
+    topSlotMarked: card.querySelector("[data-chapter-act]")?.parentElement?.hasAttribute("data-chapter-top-slot") ?? false,
+    copyLevels: [...card.querySelector(".chapter-card__copy").children].map((node) => node.hasAttribute("data-chapter-top-slot") ? "top-slot" : node.hasAttribute("data-chapter-name") ? "chapter" : "unexpected")
   })));
 
-  assert.deepEqual(snapshots, expectedChapterCards);
+  assert.deepEqual(snapshots, expectedChapterCards.map((card) => ({
+    ...card,
+    topSlotShared: true,
+    topSlotMarked: true,
+    copyLevels: ["top-slot", "chapter"]
+  })));
 });
 
-test("chapter-card children stay hidden before reveal and resolve visibly without flashing", async () => {
-  const samples = await page.evaluate(() => {
+test("chapter-card timing data reserves readable phase A, swap, and phase B windows", async () => {
+  const timing = await page.evaluate(async () => {
+    const module = await import("/compositions/chapter-titles.js");
+    return module.chapterTitleTiming ?? null;
+  });
+
+  assert.ok(timing, "chapter-card timing must be exported as editable data");
+  assert.deepEqual(Object.keys(timing), ["ambient", "phaseA", "swap", "phaseB"]);
+  for (const [section, values] of Object.entries(timing)) {
+    for (const [name, value] of Object.entries(values)) {
+      assert.ok(Number.isFinite(value), `${section}.${name} must be finite timing data`);
+    }
+  }
+  const phaseAReady = Math.max(
+    timing.phaseA.actAt + timing.phaseA.actDuration,
+    timing.phaseA.chapterAt + timing.phaseA.chapterDuration
+  );
+  assert.ok(timing.phaseA.heroAt >= phaseAReady && timing.phaseA.heroAt < timing.swap.at, "phase A hero must land inside its readable hold");
+  assert.ok(timing.swap.at - phaseAReady >= 0.45, "phase A needs at least 450 ms fully readable");
+  assert.ok(timing.swap.duration >= 0.3, "the top-slot crossfade needs a readable focus transition");
+  assert.ok(timing.phaseB.heroAt >= timing.swap.at + timing.swap.duration && timing.phaseB.heroAt < timing.phaseB.readableUntil, "phase B hero must land inside its readable hold");
+  assert.ok(timing.phaseB.readableUntil - (timing.swap.at + timing.swap.duration) >= 0.65, "phase B needs at least 650 ms fully readable");
+});
+
+test("seven chapter cards reveal ACT plus title, crossfade the top slot, then hold topology plus title", async () => {
+  const samples = await page.evaluate(async () => {
+    const { chapterTitleTiming: timing } = await import("/compositions/chapter-titles.js");
     const timeline = window.__timelines["footsteps-return"];
     const cards = [...document.querySelectorAll("[data-chapter-card]")];
-    const selectors = [
-      "[data-chapter-volume]",
-      "[data-chapter-silhouette]",
-      "[data-chapter-act]",
-      "[data-chapter-name]",
-      "[data-topology-name]"
-    ];
+    const opacity = (node) => Number(getComputedStyle(node).opacity);
+    const bounds = (node) => {
+      const rect = node.getBoundingClientRect();
+      return { x: rect.x, y: rect.y, width: rect.width, height: rect.height };
+    };
     return cards.map((card) => {
       const scene = card.closest("[data-scene-id]");
       const start = Number(scene.dataset.sceneStart);
-      const sampleAt = (time) => {
-        timeline.time(time, false).pause();
-        return selectors.map((selector) => Number(getComputedStyle(card.querySelector(selector)).opacity));
+      const act = card.querySelector("[data-chapter-act]");
+      const chapter = card.querySelector("[data-chapter-name]");
+      const topology = card.querySelector("[data-topology-name]");
+      const sampleAt = (offset) => {
+        timeline.time(start + offset, false).pause();
+        return {
+          act: opacity(act),
+          chapter: opacity(chapter),
+          topology: opacity(topology),
+          chapterBounds: bounds(chapter)
+        };
       };
       return {
         id: card.dataset.chapterCard,
-        before: sampleAt(start - 0.01),
-        start: sampleAt(start),
-        during: sampleAt(start + 0.72),
-        after: sampleAt(start + 1.45)
+        before: sampleAt(-0.01),
+        start: sampleAt(0),
+        phaseA: sampleAt(timing.phaseA.heroAt),
+        swap: Array.from({ length: Math.ceil(timing.swap.duration * 60) + 1 }, (_, index) => sampleAt(timing.swap.at + Math.min(index / 60, timing.swap.duration))),
+        phaseB: sampleAt(timing.phaseB.heroAt)
       };
     });
   });
 
-  samples.forEach(({ id, before, start, during, after }) => {
-    assert.deepEqual(before, [0, 0, 0, 0, 0], `${id} children must be authored hidden before reveal`);
-    assert.deepEqual(start, [0, 0, 0, 0, 0], `${id} children must remain hidden at chapter start`);
-    during.forEach((opacity) => assert.ok(opacity > 0, `${id} child should be visible during reveal`));
-    after.forEach((opacity) => assert.ok(opacity > 0, `${id} child should remain visible after reveal`));
+  samples.forEach(({ id, before, start, phaseA, swap, phaseB }) => {
+    for (const [label, sample] of [["before reveal", before], ["at chapter start", start]]) {
+      assert.equal(sample.act, 0, `${id} ACT must be hidden ${label}`);
+      assert.equal(sample.chapter, 0, `${id} title must be hidden ${label}`);
+      assert.equal(sample.topology, 0, `${id} topology must be hidden ${label}`);
+    }
+    assert.ok(phaseA.act > 0.99, `${id} phase A must show ACT`);
+    assert.ok(phaseA.chapter > 0.99, `${id} phase A must show the chapter title`);
+    assert.ok(phaseA.topology < 0.01, `${id} phase A must hide topology`);
+    assert.ok(phaseB.act < 0.01, `${id} phase B must hide ACT`);
+    assert.ok(phaseB.chapter > 0.99, `${id} phase B must keep the chapter title`);
+    assert.ok(phaseB.topology > 0.99, `${id} phase B must show topology`);
+    assert.deepEqual(phaseB.chapterBounds, phaseA.chapterBounds, `${id} lower title must not move during the top-slot swap`);
+    assert.equal(phaseB.chapter, phaseA.chapter, `${id} lower title opacity must remain stable across phases`);
+    swap.forEach((sample, index) => {
+      assert.ok(Math.min(sample.act, sample.topology) < 0.99, `${id} ACT and topology cannot both be fully visible at swap sample ${index}`);
+      assert.ok(Math.max(sample.act, sample.topology) > 0.45, `${id} top slot cannot disappear during swap sample ${index}`);
+      assert.deepEqual(sample.chapterBounds, phaseA.chapterBounds, `${id} lower title must stay fixed during swap sample ${index}`);
+      assert.equal(sample.chapter, phaseA.chapter, `${id} lower title opacity must stay fixed during swap sample ${index}`);
+    });
+  });
+});
+
+test("both chapter-card rows stay centered on the 4K stage through phase A, swap, and phase B", async () => {
+  const samples = await page.evaluate(async () => {
+    const { chapterTitleTiming: timing } = await import("/compositions/chapter-titles.js");
+    const timeline = window.__timelines["footsteps-return"];
+    const stageRect = document.querySelector("[data-master-stage]").getBoundingClientRect();
+    const stageCenter = stageRect.x + stageRect.width / 2;
+    const centerX = (node) => {
+      const rect = node.getBoundingClientRect();
+      return rect.x + rect.width / 2;
+    };
+    return [...document.querySelectorAll("[data-chapter-card]")].map((card) => {
+      const scene = card.closest("[data-scene-id]");
+      const start = Number(scene.dataset.sceneStart);
+      const topSlot = card.querySelector("[data-chapter-top-slot]");
+      const act = card.querySelector("[data-chapter-act]");
+      const chapter = card.querySelector("[data-chapter-name]");
+      const topology = card.querySelector("[data-topology-name]");
+      const sampleAt = (offset) => {
+        timeline.time(start + offset, false).pause();
+        return {
+          stageCenter,
+          topSlotCenter: centerX(topSlot),
+          actCenter: centerX(act),
+          chapterCenter: centerX(chapter),
+          topologyCenter: centerX(topology),
+          align: [act, chapter, topology].map((node) => getComputedStyle(node).textAlign)
+        };
+      };
+      return {
+        id: card.dataset.chapterCard,
+        phaseA: sampleAt(timing.phaseA.heroAt),
+        swap: Array.from({ length: Math.ceil(timing.swap.duration * 60) + 1 }, (_, index) => sampleAt(timing.swap.at + Math.min(index / 60, timing.swap.duration))),
+        phaseB: sampleAt(timing.phaseB.heroAt)
+      };
+    });
+  });
+
+  const assertCentered = (id, label, sample) => {
+    for (const [row, center] of [["top slot", sample.topSlotCenter], ["ACT", sample.actCenter], ["chapter", sample.chapterCenter], ["topology", sample.topologyCenter]]) {
+      assert.ok(Math.abs(center - sample.stageCenter) <= 1, `${id} ${row} must stay within 1px of the stage center during ${label}`);
+    }
+    assert.deepEqual(sample.align, ["center", "center", "center"], `${id} both visible rows must use centered text during ${label}`);
+  };
+
+  samples.forEach(({ id, phaseA, swap, phaseB }) => {
+    assertCentered(id, "phase A", phaseA);
+    swap.forEach((sample, index) => assertCentered(id, `swap sample ${index}`, sample));
+    assertCentered(id, "phase B", phaseB);
   });
 });
 

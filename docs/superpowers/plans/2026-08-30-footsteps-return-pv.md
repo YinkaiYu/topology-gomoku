@@ -15,7 +15,7 @@
 - [ ] Keep game SemVer at `1.37.2`; this production task does not create a game release.
 - [ ] Use only the real game render adapter for rule evidence. Do not redraw the board in the PV layer.
 - [ ] Keep all captions single-line, white with black outline, without a full stop, card, shadow, glow, or word-by-word animation.
-- [ ] Never narrate chapter cards. Each card must show `ACT.` line, chapter name, and topology name.
+- [ ] Never narrate chapter cards. Each card must first show `ACT.` plus the anchored chapter name, then replace `ACT.` in the same top slot with the topology name while the chapter name remains fixed.
 - [ ] Use camera occlusion, surface morphs, short black, and match cuts for transitions; do not use wipes, cross-screen connector lines, or slide transitions.
 - [ ] Keep the opening free of the Institute of Physics mark; show the game title and a prominent IOP logo only on the final card.
 - [ ] Commit source, manifests, score source, captions, tests, and provenance. Ignore frame sequences, caches, rendered WAV intermediates, and final videos.
@@ -57,7 +57,7 @@
 - Test: `tests/pv-manifest.test.js`
 
 - [ ] Write manifest tests first. Assert one intro, exactly seven ordered chapters, one seven-world gallery, and one end card; assert chapter IDs `plane`, `cylinder`, `torus`, `mobius`, `klein`, `projective`, `sphere`.
-- [ ] Assert exact visible title triples: `ACT. PROLOGUE / 方庭 / 平面` through `ACT. VI / 归圆 / 球面`.
+- [ ] Assert the exact stored copy sets `ACT. PROLOGUE / 方庭 / 平面` through `ACT. VI / 归圆 / 球面`; these are data triples, not three simultaneously visible lines.
 - [ ] Assert the approved narration verbatim, while keeping punctuation metadata separate from visible subtitle text.
 - [ ] Assert every narration cue has a stable ID, speaker role, semantic group, and estimated duration; every scene has non-negative duration and a transition contract; chapter cards have no narration IDs.
 - [ ] Assert asset references are repository-relative and reject drive-letter paths, URLs without provenance, missing files, and generated-output paths.
@@ -103,11 +103,11 @@
 - Test: `tests/pv-composition.test.js`
 
 - [ ] Write DOM-contract tests for one master stage, one paused GSAP master timeline, scene registration, safe-area tokens, and a single visible caption group.
-- [ ] Add chapter-card snapshot tests for all seven title triples and verify the `ACT.` line remains single-line.
+- [ ] Add real-browser chapter-card tests for all seven copy triples and verify two sequential visible pairs: phase A is `ACT.` plus chapter name, phase B is topology name plus the unchanged chapter name. Keep every `ACT.` line single-line.
 - [ ] Run `node --test tests/pv-composition.test.js` and confirm failure.
 - [ ] Build the composition at 3840×2160/60fps, authored and reviewed for the sole 4K delivery target.
 - [ ] Load local `Topo Serif` 400/600/700 assets and wait for `document.fonts.ready` before exposing render readiness.
-- [ ] Implement chapter cards as near-black spaces with low-contrast topology silhouettes, fixed type hierarchy, restrained volumetric reveal, and per-chapter light colors from `DESIGN.md`.
+- [ ] Implement chapter cards as near-black spaces with low-contrast topology silhouettes, a fixed two-level hierarchy, restrained volumetric reveal, and per-chapter light colors from `DESIGN.md`. Center both rows and their containers on the stage's 50% horizontal axis; crossfade `ACT.` to the topology name in one top slot without moving or dimming the lower chapter-name anchor; manage phase A, swap, and phase B timing as adjustable data.
 - [ ] Keep timelines paused and deterministic. Construct every scene synchronously and register it before playback; do not use infinite repeats or async timeline mutation.
 - [ ] Run `npm run pv:lint`, `npm run pv:validate`, `npm run pv:inspect`, and the composition tests.
 - [ ] Commit as `feat: build pv composition and chapter cards`.

@@ -58,7 +58,7 @@
 | 关卡卡片进入棋盘 | [`进入前`](../../artifacts/qa-level-card-entry-before-v1361.png)、[`回弹中`](../../artifacts/qa-level-card-entry-mid-v1361.png)、[`稳定态`](../../artifacts/qa-level-card-entry-settled-v1361.png) |
 | 棋盘返回关卡卡片 | [`收束中`](../../artifacts/qa-level-card-return-mid-v1361.png)、[`稳定态`](../../artifacts/qa-level-card-return-settled-v1361.png) |
 | AI 难度文案与内嵌字体 | [`artifacts/qa-ai-difficulty-labels-v1363.png`](../../artifacts/qa-ai-difficulty-labels-v1363.png) |
-| 《足音回归》4K 章节牌 | [`空母版基线`](../../artifacts/pv-chapter-card-before-4k.png)、[`方庭`](../../artifacts/pv-chapter-card-plane-4k.png)、[`回廊`](../../artifacts/pv-chapter-card-cylinder-4k.png)、[`环游`](../../artifacts/pv-chapter-card-torus-4k.png)、[`扭带`](../../artifacts/pv-chapter-card-mobius-4k.png)、[`瓶界`](../../artifacts/pv-chapter-card-klein-4k.png)、[`双生`](../../artifacts/pv-chapter-card-projective-4k.png)、[`归圆`](../../artifacts/pv-chapter-card-sphere-4k.png) |
+| 《足音回归》4K 章节牌两阶段 | [`空母版基线`](../../artifacts/pv-chapter-card-before-4k.png)、[`方庭 A：ACT + 关卡名`](../../artifacts/pv-chapter-card-phases/frame-00-at-20.04s.png)、[`方庭 B：流形名 + 关卡名`](../../artifacts/pv-chapter-card-phases/frame-01-at-20.95s.png)、[`扭带 A：ACT + 关卡名`](../../artifacts/pv-chapter-card-phases/frame-02-at-68.04s.png)、[`扭带 B：流形名 + 关卡名`](../../artifacts/pv-chapter-card-phases/frame-03-at-68.95s.png)、[`A/B 联系表`](../../artifacts/pv-chapter-card-phases/contact-sheet.jpg)；其余五章由 Task 11 统一输出联系表 |
 
 较早截图只用于回归和问题溯源，不自动成为新设计的视觉真相。出现冲突时，以最新已确认实现、视觉设计语言和同状态实机/预览证据为准。
 
