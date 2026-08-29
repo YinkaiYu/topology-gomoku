@@ -3,7 +3,8 @@ import { spawnSync } from "node:child_process";
 import { fileURLToPath } from "node:url";
 import path from "node:path";
 
-const scriptDirectory = path.dirname(fileURLToPath(import.meta.url));
+const scriptPath = fileURLToPath(import.meta.url);
+const scriptDirectory = path.dirname(scriptPath);
 const repositoryRoot = path.resolve(scriptDirectory, "../../..");
 const requiredAssets = [
   "app/assets/fonts/noto-serif-sc-400.woff2",
@@ -18,9 +19,8 @@ const requiredAssets = [
   "app/assets/topologies/projective.svg"
 ];
 
-function isCallable(command, args = ["--version"]) {
-  const result = spawnSync(command, args, { stdio: "ignore" });
-  return result.status === 0;
+export function probeCommand(command, args = ["--version"]) {
+  return spawnSync(command, args, { encoding: "utf8" });
 }
 
 function fromWingetPackage(packagePrefix, relativeExecutable) {
@@ -45,32 +45,47 @@ function fromWingetPackage(packagePrefix, relativeExecutable) {
   }
 }
 
-function findCallable(candidates, args = ["--version"]) {
-  return candidates.find((command) => command && isCallable(command, args));
+export function findCallable(candidates, args = ["--version"], probe = probeCommand) {
+  return candidates.find((command) => command && probe(command, args).status === 0);
 }
 
-function findFfmpeg() {
+export function findFfmpeg(probe = probeCommand) {
   return findCallable([
     "ffmpeg",
     fromWingetPackage("Gyan.FFmpeg_", path.join("bin", "ffmpeg.exe"))
-  ], ["-version"]);
+  ], ["-version"], probe);
 }
 
-function findEspeak() {
+export function findEspeak(probe = probeCommand) {
   return findCallable([
     "espeak-ng",
     process.env.ProgramFiles && path.join(process.env.ProgramFiles, "eSpeak NG", "espeak-ng.exe")
-  ]);
+  ], ["--version"], probe);
 }
 
-function findMuseScore() {
-  return findCallable([
+function museScoreCandidates() {
+  return [
     "MuseScore4.exe",
     "MuseScore4",
     "mscore4",
     "mscore",
     process.env.ProgramFiles && path.join(process.env.ProgramFiles, "MuseScore 4", "bin", "MuseScore4.exe")
-  ]);
+  ];
+}
+
+export function museScoreMajorVersion(output) {
+  const match = /\bMuseScore(?:\s+Studio|4)?\s+(\d+)(?:\.\d+)*/i.exec(output);
+  return match ? Number.parseInt(match[1], 10) : undefined;
+}
+
+export function findMuseScore({ candidates = museScoreCandidates(), probe = probeCommand } = {}) {
+  return candidates.find((command) => {
+    if (!command) {
+      return false;
+    }
+    const result = probe(command, ["--version"]);
+    return result.status === 0 && museScoreMajorVersion(`${result.stdout ?? ""}\n${result.stderr ?? ""}`) === 4;
+  });
 }
 
 function reportMissing(message, remediation) {
@@ -80,7 +95,7 @@ function reportMissing(message, remediation) {
 function runMuseScore() {
   const command = findMuseScore();
   if (!command) {
-    reportMissing("MuseScore 4 is not callable.", "Install it with: winget install Musescore.Musescore");
+    reportMissing("MuseScore 4 is required and must be callable.", "Install it with: winget install Musescore.Musescore");
     process.exitCode = 1;
     return;
   }
@@ -88,9 +103,7 @@ function runMuseScore() {
   process.exitCode = result.status ?? 1;
 }
 
-if (process.argv[2] === "--musescore") {
-  runMuseScore();
-} else {
+export function runDoctor() {
   let failed = false;
 
   if (Number.parseInt(process.versions.node, 10) < 22) {
@@ -106,7 +119,7 @@ if (process.argv[2] === "--musescore") {
     failed = true;
   }
   if (!findMuseScore()) {
-    reportMissing("MuseScore 4 is not callable.", "Install it with: winget install Musescore.Musescore");
+    reportMissing("MuseScore 4 is required and must be callable.", "Install it with: winget install Musescore.Musescore");
     failed = true;
   }
 
@@ -120,5 +133,13 @@ if (process.argv[2] === "--musescore") {
     process.exitCode = 1;
   } else {
     console.log("✓ PV toolchain is ready: Node.js, FFmpeg, eSpeak NG, MuseScore 4, fonts, and topology assets are available.");
+  }
+}
+
+if (process.argv[1] && path.resolve(process.argv[1]) === scriptPath) {
+  if (process.argv[2] === "--musescore") {
+    runMuseScore();
+  } else {
+    runDoctor();
   }
 }

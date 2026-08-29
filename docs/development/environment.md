@@ -6,7 +6,7 @@
 
 | 工具 | 用途 | 约束 |
 | --- | --- | --- |
-| Node.js | 测试与 npm 任务 | `package.json` 要求 Node.js 18 或更高版本 |
+| Node.js | 测试、npm 任务与 PV 工具链 | `package.json` 要求 Node.js 22 或更高版本 |
 | PowerShell | H5 校验、构建与字体命令入口 | 使用仓库脚本，不复制临时命令 |
 | uv | Python 版本、虚拟环境与依赖锁定 | 以 `.python-version`、`pyproject.toml`、`uv.lock` 为准 |
 
@@ -32,7 +32,7 @@ npm run pv:preview
 - `npm run fonts:subset` 通过 `uv run --locked` 自动创建或同步 `.venv`，无需激活虚拟环境。
 - `npm run release:check-versions -- X.Y.Z` 仅供维护者在稳定同步后检查 `main` 与三个发行分支的统一游戏版本。
 - `npm run pv:doctor` 检查 PV 所需的 Node.js 22、FFmpeg、eSpeak NG、MuseScore 4 与仓库字体/拓扑资产；`pv:lint`、`pv:validate`、`pv:inspect` 依次执行合成静态、综合运行时质量门与布局检查。
-- `npm run pv:capture -- <URL>`、`npm run pv:voice -- <文字或文本文件> --output <路径>`、`npm run pv:score -- <score.mscz>` 分别转发到 HyperFrames 网站采集、TTS 和本机 MuseScore 4。渲染使用 `pv:render:draft`、`pv:render:4k` 或 `pv:render:1080`。
+- `npm run pv:capture -- <URL>` 与 `npm run pv:voice -- <文字或文本文件>` 分别转发到 HyperFrames 网站采集和 TTS，并强制将媒体写入被忽略的 PV 采集目录；`npm run pv:score -- <score.mscz>` 转发到本机 MuseScore 4。渲染只使用 `pv:render:draft` 与 `pv:render:4k`，输出固定为 4K/60fps。
 - 首次同步需要下载 `uv.lock` 中的依赖；之后会复用锁定环境与本地缓存。
 
 ## Python 环境

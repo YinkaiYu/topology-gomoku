@@ -2,11 +2,11 @@
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
-**Goal:** 制作可复现、可逐帧检查的 16:9 章节预告 PV，以真实游戏规则演示串联七种拓扑流形，并交付 4K/60fps 母版、1080p/60fps 发布版、原创配乐和完整工程。
+**Goal:** 制作可复现、可逐帧检查的 16:9 章节预告 PV，以真实游戏规则演示串联七种拓扑流形，并交付 4K/60fps 成片、原创配乐和完整工程。
 
 **Architecture:** 在 `video/footsteps-return/` 建立独立 HyperFrames 工程。游戏画面由 Playwright 驱动现有 `app/`，用虚拟时钟确定性采集；章节、三维流形、字幕和片尾在 HyperFrames 中合成；旁白、MusicXML 配乐和音效由仓库脚本生成后统一交给 FFmpeg 混音。主时间轴只消费经过校验的 manifest，不把制作控制逻辑写入玩家版本。
 
-**Tech Stack:** HyperFrames 0.8.18、GSAP、Three.js 0.185.1、Playwright 1.62.1、Tone.js 15.1.22、`@tonejs/midi` 2.0.28、Node.js 24、FFmpeg 9、eSpeak NG 1.52、MuseScore 4、Node 内置测试运行器。
+**Tech Stack:** HyperFrames 0.8.18、GSAP 3.14.2、Three.js 0.185.1、Playwright 1.62.1、Tone.js 15.1.22、`@tonejs/midi` 2.0.28、Node.js 24、FFmpeg 9、eSpeak NG 1.52、MuseScore 4、Node 内置测试运行器。
 
 **Source Spec:** [`../specs/2026-08-30-seven-realms-pv-design.md`](../specs/2026-08-30-seven-realms-pv-design.md)
 
@@ -38,7 +38,7 @@
 - [ ] Write `tests/pv-toolchain.test.js` first. Assert exact npm dependency versions, required PV scripts, the presence of `DESIGN.md`, a 3840×2160/60fps composition configuration, and ignored generated directories.
 - [ ] Run `node --test tests/pv-toolchain.test.js` and confirm it fails because the scaffold is absent.
 - [ ] Install local packages with exact versions: `hyperframes@0.8.18`, `@hyperframes/shader-transitions@0.8.18`, `playwright@1.62.1`, `three@0.185.1`, `tone@15.1.22`, and `@tonejs/midi@2.0.28`. Commit the resulting lock file.
-- [ ] Add repository commands: `pv:doctor`, `pv:lint`, `pv:validate`, `pv:inspect`, `pv:preview`, `pv:capture`, `pv:voice`, `pv:score`, `pv:render:draft`, `pv:render:4k`, and `pv:render:1080`.
+- [ ] Add repository commands: `pv:doctor`, `pv:lint`, `pv:validate`, `pv:inspect`, `pv:preview`, `pv:capture`, `pv:voice`, `pv:score`, `pv:render:draft`, and `pv:render:4k`.
 - [ ] Add `captures/`, `renders/`, `.hyperframes/`, generated narration WAVs, generated score WAVs, and frame sequences below `video/footsteps-return/` to `.gitignore`.
 - [ ] Write `DESIGN.md` before adding visual composition code. Inherit the existing visual-language document and fix the palette, typography, safe areas, chapter light colors, camera rules, motion rules, subtitle style, and prohibited effects.
 - [ ] Implement `doctor.mjs` to fail with actionable messages unless Node ≥22, FFmpeg, eSpeak NG, and MuseScore 4 are callable and required fonts/assets exist.
@@ -102,7 +102,7 @@
 - [ ] Write DOM-contract tests for one master stage, one paused GSAP master timeline, scene registration, safe-area tokens, and a single visible caption group.
 - [ ] Add chapter-card snapshot tests for all seven title triples and verify the `ACT.` line remains single-line.
 - [ ] Run `node --test tests/pv-composition.test.js` and confirm failure.
-- [ ] Build the composition at 3840×2160, authored with scale-safe CSS variables so the same source renders at 1920×1080.
+- [ ] Build the composition at 3840×2160/60fps, authored and reviewed for the sole 4K delivery target.
 - [ ] Load local `Topo Serif` 400/600/700 assets and wait for `document.fonts.ready` before exposing render readiness.
 - [ ] Implement chapter cards as near-black spaces with low-contrast topology silhouettes, fixed type hierarchy, restrained volumetric reveal, and per-chapter light colors from `DESIGN.md`.
 - [ ] Keep timelines paused and deterministic. Construct every scene synchronously and register it before playback; do not use infinite repeats or async timeline mutation.
@@ -243,14 +243,14 @@
 - Create: `video/footsteps-return/QA.md`
 - Test: `tests/pv-output.test.js`
 
-- [ ] Write output tests for 3840×2160/60fps and 1920×1080/60fps, 48kHz stereo audio, expected duration tolerance, required streams, and absence of unintended transparency.
+- [ ] Write output tests for 3840×2160/60fps, 48kHz stereo audio, expected duration tolerance, required streams, and absence of unintended transparency.
 - [ ] Run `node --test tests/pv-output.test.js` and confirm failure before final renders exist.
 - [ ] Generate an animation map and contact sheet covering intro, seven chapter cards, fourteen chapter evidence/morph frames, seven-world gallery, and end card.
-- [ ] Render the full 4K and 1080p outputs. Run `ffprobe` checks, full-frame decode checks, black-frame detection, freeze-frame detection, and audio clipping/loudness analysis.
-- [ ] Watch both outputs from start to finish. Record results for single-line captions, punctuation, font rendering, sync, reading time, black-frame breathing, match cuts, motion blur, banding, topology correctness, narration intelligibility, music form, SFX masking, and final logo hierarchy.
+- [ ] Render the full 4K/60fps output. Run `ffprobe` checks, full-frame decode checks, black-frame detection, freeze-frame detection, and audio clipping/loudness analysis.
+- [ ] Watch the 4K/60fps output from start to finish. Record results for single-line captions, punctuation, font rendering, sync, reading time, black-frame breathing, match cuts, motion blur, banding, topology correctness, narration intelligibility, music form, SFX masking, and final logo hierarchy.
 - [ ] Run the complete gate: `npm test`, `npm run validate`, `npm run docs:check`, `npm run pv:lint`, `npm run pv:validate`, `npm run pv:inspect`, and `git diff --check`.
 - [ ] Update `video/footsteps-return/README.md` with reproducible preview/render commands and generated-output locations. Update `docs/design/qa.md` using repository-relative evidence paths only.
-- [ ] Open the HyperFrames Studio preview and the 1080p draft for user review. Do not merge to `dev` until the user explicitly confirms the preview.
+- [ ] Open the HyperFrames Studio preview and the 4K/60fps draft for user review. Do not merge to `dev` until the user explicitly confirms the preview.
 - [ ] After user approval, use the repository’s branch-finishing workflow to prepare the verified branch for a fast-forward merge into `dev`; do not promote to `main` or platform release branches.
 
 ## Final acceptance checklist
