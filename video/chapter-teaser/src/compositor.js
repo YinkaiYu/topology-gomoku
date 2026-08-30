@@ -4,21 +4,23 @@
   if (typeof module === "object" && module.exports) {
     module.exports = factory(
       require("../../../app/assets/topology.js"),
-      require("../../../app/assets/topology-morph.js")
+      require("../../../app/assets/topology-morph.js"),
+      require("../../../app/assets/topology-art.js")
     );
     return;
   }
-  root.ChapterTeaserCompositor = factory(root.TopologyGomoku, root.TopologyMorph);
-})(typeof globalThis !== "undefined" ? globalThis : this, function compositorFactory(Engine, Morph) {
+  root.ChapterTeaserCompositor = factory(root.TopologyGomoku, root.TopologyMorph, root.TopologyArt);
+})(typeof globalThis !== "undefined" ? globalThis : this, function compositorFactory(Engine, Morph, Art) {
   "use strict";
 
-  if (!Engine || !Morph) {
-    throw new Error("Chapter teaser compositor requires TopologyGomoku and TopologyMorph");
+  if (!Engine || !Morph || !Art) {
+    throw new Error("Chapter teaser compositor requires TopologyGomoku, TopologyMorph and TopologyArt");
   }
 
   var TAU = Math.PI * 2;
   var DEFAULT_SEED = 0x715eede7;
   var FONT_FAMILY = '"Topo Serif PV"';
+  var GAME_PALETTE = Art.PALETTE;
 
   function clamp(value, low, high) {
     return Math.max(low, Math.min(high, value));
@@ -158,6 +160,35 @@
     return manifest;
   }
 
+  function topologyConnections(type) {
+    if (type === "cylinder") return { x: "same", y: null };
+    if (type === "torus") return { x: "same", y: "same" };
+    if (type === "mobius") return { x: "twist", y: null };
+    if (type === "klein") return { x: "twist", y: "same" };
+    if (type === "projective") return { x: "twist", y: "twist" };
+    if (type === "sphere") return { x: "adjacent", y: "adjacent" };
+    return { x: null, y: null };
+  }
+
+  function supportingStones(rules, winningCells) {
+    var blocked = Object.create(null);
+    winningCells.forEach(function remember(cell) { blocked[cell] = true; });
+    var coordinates = [
+      [Math.floor(rules.width * 0.28), Math.floor(rules.height * 0.24)],
+      [Math.floor(rules.width * 0.72), Math.floor(rules.height * 0.72)],
+      [Math.floor(rules.width * 0.72), Math.floor(rules.height * 0.28)],
+      [Math.floor(rules.width * 0.28), Math.floor(rules.height * 0.72)]
+    ];
+    var result = [];
+    coordinates.forEach(function addCoordinate(coordinate) {
+      var cell = Engine.toCell(rules, clamp(coordinate[0], 0, rules.width - 1), clamp(coordinate[1], 0, rules.height - 1));
+      if (!blocked[cell] && !result.some(function duplicate(item) { return item.cell === cell; })) {
+        result.push({ cell: cell, player: Engine.AI });
+      }
+    });
+    return result.slice(0, 3);
+  }
+
   function prepareChapter(chapter) {
     var rules = Engine.createRules({
       type: chapter.id,
@@ -174,7 +205,9 @@
       rules: rules,
       trace: trace,
       presentation: presentation,
-      accent: parseHex(chapter.accent)
+      accent: chapter.accent,
+      connections: topologyConnections(chapter.id),
+      supportingStones: supportingStones(rules, trace.cells)
     };
   }
 
@@ -241,54 +274,101 @@
 
   function makeOrientation(model, frameIndex, progress, scale) {
     var chapterIndex = model.chapter.index || 0;
-    var drift = Math.sin(frameIndex / 181 + chapterIndex * 0.73);
     return {
-      x: Math.sin(frameIndex / 317 + chapterIndex) * 0.035,
-      y: progress * 0.34 + frameIndex / 1800 + chapterIndex * 0.025,
-      z: Math.sin(frameIndex / 263 + chapterIndex * 1.3) * 0.018,
+      x: -0.07 + chapterIndex * 0.012,
+      y: progress * 0.22 + chapterIndex * 0.045,
+      z: (chapterIndex % 2 ? -1 : 1) * 0.018,
       scale: scale || 1,
       shapeX: 1,
       shapeY: 1,
       shapeZ: 1,
-      wobbleX: drift * 0.018,
-      wobbleY: Math.cos(frameIndex / 229 + chapterIndex) * 0.012,
+      wobbleX: 0,
+      wobbleY: 0,
       presentation: model.presentation
     };
   }
 
-  function flatPoint(model, u, v, lift) {
-    var aspect = model.rules.width / model.rules.height;
-    var x = (u - 0.5) * 2 * Math.min(1.35, aspect);
-    var y = (v - 0.5) * 2;
-    var edge = Math.max(Math.abs(u - 0.5), Math.abs(v - 0.5)) * 2;
-    var z = model.chapter.id === "plane" ? Math.pow(edge, 4) * lift * 0.36 : 0;
-    return [x, y, z];
+  function flatBoardSize(model, viewport) {
+    var first = Morph.stoneUV(model.rules, 0);
+    var last = Morph.stoneUV(model.rules, model.rules.cellCount - 1);
+    var columns = Math.max(1, model.rules.width - 1);
+    var rows = Math.max(1, model.rules.height - 1);
+    var spanU = Math.max(1e-6, Math.abs(last.u - first.u));
+    var spanV = Math.max(1e-6, Math.abs(last.v - first.v));
+    // The parameter domain grows by one interval on every periodic axis. Derive
+    // its aspect from the actual stone UV span so both canvas axes retain the
+    // live game's single square-cell metric for every topology.
+    var aspect = Math.max(0.74, (spanV * columns) / (spanU * rows));
+    var height = viewport.height * 0.60;
+    var width = height * aspect;
+    if (width > viewport.width * 0.47) {
+      width = viewport.width * 0.47;
+      height = width / aspect;
+    }
+    return { width: width, height: height };
   }
 
-  function surfacePoint(model, u, v, morphAmount) {
-    var target = Morph.surfacePoint(model.chapter.id, u, v);
-    var flat = flatPoint(model, u, v, morphAmount);
-    if (model.chapter.id === "plane") {
-      return flat;
-    }
-    return mix3(flat, target, smootherstep(0, 1, morphAmount));
+  function flatCanvasPoint(model, u, v, viewport) {
+    var size = flatBoardSize(model, viewport);
+    return {
+      x: viewport.x + viewport.width * 0.5 + (u - 0.5) * size.width,
+      y: viewport.y + viewport.height * 0.5 + (v - 0.5) * size.height,
+      depth: 0,
+      u: u,
+      v: v
+    };
   }
 
   function projectSurfacePoint(model, u, v, viewport, morphAmount, orientation) {
-    var point = surfacePoint(model, u, v, morphAmount);
-    var projected = Morph.projectPoint(
+    var flat = flatCanvasPoint(model, u, v, viewport);
+    if (model.chapter.id === "plane" || morphAmount <= 0) {
+      return flat;
+    }
+    var projected = Morph.project(
       model.chapter.id,
-      point,
+      u,
+      v,
       viewport.width,
       viewport.height,
       orientation
     );
     return {
-      x: projected.x + viewport.x,
-      y: projected.y + viewport.y,
-      depth: projected.depth,
+      x: mix(flat.x, projected.x + viewport.x, morphAmount),
+      y: mix(flat.y, projected.y + viewport.y, morphAmount),
+      depth: projected.depth * morphAmount,
       u: u,
       v: v
+    };
+  }
+
+  function flatBoardLayout(model, viewport) {
+    var first = Morph.stoneUV(model.rules, 0);
+    var last = Morph.stoneUV(model.rules, model.rules.cellCount - 1);
+    var topLeft = flatCanvasPoint(model, first.u, first.v, viewport);
+    var bottomRight = flatCanvasPoint(model, last.u, last.v, viewport);
+    var cellX = (bottomRight.x - topLeft.x) / Math.max(1, model.rules.width - 1);
+    var cellY = (bottomRight.y - topLeft.y) / Math.max(1, model.rules.height - 1);
+    return {
+      left: topLeft.x,
+      right: bottomRight.x,
+      top: topLeft.y,
+      bottom: bottomRight.y,
+      cellX: cellX,
+      cellY: cellY,
+      cell: Math.min(Math.abs(cellX), Math.abs(cellY)),
+      artScale: Math.min(Math.abs(cellX), Math.abs(cellY)) / 48
+    };
+  }
+
+  function boardStageBounds(model, viewport) {
+    var domainTopLeft = flatCanvasPoint(model, 0, 0, viewport);
+    var domainBottomRight = flatCanvasPoint(model, 1, 1, viewport);
+    var padding = viewport.height * 0.048;
+    return {
+      left: domainTopLeft.x - padding,
+      top: domainTopLeft.y - padding,
+      right: domainBottomRight.x + padding,
+      bottom: domainBottomRight.y + padding
     };
   }
 
@@ -310,30 +390,16 @@
     ctx.textAlign = align;
   }
 
-  function drawVoid(ctx, width, height, frameIndex, palette, seed, intensity) {
+  function drawGameBackdrop(ctx, width, height, frameIndex, palette, seed, intensity, accent) {
+    Art.drawAppBackdrop(ctx, width, height, { alpha: intensity, accent: accent || null });
+    Art.drawPaperTexture(ctx, width, height, 0.42 * intensity);
     ctx.save();
-    ctx.fillStyle = palette.void;
-    ctx.fillRect(0, 0, width, height);
-
-    var radial = ctx.createRadialGradient(width * 0.5, height * 0.48, 0, width * 0.5, height * 0.48, Math.max(width, height) * 0.72);
-    radial.addColorStop(0, rgba(palette.voidLift, 0.68 * intensity));
-    radial.addColorStop(0.5, rgba(palette.voidLift, 0.18 * intensity));
-    radial.addColorStop(1, rgba(palette.void, 0));
-    ctx.fillStyle = radial;
-    ctx.fillRect(0, 0, width, height);
-
-    var dustCount = Math.round(72 + 40 * intensity);
-    for (var index = 0; index < dustCount; index += 1) {
-      var x = hash01(seed, index * 5) * width;
-      var baseY = hash01(seed, index * 5 + 1) * height;
-      var speed = mix(0.006, 0.024, hash01(seed, index * 5 + 2));
-      var y = (baseY + frameIndex * speed * height / 60) % height;
-      var radius = mix(0.35, 1.35, hash01(seed, index * 5 + 3)) * height / 1080;
-      var pulse = 0.45 + 0.55 * Math.sin(frameIndex / mix(74, 137, hash01(seed, index * 5 + 4)) + index);
-      ctx.fillStyle = rgba(palette.paper, (0.022 + 0.055 * pulse) * intensity);
-      ctx.beginPath();
-      ctx.arc(x, y, radius, 0, TAU);
-      ctx.fill();
+    for (var index = 0; index < 34; index += 1) {
+      var x = hash01(seed, index * 3) * width;
+      var y = hash01(seed, index * 3 + 1) * height;
+      var radius = mix(0.35, 1.05, hash01(seed, index * 3 + 2)) * height / 1080;
+      ctx.fillStyle = rgba(GAME_PALETTE.ink, 0.018 * intensity);
+      ctx.fillRect(x, y, radius, radius);
     }
     ctx.restore();
   }
@@ -341,8 +407,8 @@
   function drawVignette(ctx, width, height, strength) {
     var gradient = ctx.createRadialGradient(width * 0.5, height * 0.48, Math.min(width, height) * 0.18, width * 0.5, height * 0.5, Math.max(width, height) * 0.68);
     gradient.addColorStop(0, "rgba(0,0,0,0)");
-    gradient.addColorStop(0.64, "rgba(0,0,0,0.04)");
-    gradient.addColorStop(1, "rgba(0,0,0," + clamp01(strength) + ")");
+    gradient.addColorStop(0.64, rgba(GAME_PALETTE.ink, 0.012));
+    gradient.addColorStop(1, rgba(GAME_PALETTE.ink, clamp01(strength)));
     ctx.fillStyle = gradient;
     ctx.fillRect(0, 0, width, height);
   }
@@ -366,74 +432,220 @@
     for (row = 0; row < stepsV; row += 1) {
       for (column = 0; column < stepsU; column += 1) {
         var quad = [rows[row][column], rows[row][column + 1], rows[row + 1][column + 1], rows[row + 1][column]];
-        patches.push({
-          points: quad,
-          depth: (quad[0].depth + quad[1].depth + quad[2].depth + quad[3].depth) / 4
-        });
+        if (model.chapter.id === "sphere") {
+          [[0, 1, 2], [0, 2, 3]].forEach(function addSphereTriangle(indices) {
+            var triangle = indices.map(function sphereTrianglePoint(index) { return quad[index]; });
+            patches.push({
+              points: triangle,
+              depth: (triangle[0].depth + triangle[1].depth + triangle[2].depth) / 3
+            });
+          });
+        } else {
+          patches.push({
+            points: quad,
+            depth: (quad[0].depth + quad[1].depth + quad[2].depth + quad[3].depth) / 4
+          });
+        }
       }
     }
     patches.sort(function sortDepth(left, right) { return left.depth - right.depth; });
     return { rows: rows, patches: patches, stepsU: stepsU, stepsV: stepsV };
   }
 
-  function drawSurfaceFill(ctx, mesh, accent, opacity) {
-    mesh.patches.forEach(function drawPatch(patch) {
-      var depthLight = clamp01(0.48 + patch.depth * 0.22);
-      ctx.fillStyle = rgba(accent, opacity * mix(0.24, 0.78, depthLight));
-      ctx.beginPath();
-      ctx.moveTo(patch.points[0].x, patch.points[0].y);
-      for (var index = 1; index < patch.points.length; index += 1) {
-        ctx.lineTo(patch.points[index].x, patch.points[index].y);
-      }
-      ctx.closePath();
-      ctx.fill();
-    });
+  function drawSurfaceFill(ctx, mesh, model, viewport, morphAmount, opacity) {
+    Art.drawCompletionSurface(ctx, mesh.patches, viewport.y + viewport.height, morphAmount, opacity, model.accent);
   }
 
-  function traceParamLine(ctx, model, viewport, morphAmount, orientation, fixedAxis, fixedValue, samples) {
-    ctx.beginPath();
+  function collectParamLine(model, viewport, morphAmount, orientation, fixedAxis, fixedValue, samples, start, end) {
+    var points = [];
+    var from = start == null ? 0 : start;
+    var to = end == null ? 1 : end;
     for (var index = 0; index <= samples; index += 1) {
-      var amount = index / samples;
+      var amount = mix(from, to, index / samples);
       var u = fixedAxis === "u" ? fixedValue : amount;
       var v = fixedAxis === "v" ? fixedValue : amount;
-      var point = projectSurfacePoint(model, u, v, viewport, morphAmount, orientation);
-      if (index === 0) ctx.moveTo(point.x, point.y);
-      else ctx.lineTo(point.x, point.y);
+      points.push(projectSurfacePoint(model, u, v, viewport, morphAmount, orientation));
+    }
+    return points;
+  }
+
+  function strokeSurfacePolyline(ctx, points) {
+    if (!points.length) return;
+    ctx.beginPath();
+    ctx.moveTo(points[0].x, points[0].y);
+    for (var index = 1; index < points.length; index += 1) {
+      ctx.lineTo(points[index].x, points[index].y);
     }
     ctx.stroke();
   }
 
-  function drawSurfaceGrid(ctx, model, viewport, morphAmount, orientation, accent, opacity) {
-    var samples = model.chapter.id === "sphere" ? 42 : 30;
+  function strokeSmoothSurfacePath(ctx, points) {
+    if (!points.length) return;
+    ctx.beginPath();
+    ctx.moveTo(points[0].x, points[0].y);
+    if (points.length === 2) {
+      ctx.lineTo(points[1].x, points[1].y);
+    } else {
+      for (var index = 0; index < points.length - 1; index += 1) {
+        var before = points[Math.max(0, index - 1)];
+        var from = points[index];
+        var to = points[index + 1];
+        var after = points[Math.min(points.length - 1, index + 2)];
+        ctx.bezierCurveTo(
+          from.x + (to.x - before.x) / 6,
+          from.y + (to.y - before.y) / 6,
+          to.x - (after.x - from.x) / 6,
+          to.y - (after.y - from.y) / 6,
+          to.x,
+          to.y
+        );
+      }
+    }
+    ctx.stroke();
+  }
+
+  function surfaceDepthIntersection(from, to, threshold) {
+    var span = to.depth - from.depth;
+    var amount = Math.abs(span) < 1e-8 ? 0.5 : (threshold - from.depth) / span;
+    amount = clamp01(amount);
+    return {
+      x: mix(from.x, to.x, amount),
+      y: mix(from.y, to.y, amount),
+      depth: threshold
+    };
+  }
+
+  function strokeFrontFacingSurfacePath(ctx, points, threshold) {
+    var visible = [];
+    function finishVisibleRun() {
+      if (visible.length > 1) strokeSmoothSurfacePath(ctx, visible);
+      visible = [];
+    }
+    for (var index = 1; index < points.length; index += 1) {
+      var from = points[index - 1];
+      var to = points[index];
+      var fromVisible = from.depth >= threshold;
+      var toVisible = to.depth >= threshold;
+      if (fromVisible && toVisible) {
+        if (!visible.length) visible.push(from);
+        visible.push(to);
+      } else if (fromVisible) {
+        if (!visible.length) visible.push(from);
+        visible.push(surfaceDepthIntersection(from, to, threshold));
+        finishVisibleRun();
+      } else if (toVisible) {
+        visible.push(surfaceDepthIntersection(from, to, threshold));
+        visible.push(to);
+      } else {
+        finishVisibleRun();
+      }
+    }
+    finishVisibleRun();
+  }
+
+  function traceParamLine(ctx, model, viewport, morphAmount, orientation, fixedAxis, fixedValue, samples) {
+    strokeSurfacePolyline(
+      ctx,
+      collectParamLine(model, viewport, morphAmount, orientation, fixedAxis, fixedValue, samples)
+    );
+  }
+
+  function drawSphereSurfaceGrid(ctx, model, viewport, morphAmount, orientation, samples) {
+    var first = Morph.stoneUV(model.rules, 0);
+    var last = Morph.stoneUV(model.rules, model.rules.cellCount - 1);
+    var frontBlend = Morph.smooth((morphAmount - 0.46) / 0.42);
+    var depthThreshold = -0.012 * morphAmount;
+
+    function strokeSphereLine(points) {
+      ctx.save();
+      ctx.globalAlpha *= 1 - frontBlend * 0.84;
+      strokeSmoothSurfacePath(ctx, points);
+      ctx.restore();
+      if (frontBlend > 0) {
+        ctx.save();
+        ctx.globalAlpha *= frontBlend * 0.84;
+        strokeFrontFacingSurfacePath(ctx, points, depthThreshold);
+        ctx.restore();
+      }
+    }
+
+    for (var x = 0; x < model.rules.width; x += 1) {
+      var u = Morph.stoneUV(model.rules, x).u;
+      strokeSphereLine(collectParamLine(model, viewport, morphAmount, orientation, "u", u, samples, first.v, last.v));
+    }
+    for (var y = 0; y < model.rules.height; y += 1) {
+      var v = Morph.stoneUV(model.rules, y * model.rules.width).v;
+      strokeSphereLine(collectParamLine(model, viewport, morphAmount, orientation, "v", v, samples, first.u, last.u));
+    }
+  }
+
+  function drawSurfaceGrid(ctx, model, viewport, morphAmount, orientation, opacity) {
+    var samples = model.chapter.id === "sphere" ? 72 : 30;
+    var flatBlend = model.chapter.id === "plane" ? 1 : 1 - smoothstep(0.035, 0.18, morphAmount);
+    if (flatBlend > 0.001) {
+      Art.drawGrid(ctx, flatBoardLayout(model, viewport), model.rules, opacity * flatBlend);
+    }
+    if (model.chapter.id === "plane") return;
+    var surfaceBlend = smoothstep(0.025, 0.15, morphAmount);
+    if (surfaceBlend <= 0.001) return;
     ctx.save();
     ctx.lineCap = "round";
     ctx.lineJoin = "round";
-    ctx.lineWidth = Math.max(0.65, viewport.height / 1480);
-    ctx.strokeStyle = rgba(accent, opacity * 0.48);
+    ctx.lineWidth = Math.max(0.7, viewport.height / 1480);
+    ctx.strokeStyle = "rgba(92,88,80," + (opacity * surfaceBlend * (0.48 - clamp01(morphAmount) * 0.17)) + ")";
+    if (model.chapter.id === "sphere") {
+      drawSphereSurfaceGrid(ctx, model, viewport, morphAmount, orientation, samples);
+      ctx.restore();
+      return;
+    }
     for (var x = 0; x < model.rules.width; x += 1) {
-      var u = model.rules.width === 1 ? 0.5 : x / (model.rules.width - 1);
-      if (Morph.isPeriodicX(model.chapter.id)) u = (x + 0.5) / model.rules.width;
+      var u = Morph.stoneUV(model.rules, x).u;
       traceParamLine(ctx, model, viewport, morphAmount, orientation, "u", u, samples);
     }
     for (var y = 0; y < model.rules.height; y += 1) {
-      var v = model.rules.height === 1 ? 0.5 : y / (model.rules.height - 1);
-      if (Morph.isPeriodicY(model.chapter.id)) v = (y + 0.5) / model.rules.height;
+      var v = Morph.stoneUV(model.rules, y * model.rules.width).v;
       traceParamLine(ctx, model, viewport, morphAmount, orientation, "v", v, samples);
     }
-    ctx.lineWidth *= 1.35;
-    ctx.strokeStyle = rgba(accent, opacity * 0.28);
-    traceParamLine(ctx, model, viewport, morphAmount, orientation, "u", 0, samples);
-    traceParamLine(ctx, model, viewport, morphAmount, orientation, "u", 1, samples);
-    traceParamLine(ctx, model, viewport, morphAmount, orientation, "v", 0, samples);
-    traceParamLine(ctx, model, viewport, morphAmount, orientation, "v", 1, samples);
     ctx.restore();
+  }
+
+  function drawSurfaceBoundaries(ctx, model, viewport, morphAmount, orientation, opacity) {
+    if (model.chapter.id === "plane") return;
+    var reveal = smoothstep(0.08, 0.42, morphAmount) * opacity;
+    if (reveal <= 0.001) return;
+    var samples = model.chapter.id === "sphere" ? 72 : 48;
+    var scale = viewport.height / 1080;
+    function strokeBoundary(fixedAxis, fixedValue, color) {
+      ctx.save();
+      ctx.strokeStyle = rgba(color, reveal * 0.72);
+      ctx.lineWidth = Math.max(1.5, 2.4 * scale);
+      ctx.lineCap = "round";
+      traceParamLine(ctx, model, viewport, morphAmount, orientation, fixedAxis, fixedValue, samples);
+      ctx.restore();
+    }
+    if (model.chapter.id === "sphere") {
+      strokeBoundary("v", 0, GAME_PALETTE.connection);
+      strokeBoundary("u", 0, GAME_PALETTE.connection);
+      strokeBoundary("v", 1, GAME_PALETTE.twist);
+      strokeBoundary("u", 1, GAME_PALETTE.twist);
+      return;
+    }
+    if (model.connections.x) {
+      strokeBoundary("u", 0, GAME_PALETTE.connection);
+      strokeBoundary("u", 1, GAME_PALETTE.connection);
+    }
+    if (model.connections.y) {
+      strokeBoundary("v", 0, GAME_PALETTE.twist);
+      strokeBoundary("v", 1, GAME_PALETTE.twist);
+    }
   }
 
   function drawSurface(ctx, model, viewport, morphAmount, orientation, opacity, quality) {
     var mesh = buildSurfaceMesh(model, viewport, morphAmount, orientation, quality);
     ctx.save();
-    drawSurfaceFill(ctx, mesh, model.accent, opacity * 0.16);
-    drawSurfaceGrid(ctx, model, viewport, morphAmount, orientation, model.accent, opacity);
+    drawSurfaceFill(ctx, mesh, model, viewport, morphAmount, opacity);
+    drawSurfaceGrid(ctx, model, viewport, morphAmount, orientation, opacity);
+    drawSurfaceBoundaries(ctx, model, viewport, morphAmount, orientation, opacity);
     ctx.restore();
     return mesh;
   }
@@ -484,9 +696,123 @@
     ctx.restore();
   }
 
+  function projectedCellPoint(model, cell, viewport, morphAmount, orientation) {
+    var uv = Morph.stoneUV(model.rules, cell);
+    return projectSurfacePoint(model, uv.u, uv.v, viewport, morphAmount, orientation);
+  }
+
+  function drawFlatBoardStage(ctx, model, viewport, alpha) {
+    if (alpha <= 0.001) return;
+    var bounds = boardStageBounds(model, viewport);
+    Art.drawBoardStage(ctx, bounds, alpha);
+    ctx.save();
+    Art.internals.roundedRect(
+      ctx,
+      bounds.left,
+      bounds.top,
+      bounds.right - bounds.left,
+      bounds.bottom - bounds.top,
+      Math.max(16, viewport.height * 0.027)
+    );
+    ctx.clip();
+    ctx.translate(bounds.left, bounds.top);
+    Art.drawPaperTexture(ctx, bounds.right - bounds.left, bounds.bottom - bounds.top, alpha * 0.72);
+    ctx.restore();
+  }
+
+  function drawBoundaryTeaching(ctx, model, viewport, morphAmount, orientation, reveal, opacity, frameIndex) {
+    var flatAlpha = opacity * (1 - smoothstep(0.28, 0.68, morphAmount));
+    if (flatAlpha <= 0.001) return;
+    var layout = flatBoardLayout(model, viewport);
+    var time = frameIndex * 1000 / 60;
+    var railPulse = 0.18 + (Math.sin(time * 0.0055) * 0.5 + 0.5) * 0.38;
+    Art.drawTopologyRails(ctx, {
+      layout: layout,
+      type: model.chapter.id,
+      xConnection: model.connections.x,
+      yConnection: model.connections.y,
+      pulseX: railPulse,
+      pulseY: railPulse * 0.86,
+      alpha: flatAlpha
+    });
+
+    var edgeTravel = reveal * 4.35;
+    var activeTarget = edgeTravel < 0.05 ? 0 : Math.min(4, Math.floor(edgeTravel) + 1);
+    for (var edge = 0; edge < model.trace.cells.length - 1; edge += 1) {
+      var amount = clamp01(edgeTravel - edge);
+      if (amount <= 0) continue;
+      var from = projectedCellPoint(model, model.trace.cells[edge], viewport, 0, orientation);
+      var to = projectedCellPoint(model, model.trace.cells[edge + 1], viewport, 0, orientation);
+      var seam = model.trace.seams[edge];
+      var color = seam & Engine.SEAM_TWIST ? GAME_PALETTE.twist : GAME_PALETTE.connection;
+      var pending = amount < 0.999;
+      var pulse = Math.sin(time * 0.0055) * 0.5 + 0.5;
+      ctx.save();
+      ctx.globalAlpha = flatAlpha * (pending ? 0.48 + pulse * 0.24 : 0.34);
+      ctx.strokeStyle = color;
+      ctx.fillStyle = color;
+      ctx.lineWidth = Math.max(1.5, layout.cell * 0.045);
+      ctx.lineCap = "round";
+      if (pending) {
+        ctx.setLineDash([layout.cell * 0.12, layout.cell * 0.10]);
+        ctx.lineDashOffset = -time * 0.018;
+      }
+      if (!seam) {
+        ctx.beginPath();
+        ctx.moveTo(from.x, from.y);
+        ctx.lineTo(mix(from.x, to.x, amount), mix(from.y, to.y, amount));
+        ctx.stroke();
+      } else {
+        var fromDirection = Engine.DIRECTIONS[model.trace.directions[edge]];
+        var nextDirectionIndex = model.trace.directions[edge + 1] == null
+          ? model.trace.directions[edge]
+          : model.trace.directions[edge + 1];
+        var toDirection = Engine.DIRECTIONS[nextDirectionIndex];
+        var ray = layout.cell * (pending ? 0.72 : 0.58);
+        var fromEdge = { x: from.x + fromDirection.dx * ray, y: from.y + fromDirection.dy * ray };
+        var toEdge = { x: to.x - toDirection.dx * ray, y: to.y - toDirection.dy * ray };
+        ctx.beginPath();
+        ctx.moveTo(from.x, from.y);
+        ctx.lineTo(mix(from.x, fromEdge.x, amount), mix(from.y, fromEdge.y, amount));
+        ctx.moveTo(toEdge.x, toEdge.y);
+        ctx.lineTo(mix(toEdge.x, to.x, amount), mix(toEdge.y, to.y, amount));
+        ctx.stroke();
+        ctx.setLineDash([]);
+        var ringRadius = layout.cell * 0.37 + pulse * (pending ? 4 : 2);
+        [from, to].forEach(function drawCrossingRing(point) {
+          ctx.beginPath();
+          ctx.arc(point.x, point.y, ringRadius, 0, TAU);
+          ctx.stroke();
+        });
+        if (pending) {
+          var travel = 0.2 + pulse * 0.64;
+          [[from, fromEdge], [toEdge, to]].forEach(function drawTravelDot(segment) {
+            ctx.beginPath();
+            ctx.arc(mix(segment[0].x, segment[1].x, travel), mix(segment[0].y, segment[1].y, travel), Math.max(2, layout.cell * 0.055), 0, TAU);
+            ctx.fill();
+          });
+        }
+      }
+      ctx.restore();
+    }
+
+    if (activeTarget < model.trace.cells.length && reveal < 0.94) {
+      var target = projectedCellPoint(model, model.trace.cells[activeTarget], viewport, 0, orientation);
+      Art.drawTutorialGuide(ctx, {
+        x: target.x,
+        y: target.y,
+        cell: layout.cell,
+        time: time,
+        alpha: flatAlpha * (1 - smoothstep(0.78, 0.96, reveal))
+      });
+    }
+  }
+
   function drawPath(ctx, model, viewport, morphAmount, orientation, reveal, palette, opacity) {
     var scale = viewport.height / 1080;
-    var lineColor = rgba(model.accent, opacity * 0.92);
+    var layout = flatBoardLayout(model, viewport);
+    var pathWidth = Math.max(3.4 * scale, layout.cell * (0.11 - clamp01(morphAmount) * 0.018));
+    var lineColor = rgba(GAME_PALETTE.twist, opacity * (0.62 + reveal * 0.22));
     for (var edge = 0; edge < model.trace.cells.length - 1; edge += 1) {
       var edgeReveal = clamp01(reveal * 4.35 - edge);
       if (edgeReveal <= 0) continue;
@@ -500,9 +826,9 @@
         if (pieceAmount > 0) {
           drawUvPiece(ctx, model, viewport, morphAmount, orientation, piece, pieceAmount, {
             color: lineColor,
-            glow: rgba(model.accent, opacity * 0.42),
-            width: Math.max(2, 4.6 * scale),
-            blur: 7 * scale
+            glow: rgba(GAME_PALETTE.twist, opacity * 0.36 * smoothstep(0.18, 0.74, morphAmount)),
+            width: pathWidth,
+            blur: 12 * scale * smoothstep(0.18, 0.74, morphAmount)
           });
         }
       });
@@ -512,36 +838,50 @@
         var seamUv = bridgePieces[0].to;
         var seamPoint = projectSurfacePoint(model, seamUv.u, seamUv.v, viewport, morphAmount, orientation);
         ctx.save();
-        ctx.strokeStyle = rgba(model.accent, opacity * 0.55);
-        ctx.lineWidth = 1.2 * scale;
+        var seamColor = model.trace.seams[edge] & Engine.SEAM_TWIST ? GAME_PALETTE.twist : GAME_PALETTE.connection;
+        ctx.strokeStyle = rgba(seamColor, opacity * 0.58);
+        ctx.lineWidth = Math.max(1.2 * scale, layout.cell * 0.018);
         ctx.beginPath();
-        ctx.arc(seamPoint.x, seamPoint.y, 12 * scale, 0, TAU);
+        ctx.arc(seamPoint.x, seamPoint.y, layout.cell * 0.30, 0, TAU);
         ctx.stroke();
         ctx.restore();
       }
     }
 
     var visibleStones = clamp(reveal * 5.25 + 0.1, 0, 5);
-    var stones = model.trace.cells.map(function makeStone(cell, index) {
-      var uv = Morph.stoneUV(model.rules, cell);
-      var point = projectSurfacePoint(model, uv.u, uv.v, viewport, morphAmount, orientation);
-      return { point: point, index: index, amount: clamp01(visibleStones - index) };
-    }).filter(function visible(stone) { return stone.amount > 0; });
+    var stones = model.supportingStones.map(function makeSupportingStone(item, index) {
+      return {
+        point: projectedCellPoint(model, item.cell, viewport, morphAmount, orientation),
+        index: -index - 1,
+        amount: smoothstep(0.08, 0.26, reveal),
+        player: item.player,
+        supporting: true
+      };
+    }).concat(model.trace.cells.map(function makeStone(cell, index) {
+      return {
+        point: projectedCellPoint(model, cell, viewport, morphAmount, orientation),
+        index: index,
+        amount: clamp01(visibleStones - index),
+        player: Engine.HUMAN,
+        supporting: false
+      };
+    })).filter(function visible(stone) { return stone.amount > 0; });
     stones.sort(function sortStones(left, right) { return left.point.depth - right.point.depth; });
     stones.forEach(function drawStone(stone) {
-      var depthScale = clamp(0.84 + stone.point.depth * 0.045, 0.72, 1.16);
-      var radius = (stone.index === 4 ? 15 : 13) * scale * depthScale * smootherstep(0, 1, stone.amount);
-      var fill = stone.index === 4 && reveal > 0.94 ? palette.danger : palette.paper;
+      var depthScale = clamp(0.92 + stone.point.depth * 0.05, 0.74, 1.16);
+      var radius = layout.cell * (0.37 - clamp01(morphAmount) * 0.07) * depthScale * smootherstep(0, 1, stone.amount);
       ctx.save();
-      ctx.shadowColor = rgba(fill, opacity * 0.34);
-      ctx.shadowBlur = 10 * scale;
-      ctx.fillStyle = rgba(fill, opacity * clamp(0.35 + stone.point.depth * 0.08, 0.24, 0.98));
-      ctx.beginPath();
-      ctx.arc(stone.point.x, stone.point.y, radius, 0, TAU);
-      ctx.fill();
-      ctx.strokeStyle = rgba(model.accent, opacity * 0.72);
-      ctx.lineWidth = 1.15 * scale;
-      ctx.stroke();
+      ctx.globalAlpha = opacity * (stone.supporting ? 0.62 : 1);
+      ctx.translate(stone.point.x, stone.point.y);
+      ctx.shadowColor = stone.player === Engine.HUMAN ? "rgba(24,31,29,0.28)" : "rgba(65,58,48,0.18)";
+      ctx.shadowBlur = radius * 0.42;
+      ctx.shadowOffsetY = radius * 0.2;
+      Art.drawStoneFace(ctx, {
+        player: stone.player,
+        radius: radius,
+        markLastMove: !stone.supporting && stone.index === 4 && reveal > 0.94,
+        compression: 0
+      });
       ctx.restore();
     });
   }
@@ -560,7 +900,7 @@
 
     var viewport = { x: 0, y: -height * 0.015, width: width, height: height };
     var orientation = makeOrientation(model, frameInfo.frameIndex, 0.76, 1.35);
-    drawSurfaceGrid(ctx, model, viewport, 1, orientation, model.accent, silhouetteAlpha * cardAlpha);
+    drawSurfaceGrid(ctx, model, viewport, model.chapter.id === "plane" ? 0 : 1, orientation, silhouetteAlpha * cardAlpha);
 
     var topY = height * 0.465;
     var bottomY = height * 0.558;
@@ -569,41 +909,43 @@
     ctx.save();
     ctx.textAlign = "center";
     ctx.textBaseline = "middle";
-    ctx.fillStyle = rgba(composition.palette.paper, cardAlpha);
+    ctx.fillStyle = rgba(GAME_PALETTE.ink, cardAlpha);
     ctx.font = "600 " + topSize + "px " + FONT_FAMILY;
     var topTracking = topSize * 0.18;
 
     var actAlpha = cardAlpha * (1 - transform);
     var manifoldAlpha = cardAlpha * transform;
     if (actAlpha > 0.001) {
-      ctx.fillStyle = rgba(composition.palette.paper, actAlpha * 0.88);
+      ctx.fillStyle = rgba(GAME_PALETTE.muted, actAlpha * 0.92);
       drawTrackedText(ctx, model.chapter.act, width * 0.5, topY, topTracking);
     }
     if (manifoldAlpha > 0.001) {
       var ghostDistance = height * 0.004 * (1 - transform);
-      ctx.fillStyle = rgba(model.accent, manifoldAlpha * 0.12);
+      var titleAccent = model.connections.x === "twist" || model.connections.y === "twist"
+        ? GAME_PALETTE.twist
+        : GAME_PALETTE.connection;
+      ctx.fillStyle = rgba(titleAccent, manifoldAlpha * 0.14);
       drawTrackedText(ctx, model.chapter.manifold, width * 0.5 - ghostDistance, topY, topSize * 0.115);
       drawTrackedText(ctx, model.chapter.manifold, width * 0.5 + ghostDistance, topY, topSize * 0.115);
-      ctx.fillStyle = rgba(composition.palette.paper, manifoldAlpha * 0.92);
+      ctx.fillStyle = rgba(GAME_PALETTE.ink, manifoldAlpha * 0.92);
       drawTrackedText(ctx, model.chapter.manifold, width * 0.5, topY, topSize * 0.115);
     }
 
     ctx.font = "700 " + bottomSize + "px " + FONT_FAMILY;
-    ctx.fillStyle = rgba(composition.palette.paper, cardAlpha);
+    ctx.fillStyle = rgba(GAME_PALETTE.ink, cardAlpha);
     drawTrackedText(ctx, model.chapter.chapter, width * 0.5, bottomY, bottomSize * 0.22);
     ctx.restore();
 
     var barWidth = height * 0.052;
-    ctx.fillStyle = rgba(model.accent, cardAlpha * 0.5);
+    ctx.fillStyle = rgba(model.connections.x === "twist" || model.connections.y === "twist" ? GAME_PALETTE.twist : GAME_PALETTE.connection, cardAlpha * 0.58);
     ctx.fillRect(width * 0.5 - barWidth / 2, height * 0.622, barWidth, Math.max(1, height / 1080));
   }
 
   function drawChapterScene(ctx, composition, model, frameInfo) {
     var progress = frameInfo.progress;
     var settle = smoothstep(0.02, 0.11, progress);
-    var morphAmount = model.chapter.id === "plane"
-      ? smoothstep(0.58, 0.94, progress)
-      : smootherstep(0.46, 0.84, progress);
+    var morphProgress = model.chapter.id === "plane" ? 0 : smootherstep(0.46, 0.84, progress);
+    var morphAmount = model.chapter.id === "plane" ? 0 : Morph.spring(morphProgress);
     var reveal = smootherstep(0.08, 0.38, progress);
     var viewport = {
       x: 0,
@@ -611,52 +953,35 @@
       width: composition.width,
       height: composition.height
     };
-    var orientation = makeOrientation(model, frameInfo.frameIndex, progress, mix(1.08, 0.96, morphAmount));
+    var orientation = makeOrientation(model, frameInfo.frameIndex, progress, mix(1.04, 0.96, clamp01(morphAmount)));
+    drawFlatBoardStage(ctx, model, viewport, settle * (1 - smoothstep(0.24, 0.72, morphAmount)));
     drawSurface(ctx, model, viewport, morphAmount, orientation, settle, composition.quality);
+    drawBoundaryTeaching(ctx, model, viewport, morphAmount, orientation, reveal, settle, frameInfo.frameIndex);
     drawPath(ctx, model, viewport, morphAmount, orientation, reveal, composition.palette, settle);
-
-    var seamPulse = model.trace.seams.some(Boolean) ? smoothstep(0.18, 0.46, progress) * (1 - smoothstep(0.72, 0.94, progress)) : 0;
-    if (seamPulse > 0) {
-      ctx.save();
-      var seamGradient = ctx.createLinearGradient(0, 0, composition.width, composition.height);
-      seamGradient.addColorStop(0, rgba(composition.palette.connection, 0));
-      seamGradient.addColorStop(0.48, rgba(model.accent, seamPulse * 0.028));
-      seamGradient.addColorStop(0.52, rgba(model.accent, seamPulse * 0.065));
-      seamGradient.addColorStop(1, rgba(composition.palette.connection, 0));
-      ctx.fillStyle = seamGradient;
-      ctx.fillRect(0, 0, composition.width, composition.height);
-      ctx.restore();
-    }
   }
 
   function drawIntro(ctx, composition, frameInfo) {
-    var width = composition.width;
-    var height = composition.height;
     var progress = frameInfo.progress;
-    var model = composition.chapters[0];
-    var viewport = { x: 0, y: height * 0.02, width: width, height: height };
-    var orientation = makeOrientation(model, frameInfo.frameIndex, progress, 1.34);
-    orientation.x -= 0.2;
-    orientation.y += 0.22;
+    var model = composition.chapterById.cylinder;
+    var viewport = { x: 0, y: composition.height * 0.01, width: composition.width, height: composition.height };
     var emerge = smoothstep(0.05, 0.28, progress) * (1 - smoothstep(0.82, 1, progress));
-    drawSurfaceGrid(ctx, model, viewport, smoothstep(0.58, 1, progress), orientation, composition.palette.paper, emerge * 0.35);
-
-    ctx.save();
-    ctx.strokeStyle = rgba(composition.palette.connection, emerge * 0.28);
-    ctx.lineWidth = Math.max(1, height / 1080);
-    var radius = height * mix(0.12, 0.46, smoothstep(0.3, 0.92, progress));
-    ctx.beginPath();
-    ctx.arc(width * 0.5, height * 0.48, radius, Math.PI * 1.04, Math.PI * 1.92);
-    ctx.stroke();
-    ctx.restore();
+    var morphProgress = smootherstep(0.62, 0.92, progress);
+    var morphAmount = Morph.spring(morphProgress);
+    var reveal = smootherstep(0.16, 0.64, progress);
+    var orientation = makeOrientation(model, frameInfo.frameIndex, progress, mix(1.03, 0.95, clamp01(morphAmount)));
+    drawFlatBoardStage(ctx, model, viewport, emerge * (1 - smoothstep(0.24, 0.72, morphAmount)));
+    drawSurface(ctx, model, viewport, morphAmount, orientation, emerge, composition.quality);
+    drawBoundaryTeaching(ctx, model, viewport, morphAmount, orientation, reveal, emerge, frameInfo.frameIndex);
+    drawPath(ctx, model, viewport, morphAmount, orientation, reveal, composition.palette, emerge);
   }
 
   function drawMiniature(ctx, composition, model, centerX, centerY, size, frameInfo, index, opacity) {
     var viewport = { x: centerX - size / 2, y: centerY - size / 2, width: size, height: size };
     var orientation = makeOrientation(model, frameInfo.frameIndex + index * 97, frameInfo.progress, 0.92);
     orientation.y += index * 0.13;
-    var morphAmount = model.chapter.id === "plane" ? 0.9 : 1;
-    drawSurfaceGrid(ctx, model, viewport, morphAmount, orientation, model.accent, opacity);
+    var morphAmount = model.chapter.id === "plane" ? 0 : 1;
+    drawSurface(ctx, model, viewport, morphAmount, orientation, opacity, Math.max(1.1, composition.quality * 0.56));
+    drawPath(ctx, model, viewport, morphAmount, orientation, 1, composition.palette, opacity * 0.78);
   }
 
   function drawTableau(ctx, composition, frameInfo) {
@@ -677,7 +1002,7 @@
         baseSize,
         frameInfo,
         index,
-        arrival * fade * 0.48
+        arrival * fade * 0.54
       );
     });
   }
@@ -694,7 +1019,7 @@
     if (frameInfo.progress > 0.48) {
       var orbitOpacity = smoothstep(0.48, 0.78, frameInfo.progress) * (1 - smoothstep(0.92, 1, frameInfo.progress));
       composition.chapters.slice(0, 6).forEach(function drawOrbiting(model, index) {
-        var angle = index / 6 * TAU + frameInfo.frameIndex / 1500;
+        var angle = index / 6 * TAU + frameInfo.progress * 0.22;
         var radiusX = composition.width * 0.36;
         var radiusY = composition.height * 0.29;
         drawMiniature(
@@ -738,9 +1063,9 @@
     ctx.textAlign = "center";
     ctx.textBaseline = "middle";
     ctx.font = "700 " + Math.round(height * 0.076) + "px " + FONT_FAMILY;
-    ctx.fillStyle = rgba(composition.palette.paper, alpha);
+    ctx.fillStyle = rgba(GAME_PALETTE.ink, alpha);
     drawTrackedText(ctx, composition.story.endCard.gameTitle, width * 0.5, height * 0.69, height * 0.017);
-    ctx.fillStyle = rgba(composition.palette.connection, alpha * 0.55);
+    ctx.fillStyle = rgba(GAME_PALETTE.connection, alpha * 0.62);
     ctx.fillRect(width * 0.5 - height * 0.038, height * 0.755, height * 0.076, Math.max(1, height / 1080));
     ctx.restore();
   }
@@ -763,10 +1088,10 @@
       fontSize -= 1;
       ctx.font = "600 " + fontSize + "px " + FONT_FAMILY;
     }
-    ctx.strokeStyle = "rgba(0,0,0," + (0.84 * alpha) + ")";
+    ctx.strokeStyle = rgba(GAME_PALETTE.ink, 0.88 * alpha);
     ctx.lineWidth = Math.max(2, height * 0.0034);
     ctx.strokeText(subtitle.text, width * 0.5, height * 0.917, maxWidth);
-    ctx.fillStyle = rgba(composition.palette.paper, alpha * 0.96);
+    ctx.fillStyle = rgba(GAME_PALETTE.card, alpha * 0.98);
     ctx.fillText(subtitle.text, width * 0.5, height * 0.917, maxWidth);
     ctx.restore();
   }
@@ -784,9 +1109,10 @@
       ? mix(width * (direction > 0 ? -0.15 : 1.15), width * 0.5, closing)
       : mix(width * 0.5, width * (direction > 0 ? 1.15 : -0.15), 1 - opening);
     var gradient = ctx.createRadialGradient(centerX, height * 0.50, height * 0.04, centerX, height * 0.50, Math.max(width, height) * 0.68);
-    gradient.addColorStop(0, rgba(composition.palette.void, amount * 0.98));
-    gradient.addColorStop(0.46, rgba(composition.palette.void, amount * 0.78));
-    gradient.addColorStop(1, rgba(composition.palette.void, 0));
+    gradient.addColorStop(0, rgba(GAME_PALETTE.paperDeep, amount * 0.98));
+    gradient.addColorStop(0.46, rgba(GAME_PALETTE.paper, amount * 0.82));
+    gradient.addColorStop(0.74, rgba(GAME_PALETTE.connection, amount * 0.055));
+    gradient.addColorStop(1, rgba(GAME_PALETTE.paper, 0));
     ctx.fillStyle = gradient;
     ctx.fillRect(0, 0, width, height);
   }
@@ -815,7 +1141,8 @@
       height: height,
       fps: manifest.fps,
       totalFrames: manifest.totalFrames,
-      palette: story.palette,
+      palette: Object.assign({}, story.palette, GAME_PALETTE),
+      gamePalette: GAME_PALETTE,
       seed: normalizeSeed(manifest.seed),
       logo: options.logo || null,
       quality: Number(options.quality) || (width >= 3000 ? 2.8 : 2.25),
@@ -866,7 +1193,16 @@
       ctx.setTransform(1, 0, 0, 1, 0, 0);
       ctx.globalAlpha = 1;
       ctx.globalCompositeOperation = "source-over";
-      drawVoid(ctx, width, height, frameIndex, composition.palette, composition.seed, 1);
+      drawGameBackdrop(
+        ctx,
+        width,
+        height,
+        frameIndex,
+        composition.palette,
+        composition.seed,
+        1,
+        frameInfo.chapter ? frameInfo.chapter.accent : null
+      );
 
       if (frameInfo.kind === "intro") {
         drawIntro(ctx, composition, frameInfo);
@@ -887,7 +1223,7 @@
       if (frameInfo.chapter && frameInfo.kind !== "chapter-card") {
         drawSpatialOcclusion(ctx, composition, frameInfo, frameInfo.chapter.chapter.index || 0);
       }
-      drawVignette(ctx, width, height, 0.82);
+      drawVignette(ctx, width, height, 0.075);
       drawSubtitle(ctx, composition, frameInfo.subtitle, frameIndex);
       ctx.restore();
       return frameInfo;
@@ -900,6 +1236,8 @@
         fps: composition.fps,
         totalFrames: composition.totalFrames,
         seed: composition.seed,
+        artSource: "TopologyArt",
+        palette: Object.assign({}, GAME_PALETTE),
         endCard: { logoClip: "circle", textLines: [story.endCard.gameTitle] },
         chapters: chapters.map(function summarize(model) {
           return {
@@ -907,7 +1245,9 @@
             cells: model.trace.cells.slice(),
             seams: model.trace.seams.slice(),
             directions: model.trace.directions.slice(),
-            usesSurface: true
+            usesSurface: true,
+            startsAsFlatBoard: true,
+            morphsToSurface: model.chapter.id !== "plane"
           };
         })
       };
@@ -925,6 +1265,9 @@
     internals: {
       normalizeSeed: normalizeSeed,
       hash01: hash01,
+      makeOrientation: makeOrientation,
+      flatBoardLayout: flatBoardLayout,
+      buildSurfaceMesh: buildSurfaceMesh,
       pathPieces: pathPieces,
       segmentKind: segmentKind,
       drawCircularLogo: drawCircularLogo

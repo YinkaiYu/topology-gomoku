@@ -24,10 +24,10 @@
       font-display: block;
     }
     :root {
-      color-scheme: dark;
+      color-scheme: light;
       font-family: "Topo Serif PV", serif;
-      background: #070908;
-      color: #f2efe7;
+      background: #f2efe7;
+      color: #21302c;
     }
     * { box-sizing: border-box; }
     html, body { width: 100%; min-height: 100%; margin: 0; }
@@ -36,16 +36,20 @@
       min-height: 100vh;
       place-items: center;
       padding: 24px;
-      background: radial-gradient(circle at 50% 42%, #111715 0, #070908 68%);
+      background:
+        radial-gradient(circle at 88% 34%, rgba(69, 154, 139, 0.11), transparent 46%),
+        radial-gradient(circle at 10% 74%, rgba(205, 158, 88, 0.10), transparent 44%),
+        linear-gradient(145deg, #f5f2eb 0%, #f2efe7 56%, #ece6db 100%);
     }
     main { width: min(100%, 1440px); }
     .stage {
       width: 100%;
       aspect-ratio: 16 / 9;
       overflow: hidden;
-      border: 1px solid rgba(242, 239, 231, 0.12);
-      background: #070908;
-      box-shadow: 0 30px 90px rgba(0, 0, 0, 0.48);
+      border: 1px solid rgba(255, 255, 255, 0.72);
+      border-radius: 24px;
+      background: rgba(251, 250, 246, 0.36);
+      box-shadow: 0 30px 90px rgba(33, 48, 44, 0.13);
     }
     canvas { display: block; width: 100%; height: 100%; }
     .transport {
@@ -54,16 +58,16 @@
       gap: 14px;
       align-items: center;
       padding-top: 14px;
-      color: rgba(242, 239, 231, 0.72);
+      color: rgba(33, 48, 44, 0.72);
       font: 400 13px/1.2 ui-monospace, SFMono-Regular, Consolas, monospace;
     }
     button {
       min-width: 74px;
-      border: 1px solid rgba(242, 239, 231, 0.16);
+      border: 1px solid rgba(255, 255, 255, 0.72);
       border-radius: 999px;
       padding: 8px 15px;
-      color: #f2efe7;
-      background: rgba(17, 23, 21, 0.72);
+      color: #21302c;
+      background: rgba(251, 250, 246, 0.62);
       cursor: pointer;
     }
     button:disabled { cursor: wait; opacity: 0.5; }
@@ -90,6 +94,7 @@
   </main>
   <script src="../../app/assets/topology.js"></script>
   <script src="../../app/assets/topology-morph.js"></script>
+  <script src="../../app/assets/topology-art.js"></script>
   <script src="./src/compositor.js"></script>
   <script>
     (async function startPreview() {

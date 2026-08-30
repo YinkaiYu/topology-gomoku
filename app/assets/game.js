@@ -3,6 +3,7 @@
 
   var Engine = window.TopologyGomoku;
   var Morph = window.TopologyMorph;
+  var Art = window.TopologyArt;
   var Replay = window.TopologyReplay;
   var STORAGE_KEY = "topology-gomoku:v1";
   var TUTORIAL_AUTO_ADVANCE_DELAY = 820;
@@ -3031,33 +3032,7 @@
     }
     patches.sort(function sortPatches(a, b) { return a.depth - b.depth; });
 
-    var surfaceGradient = ctx.createLinearGradient(
-      0,
-      renderState.height * 0.2,
-      0,
-      renderState.height * 0.82
-    );
-    surfaceGradient.addColorStop(0, "rgba(251,249,243,0.98)");
-    surfaceGradient.addColorStop(0.48, "rgba(238,235,226,0.98)");
-    surfaceGradient.addColorStop(1, "rgba(213,210,201,0.98)");
-
-    ctx.save();
-    ctx.globalAlpha = 0.3 + morph * 0.66;
-    ctx.fillStyle = surfaceGradient;
-    ctx.strokeStyle = surfaceGradient;
-    ctx.lineWidth = 0.82;
-    ctx.lineJoin = "round";
-    patches.forEach(function drawPatch(patch) {
-      ctx.beginPath();
-      ctx.moveTo(patch.points[0].x, patch.points[0].y);
-      for (var index = 1; index < patch.points.length; index += 1) {
-        ctx.lineTo(patch.points[index].x, patch.points[index].y);
-      }
-      ctx.closePath();
-      ctx.fill();
-      ctx.stroke();
-    });
-    ctx.restore();
+    Art.drawCompletionSurface(ctx, patches, renderState.height, morph, 1);
   }
 
   function appendCompletionSegment(points, from, to, samples, morph, spin) {
@@ -3595,46 +3570,19 @@
   }
 
   function drawPaperTexture(ctx) {
-    var index;
-    ctx.save();
-    ctx.fillStyle = "rgba(81, 75, 65, 0.035)";
-    for (index = 0; index < 46; index += 1) {
-      var x = (Math.sin(index * 91.73) * 0.5 + 0.5) * renderState.width;
-      var y = (Math.sin(index * 47.17 + 2.3) * 0.5 + 0.5) * renderState.height;
-      ctx.fillRect(x, y, 0.65, 0.65);
-    }
-    ctx.restore();
+    Art.drawPaperTexture(ctx, renderState.width, renderState.height);
   }
 
   function drawGrid(ctx, layout) {
-    var x;
-    var y;
-    ctx.save();
-    ctx.strokeStyle = "rgba(108, 103, 94, 0.5)";
-    ctx.lineWidth = Math.max(0.7, layout.cell * 0.025);
-    for (x = 0; x < game.rules.width; x += 1) {
-      var px = layout.left + x * layout.cell;
-      ctx.beginPath();
-      ctx.moveTo(px, layout.top);
-      ctx.lineTo(px, layout.bottom);
-      ctx.stroke();
-    }
-    for (y = 0; y < game.rules.height; y += 1) {
-      var py = layout.top + y * layout.cell;
-      ctx.beginPath();
-      ctx.moveTo(layout.left, py);
-      ctx.lineTo(layout.right, py);
-      ctx.stroke();
-    }
-    ctx.fillStyle = "rgba(72, 71, 65, 0.48)";
-    for (y = 0; y < game.rules.height; y += 1) {
-      for (x = 0; x < game.rules.width; x += 1) {
-        ctx.beginPath();
-        ctx.arc(layout.left + x * layout.cell, layout.top + y * layout.cell, Math.max(0.9, layout.cell * 0.035), 0, Math.PI * 2);
-        ctx.fill();
-      }
-    }
-    ctx.restore();
+    Art.drawGrid(ctx, {
+      left: layout.left,
+      right: layout.right,
+      top: layout.top,
+      bottom: layout.bottom,
+      cell: layout.cell,
+      cellX: layout.cell,
+      cellY: layout.cell
+    }, game.rules);
   }
 
   function drawDemoStones(ctx, time) {
@@ -3754,119 +3702,22 @@
 
   function drawTopologyRails(ctx, time) {
     var layout = renderState.layout;
-    if (game.level.topology === "sphere") {
-      drawSphereRails(ctx, time);
-      return;
-    }
-    if (game.level.xConnection) {
-      drawRailPair(ctx, "vertical", "#3f8c87", game.level.xConnection === "twist", seamPulseFor(Engine.SEAM_X, time));
-    }
-    if (game.level.yConnection) {
-      drawRailPair(ctx, "horizontal", "#c79244", game.level.yConnection === "twist", seamPulseFor(Engine.SEAM_Y, time));
-    }
-    if (!game.level.xConnection && !game.level.yConnection) {
-      ctx.save();
-      ctx.strokeStyle = "rgba(95, 91, 83, 0.16)";
-      ctx.lineWidth = 1;
-      ctx.strokeRect(layout.left - 8, layout.top - 8, layout.right - layout.left + 16, layout.bottom - layout.top + 16);
-      ctx.restore();
-    }
-  }
-
-  function drawSphereRails(ctx, time) {
-    var layout = renderState.layout;
-    var offset = Math.min(15, layout.cell * 0.4);
-    var pairs = [
-      { color: "#3f8c87", pulse: seamPulseFor(Engine.SEAM_X, time), sides: ["top", "left"] },
-      { color: "#c79244", pulse: seamPulseFor(Engine.SEAM_Y, time), sides: ["bottom", "right"] }
-    ];
-    pairs.forEach(function drawAdjacentPair(pair) {
-      ctx.save();
-      ctx.strokeStyle = pair.color;
-      ctx.fillStyle = pair.color;
-      ctx.globalAlpha = 0.58 + pair.pulse * 0.4;
-      ctx.lineWidth = 2 + pair.pulse * 2.2;
-      ctx.lineCap = "round";
-      ctx.shadowColor = pair.color;
-      ctx.shadowBlur = pair.pulse * 16;
-      pair.sides.forEach(function drawAdjacentSide(side) {
-        if (side === "top" || side === "bottom") {
-          var y = side === "top" ? layout.top - offset : layout.bottom + offset;
-          drawRailLine(ctx, layout.left, y, layout.right, y);
-          drawArrow(ctx, layout.left + (layout.right - layout.left) * 0.36, y, "horizontal", 1);
-          drawArrow(ctx, layout.left + (layout.right - layout.left) * 0.7, y, "horizontal", 1);
-        } else {
-          var x = side === "left" ? layout.left - offset : layout.right + offset;
-          drawRailLine(ctx, x, layout.top, x, layout.bottom);
-          drawArrow(ctx, x, layout.top + (layout.bottom - layout.top) * 0.36, "vertical", 1);
-          drawArrow(ctx, x, layout.top + (layout.bottom - layout.top) * 0.7, "vertical", 1);
-        }
-      });
-      ctx.restore();
+    Art.drawTopologyRails(ctx, {
+      layout: {
+        left: layout.left,
+        right: layout.right,
+        top: layout.top,
+        bottom: layout.bottom,
+        cell: layout.cell,
+        cellX: layout.cell,
+        cellY: layout.cell
+      },
+      type: game.level.topology,
+      xConnection: game.level.xConnection,
+      yConnection: game.level.yConnection,
+      pulseX: seamPulseFor(Engine.SEAM_X, time),
+      pulseY: seamPulseFor(Engine.SEAM_Y, time)
     });
-  }
-
-  function drawRailPair(ctx, orientation, color, twisted, pulse) {
-    var layout = renderState.layout;
-    var offset = Math.min(15, layout.cell * 0.4);
-    var alpha = 0.58 + pulse * 0.4;
-    ctx.save();
-    ctx.strokeStyle = color;
-    ctx.fillStyle = color;
-    ctx.globalAlpha = alpha;
-    ctx.lineWidth = 2 + pulse * 2.2;
-    ctx.lineCap = "round";
-    ctx.shadowColor = color;
-    ctx.shadowBlur = pulse * 16;
-    if (twisted) {
-      ctx.setLineDash([5, 5]);
-    }
-
-    if (orientation === "vertical") {
-      var leftX = layout.left - offset;
-      var rightX = layout.right + offset;
-      drawRailLine(ctx, leftX, layout.top, leftX, layout.bottom);
-      drawRailLine(ctx, rightX, layout.top, rightX, layout.bottom);
-      ctx.setLineDash([]);
-      drawArrow(ctx, leftX, layout.top + (layout.bottom - layout.top) * 0.34, "vertical", 1);
-      drawArrow(ctx, leftX, layout.top + (layout.bottom - layout.top) * 0.7, "vertical", 1);
-      drawArrow(ctx, rightX, layout.top + (layout.bottom - layout.top) * 0.34, "vertical", twisted ? -1 : 1);
-      drawArrow(ctx, rightX, layout.top + (layout.bottom - layout.top) * 0.7, "vertical", twisted ? -1 : 1);
-    } else {
-      var topY = layout.top - offset;
-      var bottomY = layout.bottom + offset;
-      drawRailLine(ctx, layout.left, topY, layout.right, topY);
-      drawRailLine(ctx, layout.left, bottomY, layout.right, bottomY);
-      ctx.setLineDash([]);
-      drawArrow(ctx, layout.left + (layout.right - layout.left) * 0.34, topY, "horizontal", 1);
-      drawArrow(ctx, layout.left + (layout.right - layout.left) * 0.7, topY, "horizontal", 1);
-      drawArrow(ctx, layout.left + (layout.right - layout.left) * 0.34, bottomY, "horizontal", twisted ? -1 : 1);
-      drawArrow(ctx, layout.left + (layout.right - layout.left) * 0.7, bottomY, "horizontal", twisted ? -1 : 1);
-    }
-    ctx.restore();
-  }
-
-  function drawRailLine(ctx, x1, y1, x2, y2) {
-    ctx.beginPath();
-    ctx.moveTo(x1, y1);
-    ctx.lineTo(x2, y2);
-    ctx.stroke();
-  }
-
-  function drawArrow(ctx, x, y, orientation, sign) {
-    var size = 4.5;
-    ctx.beginPath();
-    if (orientation === "vertical") {
-      ctx.moveTo(x, y + size * sign);
-      ctx.lineTo(x - size, y - size * sign);
-      ctx.lineTo(x + size, y - size * sign);
-    } else {
-      ctx.moveTo(x + size * sign, y);
-      ctx.lineTo(x - size * sign, y - size);
-      ctx.lineTo(x - size * sign, y + size);
-    }
-    ctx.closePath();
-    ctx.fill();
   }
 
   function drawMappedGhost(ctx) {
@@ -3907,35 +3758,12 @@
   }
 
   function drawStoneFace(ctx, player, radius, markLastMove, compression) {
-    var pressedDepth = compression || 0;
-    var highlightX = -radius * (0.28 - pressedDepth * 0.055);
-    var highlightY = -radius * (0.34 - pressedDepth * 0.12);
-    var gradient = ctx.createRadialGradient(highlightX, highlightY, radius * (0.08 + pressedDepth * 0.035), 0, 0, radius);
-    if (player === HUMAN) {
-      gradient.addColorStop(0, pressedDepth ? "#56635f" : "#66736f");
-      gradient.addColorStop(0.38, "#2b3935");
-      gradient.addColorStop(1, "#14201d");
-    } else {
-      gradient.addColorStop(0, pressedDepth ? "#fbfaf5" : "#ffffff");
-      gradient.addColorStop(0.48, "#f8f4e9");
-      gradient.addColorStop(1, "#d9d2c6");
-    }
-    ctx.fillStyle = gradient;
-    ctx.beginPath();
-    ctx.arc(0, 0, radius, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.shadowColor = "transparent";
-    if (player === AI) {
-      ctx.strokeStyle = "rgba(94, 88, 78, 0.28)";
-      ctx.lineWidth = 1;
-      ctx.stroke();
-    }
-    if (markLastMove) {
-      ctx.fillStyle = "#d95b4f";
-      ctx.beginPath();
-      ctx.arc(0, 0, Math.max(2.1, radius * 0.15), 0, Math.PI * 2);
-      ctx.fill();
-    }
+    Art.drawStoneFace(ctx, {
+      player: player,
+      radius: radius,
+      markLastMove: markLastMove,
+      compression: compression
+    });
   }
 
   function drawMovePreview(ctx, time) {

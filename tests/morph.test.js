@@ -132,10 +132,12 @@ test("球面的两组相邻边在两个半球图册中严格重合", () => {
 
 test("球面通关动画使用完整半球网格与平滑参数曲线", () => {
   const game = fs.readFileSync(path.join(ROOT, "app", "assets", "game.js"), "utf8");
+  const art = fs.readFileSync(path.join(ROOT, "app", "assets", "topology-art.js"), "utf8");
   assert.match(game, /game\.level\.topology === "sphere" \? 48 : 46/);
   assert.match(game, /\[\[0, 1, 2\], \[0, 2, 3\]\]/);
   assert.match(game, /function drawCompletionSphereBoundary/);
-  assert.match(game, /function drawSphereRails/);
+  assert.match(game, /Art\.drawTopologyRails/);
+  assert.match(art, /options\.type === "sphere"/);
   assert.match(game, /function drawCompletionSphereGrid/);
   assert.match(game, /ctx\.bezierCurveTo/);
   assert.doesNotMatch(game, /var sphereShellBlend/);

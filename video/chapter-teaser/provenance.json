@@ -22,6 +22,11 @@
       "license": "Repository MIT license"
     },
     {
+      "path": "app/assets/topology-art.js",
+      "usage": "Palette, paper texture, grid, stones, boundary rails and completion surface material are called by both the live game and PV; the PV also uses Canvas equivalents of the live DOM/CSS backdrop, liquid-glass board stage and tutorial guide without changing the live rendering paths",
+      "license": "Repository MIT license"
+    },
+    {
       "path": "app/assets/topologies",
       "usage": "Chapter relief and topology artwork",
       "license": "Repository MIT license"

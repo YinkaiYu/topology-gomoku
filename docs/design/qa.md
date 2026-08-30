@@ -58,7 +58,8 @@
 | 关卡卡片进入棋盘 | [`进入前`](../../artifacts/qa-level-card-entry-before-v1361.png)、[`回弹中`](../../artifacts/qa-level-card-entry-mid-v1361.png)、[`稳定态`](../../artifacts/qa-level-card-entry-settled-v1361.png) |
 | 棋盘返回关卡卡片 | [`收束中`](../../artifacts/qa-level-card-return-mid-v1361.png)、[`稳定态`](../../artifacts/qa-level-card-return-settled-v1361.png) |
 | AI 难度文案与内嵌字体 | [`artifacts/qa-ai-difficulty-labels-v1363.png`](../../artifacts/qa-ai-difficulty-labels-v1363.png) |
-| 章节预告 PV「七界足迹」4K 关键帧 | [`artifacts/qa-chapter-teaser-pv-4k-contact-sheet.png`](../../artifacts/qa-chapter-teaser-pv-4k-contact-sheet.png) |
+| 章节预告 PV「七界足迹」旧黑底基线 | [`artifacts/qa-chapter-teaser-pv-4k-contact-sheet.png`](../../artifacts/qa-chapter-teaser-pv-4k-contact-sheet.png) |
+| 章节预告 PV「七界足迹」实机美术统一结果 | [`artifacts/qa-chapter-teaser-pv-game-art-4k-contact-sheet.png`](../../artifacts/qa-chapter-teaser-pv-game-art-4k-contact-sheet.png) |
 
 较早截图只用于回归和问题溯源，不自动成为新设计的视觉真相。出现冲突时，以最新已确认实现、视觉设计语言和同状态实机/预览证据为准。
 
@@ -69,6 +70,8 @@
 难度滑块的连续拖动在 390 × 844 H5 预览中完成回归：指针按住玻璃滑块时，位移逐帧直接跟随输入，只对液态形变保留缓动；释放后再恢复距离感知的吸附与单次回弹。这样避免移动 WebView 在每个指针帧中断并重启位移动画造成抖动，同时保持点击跳档和释放停靠的原有质感。
 
 章节预告 PV「七界足迹」于 2026-08-30 在 `codex/chapter-teaser-pv` 独立 worktree 中完成首轮 4K 静态 QA。`dev` 基线没有章节预告 PV，结果证据以 3840 × 2160、60 fps 的确定性时间线生成；联系表覆盖序章、七组两阶段章节牌、七章真实棋路与拓扑曲面、七界回望、终章和片尾，共 32 个关键状态。可用 `npm run pv:keyframes` 在 `.tmp/chapter-teaser/keyframes-4k/` 重建相同视口的关键帧和联系表。
+
+2026-08-31 按实机视觉统一要求，在完全相同的 3840 × 2160 视口、时间线和 32 个关键帧位置完成前后对比。旧证据保留为黑底几何语言基线；新证据改为与小游戏一致的暖纸背景、液态玻璃棋盘、纸纹与中性网格、黑白实体棋子、青/金边界轨道、呼吸落点、跨缝旅行点、金色五连，以及棋盘、胜线和棋子共同参与的二维转三维。`app/assets/topology-art.js` 中由小游戏与 PV 真正共同调用的是配色、纸纹、网格、棋子、边界轨道和通关曲面材质；实机的 DOM/CSS 背景、液态玻璃棋盘舞台与教学引导由 PV 以 Canvas 做等效复刻，实机不调用这些 PV Canvas 函数。方庭保持二维，其余六章连续弯曲为真实参数流形。
 
 该联系表只验证构图、留白、章节色、两行标题变换、棋路到曲面的视觉递进、单行字幕安全区与片尾品牌层级；转场连续性、60 fps 运动、旁白可懂度、各章配乐辨识度和音画同步必须以完整 1080p60 审阅版复核。当前预览确认状态为“待用户审阅”，用户明确确认前不得把任务分支合回 `dev`，也不得提前生成作为发行交付的 4K 母版。
 

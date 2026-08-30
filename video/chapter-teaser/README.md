@@ -1,6 +1,6 @@
 # 章节预告 PV「七界足迹」
 
-本目录保存可复现的章节预告 PV 源工程。画面由真实拓扑规则、参数曲面、内嵌字体和确定性 Canvas 合成器生成；MuseScore 负责渲染原创管弦配乐，FFmpeg 负责编码与封装。大体积语音、音乐分轨、临时帧和视频全部写入仓库根目录的 `.tmp/chapter-teaser/`，不会提交 Git。
+本目录保存可复现的章节预告 PV 源工程。画面由真实拓扑规则、参数曲面、内嵌字体和确定性 Canvas 合成器生成。小游戏与 PV 通过 `app/assets/topology-art.js` 真正共用配色、纸纹、网格、棋子、边界轨道和通关曲面材质；小游戏的 DOM/CSS 背景与液态玻璃棋盘舞台，以及游戏内教学引导，则由 PV 在 Canvas 中做视觉等效复刻，实机不会调用这些 PV Canvas 绘制函数。MuseScore 负责渲染原创管弦配乐，FFmpeg 负责编码与封装。大体积语音、音乐分轨、临时帧和视频全部写入仓库根目录的 `.tmp/chapter-teaser/`，不会提交 Git。
 
 设计与内容约束见 [`DESIGN.md`](DESIGN.md)，旁白和七章数据见 [`story.json`](story.json)，素材与许可来源见 [`provenance.json`](provenance.json)。
 
@@ -30,7 +30,7 @@ npm run pv:keyframes
 ```
 
 - `pv:fonts` 重建 PV 专用 400/600/700 字重子集。
-- `pv:audio` 通过 MuseScore Basic 渲染 11 份原创 MusicXML 分谱，再归一为 48 kHz 双声道并汇成钢琴、弦乐、低音/铜管、合唱、音效/打击五条总线；随后与本地审阅旁白混音，并同步生成 `manifest.json`、`captions.srt` 和 `captions.ass`。乐谱渲染缓存位于 `.tmp/`，源文件哈希变化时会自动失效。
+- `pv:audio` 通过 MuseScore Basic 渲染 11 份原创 MusicXML 分谱，再归一为 48 kHz 双声道并汇成钢琴+钢片琴、四部弦乐、低音提琴+低音单簧管、无词合唱+圆号、克制打击+程序化拓扑音效五条总线；随后与本地审阅旁白混音，并同步生成 `manifest.json`、`captions.srt` 和 `captions.ass`。乐谱渲染缓存位于 `.tmp/`，源文件哈希变化时会自动失效。
 - `pv:keyframes` 输出 3840 × 2160 关键帧、`frames.json` 和联系表到 `.tmp/chapter-teaser/keyframes-4k/`，用于同一视口的视觉 QA。
 
 浏览器逐帧预览不会生成视频；加 `--open` 会用本机 Edge 打开预览页：

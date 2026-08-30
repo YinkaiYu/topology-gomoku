@@ -10,7 +10,8 @@ const REPOSITORY_ROOT = path.resolve(SCRIPT_DIR, "..", "..", "..");
 const PV_ROOT = path.resolve(SCRIPT_DIR, "..");
 const TOPOLOGY_SCRIPTS = new Set([
   path.join(REPOSITORY_ROOT, "app", "assets", "topology.js"),
-  path.join(REPOSITORY_ROOT, "app", "assets", "topology-morph.js")
+  path.join(REPOSITORY_ROOT, "app", "assets", "topology-morph.js"),
+  path.join(REPOSITORY_ROOT, "app", "assets", "topology-art.js")
 ]);
 const PREVIEW_PATH = "/video/chapter-teaser/preview.html";
 const MIME_TYPES = new Map([

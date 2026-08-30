@@ -12,6 +12,7 @@ const PV_ROOT = path.join(ROOT, "video", "chapter-teaser");
 const Compositor = require(path.join(PV_ROOT, "src", "compositor.js"));
 const Engine = require(path.join(ROOT, "app", "assets", "topology.js"));
 const Morph = require(path.join(ROOT, "app", "assets", "topology-morph.js"));
+const Art = require(path.join(ROOT, "app", "assets", "topology-art.js"));
 const story = JSON.parse(fs.readFileSync(path.join(PV_ROOT, "story.json"), "utf8"));
 const manifest = JSON.parse(fs.readFileSync(path.join(PV_ROOT, "manifest.json"), "utf8"));
 
@@ -88,6 +89,91 @@ test("all seven visual paths are the exact tracePath results and retain per-step
     assert.deepEqual(actual.directions, expected.directions);
     assert.equal(actual.usesSurface, true);
   }
+});
+
+test("the PV and live game share the same restrained canvas art source", () => {
+  const teaser = getComposition();
+  const inspected = teaser.inspect();
+  assert.equal(inspected.artSource, "TopologyArt");
+  assert.deepEqual(inspected.palette, Art.PALETTE);
+  assert.deepEqual(
+    {
+      paper: inspected.palette.paper,
+      paperDeep: inspected.palette.paperDeep,
+      ink: inspected.palette.ink,
+      connection: inspected.palette.connection,
+      twist: inspected.palette.twist,
+      danger: inspected.palette.danger
+    },
+    {
+      paper: "#f2efe7",
+      paperDeep: "#e8e2d7",
+      ink: "#21302c",
+      connection: "#3f8c87",
+      twist: "#c79244",
+      danger: "#d95b4f"
+    }
+  );
+  const app = fs.readFileSync(path.join(ROOT, "app", "assets", "game.js"), "utf8");
+  const compositorSource = fs.readFileSync(path.join(PV_ROOT, "src", "compositor.js"), "utf8");
+  assert.match(app, /Art\.drawGrid/);
+  assert.match(app, /Art\.drawStoneFace/);
+  assert.match(app, /Art\.drawTopologyRails/);
+  assert.match(app, /Art\.drawCompletionSurface/);
+  assert.match(compositorSource, /Art\.drawBoardStage/);
+  assert.match(compositorSource, /Art\.drawTutorialGuide/);
+  assert.doesNotMatch(compositorSource, /function drawVoid|drawVoid\(/);
+});
+
+test("shared stones safely skip the subpixel entrance state used by full-frame playback", () => {
+  const canvas = createCanvas(64, 64);
+  const context = canvas.getContext("2d", { alpha: false });
+  assert.doesNotThrow(() => Art.drawStoneFace(context, { player: Engine.HUMAN, radius: 0.01 }));
+});
+
+test("every chapter starts on the live flat board and only higher topologies morph to 3D", () => {
+  const chapters = getComposition().inspect().chapters;
+  assert.equal(chapters.every((chapter) => chapter.startsAsFlatBoard), true);
+  assert.equal(chapters.find((chapter) => chapter.id === "plane").morphsToSurface, false);
+  assert.equal(chapters.filter((chapter) => chapter.id !== "plane").every((chapter) => chapter.morphsToSurface), true);
+});
+
+test("every flat topology board preserves the live game's square cell metric", () => {
+  const teaser = getComposition();
+  const viewport = { x: 0, y: 0, width: teaser.width, height: teaser.height };
+  for (const chapter of story.chapters) {
+    const layout = Compositor.internals.flatBoardLayout(teaser.chapterById[chapter.id], viewport);
+    assert.ok(
+      Math.abs(Math.abs(layout.cellX) - Math.abs(layout.cellY)) < 1e-9,
+      `${chapter.id} cells must remain square before the topology morph`
+    );
+  }
+});
+
+test("the sphere uses triangular surface patches and front-facing grid clipping", () => {
+  const teaser = getComposition();
+  const sphere = teaser.chapterById.sphere;
+  const cylinder = teaser.chapterById.cylinder;
+  const viewport = { x: 0, y: 0, width: teaser.width, height: teaser.height };
+  const sphereMesh = Compositor.internals.buildSurfaceMesh(
+    sphere,
+    viewport,
+    1,
+    Compositor.internals.makeOrientation(sphere, 0, 1, 1),
+    1
+  );
+  const cylinderMesh = Compositor.internals.buildSurfaceMesh(
+    cylinder,
+    viewport,
+    1,
+    Compositor.internals.makeOrientation(cylinder, 0, 1, 1),
+    1
+  );
+  assert.equal(sphereMesh.patches.every((patch) => patch.points.length === 3), true);
+  assert.equal(cylinderMesh.patches.every((patch) => patch.points.length === 4), true);
+  const source = fs.readFileSync(path.join(PV_ROOT, "src", "compositor.js"), "utf8");
+  assert.match(source, /strokeFrontFacingSurfacePath\(ctx, points, depthThreshold\)/);
+  assert.match(source, /Morph\.smooth\(\(morphAmount - 0\.46\) \/ 0\.42\)/);
 });
 
 test("seam-crossing path strokes use both charts of the real parametric surface", () => {
@@ -218,6 +304,7 @@ test("browser preview uses the shared compositor and the local server can open t
   const server = fs.readFileSync(path.join(PV_ROOT, "scripts", "serve.mjs"), "utf8");
   assert.match(preview, /aspect-ratio:\s*16\s*\/\s*9/);
   assert.match(preview, /ChapterTeaserCompositor\.createComposition/);
+  assert.match(preview, /topology-art\.js/);
   assert.match(preview, /manifest\.json is missing; run the PV audio build first/);
   assert.match(server, /import\("playwright-core"\)/);
 });

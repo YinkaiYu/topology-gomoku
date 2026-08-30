@@ -188,7 +188,7 @@ async function renderKeyframes(project, options) {
   const rows = Math.ceil(frames.length / columns);
   const sheet = createCanvas(thumbWidth * columns, thumbHeight * rows);
   const sheetContext = sheet.getContext("2d", { alpha: false });
-  sheetContext.fillStyle = project.story.palette.void;
+  sheetContext.fillStyle = composition.gamePalette.paperDeep;
   sheetContext.fillRect(0, 0, sheet.width, sheet.height);
 
   for (let index = 0; index < frames.length; index += 1) {
