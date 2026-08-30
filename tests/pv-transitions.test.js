@@ -19,6 +19,9 @@ const EXPECTED_PATH_IDS = [
   "sphere:adjacent-edge-turn"
 ];
 const PROHIBITED_TERMS = /wipe|slide|connector[- ]?line|page[- ]?movement|page[- ]?transition/i;
+const BACKGROUND_CHANNELS = ["red", "green", "blue"];
+const TRANSITION_GEOMETRY_SIDES = ["occlusion", "outgoing-match", "incoming-match"];
+const BBOX_FIELDS = ["x", "y", "width", "height"];
 
 async function pixelMetrics(png) {
   return page.evaluate(async (dataUrl) => {
@@ -96,6 +99,12 @@ function assertEvidencePixelMetrics(id, actual, recorded) {
   assert.ok(actual.nonPureColorRatio > 0.005, `${id} must not be a black or pure-color frame`);
   assert.ok(actual.contentBbox?.width > 0 && actual.contentBbox?.height > 0, `${id} must have a non-background content bbox`);
   assert.ok(actual.contentBbox?.pixelRatio > 0.002, `${id} content bbox must contain a meaningful number of pixels`);
+  assert.ok(recorded.background && typeof recorded.background === "object" && !Array.isArray(recorded.background), `${id} recorded background must be an object`);
+  assert.deepEqual(Object.keys(recorded.background).sort(), [...BACKGROUND_CHANNELS].sort(), `${id} recorded background must contain exactly red, green, and blue`);
+  for (const channel of BACKGROUND_CHANNELS) {
+    assert.ok(Number.isInteger(recorded.background[channel]) && recorded.background[channel] >= 0 && recorded.background[channel] <= 255, `${id} recorded background ${channel} must be an 8-bit integer`);
+    assertClose(actual.background?.[channel], recorded.background[channel], 1, `${id} decoded background ${channel}`);
+  }
   assertClose(actual.mean, recorded.mean, 0.15, `${id} decoded mean`);
   assertClose(actual.variance, recorded.variance, Math.max(0.75, recorded.variance * 0.1), `${id} decoded variance`);
   assertClose(actual.nonPureColorRatio, recorded.nonPureColorRatio, 0.005, `${id} decoded non-pure-color ratio`);
@@ -124,30 +133,37 @@ async function liveGeometryAt(frame) {
   }, frame);
 }
 
-function assertLiveGeometryMatches(frame, liveGeometry, recordedGeometry = null) {
+function assertLiveGeometryMatches(frame, liveGeometry, recordedGeometry) {
   assert.ok(liveGeometry, `${frame.id} must resolve live geometry for ${frame.contractId}`);
-  assert.deepEqual(liveGeometry.map(({ side }) => side), ["occlusion", "outgoing-match", "incoming-match"]);
-  if (recordedGeometry) {
-    assert.deepEqual(recordedGeometry.map(({ side }) => side), liveGeometry.map(({ side }) => side), `${frame.id} manifest must record all three live geometry sides`);
-  }
+  assert.deepEqual(liveGeometry.map(({ side }) => side), TRANSITION_GEOMETRY_SIDES);
+  assert.ok(Array.isArray(recordedGeometry), `${frame.id} manifest must record runtime geometry`);
+  assert.deepEqual(recordedGeometry.map(({ side }) => side), TRANSITION_GEOMETRY_SIDES, `${frame.id} manifest must record all three live geometry sides`);
   const expectedBySide = {
     occlusion: frame.expectedGeometry.occlusion,
     "outgoing-match": frame.expectedGeometry.outgoing,
     "incoming-match": frame.expectedGeometry.incoming
   };
+  for (const recorded of recordedGeometry) {
+    assert.ok(typeof recorded.geometry === "string" && recorded.geometry.length > 0, `${frame.id} ${recorded.side} manifest geometry is required`);
+    assert.ok(Number.isFinite(recorded.opacity) && recorded.opacity >= 0 && recorded.opacity <= 1, `${frame.id} ${recorded.side} manifest opacity must be finite and between 0 and 1`);
+    assert.ok(recorded.bbox && typeof recorded.bbox === "object" && !Array.isArray(recorded.bbox), `${frame.id} ${recorded.side} manifest bbox is required`);
+    assert.deepEqual(Object.keys(recorded.bbox).sort(), [...BBOX_FIELDS].sort(), `${frame.id} ${recorded.side} manifest bbox must contain exactly x, y, width, and height`);
+    for (const key of BBOX_FIELDS) {
+      assert.ok(Number.isFinite(recorded.bbox[key]), `${frame.id} ${recorded.side} manifest bbox ${key} must be finite`);
+    }
+    assert.ok(recorded.bbox.width > 0 && recorded.bbox.height > 0, `${frame.id} ${recorded.side} manifest bbox must be valid`);
+  }
   for (const live of liveGeometry) {
     const expected = expectedBySide[live.side];
     assert.equal(live.geometry, expected, `${frame.id} ${live.side} expected ${expected} but live runtime used ${live.geometry}`);
     assert.ok(Number.isFinite(live.opacity) && live.opacity >= 0 && live.opacity <= 1, `${frame.id} ${live.side} must expose a finite live opacity`);
     assert.ok(live.bbox.width > 0 && live.bbox.height > 0, `${frame.id} ${live.side} must expose a valid live bbox`);
-    if (recordedGeometry) {
-      const recorded = recordedGeometry.find(({ side }) => side === live.side);
-      assert.ok(recorded, `${frame.id} manifest must record ${live.side}`);
-      assert.equal(recorded.geometry, live.geometry, `${frame.id} ${live.side} recorded geometry must match live runtime`);
-      assertClose(live.opacity, recorded.opacity, 0.02, `${frame.id} ${live.side} live opacity`);
-      for (const key of ["x", "y", "width", "height"]) {
-        assertClose(live.bbox[key], recorded.bbox?.[key], 2, `${frame.id} ${live.side} live bbox ${key}`);
-      }
+    const recorded = recordedGeometry.find(({ side }) => side === live.side);
+    assert.equal(recorded.geometry, live.geometry, `${frame.id} ${live.side} recorded geometry must match live runtime`);
+    assert.equal(recorded.geometry, expected, `${frame.id} ${live.side} recorded geometry must match expectedGeometry`);
+    assertClose(live.opacity, recorded.opacity, 0.02, `${frame.id} ${live.side} live opacity`);
+    for (const key of ["x", "y", "width", "height"]) {
+      assertClose(live.bbox[key], recorded.bbox[key], 2, `${frame.id} ${live.side} live bbox ${key}`);
     }
   }
 }
@@ -511,6 +527,70 @@ test("evidence validation rejects a replacement PNG containing only black pixels
   );
 });
 
+test("evidence validation requires the recorded background structure", async () => {
+  const manifest = JSON.parse(fs.readFileSync(path.join(ROOT, "artifacts/pv-transition-scenes-task7-manifest.json"), "utf8"));
+  const frame = manifest.frames[0];
+  const actual = await pixelMetrics(fs.readFileSync(path.join(ROOT, frame.path)));
+  const recorded = structuredClone(frame.pixels);
+  delete recorded.background;
+
+  assert.throws(
+    () => assertEvidencePixelMetrics(frame.id, actual, recorded),
+    /cylinder-to-torus-pre recorded background/
+  );
+});
+
+test("evidence validation rejects a recorded background that disagrees with the decoded PNG", async () => {
+  const manifest = JSON.parse(fs.readFileSync(path.join(ROOT, "artifacts/pv-transition-scenes-task7-manifest.json"), "utf8"));
+  const frame = manifest.frames[0];
+  const actual = await pixelMetrics(fs.readFileSync(path.join(ROOT, frame.path)));
+  const recorded = structuredClone(frame.pixels);
+  recorded.background.red += 12;
+
+  assert.throws(
+    () => assertEvidencePixelMetrics(frame.id, actual, recorded),
+    /cylinder-to-torus-pre decoded background red/
+  );
+});
+
+test("evidence validation requires the recorded runtime geometry field", async () => {
+  const manifest = JSON.parse(fs.readFileSync(path.join(ROOT, "artifacts/pv-transition-scenes-task7-manifest.json"), "utf8"));
+  const frame = manifest.frames.find(({ id }) => id === "cylinder-to-torus-post");
+  const liveGeometry = await liveGeometryAt(frame);
+  const tampered = structuredClone(frame);
+  delete tampered.observation.geometry;
+
+  assert.throws(
+    () => assertLiveGeometryMatches(tampered, liveGeometry, tampered.observation.geometry),
+    /cylinder-to-torus-post manifest must record runtime geometry/
+  );
+});
+
+test("evidence validation rejects a recorded runtime geometry layer deletion", async () => {
+  const manifest = JSON.parse(fs.readFileSync(path.join(ROOT, "artifacts/pv-transition-scenes-task7-manifest.json"), "utf8"));
+  const frame = manifest.frames.find(({ id }) => id === "cylinder-to-torus-post");
+  const liveGeometry = await liveGeometryAt(frame);
+  const recordedGeometry = frame.observation.geometry.filter(({ side }) => side !== "outgoing-match");
+
+  assert.throws(
+    () => assertLiveGeometryMatches(frame, liveGeometry, recordedGeometry),
+    /cylinder-to-torus-post manifest must record all three live geometry sides/
+  );
+});
+
+test("evidence validation rejects recorded runtime geometry that disagrees with the live layer", async () => {
+  const manifest = JSON.parse(fs.readFileSync(path.join(ROOT, "artifacts/pv-transition-scenes-task7-manifest.json"), "utf8"));
+  const frame = manifest.frames.find(({ id }) => id === "cylinder-to-torus-post");
+  const liveGeometry = await liveGeometryAt(frame);
+  const recordedGeometry = structuredClone(frame.observation.geometry);
+  recordedGeometry.find(({ side }) => side === "incoming-match").geometry = "tampered-inner-ring";
+
+  assert.throws(
+    () => assertLiveGeometryMatches(frame, liveGeometry, recordedGeometry),
+    /cylinder-to-torus-post incoming-match recorded geometry must match live runtime/
+  );
+});
+
 test("evidence validation rejects manifest geometry that disagrees with the live runtime", async () => {
   const tampered = {
     id: "cylinder-to-torus-post",
@@ -525,7 +605,7 @@ test("evidence validation rejects manifest geometry that disagrees with the live
   const liveGeometry = await liveGeometryAt(tampered);
 
   assert.throws(
-    () => assertLiveGeometryMatches(tampered, liveGeometry),
+    () => assertLiveGeometryMatches(tampered, liveGeometry, liveGeometry),
     /cylinder-to-torus-post incoming-match.*tampered-inner-ring.*torus-inner-ring/
   );
 });

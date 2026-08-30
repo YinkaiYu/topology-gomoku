@@ -89,3 +89,24 @@ manifest 同时保存 transition selector、occlusion geometry、消费状态、
 - `node video/footsteps-return/scripts/capture-transition-evidence.mjs`：通过（7 张原生 4K 图像保持确定性，manifest 新增 content bbox）。
 - `npm run docs:check` 与 `git diff --check`：通过。
 - 按要求未启动完整 FFmpeg render。
+
+## Fix round 4：background 与三层几何记录成为强制证据
+
+### 根因与实现
+
+- PNG 独立解码已重算四角背景色，但旧 helper 未读取 `pixels.background`，所以删除或篡改 manifest 背景记录都不会影响门禁。现在背景记录必须是恰含 `red`、`green`、`blue` 的 8-bit 整数结构，三个通道均需在 ±1 容差内匹配实际 PNG 解码值。
+- `assertLiveGeometryMatches()` 过去把 recorded geometry 默认成 `null`，并把记录侧的 side、geometry、opacity、bbox 比较整体放在条件分支中；删除整个 `observation.geometry` 会静默跳过。现在记录必须按 `occlusion`、`outgoing-match`、`incoming-match` 的明确顺序恰含三层；每层强制提供非空 geometry、0–1 的有限 opacity，以及恰含 x / y / width / height 的有效 bbox。
+- 三层记录无条件与同一 seek 的 live runtime 比较，并分别与 `expectedGeometry` 对照；live opacity 与 bbox 继续使用原有 0.02 / 2 px 容差。直接 PNG 解码、runtime seek、50.02s torus inner-ring 与非黑像素断言均保留。
+- 新增五个负例，覆盖 background 整体删除与通道篡改，以及 observation.geometry 整体删除、单层删除与 geometry 篡改。现有 7 张 PNG、capture plan、manifest 数据与运行时均无需重生成或修改。
+
+### RED / GREEN
+
+- RED：加入负例后运行 `node --test tests/pv-transitions.test.js`，得到 11 pass / 3 fail；缺失 background、篡改 background、删除整个 observation.geometry 三项均因旧 helper 未消费记录而出现 `Missing expected exception`。单层删除与 geometry 篡改负例在旧比较下已通过，证明这两条既有路径未回退。
+- GREEN：收紧 helper 后 focused transitions 得到 14/14 pass；五个负例全部由对应 schema 或 live-runtime 比较拒绝，7 个真实 manifest 帧继续通过独立 PNG 解码、三层 runtime seek 与 50.02s 专项门禁。
+
+### Fix round 4 验证
+
+- `node --test tests/pv-transitions.test.js`：通过（14/14）。
+- `npm test`：通过（137/137）。
+- `npm run pv:validate`：通过（manifest valid；Lint / Runtime / Layout / Motion 均 0 issue；Contrast 2/2）。
+- 未修改运行时、视觉资产或 capture manifest，按要求未重抓图片、未启动 FFmpeg render。
