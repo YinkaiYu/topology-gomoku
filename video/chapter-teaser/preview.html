@@ -23,6 +23,12 @@
       font-weight: 700;
       font-display: block;
     }
+    @font-face {
+      font-family: "Topo Sans PV";
+      src: url("./assets/fonts/topo-sans-pv-600.woff2") format("woff2");
+      font-weight: 600;
+      font-display: block;
+    }
     :root {
       color-scheme: light;
       font-family: "Topo Serif PV", serif;
@@ -128,15 +134,17 @@
         canvas.width = profile.width;
         canvas.height = profile.height;
 
-        var logo = new Image();
-        logo.src = "./assets/iop-logo.png";
-        await Promise.all([document.fonts.ready, logo.decode()]);
+        var institutionLogo = new Image();
+        institutionLogo.src = "./assets/iop-logo.png";
+        var gameLogo = new Image();
+        gameLogo.src = "../../app/assets/brand-icon.png";
+        await Promise.all([document.fonts.ready, institutionLogo.decode(), gameLogo.decode()]);
         var composition = ChapterTeaserCompositor.createComposition({
           story: story,
           manifest: manifest,
           width: profile.width,
           height: profile.height,
-          logo: logo
+          logos: { institution: institutionLogo, game: gameLogo }
         });
         var ctx = canvas.getContext("2d", { alpha: false });
 

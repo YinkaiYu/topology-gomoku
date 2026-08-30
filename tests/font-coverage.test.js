@@ -169,6 +169,50 @@ function requiredNonAsciiCodepoints(root = APP_ROOT) {
   return [...codepoints].sort((left, right) => left - right);
 }
 
+function chapterTeaserSubtitleTexts() {
+  const timingPath = path.join(PV_ROOT, "narration-timing.json");
+  if (fs.existsSync(timingPath)) {
+    const timing = JSON.parse(fs.readFileSync(timingPath, "utf8"));
+    assert.ok(Array.isArray(timing.cues), "narration timing must contain subtitle cues");
+    return timing.cues.map((cue) => cue.captionText);
+  }
+  const manifest = JSON.parse(fs.readFileSync(path.join(PV_ROOT, "manifest.json"), "utf8"));
+  return manifest.subtitles.map((subtitle) => subtitle.text);
+}
+
+function requiredSubtitleCodepoints() {
+  const subtitles = chapterTeaserSubtitleTexts();
+  assert.equal(subtitles.length, 39, "the revised narration must produce exactly 39 subtitle cues");
+  const codepoints = new Set();
+  for (const text of subtitles) {
+    assert.equal(typeof text, "string");
+    for (const character of text) {
+      if (character.codePointAt(0) > 0x7f && !/\s/u.test(character)) {
+        codepoints.add(character.codePointAt(0));
+      }
+    }
+  }
+  return [...codepoints].sort((left, right) => left - right);
+}
+
+function requiredChapterTeaserDisplayCodepoints() {
+  const story = JSON.parse(fs.readFileSync(path.join(PV_ROOT, "story.json"), "utf8"));
+  const codepoints = new Set();
+  const visit = (value) => {
+    if (typeof value === "string") {
+      for (const character of value) {
+        if (character.codePointAt(0) > 0x7f && !/\s/u.test(character)) codepoints.add(character.codePointAt(0));
+      }
+    } else if (Array.isArray(value)) {
+      value.forEach(visit);
+    } else if (value && typeof value === "object") {
+      Object.values(value).forEach(visit);
+    }
+  };
+  visit(story);
+  return [...codepoints].sort((left, right) => left - right);
+}
+
 test("所有应用文本都由三个内嵌字体字重完整覆盖", () => {
   const required = requiredNonAsciiCodepoints();
   assert.ok(required.length > 200, "expected the complete application character set");
@@ -185,7 +229,7 @@ test("所有应用文本都由三个内嵌字体字重完整覆盖", () => {
 });
 
 test("章节预告全部文本都由专用内嵌字体字重完整覆盖", () => {
-  const required = requiredNonAsciiCodepoints(PV_ROOT);
+  const required = requiredChapterTeaserDisplayCodepoints();
   assert.ok(required.length > 100, "expected the chapter teaser character set");
   FONT_WEIGHTS.forEach((weight) => {
     const fontPath = path.join(PV_FONT_ROOT, `topo-serif-pv-${weight}.woff2`);
@@ -197,4 +241,19 @@ test("章节预告全部文本都由专用内嵌字体字重完整覆盖", () =>
       `${path.basename(fontPath)} missing: ${missing.map((value) => String.fromCodePoint(value)).join("")}`
     );
   });
+});
+
+test("章节预告新版 39 条字幕由专用无衬线字体完整覆盖", () => {
+  const required = requiredSubtitleCodepoints();
+  assert.ok(required.length > 100, "expected the revised chapter teaser subtitle character set");
+  const woff2Path = path.join(PV_FONT_ROOT, "topo-sans-pv-600.woff2");
+  const ttfPath = path.join(PV_FONT_ROOT, "topo-sans-pv-600.ttf");
+  assert.equal(fs.existsSync(ttfPath), true, "offline Canvas subtitle font must exist");
+  const cmap = readCmap(fs.readFileSync(woff2Path));
+  const missing = required.filter((codepoint) => !cmap.has(codepoint));
+  assert.deepEqual(
+    missing,
+    [],
+    `${path.basename(woff2Path)} missing: ${missing.map((value) => String.fromCodePoint(value)).join("")}`
+  );
 });

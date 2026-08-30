@@ -1,0 +1,506 @@
+{
+  "schemaVersion": 1,
+  "fps": 60,
+  "totalFrames": 12897,
+  "timelineDurationSeconds": 214.95,
+  "timingPolicy": {
+    "frameInterval": "[startFrame, endFrame)",
+    "startFrame": "floor(startSeconds * fps)",
+    "endFrame": "ceil(endSeconds * fps)"
+  },
+  "sources": {
+    "script": {
+      "fileName": "余荫铠旁白台词.txt",
+      "sha256": "19779afaeef46168a5698a8f2aa8fd8e41372ac7960163927440dc8b8c4e391b"
+    },
+    "voice": {
+      "fileName": "余荫铠旁白配音.mp3",
+      "sha256": "502e1b05792ed3d16eddc13d192f73c3c8622e0f10abe05559cdf9f16f8f54e2",
+      "sourceDurationSeconds": 214.9355
+    }
+  },
+  "visualSegments": [
+    {
+      "id": "intro-edge",
+      "kind": "intro",
+      "startFrame": 0,
+      "endFrame": 1225,
+      "durationFrames": 1225
+    },
+    {
+      "id": "institution-logo",
+      "kind": "institution-logo",
+      "startFrame": 1225,
+      "endFrame": 1466,
+      "durationFrames": 241
+    },
+    {
+      "id": "intro-awakening",
+      "kind": "intro",
+      "startFrame": 1466,
+      "endFrame": 2156,
+      "durationFrames": 690
+    },
+    {
+      "id": "chapter-card-prologue",
+      "kind": "chapter-card",
+      "chapterId": "plane",
+      "actLabel": "ACT. PROLOGUE",
+      "chapterTitle": "方庭",
+      "startFrame": 2156,
+      "endFrame": 2507,
+      "durationFrames": 351
+    },
+    {
+      "id": "chapter-prologue",
+      "kind": "chapter",
+      "chapterId": "plane",
+      "startFrame": 2507,
+      "endFrame": 3260,
+      "durationFrames": 753
+    },
+    {
+      "id": "chapter-card-i",
+      "kind": "chapter-card",
+      "chapterId": "cylinder",
+      "actLabel": "ACT. I",
+      "chapterTitle": "回廊",
+      "startFrame": 3260,
+      "endFrame": 3618,
+      "durationFrames": 358
+    },
+    {
+      "id": "chapter-i",
+      "kind": "chapter",
+      "chapterId": "cylinder",
+      "startFrame": 3618,
+      "endFrame": 4405,
+      "durationFrames": 787
+    },
+    {
+      "id": "chapter-card-ii",
+      "kind": "chapter-card",
+      "chapterId": "torus",
+      "actLabel": "ACT. II",
+      "chapterTitle": "环游",
+      "startFrame": 4405,
+      "endFrame": 4747,
+      "durationFrames": 342
+    },
+    {
+      "id": "chapter-ii",
+      "kind": "chapter",
+      "chapterId": "torus",
+      "startFrame": 4747,
+      "endFrame": 5657,
+      "durationFrames": 910
+    },
+    {
+      "id": "chapter-card-iii",
+      "kind": "chapter-card",
+      "chapterId": "mobius",
+      "actLabel": "ACT. III",
+      "chapterTitle": "扭带",
+      "startFrame": 5657,
+      "endFrame": 5997,
+      "durationFrames": 340
+    },
+    {
+      "id": "chapter-iii",
+      "kind": "chapter",
+      "chapterId": "mobius",
+      "startFrame": 5997,
+      "endFrame": 6909,
+      "durationFrames": 912
+    },
+    {
+      "id": "chapter-card-iv",
+      "kind": "chapter-card",
+      "chapterId": "klein",
+      "actLabel": "ACT. IV",
+      "chapterTitle": "瓶界",
+      "startFrame": 6909,
+      "endFrame": 7234,
+      "durationFrames": 325
+    },
+    {
+      "id": "chapter-iv",
+      "kind": "chapter",
+      "chapterId": "klein",
+      "startFrame": 7234,
+      "endFrame": 7869,
+      "durationFrames": 635
+    },
+    {
+      "id": "chapter-card-v",
+      "kind": "chapter-card",
+      "chapterId": "projective",
+      "actLabel": "ACT. V",
+      "chapterTitle": "双生",
+      "startFrame": 7869,
+      "endFrame": 8201,
+      "durationFrames": 332
+    },
+    {
+      "id": "chapter-v",
+      "kind": "chapter",
+      "chapterId": "projective",
+      "startFrame": 8201,
+      "endFrame": 9219,
+      "durationFrames": 1018
+    },
+    {
+      "id": "chapter-card-vi",
+      "kind": "chapter-card",
+      "chapterId": "sphere",
+      "actLabel": "ACT. VI",
+      "chapterTitle": "归圆",
+      "startFrame": 9219,
+      "endFrame": 9559,
+      "durationFrames": 340
+    },
+    {
+      "id": "chapter-vi",
+      "kind": "chapter",
+      "chapterId": "sphere",
+      "startFrame": 9559,
+      "endFrame": 10713,
+      "durationFrames": 1154
+    },
+    {
+      "id": "tableau",
+      "kind": "tableau",
+      "startFrame": 10713,
+      "endFrame": 10880,
+      "durationFrames": 167
+    },
+    {
+      "id": "finale",
+      "kind": "finale",
+      "startFrame": 10880,
+      "endFrame": 12474,
+      "durationFrames": 1594
+    },
+    {
+      "id": "end-card",
+      "kind": "end-card",
+      "startFrame": 12474,
+      "endFrame": 12897,
+      "durationFrames": 423
+    }
+  ],
+  "cues": [
+    {
+      "id": "caption-01",
+      "startSeconds": 5.271746,
+      "endSeconds": 8.517642,
+      "startFrame": 316,
+      "endFrame": 512,
+      "captionText": "人们总把棋盘的边缘视作尽头"
+    },
+    {
+      "id": "caption-02",
+      "startSeconds": 9.491202,
+      "endSeconds": 13.414535,
+      "startFrame": 569,
+      "endFrame": 805,
+      "captionText": "可那些消失在边界上的道路并未中断"
+    },
+    {
+      "id": "caption-03",
+      "startSeconds": 13.698912,
+      "endSeconds": 16.476621,
+      "startFrame": 821,
+      "endFrame": 989,
+      "captionText": "它们从另一条边界后延续"
+    },
+    {
+      "id": "caption-04",
+      "startSeconds": 16.92161,
+      "endSeconds": 20.408,
+      "startFrame": 1015,
+      "endFrame": 1225,
+      "captionText": "将遥远的彼岸重新粘合为近邻"
+    },
+    {
+      "id": "caption-05",
+      "startSeconds": 24.433334,
+      "endSeconds": 27.260023,
+      "startFrame": 1466,
+      "endFrame": 1636,
+      "captionText": "现在，僭越棋盘之人"
+    },
+    {
+      "id": "caption-06",
+      "startSeconds": 27.799093,
+      "endSeconds": 30.351043,
+      "startFrame": 1667,
+      "endFrame": 1822,
+      "captionText": "循着隐藏的连接前行吧"
+    },
+    {
+      "id": "caption-07",
+      "startSeconds": 31.110952,
+      "endSeconds": 35.929433,
+      "startFrame": 1866,
+      "endFrame": 2156,
+      "captionText": "世界的七重轮廓，在你面前依次苏醒"
+    },
+    {
+      "id": "caption-08",
+      "startSeconds": 41.796553,
+      "endSeconds": 46.972585,
+      "startFrame": 2507,
+      "endFrame": 2819,
+      "captionText": "绝对的秩序，让世人确信那就是天地的尽头"
+    },
+    {
+      "id": "caption-09",
+      "startSeconds": 47.577438,
+      "endSeconds": 51.359184,
+      "startFrame": 2854,
+      "endFrame": 3082,
+      "captionText": "习惯了有限规则的生灵，真的能察觉"
+    },
+    {
+      "id": "caption-10",
+      "startSeconds": 51.610295,
+      "endSeconds": 54.329977,
+      "startFrame": 3096,
+      "endFrame": 3260,
+      "captionText": "这只是世界的冰山一角吗？"
+    },
+    {
+      "id": "caption-11",
+      "startSeconds": 60.315533,
+      "endSeconds": 63.528277,
+      "startFrame": 3618,
+      "endFrame": 3812,
+      "captionText": "左右相接，上下仍被截断"
+    },
+    {
+      "id": "caption-12",
+      "startSeconds": 64.318005,
+      "endSeconds": 67.627166,
+      "startFrame": 3859,
+      "endFrame": 4058,
+      "captionText": "一端坠入虚无，一端连缀归途"
+    },
+    {
+      "id": "caption-13",
+      "startSeconds": 68.589592,
+      "endSeconds": 73.412834,
+      "startFrame": 4115,
+      "endFrame": 4405,
+      "captionText": "拥有一重循环的世界，该如何丈量远近？"
+    },
+    {
+      "id": "caption-14",
+      "startSeconds": 79.125601,
+      "endSeconds": 82.760408,
+      "startFrame": 4747,
+      "endFrame": 4966,
+      "captionText": "天与地交织，首与尾相连"
+    },
+    {
+      "id": "caption-15",
+      "startSeconds": 83.528912,
+      "endSeconds": 85.732925,
+      "startFrame": 5011,
+      "endFrame": 5144,
+      "captionText": "两个方向各自成环"
+    },
+    {
+      "id": "caption-16",
+      "startSeconds": 86.226077,
+      "endSeconds": 91.070385,
+      "startFrame": 5173,
+      "endFrame": 5465,
+      "captionText": "在没有尽头的轮回中，背道而驰的棋子"
+    },
+    {
+      "id": "caption-17",
+      "startSeconds": 91.241791,
+      "endSeconds": 94.277846,
+      "startFrame": 5474,
+      "endFrame": 5657,
+      "captionText": "终将在宿命的交汇处重逢"
+    },
+    {
+      "id": "caption-18",
+      "startSeconds": 99.957891,
+      "endSeconds": 105.404966,
+      "startFrame": 5997,
+      "endFrame": 6325,
+      "captionText": "正与反的界限，被一次荒谬的扭转轻易抹除"
+    },
+    {
+      "id": "caption-19",
+      "startSeconds": 106.243946,
+      "endSeconds": 110.980635,
+      "startFrame": 6374,
+      "endFrame": 6659,
+      "captionText": "在只有一面的世界里，世人迷信黑白分明"
+    },
+    {
+      "id": "caption-20",
+      "startSeconds": 111.209002,
+      "endSeconds": 115.13517,
+      "startFrame": 6672,
+      "endFrame": 6909,
+      "captionText": "却不知正反不过是同源的虚妄"
+    },
+    {
+      "id": "caption-21",
+      "startSeconds": 120.567937,
+      "endSeconds": 123.54381,
+      "startFrame": 7234,
+      "endFrame": 7413,
+      "captionText": "世界在此剥离了内与外的分别"
+    },
+    {
+      "id": "caption-22",
+      "startSeconds": 124.471859,
+      "endSeconds": 126.586395,
+      "startFrame": 7468,
+      "endFrame": 7596,
+      "captionText": "路径会记住你的选择"
+    },
+    {
+      "id": "caption-23",
+      "startSeconds": 127.333129,
+      "endSeconds": 131.142971,
+      "startFrame": 7639,
+      "endFrame": 7869,
+      "captionText": "然后以颠倒的姿态，将因果偿还"
+    },
+    {
+      "id": "caption-24",
+      "startSeconds": 136.694898,
+      "endSeconds": 140.318844,
+      "startFrame": 8201,
+      "endFrame": 8420,
+      "captionText": "上下左右，全都通向各自的倒影"
+    },
+    {
+      "id": "caption-25",
+      "startSeconds": 141.165941,
+      "endSeconds": 144.229206,
+      "startFrame": 8469,
+      "endFrame": 8654,
+      "captionText": "一次越界是对自我的背叛"
+    },
+    {
+      "id": "caption-26",
+      "startSeconds": 144.457188,
+      "endSeconds": 148.104671,
+      "startFrame": 8667,
+      "endFrame": 8887,
+      "captionText": "而两次倒映又让宿命重新吻合"
+    },
+    {
+      "id": "caption-27",
+      "startSeconds": 149.293152,
+      "endSeconds": 153.645533,
+      "startFrame": 8957,
+      "endFrame": 9219,
+      "captionText": "在双生世界的尽头，你会遇见另一个自己"
+    },
+    {
+      "id": "caption-28",
+      "startSeconds": 159.325034,
+      "endSeconds": 163.4622,
+      "startFrame": 9559,
+      "endFrame": 9808,
+      "captionText": "在最后的世界，四方的棱角褪去"
+    },
+    {
+      "id": "caption-29",
+      "startSeconds": 164.072948,
+      "endSeconds": 166.755011,
+      "startFrame": 9844,
+      "endFrame": 10006,
+      "captionText": "支离破碎的版图归于圆满"
+    },
+    {
+      "id": "caption-30",
+      "startSeconds": 167.603129,
+      "endSeconds": 169.762132,
+      "startFrame": 10056,
+      "endFrame": 10186,
+      "captionText": "人们为了看懂这个世界"
+    },
+    {
+      "id": "caption-31",
+      "startSeconds": 169.993243,
+      "endSeconds": 173.475488,
+      "startFrame": 10199,
+      "endFrame": 10409,
+      "captionText": "将它粗暴地展平成一张带边界的纸"
+    },
+    {
+      "id": "caption-32",
+      "startSeconds": 174.17619,
+      "endSeconds": 178.543719,
+      "startFrame": 10450,
+      "endFrame": 10713,
+      "captionText": "所谓边界，不过是观测者无知的刻痕"
+    },
+    {
+      "id": "caption-33",
+      "startSeconds": 181.336871,
+      "endSeconds": 183.275488,
+      "startFrame": 10880,
+      "endFrame": 10997,
+      "captionText": "现在，执子之人"
+    },
+    {
+      "id": "caption-34",
+      "startSeconds": 183.845079,
+      "endSeconds": 186.282268,
+      "startFrame": 11030,
+      "endFrame": 11177,
+      "captionText": "七种流形皆已显现"
+    },
+    {
+      "id": "caption-35",
+      "startSeconds": 187.002517,
+      "endSeconds": 191.471134,
+      "startFrame": 11220,
+      "endFrame": 11489,
+      "captionText": "但最后的闭环，仍等待你亲手落位"
+    },
+    {
+      "id": "caption-36",
+      "startSeconds": 192.392336,
+      "endSeconds": 195.046417,
+      "startFrame": 11543,
+      "endFrame": 11703,
+      "captionText": "若你已经洞悉边界的谎言"
+    },
+    {
+      "id": "caption-37",
+      "startSeconds": 195.591361,
+      "endSeconds": 198.056757,
+      "startFrame": 11735,
+      "endFrame": 11884,
+      "captionText": "就上前来，落下那颗子"
+    },
+    {
+      "id": "caption-38",
+      "startSeconds": 198.782925,
+      "endSeconds": 202.968073,
+      "startFrame": 11926,
+      "endFrame": 12179,
+      "captionText": "向我证明，你比我更懂得拓扑的真谛"
+    },
+    {
+      "id": "caption-39",
+      "startSeconds": 203.866576,
+      "endSeconds": 207.892404,
+      "startFrame": 12231,
+      "endFrame": 12474,
+      "captionText": "然后，去见证世界本来的模样吧"
+    }
+  ]
+}

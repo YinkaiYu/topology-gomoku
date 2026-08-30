@@ -194,7 +194,7 @@ async function main() {
   if (!parsed.values["manifest-only"]) {
     const fallback = parsed.values.profile === "master"
       ? path.join(DEFAULT_OUTPUT_ROOT, "master", "seven-realms-master.mov")
-      : path.join(DEFAULT_OUTPUT_ROOT, "review", "seven-realms-review.mp4");
+      : path.join(DEFAULT_OUTPUT_ROOT, "delivery", "topology-gomoku-chapter-teaser-final-1080p.mp4");
     const inputPath = resolveFromRoot(parsed.values.input || parsed.positionals[0], fallback);
     try {
       await fs.access(inputPath);

@@ -16,6 +16,8 @@
     "pv:keyframes": "node ./video/chapter-teaser/scripts/render.mjs keyframes --profile master --output ./.tmp/chapter-teaser/keyframes-4k",
     "pv:serve": "node ./video/chapter-teaser/scripts/serve.mjs",
     "pv:preview": "node ./video/chapter-teaser/scripts/render.mjs review --profile review",
+    "pv:review-clean": "node ./video/chapter-teaser/scripts/render.mjs review --profile review --silent --no-subtitles --output ./.tmp/chapter-teaser/review/chapter-teaser-clean.mp4 --overwrite",
+    "pv:package": "node ./video/chapter-teaser/scripts/package-deliverables.mjs",
     "pv:master": "node ./video/chapter-teaser/scripts/render.mjs master --profile master",
     "pv:verify": "node ./video/chapter-teaser/scripts/verify-video.mjs --profile review",
     "build": "npm run build:xiaohongshu",

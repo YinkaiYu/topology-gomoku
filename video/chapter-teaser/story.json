@@ -23,15 +23,14 @@
   },
   "intro": {
     "id": "intro",
-    "preRollFrames": 84,
-    "postRollFrames": 72,
     "cues": [
-      { "text": "人们总把棋盘的边缘视作尽头", "pauseAfterFrames": 30 },
-      { "text": "可那些消失在边界上的道路并未中断", "pauseAfterFrames": 18 },
-      { "text": "它们在另一处接缝后延续", "pauseAfterFrames": 12 },
-      { "text": "将遥远的落点重新变为近邻", "pauseAfterFrames": 36 },
-      { "text": "现在，落子之人啊，循着隐藏的连接前行吧", "pauseAfterFrames": 18 },
-      { "text": "七种世界，将在你面前依次展开", "pauseAfterFrames": 0 }
+      { "text": "人们总把棋盘的边缘视作尽头。" },
+      { "text": "可那些消失在边界上的道路并未中断。" },
+      { "text": "它们从另一条边界后延续。" },
+      { "text": "将遥远的彼岸重新粘合为近邻。" },
+      { "text": "现在，僭越棋盘之人。" },
+      { "text": "循着隐藏的连接前行吧。" },
+      { "text": "世界的七重轮廓，在你面前依次苏醒。" }
     ]
   },
   "chapters": [
@@ -45,12 +44,10 @@
       "start": [1, 3],
       "direction": 0,
       "accent": "#ded7c6",
-      "preRollFrames": 36,
-      "postRollFrames": 96,
       "cues": [
-        { "text": "边界分明，方向笔直，胜负都在眼前", "pauseAfterFrames": 18 },
-        { "text": "方庭以有限的秩序收容第一条五连", "pauseAfterFrames": 12 },
-        { "text": "也由此埋下对所有边界的疑问", "pauseAfterFrames": 0 }
+        { "text": "绝对的秩序，让世人确信那就是天地的尽头。" },
+        { "text": "习惯了有限规则的生灵，真的能察觉。" },
+        { "text": "这只是世界的冰山一角吗？" }
       ]
     },
     {
@@ -63,13 +60,10 @@
       "start": [5, 2],
       "direction": 0,
       "accent": "#68aaa2",
-      "preRollFrames": 36,
-      "postRollFrames": 96,
       "cues": [
-        { "text": "左右相接，上下仍被截断", "pauseAfterFrames": 18 },
-        { "text": "横向的路绕过世界回到身后", "pauseAfterFrames": 12 },
-        { "text": "纵向的路却有始有终", "pauseAfterFrames": 24 },
-        { "text": "只拥有一重循环的世界，该如何丈量远近？", "pauseAfterFrames": 0 }
+        { "text": "左右相接，上下仍被截断。" },
+        { "text": "一端坠入虚无，一端连缀归途。" },
+        { "text": "拥有一重循环的世界，该如何丈量远近？" }
       ]
     },
     {
@@ -82,14 +76,11 @@
       "start": [1, 0],
       "direction": 5,
       "accent": "#667fac",
-      "preRollFrames": 36,
-      "postRollFrames": 96,
       "cues": [
-        { "text": "四边相接，两个方向各自成环", "pauseAfterFrames": 18 },
-        { "text": "一条斜线可以先越过上边", "pauseAfterFrames": 12 },
-        { "text": "再从左侧归来", "pauseAfterFrames": 24 },
-        { "text": "两重循环交织之处", "pauseAfterFrames": 12 },
-        { "text": "最短的道路往往藏在视野之外", "pauseAfterFrames": 0 }
+        { "text": "天与地交织，首与尾相连。" },
+        { "text": "两个方向各自成环。" },
+        { "text": "在没有尽头的轮回中，背道而驰的棋子。" },
+        { "text": "终将在宿命的交汇处重逢。" }
       ]
     },
     {
@@ -102,13 +93,10 @@
       "start": [6, 0],
       "direction": 1,
       "accent": "#c28a48",
-      "preRollFrames": 36,
-      "postRollFrames": 96,
       "cues": [
-        { "text": "左右边界相接，却带着一次翻转", "pauseAfterFrames": 18 },
-        { "text": "沿同一面环行一周", "pauseAfterFrames": 12 },
-        { "text": "归来时上下已经交换", "pauseAfterFrames": 24 },
-        { "text": "只有一面的世界，正反又该如何分辨？", "pauseAfterFrames": 0 }
+        { "text": "正与反的界限，被一次荒谬的扭转轻易抹除。" },
+        { "text": "在只有一面的世界里，世人迷信黑白分明。" },
+        { "text": "却不知正反不过是同源的虚妄。" }
       ]
     },
     {
@@ -121,14 +109,10 @@
       "start": [1, 0],
       "direction": 5,
       "accent": "#aa7448",
-      "preRollFrames": 36,
-      "postRollFrames": 96,
       "cues": [
-        { "text": "一组边界如圆环般相接", "pauseAfterFrames": 12 },
-        { "text": "另一组边界让方向翻转", "pauseAfterFrames": 18 },
-        { "text": "两种归来共处一界", "pauseAfterFrames": 12 },
-        { "text": "一条路保持原样，一条路带回倒影", "pauseAfterFrames": 24 },
-        { "text": "路径会记住你选择的环绕", "pauseAfterFrames": 0 }
+        { "text": "世界在此剥离了内与外的分别。" },
+        { "text": "路径会记住你的选择。" },
+        { "text": "然后以颠倒的姿态，将因果偿还。" }
       ]
     },
     {
@@ -141,14 +125,11 @@
       "start": [1, 0],
       "direction": 5,
       "accent": "#8374a8",
-      "preRollFrames": 36,
-      "postRollFrames": 96,
       "cues": [
-        { "text": "上下左右，全都通向各自的倒影", "pauseAfterFrames": 18 },
-        { "text": "一次越界改变方向", "pauseAfterFrames": 12 },
-        { "text": "两次倒映使棋路重新吻合", "pauseAfterFrames": 24 },
-        { "text": "在双生的世界里", "pauseAfterFrames": 12 },
-        { "text": "每次远行，都会遇见另一个自己", "pauseAfterFrames": 0 }
+        { "text": "上下左右，全都通向各自的倒影。" },
+        { "text": "一次越界是对自我的背叛。" },
+        { "text": "而两次倒映又让宿命重新吻合。" },
+        { "text": "在双生世界的尽头，你会遇见另一个自己。" }
       ]
     },
     {
@@ -161,40 +142,36 @@
       "start": [1, 0],
       "direction": 5,
       "accent": "#d7d0ad",
-      "preRollFrames": 36,
-      "postRollFrames": 132,
       "cues": [
-        { "text": "在最后的世界", "pauseAfterFrames": 12 },
-        { "text": "棋路离开一条边，便会沿相邻的方向继续", "pauseAfterFrames": 18 },
-        { "text": "四条边依次归向彼此", "pauseAfterFrames": 12 },
-        { "text": "方形的棋盘也随之闭合成球", "pauseAfterFrames": 30 },
-        { "text": "人们为了看清完整的世界", "pauseAfterFrames": 12 },
-        { "text": "将它展开成一张有边的图", "pauseAfterFrames": 24 },
-        { "text": "所谓边界，或许只是观察世界时留下的痕迹", "pauseAfterFrames": 0 }
+        { "text": "在最后的世界，四方的棱角褪去。" },
+        { "text": "支离破碎的版图归于圆满。" },
+        { "text": "人们为了看懂这个世界。" },
+        { "text": "将它粗暴地展平成一张带边界的纸。" },
+        { "text": "所谓边界，不过是观测者无知的刻痕。" }
       ]
     }
   ],
   "tableau": {
     "id": "seven-worlds",
-    "durationFrames": 480
+    "durationFrames": 167
   },
   "finale": {
     "id": "finale",
-    "preRollFrames": 48,
-    "postRollFrames": 96,
     "cues": [
-      { "text": "现在，落子之人", "pauseAfterFrames": 18 },
-      { "text": "七种世界已经显现", "pauseAfterFrames": 12 },
-      { "text": "但最后的连接，仍等待你亲手完成", "pauseAfterFrames": 30 },
-      { "text": "若你已经理解边界的意义", "pauseAfterFrames": 12 },
-      { "text": "就落下那颗棋子", "pauseAfterFrames": 24 },
-      { "text": "然后，去看见世界本来的样子吧", "pauseAfterFrames": 0 }
+      { "text": "现在，执子之人。" },
+      { "text": "七种流形皆已显现。" },
+      { "text": "但最后的闭环，仍等待你亲手落位。" },
+      { "text": "若你已经洞悉边界的谎言。" },
+      { "text": "就上前来，落下那颗子。" },
+      { "text": "向我证明，你比我更懂得拓扑的真谛。" },
+      { "text": "然后，去见证世界本来的模样吧。" }
     ]
   },
   "endCard": {
     "id": "end-card",
-    "durationFrames": 390,
+    "durationFrames": 423,
     "gameTitle": "拓扑五子棋",
-    "institution": "中国科学院物理研究所"
+    "institution": "中国科学院物理研究所",
+    "producer": "制作：余荫铠"
   }
 }

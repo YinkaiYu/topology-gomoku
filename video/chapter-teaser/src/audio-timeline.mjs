@@ -15,113 +15,67 @@ export function flattenStoryCues(story) {
     sectionId: section.id,
     index,
     text: cue.text,
-    captionText: cue.text.replace(FULL_STOPS, ""),
-    pauseAfterFrames: cue.pauseAfterFrames
+    captionText: cue.text.replace(FULL_STOPS, "")
   })));
 }
 
-export function buildTimeline(story, measuredCues) {
+export function buildTimeline(story, timing) {
+  if (!timing || !Array.isArray(timing.visualSegments) || !Array.isArray(timing.cues)) {
+    throw new Error("narration-timing.json must define visualSegments and cues");
+  }
   const fps = story.render.fps;
-  const expected = flattenStoryCues(story);
-  const measuredById = new Map(measuredCues.map((cue) => [cue.id, cue]));
-  const cues = [];
-  const segments = [];
-  let cursor = 0;
-
-  const scheduleNarratedSegment = ({ id, kind, source, title, chapterId, manifold }) => {
-    const startFrame = cursor;
-    cursor += source.preRollFrames;
-    const narrationCueIds = [];
-    for (let index = 0; index < source.cues.length; index += 1) {
-      const cueId = `${id}-${String(index + 1).padStart(2, "0")}`;
-      const sourceCue = expected.find((cue) => cue.id === cueId);
-      const measured = measuredById.get(cueId);
-      if (!measured || !(measured.durationSeconds > 0)) {
-        throw new Error(`Missing measured voice duration for ${cueId}`);
-      }
-      const durationFrames = Math.max(1, Math.ceil(measured.durationSeconds * fps));
-      const start = cursor;
-      const end = start + durationFrames;
-      cues.push({
-        ...sourceCue,
-        startFrame: start,
-        endFrame: end,
-        durationFrames,
-        sourceDurationSeconds: round(measured.durationSeconds),
-        sourceSampleRate: measured.sourceSampleRate,
-        sourceStartSample: measured.sourceStartSample,
-        sourceEndSample: measured.sourceEndSample,
-        voiceFile: measured.voiceFile
-      });
-      narrationCueIds.push(cueId);
-      cursor = end + sourceCue.pauseAfterFrames;
-    }
-    cursor += source.postRollFrames;
-    segments.push({
-      id,
-      kind,
-      ...(title ? { title } : {}),
-      ...(chapterId ? { chapterId } : {}),
-      ...(manifold ? { manifold } : {}),
-      startFrame,
-      endFrame: cursor,
-      durationFrames: cursor - startFrame,
-      narrationCueIds
-    });
-  };
-
-  scheduleNarratedSegment({ id: story.intro.id, kind: "intro", source: story.intro, title: story.title });
-
-  for (const chapter of story.chapters) {
-    const cardStart = cursor;
-    cursor += story.render.titleFrames;
-    segments.push({
-      id: `${chapter.id}-card`,
-      kind: "chapter-card",
-      chapterId: chapter.id,
-      act: chapter.act,
-      title: chapter.chapter,
-      manifold: chapter.manifold,
-      transformFrame: cardStart + story.render.titleTransformFrame,
-      startFrame: cardStart,
-      endFrame: cursor,
-      durationFrames: story.render.titleFrames,
-      narrationCueIds: []
-    });
-    scheduleNarratedSegment({
-      id: chapter.id,
-      kind: "chapter",
-      source: chapter,
-      title: chapter.chapter,
-      chapterId: chapter.id,
-      manifold: chapter.manifold
-    });
+  if (timing.fps !== fps || !Number.isInteger(timing.totalFrames)) {
+    throw new Error("Narration timing must use the story frame rate and an integer totalFrames");
   }
 
-  const tableauStart = cursor;
-  cursor += story.tableau.durationFrames;
-  segments.push({
-    id: story.tableau.id,
-    kind: "tableau",
-    startFrame: tableauStart,
-    endFrame: cursor,
-    durationFrames: story.tableau.durationFrames,
-    narrationCueIds: []
+  const expected = flattenStoryCues(story);
+  if (expected.length !== timing.cues.length) {
+    throw new Error(`Story/timing cue count mismatch: ${expected.length} != ${timing.cues.length}`);
+  }
+  const cues = timing.cues.map((timed, index) => {
+    const source = expected[index];
+    if (source.captionText !== timed.captionText) {
+      throw new Error(`Story/timing text mismatch at ${timed.id}: ${source.captionText} != ${timed.captionText}`);
+    }
+    return {
+      id: timed.id,
+      storyCueId: source.id,
+      sectionId: source.sectionId,
+      index: source.index,
+      text: source.text,
+      captionText: timed.captionText,
+      startSeconds: timed.startSeconds,
+      endSeconds: timed.endSeconds,
+      startFrame: timed.startFrame,
+      endFrame: timed.endFrame,
+      durationFrames: timed.endFrame - timed.startFrame
+    };
   });
 
-  scheduleNarratedSegment({ id: story.finale.id, kind: "finale", source: story.finale });
-
-  const endCardStart = cursor;
-  cursor += story.endCard.durationFrames;
-  segments.push({
-    id: story.endCard.id,
-    kind: "end-card",
-    title: story.endCard.gameTitle,
-    institution: story.endCard.institution,
-    startFrame: endCardStart,
-    endFrame: cursor,
-    durationFrames: story.endCard.durationFrames,
-    narrationCueIds: []
+  const chapterById = new Map(story.chapters.map((chapter) => [chapter.id, chapter]));
+  const segments = timing.visualSegments.map((source) => {
+    const chapter = source.chapterId ? chapterById.get(source.chapterId) : null;
+    const narrationCueIds = cues
+      .filter((cue) => cue.startFrame >= source.startFrame && cue.endFrame <= source.endFrame)
+      .map((cue) => cue.id);
+    const segment = {
+      ...source,
+      narrationCueIds
+    };
+    if (chapter) {
+      segment.act = chapter.act;
+      segment.title = chapter.chapter;
+      segment.manifold = chapter.manifold;
+    }
+    if (source.kind === "chapter-card") {
+      segment.transformFrame = source.startFrame + Math.round(source.durationFrames * 0.52);
+    }
+    if (source.kind === "end-card") {
+      segment.title = story.endCard.gameTitle;
+      segment.institution = story.endCard.institution;
+      segment.producer = story.endCard.producer;
+    }
+    return segment;
   });
 
   const subtitles = cues.map((cue) => ({
@@ -134,8 +88,8 @@ export function buildTimeline(story, measuredCues) {
   }));
   return {
     fps,
-    totalFrames: cursor,
-    durationSeconds: round(cursor / fps),
+    totalFrames: timing.totalFrames,
+    durationSeconds: round(timing.totalFrames / fps),
     segments,
     cues,
     subtitles
@@ -143,7 +97,10 @@ export function buildTimeline(story, measuredCues) {
 }
 
 export function frameToSrtTime(frame, fps) {
-  const milliseconds = Math.round(frame * 1000 / fps);
+  // One subtitle time unit is shorter than a 60 fps frame. Flooring both
+  // boundaries preserves the intended [startFrame, endFrame) frame set while
+  // preventing a rounded end from leaking into a silent logo or title card.
+  const milliseconds = Math.floor(frame * 1000 / fps + Number.EPSILON);
   const hours = Math.floor(milliseconds / 3600000);
   const minutes = Math.floor(milliseconds % 3600000 / 60000);
   const seconds = Math.floor(milliseconds % 60000 / 1000);
@@ -152,7 +109,7 @@ export function frameToSrtTime(frame, fps) {
 }
 
 export function frameToAssTime(frame, fps) {
-  const centiseconds = Math.round(frame * 100 / fps);
+  const centiseconds = Math.floor(frame * 100 / fps + Number.EPSILON);
   const hours = Math.floor(centiseconds / 360000);
   const minutes = Math.floor(centiseconds % 360000 / 6000);
   const seconds = Math.floor(centiseconds % 6000 / 100);
@@ -183,7 +140,7 @@ export function serializeAss(subtitles, fps) {
     "",
     "[V4+ Styles]",
     "Format: Name, Fontname, Fontsize, PrimaryColour, SecondaryColour, OutlineColour, BackColour, Bold, Italic, Underline, StrikeOut, ScaleX, ScaleY, Spacing, Angle, BorderStyle, Outline, Shadow, Alignment, MarginL, MarginR, MarginV, Encoding",
-    "Style: Caption,Topo Serif SC,44,&H00F2EFE7,&H00F2EFE7,&HCC070908,&H00000000,0,0,0,0,100,100,1.2,0,1,2.2,0,2,144,144,90,1",
+    "Style: Caption,Topo Sans PV,44,&H00F2EFE7,&H00F2EFE7,&HCC070908,&H00000000,0,0,0,0,100,100,1.2,0,1,2.2,0,2,144,144,90,1",
     "",
     "[Events]",
     "Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text",

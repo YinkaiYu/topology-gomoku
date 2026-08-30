@@ -1,2076 +1,2365 @@
 {
-  "schemaVersion": 1,
+  "schemaVersion": 2,
   "title": "七界足迹",
   "fps": 60,
   "sampleRate": 48000,
   "samplesPerFrame": 800,
-  "totalFrames": 11384,
-  "durationSeconds": 189.733333,
+  "totalFrames": 12897,
+  "durationSeconds": 214.95,
   "seed": 2115104775,
   "source": {
     "story": "video/chapter-teaser/story.json",
-    "storySha256": "b81bb3fa96d166bff100b2c1a600dc31052e44f07d2710273318d45ac57a6b3c",
-    "timing": "Measured per-cue Kangkang WAV durations, silence-trimmed and rounded up to integer 60 fps frames"
-  },
-  "outputRoot": ".tmp/chapter-teaser",
-  "voice": {
-    "engine": "Windows.Media.SpeechSynthesis",
-    "displayName": "Microsoft Kangkang",
-    "language": "zh-CN",
-    "gender": "Male",
-    "rate": 0,
-    "speakingRate": 1,
-    "reviewOnly": true,
-    "releaseRequirement": "公开发布前需再次确认声音来源与授权"
-  },
-  "score": {
-    "source": {
-      "format": "11 committed MusicXML parts rendered with MuseScore Basic",
-      "title": "七界足迹原创管弦乐源",
-      "composerCredit": "Original score composed for Topology Gomoku",
-      "copyright": "Original project score; no third-party composition",
-      "original": true,
-      "importedOrTranscribedReferenceMusic": false,
-      "sourceDurationSeconds": 183.352,
-      "plan": "video/chapter-teaser/src/score/orchestral-source.json",
-      "planSha256": "9938102fd06fa1c7cf26e85d4461c2488c79a5cf97260e2b7395f0dc0ab8a66c",
-      "musicXmlParts": {
-        "piano": {
-          "path": "video/chapter-teaser/src/score/stems/piano.musicxml",
-          "sha256": "1344beecdff48aba5c410515bd6b062c0fa43c3422124550cd287063fad7c26e"
-        },
-        "celesta": {
-          "path": "video/chapter-teaser/src/score/stems/celesta.musicxml",
-          "sha256": "22c28defab9cfe52736b1de8cbb103e4d159144861ae5a1b949acf6d73dabf72"
-        },
-        "violin-i": {
-          "path": "video/chapter-teaser/src/score/stems/violin-i.musicxml",
-          "sha256": "9567bc143386cb008440a728c37427239b8a23e22ee7bdb61bf9b2e50b069a72"
-        },
-        "violin-ii": {
-          "path": "video/chapter-teaser/src/score/stems/violin-ii.musicxml",
-          "sha256": "0390263dab26fb24fe6e2cba27ca0d251f9dcb009c81fb85af3d6dbb1a558bfe"
-        },
-        "viola": {
-          "path": "video/chapter-teaser/src/score/stems/viola.musicxml",
-          "sha256": "1a7e7e909c02ea099a79a7e93244d82a2d8931295c95722d36b1d8f772b18dfc"
-        },
-        "cello": {
-          "path": "video/chapter-teaser/src/score/stems/cello.musicxml",
-          "sha256": "7a05adc5faa78f81733701fe0b2f03b852cf038eada51d0e209ae9d0903273f6"
-        },
-        "double-bass": {
-          "path": "video/chapter-teaser/src/score/stems/double-bass.musicxml",
-          "sha256": "ceae84511a44e50e3bc741d32b2d087e21121bcd8d22cb35a9f50629dc73d6df"
-        },
-        "bass-clarinet": {
-          "path": "video/chapter-teaser/src/score/stems/bass-clarinet.musicxml",
-          "sha256": "bde8534aed632ace2519bde75564bcf676699aa790ed5690cfbee39b0758ff36"
-        },
-        "choir-aahs": {
-          "path": "video/chapter-teaser/src/score/stems/choir-aahs.musicxml",
-          "sha256": "a3df1a51b5b8edf8bc9d0b5addfa087ba4c3ebdf784ff9b54e9f3948b08ac44c"
-        },
-        "french-horn": {
-          "path": "video/chapter-teaser/src/score/stems/french-horn.musicxml",
-          "sha256": "812d9548b2d4909c058cae2c3312872d3c5859016067dabfeae66c5ce977783c"
-        },
-        "restrained-percussion": {
-          "path": "video/chapter-teaser/src/score/stems/restrained-percussion.musicxml",
-          "sha256": "3427bd35cac60bb802c7da4b6c12ea6061f96b62063dbc6e752129c37aa26d85"
-        }
-      },
-      "licenses": [
-        "video/chapter-teaser/assets/licenses/audio/musescore-license.txt",
-        "video/chapter-teaser/assets/licenses/audio/ms-basic-license.md"
-      ]
-    },
-    "deepStructure": {
-      "pitchCell": [
-        "D",
-        "F",
-        "G",
-        "A",
-        "C"
-      ],
-      "midi": [
-        62,
-        65,
-        67,
-        69,
-        72
-      ],
-      "use": "A compact prologue signal and a sparse long-range memory only; never a melody shared by the seven chapters",
-      "boundarySonority": [
-        "D",
-        "A"
-      ],
-      "maximumBoundarySonoritySeconds": 0.625
-    },
-    "sharedChapterMelody": false,
-    "chapters": {
-      "plane": {
-        "mode": "D Lydian",
-        "motive": {
-          "pitches": [
-            62,
-            66,
-            64,
-            69,
-            68,
-            71,
-            74
-          ],
-          "rhythmSeconds": [
-            0.75,
-            0.5,
-            1.125,
-            0.5,
-            0.75,
-            0.75,
-            1.5
-          ]
-        },
-        "rhythmicIdentity": "lucid 4/4 with a two-note pickup",
-        "leadParts": [
-          "piano"
-        ],
-        "supportingPalette": [
-          "violin-i",
-          "violin-ii",
-          "viola",
-          "cello",
-          "bass-clarinet"
-        ],
-        "character": "Clear, poised and finite; the piano states a complete independent melody while transparent strings refract rather than double it"
-      },
-      "cylinder": {
-        "mode": "B-flat Mixolydian",
-        "motive": {
-          "pitches": [
-            58,
-            62,
-            60,
-            65,
-            63,
-            67
-          ],
-          "rhythmSeconds": [
-            0.5,
-            0.5,
-            1,
-            0.5,
-            0.75,
-            1.1
-          ]
-        },
-        "rhythmicIdentity": "3+3 cyclical pulse",
-        "leadParts": [
-          "bass-clarinet",
-          "cello"
-        ],
-        "supportingPalette": [
-          "viola",
-          "double-bass",
-          "restrained-percussion",
-          "french-horn"
-        ],
-        "character": "Rounded and travelling; a reed-led orbit with pizzicato lateral motion and restrained cyclic percussion"
-      },
-      "torus": {
-        "mode": "E Mixolydian / G Lydian",
-        "motive": {
-          "pitches": [
-            52,
-            59,
-            57,
-            61,
-            56,
-            64
-          ],
-          "rhythmSeconds": [
-            0.5,
-            0.75,
-            0.75,
-            0.5,
-            1,
-            0.7
-          ]
-        },
-        "counterMotive": {
-          "pitches": [
-            79,
-            81,
-            78,
-            84,
-            83
-          ],
-          "rhythmSeconds": [
-            0.75,
-            0.5,
-            1,
-            0.75,
-            0.8
-          ]
-        },
-        "rhythmicIdentity": "4.75 against 5.25 second cycles that mesh",
-        "leadParts": [
-          "piano",
-          "celesta"
-        ],
-        "supportingPalette": [
-          "violin-ii",
-          "viola",
-          "double-bass"
-        ],
-        "character": "Crystalline and interlocked; two genuinely different keyboard cycles mesh without resolving into a common tune"
-      },
-      "mobius": {
-        "mode": "C octatonic",
-        "motive": {
-          "pitches": [
-            60,
-            66,
-            63,
-            69,
-            67,
-            61
-          ],
-          "rhythmSeconds": [
-            0.75,
-            0.75,
-            1,
-            0.75,
-            0.75,
-            1.1
-          ]
-        },
-        "rhythmicIdentity": "3+2+3/8 additive meter",
-        "leadParts": [
-          "viola",
-          "bass-clarinet"
-        ],
-        "supportingPalette": [
-          "violin-i",
-          "violin-ii",
-          "cello",
-          "celesta"
-        ],
-        "character": "Folded and ambiguous; an asymmetrical viola line returns through a darker reed reverse side and compressed bow envelopes"
-      },
-      "klein": {
-        "mode": "D Phrygian dominant",
-        "motive": {
-          "pitches": [
-            81,
-            75,
-            78,
-            86
-          ],
-          "rhythmSeconds": [
-            0.5,
-            0.5,
-            0.75,
-            1
-          ]
-        },
-        "counterMotive": {
-          "pitches": [
-            38,
-            45,
-            46,
-            51
-          ],
-          "rhythmSeconds": [
-            0.5,
-            0.5,
-            0.75,
-            1
-          ]
-        },
-        "rhythmicIdentity": "antiphonal 6/8 propulsion",
-        "leadParts": [
-          "violin-i",
-          "bass-clarinet",
-          "cello",
-          "double-bass"
-        ],
-        "supportingPalette": [
-          "violin-ii",
-          "piano",
-          "french-horn",
-          "restrained-percussion"
-        ],
-        "character": "Propelled and antiphonal; jagged high strings and low reeds collide across a metallic register split"
-      },
-      "projective": {
-        "mode": "E Lydian",
-        "motive": {
-          "pitches": [
-            76,
-            83,
-            78,
-            82,
-            80,
-            87
-          ],
-          "rhythmSeconds": [
-            0.75,
-            0.75,
-            1,
-            0.75,
-            1,
-            1.1
-          ]
-        },
-        "rhythmicIdentity": "mirrored six-pulse canon",
-        "leadParts": [
-          "celesta",
-          "violin-i",
-          "choir-aahs"
-        ],
-        "supportingPalette": [
-          "violin-ii",
-          "viola",
-          "cello",
-          "restrained-percussion"
-        ],
-        "character": "Cold and doubled; celesta, divided strings and a distant wordless choir form an oblique mirrored canon"
-      },
-      "sphere": {
-        "mode": "D major",
-        "motive": {
-          "pitches": [
-            62,
-            64,
-            66,
-            69,
-            67,
-            71,
-            69,
-            66,
-            76,
-            74
-          ],
-          "rhythmSeconds": [
-            0.75,
-            0.75,
-            1,
-            1,
-            0.75,
-            0.75,
-            1,
-            0.75,
-            1,
-            1.5
-          ]
-        },
-        "rhythmicIdentity": "broad 4/4 anacrusis into a two-bar melody",
-        "leadParts": [
-          "piano",
-          "french-horn",
-          "violin-i",
-          "choir-aahs"
-        ],
-        "supportingPalette": [
-          "celesta",
-          "violin-ii",
-          "viola",
-          "cello",
-          "double-bass",
-          "bass-clarinet",
-          "restrained-percussion"
-        ],
-        "character": "Open and resolving; piano and horn carry a new broad melody into full strings and a light choral horizon"
-      }
-    },
-    "continuity": {
-      "method": "Phrase overlap, pre-cut pickup, harmonic pivot, rhythmic handoff and timbral relay preserved by piecewise continuous frame warp",
-      "joins": [
-        {
-          "from": "intro",
-          "to": "plane",
-          "overlapSeconds": 0.552667,
-          "method": "D/A harmonic relay becomes a piano pickup"
-        },
-        {
-          "from": "plane",
-          "to": "cylinder",
-          "overlapSeconds": 0.412667,
-          "method": "piano resonance rounds into B-flat bass clarinet"
-        },
-        {
-          "from": "cylinder",
-          "to": "torus",
-          "overlapSeconds": 0.351334,
-          "method": "travelling pizzicato hands a high intersection to celesta"
-        },
-        {
-          "from": "torus",
-          "to": "mobius",
-          "overlapSeconds": 0.481334,
-          "method": "celesta lattice folds into an octatonic viola pickup"
-        },
-        {
-          "from": "mobius",
-          "to": "klein",
-          "overlapSeconds": 0.444667,
-          "method": "viola D/A is struck into metallic D/E-flat propulsion"
-        },
-        {
-          "from": "klein",
-          "to": "projective",
-          "overlapSeconds": 0.426667,
-          "method": "metallic E/B overtone becomes a cold celesta pickup"
-        },
-        {
-          "from": "projective",
-          "to": "sphere",
-          "overlapSeconds": 0.48,
-          "method": "choir D/A plane acquires a bright horn F-sharp"
-        },
-        {
-          "from": "sphere",
-          "to": "tableau",
-          "overlapSeconds": 0.501333,
-          "method": "violin crest breaks into a celesta mosaic"
-        },
-        {
-          "from": "tableau",
-          "to": "finale",
-          "overlapSeconds": 0.401333,
-          "method": "string A/E relay becomes the final piano anacrusis"
-        }
-      ]
-    },
-    "buses": {
-      "piano": [
-        "piano",
-        "celesta"
-      ],
-      "strings": [
-        "violin-i",
-        "violin-ii",
-        "viola",
-        "cello"
-      ],
-      "bass": [
-        "double-bass",
-        "bass-clarinet"
-      ],
-      "choir": [
-        "choir-aahs",
-        "french-horn"
-      ],
-      "fx": [
-        "restrained-percussion"
-      ]
-    },
-    "timeWarp": {
-      "targetDurationSeconds": 189.733333,
-      "fps": 60,
-      "interpolation": "piecewise-linear continuous PCM mapping between semantic scene boundaries",
-      "anchors": [
-        {
-          "label": "timeline-start",
-          "sourceSeconds": 0,
-          "targetFrame": 0
-        },
-        {
-          "label": "intro-to-plane-card",
-          "sourceSeconds": 21.502667,
-          "targetFrame": 1386
-        },
-        {
-          "label": "plane-card-to-plane",
-          "sourceSeconds": 24.502667,
-          "targetFrame": 1602
-        },
-        {
-          "label": "plane-to-cylinder-card",
-          "sourceSeconds": 37.762667,
-          "targetFrame": 2352
-        },
-        {
-          "label": "cylinder-card-to-cylinder",
-          "sourceSeconds": 40.762667,
-          "targetFrame": 2568
-        },
-        {
-          "label": "cylinder-to-torus-card",
-          "sourceSeconds": 56.601334,
-          "targetFrame": 3405
-        },
-        {
-          "label": "torus-card-to-torus",
-          "sourceSeconds": 59.601334,
-          "targetFrame": 3621
-        },
-        {
-          "label": "torus-to-mobius-card",
-          "sourceSeconds": 75.781334,
-          "targetFrame": 4520
-        },
-        {
-          "label": "mobius-card-to-mobius",
-          "sourceSeconds": 78.781334,
-          "targetFrame": 4736
-        },
-        {
-          "label": "mobius-to-klein-card",
-          "sourceSeconds": 93.894667,
-          "targetFrame": 5552
-        },
-        {
-          "label": "klein-card-to-klein",
-          "sourceSeconds": 96.894667,
-          "targetFrame": 5768
-        },
-        {
-          "label": "klein-to-projective-card",
-          "sourceSeconds": 112.626667,
-          "targetFrame": 6690
-        },
-        {
-          "label": "projective-card-to-projective",
-          "sourceSeconds": 115.626667,
-          "targetFrame": 6906
-        },
-        {
-          "label": "projective-to-sphere-card",
-          "sourceSeconds": 131.38,
-          "targetFrame": 7829
-        },
-        {
-          "label": "sphere-card-to-sphere",
-          "sourceSeconds": 134.38,
-          "targetFrame": 8045
-        },
-        {
-          "label": "sphere-to-tableau",
-          "sourceSeconds": 156.301333,
-          "targetFrame": 9463
-        },
-        {
-          "label": "tableau-to-finale",
-          "sourceSeconds": 163.301333,
-          "targetFrame": 9943
-        },
-        {
-          "label": "finale-to-end-card",
-          "sourceSeconds": 179.352,
-          "targetFrame": 10994
-        },
-        {
-          "label": "timeline-end",
-          "sourceSeconds": 183.352,
-          "targetFrame": 11384
-        }
-      ]
+    "storySha256": "917d658ce92ad08f300601f8f5d07d3d26fcf3aecc78040ca2c8ba3020109036",
+    "timing": "video/chapter-teaser/narration-timing.json",
+    "timingSha256": "9fc8fb8677ae10eb70ee6fc0c6e692a99df4bf9066508de8bb5f4a4a14549ced",
+    "script": "video/chapter-teaser/narration-script.txt",
+    "suppliedScriptSha256": "19779afaeef46168a5698a8f2aa8fd8e41372ac7960163927440dc8b8c4e391b",
+    "timingPolicy": {
+      "frameInterval": "[startFrame, endFrame)",
+      "startFrame": "floor(startSeconds * fps)",
+      "endFrame": "ceil(endSeconds * fps)"
     }
   },
+  "voice": {
+    "speaker": "余荫铠",
+    "sourceFileName": "余荫铠旁白配音.mp3",
+    "sourceDurationSeconds": 214.9355,
+    "sourceSha256": "502e1b05792ed3d16eddc13d192f73c3c8622e0f10abe05559cdf9f16f8f54e2",
+    "processing": "One continuous take; decoded once to 48 kHz stereo PCM; no edits, reordering or time stretch; frame-aligned tail silence only",
+    "alignment": {
+      "sourceSampleFrames": 10316905,
+      "outputSampleFrames": 10317600,
+      "paddedSampleFrames": 695,
+      "trimmedSampleFrames": 0
+    }
+  },
+  "music": {
+    "plan": "video/chapter-teaser/music-plan.json",
+    "planSha256": "e58fed4250b97b61f078043585f08537d8ffecd498db8130ea85492b6a07bbf8",
+    "reference": {
+      "title": "《原神·提瓦特篇》主线章节预告PV-「足迹」伴奏背景音乐",
+      "role": "structure, pacing and transition reference only",
+      "sha256": "2856c83944d69c2779ab259e98f05a46c264221486777cd2cc158bd795d7c92f"
+    },
+    "sources": [
+      {
+        "id": "satie-gnossienne-6",
+        "filename": "01-satie-gnossienne-6.ogg",
+        "sha256": "a6e768ea96ab0f23fe68b375f4f43a62fa047563577c016d5584a1279fc391e9",
+        "work": "Gnossienne No. 6",
+        "composer": "Erik Satie",
+        "performer": "La Pianista",
+        "license": "CC BY-SA 3.0",
+        "sourcePage": "https://commons.wikimedia.org/wiki/File:Gnossienne_6_(Satie).ogg",
+        "downloadUrl": "https://upload.wikimedia.org/wikipedia/commons/2/2b/Gnossienne_6_%28Satie%29.ogg",
+        "artifact": {
+          "path": ".tmp/chapter-teaser/source/music/curated/01-satie-gnossienne-6.ogg",
+          "bytes": 2118776,
+          "sha256": "a6e768ea96ab0f23fe68b375f4f43a62fa047563577c016d5584a1279fc391e9"
+        },
+        "probe": {
+          "durationSeconds": 122.62712,
+          "codec": "vorbis",
+          "sampleRate": 44100,
+          "channels": 2,
+          "channelLayout": "stereo",
+          "bitRate": 160000
+        }
+      },
+      {
+        "id": "bach-contrapunctus-1",
+        "filename": "02-bach-contrapunctus-1.flac",
+        "sha256": "90ae30d4cafe8aed8fe2c428b95674147457d390d8a54ed5ebf59335751c6af3",
+        "work": "The Art of Fugue, BWV 1080 — Contrapunctus I",
+        "composer": "Johann Sebastian Bach",
+        "performer": "Kimiko Douglass-Ishizaka",
+        "license": "CC0",
+        "sourcePage": "https://commons.wikimedia.org/wiki/File:Kimiko_Ishizaka_-_J.S._Bach,_The_Art_of_Fugue,_BWV_1080_-_01_Contrapunctus_1.ogg",
+        "downloadUrl": "https://commons.wikimedia.org/wiki/Special:Redirect/file/Kimiko_Ishizaka_-_J.S._Bach%2C_The_Art_of_Fugue%2C_BWV_1080_-_01_Contrapunctus_1.flac",
+        "artifact": {
+          "path": ".tmp/chapter-teaser/source/music/curated/02-bach-contrapunctus-1.flac",
+          "bytes": 51974242,
+          "sha256": "90ae30d4cafe8aed8fe2c428b95674147457d390d8a54ed5ebf59335751c6af3"
+        },
+        "probe": {
+          "durationSeconds": 185.386667,
+          "codec": "flac",
+          "sampleRate": 96000,
+          "channels": 2,
+          "channelLayout": "stereo",
+          "bitRate": 0
+        }
+      },
+      {
+        "id": "bach-cello-suite-1-prelude",
+        "filename": "03-bach-cello-suite-1-prelude.ogg",
+        "sha256": "1e50d9e513c37725e8d8f378787a87330b040505ec679f9e919b01f2f4eae25f",
+        "work": "Cello Suite No. 1 in G major, BWV 1007 — Prelude",
+        "composer": "Johann Sebastian Bach",
+        "performer": "Chris (Fopseh)",
+        "license": "CC0",
+        "sourcePage": "https://commons.wikimedia.org/wiki/File:Bach_Cello_Suite_1_Prelude_(BWV_1007)_Played_by_Chris.ogg",
+        "downloadUrl": "https://upload.wikimedia.org/wikipedia/commons/a/a7/Bach_Cello_Suite_1_Prelude_%28BWV_1007%29_Played_by_Chris.ogg",
+        "artifact": {
+          "path": ".tmp/chapter-teaser/source/music/curated/03-bach-cello-suite-1-prelude.ogg",
+          "bytes": 8025732,
+          "sha256": "1e50d9e513c37725e8d8f378787a87330b040505ec679f9e919b01f2f4eae25f"
+        },
+        "probe": {
+          "durationSeconds": 154.712604,
+          "codec": "vorbis",
+          "sampleRate": 48000,
+          "channels": 2,
+          "channelLayout": "stereo",
+          "bitRate": 499821
+        }
+      },
+      {
+        "id": "ravel-string-quartet-2",
+        "filename": "04-ravel-string-quartet-mvt-2.ogg",
+        "sha256": "da1b606d16cfb8cf7ea244fac61307ed1ee8eaa20ec409652eb46f3556aba38f",
+        "work": "String Quartet in F major — II. Assez vif, très rythmé",
+        "composer": "Maurice Ravel",
+        "performer": "United States Army Band",
+        "license": "Public domain",
+        "sourcePage": "https://commons.wikimedia.org/wiki/File:Ravel_-_String_Quartet,_mvt_2_-_US_Army_Band.ogg",
+        "downloadUrl": "https://upload.wikimedia.org/wikipedia/commons/2/24/Ravel_-_String_Quartet%2C_mvt_2_-_US_Army_Band.ogg",
+        "artifact": {
+          "path": ".tmp/chapter-teaser/source/music/curated/04-ravel-string-quartet-mvt-2.ogg",
+          "bytes": 15696556,
+          "sha256": "da1b606d16cfb8cf7ea244fac61307ed1ee8eaa20ec409652eb46f3556aba38f"
+        },
+        "probe": {
+          "durationSeconds": 350.174535,
+          "codec": "vorbis",
+          "sampleRate": 44100,
+          "channels": 2,
+          "channelLayout": "stereo",
+          "bitRate": 499821
+        }
+      },
+      {
+        "id": "scriabin-prelude-op67-1",
+        "filename": "05-scriabin-prelude-op67-no1.ogg",
+        "sha256": "8151a52299770202a1b4d001837808529d4e6c49c78786feac1bda3d4519587b",
+        "work": "Prelude, Op. 67 No. 1",
+        "composer": "Alexander Scriabin",
+        "performer": "Jennifer Castellano",
+        "license": "Public domain / Musopen",
+        "sourcePage": "https://commons.wikimedia.org/wiki/File:Alexander_Scriabin_-_prelude_no._1,_op._67.ogg",
+        "downloadUrl": "https://upload.wikimedia.org/wikipedia/commons/e/e5/Alexander_Scriabin_-_prelude_no._1%2C_op._67.ogg",
+        "artifact": {
+          "path": ".tmp/chapter-teaser/source/music/curated/05-scriabin-prelude-op67-no1.ogg",
+          "bytes": 1962358,
+          "sha256": "8151a52299770202a1b4d001837808529d4e6c49c78786feac1bda3d4519587b"
+        },
+        "probe": {
+          "durationSeconds": 117.289796,
+          "codec": "vorbis",
+          "sampleRate": 44100,
+          "channels": 2,
+          "channelLayout": "stereo",
+          "bitRate": 192000
+        }
+      },
+      {
+        "id": "debussy-cathedrale",
+        "filename": "06-debussy-sunken-cathedral.ogg",
+        "sha256": "ee807789ba469ae989cec2c6d9c0f7e3f2f8de958e9c9291809c7454a454abe4",
+        "work": "La cathédrale engloutie",
+        "composer": "Claude Debussy",
+        "performer": "Ivan Ilić",
+        "license": "CC BY 3.0",
+        "sourcePage": "https://commons.wikimedia.org/wiki/File:La_Cath%C3%A9drale_engloutie_-_Claude_Debussy_-_performed_by_Ivan_Ilic.ogg",
+        "downloadUrl": "https://upload.wikimedia.org/wikipedia/commons/7/78/La_Cath%C3%A9drale_engloutie_-_Claude_Debussy_-_performed_by_Ivan_Ilic.ogg",
+        "artifact": {
+          "path": ".tmp/chapter-teaser/source/music/curated/06-debussy-sunken-cathedral.ogg",
+          "bytes": 5710500,
+          "sha256": "ee807789ba469ae989cec2c6d9c0f7e3f2f8de958e9c9291809c7454a454abe4"
+        },
+        "probe": {
+          "durationSeconds": 324.92,
+          "codec": "vorbis",
+          "sampleRate": 44100,
+          "channels": 2,
+          "channelLayout": "stereo",
+          "bitRate": 160000
+        }
+      },
+      {
+        "id": "bach-inversus-recta",
+        "filename": "07-bach-contrapunctus-inversus-recta.flac",
+        "sha256": "4efa088cdbc1ef9ded71f8114e117714b00dadccbf1b9e3627ee3d55a8804aa1",
+        "work": "The Art of Fugue — Contrapunctus Inversus A4, Forma Recta",
+        "composer": "Johann Sebastian Bach",
+        "performer": "Kimiko Douglass-Ishizaka",
+        "license": "CC0",
+        "sourcePage": "https://commons.wikimedia.org/wiki/File:Kimiko_Ishizaka_-_J.S._Bach,_The_Art_of_Fugue,_BWV_1080_-_13_Contrapunctus_Inversus_A4_-_Forma_Recta.ogg",
+        "downloadUrl": "https://commons.wikimedia.org/wiki/Special:Redirect/file/Kimiko_Ishizaka_-_J.S._Bach%2C_The_Art_of_Fugue%2C_BWV_1080_-_13_Contrapunctus_Inversus_A4_-_Forma_Recta.flac",
+        "artifact": {
+          "path": ".tmp/chapter-teaser/source/music/curated/07-bach-contrapunctus-inversus-recta.flac",
+          "bytes": 51135205,
+          "sha256": "4efa088cdbc1ef9ded71f8114e117714b00dadccbf1b9e3627ee3d55a8804aa1"
+        },
+        "probe": {
+          "durationSeconds": 182.6,
+          "codec": "flac",
+          "sampleRate": 96000,
+          "channels": 2,
+          "channelLayout": "stereo",
+          "bitRate": 0
+        }
+      },
+      {
+        "id": "bach-inversus-inversa",
+        "filename": "08-bach-contrapunctus-inversus-inversa.flac",
+        "sha256": "f089630392d9526dba78e6190184c3f2a8fe876137bdb5022e0f657936d2155e",
+        "work": "The Art of Fugue — Contrapunctus Inversus A4, Forma Inversa",
+        "composer": "Johann Sebastian Bach",
+        "performer": "Kimiko Douglass-Ishizaka",
+        "license": "CC0",
+        "sourcePage": "https://commons.wikimedia.org/wiki/File:Kimiko_Ishizaka_-_J.S._Bach,_The_Art_of_Fugue,_BWV_1080_-_12_Contrapunctus_Inversus_12_A4_-_Forma_Inversa.ogg",
+        "downloadUrl": "https://commons.wikimedia.org/wiki/Special:Redirect/file/Kimiko_Ishizaka_-_J.S._Bach%2C_The_Art_of_Fugue%2C_BWV_1080_-_12_Contrapunctus_Inversus_12_A4_-_Forma_Inversa.flac",
+        "artifact": {
+          "path": ".tmp/chapter-teaser/source/music/curated/08-bach-contrapunctus-inversus-inversa.flac",
+          "bytes": 53531209,
+          "sha256": "f089630392d9526dba78e6190184c3f2a8fe876137bdb5022e0f657936d2155e"
+        },
+        "probe": {
+          "durationSeconds": 191.746667,
+          "codec": "flac",
+          "sampleRate": 96000,
+          "channels": 2,
+          "channelLayout": "stereo",
+          "bitRate": 0
+        }
+      },
+      {
+        "id": "bach-air-bwv1068",
+        "filename": "09-bach-air-usaf.mp3",
+        "sha256": "139e7a43fc39a5502b58a49b0002f96d37875be3794d2f6938ef59c1f35af1cd",
+        "work": "Orchestral Suite No. 3 in D major, BWV 1068 — Air",
+        "composer": "Johann Sebastian Bach",
+        "performer": "United States Air Force Strings",
+        "license": "Public domain (U.S. federal government recording)",
+        "sourcePage": "https://commons.wikimedia.org/wiki/File:Air_-_Air_Force_Strings_-_United_States_Air_Force_Band.mp3",
+        "downloadUrl": "https://upload.wikimedia.org/wikipedia/commons/e/ec/Air_-_Air_Force_Strings_-_United_States_Air_Force_Band.mp3",
+        "artifact": {
+          "path": ".tmp/chapter-teaser/source/music/curated/09-bach-air-usaf.mp3",
+          "bytes": 7539726,
+          "sha256": "139e7a43fc39a5502b58a49b0002f96d37875be3794d2f6938ef59c1f35af1cd"
+        },
+        "probe": {
+          "durationSeconds": 183.305525,
+          "codec": "mp3",
+          "sampleRate": 44100,
+          "channels": 2,
+          "channelLayout": "stereo",
+          "bitRate": 320000
+        }
+      },
+      {
+        "id": "bach-contrapunctus-9",
+        "filename": "10-bach-contrapunctus-9.flac",
+        "sha256": "863f5f260f7652bf933c00c136924e1599f8fc8f809afba4c4a8b201ca49ea23",
+        "work": "The Art of Fugue, BWV 1080 — Contrapunctus IX a 4 alla Duodecima",
+        "composer": "Johann Sebastian Bach",
+        "performer": "Kimiko Douglass-Ishizaka",
+        "license": "CC0",
+        "sourcePage": "https://commons.wikimedia.org/wiki/File:Kimiko_Ishizaka_-_J.S._Bach,_The_Art_of_Fugue,_BWV_1080_-_09_Contrapunctus_9_a_4_Alla_Duodecima.ogg",
+        "downloadUrl": "https://commons.wikimedia.org/wiki/Special:Redirect/file/Kimiko_Ishizaka_-_J.S._Bach%2C_The_Art_of_Fugue%2C_BWV_1080_-_09_Contrapunctus_9_a_4_Alla_Duodecima.flac",
+        "artifact": {
+          "path": ".tmp/chapter-teaser/source/music/curated/10-bach-contrapunctus-9.flac",
+          "bytes": 44403065,
+          "sha256": "863f5f260f7652bf933c00c136924e1599f8fc8f809afba4c4a8b201ca49ea23"
+        },
+        "probe": {
+          "durationSeconds": 155.693333,
+          "codec": "flac",
+          "sampleRate": 96000,
+          "channels": 2,
+          "channelLayout": "stereo",
+          "bitRate": 0
+        }
+      }
+    ],
+    "clips": [
+      {
+        "id": "intro",
+        "sourceId": "satie-gnossienne-6",
+        "sourceInSeconds": 0,
+        "targetStartFrame": 0,
+        "targetEndFrame": 2198,
+        "fadeInFrames": 72,
+        "fadeOutFrames": 42
+      },
+      {
+        "id": "plane",
+        "sourceId": "bach-contrapunctus-1",
+        "sourceInSeconds": 0,
+        "targetStartFrame": 2114,
+        "targetEndFrame": 3302,
+        "fadeInFrames": 42,
+        "fadeOutFrames": 42
+      },
+      {
+        "id": "cylinder",
+        "sourceId": "bach-cello-suite-1-prelude",
+        "sourceInSeconds": 0,
+        "targetStartFrame": 3218,
+        "targetEndFrame": 4447,
+        "fadeInFrames": 42,
+        "fadeOutFrames": 42
+      },
+      {
+        "id": "torus",
+        "sourceId": "ravel-string-quartet-2",
+        "sourceInSeconds": 0,
+        "targetStartFrame": 4363,
+        "targetEndFrame": 5699,
+        "fadeInFrames": 42,
+        "fadeOutFrames": 42
+      },
+      {
+        "id": "mobius",
+        "sourceId": "scriabin-prelude-op67-1",
+        "sourceInSeconds": 0,
+        "targetStartFrame": 5615,
+        "targetEndFrame": 6951,
+        "fadeInFrames": 42,
+        "fadeOutFrames": 42
+      },
+      {
+        "id": "klein",
+        "sourceId": "debussy-cathedrale",
+        "sourceInSeconds": 0,
+        "targetStartFrame": 6867,
+        "targetEndFrame": 7911,
+        "fadeInFrames": 42,
+        "fadeOutFrames": 42
+      },
+      {
+        "id": "projective-recta",
+        "sourceId": "bach-inversus-recta",
+        "sourceInSeconds": 0,
+        "targetStartFrame": 7827,
+        "targetEndFrame": 8670,
+        "fadeInFrames": 42,
+        "fadeOutFrames": 120
+      },
+      {
+        "id": "projective-inversa",
+        "sourceId": "bach-inversus-inversa",
+        "sourceInSeconds": 0,
+        "targetStartFrame": 8400,
+        "targetEndFrame": 9261,
+        "fadeInFrames": 120,
+        "fadeOutFrames": 42
+      },
+      {
+        "id": "sphere",
+        "sourceId": "bach-air-bwv1068",
+        "sourceInSeconds": 0,
+        "targetStartFrame": 9177,
+        "targetEndFrame": 10755,
+        "fadeInFrames": 42,
+        "fadeOutFrames": 42
+      },
+      {
+        "id": "finale",
+        "sourceId": "bach-contrapunctus-9",
+        "sourceInSeconds": 118.593333,
+        "targetStartFrame": 10671,
+        "targetEndFrame": 12897,
+        "fadeInFrames": 42,
+        "fadeOutFrames": 6
+      }
+    ]
+  },
   "audio": {
+    "rendered": true,
     "format": {
       "codec": "pcm_s16le",
       "sampleRate": 48000,
       "channels": 2,
       "bitDepth": 16
     },
+    "originalVoice": ".tmp/chapter-teaser/audio/voice-original.mp3",
     "voiceStem": ".tmp/chapter-teaser/audio/voice.wav",
-    "scoreStems": {
-      "piano": ".tmp/chapter-teaser/audio/stems/piano.wav",
-      "strings": ".tmp/chapter-teaser/audio/stems/strings.wav",
-      "bass": ".tmp/chapter-teaser/audio/stems/bass.wav",
-      "choir": ".tmp/chapter-teaser/audio/stems/choir.wav",
-      "fx": ".tmp/chapter-teaser/audio/stems/fx.wav"
-    },
-    "scoreMix": ".tmp/chapter-teaser/audio/score.wav",
+    "musicStem": ".tmp/chapter-teaser/audio/music.wav",
+    "sfxStem": ".tmp/chapter-teaser/audio/sfx.wav",
+    "scoreMix": ".tmp/chapter-teaser/audio/music-and-sfx.wav",
     "masterMix": ".tmp/chapter-teaser/audio/master.wav",
     "mix": {
-      "voiceDucking": {
-        "attackFrames": 12,
-        "releaseFrames": 24,
-        "maximumReduction": 0.66
-      },
-      "peakCeiling": 0.96
+      "voiceGain": 1.06,
+      "musicGain": "1.0 in pauses; 0.52 under speech with 12-frame attack / 24-frame release",
+      "sfxGain": 0.82,
+      "limiter": "deterministic tanh soft limiter, 0.96 ceiling"
     },
     "metrics": {
-      "stems": {
-        "piano": {
-          "peak": 0.31,
-          "rms": 0.01671853017337773,
-          "normalizationGain": 1.8993930195273554,
-          "eventCount": 0,
-          "sourcePartCount": 2,
-          "sourceParts": [
-            "piano",
-            "celesta"
-          ],
-          "renderer": "MuseScore-Basic-MusicXML-piecewise-frame-warp"
-        },
-        "strings": {
-          "peak": 0.26,
-          "rms": 0.01577873731799846,
-          "normalizationGain": 1.4776514322797685,
-          "eventCount": 0,
-          "sourcePartCount": 4,
-          "sourceParts": [
-            "violin-i",
-            "violin-ii",
-            "viola",
-            "cello"
-          ],
-          "renderer": "MuseScore-Basic-MusicXML-piecewise-frame-warp"
-        },
-        "bass": {
-          "peak": 0.24,
-          "rms": 0.01698226866573039,
-          "normalizationGain": 2.3824178421065283,
-          "eventCount": 0,
-          "sourcePartCount": 2,
-          "sourceParts": [
-            "double-bass",
-            "bass-clarinet"
-          ],
-          "renderer": "MuseScore-Basic-MusicXML-piecewise-frame-warp"
-        },
-        "choir": {
-          "peak": 0.21,
-          "rms": 0.016284619148717774,
-          "normalizationGain": 1.6608810569779846,
-          "eventCount": 0,
-          "sourcePartCount": 2,
-          "sourceParts": [
-            "choir-aahs",
-            "french-horn"
-          ],
-          "renderer": "MuseScore-Basic-MusicXML-piecewise-frame-warp"
-        },
-        "fx": {
-          "peak": 0.25,
-          "rms": 0.013394412392340028,
-          "normalizationGain": 0.6583185762577521,
-          "eventCount": 68,
-          "sourcePartCount": 1,
-          "sourceParts": [
-            "restrained-percussion"
-          ],
-          "renderer": "MuseScore-Basic-MusicXML-piecewise-frame-warp"
-        }
+      "voiceAlignment": {
+        "sourceSampleFrames": 10316905,
+        "outputSampleFrames": 10317600,
+        "paddedSampleFrames": 695,
+        "trimmedSampleFrames": 0
       },
-      "orchestralSource": {
-        "partCount": 11,
-        "cacheHits": 0,
-        "renderer": "MuseScore Basic",
-        "sampleRate": 48000,
-        "channels": 2,
-        "sourceDurationSeconds": 183.352
+      "musicAlignment": {
+        "sourceSampleFrames": 10314400,
+        "outputSampleFrames": 10317600,
+        "paddedSampleFrames": 3200,
+        "trimmedSampleFrames": 0
       },
-      "voice": {
-        "peak": 0.41012194752693176,
-        "rms": 0.04505155495602807,
-        "cueCount": 45
+      "sfx": {
+        "peak": 0.25,
+        "rms": 0.012256225429536622,
+        "normalizationGain": 0.5871471274396984,
+        "eventCount": 62,
+        "renderer": "deterministic-procedural-layer",
+        "events": [
+          {
+            "id": "intro-hidden-seam",
+            "startFrame": 770,
+            "durationFrames": 210,
+            "velocity": 0.34,
+            "pan": -0.16,
+            "kind": "seam",
+            "midi": 50,
+            "role": "boundary-connection"
+          },
+          {
+            "id": "institution-logo-resonance",
+            "startFrame": 1225,
+            "durationFrames": 180,
+            "velocity": 0.22,
+            "pan": 0,
+            "kind": "seam",
+            "midi": 50,
+            "role": "institution-logo"
+          },
+          {
+            "id": "seven-worlds-awaken",
+            "startFrame": 1466,
+            "durationFrames": 220,
+            "velocity": 0.32,
+            "pan": 0.12,
+            "kind": "seam",
+            "midi": 50,
+            "role": "awakening"
+          },
+          {
+            "id": "plane-card-impact",
+            "startFrame": 2156,
+            "durationFrames": 72,
+            "velocity": 0.48,
+            "pan": 0,
+            "kind": "impact",
+            "midi": 50,
+            "role": "chapter-card"
+          },
+          {
+            "id": "plane-title-transform",
+            "startFrame": 2321,
+            "durationFrames": 128,
+            "velocity": 0.26,
+            "pan": -0.16,
+            "kind": "seam",
+            "midi": 50,
+            "role": "title-transform"
+          },
+          {
+            "id": "plane-stone-1",
+            "startFrame": 2582,
+            "durationFrames": 30,
+            "velocity": 0.3,
+            "pan": -0.15,
+            "kind": "stone",
+            "midi": 50,
+            "role": "five-in-a-row",
+            "chapterId": "plane"
+          },
+          {
+            "id": "plane-stone-2",
+            "startFrame": 2627,
+            "durationFrames": 30,
+            "velocity": 0.328,
+            "pan": -0.075,
+            "kind": "stone",
+            "midi": 50,
+            "role": "five-in-a-row",
+            "chapterId": "plane"
+          },
+          {
+            "id": "plane-stone-3",
+            "startFrame": 2673,
+            "durationFrames": 30,
+            "velocity": 0.356,
+            "pan": 0,
+            "kind": "stone",
+            "midi": 50,
+            "role": "five-in-a-row",
+            "chapterId": "plane"
+          },
+          {
+            "id": "plane-stone-4",
+            "startFrame": 2718,
+            "durationFrames": 30,
+            "velocity": 0.384,
+            "pan": 0.075,
+            "kind": "stone",
+            "midi": 50,
+            "role": "five-in-a-row",
+            "chapterId": "plane"
+          },
+          {
+            "id": "plane-stone-5",
+            "startFrame": 2763,
+            "durationFrames": 30,
+            "velocity": 0.412,
+            "pan": 0.15,
+            "kind": "stone",
+            "midi": 50,
+            "role": "five-in-a-row",
+            "chapterId": "plane"
+          },
+          {
+            "id": "cylinder-card-impact",
+            "startFrame": 3260,
+            "durationFrames": 72,
+            "velocity": 0.48,
+            "pan": 0,
+            "kind": "impact",
+            "midi": 50,
+            "role": "chapter-card"
+          },
+          {
+            "id": "cylinder-title-transform",
+            "startFrame": 3428,
+            "durationFrames": 128,
+            "velocity": 0.26,
+            "pan": 0.16,
+            "kind": "seam",
+            "midi": 50,
+            "role": "title-transform"
+          },
+          {
+            "id": "cylinder-stone-1",
+            "startFrame": 3697,
+            "durationFrames": 30,
+            "velocity": 0.3,
+            "pan": -0.15,
+            "kind": "stone",
+            "midi": 50,
+            "role": "five-in-a-row",
+            "chapterId": "cylinder"
+          },
+          {
+            "id": "cylinder-stone-2",
+            "startFrame": 3744,
+            "durationFrames": 30,
+            "velocity": 0.328,
+            "pan": -0.075,
+            "kind": "stone",
+            "midi": 50,
+            "role": "five-in-a-row",
+            "chapterId": "cylinder"
+          },
+          {
+            "id": "cylinder-stone-3",
+            "startFrame": 3791,
+            "durationFrames": 30,
+            "velocity": 0.356,
+            "pan": 0,
+            "kind": "stone",
+            "midi": 50,
+            "role": "five-in-a-row",
+            "chapterId": "cylinder"
+          },
+          {
+            "id": "cylinder-stone-4",
+            "startFrame": 3838,
+            "durationFrames": 30,
+            "velocity": 0.384,
+            "pan": 0.075,
+            "kind": "stone",
+            "midi": 50,
+            "role": "five-in-a-row",
+            "chapterId": "cylinder"
+          },
+          {
+            "id": "cylinder-stone-5",
+            "startFrame": 3886,
+            "durationFrames": 30,
+            "velocity": 0.412,
+            "pan": 0.15,
+            "kind": "stone",
+            "midi": 50,
+            "role": "five-in-a-row",
+            "chapterId": "cylinder"
+          },
+          {
+            "id": "cylinder-morph",
+            "startFrame": 3980,
+            "durationFrames": 299,
+            "velocity": 0.24,
+            "pan": 0.2,
+            "kind": "seam",
+            "midi": 50,
+            "role": "2d-to-3d",
+            "chapterId": "cylinder"
+          },
+          {
+            "id": "torus-card-impact",
+            "startFrame": 4405,
+            "durationFrames": 72,
+            "velocity": 0.48,
+            "pan": 0,
+            "kind": "impact",
+            "midi": 50,
+            "role": "chapter-card"
+          },
+          {
+            "id": "torus-title-transform",
+            "startFrame": 4565,
+            "durationFrames": 128,
+            "velocity": 0.26,
+            "pan": -0.16,
+            "kind": "seam",
+            "midi": 50,
+            "role": "title-transform"
+          },
+          {
+            "id": "torus-stone-1",
+            "startFrame": 4838,
+            "durationFrames": 30,
+            "velocity": 0.3,
+            "pan": -0.15,
+            "kind": "stone",
+            "midi": 50,
+            "role": "five-in-a-row",
+            "chapterId": "torus"
+          },
+          {
+            "id": "torus-stone-2",
+            "startFrame": 4893,
+            "durationFrames": 30,
+            "velocity": 0.328,
+            "pan": -0.075,
+            "kind": "stone",
+            "midi": 50,
+            "role": "five-in-a-row",
+            "chapterId": "torus"
+          },
+          {
+            "id": "torus-stone-3",
+            "startFrame": 4947,
+            "durationFrames": 30,
+            "velocity": 0.356,
+            "pan": 0,
+            "kind": "stone",
+            "midi": 50,
+            "role": "five-in-a-row",
+            "chapterId": "torus"
+          },
+          {
+            "id": "torus-stone-4",
+            "startFrame": 5002,
+            "durationFrames": 30,
+            "velocity": 0.384,
+            "pan": 0.075,
+            "kind": "stone",
+            "midi": 50,
+            "role": "five-in-a-row",
+            "chapterId": "torus"
+          },
+          {
+            "id": "torus-stone-5",
+            "startFrame": 5056,
+            "durationFrames": 30,
+            "velocity": 0.412,
+            "pan": 0.15,
+            "kind": "stone",
+            "midi": 50,
+            "role": "five-in-a-row",
+            "chapterId": "torus"
+          },
+          {
+            "id": "torus-morph",
+            "startFrame": 5166,
+            "durationFrames": 346,
+            "velocity": 0.24,
+            "pan": -0.2,
+            "kind": "seam",
+            "midi": 50,
+            "role": "2d-to-3d",
+            "chapterId": "torus"
+          },
+          {
+            "id": "mobius-card-impact",
+            "startFrame": 5657,
+            "durationFrames": 72,
+            "velocity": 0.48,
+            "pan": 0,
+            "kind": "impact",
+            "midi": 50,
+            "role": "chapter-card"
+          },
+          {
+            "id": "mobius-title-transform",
+            "startFrame": 5816,
+            "durationFrames": 128,
+            "velocity": 0.26,
+            "pan": 0.16,
+            "kind": "seam",
+            "midi": 50,
+            "role": "title-transform"
+          },
+          {
+            "id": "mobius-stone-1",
+            "startFrame": 6088,
+            "durationFrames": 30,
+            "velocity": 0.3,
+            "pan": -0.15,
+            "kind": "stone",
+            "midi": 50,
+            "role": "five-in-a-row",
+            "chapterId": "mobius"
+          },
+          {
+            "id": "mobius-stone-2",
+            "startFrame": 6143,
+            "durationFrames": 30,
+            "velocity": 0.328,
+            "pan": -0.075,
+            "kind": "stone",
+            "midi": 50,
+            "role": "five-in-a-row",
+            "chapterId": "mobius"
+          },
+          {
+            "id": "mobius-stone-3",
+            "startFrame": 6198,
+            "durationFrames": 30,
+            "velocity": 0.356,
+            "pan": 0,
+            "kind": "stone",
+            "midi": 50,
+            "role": "five-in-a-row",
+            "chapterId": "mobius"
+          },
+          {
+            "id": "mobius-stone-4",
+            "startFrame": 6252,
+            "durationFrames": 30,
+            "velocity": 0.384,
+            "pan": 0.075,
+            "kind": "stone",
+            "midi": 50,
+            "role": "five-in-a-row",
+            "chapterId": "mobius"
+          },
+          {
+            "id": "mobius-stone-5",
+            "startFrame": 6307,
+            "durationFrames": 30,
+            "velocity": 0.412,
+            "pan": 0.15,
+            "kind": "stone",
+            "midi": 50,
+            "role": "five-in-a-row",
+            "chapterId": "mobius"
+          },
+          {
+            "id": "mobius-morph",
+            "startFrame": 6417,
+            "durationFrames": 347,
+            "velocity": 0.24,
+            "pan": 0.2,
+            "kind": "seam",
+            "midi": 50,
+            "role": "2d-to-3d",
+            "chapterId": "mobius"
+          },
+          {
+            "id": "klein-card-impact",
+            "startFrame": 6909,
+            "durationFrames": 72,
+            "velocity": 0.48,
+            "pan": 0,
+            "kind": "impact",
+            "midi": 50,
+            "role": "chapter-card"
+          },
+          {
+            "id": "klein-title-transform",
+            "startFrame": 7060,
+            "durationFrames": 128,
+            "velocity": 0.26,
+            "pan": -0.16,
+            "kind": "seam",
+            "midi": 50,
+            "role": "title-transform"
+          },
+          {
+            "id": "klein-stone-1",
+            "startFrame": 7298,
+            "durationFrames": 30,
+            "velocity": 0.3,
+            "pan": -0.15,
+            "kind": "stone",
+            "midi": 50,
+            "role": "five-in-a-row",
+            "chapterId": "klein"
+          },
+          {
+            "id": "klein-stone-2",
+            "startFrame": 7336,
+            "durationFrames": 30,
+            "velocity": 0.328,
+            "pan": -0.075,
+            "kind": "stone",
+            "midi": 50,
+            "role": "five-in-a-row",
+            "chapterId": "klein"
+          },
+          {
+            "id": "klein-stone-3",
+            "startFrame": 7374,
+            "durationFrames": 30,
+            "velocity": 0.356,
+            "pan": 0,
+            "kind": "stone",
+            "midi": 50,
+            "role": "five-in-a-row",
+            "chapterId": "klein"
+          },
+          {
+            "id": "klein-stone-4",
+            "startFrame": 7412,
+            "durationFrames": 30,
+            "velocity": 0.384,
+            "pan": 0.075,
+            "kind": "stone",
+            "midi": 50,
+            "role": "five-in-a-row",
+            "chapterId": "klein"
+          },
+          {
+            "id": "klein-stone-5",
+            "startFrame": 7450,
+            "durationFrames": 30,
+            "velocity": 0.412,
+            "pan": 0.15,
+            "kind": "stone",
+            "midi": 50,
+            "role": "five-in-a-row",
+            "chapterId": "klein"
+          },
+          {
+            "id": "klein-morph",
+            "startFrame": 7526,
+            "durationFrames": 241,
+            "velocity": 0.24,
+            "pan": -0.2,
+            "kind": "seam",
+            "midi": 50,
+            "role": "2d-to-3d",
+            "chapterId": "klein"
+          },
+          {
+            "id": "projective-card-impact",
+            "startFrame": 7869,
+            "durationFrames": 72,
+            "velocity": 0.48,
+            "pan": 0,
+            "kind": "impact",
+            "midi": 50,
+            "role": "chapter-card"
+          },
+          {
+            "id": "projective-title-transform",
+            "startFrame": 8024,
+            "durationFrames": 128,
+            "velocity": 0.26,
+            "pan": 0.16,
+            "kind": "seam",
+            "midi": 50,
+            "role": "title-transform"
+          },
+          {
+            "id": "projective-stone-1",
+            "startFrame": 8303,
+            "durationFrames": 30,
+            "velocity": 0.3,
+            "pan": -0.15,
+            "kind": "stone",
+            "midi": 50,
+            "role": "five-in-a-row",
+            "chapterId": "projective"
+          },
+          {
+            "id": "projective-stone-2",
+            "startFrame": 8364,
+            "durationFrames": 30,
+            "velocity": 0.328,
+            "pan": -0.075,
+            "kind": "stone",
+            "midi": 50,
+            "role": "five-in-a-row",
+            "chapterId": "projective"
+          },
+          {
+            "id": "projective-stone-3",
+            "startFrame": 8425,
+            "durationFrames": 30,
+            "velocity": 0.356,
+            "pan": 0,
+            "kind": "stone",
+            "midi": 50,
+            "role": "five-in-a-row",
+            "chapterId": "projective"
+          },
+          {
+            "id": "projective-stone-4",
+            "startFrame": 8486,
+            "durationFrames": 30,
+            "velocity": 0.384,
+            "pan": 0.075,
+            "kind": "stone",
+            "midi": 50,
+            "role": "five-in-a-row",
+            "chapterId": "projective"
+          },
+          {
+            "id": "projective-stone-5",
+            "startFrame": 8547,
+            "durationFrames": 30,
+            "velocity": 0.412,
+            "pan": 0.15,
+            "kind": "stone",
+            "midi": 50,
+            "role": "five-in-a-row",
+            "chapterId": "projective"
+          },
+          {
+            "id": "projective-morph",
+            "startFrame": 8669,
+            "durationFrames": 387,
+            "velocity": 0.24,
+            "pan": 0.2,
+            "kind": "seam",
+            "midi": 50,
+            "role": "2d-to-3d",
+            "chapterId": "projective"
+          },
+          {
+            "id": "sphere-card-impact",
+            "startFrame": 9219,
+            "durationFrames": 72,
+            "velocity": 0.48,
+            "pan": 0,
+            "kind": "impact",
+            "midi": 50,
+            "role": "chapter-card"
+          },
+          {
+            "id": "sphere-title-transform",
+            "startFrame": 9378,
+            "durationFrames": 128,
+            "velocity": 0.26,
+            "pan": -0.16,
+            "kind": "seam",
+            "midi": 50,
+            "role": "title-transform"
+          },
+          {
+            "id": "sphere-stone-1",
+            "startFrame": 9674,
+            "durationFrames": 30,
+            "velocity": 0.3,
+            "pan": -0.15,
+            "kind": "stone",
+            "midi": 50,
+            "role": "five-in-a-row",
+            "chapterId": "sphere"
+          },
+          {
+            "id": "sphere-stone-2",
+            "startFrame": 9744,
+            "durationFrames": 30,
+            "velocity": 0.328,
+            "pan": -0.075,
+            "kind": "stone",
+            "midi": 50,
+            "role": "five-in-a-row",
+            "chapterId": "sphere"
+          },
+          {
+            "id": "sphere-stone-3",
+            "startFrame": 9813,
+            "durationFrames": 30,
+            "velocity": 0.356,
+            "pan": 0,
+            "kind": "stone",
+            "midi": 50,
+            "role": "five-in-a-row",
+            "chapterId": "sphere"
+          },
+          {
+            "id": "sphere-stone-4",
+            "startFrame": 9882,
+            "durationFrames": 30,
+            "velocity": 0.384,
+            "pan": 0.075,
+            "kind": "stone",
+            "midi": 50,
+            "role": "five-in-a-row",
+            "chapterId": "sphere"
+          },
+          {
+            "id": "sphere-stone-5",
+            "startFrame": 9951,
+            "durationFrames": 30,
+            "velocity": 0.412,
+            "pan": 0.15,
+            "kind": "stone",
+            "midi": 50,
+            "role": "five-in-a-row",
+            "chapterId": "sphere"
+          },
+          {
+            "id": "sphere-morph",
+            "startFrame": 10090,
+            "durationFrames": 439,
+            "velocity": 0.24,
+            "pan": -0.2,
+            "kind": "seam",
+            "midi": 50,
+            "role": "2d-to-3d",
+            "chapterId": "sphere"
+          },
+          {
+            "id": "tableau-convergence",
+            "startFrame": 10713,
+            "durationFrames": 167,
+            "velocity": 0.32,
+            "pan": 0,
+            "kind": "seam",
+            "midi": 50,
+            "role": "seven-worlds"
+          },
+          {
+            "id": "finale-breath",
+            "startFrame": 11390,
+            "durationFrames": 180,
+            "velocity": 0.27,
+            "pan": 0,
+            "kind": "seam",
+            "midi": 50,
+            "role": "final-challenge"
+          },
+          {
+            "id": "finale-decisive-stone",
+            "startFrame": 11802,
+            "durationFrames": 44,
+            "velocity": 0.64,
+            "pan": 0,
+            "kind": "stone",
+            "midi": 50,
+            "role": "decisive-move"
+          },
+          {
+            "id": "end-card-arrival",
+            "startFrame": 12474,
+            "durationFrames": 120,
+            "velocity": 0.29,
+            "pan": 0,
+            "kind": "impact",
+            "midi": 50,
+            "role": "end-card"
+          }
+        ]
       },
       "scoreMix": {
-        "peak": 0.3729273517757294,
-        "rms": 0.035391849671238304
+        "peak": 0.3822155974006859,
+        "rms": 0.02741095751087099
       },
       "masterMix": {
-        "peak": 0.558981889868727,
-        "rms": 0.06429508311106959
+        "peak": 0.7603320913583992,
+        "rms": 0.06895447738335685
+      },
+      "probes": {
+        "musicSources": {
+          "satie-gnossienne-6": {
+            "durationSeconds": 122.62712,
+            "codec": "vorbis",
+            "sampleRate": 44100,
+            "channels": 2,
+            "channelLayout": "stereo",
+            "bitRate": 160000
+          },
+          "bach-contrapunctus-1": {
+            "durationSeconds": 185.386667,
+            "codec": "flac",
+            "sampleRate": 96000,
+            "channels": 2,
+            "channelLayout": "stereo",
+            "bitRate": 0
+          },
+          "bach-cello-suite-1-prelude": {
+            "durationSeconds": 154.712604,
+            "codec": "vorbis",
+            "sampleRate": 48000,
+            "channels": 2,
+            "channelLayout": "stereo",
+            "bitRate": 499821
+          },
+          "ravel-string-quartet-2": {
+            "durationSeconds": 350.174535,
+            "codec": "vorbis",
+            "sampleRate": 44100,
+            "channels": 2,
+            "channelLayout": "stereo",
+            "bitRate": 499821
+          },
+          "scriabin-prelude-op67-1": {
+            "durationSeconds": 117.289796,
+            "codec": "vorbis",
+            "sampleRate": 44100,
+            "channels": 2,
+            "channelLayout": "stereo",
+            "bitRate": 192000
+          },
+          "debussy-cathedrale": {
+            "durationSeconds": 324.92,
+            "codec": "vorbis",
+            "sampleRate": 44100,
+            "channels": 2,
+            "channelLayout": "stereo",
+            "bitRate": 160000
+          },
+          "bach-inversus-recta": {
+            "durationSeconds": 182.6,
+            "codec": "flac",
+            "sampleRate": 96000,
+            "channels": 2,
+            "channelLayout": "stereo",
+            "bitRate": 0
+          },
+          "bach-inversus-inversa": {
+            "durationSeconds": 191.746667,
+            "codec": "flac",
+            "sampleRate": 96000,
+            "channels": 2,
+            "channelLayout": "stereo",
+            "bitRate": 0
+          },
+          "bach-air-bwv1068": {
+            "durationSeconds": 183.305525,
+            "codec": "mp3",
+            "sampleRate": 44100,
+            "channels": 2,
+            "channelLayout": "stereo",
+            "bitRate": 320000
+          },
+          "bach-contrapunctus-9": {
+            "durationSeconds": 155.693333,
+            "codec": "flac",
+            "sampleRate": 96000,
+            "channels": 2,
+            "channelLayout": "stereo",
+            "bitRate": 0
+          }
+        },
+        "originalVoice": {
+          "durationSeconds": 214.9355,
+          "codec": "mp3",
+          "sampleRate": 44100,
+          "channels": 2,
+          "channelLayout": "stereo",
+          "bitRate": 192000
+        },
+        "voiceStem": {
+          "durationSeconds": 214.95,
+          "codec": "pcm_s16le",
+          "sampleRate": 48000,
+          "channels": 2,
+          "bitRate": 1536000
+        },
+        "musicStem": {
+          "durationSeconds": 214.95,
+          "codec": "pcm_s16le",
+          "sampleRate": 48000,
+          "channels": 2,
+          "bitRate": 1536000
+        },
+        "sfxStem": {
+          "durationSeconds": 214.95,
+          "codec": "pcm_s16le",
+          "sampleRate": 48000,
+          "channels": 2,
+          "bitRate": 1536000
+        },
+        "scoreMix": {
+          "durationSeconds": 214.95,
+          "codec": "pcm_s16le",
+          "sampleRate": 48000,
+          "channels": 2,
+          "bitRate": 1536000
+        },
+        "masterMix": {
+          "durationSeconds": 214.95,
+          "codec": "pcm_s16le",
+          "sampleRate": 48000,
+          "channels": 2,
+          "bitRate": 1536000
+        }
       }
     },
     "artifacts": {
-      "pianoStem": {
-        "path": ".tmp/chapter-teaser/audio/stems/piano.wav",
-        "bytes": 36428844,
-        "sha256": "5801bc488b4423a1e03c01f97c73d292729dff9e40a7bd9b80aeec09ae5ab2c5",
-        "scorePlanSha256": "9938102fd06fa1c7cf26e85d4461c2488c79a5cf97260e2b7395f0dc0ab8a66c"
-      },
-      "stringsStem": {
-        "path": ".tmp/chapter-teaser/audio/stems/strings.wav",
-        "bytes": 36428844,
-        "sha256": "ac75578757f30aac86bc8cfa7942f48ed76e25e094cedabefafdb5d9eb450761",
-        "scorePlanSha256": "9938102fd06fa1c7cf26e85d4461c2488c79a5cf97260e2b7395f0dc0ab8a66c"
-      },
-      "bassStem": {
-        "path": ".tmp/chapter-teaser/audio/stems/bass.wav",
-        "bytes": 36428844,
-        "sha256": "a6e0d08873eca5f366c1a6bd3f56fb9096fa40c29c17bb97efd779c5646b3b2a",
-        "scorePlanSha256": "9938102fd06fa1c7cf26e85d4461c2488c79a5cf97260e2b7395f0dc0ab8a66c"
-      },
-      "choirStem": {
-        "path": ".tmp/chapter-teaser/audio/stems/choir.wav",
-        "bytes": 36428844,
-        "sha256": "467405a2e772a5a43f013602fb76c0b5493129f10611b6b7db6aa9db598a0831",
-        "scorePlanSha256": "9938102fd06fa1c7cf26e85d4461c2488c79a5cf97260e2b7395f0dc0ab8a66c"
-      },
-      "fxStem": {
-        "path": ".tmp/chapter-teaser/audio/stems/fx.wav",
-        "bytes": 36428844,
-        "sha256": "e764aee5e9cc7f22971e954d8fa31d43a68caa6d35ac5dfed6b434b4d58fe72f",
-        "scorePlanSha256": "9938102fd06fa1c7cf26e85d4461c2488c79a5cf97260e2b7395f0dc0ab8a66c"
+      "originalVoice": {
+        "path": ".tmp/chapter-teaser/audio/voice-original.mp3",
+        "bytes": 5158502,
+        "sha256": "502e1b05792ed3d16eddc13d192f73c3c8622e0f10abe05559cdf9f16f8f54e2"
       },
       "voiceStem": {
         "path": ".tmp/chapter-teaser/audio/voice.wav",
-        "bytes": 36428844,
-        "sha256": "0db38103327a3f8245f419da4fc2f3bcb0146f9b8404db2eef4aee17fb7ed0d2"
+        "bytes": 41270444,
+        "sha256": "c329c3cd59fb3c857cbcbbe7b385e5a2b5aade6d42b2f80b8fc63f123073a44e"
+      },
+      "musicStem": {
+        "path": ".tmp/chapter-teaser/audio/music.wav",
+        "bytes": 41270444,
+        "sha256": "277e015a8aeb236a556733dbc2d560663604df941c96f99825c1dc1da13976b4"
+      },
+      "sfxStem": {
+        "path": ".tmp/chapter-teaser/audio/sfx.wav",
+        "bytes": 41270444,
+        "sha256": "7e5a1361ef423d6632cb747b699d70b00edf40fa870dfcea8240bff8e13dcda9"
       },
       "scoreMix": {
-        "path": ".tmp/chapter-teaser/audio/score.wav",
-        "bytes": 36428844,
-        "sha256": "91562c1ef2bf0f937d3284c55213240f0c5fd50b1e85c0ec8937480c1a6ca9bd",
-        "scorePlanSha256": "9938102fd06fa1c7cf26e85d4461c2488c79a5cf97260e2b7395f0dc0ab8a66c"
+        "path": ".tmp/chapter-teaser/audio/music-and-sfx.wav",
+        "bytes": 41270444,
+        "sha256": "160586c8f8d0f1fa5179c3fe2916b9fb2c54530ff52e52de45807e48d5e7768d"
       },
       "masterMix": {
         "path": ".tmp/chapter-teaser/audio/master.wav",
-        "bytes": 36428844,
-        "sha256": "ade3cf5ac066cdb88fec3dbc4e7c70a613f781b58b38f1bf317e1eb3e4dbae6e",
-        "scorePlanSha256": "9938102fd06fa1c7cf26e85d4461c2488c79a5cf97260e2b7395f0dc0ab8a66c"
+        "bytes": 41270444,
+        "sha256": "ca53e2553cb37af7222f8a61c9b4483d1cc405d4c4285e1bae30860d77c07177"
       }
     }
   },
   "segments": [
     {
-      "id": "intro",
+      "id": "intro-edge",
       "kind": "intro",
-      "title": "七界足迹",
       "startFrame": 0,
-      "endFrame": 1386,
-      "durationFrames": 1386,
+      "endFrame": 1225,
+      "durationFrames": 1225,
       "narrationCueIds": [
-        "intro-01",
-        "intro-02",
-        "intro-03",
-        "intro-04",
-        "intro-05",
-        "intro-06"
+        "caption-01",
+        "caption-02",
+        "caption-03",
+        "caption-04"
       ]
     },
     {
-      "id": "plane-card",
+      "id": "institution-logo",
+      "kind": "institution-logo",
+      "startFrame": 1225,
+      "endFrame": 1466,
+      "durationFrames": 241,
+      "narrationCueIds": []
+    },
+    {
+      "id": "intro-awakening",
+      "kind": "intro",
+      "startFrame": 1466,
+      "endFrame": 2156,
+      "durationFrames": 690,
+      "narrationCueIds": [
+        "caption-05",
+        "caption-06",
+        "caption-07"
+      ]
+    },
+    {
+      "id": "chapter-card-prologue",
       "kind": "chapter-card",
       "chapterId": "plane",
+      "actLabel": "ACT. PROLOGUE",
+      "chapterTitle": "方庭",
+      "startFrame": 2156,
+      "endFrame": 2507,
+      "durationFrames": 351,
+      "narrationCueIds": [],
       "act": "ACT. PROLOGUE",
       "title": "方庭",
       "manifold": "平面",
-      "transformFrame": 1494,
-      "startFrame": 1386,
-      "endFrame": 1602,
-      "durationFrames": 216,
-      "narrationCueIds": []
+      "transformFrame": 2339
     },
     {
-      "id": "plane",
+      "id": "chapter-prologue",
       "kind": "chapter",
-      "title": "方庭",
       "chapterId": "plane",
-      "manifold": "平面",
-      "startFrame": 1602,
-      "endFrame": 2352,
-      "durationFrames": 750,
+      "startFrame": 2507,
+      "endFrame": 3260,
+      "durationFrames": 753,
       "narrationCueIds": [
-        "plane-01",
-        "plane-02",
-        "plane-03"
-      ]
+        "caption-08",
+        "caption-09",
+        "caption-10"
+      ],
+      "act": "ACT. PROLOGUE",
+      "title": "方庭",
+      "manifold": "平面"
     },
     {
-      "id": "cylinder-card",
+      "id": "chapter-card-i",
       "kind": "chapter-card",
       "chapterId": "cylinder",
+      "actLabel": "ACT. I",
+      "chapterTitle": "回廊",
+      "startFrame": 3260,
+      "endFrame": 3618,
+      "durationFrames": 358,
+      "narrationCueIds": [],
       "act": "ACT. I",
       "title": "回廊",
       "manifold": "圆柱面",
-      "transformFrame": 2460,
-      "startFrame": 2352,
-      "endFrame": 2568,
-      "durationFrames": 216,
-      "narrationCueIds": []
+      "transformFrame": 3446
     },
     {
-      "id": "cylinder",
+      "id": "chapter-i",
       "kind": "chapter",
-      "title": "回廊",
       "chapterId": "cylinder",
-      "manifold": "圆柱面",
-      "startFrame": 2568,
-      "endFrame": 3405,
-      "durationFrames": 837,
+      "startFrame": 3618,
+      "endFrame": 4405,
+      "durationFrames": 787,
       "narrationCueIds": [
-        "cylinder-01",
-        "cylinder-02",
-        "cylinder-03",
-        "cylinder-04"
-      ]
+        "caption-11",
+        "caption-12",
+        "caption-13"
+      ],
+      "act": "ACT. I",
+      "title": "回廊",
+      "manifold": "圆柱面"
     },
     {
-      "id": "torus-card",
+      "id": "chapter-card-ii",
       "kind": "chapter-card",
       "chapterId": "torus",
+      "actLabel": "ACT. II",
+      "chapterTitle": "环游",
+      "startFrame": 4405,
+      "endFrame": 4747,
+      "durationFrames": 342,
+      "narrationCueIds": [],
       "act": "ACT. II",
       "title": "环游",
       "manifold": "环面",
-      "transformFrame": 3513,
-      "startFrame": 3405,
-      "endFrame": 3621,
-      "durationFrames": 216,
-      "narrationCueIds": []
+      "transformFrame": 4583
     },
     {
-      "id": "torus",
+      "id": "chapter-ii",
       "kind": "chapter",
-      "title": "环游",
       "chapterId": "torus",
-      "manifold": "环面",
-      "startFrame": 3621,
-      "endFrame": 4520,
-      "durationFrames": 899,
+      "startFrame": 4747,
+      "endFrame": 5657,
+      "durationFrames": 910,
       "narrationCueIds": [
-        "torus-01",
-        "torus-02",
-        "torus-03",
-        "torus-04",
-        "torus-05"
-      ]
+        "caption-14",
+        "caption-15",
+        "caption-16",
+        "caption-17"
+      ],
+      "act": "ACT. II",
+      "title": "环游",
+      "manifold": "环面"
     },
     {
-      "id": "mobius-card",
+      "id": "chapter-card-iii",
       "kind": "chapter-card",
       "chapterId": "mobius",
+      "actLabel": "ACT. III",
+      "chapterTitle": "扭带",
+      "startFrame": 5657,
+      "endFrame": 5997,
+      "durationFrames": 340,
+      "narrationCueIds": [],
       "act": "ACT. III",
       "title": "扭带",
       "manifold": "莫比乌斯环",
-      "transformFrame": 4628,
-      "startFrame": 4520,
-      "endFrame": 4736,
-      "durationFrames": 216,
-      "narrationCueIds": []
+      "transformFrame": 5834
     },
     {
-      "id": "mobius",
+      "id": "chapter-iii",
       "kind": "chapter",
-      "title": "扭带",
       "chapterId": "mobius",
-      "manifold": "莫比乌斯环",
-      "startFrame": 4736,
-      "endFrame": 5552,
-      "durationFrames": 816,
+      "startFrame": 5997,
+      "endFrame": 6909,
+      "durationFrames": 912,
       "narrationCueIds": [
-        "mobius-01",
-        "mobius-02",
-        "mobius-03",
-        "mobius-04"
-      ]
+        "caption-18",
+        "caption-19",
+        "caption-20"
+      ],
+      "act": "ACT. III",
+      "title": "扭带",
+      "manifold": "莫比乌斯环"
     },
     {
-      "id": "klein-card",
+      "id": "chapter-card-iv",
       "kind": "chapter-card",
       "chapterId": "klein",
+      "actLabel": "ACT. IV",
+      "chapterTitle": "瓶界",
+      "startFrame": 6909,
+      "endFrame": 7234,
+      "durationFrames": 325,
+      "narrationCueIds": [],
       "act": "ACT. IV",
       "title": "瓶界",
       "manifold": "克莱因瓶",
-      "transformFrame": 5660,
-      "startFrame": 5552,
-      "endFrame": 5768,
-      "durationFrames": 216,
-      "narrationCueIds": []
+      "transformFrame": 7078
     },
     {
-      "id": "klein",
+      "id": "chapter-iv",
       "kind": "chapter",
-      "title": "瓶界",
       "chapterId": "klein",
-      "manifold": "克莱因瓶",
-      "startFrame": 5768,
-      "endFrame": 6690,
-      "durationFrames": 922,
+      "startFrame": 7234,
+      "endFrame": 7869,
+      "durationFrames": 635,
       "narrationCueIds": [
-        "klein-01",
-        "klein-02",
-        "klein-03",
-        "klein-04",
-        "klein-05"
-      ]
+        "caption-21",
+        "caption-22",
+        "caption-23"
+      ],
+      "act": "ACT. IV",
+      "title": "瓶界",
+      "manifold": "克莱因瓶"
     },
     {
-      "id": "projective-card",
+      "id": "chapter-card-v",
       "kind": "chapter-card",
       "chapterId": "projective",
+      "actLabel": "ACT. V",
+      "chapterTitle": "双生",
+      "startFrame": 7869,
+      "endFrame": 8201,
+      "durationFrames": 332,
+      "narrationCueIds": [],
       "act": "ACT. V",
       "title": "双生",
       "manifold": "实射影平面",
-      "transformFrame": 6798,
-      "startFrame": 6690,
-      "endFrame": 6906,
-      "durationFrames": 216,
-      "narrationCueIds": []
+      "transformFrame": 8042
     },
     {
-      "id": "projective",
+      "id": "chapter-v",
       "kind": "chapter",
-      "title": "双生",
       "chapterId": "projective",
-      "manifold": "实射影平面",
-      "startFrame": 6906,
-      "endFrame": 7829,
-      "durationFrames": 923,
+      "startFrame": 8201,
+      "endFrame": 9219,
+      "durationFrames": 1018,
       "narrationCueIds": [
-        "projective-01",
-        "projective-02",
-        "projective-03",
-        "projective-04",
-        "projective-05"
-      ]
+        "caption-24",
+        "caption-25",
+        "caption-26",
+        "caption-27"
+      ],
+      "act": "ACT. V",
+      "title": "双生",
+      "manifold": "实射影平面"
     },
     {
-      "id": "sphere-card",
+      "id": "chapter-card-vi",
       "kind": "chapter-card",
       "chapterId": "sphere",
+      "actLabel": "ACT. VI",
+      "chapterTitle": "归圆",
+      "startFrame": 9219,
+      "endFrame": 9559,
+      "durationFrames": 340,
+      "narrationCueIds": [],
       "act": "ACT. VI",
       "title": "归圆",
       "manifold": "球面",
-      "transformFrame": 7937,
-      "startFrame": 7829,
-      "endFrame": 8045,
-      "durationFrames": 216,
-      "narrationCueIds": []
+      "transformFrame": 9396
     },
     {
-      "id": "sphere",
+      "id": "chapter-vi",
       "kind": "chapter",
-      "title": "归圆",
       "chapterId": "sphere",
-      "manifold": "球面",
-      "startFrame": 8045,
-      "endFrame": 9463,
-      "durationFrames": 1418,
+      "startFrame": 9559,
+      "endFrame": 10713,
+      "durationFrames": 1154,
       "narrationCueIds": [
-        "sphere-01",
-        "sphere-02",
-        "sphere-03",
-        "sphere-04",
-        "sphere-05",
-        "sphere-06",
-        "sphere-07"
-      ]
+        "caption-28",
+        "caption-29",
+        "caption-30",
+        "caption-31",
+        "caption-32"
+      ],
+      "act": "ACT. VI",
+      "title": "归圆",
+      "manifold": "球面"
     },
     {
-      "id": "seven-worlds",
+      "id": "tableau",
       "kind": "tableau",
-      "startFrame": 9463,
-      "endFrame": 9943,
-      "durationFrames": 480,
+      "startFrame": 10713,
+      "endFrame": 10880,
+      "durationFrames": 167,
       "narrationCueIds": []
     },
     {
       "id": "finale",
       "kind": "finale",
-      "startFrame": 9943,
-      "endFrame": 10994,
-      "durationFrames": 1051,
+      "startFrame": 10880,
+      "endFrame": 12474,
+      "durationFrames": 1594,
       "narrationCueIds": [
-        "finale-01",
-        "finale-02",
-        "finale-03",
-        "finale-04",
-        "finale-05",
-        "finale-06"
+        "caption-33",
+        "caption-34",
+        "caption-35",
+        "caption-36",
+        "caption-37",
+        "caption-38",
+        "caption-39"
       ]
     },
     {
       "id": "end-card",
       "kind": "end-card",
+      "startFrame": 12474,
+      "endFrame": 12897,
+      "durationFrames": 423,
+      "narrationCueIds": [],
       "title": "拓扑五子棋",
       "institution": "中国科学院物理研究所",
-      "startFrame": 10994,
-      "endFrame": 11384,
-      "durationFrames": 390,
-      "narrationCueIds": []
+      "producer": "制作：余荫铠"
     }
   ],
   "cues": [
     {
-      "id": "intro-01",
+      "id": "caption-01",
+      "storyCueId": "intro-01",
       "sectionId": "intro",
       "index": 0,
-      "text": "人们总把棋盘的边缘视作尽头",
+      "text": "人们总把棋盘的边缘视作尽头。",
       "captionText": "人们总把棋盘的边缘视作尽头",
-      "pauseAfterFrames": 30,
-      "startFrame": 84,
-      "endFrame": 257,
-      "durationFrames": 173,
-      "sourceDurationSeconds": 2.8685,
-      "sourceSampleRate": 16000,
-      "sourceStartSample": 1467,
-      "sourceEndSample": 47363,
-      "voiceFile": ".tmp/chapter-teaser/voice/raw/intro-01.wav"
+      "startSeconds": 5.271746,
+      "endSeconds": 8.517642,
+      "startFrame": 316,
+      "endFrame": 512,
+      "durationFrames": 196
     },
     {
-      "id": "intro-02",
+      "id": "caption-02",
+      "storyCueId": "intro-02",
       "sectionId": "intro",
       "index": 1,
-      "text": "可那些消失在边界上的道路并未中断",
+      "text": "可那些消失在边界上的道路并未中断。",
       "captionText": "可那些消失在边界上的道路并未中断",
-      "pauseAfterFrames": 18,
-      "startFrame": 287,
-      "endFrame": 493,
-      "durationFrames": 206,
-      "sourceDurationSeconds": 3.417375,
-      "sourceSampleRate": 16000,
-      "sourceStartSample": 1164,
-      "sourceEndSample": 55842,
-      "voiceFile": ".tmp/chapter-teaser/voice/raw/intro-02.wav"
+      "startSeconds": 9.491202,
+      "endSeconds": 13.414535,
+      "startFrame": 569,
+      "endFrame": 805,
+      "durationFrames": 236
     },
     {
-      "id": "intro-03",
+      "id": "caption-03",
+      "storyCueId": "intro-03",
       "sectionId": "intro",
       "index": 2,
-      "text": "它们在另一处接缝后延续",
-      "captionText": "它们在另一处接缝后延续",
-      "pauseAfterFrames": 12,
-      "startFrame": 511,
-      "endFrame": 654,
-      "durationFrames": 143,
-      "sourceDurationSeconds": 2.383,
-      "sourceSampleRate": 16000,
-      "sourceStartSample": 1377,
-      "sourceEndSample": 39505,
-      "voiceFile": ".tmp/chapter-teaser/voice/raw/intro-03.wav"
+      "text": "它们从另一条边界后延续。",
+      "captionText": "它们从另一条边界后延续",
+      "startSeconds": 13.698912,
+      "endSeconds": 16.476621,
+      "startFrame": 821,
+      "endFrame": 989,
+      "durationFrames": 168
     },
     {
-      "id": "intro-04",
+      "id": "caption-04",
+      "storyCueId": "intro-04",
       "sectionId": "intro",
       "index": 3,
-      "text": "将遥远的落点重新变为近邻",
-      "captionText": "将遥远的落点重新变为近邻",
-      "pauseAfterFrames": 36,
-      "startFrame": 666,
-      "endFrame": 827,
-      "durationFrames": 161,
-      "sourceDurationSeconds": 2.676438,
-      "sourceSampleRate": 16000,
-      "sourceStartSample": 1331,
-      "sourceEndSample": 44154,
-      "voiceFile": ".tmp/chapter-teaser/voice/raw/intro-04.wav"
+      "text": "将遥远的彼岸重新粘合为近邻。",
+      "captionText": "将遥远的彼岸重新粘合为近邻",
+      "startSeconds": 16.92161,
+      "endSeconds": 20.408,
+      "startFrame": 1015,
+      "endFrame": 1225,
+      "durationFrames": 210
     },
     {
-      "id": "intro-05",
+      "id": "caption-05",
+      "storyCueId": "intro-05",
       "sectionId": "intro",
       "index": 4,
-      "text": "现在，落子之人啊，循着隐藏的连接前行吧",
-      "captionText": "现在，落子之人啊，循着隐藏的连接前行吧",
-      "pauseAfterFrames": 18,
-      "startFrame": 863,
-      "endFrame": 1109,
-      "durationFrames": 246,
-      "sourceDurationSeconds": 4.096312,
-      "sourceSampleRate": 16000,
-      "sourceStartSample": 1151,
-      "sourceEndSample": 66692,
-      "voiceFile": ".tmp/chapter-teaser/voice/raw/intro-05.wav"
+      "text": "现在，僭越棋盘之人。",
+      "captionText": "现在，僭越棋盘之人",
+      "startSeconds": 24.433334,
+      "endSeconds": 27.260023,
+      "startFrame": 1466,
+      "endFrame": 1636,
+      "durationFrames": 170
     },
     {
-      "id": "intro-06",
+      "id": "caption-06",
+      "storyCueId": "intro-06",
       "sectionId": "intro",
       "index": 5,
-      "text": "七种世界，将在你面前依次展开",
-      "captionText": "七种世界，将在你面前依次展开",
-      "pauseAfterFrames": 0,
-      "startFrame": 1127,
-      "endFrame": 1314,
-      "durationFrames": 187,
-      "sourceDurationSeconds": 3.109625,
-      "sourceSampleRate": 16000,
-      "sourceStartSample": 1319,
-      "sourceEndSample": 51073,
-      "voiceFile": ".tmp/chapter-teaser/voice/raw/intro-06.wav"
+      "text": "循着隐藏的连接前行吧。",
+      "captionText": "循着隐藏的连接前行吧",
+      "startSeconds": 27.799093,
+      "endSeconds": 30.351043,
+      "startFrame": 1667,
+      "endFrame": 1822,
+      "durationFrames": 155
     },
     {
-      "id": "plane-01",
-      "sectionId": "plane",
-      "index": 0,
-      "text": "边界分明，方向笔直，胜负都在眼前",
-      "captionText": "边界分明，方向笔直，胜负都在眼前",
-      "pauseAfterFrames": 18,
-      "startFrame": 1638,
-      "endFrame": 1860,
-      "durationFrames": 222,
-      "sourceDurationSeconds": 3.699813,
-      "sourceSampleRate": 16000,
-      "sourceStartSample": 885,
-      "sourceEndSample": 60082,
-      "voiceFile": ".tmp/chapter-teaser/voice/raw/plane-01.wav"
-    },
-    {
-      "id": "plane-02",
-      "sectionId": "plane",
-      "index": 1,
-      "text": "方庭以有限的秩序收容第一条五连",
-      "captionText": "方庭以有限的秩序收容第一条五连",
-      "pauseAfterFrames": 12,
-      "startFrame": 1878,
-      "endFrame": 2075,
-      "durationFrames": 197,
-      "sourceDurationSeconds": 3.273125,
-      "sourceSampleRate": 16000,
-      "sourceStartSample": 1851,
-      "sourceEndSample": 54221,
-      "voiceFile": ".tmp/chapter-teaser/voice/raw/plane-02.wav"
-    },
-    {
-      "id": "plane-03",
-      "sectionId": "plane",
-      "index": 2,
-      "text": "也由此埋下对所有边界的疑问",
-      "captionText": "也由此埋下对所有边界的疑问",
-      "pauseAfterFrames": 0,
-      "startFrame": 2087,
-      "endFrame": 2256,
-      "durationFrames": 169,
-      "sourceDurationSeconds": 2.8055,
-      "sourceSampleRate": 16000,
-      "sourceStartSample": 1155,
-      "sourceEndSample": 46043,
-      "voiceFile": ".tmp/chapter-teaser/voice/raw/plane-03.wav"
-    },
-    {
-      "id": "cylinder-01",
-      "sectionId": "cylinder",
-      "index": 0,
-      "text": "左右相接，上下仍被截断",
-      "captionText": "左右相接，上下仍被截断",
-      "pauseAfterFrames": 18,
-      "startFrame": 2604,
-      "endFrame": 2757,
-      "durationFrames": 153,
-      "sourceDurationSeconds": 2.539687,
-      "sourceSampleRate": 16000,
-      "sourceStartSample": 899,
-      "sourceEndSample": 41534,
-      "voiceFile": ".tmp/chapter-teaser/voice/raw/cylinder-01.wav"
-    },
-    {
-      "id": "cylinder-02",
-      "sectionId": "cylinder",
-      "index": 1,
-      "text": "横向的路绕过世界回到身后",
-      "captionText": "横向的路绕过世界回到身后",
-      "pauseAfterFrames": 12,
-      "startFrame": 2775,
-      "endFrame": 2928,
-      "durationFrames": 153,
-      "sourceDurationSeconds": 2.543563,
-      "sourceSampleRate": 16000,
-      "sourceStartSample": 1319,
-      "sourceEndSample": 42016,
-      "voiceFile": ".tmp/chapter-teaser/voice/raw/cylinder-02.wav"
-    },
-    {
-      "id": "cylinder-03",
-      "sectionId": "cylinder",
-      "index": 2,
-      "text": "纵向的路却有始有终",
-      "captionText": "纵向的路却有始有终",
-      "pauseAfterFrames": 24,
-      "startFrame": 2940,
-      "endFrame": 3058,
-      "durationFrames": 118,
-      "sourceDurationSeconds": 1.955188,
-      "sourceSampleRate": 16000,
-      "sourceStartSample": 899,
-      "sourceEndSample": 32182,
-      "voiceFile": ".tmp/chapter-teaser/voice/raw/cylinder-03.wav"
-    },
-    {
-      "id": "cylinder-04",
-      "sectionId": "cylinder",
-      "index": 3,
-      "text": "只拥有一重循环的世界，该如何丈量远近？",
-      "captionText": "只拥有一重循环的世界，该如何丈量远近？",
-      "pauseAfterFrames": 0,
-      "startFrame": 3082,
-      "endFrame": 3309,
-      "durationFrames": 227,
-      "sourceDurationSeconds": 3.769875,
-      "sourceSampleRate": 16000,
-      "sourceStartSample": 1206,
-      "sourceEndSample": 61524,
-      "voiceFile": ".tmp/chapter-teaser/voice/raw/cylinder-04.wav"
-    },
-    {
-      "id": "torus-01",
-      "sectionId": "torus",
-      "index": 0,
-      "text": "四边相接，两个方向各自成环",
-      "captionText": "四边相接，两个方向各自成环",
-      "pauseAfterFrames": 18,
-      "startFrame": 3657,
-      "endFrame": 3834,
-      "durationFrames": 177,
-      "sourceDurationSeconds": 2.938312,
-      "sourceSampleRate": 16000,
-      "sourceStartSample": 1168,
-      "sourceEndSample": 48181,
-      "voiceFile": ".tmp/chapter-teaser/voice/raw/torus-01.wav"
-    },
-    {
-      "id": "torus-02",
-      "sectionId": "torus",
-      "index": 1,
-      "text": "一条斜线可以先越过上边",
-      "captionText": "一条斜线可以先越过上边",
-      "pauseAfterFrames": 12,
-      "startFrame": 3852,
-      "endFrame": 4005,
-      "durationFrames": 153,
-      "sourceDurationSeconds": 2.547063,
-      "sourceSampleRate": 16000,
-      "sourceStartSample": 1135,
-      "sourceEndSample": 41888,
-      "voiceFile": ".tmp/chapter-teaser/voice/raw/torus-02.wav"
-    },
-    {
-      "id": "torus-03",
-      "sectionId": "torus",
-      "index": 2,
-      "text": "再从左侧归来",
-      "captionText": "再从左侧归来",
-      "pauseAfterFrames": 24,
-      "startFrame": 4017,
-      "endFrame": 4111,
-      "durationFrames": 94,
-      "sourceDurationSeconds": 1.55175,
-      "sourceSampleRate": 16000,
-      "sourceStartSample": 887,
-      "sourceEndSample": 25715,
-      "voiceFile": ".tmp/chapter-teaser/voice/raw/torus-03.wav"
-    },
-    {
-      "id": "torus-04",
-      "sectionId": "torus",
-      "index": 3,
-      "text": "两重循环交织之处",
-      "captionText": "两重循环交织之处",
-      "pauseAfterFrames": 12,
-      "startFrame": 4135,
-      "endFrame": 4250,
-      "durationFrames": 115,
-      "sourceDurationSeconds": 1.913938,
-      "sourceSampleRate": 16000,
-      "sourceStartSample": 987,
-      "sourceEndSample": 31610,
-      "voiceFile": ".tmp/chapter-teaser/voice/raw/torus-04.wav"
-    },
-    {
-      "id": "torus-05",
-      "sectionId": "torus",
-      "index": 4,
-      "text": "最短的道路往往藏在视野之外",
-      "captionText": "最短的道路往往藏在视野之外",
-      "pauseAfterFrames": 0,
-      "startFrame": 4262,
-      "endFrame": 4424,
-      "durationFrames": 162,
-      "sourceDurationSeconds": 2.6955,
-      "sourceSampleRate": 16000,
-      "sourceStartSample": 1356,
-      "sourceEndSample": 44484,
-      "voiceFile": ".tmp/chapter-teaser/voice/raw/torus-05.wav"
-    },
-    {
-      "id": "mobius-01",
-      "sectionId": "mobius",
-      "index": 0,
-      "text": "左右边界相接，却带着一次翻转",
-      "captionText": "左右边界相接，却带着一次翻转",
-      "pauseAfterFrames": 18,
-      "startFrame": 4772,
-      "endFrame": 4957,
-      "durationFrames": 185,
-      "sourceDurationSeconds": 3.068687,
-      "sourceSampleRate": 16000,
-      "sourceStartSample": 1477,
-      "sourceEndSample": 50576,
-      "voiceFile": ".tmp/chapter-teaser/voice/raw/mobius-01.wav"
-    },
-    {
-      "id": "mobius-02",
-      "sectionId": "mobius",
-      "index": 1,
-      "text": "沿同一面环行一周",
-      "captionText": "沿同一面环行一周",
-      "pauseAfterFrames": 12,
-      "startFrame": 4975,
-      "endFrame": 5088,
-      "durationFrames": 113,
-      "sourceDurationSeconds": 1.878875,
-      "sourceSampleRate": 16000,
-      "sourceStartSample": 1166,
-      "sourceEndSample": 31228,
-      "voiceFile": ".tmp/chapter-teaser/voice/raw/mobius-02.wav"
-    },
-    {
-      "id": "mobius-03",
-      "sectionId": "mobius",
-      "index": 2,
-      "text": "归来时上下已经交换",
-      "captionText": "归来时上下已经交换",
-      "pauseAfterFrames": 24,
-      "startFrame": 5100,
-      "endFrame": 5233,
-      "durationFrames": 133,
-      "sourceDurationSeconds": 2.214562,
-      "sourceSampleRate": 16000,
-      "sourceStartSample": 885,
-      "sourceEndSample": 36318,
-      "voiceFile": ".tmp/chapter-teaser/voice/raw/mobius-03.wav"
-    },
-    {
-      "id": "mobius-04",
-      "sectionId": "mobius",
-      "index": 3,
-      "text": "只有一面的世界，正反又该如何分辨？",
-      "captionText": "只有一面的世界，正反又该如何分辨？",
-      "pauseAfterFrames": 0,
-      "startFrame": 5257,
-      "endFrame": 5456,
-      "durationFrames": 199,
-      "sourceDurationSeconds": 3.31425,
-      "sourceSampleRate": 16000,
-      "sourceStartSample": 724,
-      "sourceEndSample": 53752,
-      "voiceFile": ".tmp/chapter-teaser/voice/raw/mobius-04.wav"
-    },
-    {
-      "id": "klein-01",
-      "sectionId": "klein",
-      "index": 0,
-      "text": "一组边界如圆环般相接",
-      "captionText": "一组边界如圆环般相接",
-      "pauseAfterFrames": 12,
-      "startFrame": 5804,
-      "endFrame": 5944,
-      "durationFrames": 140,
-      "sourceDurationSeconds": 2.325312,
-      "sourceSampleRate": 16000,
-      "sourceStartSample": 1196,
-      "sourceEndSample": 38401,
-      "voiceFile": ".tmp/chapter-teaser/voice/raw/klein-01.wav"
-    },
-    {
-      "id": "klein-02",
-      "sectionId": "klein",
-      "index": 1,
-      "text": "另一组边界让方向翻转",
-      "captionText": "另一组边界让方向翻转",
-      "pauseAfterFrames": 18,
-      "startFrame": 5956,
-      "endFrame": 6095,
-      "durationFrames": 139,
-      "sourceDurationSeconds": 2.310062,
-      "sourceSampleRate": 16000,
-      "sourceStartSample": 992,
-      "sourceEndSample": 37953,
-      "voiceFile": ".tmp/chapter-teaser/voice/raw/klein-02.wav"
-    },
-    {
-      "id": "klein-03",
-      "sectionId": "klein",
-      "index": 2,
-      "text": "两种归来共处一界",
-      "captionText": "两种归来共处一界",
-      "pauseAfterFrames": 12,
-      "startFrame": 6113,
-      "endFrame": 6219,
-      "durationFrames": 106,
-      "sourceDurationSeconds": 1.755437,
-      "sourceSampleRate": 16000,
-      "sourceStartSample": 987,
-      "sourceEndSample": 29074,
-      "voiceFile": ".tmp/chapter-teaser/voice/raw/klein-03.wav"
-    },
-    {
-      "id": "klein-04",
-      "sectionId": "klein",
-      "index": 3,
-      "text": "一条路保持原样，一条路带回倒影",
-      "captionText": "一条路保持原样，一条路带回倒影",
-      "pauseAfterFrames": 24,
-      "startFrame": 6231,
-      "endFrame": 6426,
-      "durationFrames": 195,
-      "sourceDurationSeconds": 3.241812,
-      "sourceSampleRate": 16000,
-      "sourceStartSample": 1133,
-      "sourceEndSample": 53002,
-      "voiceFile": ".tmp/chapter-teaser/voice/raw/klein-04.wav"
-    },
-    {
-      "id": "klein-05",
-      "sectionId": "klein",
-      "index": 4,
-      "text": "路径会记住你选择的环绕",
-      "captionText": "路径会记住你选择的环绕",
-      "pauseAfterFrames": 0,
-      "startFrame": 6450,
-      "endFrame": 6594,
-      "durationFrames": 144,
-      "sourceDurationSeconds": 2.393562,
-      "sourceSampleRate": 16000,
-      "sourceStartSample": 1124,
-      "sourceEndSample": 39421,
-      "voiceFile": ".tmp/chapter-teaser/voice/raw/klein-05.wav"
-    },
-    {
-      "id": "projective-01",
-      "sectionId": "projective",
-      "index": 0,
-      "text": "上下左右，全都通向各自的倒影",
-      "captionText": "上下左右，全都通向各自的倒影",
-      "pauseAfterFrames": 18,
-      "startFrame": 6942,
-      "endFrame": 7126,
-      "durationFrames": 184,
-      "sourceDurationSeconds": 3.057812,
-      "sourceSampleRate": 16000,
-      "sourceStartSample": 1025,
-      "sourceEndSample": 49950,
-      "voiceFile": ".tmp/chapter-teaser/voice/raw/projective-01.wav"
-    },
-    {
-      "id": "projective-02",
-      "sectionId": "projective",
-      "index": 1,
-      "text": "一次越界改变方向",
-      "captionText": "一次越界改变方向",
-      "pauseAfterFrames": 12,
-      "startFrame": 7144,
-      "endFrame": 7254,
-      "durationFrames": 110,
-      "sourceDurationSeconds": 1.82675,
-      "sourceSampleRate": 16000,
-      "sourceStartSample": 1156,
-      "sourceEndSample": 30384,
-      "voiceFile": ".tmp/chapter-teaser/voice/raw/projective-02.wav"
-    },
-    {
-      "id": "projective-03",
-      "sectionId": "projective",
-      "index": 2,
-      "text": "两次倒映使棋路重新吻合",
-      "captionText": "两次倒映使棋路重新吻合",
-      "pauseAfterFrames": 24,
-      "startFrame": 7266,
-      "endFrame": 7419,
-      "durationFrames": 153,
-      "sourceDurationSeconds": 2.54,
-      "sourceSampleRate": 16000,
-      "sourceStartSample": 987,
-      "sourceEndSample": 41627,
-      "voiceFile": ".tmp/chapter-teaser/voice/raw/projective-03.wav"
-    },
-    {
-      "id": "projective-04",
-      "sectionId": "projective",
-      "index": 3,
-      "text": "在双生的世界里",
-      "captionText": "在双生的世界里",
-      "pauseAfterFrames": 12,
-      "startFrame": 7443,
-      "endFrame": 7539,
-      "durationFrames": 96,
-      "sourceDurationSeconds": 1.585438,
-      "sourceSampleRate": 16000,
-      "sourceStartSample": 1434,
-      "sourceEndSample": 26801,
-      "voiceFile": ".tmp/chapter-teaser/voice/raw/projective-04.wav"
-    },
-    {
-      "id": "projective-05",
-      "sectionId": "projective",
-      "index": 4,
-      "text": "每次远行，都会遇见另一个自己",
-      "captionText": "每次远行，都会遇见另一个自己",
-      "pauseAfterFrames": 0,
-      "startFrame": 7551,
-      "endFrame": 7733,
-      "durationFrames": 182,
-      "sourceDurationSeconds": 3.025688,
-      "sourceSampleRate": 16000,
-      "sourceStartSample": 978,
-      "sourceEndSample": 49389,
-      "voiceFile": ".tmp/chapter-teaser/voice/raw/projective-05.wav"
-    },
-    {
-      "id": "sphere-01",
-      "sectionId": "sphere",
-      "index": 0,
-      "text": "在最后的世界",
-      "captionText": "在最后的世界",
-      "pauseAfterFrames": 12,
-      "startFrame": 8081,
-      "endFrame": 8155,
-      "durationFrames": 74,
-      "sourceDurationSeconds": 1.217812,
-      "sourceSampleRate": 16000,
-      "sourceStartSample": 887,
-      "sourceEndSample": 20372,
-      "voiceFile": ".tmp/chapter-teaser/voice/raw/sphere-01.wav"
-    },
-    {
-      "id": "sphere-02",
-      "sectionId": "sphere",
-      "index": 1,
-      "text": "棋路离开一条边，便会沿相邻的方向继续",
-      "captionText": "棋路离开一条边，便会沿相邻的方向继续",
-      "pauseAfterFrames": 18,
-      "startFrame": 8167,
-      "endFrame": 8403,
-      "durationFrames": 236,
-      "sourceDurationSeconds": 3.919938,
-      "sourceSampleRate": 16000,
-      "sourceStartSample": 1319,
-      "sourceEndSample": 64038,
-      "voiceFile": ".tmp/chapter-teaser/voice/raw/sphere-02.wav"
-    },
-    {
-      "id": "sphere-03",
-      "sectionId": "sphere",
-      "index": 2,
-      "text": "四条边依次归向彼此",
-      "captionText": "四条边依次归向彼此",
-      "pauseAfterFrames": 12,
-      "startFrame": 8421,
-      "endFrame": 8543,
-      "durationFrames": 122,
-      "sourceDurationSeconds": 2.0205,
-      "sourceSampleRate": 16000,
-      "sourceStartSample": 1168,
-      "sourceEndSample": 33496,
-      "voiceFile": ".tmp/chapter-teaser/voice/raw/sphere-03.wav"
-    },
-    {
-      "id": "sphere-04",
-      "sectionId": "sphere",
-      "index": 3,
-      "text": "方形的棋盘也随之闭合成球",
-      "captionText": "方形的棋盘也随之闭合成球",
-      "pauseAfterFrames": 30,
-      "startFrame": 8555,
-      "endFrame": 8715,
-      "durationFrames": 160,
-      "sourceDurationSeconds": 2.651937,
-      "sourceSampleRate": 16000,
-      "sourceStartSample": 1851,
-      "sourceEndSample": 44282,
-      "voiceFile": ".tmp/chapter-teaser/voice/raw/sphere-04.wav"
-    },
-    {
-      "id": "sphere-05",
-      "sectionId": "sphere",
-      "index": 4,
-      "text": "人们为了看清完整的世界",
-      "captionText": "人们为了看清完整的世界",
-      "pauseAfterFrames": 12,
-      "startFrame": 8745,
-      "endFrame": 8885,
-      "durationFrames": 140,
-      "sourceDurationSeconds": 2.330375,
-      "sourceSampleRate": 16000,
-      "sourceStartSample": 1422,
-      "sourceEndSample": 38708,
-      "voiceFile": ".tmp/chapter-teaser/voice/raw/sphere-05.wav"
-    },
-    {
-      "id": "sphere-06",
-      "sectionId": "sphere",
-      "index": 5,
-      "text": "将它展开成一张有边的图",
-      "captionText": "将它展开成一张有边的图",
-      "pauseAfterFrames": 24,
-      "startFrame": 8897,
-      "endFrame": 9051,
-      "durationFrames": 154,
-      "sourceDurationSeconds": 2.552437,
-      "sourceSampleRate": 16000,
-      "sourceStartSample": 1337,
-      "sourceEndSample": 42176,
-      "voiceFile": ".tmp/chapter-teaser/voice/raw/sphere-06.wav"
-    },
-    {
-      "id": "sphere-07",
-      "sectionId": "sphere",
+      "id": "caption-07",
+      "storyCueId": "intro-07",
+      "sectionId": "intro",
       "index": 6,
-      "text": "所谓边界，或许只是观察世界时留下的痕迹",
-      "captionText": "所谓边界，或许只是观察世界时留下的痕迹",
-      "pauseAfterFrames": 0,
-      "startFrame": 9075,
-      "endFrame": 9331,
-      "durationFrames": 256,
-      "sourceDurationSeconds": 4.254187,
-      "sourceSampleRate": 16000,
-      "sourceStartSample": 1198,
-      "sourceEndSample": 69265,
-      "voiceFile": ".tmp/chapter-teaser/voice/raw/sphere-07.wav"
+      "text": "世界的七重轮廓，在你面前依次苏醒。",
+      "captionText": "世界的七重轮廓，在你面前依次苏醒",
+      "startSeconds": 31.110952,
+      "endSeconds": 35.929433,
+      "startFrame": 1866,
+      "endFrame": 2156,
+      "durationFrames": 290
     },
     {
-      "id": "finale-01",
+      "id": "caption-08",
+      "storyCueId": "plane-01",
+      "sectionId": "plane",
+      "index": 0,
+      "text": "绝对的秩序，让世人确信那就是天地的尽头。",
+      "captionText": "绝对的秩序，让世人确信那就是天地的尽头",
+      "startSeconds": 41.796553,
+      "endSeconds": 46.972585,
+      "startFrame": 2507,
+      "endFrame": 2819,
+      "durationFrames": 312
+    },
+    {
+      "id": "caption-09",
+      "storyCueId": "plane-02",
+      "sectionId": "plane",
+      "index": 1,
+      "text": "习惯了有限规则的生灵，真的能察觉。",
+      "captionText": "习惯了有限规则的生灵，真的能察觉",
+      "startSeconds": 47.577438,
+      "endSeconds": 51.359184,
+      "startFrame": 2854,
+      "endFrame": 3082,
+      "durationFrames": 228
+    },
+    {
+      "id": "caption-10",
+      "storyCueId": "plane-03",
+      "sectionId": "plane",
+      "index": 2,
+      "text": "这只是世界的冰山一角吗？",
+      "captionText": "这只是世界的冰山一角吗？",
+      "startSeconds": 51.610295,
+      "endSeconds": 54.329977,
+      "startFrame": 3096,
+      "endFrame": 3260,
+      "durationFrames": 164
+    },
+    {
+      "id": "caption-11",
+      "storyCueId": "cylinder-01",
+      "sectionId": "cylinder",
+      "index": 0,
+      "text": "左右相接，上下仍被截断。",
+      "captionText": "左右相接，上下仍被截断",
+      "startSeconds": 60.315533,
+      "endSeconds": 63.528277,
+      "startFrame": 3618,
+      "endFrame": 3812,
+      "durationFrames": 194
+    },
+    {
+      "id": "caption-12",
+      "storyCueId": "cylinder-02",
+      "sectionId": "cylinder",
+      "index": 1,
+      "text": "一端坠入虚无，一端连缀归途。",
+      "captionText": "一端坠入虚无，一端连缀归途",
+      "startSeconds": 64.318005,
+      "endSeconds": 67.627166,
+      "startFrame": 3859,
+      "endFrame": 4058,
+      "durationFrames": 199
+    },
+    {
+      "id": "caption-13",
+      "storyCueId": "cylinder-03",
+      "sectionId": "cylinder",
+      "index": 2,
+      "text": "拥有一重循环的世界，该如何丈量远近？",
+      "captionText": "拥有一重循环的世界，该如何丈量远近？",
+      "startSeconds": 68.589592,
+      "endSeconds": 73.412834,
+      "startFrame": 4115,
+      "endFrame": 4405,
+      "durationFrames": 290
+    },
+    {
+      "id": "caption-14",
+      "storyCueId": "torus-01",
+      "sectionId": "torus",
+      "index": 0,
+      "text": "天与地交织，首与尾相连。",
+      "captionText": "天与地交织，首与尾相连",
+      "startSeconds": 79.125601,
+      "endSeconds": 82.760408,
+      "startFrame": 4747,
+      "endFrame": 4966,
+      "durationFrames": 219
+    },
+    {
+      "id": "caption-15",
+      "storyCueId": "torus-02",
+      "sectionId": "torus",
+      "index": 1,
+      "text": "两个方向各自成环。",
+      "captionText": "两个方向各自成环",
+      "startSeconds": 83.528912,
+      "endSeconds": 85.732925,
+      "startFrame": 5011,
+      "endFrame": 5144,
+      "durationFrames": 133
+    },
+    {
+      "id": "caption-16",
+      "storyCueId": "torus-03",
+      "sectionId": "torus",
+      "index": 2,
+      "text": "在没有尽头的轮回中，背道而驰的棋子。",
+      "captionText": "在没有尽头的轮回中，背道而驰的棋子",
+      "startSeconds": 86.226077,
+      "endSeconds": 91.070385,
+      "startFrame": 5173,
+      "endFrame": 5465,
+      "durationFrames": 292
+    },
+    {
+      "id": "caption-17",
+      "storyCueId": "torus-04",
+      "sectionId": "torus",
+      "index": 3,
+      "text": "终将在宿命的交汇处重逢。",
+      "captionText": "终将在宿命的交汇处重逢",
+      "startSeconds": 91.241791,
+      "endSeconds": 94.277846,
+      "startFrame": 5474,
+      "endFrame": 5657,
+      "durationFrames": 183
+    },
+    {
+      "id": "caption-18",
+      "storyCueId": "mobius-01",
+      "sectionId": "mobius",
+      "index": 0,
+      "text": "正与反的界限，被一次荒谬的扭转轻易抹除。",
+      "captionText": "正与反的界限，被一次荒谬的扭转轻易抹除",
+      "startSeconds": 99.957891,
+      "endSeconds": 105.404966,
+      "startFrame": 5997,
+      "endFrame": 6325,
+      "durationFrames": 328
+    },
+    {
+      "id": "caption-19",
+      "storyCueId": "mobius-02",
+      "sectionId": "mobius",
+      "index": 1,
+      "text": "在只有一面的世界里，世人迷信黑白分明。",
+      "captionText": "在只有一面的世界里，世人迷信黑白分明",
+      "startSeconds": 106.243946,
+      "endSeconds": 110.980635,
+      "startFrame": 6374,
+      "endFrame": 6659,
+      "durationFrames": 285
+    },
+    {
+      "id": "caption-20",
+      "storyCueId": "mobius-03",
+      "sectionId": "mobius",
+      "index": 2,
+      "text": "却不知正反不过是同源的虚妄。",
+      "captionText": "却不知正反不过是同源的虚妄",
+      "startSeconds": 111.209002,
+      "endSeconds": 115.13517,
+      "startFrame": 6672,
+      "endFrame": 6909,
+      "durationFrames": 237
+    },
+    {
+      "id": "caption-21",
+      "storyCueId": "klein-01",
+      "sectionId": "klein",
+      "index": 0,
+      "text": "世界在此剥离了内与外的分别。",
+      "captionText": "世界在此剥离了内与外的分别",
+      "startSeconds": 120.567937,
+      "endSeconds": 123.54381,
+      "startFrame": 7234,
+      "endFrame": 7413,
+      "durationFrames": 179
+    },
+    {
+      "id": "caption-22",
+      "storyCueId": "klein-02",
+      "sectionId": "klein",
+      "index": 1,
+      "text": "路径会记住你的选择。",
+      "captionText": "路径会记住你的选择",
+      "startSeconds": 124.471859,
+      "endSeconds": 126.586395,
+      "startFrame": 7468,
+      "endFrame": 7596,
+      "durationFrames": 128
+    },
+    {
+      "id": "caption-23",
+      "storyCueId": "klein-03",
+      "sectionId": "klein",
+      "index": 2,
+      "text": "然后以颠倒的姿态，将因果偿还。",
+      "captionText": "然后以颠倒的姿态，将因果偿还",
+      "startSeconds": 127.333129,
+      "endSeconds": 131.142971,
+      "startFrame": 7639,
+      "endFrame": 7869,
+      "durationFrames": 230
+    },
+    {
+      "id": "caption-24",
+      "storyCueId": "projective-01",
+      "sectionId": "projective",
+      "index": 0,
+      "text": "上下左右，全都通向各自的倒影。",
+      "captionText": "上下左右，全都通向各自的倒影",
+      "startSeconds": 136.694898,
+      "endSeconds": 140.318844,
+      "startFrame": 8201,
+      "endFrame": 8420,
+      "durationFrames": 219
+    },
+    {
+      "id": "caption-25",
+      "storyCueId": "projective-02",
+      "sectionId": "projective",
+      "index": 1,
+      "text": "一次越界是对自我的背叛。",
+      "captionText": "一次越界是对自我的背叛",
+      "startSeconds": 141.165941,
+      "endSeconds": 144.229206,
+      "startFrame": 8469,
+      "endFrame": 8654,
+      "durationFrames": 185
+    },
+    {
+      "id": "caption-26",
+      "storyCueId": "projective-03",
+      "sectionId": "projective",
+      "index": 2,
+      "text": "而两次倒映又让宿命重新吻合。",
+      "captionText": "而两次倒映又让宿命重新吻合",
+      "startSeconds": 144.457188,
+      "endSeconds": 148.104671,
+      "startFrame": 8667,
+      "endFrame": 8887,
+      "durationFrames": 220
+    },
+    {
+      "id": "caption-27",
+      "storyCueId": "projective-04",
+      "sectionId": "projective",
+      "index": 3,
+      "text": "在双生世界的尽头，你会遇见另一个自己。",
+      "captionText": "在双生世界的尽头，你会遇见另一个自己",
+      "startSeconds": 149.293152,
+      "endSeconds": 153.645533,
+      "startFrame": 8957,
+      "endFrame": 9219,
+      "durationFrames": 262
+    },
+    {
+      "id": "caption-28",
+      "storyCueId": "sphere-01",
+      "sectionId": "sphere",
+      "index": 0,
+      "text": "在最后的世界，四方的棱角褪去。",
+      "captionText": "在最后的世界，四方的棱角褪去",
+      "startSeconds": 159.325034,
+      "endSeconds": 163.4622,
+      "startFrame": 9559,
+      "endFrame": 9808,
+      "durationFrames": 249
+    },
+    {
+      "id": "caption-29",
+      "storyCueId": "sphere-02",
+      "sectionId": "sphere",
+      "index": 1,
+      "text": "支离破碎的版图归于圆满。",
+      "captionText": "支离破碎的版图归于圆满",
+      "startSeconds": 164.072948,
+      "endSeconds": 166.755011,
+      "startFrame": 9844,
+      "endFrame": 10006,
+      "durationFrames": 162
+    },
+    {
+      "id": "caption-30",
+      "storyCueId": "sphere-03",
+      "sectionId": "sphere",
+      "index": 2,
+      "text": "人们为了看懂这个世界。",
+      "captionText": "人们为了看懂这个世界",
+      "startSeconds": 167.603129,
+      "endSeconds": 169.762132,
+      "startFrame": 10056,
+      "endFrame": 10186,
+      "durationFrames": 130
+    },
+    {
+      "id": "caption-31",
+      "storyCueId": "sphere-04",
+      "sectionId": "sphere",
+      "index": 3,
+      "text": "将它粗暴地展平成一张带边界的纸。",
+      "captionText": "将它粗暴地展平成一张带边界的纸",
+      "startSeconds": 169.993243,
+      "endSeconds": 173.475488,
+      "startFrame": 10199,
+      "endFrame": 10409,
+      "durationFrames": 210
+    },
+    {
+      "id": "caption-32",
+      "storyCueId": "sphere-05",
+      "sectionId": "sphere",
+      "index": 4,
+      "text": "所谓边界，不过是观测者无知的刻痕。",
+      "captionText": "所谓边界，不过是观测者无知的刻痕",
+      "startSeconds": 174.17619,
+      "endSeconds": 178.543719,
+      "startFrame": 10450,
+      "endFrame": 10713,
+      "durationFrames": 263
+    },
+    {
+      "id": "caption-33",
+      "storyCueId": "finale-01",
       "sectionId": "finale",
       "index": 0,
-      "text": "现在，落子之人",
-      "captionText": "现在，落子之人",
-      "pauseAfterFrames": 18,
-      "startFrame": 9991,
-      "endFrame": 10086,
-      "durationFrames": 95,
-      "sourceDurationSeconds": 1.571937,
-      "sourceSampleRate": 16000,
-      "sourceStartSample": 1121,
-      "sourceEndSample": 26272,
-      "voiceFile": ".tmp/chapter-teaser/voice/raw/finale-01.wav"
+      "text": "现在，执子之人。",
+      "captionText": "现在，执子之人",
+      "startSeconds": 181.336871,
+      "endSeconds": 183.275488,
+      "startFrame": 10880,
+      "endFrame": 10997,
+      "durationFrames": 117
     },
     {
-      "id": "finale-02",
+      "id": "caption-34",
+      "storyCueId": "finale-02",
       "sectionId": "finale",
       "index": 1,
-      "text": "七种世界已经显现",
-      "captionText": "七种世界已经显现",
-      "pauseAfterFrames": 12,
-      "startFrame": 10104,
-      "endFrame": 10209,
-      "durationFrames": 105,
-      "sourceDurationSeconds": 1.742438,
-      "sourceSampleRate": 16000,
-      "sourceStartSample": 1285,
-      "sourceEndSample": 29164,
-      "voiceFile": ".tmp/chapter-teaser/voice/raw/finale-02.wav"
+      "text": "七种流形皆已显现。",
+      "captionText": "七种流形皆已显现",
+      "startSeconds": 183.845079,
+      "endSeconds": 186.282268,
+      "startFrame": 11030,
+      "endFrame": 11177,
+      "durationFrames": 147
     },
     {
-      "id": "finale-03",
+      "id": "caption-35",
+      "storyCueId": "finale-03",
       "sectionId": "finale",
       "index": 2,
-      "text": "但最后的连接，仍等待你亲手完成",
-      "captionText": "但最后的连接，仍等待你亲手完成",
-      "pauseAfterFrames": 30,
-      "startFrame": 10221,
-      "endFrame": 10426,
-      "durationFrames": 205,
-      "sourceDurationSeconds": 3.412812,
-      "sourceSampleRate": 16000,
-      "sourceStartSample": 885,
-      "sourceEndSample": 55490,
-      "voiceFile": ".tmp/chapter-teaser/voice/raw/finale-03.wav"
+      "text": "但最后的闭环，仍等待你亲手落位。",
+      "captionText": "但最后的闭环，仍等待你亲手落位",
+      "startSeconds": 187.002517,
+      "endSeconds": 191.471134,
+      "startFrame": 11220,
+      "endFrame": 11489,
+      "durationFrames": 269
     },
     {
-      "id": "finale-04",
+      "id": "caption-36",
+      "storyCueId": "finale-04",
       "sectionId": "finale",
       "index": 3,
-      "text": "若你已经理解边界的意义",
-      "captionText": "若你已经理解边界的意义",
-      "pauseAfterFrames": 12,
-      "startFrame": 10456,
-      "endFrame": 10586,
-      "durationFrames": 130,
-      "sourceDurationSeconds": 2.161062,
-      "sourceSampleRate": 16000,
-      "sourceStartSample": 869,
-      "sourceEndSample": 35446,
-      "voiceFile": ".tmp/chapter-teaser/voice/raw/finale-04.wav"
+      "text": "若你已经洞悉边界的谎言。",
+      "captionText": "若你已经洞悉边界的谎言",
+      "startSeconds": 192.392336,
+      "endSeconds": 195.046417,
+      "startFrame": 11543,
+      "endFrame": 11703,
+      "durationFrames": 160
     },
     {
-      "id": "finale-05",
+      "id": "caption-37",
+      "storyCueId": "finale-05",
       "sectionId": "finale",
       "index": 4,
-      "text": "就落下那颗棋子",
-      "captionText": "就落下那颗棋子",
-      "pauseAfterFrames": 24,
-      "startFrame": 10598,
-      "endFrame": 10695,
-      "durationFrames": 97,
-      "sourceDurationSeconds": 1.600937,
-      "sourceSampleRate": 16000,
-      "sourceStartSample": 1345,
-      "sourceEndSample": 26960,
-      "voiceFile": ".tmp/chapter-teaser/voice/raw/finale-05.wav"
+      "text": "就上前来，落下那颗子。",
+      "captionText": "就上前来，落下那颗子",
+      "startSeconds": 195.591361,
+      "endSeconds": 198.056757,
+      "startFrame": 11735,
+      "endFrame": 11884,
+      "durationFrames": 149
     },
     {
-      "id": "finale-06",
+      "id": "caption-38",
+      "storyCueId": "finale-06",
       "sectionId": "finale",
       "index": 5,
-      "text": "然后，去看见世界本来的样子吧",
-      "captionText": "然后，去看见世界本来的样子吧",
-      "pauseAfterFrames": 0,
-      "startFrame": 10719,
-      "endFrame": 10898,
-      "durationFrames": 179,
-      "sourceDurationSeconds": 2.967687,
-      "sourceSampleRate": 16000,
-      "sourceStartSample": 1425,
-      "sourceEndSample": 48908,
-      "voiceFile": ".tmp/chapter-teaser/voice/raw/finale-06.wav"
+      "text": "向我证明，你比我更懂得拓扑的真谛。",
+      "captionText": "向我证明，你比我更懂得拓扑的真谛",
+      "startSeconds": 198.782925,
+      "endSeconds": 202.968073,
+      "startFrame": 11926,
+      "endFrame": 12179,
+      "durationFrames": 253
+    },
+    {
+      "id": "caption-39",
+      "storyCueId": "finale-07",
+      "sectionId": "finale",
+      "index": 6,
+      "text": "然后，去见证世界本来的模样吧。",
+      "captionText": "然后，去见证世界本来的模样吧",
+      "startSeconds": 203.866576,
+      "endSeconds": 207.892404,
+      "startFrame": 12231,
+      "endFrame": 12474,
+      "durationFrames": 243
     }
   ],
   "subtitles": [
     {
-      "id": "intro-01",
-      "cueId": "intro-01",
+      "id": "caption-01",
+      "cueId": "caption-01",
       "text": "人们总把棋盘的边缘视作尽头",
-      "startFrame": 84,
-      "endFrame": 257,
-      "durationFrames": 173
+      "startFrame": 316,
+      "endFrame": 512,
+      "durationFrames": 196
     },
     {
-      "id": "intro-02",
-      "cueId": "intro-02",
+      "id": "caption-02",
+      "cueId": "caption-02",
       "text": "可那些消失在边界上的道路并未中断",
-      "startFrame": 287,
-      "endFrame": 493,
-      "durationFrames": 206
-    },
-    {
-      "id": "intro-03",
-      "cueId": "intro-03",
-      "text": "它们在另一处接缝后延续",
-      "startFrame": 511,
-      "endFrame": 654,
-      "durationFrames": 143
-    },
-    {
-      "id": "intro-04",
-      "cueId": "intro-04",
-      "text": "将遥远的落点重新变为近邻",
-      "startFrame": 666,
-      "endFrame": 827,
-      "durationFrames": 161
-    },
-    {
-      "id": "intro-05",
-      "cueId": "intro-05",
-      "text": "现在，落子之人啊，循着隐藏的连接前行吧",
-      "startFrame": 863,
-      "endFrame": 1109,
-      "durationFrames": 246
-    },
-    {
-      "id": "intro-06",
-      "cueId": "intro-06",
-      "text": "七种世界，将在你面前依次展开",
-      "startFrame": 1127,
-      "endFrame": 1314,
-      "durationFrames": 187
-    },
-    {
-      "id": "plane-01",
-      "cueId": "plane-01",
-      "text": "边界分明，方向笔直，胜负都在眼前",
-      "startFrame": 1638,
-      "endFrame": 1860,
-      "durationFrames": 222
-    },
-    {
-      "id": "plane-02",
-      "cueId": "plane-02",
-      "text": "方庭以有限的秩序收容第一条五连",
-      "startFrame": 1878,
-      "endFrame": 2075,
-      "durationFrames": 197
-    },
-    {
-      "id": "plane-03",
-      "cueId": "plane-03",
-      "text": "也由此埋下对所有边界的疑问",
-      "startFrame": 2087,
-      "endFrame": 2256,
-      "durationFrames": 169
-    },
-    {
-      "id": "cylinder-01",
-      "cueId": "cylinder-01",
-      "text": "左右相接，上下仍被截断",
-      "startFrame": 2604,
-      "endFrame": 2757,
-      "durationFrames": 153
-    },
-    {
-      "id": "cylinder-02",
-      "cueId": "cylinder-02",
-      "text": "横向的路绕过世界回到身后",
-      "startFrame": 2775,
-      "endFrame": 2928,
-      "durationFrames": 153
-    },
-    {
-      "id": "cylinder-03",
-      "cueId": "cylinder-03",
-      "text": "纵向的路却有始有终",
-      "startFrame": 2940,
-      "endFrame": 3058,
-      "durationFrames": 118
-    },
-    {
-      "id": "cylinder-04",
-      "cueId": "cylinder-04",
-      "text": "只拥有一重循环的世界，该如何丈量远近？",
-      "startFrame": 3082,
-      "endFrame": 3309,
-      "durationFrames": 227
-    },
-    {
-      "id": "torus-01",
-      "cueId": "torus-01",
-      "text": "四边相接，两个方向各自成环",
-      "startFrame": 3657,
-      "endFrame": 3834,
-      "durationFrames": 177
-    },
-    {
-      "id": "torus-02",
-      "cueId": "torus-02",
-      "text": "一条斜线可以先越过上边",
-      "startFrame": 3852,
-      "endFrame": 4005,
-      "durationFrames": 153
-    },
-    {
-      "id": "torus-03",
-      "cueId": "torus-03",
-      "text": "再从左侧归来",
-      "startFrame": 4017,
-      "endFrame": 4111,
-      "durationFrames": 94
-    },
-    {
-      "id": "torus-04",
-      "cueId": "torus-04",
-      "text": "两重循环交织之处",
-      "startFrame": 4135,
-      "endFrame": 4250,
-      "durationFrames": 115
-    },
-    {
-      "id": "torus-05",
-      "cueId": "torus-05",
-      "text": "最短的道路往往藏在视野之外",
-      "startFrame": 4262,
-      "endFrame": 4424,
-      "durationFrames": 162
-    },
-    {
-      "id": "mobius-01",
-      "cueId": "mobius-01",
-      "text": "左右边界相接，却带着一次翻转",
-      "startFrame": 4772,
-      "endFrame": 4957,
-      "durationFrames": 185
-    },
-    {
-      "id": "mobius-02",
-      "cueId": "mobius-02",
-      "text": "沿同一面环行一周",
-      "startFrame": 4975,
-      "endFrame": 5088,
-      "durationFrames": 113
-    },
-    {
-      "id": "mobius-03",
-      "cueId": "mobius-03",
-      "text": "归来时上下已经交换",
-      "startFrame": 5100,
-      "endFrame": 5233,
-      "durationFrames": 133
-    },
-    {
-      "id": "mobius-04",
-      "cueId": "mobius-04",
-      "text": "只有一面的世界，正反又该如何分辨？",
-      "startFrame": 5257,
-      "endFrame": 5456,
-      "durationFrames": 199
-    },
-    {
-      "id": "klein-01",
-      "cueId": "klein-01",
-      "text": "一组边界如圆环般相接",
-      "startFrame": 5804,
-      "endFrame": 5944,
-      "durationFrames": 140
-    },
-    {
-      "id": "klein-02",
-      "cueId": "klein-02",
-      "text": "另一组边界让方向翻转",
-      "startFrame": 5956,
-      "endFrame": 6095,
-      "durationFrames": 139
-    },
-    {
-      "id": "klein-03",
-      "cueId": "klein-03",
-      "text": "两种归来共处一界",
-      "startFrame": 6113,
-      "endFrame": 6219,
-      "durationFrames": 106
-    },
-    {
-      "id": "klein-04",
-      "cueId": "klein-04",
-      "text": "一条路保持原样，一条路带回倒影",
-      "startFrame": 6231,
-      "endFrame": 6426,
-      "durationFrames": 195
-    },
-    {
-      "id": "klein-05",
-      "cueId": "klein-05",
-      "text": "路径会记住你选择的环绕",
-      "startFrame": 6450,
-      "endFrame": 6594,
-      "durationFrames": 144
-    },
-    {
-      "id": "projective-01",
-      "cueId": "projective-01",
-      "text": "上下左右，全都通向各自的倒影",
-      "startFrame": 6942,
-      "endFrame": 7126,
-      "durationFrames": 184
-    },
-    {
-      "id": "projective-02",
-      "cueId": "projective-02",
-      "text": "一次越界改变方向",
-      "startFrame": 7144,
-      "endFrame": 7254,
-      "durationFrames": 110
-    },
-    {
-      "id": "projective-03",
-      "cueId": "projective-03",
-      "text": "两次倒映使棋路重新吻合",
-      "startFrame": 7266,
-      "endFrame": 7419,
-      "durationFrames": 153
-    },
-    {
-      "id": "projective-04",
-      "cueId": "projective-04",
-      "text": "在双生的世界里",
-      "startFrame": 7443,
-      "endFrame": 7539,
-      "durationFrames": 96
-    },
-    {
-      "id": "projective-05",
-      "cueId": "projective-05",
-      "text": "每次远行，都会遇见另一个自己",
-      "startFrame": 7551,
-      "endFrame": 7733,
-      "durationFrames": 182
-    },
-    {
-      "id": "sphere-01",
-      "cueId": "sphere-01",
-      "text": "在最后的世界",
-      "startFrame": 8081,
-      "endFrame": 8155,
-      "durationFrames": 74
-    },
-    {
-      "id": "sphere-02",
-      "cueId": "sphere-02",
-      "text": "棋路离开一条边，便会沿相邻的方向继续",
-      "startFrame": 8167,
-      "endFrame": 8403,
+      "startFrame": 569,
+      "endFrame": 805,
       "durationFrames": 236
     },
     {
-      "id": "sphere-03",
-      "cueId": "sphere-03",
-      "text": "四条边依次归向彼此",
-      "startFrame": 8421,
-      "endFrame": 8543,
-      "durationFrames": 122
+      "id": "caption-03",
+      "cueId": "caption-03",
+      "text": "它们从另一条边界后延续",
+      "startFrame": 821,
+      "endFrame": 989,
+      "durationFrames": 168
     },
     {
-      "id": "sphere-04",
-      "cueId": "sphere-04",
-      "text": "方形的棋盘也随之闭合成球",
-      "startFrame": 8555,
-      "endFrame": 8715,
-      "durationFrames": 160
+      "id": "caption-04",
+      "cueId": "caption-04",
+      "text": "将遥远的彼岸重新粘合为近邻",
+      "startFrame": 1015,
+      "endFrame": 1225,
+      "durationFrames": 210
     },
     {
-      "id": "sphere-05",
-      "cueId": "sphere-05",
-      "text": "人们为了看清完整的世界",
-      "startFrame": 8745,
-      "endFrame": 8885,
-      "durationFrames": 140
+      "id": "caption-05",
+      "cueId": "caption-05",
+      "text": "现在，僭越棋盘之人",
+      "startFrame": 1466,
+      "endFrame": 1636,
+      "durationFrames": 170
     },
     {
-      "id": "sphere-06",
-      "cueId": "sphere-06",
-      "text": "将它展开成一张有边的图",
-      "startFrame": 8897,
-      "endFrame": 9051,
-      "durationFrames": 154
+      "id": "caption-06",
+      "cueId": "caption-06",
+      "text": "循着隐藏的连接前行吧",
+      "startFrame": 1667,
+      "endFrame": 1822,
+      "durationFrames": 155
     },
     {
-      "id": "sphere-07",
-      "cueId": "sphere-07",
-      "text": "所谓边界，或许只是观察世界时留下的痕迹",
-      "startFrame": 9075,
-      "endFrame": 9331,
-      "durationFrames": 256
+      "id": "caption-07",
+      "cueId": "caption-07",
+      "text": "世界的七重轮廓，在你面前依次苏醒",
+      "startFrame": 1866,
+      "endFrame": 2156,
+      "durationFrames": 290
     },
     {
-      "id": "finale-01",
-      "cueId": "finale-01",
-      "text": "现在，落子之人",
-      "startFrame": 9991,
-      "endFrame": 10086,
-      "durationFrames": 95
+      "id": "caption-08",
+      "cueId": "caption-08",
+      "text": "绝对的秩序，让世人确信那就是天地的尽头",
+      "startFrame": 2507,
+      "endFrame": 2819,
+      "durationFrames": 312
     },
     {
-      "id": "finale-02",
-      "cueId": "finale-02",
-      "text": "七种世界已经显现",
-      "startFrame": 10104,
-      "endFrame": 10209,
-      "durationFrames": 105
+      "id": "caption-09",
+      "cueId": "caption-09",
+      "text": "习惯了有限规则的生灵，真的能察觉",
+      "startFrame": 2854,
+      "endFrame": 3082,
+      "durationFrames": 228
     },
     {
-      "id": "finale-03",
-      "cueId": "finale-03",
-      "text": "但最后的连接，仍等待你亲手完成",
-      "startFrame": 10221,
-      "endFrame": 10426,
-      "durationFrames": 205
+      "id": "caption-10",
+      "cueId": "caption-10",
+      "text": "这只是世界的冰山一角吗？",
+      "startFrame": 3096,
+      "endFrame": 3260,
+      "durationFrames": 164
     },
     {
-      "id": "finale-04",
-      "cueId": "finale-04",
-      "text": "若你已经理解边界的意义",
-      "startFrame": 10456,
-      "endFrame": 10586,
+      "id": "caption-11",
+      "cueId": "caption-11",
+      "text": "左右相接，上下仍被截断",
+      "startFrame": 3618,
+      "endFrame": 3812,
+      "durationFrames": 194
+    },
+    {
+      "id": "caption-12",
+      "cueId": "caption-12",
+      "text": "一端坠入虚无，一端连缀归途",
+      "startFrame": 3859,
+      "endFrame": 4058,
+      "durationFrames": 199
+    },
+    {
+      "id": "caption-13",
+      "cueId": "caption-13",
+      "text": "拥有一重循环的世界，该如何丈量远近？",
+      "startFrame": 4115,
+      "endFrame": 4405,
+      "durationFrames": 290
+    },
+    {
+      "id": "caption-14",
+      "cueId": "caption-14",
+      "text": "天与地交织，首与尾相连",
+      "startFrame": 4747,
+      "endFrame": 4966,
+      "durationFrames": 219
+    },
+    {
+      "id": "caption-15",
+      "cueId": "caption-15",
+      "text": "两个方向各自成环",
+      "startFrame": 5011,
+      "endFrame": 5144,
+      "durationFrames": 133
+    },
+    {
+      "id": "caption-16",
+      "cueId": "caption-16",
+      "text": "在没有尽头的轮回中，背道而驰的棋子",
+      "startFrame": 5173,
+      "endFrame": 5465,
+      "durationFrames": 292
+    },
+    {
+      "id": "caption-17",
+      "cueId": "caption-17",
+      "text": "终将在宿命的交汇处重逢",
+      "startFrame": 5474,
+      "endFrame": 5657,
+      "durationFrames": 183
+    },
+    {
+      "id": "caption-18",
+      "cueId": "caption-18",
+      "text": "正与反的界限，被一次荒谬的扭转轻易抹除",
+      "startFrame": 5997,
+      "endFrame": 6325,
+      "durationFrames": 328
+    },
+    {
+      "id": "caption-19",
+      "cueId": "caption-19",
+      "text": "在只有一面的世界里，世人迷信黑白分明",
+      "startFrame": 6374,
+      "endFrame": 6659,
+      "durationFrames": 285
+    },
+    {
+      "id": "caption-20",
+      "cueId": "caption-20",
+      "text": "却不知正反不过是同源的虚妄",
+      "startFrame": 6672,
+      "endFrame": 6909,
+      "durationFrames": 237
+    },
+    {
+      "id": "caption-21",
+      "cueId": "caption-21",
+      "text": "世界在此剥离了内与外的分别",
+      "startFrame": 7234,
+      "endFrame": 7413,
+      "durationFrames": 179
+    },
+    {
+      "id": "caption-22",
+      "cueId": "caption-22",
+      "text": "路径会记住你的选择",
+      "startFrame": 7468,
+      "endFrame": 7596,
+      "durationFrames": 128
+    },
+    {
+      "id": "caption-23",
+      "cueId": "caption-23",
+      "text": "然后以颠倒的姿态，将因果偿还",
+      "startFrame": 7639,
+      "endFrame": 7869,
+      "durationFrames": 230
+    },
+    {
+      "id": "caption-24",
+      "cueId": "caption-24",
+      "text": "上下左右，全都通向各自的倒影",
+      "startFrame": 8201,
+      "endFrame": 8420,
+      "durationFrames": 219
+    },
+    {
+      "id": "caption-25",
+      "cueId": "caption-25",
+      "text": "一次越界是对自我的背叛",
+      "startFrame": 8469,
+      "endFrame": 8654,
+      "durationFrames": 185
+    },
+    {
+      "id": "caption-26",
+      "cueId": "caption-26",
+      "text": "而两次倒映又让宿命重新吻合",
+      "startFrame": 8667,
+      "endFrame": 8887,
+      "durationFrames": 220
+    },
+    {
+      "id": "caption-27",
+      "cueId": "caption-27",
+      "text": "在双生世界的尽头，你会遇见另一个自己",
+      "startFrame": 8957,
+      "endFrame": 9219,
+      "durationFrames": 262
+    },
+    {
+      "id": "caption-28",
+      "cueId": "caption-28",
+      "text": "在最后的世界，四方的棱角褪去",
+      "startFrame": 9559,
+      "endFrame": 9808,
+      "durationFrames": 249
+    },
+    {
+      "id": "caption-29",
+      "cueId": "caption-29",
+      "text": "支离破碎的版图归于圆满",
+      "startFrame": 9844,
+      "endFrame": 10006,
+      "durationFrames": 162
+    },
+    {
+      "id": "caption-30",
+      "cueId": "caption-30",
+      "text": "人们为了看懂这个世界",
+      "startFrame": 10056,
+      "endFrame": 10186,
       "durationFrames": 130
     },
     {
-      "id": "finale-05",
-      "cueId": "finale-05",
-      "text": "就落下那颗棋子",
-      "startFrame": 10598,
-      "endFrame": 10695,
-      "durationFrames": 97
+      "id": "caption-31",
+      "cueId": "caption-31",
+      "text": "将它粗暴地展平成一张带边界的纸",
+      "startFrame": 10199,
+      "endFrame": 10409,
+      "durationFrames": 210
     },
     {
-      "id": "finale-06",
-      "cueId": "finale-06",
-      "text": "然后，去看见世界本来的样子吧",
-      "startFrame": 10719,
-      "endFrame": 10898,
-      "durationFrames": 179
+      "id": "caption-32",
+      "cueId": "caption-32",
+      "text": "所谓边界，不过是观测者无知的刻痕",
+      "startFrame": 10450,
+      "endFrame": 10713,
+      "durationFrames": 263
+    },
+    {
+      "id": "caption-33",
+      "cueId": "caption-33",
+      "text": "现在，执子之人",
+      "startFrame": 10880,
+      "endFrame": 10997,
+      "durationFrames": 117
+    },
+    {
+      "id": "caption-34",
+      "cueId": "caption-34",
+      "text": "七种流形皆已显现",
+      "startFrame": 11030,
+      "endFrame": 11177,
+      "durationFrames": 147
+    },
+    {
+      "id": "caption-35",
+      "cueId": "caption-35",
+      "text": "但最后的闭环，仍等待你亲手落位",
+      "startFrame": 11220,
+      "endFrame": 11489,
+      "durationFrames": 269
+    },
+    {
+      "id": "caption-36",
+      "cueId": "caption-36",
+      "text": "若你已经洞悉边界的谎言",
+      "startFrame": 11543,
+      "endFrame": 11703,
+      "durationFrames": 160
+    },
+    {
+      "id": "caption-37",
+      "cueId": "caption-37",
+      "text": "就上前来，落下那颗子",
+      "startFrame": 11735,
+      "endFrame": 11884,
+      "durationFrames": 149
+    },
+    {
+      "id": "caption-38",
+      "cueId": "caption-38",
+      "text": "向我证明，你比我更懂得拓扑的真谛",
+      "startFrame": 11926,
+      "endFrame": 12179,
+      "durationFrames": 253
+    },
+    {
+      "id": "caption-39",
+      "cueId": "caption-39",
+      "text": "然后，去见证世界本来的模样吧",
+      "startFrame": 12231,
+      "endFrame": 12474,
+      "durationFrames": 243
     }
   ]
 }

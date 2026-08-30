@@ -32,6 +32,7 @@ function parseCli(argv) {
       "end-frame": { type: "string" },
       quality: { type: "string" },
       silent: { type: "boolean", default: false },
+      "no-subtitles": { type: "boolean", default: false },
       overwrite: { type: "boolean", default: false },
       help: { type: "boolean", short: "h", default: false }
     }
@@ -60,6 +61,7 @@ function usage() {
     "  --start-frame N             First video frame (inclusive)",
     "  --end-frame N               Final video frame (exclusive)",
     "  --silent                    Render without the manifest audio master",
+    "  --no-subtitles              Do not burn captions into rendered frames",
     "  --overwrite                 Replace an existing output file",
     "  --quality N                 Surface subdivisions per board interval"
   ].join("\n");
@@ -96,20 +98,25 @@ function registerFonts() {
       throw new Error(`Unable to register embedded font: ${fontPath}`);
     }
   }
+  const subtitleFontPath = path.join(PV_ROOT, "assets", "fonts", "topo-sans-pv-600.ttf");
+  if (!GlobalFonts.registerFromPath(subtitleFontPath, "Topo Sans PV")) {
+    throw new Error(`Unable to register embedded subtitle font: ${subtitleFontPath}`);
+  }
 }
 
 async function loadProject(options) {
   const manifestPath = path.resolve(REPOSITORY_ROOT, options.manifest || DEFAULT_MANIFEST);
-  const [story, manifest, logo] = await Promise.all([
+  const [story, manifest, institutionLogo, gameLogo] = await Promise.all([
     readJson(path.join(PV_ROOT, "story.json"), "story.json"),
     readJson(manifestPath, "manifest.json"),
-    loadImage(path.join(PV_ROOT, "assets", "iop-logo.png"))
+    loadImage(path.join(PV_ROOT, "assets", "iop-logo.png")),
+    loadImage(path.join(REPOSITORY_ROOT, "app", "assets", "brand-icon.png"))
   ]);
   Compositor.validateManifest(manifest, story);
-  return { story, manifest, logo, manifestPath };
+  return { story, manifest, logos: { institution: institutionLogo, game: gameLogo }, manifestPath };
 }
 
-function makeComposition(project, profileName, quality) {
+function makeComposition(project, profileName, quality, subtitlesEnabled = true) {
   const profile = project.story.render[profileName];
   return Compositor.createComposition({
     story: project.story,
@@ -117,7 +124,8 @@ function makeComposition(project, profileName, quality) {
     width: profile.width,
     height: profile.height,
     quality: quality == null ? undefined : Number(quality),
-    logo: project.logo
+    logos: project.logos,
+    subtitlesEnabled
   });
 }
 
@@ -177,7 +185,7 @@ function safeFilename(value) {
 async function renderKeyframes(project, options) {
   const outputDirectory = resolveOutput(options.output, path.join(DEFAULT_OUTPUT_ROOT, "keyframes"));
   await fs.mkdir(outputDirectory, { recursive: true });
-  const composition = makeComposition(project, options.profile, options.quality);
+  const composition = makeComposition(project, options.profile, options.quality, !options["no-subtitles"]);
   const canvas = createCanvas(composition.width, composition.height);
   const context = canvas.getContext("2d", { alpha: false });
   const frames = selectKeyframes(composition);
@@ -354,7 +362,7 @@ async function writeFrame(stream, buffer) {
 }
 
 async function renderVideo(project, options) {
-  const composition = makeComposition(project, options.profile, options.quality);
+  const composition = makeComposition(project, options.profile, options.quality, !options["no-subtitles"]);
   const startFrame = integerOption(options["start-frame"], "--start-frame", 0);
   const endFrame = integerOption(options["end-frame"], "--end-frame", composition.totalFrames);
   if (startFrame < 0 || startFrame >= composition.totalFrames) throw new Error("--start-frame is outside the timeline");
@@ -429,7 +437,7 @@ async function main() {
     return;
   }
   if (options.mode === "frame") {
-    const composition = makeComposition(project, options.profile, options.quality);
+    const composition = makeComposition(project, options.profile, options.quality, !options["no-subtitles"]);
     const frameIndex = integerOption(options.frame, "--frame", 0);
     if (frameIndex < 0 || frameIndex >= composition.totalFrames) throw new Error("--frame is outside the timeline");
     const outputPath = resolveOutput(options.output, path.join(DEFAULT_OUTPUT_ROOT, "keyframes", `frame-${String(frameIndex).padStart(6, "0")}.png`));

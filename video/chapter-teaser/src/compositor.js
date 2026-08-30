@@ -20,6 +20,7 @@
   var TAU = Math.PI * 2;
   var DEFAULT_SEED = 0x715eede7;
   var FONT_FAMILY = '"Topo Serif PV"';
+  var SUBTITLE_FONT_FAMILY = '"Topo Sans PV"';
   var GAME_PALETTE = Art.PALETTE;
 
   function clamp(value, low, high) {
@@ -960,19 +961,144 @@
     drawPath(ctx, model, viewport, morphAmount, orientation, reveal, composition.palette, settle);
   }
 
-  function drawIntro(ctx, composition, frameInfo) {
+  function drawIntroEdge(ctx, composition, frameInfo) {
+    var width = composition.width;
+    var height = composition.height;
     var progress = frameInfo.progress;
-    var model = composition.chapterById.cylinder;
-    var viewport = { x: 0, y: composition.height * 0.01, width: composition.width, height: composition.height };
-    var emerge = smoothstep(0.05, 0.28, progress) * (1 - smoothstep(0.82, 1, progress));
-    var morphProgress = smootherstep(0.62, 0.92, progress);
-    var morphAmount = Morph.spring(morphProgress);
-    var reveal = smootherstep(0.16, 0.64, progress);
-    var orientation = makeOrientation(model, frameInfo.frameIndex, progress, mix(1.03, 0.95, clamp01(morphAmount)));
-    drawFlatBoardStage(ctx, model, viewport, emerge * (1 - smoothstep(0.24, 0.72, morphAmount)));
-    drawSurface(ctx, model, viewport, morphAmount, orientation, emerge, composition.quality);
-    drawBoundaryTeaching(ctx, model, viewport, morphAmount, orientation, reveal, emerge, frameInfo.frameIndex);
-    drawPath(ctx, model, viewport, morphAmount, orientation, reveal, composition.palette, emerge);
+    var reveal = smootherstep(0.03, 0.20, progress);
+    var dissolve = 1 - smoothstep(0.90, 1, progress);
+    var alpha = reveal * dissolve;
+    var left = width * 0.18;
+    var right = width * 0.82;
+    var top = height * 0.24;
+    var bottom = height * 0.72;
+    var columns = 11;
+    var rows = 7;
+    var pulse = 0.55 + 0.45 * Math.sin(frameInfo.frameIndex * 0.018);
+
+    ctx.save();
+    ctx.lineCap = "round";
+    ctx.lineJoin = "round";
+    ctx.lineWidth = Math.max(1, height / 1080);
+    for (var column = 0; column <= columns; column += 1) {
+      var x = mix(left, right, column / columns);
+      var edgeDistanceX = Math.min(column, columns - column) / Math.max(1, columns * 0.34);
+      ctx.strokeStyle = rgba(GAME_PALETTE.ink, alpha * mix(0.035, 0.14, clamp01(edgeDistanceX)));
+      ctx.beginPath();
+      ctx.moveTo(x, top);
+      ctx.lineTo(x, bottom);
+      ctx.stroke();
+    }
+    for (var row = 0; row <= rows; row += 1) {
+      var y = mix(top, bottom, row / rows);
+      var edgeDistanceY = Math.min(row, rows - row) / Math.max(1, rows * 0.34);
+      ctx.strokeStyle = rgba(GAME_PALETTE.ink, alpha * mix(0.035, 0.14, clamp01(edgeDistanceY)));
+      ctx.beginPath();
+      ctx.moveTo(left, y);
+      ctx.lineTo(right, y);
+      ctx.stroke();
+    }
+
+    ctx.lineWidth = Math.max(2, height * 0.0032);
+    ctx.strokeStyle = rgba(GAME_PALETTE.connection, alpha * (0.38 + pulse * 0.12));
+    ctx.setLineDash([height * 0.022, height * 0.014]);
+    ctx.lineDashOffset = -frameInfo.frameIndex * height * 0.00045;
+    ctx.beginPath();
+    ctx.moveTo(width * 0.50, height * 0.58);
+    ctx.bezierCurveTo(width * 0.63, height * 0.56, width * 0.73, height * 0.39, right, height * 0.42);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(left, height * 0.42);
+    ctx.bezierCurveTo(width * 0.29, height * 0.45, width * 0.36, height * 0.60, width * 0.50, height * 0.58);
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    var fold = smootherstep(0.47, 0.82, progress);
+    var farGap = mix(width * 0.64, width * 0.10, fold);
+    var pointY = height * 0.42;
+    [width * 0.5 - farGap / 2, width * 0.5 + farGap / 2].forEach(function drawEndpoint(pointX, index) {
+      var radius = height * (0.010 + pulse * 0.0025);
+      ctx.fillStyle = rgba(index ? GAME_PALETTE.connection : GAME_PALETTE.twist, alpha * 0.92);
+      ctx.beginPath();
+      ctx.arc(pointX, pointY, radius, 0, TAU);
+      ctx.fill();
+      ctx.strokeStyle = rgba(GAME_PALETTE.card, alpha * 0.72);
+      ctx.lineWidth = Math.max(1, height * 0.0014);
+      ctx.stroke();
+    });
+
+    ctx.strokeStyle = rgba(GAME_PALETTE.twist, alpha * fold * 0.24);
+    ctx.lineWidth = Math.max(1, height * 0.0018);
+    ctx.beginPath();
+    ctx.ellipse(width * 0.5, pointY, farGap * 0.58, height * 0.095 * (1 - fold * 0.35), 0, Math.PI, TAU);
+    ctx.stroke();
+    ctx.restore();
+  }
+
+  function drawIntroAwakening(ctx, composition, frameInfo) {
+    var positions = [
+      [0.16, 0.42], [0.275, 0.62], [0.39, 0.36], [0.50, 0.58],
+      [0.61, 0.36], [0.725, 0.62], [0.84, 0.42]
+    ];
+    var progress = frameInfo.progress;
+    var width = composition.width;
+    var height = composition.height;
+    var lineReveal = smootherstep(0.06, 0.72, progress);
+    ctx.save();
+    ctx.strokeStyle = rgba(GAME_PALETTE.connection, lineReveal * 0.16);
+    ctx.lineWidth = Math.max(1, height * 0.0016);
+    ctx.setLineDash([height * 0.010, height * 0.014]);
+    ctx.lineDashOffset = -frameInfo.frameIndex * height * 0.0002;
+    ctx.beginPath();
+    positions.forEach(function connect(position, index) {
+      var x = width * position[0];
+      var y = height * position[1];
+      if (index === 0) ctx.moveTo(x, y);
+      else ctx.quadraticCurveTo(width * 0.5, height * (index % 2 ? 0.28 : 0.72), x, y);
+    });
+    ctx.stroke();
+    ctx.restore();
+
+    composition.chapters.forEach(function awaken(model, index) {
+      var arrival = smootherstep(index * 0.085, index * 0.085 + 0.25, progress);
+      var fade = 1 - smoothstep(0.91, 1, progress);
+      drawMiniature(
+        ctx,
+        composition,
+        model,
+        width * positions[index][0],
+        height * positions[index][1],
+        height * 0.31,
+        frameInfo,
+        index,
+        arrival * fade * 0.34
+      );
+    });
+  }
+
+  function drawIntro(ctx, composition, frameInfo) {
+    if (frameInfo.segment.id === "intro-awakening") {
+      drawIntroAwakening(ctx, composition, frameInfo);
+      return;
+    }
+    drawIntroEdge(ctx, composition, frameInfo);
+  }
+
+  function drawInstitutionLogo(ctx, composition, frameInfo) {
+    var width = composition.width;
+    var height = composition.height;
+    var reveal = smootherstep(0.05, 0.28, frameInfo.progress);
+    var fade = 1 - smoothstep(0.82, 1, frameInfo.progress);
+    var alpha = reveal * fade;
+    var diameter = height * 0.36;
+    ctx.save();
+    ctx.strokeStyle = rgba(GAME_PALETTE.connection, alpha * 0.13);
+    ctx.lineWidth = Math.max(1, height * 0.0015);
+    ctx.beginPath();
+    ctx.arc(width * 0.5, height * 0.49, diameter * 0.61, 0, TAU);
+    ctx.stroke();
+    ctx.restore();
+    drawCircularLogo(ctx, composition.logos.institution, width * 0.5, height * 0.49, diameter, alpha);
   }
 
   function drawMiniature(ctx, composition, model, centerX, centerY, size, frameInfo, index, opacity) {
@@ -1050,23 +1176,45 @@
     ctx.restore();
   }
 
+  function drawContainedImage(ctx, image, centerX, centerY, width, height, alpha) {
+    if (!image || !image.width || !image.height) return;
+    var scale = Math.min(width / image.width, height / image.height);
+    var drawWidth = image.width * scale;
+    var drawHeight = image.height * scale;
+    ctx.save();
+    ctx.globalAlpha = clamp01(alpha);
+    ctx.drawImage(image, centerX - drawWidth / 2, centerY - drawHeight / 2, drawWidth, drawHeight);
+    ctx.restore();
+  }
+
   function drawEndCard(ctx, composition, frameInfo) {
     var width = composition.width;
     var height = composition.height;
     var reveal = smootherstep(0.04, 0.28, frameInfo.progress);
-    var fade = 1 - smoothstep(0.91, 0.995, frameInfo.progress);
-    var alpha = reveal * fade;
-    var logoDiameter = height * 0.34;
-    drawCircularLogo(ctx, composition.logo, width * 0.5, height * 0.39, logoDiameter, alpha);
+    var alpha = reveal;
+    var logoDiameter = height * 0.235;
+    drawCircularLogo(ctx, composition.logos.institution, width * 0.425, height * 0.36, logoDiameter, alpha);
+    drawContainedImage(
+      ctx,
+      composition.logos.game,
+      width * 0.575,
+      height * 0.36,
+      logoDiameter * 1.16,
+      logoDiameter * 1.16,
+      alpha
+    );
 
     ctx.save();
     ctx.textAlign = "center";
     ctx.textBaseline = "middle";
     ctx.font = "700 " + Math.round(height * 0.076) + "px " + FONT_FAMILY;
     ctx.fillStyle = rgba(GAME_PALETTE.ink, alpha);
-    drawTrackedText(ctx, composition.story.endCard.gameTitle, width * 0.5, height * 0.69, height * 0.017);
+    drawTrackedText(ctx, composition.story.endCard.gameTitle, width * 0.5, height * 0.64, height * 0.017);
     ctx.fillStyle = rgba(GAME_PALETTE.connection, alpha * 0.62);
-    ctx.fillRect(width * 0.5 - height * 0.038, height * 0.755, height * 0.076, Math.max(1, height / 1080));
+    ctx.fillRect(width * 0.5 - height * 0.038, height * 0.715, height * 0.076, Math.max(1, height / 1080));
+    ctx.font = "600 " + Math.round(height * 0.036) + "px " + FONT_FAMILY;
+    ctx.fillStyle = rgba(GAME_PALETTE.ink, alpha * 0.88);
+    drawTrackedText(ctx, composition.story.endCard.producer, width * 0.5, height * 0.80, height * 0.008);
     ctx.restore();
   }
 
@@ -1083,10 +1231,10 @@
     ctx.textAlign = "center";
     ctx.textBaseline = "alphabetic";
     ctx.lineJoin = "round";
-    ctx.font = "600 " + fontSize + "px " + FONT_FAMILY;
+    ctx.font = "600 " + fontSize + "px " + SUBTITLE_FONT_FAMILY;
     while (fontSize > height * 0.026 && ctx.measureText(subtitle.text).width > maxWidth) {
       fontSize -= 1;
-      ctx.font = "600 " + fontSize + "px " + FONT_FAMILY;
+      ctx.font = "600 " + fontSize + "px " + SUBTITLE_FONT_FAMILY;
     }
     ctx.strokeStyle = rgba(GAME_PALETTE.ink, 0.88 * alpha);
     ctx.lineWidth = Math.max(2, height * 0.0034);
@@ -1144,7 +1292,8 @@
       palette: Object.assign({}, story.palette, GAME_PALETTE),
       gamePalette: GAME_PALETTE,
       seed: normalizeSeed(manifest.seed),
-      logo: options.logo || null,
+      logos: options.logos || { institution: options.logo || null, game: null },
+      subtitlesEnabled: options.subtitlesEnabled !== false,
       quality: Number(options.quality) || (width >= 3000 ? 2.8 : 2.25),
       chapters: chapters,
       chapterById: chapterById
@@ -1159,7 +1308,9 @@
       var model = chapterForSegment(chapterById, segment);
       var durationFrames = segment.endFrame - segment.startFrame;
       var localFrame = frameIndex - segment.startFrame;
-      var subtitle = kind === "chapter-card" ? null : findSubtitle(manifest.subtitles, frameIndex);
+      var subtitle = composition.subtitlesEnabled && kind !== "chapter-card"
+        ? findSubtitle(manifest.subtitles, frameIndex)
+        : null;
       var titleRows = null;
       var titlePhase = null;
       var titleTransformLocalFrame = null;
@@ -1206,6 +1357,8 @@
 
       if (frameInfo.kind === "intro") {
         drawIntro(ctx, composition, frameInfo);
+      } else if (frameInfo.kind === "institution-logo") {
+        drawInstitutionLogo(ctx, composition, frameInfo);
       } else if (frameInfo.kind === "chapter-card") {
         drawChapterCard(ctx, composition, frameInfo.chapter, frameInfo);
       } else if (frameInfo.kind === "tableau" || frameInfo.kind === "seven-worlds") {
@@ -1238,7 +1391,12 @@
         seed: composition.seed,
         artSource: "TopologyArt",
         palette: Object.assign({}, GAME_PALETTE),
-        endCard: { logoClip: "circle", textLines: [story.endCard.gameTitle] },
+        subtitlesEnabled: composition.subtitlesEnabled,
+        endCard: {
+          logos: ["institution", "game"],
+          institutionLogoClip: "circle",
+          textLines: [story.endCard.gameTitle, story.endCard.producer]
+        },
         chapters: chapters.map(function summarize(model) {
           return {
             id: model.chapter.id,
@@ -1259,6 +1417,7 @@
   return {
     DEFAULT_SEED: DEFAULT_SEED,
     FONT_FAMILY: FONT_FAMILY,
+    SUBTITLE_FONT_FAMILY: SUBTITLE_FONT_FAMILY,
     validateStory: validateStory,
     validateManifest: validateManifest,
     createComposition: createComposition,

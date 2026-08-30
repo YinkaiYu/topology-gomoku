@@ -19,6 +19,7 @@ const manifest = JSON.parse(fs.readFileSync(path.join(PV_ROOT, "manifest.json"),
 for (const weight of [400, 600, 700]) {
   GlobalFonts.registerFromPath(path.join(PV_ROOT, "assets", "fonts", `topo-serif-pv-${weight}.ttf`), "Topo Serif PV");
 }
+GlobalFonts.registerFromPath(path.join(PV_ROOT, "assets", "fonts", "topo-sans-pv-600.ttf"), "Topo Sans PV");
 
 let composition;
 function getComposition() {
@@ -73,6 +74,28 @@ test("subtitle lookup is single-cue, one-line, and suppressed on silent chapter 
   const invalid = structuredClone(manifest);
   invalid.subtitles[1].startFrame = invalid.subtitles[0].startFrame;
   assert.throws(() => Compositor.validateManifest(invalid, story), /must not overlap/);
+});
+
+test("clean composition disables every burned subtitle without changing the timeline", () => {
+  const clean = Compositor.createComposition({
+    story,
+    manifest,
+    width: 320,
+    height: 180,
+    quality: 1.25,
+    subtitlesEnabled: false
+  });
+  assert.equal(clean.totalFrames, manifest.totalFrames);
+  assert.equal(clean.inspect().subtitlesEnabled, false);
+  for (const subtitle of manifest.subtitles) assert.equal(clean.describeFrame(subtitle.startFrame).subtitle, null);
+});
+
+test("the narration silence is a dedicated institution-logo scene", () => {
+  const logo = manifest.segments.find((segment) => segment.kind === "institution-logo");
+  assert.ok(logo);
+  assert.deepEqual([logo.startFrame, logo.endFrame], [1225, 1466]);
+  assert.equal(getComposition().describeFrame(1330).kind, "institution-logo");
+  assert.deepEqual(logo.narrationCueIds, []);
 });
 
 test("all seven visual paths are the exact tracePath results and retain per-step seam data", () => {
@@ -241,10 +264,11 @@ test("chapter scenes reveal the real board path before the full surface state", 
   assert.match(source, /smootherstep\(0\.08, 0\.38, progress\)/);
 });
 
-test("end card exposes a circular official-logo clip and only the game title text line", () => {
+test("end card exposes both logos, the game title and a prominent producer credit", () => {
   const endCard = getComposition().inspect().endCard;
-  assert.equal(endCard.logoClip, "circle");
-  assert.deepEqual(endCard.textLines, [story.endCard.gameTitle]);
+  assert.equal(endCard.institutionLogoClip, "circle");
+  assert.deepEqual(endCard.logos, ["institution", "game"]);
+  assert.deepEqual(endCard.textLines, [story.endCard.gameTitle, "制作：余荫铠"]);
 });
 
 test("offline render streams raw frames into FFmpeg without a complete PNG sequence cache", () => {
@@ -255,6 +279,8 @@ test("offline render streams raw frames into FFmpeg without a complete PNG seque
   assert.doesNotMatch(source, /%0\d+d\.png/);
   assert.doesNotMatch(source, /Math\.random\s*\(|Date\.now\s*\(/);
   assert.match(source, /overwrite:\s*\{ type: "boolean", default: false \}/);
+  assert.match(source, /"no-subtitles":\s*\{ type: "boolean", default: false \}/);
+  assert.match(source, /brand-icon\.png/);
 });
 
 test("missing manifest failure is explicit and manifest-only verification passes", () => {
@@ -279,7 +305,13 @@ test("offline render rejects an audio master that no longer matches the manifest
   const temporaryRoot = fs.mkdtempSync(path.join(os.tmpdir(), "chapter-teaser-stale-audio-"));
   t.after(() => fs.rmSync(temporaryRoot, { recursive: true, force: true }));
   const staleManifest = structuredClone(manifest);
-  staleManifest.audio.artifacts.masterMix.sha256 = "0".repeat(64);
+  const staleAudio = path.join(temporaryRoot, "stale.wav");
+  fs.writeFileSync(staleAudio, Buffer.alloc(44));
+  staleManifest.audio.masterMix = staleAudio;
+  staleManifest.audio.artifacts = {
+    ...(staleManifest.audio.artifacts || {}),
+    masterMix: { path: staleAudio, bytes: 44, sha256: "0".repeat(64) }
+  };
   const manifestPath = path.join(temporaryRoot, "manifest.json");
   fs.writeFileSync(manifestPath, `${JSON.stringify(staleManifest)}\n`, "utf8");
   const rendered = spawnSync(
@@ -305,6 +337,8 @@ test("browser preview uses the shared compositor and the local server can open t
   assert.match(preview, /aspect-ratio:\s*16\s*\/\s*9/);
   assert.match(preview, /ChapterTeaserCompositor\.createComposition/);
   assert.match(preview, /topology-art\.js/);
+  assert.match(preview, /Topo Sans PV/);
+  assert.match(preview, /brand-icon\.png/);
   assert.match(preview, /manifest\.json is missing; run the PV audio build first/);
   assert.match(server, /import\("playwright-core"\)/);
 });

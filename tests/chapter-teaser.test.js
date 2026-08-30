@@ -7,6 +7,8 @@ const crypto = require("node:crypto");
 const ROOT = path.resolve(__dirname, "..");
 const PV_ROOT = path.join(ROOT, "video", "chapter-teaser");
 const story = JSON.parse(fs.readFileSync(path.join(PV_ROOT, "story.json"), "utf8"));
+const timing = JSON.parse(fs.readFileSync(path.join(PV_ROOT, "narration-timing.json"), "utf8"));
+const musicPlan = JSON.parse(fs.readFileSync(path.join(PV_ROOT, "music-plan.json"), "utf8"));
 const provenance = JSON.parse(fs.readFileSync(path.join(PV_ROOT, "provenance.json"), "utf8"));
 const Engine = require(path.join(ROOT, "app", "assets", "topology.js"));
 
@@ -45,15 +47,21 @@ test("七张章节牌的 ACT、关卡名和流形名一一对应", () => {
   );
 });
 
-test("所有旁白字幕都是无句号的单行文本", () => {
+test("新版正式旁白拆为 39 条单行字幕且标题不进入字幕", () => {
   const cues = allCues();
-  assert.ok(cues.length >= 40);
+  assert.equal(cues.length, 39);
+  assert.equal(timing.cues.length, 39);
   cues.forEach((cue) => {
     assert.equal(typeof cue.text, "string");
     assert.ok(cue.text.length > 0);
     assert.doesNotMatch(cue.text, /[\r\n]/u);
-    assert.doesNotMatch(cue.text, /[。.]/u);
   });
+  timing.cues.forEach((cue) => {
+    assert.doesNotMatch(cue.captionText, /[。.\r\n]/u);
+    assert.doesNotMatch(cue.captionText, /ACT\.|【|】/u);
+  });
+  assert.equal(timing.sources.script.sha256, "19779afaeef46168a5698a8f2aa8fd8e41372ac7960163927440dc8b8c4e391b");
+  assert.equal(timing.sources.voice.sha256, "502e1b05792ed3d16eddc13d192f73c3c8622e0f10abe05559cdf9f16f8f54e2");
 });
 
 test("七章代表棋路全部由真实规则生成且包含五个不同落点", () => {
@@ -88,9 +96,27 @@ test("工程依赖保持为自有 Canvas 渲染器与浏览器检查工具", () 
   assert.equal(fs.existsSync(path.join(ROOT, ".superpowers")), false);
 });
 
-test("片尾机构标识与来源清单中的确定性派生文件一致", () => {
+test("片中机构标识、游戏标识与片尾制作人字段齐备", () => {
   const logoPath = path.join(ROOT, provenance.institutionLogo.derivedPath);
   const hash = crypto.createHash("sha256").update(fs.readFileSync(logoPath)).digest("hex");
   assert.equal(hash, provenance.institutionLogo.derivedSha256);
   assert.equal(provenance.institutionLogo.sourceSha256.length, 64);
+  assert.equal(fs.existsSync(path.join(ROOT, "app", "assets", "brand-icon.png")), true);
+  assert.equal(story.endCard.gameTitle, "拓扑五子棋");
+  assert.equal(story.endCard.producer, "制作：余荫铠");
+  assert.equal(timing.visualSegments.some((segment) => segment.kind === "institution-logo"), true);
+});
+
+test("配乐计划为七章建立不同作品与配器身份", () => {
+  assert.equal(musicPlan.sources.length, 10);
+  assert.equal(musicPlan.clips.length, 10);
+  const chapterSources = new Set(musicPlan.clips.filter((clip) => !["intro", "finale"].includes(clip.id)).map((clip) => clip.sourceId));
+  assert.ok(chapterSources.size >= 8);
+  assert.equal(musicPlan.clips.some((clip) => clip.sourceId === "bach-inversus-recta"), true);
+  assert.equal(musicPlan.clips.some((clip) => clip.sourceId === "bach-inversus-inversa"), true);
+  for (const source of musicPlan.sources) {
+    assert.match(source.sourcePage, /^https:\/\/commons\.wikimedia\.org\//);
+    assert.match(source.downloadUrl, /^https:\/(?:\/upload\.wikimedia\.org|\/commons\.wikimedia\.org)\//);
+    assert.match(source.sha256, /^[0-9a-f]{64}$/);
+  }
 });

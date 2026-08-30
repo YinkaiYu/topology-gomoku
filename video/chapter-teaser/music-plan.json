@@ -1,0 +1,141 @@
+{
+  "schemaVersion": 1,
+  "fps": 60,
+  "sampleRate": 48000,
+  "editing": {
+    "crossfade": "equal-duration chapter-card overlaps with source-native tempo preserved",
+    "normalizationTargetLufs": -25.5,
+    "truePeakDb": -3,
+    "postMixGain": 0.42,
+    "logoWindow": { "startFrame": 1225, "endFrame": 1466, "gain": 0.52 }
+  },
+  "reference": {
+    "title": "《原神·提瓦特篇》主线章节预告PV-「足迹」伴奏背景音乐",
+    "role": "structure, pacing and transition reference only",
+    "sha256": "2856c83944d69c2779ab259e98f05a46c264221486777cd2cc158bd795d7c92f"
+  },
+  "sources": [
+    {
+      "id": "satie-gnossienne-6",
+      "filename": "01-satie-gnossienne-6.ogg",
+      "sha256": "a6e768ea96ab0f23fe68b375f4f43a62fa047563577c016d5584a1279fc391e9",
+      "work": "Gnossienne No. 6",
+      "composer": "Erik Satie",
+      "performer": "La Pianista",
+      "license": "CC BY-SA 3.0",
+      "sourcePage": "https://commons.wikimedia.org/wiki/File:Gnossienne_6_(Satie).ogg",
+      "downloadUrl": "https://upload.wikimedia.org/wikipedia/commons/2/2b/Gnossienne_6_%28Satie%29.ogg"
+    },
+    {
+      "id": "bach-contrapunctus-1",
+      "filename": "02-bach-contrapunctus-1.flac",
+      "sha256": "90ae30d4cafe8aed8fe2c428b95674147457d390d8a54ed5ebf59335751c6af3",
+      "work": "The Art of Fugue, BWV 1080 — Contrapunctus I",
+      "composer": "Johann Sebastian Bach",
+      "performer": "Kimiko Douglass-Ishizaka",
+      "license": "CC0",
+      "sourcePage": "https://commons.wikimedia.org/wiki/File:Kimiko_Ishizaka_-_J.S._Bach,_The_Art_of_Fugue,_BWV_1080_-_01_Contrapunctus_1.ogg",
+      "downloadUrl": "https://commons.wikimedia.org/wiki/Special:Redirect/file/Kimiko_Ishizaka_-_J.S._Bach%2C_The_Art_of_Fugue%2C_BWV_1080_-_01_Contrapunctus_1.flac"
+    },
+    {
+      "id": "bach-cello-suite-1-prelude",
+      "filename": "03-bach-cello-suite-1-prelude.ogg",
+      "sha256": "1e50d9e513c37725e8d8f378787a87330b040505ec679f9e919b01f2f4eae25f",
+      "work": "Cello Suite No. 1 in G major, BWV 1007 — Prelude",
+      "composer": "Johann Sebastian Bach",
+      "performer": "Chris (Fopseh)",
+      "license": "CC0",
+      "sourcePage": "https://commons.wikimedia.org/wiki/File:Bach_Cello_Suite_1_Prelude_(BWV_1007)_Played_by_Chris.ogg",
+      "downloadUrl": "https://upload.wikimedia.org/wikipedia/commons/a/a7/Bach_Cello_Suite_1_Prelude_%28BWV_1007%29_Played_by_Chris.ogg"
+    },
+    {
+      "id": "ravel-string-quartet-2",
+      "filename": "04-ravel-string-quartet-mvt-2.ogg",
+      "sha256": "da1b606d16cfb8cf7ea244fac61307ed1ee8eaa20ec409652eb46f3556aba38f",
+      "work": "String Quartet in F major — II. Assez vif, très rythmé",
+      "composer": "Maurice Ravel",
+      "performer": "United States Army Band",
+      "license": "Public domain",
+      "sourcePage": "https://commons.wikimedia.org/wiki/File:Ravel_-_String_Quartet,_mvt_2_-_US_Army_Band.ogg",
+      "downloadUrl": "https://upload.wikimedia.org/wikipedia/commons/2/24/Ravel_-_String_Quartet%2C_mvt_2_-_US_Army_Band.ogg"
+    },
+    {
+      "id": "scriabin-prelude-op67-1",
+      "filename": "05-scriabin-prelude-op67-no1.ogg",
+      "sha256": "8151a52299770202a1b4d001837808529d4e6c49c78786feac1bda3d4519587b",
+      "work": "Prelude, Op. 67 No. 1",
+      "composer": "Alexander Scriabin",
+      "performer": "Jennifer Castellano",
+      "license": "Public domain / Musopen",
+      "sourcePage": "https://commons.wikimedia.org/wiki/File:Alexander_Scriabin_-_prelude_no._1,_op._67.ogg",
+      "downloadUrl": "https://upload.wikimedia.org/wikipedia/commons/e/e5/Alexander_Scriabin_-_prelude_no._1%2C_op._67.ogg"
+    },
+    {
+      "id": "debussy-cathedrale",
+      "filename": "06-debussy-sunken-cathedral.ogg",
+      "sha256": "ee807789ba469ae989cec2c6d9c0f7e3f2f8de958e9c9291809c7454a454abe4",
+      "work": "La cathédrale engloutie",
+      "composer": "Claude Debussy",
+      "performer": "Ivan Ilić",
+      "license": "CC BY 3.0",
+      "sourcePage": "https://commons.wikimedia.org/wiki/File:La_Cath%C3%A9drale_engloutie_-_Claude_Debussy_-_performed_by_Ivan_Ilic.ogg",
+      "downloadUrl": "https://upload.wikimedia.org/wikipedia/commons/7/78/La_Cath%C3%A9drale_engloutie_-_Claude_Debussy_-_performed_by_Ivan_Ilic.ogg"
+    },
+    {
+      "id": "bach-inversus-recta",
+      "filename": "07-bach-contrapunctus-inversus-recta.flac",
+      "sha256": "4efa088cdbc1ef9ded71f8114e117714b00dadccbf1b9e3627ee3d55a8804aa1",
+      "work": "The Art of Fugue — Contrapunctus Inversus A4, Forma Recta",
+      "composer": "Johann Sebastian Bach",
+      "performer": "Kimiko Douglass-Ishizaka",
+      "license": "CC0",
+      "sourcePage": "https://commons.wikimedia.org/wiki/File:Kimiko_Ishizaka_-_J.S._Bach,_The_Art_of_Fugue,_BWV_1080_-_13_Contrapunctus_Inversus_A4_-_Forma_Recta.ogg",
+      "downloadUrl": "https://commons.wikimedia.org/wiki/Special:Redirect/file/Kimiko_Ishizaka_-_J.S._Bach%2C_The_Art_of_Fugue%2C_BWV_1080_-_13_Contrapunctus_Inversus_A4_-_Forma_Recta.flac"
+    },
+    {
+      "id": "bach-inversus-inversa",
+      "filename": "08-bach-contrapunctus-inversus-inversa.flac",
+      "sha256": "f089630392d9526dba78e6190184c3f2a8fe876137bdb5022e0f657936d2155e",
+      "work": "The Art of Fugue — Contrapunctus Inversus A4, Forma Inversa",
+      "composer": "Johann Sebastian Bach",
+      "performer": "Kimiko Douglass-Ishizaka",
+      "license": "CC0",
+      "sourcePage": "https://commons.wikimedia.org/wiki/File:Kimiko_Ishizaka_-_J.S._Bach,_The_Art_of_Fugue,_BWV_1080_-_12_Contrapunctus_Inversus_12_A4_-_Forma_Inversa.ogg",
+      "downloadUrl": "https://commons.wikimedia.org/wiki/Special:Redirect/file/Kimiko_Ishizaka_-_J.S._Bach%2C_The_Art_of_Fugue%2C_BWV_1080_-_12_Contrapunctus_Inversus_12_A4_-_Forma_Inversa.flac"
+    },
+    {
+      "id": "bach-air-bwv1068",
+      "filename": "09-bach-air-usaf.mp3",
+      "sha256": "139e7a43fc39a5502b58a49b0002f96d37875be3794d2f6938ef59c1f35af1cd",
+      "work": "Orchestral Suite No. 3 in D major, BWV 1068 — Air",
+      "composer": "Johann Sebastian Bach",
+      "performer": "United States Air Force Strings",
+      "license": "Public domain (U.S. federal government recording)",
+      "sourcePage": "https://commons.wikimedia.org/wiki/File:Air_-_Air_Force_Strings_-_United_States_Air_Force_Band.mp3",
+      "downloadUrl": "https://upload.wikimedia.org/wikipedia/commons/e/ec/Air_-_Air_Force_Strings_-_United_States_Air_Force_Band.mp3"
+    },
+    {
+      "id": "bach-contrapunctus-9",
+      "filename": "10-bach-contrapunctus-9.flac",
+      "sha256": "863f5f260f7652bf933c00c136924e1599f8fc8f809afba4c4a8b201ca49ea23",
+      "work": "The Art of Fugue, BWV 1080 — Contrapunctus IX a 4 alla Duodecima",
+      "composer": "Johann Sebastian Bach",
+      "performer": "Kimiko Douglass-Ishizaka",
+      "license": "CC0",
+      "sourcePage": "https://commons.wikimedia.org/wiki/File:Kimiko_Ishizaka_-_J.S._Bach,_The_Art_of_Fugue,_BWV_1080_-_09_Contrapunctus_9_a_4_Alla_Duodecima.ogg",
+      "downloadUrl": "https://commons.wikimedia.org/wiki/Special:Redirect/file/Kimiko_Ishizaka_-_J.S._Bach%2C_The_Art_of_Fugue%2C_BWV_1080_-_09_Contrapunctus_9_a_4_Alla_Duodecima.flac"
+    }
+  ],
+  "clips": [
+    { "id": "intro", "sourceId": "satie-gnossienne-6", "sourceInSeconds": 0, "targetStartFrame": 0, "targetEndFrame": 2198, "fadeInFrames": 72, "fadeOutFrames": 42 },
+    { "id": "plane", "sourceId": "bach-contrapunctus-1", "sourceInSeconds": 0, "targetStartFrame": 2114, "targetEndFrame": 3302, "fadeInFrames": 42, "fadeOutFrames": 42 },
+    { "id": "cylinder", "sourceId": "bach-cello-suite-1-prelude", "sourceInSeconds": 0, "targetStartFrame": 3218, "targetEndFrame": 4447, "fadeInFrames": 42, "fadeOutFrames": 42 },
+    { "id": "torus", "sourceId": "ravel-string-quartet-2", "sourceInSeconds": 0, "targetStartFrame": 4363, "targetEndFrame": 5699, "fadeInFrames": 42, "fadeOutFrames": 42 },
+    { "id": "mobius", "sourceId": "scriabin-prelude-op67-1", "sourceInSeconds": 0, "targetStartFrame": 5615, "targetEndFrame": 6951, "fadeInFrames": 42, "fadeOutFrames": 42 },
+    { "id": "klein", "sourceId": "debussy-cathedrale", "sourceInSeconds": 0, "targetStartFrame": 6867, "targetEndFrame": 7911, "fadeInFrames": 42, "fadeOutFrames": 42 },
+    { "id": "projective-recta", "sourceId": "bach-inversus-recta", "sourceInSeconds": 0, "targetStartFrame": 7827, "targetEndFrame": 8670, "fadeInFrames": 42, "fadeOutFrames": 120 },
+    { "id": "projective-inversa", "sourceId": "bach-inversus-inversa", "sourceInSeconds": 0, "targetStartFrame": 8400, "targetEndFrame": 9261, "fadeInFrames": 120, "fadeOutFrames": 42 },
+    { "id": "sphere", "sourceId": "bach-air-bwv1068", "sourceInSeconds": 0, "targetStartFrame": 9177, "targetEndFrame": 10755, "fadeInFrames": 42, "fadeOutFrames": 42 },
+    { "id": "finale", "sourceId": "bach-contrapunctus-9", "sourceInSeconds": 118.593333, "targetStartFrame": 10671, "targetEndFrame": 12897, "fadeInFrames": 42, "fadeOutFrames": 6 }
+  ]
+}
