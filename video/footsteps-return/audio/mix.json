@@ -1,0 +1,502 @@
+{
+    "schemaVersion":  1,
+    "composition":  {
+                        "id":  "footsteps-return",
+                        "durationSeconds":  214.04,
+                        "sampleRateHz":  48000,
+                        "channels":  2,
+                        "outputFile":  "video/footsteps-return/audio/mix/footsteps-return-draft.wav"
+                    },
+    "inputs":  {
+                   "narration":  {
+                                     "selectedAuditionId":  "F",
+                                     "selectedVoiceId":  "cold-witness",
+                                     "pan":  "center",
+                                     "channelPolicy":  "Each measured mono cue is placed at its exact sample-aligned start and duplicated to equal-power L/R center; no time compression.",
+                                     "gainDb":  0,
+                                     "cues":  [
+                                                  {
+                                                      "id":  "intro-boundary",
+                                                      "startSeconds":  0.42,
+                                                      "durationSeconds":  4.08,
+                                                      "file":  "video/footsteps-return/captures/voiceover/intro-boundary.wav",
+                                                      "sha256":  "825be46e0acccd950d1f1bb4e0c1c1e1474d411524bf00c8f394b444051523cd"
+                                                  },
+                                                  {
+                                                      "id":  "intro-roads",
+                                                      "startSeconds":  4.86,
+                                                      "durationSeconds":  10,
+                                                      "file":  "video/footsteps-return/captures/voiceover/intro-roads.wav",
+                                                      "sha256":  "246ce63602ef6ff58083798c1fcf1d501b3305f3219914fc98a9d3f04b701e60"
+                                                  },
+                                                  {
+                                                      "id":  "intro-invitation",
+                                                      "startSeconds":  15.22,
+                                                      "durationSeconds":  10.4,
+                                                      "file":  "video/footsteps-return/captures/voiceover/intro-invitation.wav",
+                                                      "sha256":  "642100d571b12388389cbedb3ba2d8ca8ad2baf1750f71cd703a7a6883cf2cda"
+                                                  },
+                                                  {
+                                                      "id":  "plane-order",
+                                                      "startSeconds":  29.84,
+                                                      "durationSeconds":  10.88,
+                                                      "file":  "video/footsteps-return/captures/voiceover/plane-order.wav",
+                                                      "sha256":  "13d8b894b7a840588dcdbeaa4dea0f301c046f6f5d316c5a126e5d2368f35513"
+                                                  },
+                                                  {
+                                                      "id":  "cylinder-cycle",
+                                                      "startSeconds":  47.06,
+                                                      "durationSeconds":  9.44,
+                                                      "file":  "video/footsteps-return/captures/voiceover/cylinder-cycle.wav",
+                                                      "sha256":  "6e150c87a9b42564ef3361379a78d766e0e564e15a5c77e4c2f1c0dbcbc08ee4"
+                                                  },
+                                                  {
+                                                      "id":  "cylinder-distance",
+                                                      "startSeconds":  56.86,
+                                                      "durationSeconds":  4.88,
+                                                      "file":  "video/footsteps-return/captures/voiceover/cylinder-distance.wav",
+                                                      "sha256":  "e1dd285bdfd49d68c5e761e5a437fff27b9615857540d81649911456a606404a"
+                                                  },
+                                                  {
+                                                      "id":  "torus-cycles",
+                                                      "startSeconds":  68.08,
+                                                      "durationSeconds":  9.36,
+                                                      "file":  "video/footsteps-return/captures/voiceover/torus-cycles.wav",
+                                                      "sha256":  "e6e74ddbe1e982acac0938fbbeb4cf10a1eddcc8e1e4dad0cdb9f24cb282aa4a"
+                                                  },
+                                                  {
+                                                      "id":  "torus-shortest-path",
+                                                      "startSeconds":  77.8,
+                                                      "durationSeconds":  5.44,
+                                                      "file":  "video/footsteps-return/captures/voiceover/torus-shortest-path.wav",
+                                                      "sha256":  "4d5f7d54a3ceb29207004b42fda2c4e6893ce7d91cc8aa9a26e90627b27fcfcf"
+                                                  },
+                                                  {
+                                                      "id":  "mobius-turn",
+                                                      "startSeconds":  89.58,
+                                                      "durationSeconds":  8.8,
+                                                      "file":  "video/footsteps-return/captures/voiceover/mobius-turn.wav",
+                                                      "sha256":  "2be1e9f3bf5ea5229aa02a95be55f838082778321e314e1903cc6731beabf975"
+                                                  },
+                                                  {
+                                                      "id":  "mobius-one-side",
+                                                      "startSeconds":  98.74,
+                                                      "durationSeconds":  4.16,
+                                                      "file":  "video/footsteps-return/captures/voiceover/mobius-one-side.wav",
+                                                      "sha256":  "ecaa969d8042564f52342168d8bbf325e486770db136668bd4dedd8e4ce3eb5c"
+                                                  },
+                                                  {
+                                                      "id":  "klein-two-returns",
+                                                      "startSeconds":  109.24,
+                                                      "durationSeconds":  11.36,
+                                                      "file":  "video/footsteps-return/captures/voiceover/klein-two-returns.wav",
+                                                      "sha256":  "01de36256bd25a0390bdf42de8db0c0c606a0a4cdcbd1dfea1ffe2618a89332b"
+                                                  },
+                                                  {
+                                                      "id":  "klein-memory",
+                                                      "startSeconds":  120.96,
+                                                      "durationSeconds":  2.72,
+                                                      "file":  "video/footsteps-return/captures/voiceover/klein-memory.wav",
+                                                      "sha256":  "40c763005d783f0458b7cea094b1acff23943b17591753c0101b7b613e18c711"
+                                                  },
+                                                  {
+                                                      "id":  "projective-reflection",
+                                                      "startSeconds":  130.02,
+                                                      "durationSeconds":  8.96,
+                                                      "file":  "video/footsteps-return/captures/voiceover/projective-reflection.wav",
+                                                      "sha256":  "1da574c1d6824a52b1d7a48b7b8f5527349ce3871a150383ba150302c5e031ba"
+                                                  },
+                                                  {
+                                                      "id":  "projective-twin",
+                                                      "startSeconds":  139.34,
+                                                      "durationSeconds":  6.16,
+                                                      "file":  "video/footsteps-return/captures/voiceover/projective-twin.wav",
+                                                      "sha256":  "a3769726960a2844faceb89fe0de4ae5590492dfed041277965d404c78fa7437"
+                                                  },
+                                                  {
+                                                      "id":  "sphere-closure",
+                                                      "startSeconds":  151.84,
+                                                      "durationSeconds":  12,
+                                                      "file":  "video/footsteps-return/captures/voiceover/sphere-closure.wav",
+                                                      "sha256":  "c83fa1d04822dc10d2b7b7f0fe145af9d7c178410b4c92f46c1cd9b70f675ed2"
+                                                  },
+                                                  {
+                                                      "id":  "sphere-map",
+                                                      "startSeconds":  164.2,
+                                                      "durationSeconds":  5.04,
+                                                      "file":  "video/footsteps-return/captures/voiceover/sphere-map.wav",
+                                                      "sha256":  "8620a5e1fa385efe84d0b680cbf49e9f4a9daa34f3d21fb87acc3389781684a5"
+                                                  },
+                                                  {
+                                                      "id":  "sphere-boundary",
+                                                      "startSeconds":  169.6,
+                                                      "durationSeconds":  4.72,
+                                                      "file":  "video/footsteps-return/captures/voiceover/sphere-boundary.wav",
+                                                      "sha256":  "ab33353e1b4963db28d31153dfc41757cfdce842e9613ae10f85d125ff5f6ea8"
+                                                  },
+                                                  {
+                                                      "id":  "outro-invocation",
+                                                      "startSeconds":  182.36,
+                                                      "durationSeconds":  4.88,
+                                                      "file":  "video/footsteps-return/captures/voiceover/outro-invocation.wav",
+                                                      "sha256":  "c06b070c7dc429a7ea8498e1b34acc78bbb22c2c2e527e9f578f5e93ff2efac1"
+                                                  },
+                                                  {
+                                                      "id":  "outro-connection",
+                                                      "startSeconds":  187.6,
+                                                      "durationSeconds":  9.04,
+                                                      "file":  "video/footsteps-return/captures/voiceover/outro-connection.wav",
+                                                      "sha256":  "82627095212c083c45950da7f0a77010553d5f02a371704aedc58e2ba81f87a5"
+                                                  },
+                                                  {
+                                                      "id":  "outro-stone",
+                                                      "startSeconds":  197,
+                                                      "durationSeconds":  7.52,
+                                                      "file":  "video/footsteps-return/captures/voiceover/outro-stone.wav",
+                                                      "sha256":  "4b5deb574b349f8e46528f4937a3599a971ac29efed46e3c0b65372be6fa30b6"
+                                                  },
+                                                  {
+                                                      "id":  "outro-world",
+                                                      "startSeconds":  204.88,
+                                                      "durationSeconds":  4.24,
+                                                      "file":  "video/footsteps-return/captures/voiceover/outro-world.wav",
+                                                      "sha256":  "53b7cc81ce03098f37e5786ab8277ee05cf38dd0b412d5f2539827f770a8c113"
+                                                  }
+                                              ]
+                                 },
+                   "score":  {
+                                 "file":  "video/footsteps-return/audio/score/rendered/master.wav",
+                                 "sha256":  "e6ad4232d95faa78d05dffd9fd2733afd2f9e13c12990bd15eae8ec5cc41b72a",
+                                 "startSeconds":  0,
+                                 "durationSeconds":  214.04,
+                                 "gainDb":  8,
+                                 "width":  {
+                                               "method":  "mid-side",
+                                               "sideLevel":  0.7,
+                                               "middleLevel":  1
+                                           },
+                                 "ducking":  {
+                                                 "sidechain":  "narration",
+                                                 "threshold":  0.02,
+                                                 "ratio":  1.22,
+                                                 "attackMs":  35,
+                                                 "releaseMs":  280
+                                             }
+                             },
+                   "sfx":  {
+                               "continuousBed":  false,
+                               "policy":  "Only the 21 retimed editorial cues are instantiated; silence is the default SFX bed and no low-frequency tail is synthesized.",
+                               "ducking":  {
+                                               "sidechain":  "narration",
+                                               "threshold":  0.018,
+                                               "ratio":  1.28,
+                                               "attackMs":  12,
+                                               "releaseMs":  180,
+                                               "targetReductionDb":  5
+                                           },
+                               "cues":  [
+                                            {
+                                                "id":  "card-plane-low",
+                                                "category":  "chapter-low-punctuation",
+                                                "generatorId":  "chapter-sub-pulse-v1",
+                                                "sceneId":  "chapter-card-plane",
+                                                "startSeconds":  26.42,
+                                                "durationSeconds":  1.12,
+                                                "gainDb":  -2,
+                                                "file":  "video/footsteps-return/audio/sfx/generated/chapter-low-punctuation.wav",
+                                                "sha256":  "9c4ba6c24447ec53461610bd5006cf4b3d29af6a12b0ef8d74402ec0af321b26"
+                                            },
+                                            {
+                                                "id":  "card-cylinder-low",
+                                                "category":  "chapter-low-punctuation",
+                                                "generatorId":  "chapter-sub-pulse-v1",
+                                                "sceneId":  "chapter-card-cylinder",
+                                                "startSeconds":  43.64,
+                                                "durationSeconds":  1.12,
+                                                "gainDb":  -3,
+                                                "file":  "video/footsteps-return/audio/sfx/generated/chapter-low-punctuation.wav",
+                                                "sha256":  "9c4ba6c24447ec53461610bd5006cf4b3d29af6a12b0ef8d74402ec0af321b26"
+                                            },
+                                            {
+                                                "id":  "card-torus-low",
+                                                "category":  "chapter-low-punctuation",
+                                                "generatorId":  "chapter-sub-pulse-v1",
+                                                "sceneId":  "chapter-card-torus",
+                                                "startSeconds":  64.66,
+                                                "durationSeconds":  1.12,
+                                                "gainDb":  -3,
+                                                "file":  "video/footsteps-return/audio/sfx/generated/chapter-low-punctuation.wav",
+                                                "sha256":  "9c4ba6c24447ec53461610bd5006cf4b3d29af6a12b0ef8d74402ec0af321b26"
+                                            },
+                                            {
+                                                "id":  "card-mobius-low",
+                                                "category":  "chapter-low-punctuation",
+                                                "generatorId":  "chapter-sub-pulse-v1",
+                                                "sceneId":  "chapter-card-mobius",
+                                                "startSeconds":  86.16,
+                                                "durationSeconds":  1.12,
+                                                "gainDb":  -4,
+                                                "file":  "video/footsteps-return/audio/sfx/generated/chapter-low-punctuation.wav",
+                                                "sha256":  "9c4ba6c24447ec53461610bd5006cf4b3d29af6a12b0ef8d74402ec0af321b26"
+                                            },
+                                            {
+                                                "id":  "card-klein-low",
+                                                "category":  "chapter-low-punctuation",
+                                                "generatorId":  "chapter-sub-pulse-v1",
+                                                "sceneId":  "chapter-card-klein",
+                                                "startSeconds":  105.82,
+                                                "durationSeconds":  1.12,
+                                                "gainDb":  -2,
+                                                "file":  "video/footsteps-return/audio/sfx/generated/chapter-low-punctuation.wav",
+                                                "sha256":  "9c4ba6c24447ec53461610bd5006cf4b3d29af6a12b0ef8d74402ec0af321b26"
+                                            },
+                                            {
+                                                "id":  "card-projective-low",
+                                                "category":  "chapter-low-punctuation",
+                                                "generatorId":  "chapter-sub-pulse-v1",
+                                                "sceneId":  "chapter-card-projective",
+                                                "startSeconds":  126.6,
+                                                "durationSeconds":  1.12,
+                                                "gainDb":  -4,
+                                                "file":  "video/footsteps-return/audio/sfx/generated/chapter-low-punctuation.wav",
+                                                "sha256":  "9c4ba6c24447ec53461610bd5006cf4b3d29af6a12b0ef8d74402ec0af321b26"
+                                            },
+                                            {
+                                                "id":  "card-sphere-low",
+                                                "category":  "chapter-low-punctuation",
+                                                "generatorId":  "chapter-sub-pulse-v1",
+                                                "sceneId":  "chapter-card-sphere",
+                                                "startSeconds":  148.42,
+                                                "durationSeconds":  1.12,
+                                                "gainDb":  -2,
+                                                "file":  "video/footsteps-return/audio/sfx/generated/chapter-low-punctuation.wav",
+                                                "sha256":  "9c4ba6c24447ec53461610bd5006cf4b3d29af6a12b0ef8d74402ec0af321b26"
+                                            },
+                                            {
+                                                "id":  "stone-plane",
+                                                "category":  "stone-placement",
+                                                "generatorId":  "stone-soft-slate-v1",
+                                                "sceneId":  "chapter-plane",
+                                                "startSeconds":  32.898504,
+                                                "durationSeconds":  0.42,
+                                                "gainDb":  -1,
+                                                "file":  "video/footsteps-return/audio/sfx/generated/stone-placement.wav",
+                                                "sha256":  "e80f34f58613d229d7cd673f22d734fa7f2c3dfd5e875c6a5528a65713fa1280"
+                                            },
+                                            {
+                                                "id":  "stone-cylinder",
+                                                "category":  "stone-placement",
+                                                "generatorId":  "stone-soft-slate-v1",
+                                                "sceneId":  "chapter-cylinder",
+                                                "startSeconds":  51.536819,
+                                                "durationSeconds":  0.42,
+                                                "gainDb":  -2,
+                                                "file":  "video/footsteps-return/audio/sfx/generated/stone-placement.wav",
+                                                "sha256":  "e80f34f58613d229d7cd673f22d734fa7f2c3dfd5e875c6a5528a65713fa1280"
+                                            },
+                                            {
+                                                "id":  "stone-torus",
+                                                "category":  "stone-placement",
+                                                "generatorId":  "stone-soft-slate-v1",
+                                                "sceneId":  "chapter-torus",
+                                                "startSeconds":  72.034417,
+                                                "durationSeconds":  0.42,
+                                                "gainDb":  -2,
+                                                "file":  "video/footsteps-return/audio/sfx/generated/stone-placement.wav",
+                                                "sha256":  "e80f34f58613d229d7cd673f22d734fa7f2c3dfd5e875c6a5528a65713fa1280"
+                                            },
+                                            {
+                                                "id":  "stone-mobius",
+                                                "category":  "stone-placement",
+                                                "generatorId":  "stone-soft-slate-v1",
+                                                "sceneId":  "chapter-mobius",
+                                                "startSeconds":  95.861924,
+                                                "durationSeconds":  0.42,
+                                                "gainDb":  -3,
+                                                "file":  "video/footsteps-return/audio/sfx/generated/stone-placement.wav",
+                                                "sha256":  "e80f34f58613d229d7cd673f22d734fa7f2c3dfd5e875c6a5528a65713fa1280"
+                                            },
+                                            {
+                                                "id":  "stone-sphere",
+                                                "category":  "stone-placement",
+                                                "generatorId":  "stone-soft-slate-v1",
+                                                "sceneId":  "chapter-sphere",
+                                                "startSeconds":  157.761298,
+                                                "durationSeconds":  0.42,
+                                                "gainDb":  -2,
+                                                "file":  "video/footsteps-return/audio/sfx/generated/stone-placement.wav",
+                                                "sha256":  "e80f34f58613d229d7cd673f22d734fa7f2c3dfd5e875c6a5528a65713fa1280"
+                                            },
+                                            {
+                                                "id":  "stone-outro",
+                                                "category":  "stone-placement",
+                                                "generatorId":  "stone-soft-slate-v1",
+                                                "sceneId":  "outro",
+                                                "startSeconds":  198.657196,
+                                                "durationSeconds":  0.42,
+                                                "gainDb":  0,
+                                                "file":  "video/footsteps-return/audio/sfx/generated/stone-placement.wav",
+                                                "sha256":  "e80f34f58613d229d7cd673f22d734fa7f2c3dfd5e875c6a5528a65713fa1280"
+                                            },
+                                            {
+                                                "id":  "seam-cylinder",
+                                                "category":  "seam-crossing",
+                                                "generatorId":  "seam-glide-v1",
+                                                "sceneId":  "chapter-cylinder",
+                                                "startSeconds":  53.076609,
+                                                "durationSeconds":  0.76,
+                                                "gainDb":  -2,
+                                                "file":  "video/footsteps-return/audio/sfx/generated/seam-crossing.wav",
+                                                "sha256":  "cdbd0270198b87383171868dad0d5ed1cbb420a294843d0edd3b473841b094be"
+                                            },
+                                            {
+                                                "id":  "seam-torus",
+                                                "category":  "seam-crossing",
+                                                "generatorId":  "seam-glide-v1",
+                                                "sceneId":  "chapter-torus",
+                                                "startSeconds":  74.791977,
+                                                "durationSeconds":  0.76,
+                                                "gainDb":  -3,
+                                                "file":  "video/footsteps-return/audio/sfx/generated/seam-crossing.wav",
+                                                "sha256":  "cdbd0270198b87383171868dad0d5ed1cbb420a294843d0edd3b473841b094be"
+                                            },
+                                            {
+                                                "id":  "seam-projective",
+                                                "category":  "seam-crossing",
+                                                "generatorId":  "seam-glide-v1",
+                                                "sceneId":  "chapter-projective",
+                                                "startSeconds":  135.388503,
+                                                "durationSeconds":  0.76,
+                                                "gainDb":  -4,
+                                                "file":  "video/footsteps-return/audio/sfx/generated/seam-crossing.wav",
+                                                "sha256":  "cdbd0270198b87383171868dad0d5ed1cbb420a294843d0edd3b473841b094be"
+                                            },
+                                            {
+                                                "id":  "bend-torus",
+                                                "category":  "surface-bend",
+                                                "generatorId":  "surface-flex-v1",
+                                                "sceneId":  "chapter-torus",
+                                                "startSeconds":  83.580298,
+                                                "durationSeconds":  1.28,
+                                                "gainDb":  -4,
+                                                "file":  "video/footsteps-return/audio/sfx/generated/surface-bend.wav",
+                                                "sha256":  "7a736e2366b5eb4bc55505cf4234d271ab56c8ebde9abeb2deadaa8bae7fddf4"
+                                            },
+                                            {
+                                                "id":  "bend-mobius",
+                                                "category":  "surface-bend",
+                                                "generatorId":  "surface-flex-v1",
+                                                "sceneId":  "chapter-mobius",
+                                                "startSeconds":  102.482792,
+                                                "durationSeconds":  1.28,
+                                                "gainDb":  -3,
+                                                "file":  "video/footsteps-return/audio/sfx/generated/surface-bend.wav",
+                                                "sha256":  "7a736e2366b5eb4bc55505cf4234d271ab56c8ebde9abeb2deadaa8bae7fddf4"
+                                            },
+                                            {
+                                                "id":  "bend-sphere",
+                                                "category":  "surface-bend",
+                                                "generatorId":  "surface-flex-v1",
+                                                "sceneId":  "chapter-sphere",
+                                                "startSeconds":  173.710381,
+                                                "durationSeconds":  1.28,
+                                                "gainDb":  -4,
+                                                "file":  "video/footsteps-return/audio/sfx/generated/surface-bend.wav",
+                                                "sha256":  "7a736e2366b5eb4bc55505cf4234d271ab56c8ebde9abeb2deadaa8bae7fddf4"
+                                            },
+                                            {
+                                                "id":  "occlusion-plane",
+                                                "category":  "camera-occlusion",
+                                                "generatorId":  "occlusion-air-v1",
+                                                "sceneId":  "chapter-plane",
+                                                "startSeconds":  40.947212,
+                                                "durationSeconds":  0.92,
+                                                "gainDb":  -3,
+                                                "file":  "video/footsteps-return/audio/sfx/generated/camera-occlusion.wav",
+                                                "sha256":  "bc09db853c4ae76bb3a918965f7d7c8d3a0750229c7ffbe51e452d94606f7861"
+                                            },
+                                            {
+                                                "id":  "occlusion-klein",
+                                                "category":  "camera-occlusion",
+                                                "generatorId":  "occlusion-air-v1",
+                                                "sceneId":  "chapter-klein",
+                                                "startSeconds":  123.264609,
+                                                "durationSeconds":  0.92,
+                                                "gainDb":  -4,
+                                                "file":  "video/footsteps-return/audio/sfx/generated/camera-occlusion.wav",
+                                                "sha256":  "bc09db853c4ae76bb3a918965f7d7c8d3a0750229c7ffbe51e452d94606f7861"
+                                            }
+                                        ]
+                           }
+               },
+    "processing":  {
+                       "mixEngine":  "FFmpeg filter graph",
+                       "sampleAlignment":  "All cue starts are converted to integer 48 kHz sample delays before mixing.",
+                       "outputFormat":  {
+                                            "codec":  "pcm_s24le",
+                                            "bitsPerSample":  24
+                                        },
+                       "implementation":  {
+                                              "mixerScript":  "scripts/mix-audio.ps1",
+                                              "mixerScriptSha256":  "35316c33fbee7681793e46656be679be940af53aef8dc2b33080ff4a3b2797ff",
+                                              "ffmpegVersion":  "ffmpeg version 9.0.1-full_build-www.gyan.dev Copyright (c) 2000-2026 the FFmpeg developers"
+                                          },
+                       "buses":  [
+                                     "narration-center",
+                                     "score-width-ducked",
+                                     "sfx-sparse-ducked"
+                                 ],
+                       "loudness":  {
+                                        "analysis":  "FFmpeg loudnorm two-pass JSON measurement followed by final verification analysis",
+                                        "targetIntegratedLufs":  -14,
+                                        "targetLoudnessRangeLu":  7,
+                                        "truePeakCeilingDbtp":  -1,
+                                        "finalLimiterCeilingDbfs":  -1.2
+                                    }
+                   },
+    "tail":  {
+                 "endCardStartSeconds":  210.04,
+                 "lastNotatedEventSeconds":  211.682,
+                 "releaseTailSeconds":  2.358,
+                 "policy":  "Preserve the final D6/9 event and its rendered decay through the logo entrance, then retain the quiet release hold without padding the former score."
+             },
+    "readiness":  {
+                      "requiredGates":  [
+                                            "fonts",
+                                            "liveGameAdapter",
+                                            "narration",
+                                            "score",
+                                            "sfx",
+                                            "webgl"
+                                        ],
+                      "policy":  "The render promise resolves only after named visual gates, the measured mix manifest, and final master audio metadata are ready."
+                  },
+    "output":  {
+                   "status":  "measured",
+                   "sha256":  "52f5dc2f38501c07ef145abbbfaaca78d681dc88278ed3efdcf674b3c62479c8",
+                   "bytes":  61643622,
+                   "format":  {
+                                  "container":  "wav",
+                                  "codec":  "pcm_s24le",
+                                  "sampleRateHz":  48000,
+                                  "channels":  2,
+                                  "durationSeconds":  214.04
+                              },
+                   "measurements":  {
+                                        "integratedLufs":  -14.06,
+                                        "loudnessRangeLu":  7.2,
+                                        "truePeakDbtp":  -1.19,
+                                        "thresholdLufs":  -24.75
+                                    },
+                   "analysis":  {
+                                    "ffmpegVersion":  "ffmpeg version 9.0.1-full_build-www.gyan.dev Copyright (c) 2000-2026 the FFmpeg developers",
+                                    "method":  "FFmpeg two-pass loudnorm to -14 LUFS / -1 dBTP, followed by a latency-compensated -1.2 dBFS safety limiter, exact 10273920-sample trim at 48000 Hz, and independent loudnorm verification.",
+                                    "measurementRationale":  "The recorded values are automated FFmpeg measurements, not a subjective listening judgment. The target is distribution-oriented; native Mandarin intelligibility, music balance, and SFX masking remain user-review-required."
+                                },
+                   "subjectiveListening":  {
+                                               "status":  "not-completed",
+                                               "note":  "No agent listening claim is made. Native Mandarin intelligibility, musical balance, and SFX masking remain user-review-required after the draft export."
+                                           },
+                   "renderContractSha256":  "4b17719718d3fd97ad8c1417f3016fdb7f23c2c0a919eec89229cfdf74f16f90"
+               }
+}

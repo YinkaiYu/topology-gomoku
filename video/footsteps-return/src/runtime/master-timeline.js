@@ -46,6 +46,22 @@ export function buildMasterTimeline({ document: documentRef, gsap, stage, sceneF
   const transitionGeometryBindings = validateTransitionGeometryBindings(registry.scenes);
 
   const timeline = gsap.timeline({ paused: true });
+  const masterAudio = documentRef.querySelector("[data-master-audio]");
+  if (!masterAudio) throw new Error("the final master audio element is missing");
+  if (Number(masterAudio.dataset.start) !== 0 || Number(masterAudio.dataset.duration) !== timelineDefinition.duration) {
+    throw new Error("the final master audio range must match the composition");
+  }
+  const audioRoles = new Set();
+  timelineDefinition.audio.forEach((cue) => {
+    if (!cue.id || audioRoles.has(cue.role) || cue.start < 0 || cue.duration < 0 || cue.start + cue.duration > timelineDefinition.duration) {
+      throw new Error(`invalid or duplicate master audio bus ${cue.id ?? "unknown"}`);
+    }
+    audioRoles.add(cue.role);
+    timeline.addLabel(`audio-${cue.role}`, cue.start);
+  });
+  if (!["narration", "score", "sfx", "master"].every((role) => audioRoles.has(role))) {
+    throw new Error("the master timeline needs narration, score, SFX, and final mix buses");
+  }
   const elements = scenePairs.map(({ element }) => element);
   timeline.set(elements.slice(1), { opacity: 0 }, 0);
   timeline.set(elements[0], { opacity: 1 }, 0);
@@ -94,6 +110,9 @@ export function buildMasterTimeline({ document: documentRef, gsap, stage, sceneF
 
   stage.dataset.transitionGeometryReady = "true";
   stage.dataset.transitionGeometryCount = String(transitionGeometryBindings.size);
+  stage.dataset.audioTimelineReady = "true";
+  stage.dataset.audioBusCount = String(timelineDefinition.audio.length);
+  stage.dataset.masterAudioId = masterAudio.id;
 
   addCaptionTrack(timeline, { document: documentRef });
 
