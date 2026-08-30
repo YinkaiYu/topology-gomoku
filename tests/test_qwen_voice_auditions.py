@@ -70,6 +70,17 @@ class FakeOfficialWrapper:
             raise AssertionError(speakers)
 
 
+class FakeVoiceDesignWrapper:
+    def __init__(self):
+        self.request = None
+
+    def generate_voice_design(self, **kwargs):
+        self.request = kwargs
+        if "speaker" in kwargs or "ref_audio" in kwargs or "voice_clone_prompt" in kwargs:
+            raise AssertionError("VoiceDesign received a speaker or reference input")
+        return [[0.3, -0.3, 0.15, -0.15]], 24000
+
+
 class QwenVoiceAuditionTests(unittest.TestCase):
     def load_manifest_subject(self):
         generator = load_generator()
@@ -87,7 +98,7 @@ class QwenVoiceAuditionTests(unittest.TestCase):
             with self.subTest(name=name):
                 malformed = copy.deepcopy(manifest)
                 mutate(malformed["outputs"])
-                with self.assertRaisesRegex(ValueError, "styles|three"):
+                with self.assertRaisesRegex(ValueError, "styles|A-I|nine|audition"):
                     generator.verify_manifest(config, malformed)
 
     def test_manifest_verifier_rejects_stale_config_hash(self):
@@ -155,6 +166,54 @@ class QwenVoiceAuditionTests(unittest.TestCase):
         self.assertEqual(wrapper.model.request["instruct_ids"], ["tokens:instruct:用成熟清晰、克制庄重的标准普通话朗读。"])
         self.assertEqual(wrapper.model.request["speakers"], ["Uncle_Fu"])
         self.assertEqual(wrapper.model.request["languages"], ["Chinese"])
+
+    def test_voice_design_uses_only_the_official_public_generation_path(self):
+        generator = load_generator()
+        self.assertTrue(hasattr(generator, "generate_voice_design"), "VoiceDesign-only helper must exist")
+        wrapper = FakeVoiceDesignWrapper()
+        waves, sample_rate = generator.generate_voice_design(
+            wrapper,
+            text="人们总把棋盘的边缘视作尽头。可那些消失在边界上的道路并未中断。它们在另一处接缝后延续，将遥远的落点重新变为近邻。",
+            instruction="原创低沉男声。使用成熟、自然的标准普通话。",
+            language="Chinese",
+            max_new_tokens=512,
+            do_sample=True,
+            top_k=50,
+            temperature=1.0,
+            repetition_penalty=1.05,
+        )
+
+        self.assertEqual(sample_rate, 24000)
+        self.assertEqual(waves, [[0.3, -0.3, 0.15, -0.15]])
+        self.assertEqual(wrapper.request["language"], "Chinese")
+        self.assertEqual(wrapper.request["instruct"], "原创低沉男声。使用成熟、自然的标准普通话。")
+        self.assertNotIn("speaker", wrapper.request)
+        self.assertNotIn("ref_audio", wrapper.request)
+        self.assertNotIn("voice_clone_prompt", wrapper.request)
+
+    def test_manifest_verifier_requires_exactly_a_through_i(self):
+        generator, config, manifest = self.load_manifest_subject()
+        self.assertEqual(len(manifest["outputs"]), 9, "audition manifest must contain A-I before mutation checks")
+        mutations = {
+            "missing": lambda outputs: outputs.pop(),
+            "duplicate": lambda outputs: outputs.__setitem__(8, {**outputs[8], "auditionId": "H"}),
+            "unknown": lambda outputs: outputs.__setitem__(8, {**outputs[8], "auditionId": "J"}),
+        }
+        for name, mutate in mutations.items():
+            with self.subTest(name=name):
+                malformed = copy.deepcopy(manifest)
+                mutate(malformed["outputs"])
+                with self.assertRaisesRegex(ValueError, "A-I|audition|missing|duplicated|unknown"):
+                    generator.verify_manifest(config, malformed, verify_wavs=False)
+
+    def test_manifest_verifier_checks_static_voice_design_contract_before_wavs(self):
+        generator, config, manifest = self.load_manifest_subject()
+        self.assertGreaterEqual(len(manifest["outputs"]), 4, "manifest must include VoiceDesign output D")
+        malformed = copy.deepcopy(manifest)
+        malformed["outputs"][3]["sharedDeliveryClause"] = "不同的交付要求。"
+
+        with self.assertRaisesRegex(ValueError, "sharedDeliveryClause|contract"):
+            generator.verify_manifest(config, malformed, verify_wavs=False)
 
 
 if __name__ == "__main__":

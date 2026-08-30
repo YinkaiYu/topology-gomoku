@@ -20,21 +20,96 @@
   },
   "styles": [
     {
+      "auditionId": "A",
       "id": "documentary",
       "seed": 83001,
       "instruction": "请用成熟、清晰的标准普通话，像克制庄重的科学或宇宙纪录片旁白一样不疾不徐地朗读；不要悲伤，不要使用新闻播音腔，句尾收束干净。"
     },
     {
+      "auditionId": "B",
       "id": "adventure",
       "seed": 83001,
       "instruction": "请用成熟的标准普通话，带着探索感与向前的动力，坚定而有精神地朗读；轻微强调关键意象，不要喊叫，不要使用广告腔，不要戏剧化。"
     },
     {
+      "auditionId": "C",
       "id": "contemplative",
       "seed": 83001,
       "instruction": "请用成熟、圆润的标准普通话，低沉但清晰，平静、舒展而神秘地朗读；不要悲伤，不要拖尾，不要使用播音腔。"
     }
   ],
+  "voiceDesign": {
+    "textSource": {
+      "scriptPath": "video/footsteps-return/audio/voiceover/script.json",
+      "cueIds": ["intro-boundary", "intro-roads"],
+      "text": "人们总把棋盘的边缘视作尽头。可那些消失在边界上的道路并未中断。它们在另一处接缝后延续，将遥远的落点重新变为近邻。"
+    },
+    "model": {
+      "id": "Qwen/Qwen3-TTS-12Hz-1.7B-VoiceDesign",
+      "revision": "0e711a1c0aa5aad30654426e0d11f67716c1211e",
+      "package": {
+        "name": "qwen-tts",
+        "version": "0.1.1"
+      },
+      "language": "Chinese",
+      "device": "cpu",
+      "generationMethod": "generate_voice_design",
+      "referenceAudio": null,
+      "referenceText": null
+    },
+    "sharedDeliveryClause": "使用成熟、自然的标准普通话；以庄重、克制的电影感旁白朗读；辅音清楚，字词易懂；保持平静而向前的推进；不要悲伤、煽情、广告腔、新闻播音腔、喊叫或拖长句尾。",
+    "voices": [
+      {
+        "auditionId": "D",
+        "id": "deep-baritone",
+        "seed": 83001,
+        "timbreClause": "约45岁的原创男性声线；低男中音至男低音音域；胸腔共鸣强；音质浓密、稳定、清晰，绝不含混。",
+        "instruction": "约45岁的原创男性声线；低男中音至男低音音域；胸腔共鸣强；音质浓密、稳定、清晰，绝不含混。使用成熟、自然的标准普通话；以庄重、克制的电影感旁白朗读；辅音清楚，字词易懂；保持平静而向前的推进；不要悲伤、煽情、广告腔、新闻播音腔、喊叫或拖长句尾。"
+      },
+      {
+        "auditionId": "E",
+        "id": "epic-narrator",
+        "seed": 83001,
+        "timbreClause": "原创男性声线；宽广低音域；厚重而有空间感；具有统领性的电影尺度，但不做戏剧化夸张。",
+        "instruction": "原创男性声线；宽广低音域；厚重而有空间感；具有统领性的电影尺度，但不做戏剧化夸张。使用成熟、自然的标准普通话；以庄重、克制的电影感旁白朗读；辅音清楚，字词易懂；保持平静而向前的推进；不要悲伤、煽情、广告腔、新闻播音腔、喊叫或拖长句尾。"
+      },
+      {
+        "auditionId": "F",
+        "id": "cold-witness",
+        "seed": 83001,
+        "timbreClause": "原创男性声线；低沉、干燥、冷峻、受控；略带距离感；轮廓坚硬而干净；神秘而不阴郁。",
+        "instruction": "原创男性声线；低沉、干燥、冷峻、受控；略带距离感；轮廓坚硬而干净；神秘而不阴郁。使用成熟、自然的标准普通话；以庄重、克制的电影感旁白朗读；辅音清楚，字词易懂；保持平静而向前的推进；不要悲伤、煽情、广告腔、新闻播音腔、喊叫或拖长句尾。"
+      },
+      {
+        "auditionId": "G",
+        "id": "warm-scholar",
+        "seed": 83001,
+        "timbreClause": "原创成熟男性声线；理性而温暖；像可信赖的科学叙事者；低中频圆润饱满。",
+        "instruction": "原创成熟男性声线；理性而温暖；像可信赖的科学叙事者；低中频圆润饱满。使用成熟、自然的标准普通话；以庄重、克制的电影感旁白朗读；辅音清楚，字词易懂；保持平静而向前的推进；不要悲伤、煽情、广告腔、新闻播音腔、喊叫或拖长句尾。"
+      },
+      {
+        "auditionId": "H",
+        "id": "weathered-traveler",
+        "seed": 83001,
+        "timbreClause": "原创年长男性声线；久经风霜；有纹理与岁月感，但不嘶哑、不虚弱、不悲情，也不模仿任何真人。",
+        "instruction": "原创年长男性声线；久经风霜；有纹理与岁月感，但不嘶哑、不虚弱、不悲情，也不模仿任何真人。使用成熟、自然的标准普通话；以庄重、克制的电影感旁白朗读；辅音清楚，字词易懂；保持平静而向前的推进；不要悲伤、煽情、广告腔、新闻播音腔、喊叫或拖长句尾。"
+      },
+      {
+        "auditionId": "I",
+        "id": "resolute-guide",
+        "seed": 83001,
+        "timbreClause": "原创男性声线；比D与H略年轻，但仍低沉结实；果决、向前推进、安静而英勇。",
+        "instruction": "原创男性声线；比D与H略年轻，但仍低沉结实；果决、向前推进、安静而英勇。使用成熟、自然的标准普通话；以庄重、克制的电影感旁白朗读；辅音清楚，字词易懂；保持平静而向前的推进；不要悲伤、煽情、广告腔、新闻播音腔、喊叫或拖长句尾。"
+      }
+    ],
+    "generation": {
+      "maxNewTokens": 512,
+      "doSample": true,
+      "topK": 50,
+      "temperature": 1.0,
+      "repetitionPenalty": 1.05
+    }
+  },
   "generation": {
     "maxNewTokens": 512,
     "doSample": true,

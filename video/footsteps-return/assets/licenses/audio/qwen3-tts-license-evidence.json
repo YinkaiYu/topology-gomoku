@@ -19,5 +19,16 @@
     "modelCardFile": "assets/licenses/audio/qwen3-tts-model-card-85e237c.md",
     "modelCardSha256": "f010321beea475a26a048ab9f8ba69c7fdb1242745d90a047a3e08b336bf923b",
     "savedNormalization": "source text with trailing whitespace trimmed and one final LF"
+  },
+  "voiceDesignModel": {
+    "id": "Qwen/Qwen3-TTS-12Hz-1.7B-VoiceDesign",
+    "revision": "0e711a1c0aa5aad30654426e0d11f67716c1211e",
+    "spdx": "Apache-2.0",
+    "revisionUrl": "https://huggingface.co/Qwen/Qwen3-TTS-12Hz-1.7B-VoiceDesign/tree/0e711a1c0aa5aad30654426e0d11f67716c1211e",
+    "sourceUrl": "https://huggingface.co/Qwen/Qwen3-TTS-12Hz-1.7B-VoiceDesign/raw/0e711a1c0aa5aad30654426e0d11f67716c1211e/README.md",
+    "sourceSha256": "621b7e88f1867bc03d817176fc1f7f55f4b5a70654b2a07fdcda1e169efb024b",
+    "modelCardFile": "assets/licenses/audio/qwen3-tts-voice-design-model-card-0e711a1.md",
+    "modelCardSha256": "cef0ef3f5366898466254afaebddb4ba1cd2e9d6dad376a3705b55cfcc8e0f92",
+    "savedNormalization": "source line trailing whitespace trimmed, LF line endings and one final LF"
   }
 }

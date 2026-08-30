@@ -75,6 +75,25 @@ def generate_custom_voice_with_instruction(
     return waves, sample_rate
 
 
+def generate_voice_design(
+    tts: Any,
+    *,
+    text: str,
+    instruction: str,
+    language: str,
+    **generation_kwargs: Any,
+) -> tuple[list[Any], int]:
+    """Use only qwen-tts's official public VoiceDesign generation path."""
+    if not text.strip() or not instruction.strip():
+        raise ValueError("VoiceDesign requires non-empty text and instruction")
+    return tts.generate_voice_design(
+        text=text,
+        instruct=instruction,
+        language=language,
+        **generation_kwargs,
+    )
+
+
 def validate_contract(config: dict[str, Any]) -> None:
     script_path = ROOT / config["textSource"]["scriptPath"]
     script = read_json(script_path)
@@ -96,6 +115,53 @@ def validate_contract(config: dict[str, Any]) -> None:
         raise ValueError("every performance style requires a natural-language instruction")
     if len({style["seed"] for style in styles}) != 1:
         raise ValueError("performance instruction must be the only generation variable across styles")
+
+    voice_design = config["voiceDesign"]
+    voice_script_path = ROOT / voice_design["textSource"]["scriptPath"]
+    voice_script = read_json(voice_script_path)
+    voice_cue_ids = voice_design["textSource"]["cueIds"]
+    cues_by_id = {cue["id"]: cue["text"] for cue in voice_script["cues"]}
+    if voice_cue_ids != ["intro-boundary", "intro-roads"]:
+        raise ValueError("VoiceDesign audition text must use the two committed opening cues in order")
+    combined_text = "".join(cues_by_id[cue_id] for cue_id in voice_cue_ids)
+    if combined_text != voice_design["textSource"]["text"]:
+        raise ValueError("VoiceDesign audition text must remain byte-identical to the two committed cues")
+    voice_model = voice_design["model"]
+    expected_voice_model = {
+        "id": "Qwen/Qwen3-TTS-12Hz-1.7B-VoiceDesign",
+        "revision": "0e711a1c0aa5aad30654426e0d11f67716c1211e",
+        "package": {"name": "qwen-tts", "version": "0.1.1"},
+        "language": "Chinese",
+        "device": "cpu",
+        "generationMethod": "generate_voice_design",
+        "referenceAudio": None,
+        "referenceText": None,
+    }
+    if voice_model != expected_voice_model or "speaker" in voice_model:
+        raise ValueError("D-I must use only the official 1.7B VoiceDesign path with no speaker or reference audio")
+    voices = voice_design["voices"]
+    expected_voice_ids = [
+        "deep-baritone",
+        "epic-narrator",
+        "cold-witness",
+        "warm-scholar",
+        "weathered-traveler",
+        "resolute-guide",
+    ]
+    if [voice["auditionId"] for voice in voices] != list("DEFGHI"):
+        raise ValueError("VoiceDesign auditions must be exactly D-I")
+    if [voice["id"] for voice in voices] != expected_voice_ids:
+        raise ValueError("VoiceDesign timbre ids are missing, duplicated, unknown or out of order")
+    shared_delivery = voice_design["sharedDeliveryClause"]
+    if not shared_delivery.strip() or len({voice["timbreClause"] for voice in voices}) != 6:
+        raise ValueError("D-I require one shared delivery clause and six distinct timbre clauses")
+    if len({voice["seed"] for voice in voices}) != 1:
+        raise ValueError("D-I must use one fixed seed")
+    for voice in voices:
+        if voice["instruction"] != voice["timbreClause"] + shared_delivery:
+            raise ValueError(f"{voice['auditionId']} instruction must be timbreClause + byte-identical shared delivery clause")
+    if voice_design["generation"] != config["generation"]:
+        raise ValueError("D-I must use the same locked sampling parameters")
     output = config["output"]
     output_directory = (ROOT / output["directory"]).resolve()
     captures_root = (PV_ROOT / "captures").resolve()
@@ -123,6 +189,19 @@ def validate_license_evidence(config: dict[str, Any]) -> None:
         raise ValueError("saved Qwen model card does not substantiate license and speaker")
     if model["revision"] != config["model"]["revision"]:
         raise ValueError("license evidence and generation config must pin the same model revision")
+    voice_model = evidence["voiceDesignModel"]
+    voice_model_card = PV_ROOT / voice_model["modelCardFile"]
+    if sha256_file(voice_model_card) != voice_model["modelCardSha256"]:
+        raise ValueError("saved Qwen VoiceDesign model card hash does not match evidence")
+    voice_model_card_text = voice_model_card.read_text(encoding="utf-8")
+    if (
+        "license: apache-2.0" not in voice_model_card_text
+        or "Qwen3-TTS-12Hz-1.7B-VoiceDesign" not in voice_model_card_text
+        or "generate_voice_design" not in voice_model_card_text
+    ):
+        raise ValueError("saved Qwen VoiceDesign model card does not substantiate its license and official path")
+    if voice_model["revision"] != config["voiceDesign"]["model"]["revision"]:
+        raise ValueError("VoiceDesign evidence and generation config must pin the same model revision")
     installed = importlib.metadata.version(package["name"])
     if installed != package["version"] or installed != config["model"]["package"]["version"]:
         raise ValueError(f"installed qwen-tts {installed} does not match the pinned evidence")
@@ -204,7 +283,16 @@ def measure_wave(path: pathlib.Path) -> dict[str, Any]:
     }
 
 
-def build_manifest(config: dict[str, Any], generated: list[dict[str, Any]]) -> dict[str, Any]:
+def build_manifest(
+    config: dict[str, Any],
+    existing_manifest: dict[str, Any],
+    generated: list[dict[str, Any]],
+) -> dict[str, Any]:
+    legacy_outputs = []
+    for audition_id, existing in zip("ABC", existing_manifest["outputs"][:3], strict=True):
+        preserved = dict(existing)
+        preserved["auditionId"] = audition_id
+        legacy_outputs.append(preserved)
     return {
         "schemaVersion": 1,
         "status": "user-review-required",
@@ -218,7 +306,7 @@ def build_manifest(config: dict[str, Any], generated: list[dict[str, Any]]) -> d
             "speaker": config["model"]["speaker"],
         },
         "normalization": config["output"],
-        "outputs": generated,
+        "outputs": legacy_outputs + generated,
     }
 
 
@@ -243,7 +331,12 @@ def verify_outputs(manifest: dict[str, Any]) -> None:
         raise ValueError("audition peak levels are not reasonably matched")
 
 
-def verify_manifest(config: dict[str, Any], manifest: dict[str, Any]) -> None:
+def verify_manifest(
+    config: dict[str, Any],
+    manifest: dict[str, Any],
+    *,
+    verify_wavs: bool = True,
+) -> None:
     validate_contract(config)
     expected_model = {
         "id": config["model"]["id"],
@@ -266,13 +359,16 @@ def verify_manifest(config: dict[str, Any], manifest: dict[str, Any]) -> None:
         raise ValueError("manifest normalization does not match the config")
 
     outputs = manifest.get("outputs")
+    if not isinstance(outputs, list) or len(outputs) != 9:
+        raise ValueError("manifest must contain exactly the nine A-I auditions")
+    if [output.get("auditionId") for output in outputs] != list("ABCDEFGHI"):
+        raise ValueError("manifest A-I auditions are missing, duplicated, unknown or out of order")
     approved_style_ids = [style["id"] for style in config["styles"]]
-    if not isinstance(outputs, list) or len(outputs) != 3:
-        raise ValueError("manifest must contain exactly three approved styles")
-    if [output.get("style") for output in outputs] != approved_style_ids:
-        raise ValueError("manifest styles are missing, duplicated, unknown or out of order")
-    for style, output in zip(config["styles"], outputs, strict=True):
+    if [output.get("style") for output in outputs[:3]] != approved_style_ids:
+        raise ValueError("manifest A-C styles are missing, duplicated, unknown or out of order")
+    for style, output in zip(config["styles"], outputs[:3], strict=True):
         expected_static = {
+            "auditionId": style["auditionId"],
             "style": style["id"],
             "instruction": style["instruction"],
             "seed": style["seed"],
@@ -285,7 +381,29 @@ def verify_manifest(config: dict[str, Any], manifest: dict[str, Any]) -> None:
         for field, expected in expected_static.items():
             if output.get(field) != expected:
                 raise ValueError(f"manifest {style['id']} {field} does not match the config contract")
-    verify_outputs(manifest)
+    voice_design = config["voiceDesign"]
+    voice_model = voice_design["model"]
+    for voice, output in zip(voice_design["voices"], outputs[3:], strict=True):
+        expected_static = {
+            "auditionId": voice["auditionId"],
+            "style": voice["id"],
+            "model": {"id": voice_model["id"], "revision": voice_model["revision"]},
+            "text": voice_design["textSource"]["text"],
+            "timbreClause": voice["timbreClause"],
+            "sharedDeliveryClause": voice_design["sharedDeliveryClause"],
+            "instruction": voice["instruction"],
+            "seed": voice["seed"],
+            "file": f"{config['output']['directory']}/{voice['id']}.wav",
+            "normalizedSampleRateHz": config["output"]["sampleRateHz"],
+            "channels": config["output"]["channels"],
+            "subtype": config["output"]["subtype"],
+            "status": "user-review-required",
+        }
+        for field, expected in expected_static.items():
+            if output.get(field) != expected:
+                raise ValueError(f"manifest {voice['auditionId']} {field} does not match the VoiceDesign contract")
+    if verify_wavs:
+        verify_outputs(manifest)
 
 
 def generate() -> dict[str, Any]:
@@ -298,7 +416,9 @@ def generate() -> dict[str, Any]:
     config = read_json(CONFIG_PATH)
     validate_contract(config)
     validate_license_evidence(config)
-    if config["model"]["revision"] == "main":
+    voice_design = config["voiceDesign"]
+    voice_model = voice_design["model"]
+    if voice_model["revision"] == "main":
         raise ValueError("model revision must be immutable")
     output_directory = ROOT / config["output"]["directory"]
     output_directory.mkdir(parents=True, exist_ok=True)
@@ -307,8 +427,8 @@ def generate() -> dict[str, Any]:
     torch.use_deterministic_algorithms(True, warn_only=True)
     snapshot = download_pinned_snapshot(
         snapshot_download,
-        config["model"]["id"],
-        config["model"]["revision"],
+        voice_model["id"],
+        voice_model["revision"],
     )
     model_started = time.perf_counter()
     tts = Qwen3TTSModel.from_pretrained(
@@ -321,24 +441,23 @@ def generate() -> dict[str, Any]:
     print(json.dumps({"event": "model-loaded", "seconds": round(time.perf_counter() - model_started, 3)}))
 
     generated = []
-    for style in config["styles"]:
-        seed_everything(style["seed"], torch, np)
+    for voice in voice_design["voices"]:
+        seed_everything(voice["seed"], torch, np)
         started = time.perf_counter()
         with torch.inference_mode():
-            waves, source_sample_rate = generate_custom_voice_with_instruction(
+            waves, source_sample_rate = generate_voice_design(
                 tts,
-                text=config["textSource"]["text"],
-                instruction=style["instruction"],
-                speaker=config["model"]["speaker"],
-                language=config["model"]["language"],
-                max_new_tokens=config["generation"]["maxNewTokens"],
-                do_sample=config["generation"]["doSample"],
-                top_k=config["generation"]["topK"],
-                temperature=config["generation"]["temperature"],
-                repetition_penalty=config["generation"]["repetitionPenalty"],
+                text=voice_design["textSource"]["text"],
+                instruction=voice["instruction"],
+                language=voice_model["language"],
+                max_new_tokens=voice_design["generation"]["maxNewTokens"],
+                do_sample=voice_design["generation"]["doSample"],
+                top_k=voice_design["generation"]["topK"],
+                temperature=voice_design["generation"]["temperature"],
+                repetition_penalty=voice_design["generation"]["repetitionPenalty"],
             )
         if len(waves) != 1:
-            raise ValueError(f"{style['id']} produced {len(waves)} waveforms instead of one")
+            raise ValueError(f"{voice['id']} produced {len(waves)} waveforms instead of one")
         normalized = mono_resample_and_normalize(
             waves[0],
             source_sample_rate,
@@ -346,7 +465,7 @@ def generate() -> dict[str, Any]:
             target_rms_dbfs=config["output"]["targetRmsDbfs"],
             peak_ceiling_dbfs=config["output"]["peakCeilingDbfs"],
         )
-        output_path = output_directory / f"{style['id']}.wav"
+        output_path = output_directory / f"{voice['id']}.wav"
         sf.write(
             output_path,
             normalized,
@@ -357,9 +476,14 @@ def generate() -> dict[str, Any]:
         measurement = measure_wave(output_path)
         elapsed = round(time.perf_counter() - started, 3)
         generated.append({
-            "style": style["id"],
-            "instruction": style["instruction"],
-            "seed": style["seed"],
+            "auditionId": voice["auditionId"],
+            "style": voice["id"],
+            "model": {"id": voice_model["id"], "revision": voice_model["revision"]},
+            "text": voice_design["textSource"]["text"],
+            "timbreClause": voice["timbreClause"],
+            "sharedDeliveryClause": voice_design["sharedDeliveryClause"],
+            "instruction": voice["instruction"],
+            "seed": voice["seed"],
             "file": output_path.relative_to(ROOT).as_posix(),
             "sourceSampleRateHz": int(source_sample_rate),
             "normalizedSampleRateHz": measurement["sampleRateHz"],
@@ -371,9 +495,10 @@ def generate() -> dict[str, Any]:
             "sha256": measurement["sha256"],
             "status": "user-review-required",
         })
-        print(json.dumps({"event": "audition-generated", "style": style["id"], "seconds": elapsed, **measurement}))
+        print(json.dumps({"event": "audition-generated", "auditionId": voice["auditionId"], "style": voice["id"], "seconds": elapsed, **measurement}))
 
-    manifest = build_manifest(config, generated)
+    existing_manifest = read_json(MANIFEST_PATH)
+    manifest = build_manifest(config, existing_manifest, generated)
     MANIFEST_PATH.write_text(
         json.dumps(manifest, ensure_ascii=False, indent=2) + "\n",
         encoding="utf-8",
@@ -384,7 +509,7 @@ def generate() -> dict[str, Any]:
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(description="Generate three pinned Qwen3-TTS Mandarin male auditions")
+    parser = argparse.ArgumentParser(description="Generate pinned Qwen3-TTS Mandarin male VoiceDesign auditions D-I")
     parser.add_argument("--verify", action="store_true", help="verify existing ignored WAVs against the review manifest")
     args = parser.parse_args()
     if args.verify:

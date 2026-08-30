@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "status": "user-review-required",
-  "configSha256": "13909e9cf876757d34375a75110c60e0dceb993840e7ba6b00516f8ef58d150d",
+  "configSha256": "2d94820de25d99ffe4f25a66e83833f27e90b0c0ff2c8928676fc511402c3f95",
   "text": "人们总把棋盘的边缘视作尽头。",
   "model": {
     "id": "Qwen/Qwen3-TTS-12Hz-0.6B-CustomVoice",
@@ -23,6 +23,7 @@
   },
   "outputs": [
     {
+      "auditionId": "A",
       "style": "documentary",
       "instruction": "请用成熟、清晰的标准普通话，像克制庄重的科学或宇宙纪录片旁白一样不疾不徐地朗读；不要悲伤，不要使用新闻播音腔，句尾收束干净。",
       "seed": 83001,
@@ -38,6 +39,7 @@
       "status": "user-review-required"
     },
     {
+      "auditionId": "B",
       "style": "adventure",
       "instruction": "请用成熟的标准普通话，带着探索感与向前的动力，坚定而有精神地朗读；轻微强调关键意象，不要喊叫，不要使用广告腔，不要戏剧化。",
       "seed": 83001,
@@ -53,6 +55,7 @@
       "status": "user-review-required"
     },
     {
+      "auditionId": "C",
       "style": "contemplative",
       "instruction": "请用成熟、圆润的标准普通话，低沉但清晰，平静、舒展而神秘地朗读；不要悲伤，不要拖尾，不要使用播音腔。",
       "seed": 83001,
@@ -65,6 +68,144 @@
       "peakDbfs": -7.6952,
       "rmsDbfs": -22.0,
       "sha256": "9a87dcfd69ce94d474cd86bd76abdc0dabe3f78af7e82c9a62a6a4bc239e52c8",
+      "status": "user-review-required"
+    },
+    {
+      "auditionId": "D",
+      "style": "deep-baritone",
+      "model": {
+        "id": "Qwen/Qwen3-TTS-12Hz-1.7B-VoiceDesign",
+        "revision": "0e711a1c0aa5aad30654426e0d11f67716c1211e"
+      },
+      "text": "人们总把棋盘的边缘视作尽头。可那些消失在边界上的道路并未中断。它们在另一处接缝后延续，将遥远的落点重新变为近邻。",
+      "timbreClause": "约45岁的原创男性声线；低男中音至男低音音域；胸腔共鸣强；音质浓密、稳定、清晰，绝不含混。",
+      "sharedDeliveryClause": "使用成熟、自然的标准普通话；以庄重、克制的电影感旁白朗读；辅音清楚，字词易懂；保持平静而向前的推进；不要悲伤、煽情、广告腔、新闻播音腔、喊叫或拖长句尾。",
+      "instruction": "约45岁的原创男性声线；低男中音至男低音音域；胸腔共鸣强；音质浓密、稳定、清晰，绝不含混。使用成熟、自然的标准普通话；以庄重、克制的电影感旁白朗读；辅音清楚，字词易懂；保持平静而向前的推进；不要悲伤、煽情、广告腔、新闻播音腔、喊叫或拖长句尾。",
+      "seed": 83001,
+      "file": "video/footsteps-return/captures/voice-auditions/deep-baritone.wav",
+      "sourceSampleRateHz": 24000,
+      "normalizedSampleRateHz": 48000,
+      "channels": 1,
+      "subtype": "PCM_16",
+      "durationSeconds": 12.64,
+      "peakDbfs": -7.0,
+      "rmsDbfs": -22.0,
+      "sha256": "74bf906ce67f509e6896421e191fbf5a3e1858ce1525f4350781b3d5ac4f40b3",
+      "status": "user-review-required"
+    },
+    {
+      "auditionId": "E",
+      "style": "epic-narrator",
+      "model": {
+        "id": "Qwen/Qwen3-TTS-12Hz-1.7B-VoiceDesign",
+        "revision": "0e711a1c0aa5aad30654426e0d11f67716c1211e"
+      },
+      "text": "人们总把棋盘的边缘视作尽头。可那些消失在边界上的道路并未中断。它们在另一处接缝后延续，将遥远的落点重新变为近邻。",
+      "timbreClause": "原创男性声线；宽广低音域；厚重而有空间感；具有统领性的电影尺度，但不做戏剧化夸张。",
+      "sharedDeliveryClause": "使用成熟、自然的标准普通话；以庄重、克制的电影感旁白朗读；辅音清楚，字词易懂；保持平静而向前的推进；不要悲伤、煽情、广告腔、新闻播音腔、喊叫或拖长句尾。",
+      "instruction": "原创男性声线；宽广低音域；厚重而有空间感；具有统领性的电影尺度，但不做戏剧化夸张。使用成熟、自然的标准普通话；以庄重、克制的电影感旁白朗读；辅音清楚，字词易懂；保持平静而向前的推进；不要悲伤、煽情、广告腔、新闻播音腔、喊叫或拖长句尾。",
+      "seed": 83001,
+      "file": "video/footsteps-return/captures/voice-auditions/epic-narrator.wav",
+      "sourceSampleRateHz": 24000,
+      "normalizedSampleRateHz": 48000,
+      "channels": 1,
+      "subtype": "PCM_16",
+      "durationSeconds": 12.24,
+      "peakDbfs": -7.0,
+      "rmsDbfs": -22.0,
+      "sha256": "95c71ea27fc3cd2e331a4d54f55a4961f2ea3583cbfe9945b41224743a552646",
+      "status": "user-review-required"
+    },
+    {
+      "auditionId": "F",
+      "style": "cold-witness",
+      "model": {
+        "id": "Qwen/Qwen3-TTS-12Hz-1.7B-VoiceDesign",
+        "revision": "0e711a1c0aa5aad30654426e0d11f67716c1211e"
+      },
+      "text": "人们总把棋盘的边缘视作尽头。可那些消失在边界上的道路并未中断。它们在另一处接缝后延续，将遥远的落点重新变为近邻。",
+      "timbreClause": "原创男性声线；低沉、干燥、冷峻、受控；略带距离感；轮廓坚硬而干净；神秘而不阴郁。",
+      "sharedDeliveryClause": "使用成熟、自然的标准普通话；以庄重、克制的电影感旁白朗读；辅音清楚，字词易懂；保持平静而向前的推进；不要悲伤、煽情、广告腔、新闻播音腔、喊叫或拖长句尾。",
+      "instruction": "原创男性声线；低沉、干燥、冷峻、受控；略带距离感；轮廓坚硬而干净；神秘而不阴郁。使用成熟、自然的标准普通话；以庄重、克制的电影感旁白朗读；辅音清楚，字词易懂；保持平静而向前的推进；不要悲伤、煽情、广告腔、新闻播音腔、喊叫或拖长句尾。",
+      "seed": 83001,
+      "file": "video/footsteps-return/captures/voice-auditions/cold-witness.wav",
+      "sourceSampleRateHz": 24000,
+      "normalizedSampleRateHz": 48000,
+      "channels": 1,
+      "subtype": "PCM_16",
+      "durationSeconds": 13.92,
+      "peakDbfs": -7.0,
+      "rmsDbfs": -22.0,
+      "sha256": "b2c5fc6282a462c30e7d558870e7bff855a0102c8f42cb7810c0182b37a368b5",
+      "status": "user-review-required"
+    },
+    {
+      "auditionId": "G",
+      "style": "warm-scholar",
+      "model": {
+        "id": "Qwen/Qwen3-TTS-12Hz-1.7B-VoiceDesign",
+        "revision": "0e711a1c0aa5aad30654426e0d11f67716c1211e"
+      },
+      "text": "人们总把棋盘的边缘视作尽头。可那些消失在边界上的道路并未中断。它们在另一处接缝后延续，将遥远的落点重新变为近邻。",
+      "timbreClause": "原创成熟男性声线；理性而温暖；像可信赖的科学叙事者；低中频圆润饱满。",
+      "sharedDeliveryClause": "使用成熟、自然的标准普通话；以庄重、克制的电影感旁白朗读；辅音清楚，字词易懂；保持平静而向前的推进；不要悲伤、煽情、广告腔、新闻播音腔、喊叫或拖长句尾。",
+      "instruction": "原创成熟男性声线；理性而温暖；像可信赖的科学叙事者；低中频圆润饱满。使用成熟、自然的标准普通话；以庄重、克制的电影感旁白朗读；辅音清楚，字词易懂；保持平静而向前的推进；不要悲伤、煽情、广告腔、新闻播音腔、喊叫或拖长句尾。",
+      "seed": 83001,
+      "file": "video/footsteps-return/captures/voice-auditions/warm-scholar.wav",
+      "sourceSampleRateHz": 24000,
+      "normalizedSampleRateHz": 48000,
+      "channels": 1,
+      "subtype": "PCM_16",
+      "durationSeconds": 12.32,
+      "peakDbfs": -7.0006,
+      "rmsDbfs": -22.0,
+      "sha256": "d96af3e73b229ea56cbdb54d983c3eedff3a346d32b5c1e85ff6977a4d3b0f82",
+      "status": "user-review-required"
+    },
+    {
+      "auditionId": "H",
+      "style": "weathered-traveler",
+      "model": {
+        "id": "Qwen/Qwen3-TTS-12Hz-1.7B-VoiceDesign",
+        "revision": "0e711a1c0aa5aad30654426e0d11f67716c1211e"
+      },
+      "text": "人们总把棋盘的边缘视作尽头。可那些消失在边界上的道路并未中断。它们在另一处接缝后延续，将遥远的落点重新变为近邻。",
+      "timbreClause": "原创年长男性声线；久经风霜；有纹理与岁月感，但不嘶哑、不虚弱、不悲情，也不模仿任何真人。",
+      "sharedDeliveryClause": "使用成熟、自然的标准普通话；以庄重、克制的电影感旁白朗读；辅音清楚，字词易懂；保持平静而向前的推进；不要悲伤、煽情、广告腔、新闻播音腔、喊叫或拖长句尾。",
+      "instruction": "原创年长男性声线；久经风霜；有纹理与岁月感，但不嘶哑、不虚弱、不悲情，也不模仿任何真人。使用成熟、自然的标准普通话；以庄重、克制的电影感旁白朗读；辅音清楚，字词易懂；保持平静而向前的推进；不要悲伤、煽情、广告腔、新闻播音腔、喊叫或拖长句尾。",
+      "seed": 83001,
+      "file": "video/footsteps-return/captures/voice-auditions/weathered-traveler.wav",
+      "sourceSampleRateHz": 24000,
+      "normalizedSampleRateHz": 48000,
+      "channels": 1,
+      "subtype": "PCM_16",
+      "durationSeconds": 13.28,
+      "peakDbfs": -7.0,
+      "rmsDbfs": -22.0,
+      "sha256": "2824193a0eb56ebe25bbffa19d530956db462551dc31b6798996cfdc3655e7a0",
+      "status": "user-review-required"
+    },
+    {
+      "auditionId": "I",
+      "style": "resolute-guide",
+      "model": {
+        "id": "Qwen/Qwen3-TTS-12Hz-1.7B-VoiceDesign",
+        "revision": "0e711a1c0aa5aad30654426e0d11f67716c1211e"
+      },
+      "text": "人们总把棋盘的边缘视作尽头。可那些消失在边界上的道路并未中断。它们在另一处接缝后延续，将遥远的落点重新变为近邻。",
+      "timbreClause": "原创男性声线；比D与H略年轻，但仍低沉结实；果决、向前推进、安静而英勇。",
+      "sharedDeliveryClause": "使用成熟、自然的标准普通话；以庄重、克制的电影感旁白朗读；辅音清楚，字词易懂；保持平静而向前的推进；不要悲伤、煽情、广告腔、新闻播音腔、喊叫或拖长句尾。",
+      "instruction": "原创男性声线；比D与H略年轻，但仍低沉结实；果决、向前推进、安静而英勇。使用成熟、自然的标准普通话；以庄重、克制的电影感旁白朗读；辅音清楚，字词易懂；保持平静而向前的推进；不要悲伤、煽情、广告腔、新闻播音腔、喊叫或拖长句尾。",
+      "seed": 83001,
+      "file": "video/footsteps-return/captures/voice-auditions/resolute-guide.wav",
+      "sourceSampleRateHz": 24000,
+      "normalizedSampleRateHz": 48000,
+      "channels": 1,
+      "subtype": "PCM_16",
+      "durationSeconds": 11.36,
+      "peakDbfs": -7.0006,
+      "rmsDbfs": -22.0,
+      "sha256": "2b0ecde791fea44d0ef0d12abcff584188210d68e118831d0476a5c1b39bd8b6",
       "status": "user-review-required"
     }
   ]
