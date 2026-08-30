@@ -21,25 +21,64 @@ function transitionBoundary(from, to) {
   return sceneStart(to) - contract.duration;
 }
 
-const frame = (id, seek, phase, transition, filename, description) => Object.freeze({
+const expectedGeometry = (occlusion, outgoing, incoming) => Object.freeze({ occlusion, outgoing, incoming });
+
+const frame = (id, seek, phase, contractId, geometry, filename, description) => Object.freeze({
   id,
   seek,
   phase,
-  transition,
+  contractId,
+  expectedGeometry: geometry,
   filename,
   description,
   path: `${artifactDirectory}/${filename}`
 });
 
 export const transitionCapturePlan = Object.freeze([
-  frame("cylinder-to-torus-pre", transitionBoundary("chapter-cylinder", "chapter-card-torus") - 0.08, "pre", "chapter-cylinder--chapter-card-torus", "task7-cylinder-to-torus-pre.png", "cylinder section before the torus inner-ring match begins"),
-  frame("cylinder-to-torus-mid", transitionBoundary("chapter-cylinder", "chapter-card-torus") + 0.31, "mid", "chapter-cylinder--chapter-card-torus", "task7-cylinder-to-torus-mid.png", "cylinder section matched to the torus inner ring during the black dip"),
-  frame("cylinder-to-torus-post", sceneStart("chapter-card-torus") + 0.02, "post", "chapter-cylinder--chapter-card-torus", "task7-cylinder-to-torus-post.png", "torus card after the cylinder-to-torus handoff"),
-  frame("torus-to-mobius-mid", transitionBoundary("chapter-torus", "chapter-card-mobius") + 0.31, "mid", "chapter-torus--chapter-card-mobius", "task7-torus-to-mobius-mid.png", "torus aperture matched to the Möbius twist center"),
-  frame("mobius-to-klein-mid", transitionBoundary("chapter-mobius", "chapter-card-klein") + 0.31, "mid", "chapter-mobius--chapter-card-klein", "task7-mobius-to-klein-mid.png", "Möbius grazing mirror matched to the Klein crossing"),
-  frame("gallery-withdrawal-before-outro", 146.9, "overlap-before", "seven-world-gallery--outro", "task7-gallery-withdrawal-146.90s.png", "gallery withdrawal immediately before the first outro narration cue"),
-  frame("gallery-withdrawal-during-outro", 148.4, "overlap-during", "seven-world-gallery--outro", "task7-gallery-withdrawal-148.40s.png", "gallery withdrawal continuing under the first outro narration cue")
+  frame("cylinder-to-torus-pre", transitionBoundary("chapter-cylinder", "chapter-card-torus") + 0.17, "pre", "chapter-cylinder--chapter-card-torus", expectedGeometry("cylinder-section", "cylinder-section", "torus-inner-ring"), "task7-cylinder-to-torus-pre.png", "cylinder section entering the torus inner-ring match"),
+  frame("cylinder-to-torus-mid", transitionBoundary("chapter-cylinder", "chapter-card-torus") + 0.31, "mid", "chapter-cylinder--chapter-card-torus", expectedGeometry("cylinder-section", "cylinder-section", "torus-inner-ring"), "task7-cylinder-to-torus-mid.png", "cylinder section matched to the torus inner ring during the black dip"),
+  frame("cylinder-to-torus-post", sceneStart("chapter-card-torus") + 0.02, "post", "chapter-cylinder--chapter-card-torus", expectedGeometry("cylinder-section", "cylinder-section", "torus-inner-ring"), "task7-cylinder-to-torus-post.png", "incoming torus ring held through the delayed card reveal"),
+  frame("torus-to-mobius-mid", transitionBoundary("chapter-torus", "chapter-card-mobius") + 0.31, "mid", "chapter-torus--chapter-card-mobius", expectedGeometry("torus-aperture", "torus-inner-ring", "mobius-twist-center"), "task7-torus-to-mobius-mid.png", "torus aperture matched to the Möbius twist center"),
+  frame("mobius-to-klein-mid", transitionBoundary("chapter-mobius", "chapter-card-klein") + 0.31, "mid", "chapter-mobius--chapter-card-klein", expectedGeometry("mobius-ribbon", "mobius-grazing-mirror", "klein-cross"), "task7-mobius-to-klein-mid.png", "Möbius grazing mirror matched to the Klein crossing"),
+  frame("gallery-withdrawal-before-outro", 146.9, "overlap-before", "seven-world-gallery--outro", expectedGeometry("gallery-sphere", "gallery-sphere", "outro-darkness"), "task7-gallery-withdrawal-146.90s.png", "gallery withdrawal immediately before the first outro narration cue"),
+  frame("gallery-withdrawal-during-outro", 148.4, "overlap-during", "seven-world-gallery--outro", expectedGeometry("gallery-sphere", "gallery-sphere", "outro-darkness"), "task7-gallery-withdrawal-148.40s.png", "gallery withdrawal continuing under the first outro narration cue")
 ]);
+
+async function measurePixels(page, png) {
+  const metrics = await page.evaluate(async (dataUrl) => {
+    const image = new Image();
+    image.src = dataUrl;
+    await image.decode();
+    const canvas = document.createElement("canvas");
+    canvas.width = 480;
+    canvas.height = 270;
+    const context = canvas.getContext("2d", { alpha: false, willReadFrequently: true });
+    context.drawImage(image, 0, 0, canvas.width, canvas.height);
+    const data = context.getImageData(0, 0, canvas.width, canvas.height).data;
+    const pixelCount = canvas.width * canvas.height;
+    let luminanceSum = 0;
+    let luminanceSquareSum = 0;
+    let nonPureColorPixels = 0;
+    for (let index = 0; index < data.length; index += 4) {
+      const red = data[index];
+      const green = data[index + 1];
+      const blue = data[index + 2];
+      const luminance = (red + green + blue) / 3;
+      luminanceSum += luminance;
+      luminanceSquareSum += luminance * luminance;
+      if (Math.max(red, green, blue) - Math.min(red, green, blue) >= 5 || luminance >= 13) {
+        nonPureColorPixels += 1;
+      }
+    }
+    const mean = luminanceSum / pixelCount;
+    return {
+      mean,
+      variance: luminanceSquareSum / pixelCount - mean * mean,
+      nonPureColorRatio: nonPureColorPixels / pixelCount
+    };
+  }, `data:image/png;base64,${png.toString("base64")}`);
+  return Object.freeze(metrics);
+}
 
 function contactSheetMarkup(frames) {
   const cells = frames.map((item) => `<figure><img src="${item.dataUrl}" alt=""><figcaption>${item.id} · ${item.seek.toFixed(2)}s · ${item.phase}</figcaption></figure>`).join("");
@@ -62,8 +101,8 @@ async function settle(page, seek) {
 }
 
 async function observe(page, planned) {
-  return page.evaluate(({ id, seek, transition }) => {
-    const layer = document.querySelector(`[data-pv-transition-layer="${transition}"]`);
+  return page.evaluate(({ id, seek, contractId }) => {
+    const layer = document.querySelector(`[data-pv-transition-layer="${contractId}"]`);
     const gallery = document.querySelector('[data-scene-id="seven-world-gallery"]');
     const camera = gallery?.querySelector("[data-gallery-camera]");
     const source = layer?.dataset.transitionSource;
@@ -77,7 +116,7 @@ async function observe(page, planned) {
     return {
       id,
       seek,
-      transition,
+      contractId,
       renderReady: document.documentElement.dataset.renderReady === "true",
       layer: layer ? {
         occlusion: layer.dataset.transitionOcclusion,
@@ -90,6 +129,19 @@ async function observe(page, planned) {
         sourceBbox: bbox(sourceScene?.querySelector(`[data-match-shape="${source}"]`)),
         targetBbox: bbox(targetScene?.querySelector(`[data-match-shape="${target}"]`))
       } : null,
+      geometry: layer ? [...layer.querySelectorAll("[data-transition-geometry-side]")].map((node) => {
+        const style = getComputedStyle(node);
+        return {
+          side: node.dataset.transitionGeometrySide,
+          geometry: node.dataset.transitionGeometry,
+          shape: node.dataset.transitionGeometryShape,
+          matchId: node.dataset.transitionMatchId || null,
+          opacity: Number(style.opacity),
+          clipPath: style.clipPath,
+          maskImage: style.maskImage,
+          bbox: bbox(node)
+        };
+      }) : [],
       galleryCamera: camera ? {
         transform: getComputedStyle(camera).transform,
         position: camera.dataset.galleryCameraPosition,
@@ -114,13 +166,15 @@ export async function captureTransitionEvidence({ projectRoot = path.resolve(pat
     for (const planned of transitionCapturePlan) {
       const settled = await settle(page, planned.seek);
       const observation = await observe(page, planned);
-      await page.screenshot({ path: path.join(captureDirectory, planned.filename) });
+      const screenshot = await page.screenshot();
+      await writeFile(path.join(captureDirectory, planned.filename), screenshot);
       manifest.push(Object.freeze({
         ...planned,
         viewport,
         native4k: true,
         timelineTime: settled.timelineTime,
-        observation
+        observation,
+        pixels: await measurePixels(page, screenshot)
       }));
     }
 

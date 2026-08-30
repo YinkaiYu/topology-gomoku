@@ -483,7 +483,11 @@ body {
   width: 100%;
   height: 100%;
   overflow: hidden;
-  background: rgba(6, 9, 8, 0.56);
+  background: rgba(6, 9, 8, 0.28);
+}
+
+.pv-scene--outro {
+  background-color: transparent;
 }
 
 .outro-aperture {
@@ -491,8 +495,8 @@ body {
   inset: 0;
   display: grid;
   place-items: center;
-  background: radial-gradient(ellipse at 50% 50%, rgba(6, 9, 8, 0.08) 0 12%, rgba(6, 9, 8, 0.58) 44%, rgba(6, 9, 8, 0.96) 82%);
-  opacity: 0.78;
+  background: radial-gradient(ellipse at 50% 50%, rgba(6, 9, 8, 0.04) 0 12%, rgba(6, 9, 8, 0.42) 44%, rgba(6, 9, 8, 0.86) 82%);
+  opacity: 0.56;
   pointer-events: none;
 }
 
@@ -511,7 +515,43 @@ body {
   overflow: hidden;
   contain: strict;
   isolation: isolate;
+  background: transparent;
+}
+
+.pv-transition-dip-layer {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background: #060908;
+  opacity: 0;
   will-change: opacity;
+}
+
+.pv-transition-geometry-layer {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  display: block;
+  pointer-events: none;
+  transform: scale(0.94);
+  transform-origin: center;
+  opacity: 0;
+  will-change: opacity, transform, filter;
+}
+
+.pv-transition-geometry-layer--occlusion {
+  background: rgba(6, 9, 8, 0.96);
+  box-shadow: 0 0 130px rgba(6, 9, 8, 0.72);
+}
+
+.pv-transition-geometry-layer--outgoing-match {
+  background: rgba(242, 239, 231, 0.22);
+  box-shadow: 0 0 96px rgba(242, 239, 231, 0.055);
+}
+
+.pv-transition-geometry-layer--incoming-match {
+  background: rgba(242, 239, 231, 0.3);
+  box-shadow: 0 0 112px rgba(242, 239, 231, 0.075);
 }
 
 .seven-world-gallery {

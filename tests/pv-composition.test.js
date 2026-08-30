@@ -305,6 +305,7 @@ test("both chapter-card rows stay centered on the 4K stage through phase A, swap
 test("master scene factories can inject a real chapter renderer", async () => {
   const result = await page.evaluate(async () => {
     const { buildMasterTimeline } = await import("/src/runtime/master-timeline.js");
+    const { createChapterScene } = await import("/compositions/chapters/index.js");
     const stage = document.createElement("div");
     const runtime = buildMasterTimeline({
       document,
@@ -312,9 +313,7 @@ test("master scene factories can inject a real chapter renderer", async () => {
       stage,
       sceneFactories: {
         chapter({ document: documentRef, definition }) {
-          const scene = documentRef.createElement("section");
-          scene.dataset.sceneId = definition.id;
-          scene.dataset.sceneKind = definition.kind;
+          const scene = createChapterScene(documentRef, definition);
           scene.dataset.injectedRenderer = "true";
           return scene;
         }

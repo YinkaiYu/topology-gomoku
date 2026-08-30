@@ -20,6 +20,41 @@ const EXPECTED_PATH_IDS = [
 ];
 const PROHIBITED_TERMS = /wipe|slide|connector[- ]?line|page[- ]?movement|page[- ]?transition/i;
 
+async function pixelMetrics(png) {
+  return page.evaluate(async (dataUrl) => {
+    const image = new Image();
+    image.src = dataUrl;
+    await image.decode();
+    const canvas = document.createElement("canvas");
+    canvas.width = 480;
+    canvas.height = 270;
+    const context = canvas.getContext("2d", { alpha: false, willReadFrequently: true });
+    context.drawImage(image, 0, 0, canvas.width, canvas.height);
+    const data = context.getImageData(0, 0, canvas.width, canvas.height).data;
+    const pixelCount = canvas.width * canvas.height;
+    let luminanceSum = 0;
+    let luminanceSquareSum = 0;
+    let nonPureColorPixels = 0;
+    for (let index = 0; index < data.length; index += 4) {
+      const red = data[index];
+      const green = data[index + 1];
+      const blue = data[index + 2];
+      const luminance = (red + green + blue) / 3;
+      luminanceSum += luminance;
+      luminanceSquareSum += luminance * luminance;
+      if (Math.max(red, green, blue) - Math.min(red, green, blue) >= 5 || luminance >= 13) {
+        nonPureColorPixels += 1;
+      }
+    }
+    const mean = luminanceSum / pixelCount;
+    return {
+      mean,
+      variance: luminanceSquareSum / pixelCount - mean * mean,
+      nonPureColorRatio: nonPureColorPixels / pixelCount
+    };
+  }, `data:image/png;base64,${png.toString("base64")}`);
+}
+
 let browser;
 let page;
 let server;
@@ -56,6 +91,75 @@ test("every adjacent scene pair resolves to one cinematic transition contract", 
     assert.equal(PROHIBITED_TERMS.test(JSON.stringify(contract)), false, `${scene.id} -> ${next.id} uses a prohibited transition`);
     assert.deepEqual(contract.animatedProperties, ["opacity", "filter", "scale"]);
   });
+});
+
+test("matchId resolves the geometry pair used by each runtime contract", async () => {
+  const {
+    TRANSITION_MATCH_GEOMETRIES,
+    resolveTransitionMatchGeometry,
+    transitionContracts
+  } = await import("../video/footsteps-return/src/runtime/transitions.js");
+  assert.equal(Object.keys(TRANSITION_MATCH_GEOMETRIES).length, transitionContracts.length);
+  transitionContracts.forEach((contract) => {
+    assert.ok(TRANSITION_MATCH_GEOMETRIES[contract.matchId], `${contract.id} needs a matchId registry entry`);
+  });
+
+  const cylinderOutgoing = resolveTransitionMatchGeometry(
+    "cylinder-section->torus-inner-ring",
+    "outgoing-match",
+    { contractId: "chapter-cylinder--chapter-card-torus", selector: '[data-match-shape="cylinder-section"]' }
+  );
+  const torusOutgoing = resolveTransitionMatchGeometry(
+    "torus-inner-ring->mobius-twist-center",
+    "outgoing-match",
+    { contractId: "chapter-torus--chapter-card-mobius", selector: '[data-match-shape="torus-inner-ring"]' }
+  );
+  assert.equal(cylinderOutgoing.id, "cylinder-section");
+  assert.equal(torusOutgoing.id, "torus-inner-ring");
+  assert.notDeepEqual(
+    [cylinderOutgoing.clipPath, cylinderOutgoing.maskImage, cylinderOutgoing.shape],
+    [torusOutgoing.clipPath, torusOutgoing.maskImage, torusOutgoing.shape],
+    "changing matchId must change the applied geometry"
+  );
+});
+
+test("transition geometry validation fails fast with contract, selector, and side", async () => {
+  const result = await page.evaluate(async () => {
+    const transitions = await import("./src/runtime/transitions.js");
+    const registry = window.__pvSceneRegistry;
+    const contract = transitions.transitionContracts.find(({ id }) => id === "chapter-cylinder--chapter-card-torus");
+    const source = registry[contract.from];
+    const selected = [...source.querySelectorAll(contract.occlusion.selector)];
+    const placements = selected.map((node) => ({ node, parent: node.parentNode, next: node.nextSibling }));
+    selected.forEach((node) => node.remove());
+    let selectorError = "";
+    try {
+      transitions.validateTransitionGeometryBindings(registry, [contract]);
+    } catch (error) {
+      selectorError = error.message;
+    } finally {
+      placements.forEach(({ node, parent, next }) => parent.insertBefore(node, next));
+    }
+
+    let geometryError = "";
+    try {
+      transitions.validateTransitionGeometryBindings(registry, [{
+        ...contract,
+        matchId: "missing-match-geometry",
+        match: { ...contract.match, id: "missing-match-geometry" }
+      }]);
+    } catch (error) {
+      geometryError = error.message;
+    }
+    return { selectorError, geometryError };
+  });
+
+  assert.match(result.selectorError, /chapter-cylinder--chapter-card-torus/);
+  assert.match(result.selectorError, /data-occlusion="cylinder-section"/);
+  assert.match(result.selectorError, /occlusion/);
+  assert.match(result.geometryError, /chapter-cylinder--chapter-card-torus/);
+  assert.match(result.geometryError, /data-match-shape="cylinder-section"/);
+  assert.match(result.geometryError, /outgoing-match/);
 });
 
 test("gallery contains seven unique surfaces and only real Task 3/6 path IDs", async () => {
@@ -134,6 +238,19 @@ test("transition boundaries consume real geometry masks and seek reversibly", as
       const sample = (time) => {
         timeline.time(time, false).pause();
         const veil = transitionLayers[index];
+        const geometryLayers = [...veil.querySelectorAll("[data-transition-geometry-side]")].map((node) => {
+          const style = getComputedStyle(node);
+          return {
+            side: node.dataset.transitionGeometrySide,
+            nodeId: node.dataset.transitionGeometryNode,
+            matchId: node.dataset.transitionMatchId || "",
+            geometry: node.dataset.transitionGeometry,
+            shape: node.dataset.transitionGeometryShape,
+            opacity: opacity(node),
+            clip: `${style.clipPath}|${style.maskImage}|${style.webkitMaskImage}`,
+            bbox: rect(node)
+          };
+        });
         const contract = {
           from: veil.dataset.transitionFrom,
           to: veil.dataset.transitionTo,
@@ -144,18 +261,9 @@ test("transition boundaries consume real geometry masks and seek reversibly", as
           occlusionShape: veil.dataset.transitionOcclusionShape,
           occlusionNode: veil.dataset.transitionOcclusionNode,
           occlusionBbox: (() => {
-            const node = scene.querySelector(`[data-transition-occlusion-contract="${veil.dataset.transitionOcclusion}"]`);
+            const node = scene.querySelector(veil.dataset.occlusionSelector);
             const value = node?.getBoundingClientRect();
             return value ? [value.x, value.y, value.width, value.height] : null;
-          })(),
-          occlusionClip: (() => {
-            const node = scene.querySelector(`[data-transition-occlusion-contract="${veil.dataset.transitionOcclusion}"]`);
-            const style = node && getComputedStyle(node);
-            return style ? `${style.clipPath}|${style.maskImage}|${style.webkitMaskImage}` : "";
-          })(),
-          occlusionOpacity: (() => {
-            const node = scene.querySelector(`[data-transition-occlusion-contract="${veil.dataset.transitionOcclusion}"]`);
-            return node ? opacity(node) : -1;
           })(),
           occlusionFallback: Boolean(scene.querySelector(".pv-transition-geometry--fallback")),
           matchId: veil.dataset.transitionMatch,
@@ -173,24 +281,9 @@ test("transition boundaries consume real geometry masks and seek reversibly", as
             const value = node?.getBoundingClientRect();
             return value ? [value.x, value.y, value.width, value.height] : null;
           })(),
-          sourceClip: (() => {
-            const node = scene.querySelector(`[data-match-shape="${veil.dataset.transitionSource}"]`);
-            const style = node && getComputedStyle(node);
-            return style ? `${style.clipPath}|${style.maskImage}|${style.webkitMaskImage}` : "";
-          })(),
-          targetClip: (() => {
-            const node = next.querySelector(`[data-match-shape="${veil.dataset.transitionTarget}"]`);
-            const style = node && getComputedStyle(node);
-            return style ? `${style.clipPath}|${style.maskImage}|${style.webkitMaskImage}` : "";
-          })(),
-          sourceOpacity: (() => {
-            const node = scene.querySelector(`[data-match-shape="${veil.dataset.transitionSource}"]`);
-            return node ? opacity(node) : -1;
-          })(),
-          targetOpacity: (() => {
-            const node = next.querySelector(`[data-match-shape="${veil.dataset.transitionTarget}"]`);
-            return node ? opacity(node) : -1;
-          })()
+          sourceNodeUntouched: !scene.querySelector(`[data-match-shape="${veil.dataset.transitionSource}"]`)?.dataset.transitionGeometryRole,
+          targetNodeUntouched: !next.querySelector(`[data-match-shape="${veil.dataset.transitionTarget}"]`)?.dataset.transitionGeometryRole,
+          geometryLayers
         };
         return {
           from: opacity(scene),
@@ -206,7 +299,8 @@ test("transition boundaries consume real geometry masks and seek reversibly", as
       const before = sample(Math.max(0, start - 0.63));
       const middle = sample(start - 0.31);
       const after = sample(start + 0.01);
-      return { id: `${scene.dataset.sceneId}->${next.dataset.sceneId}`, before, middle, after };
+      const settled = sample(scene.dataset.sceneId === "seven-world-gallery" ? start + 2.32 : start + 0.01);
+      return { id: `${scene.dataset.sceneId}->${next.dataset.sceneId}`, before, middle, after, settled };
     });
     const gallery = document.querySelector('[data-scene-id="seven-world-gallery"]');
     const cameraSample = (time) => {
@@ -233,9 +327,14 @@ test("transition boundaries consume real geometry masks and seek reversibly", as
     return { contracts, reversible: JSON.stringify(first) === JSON.stringify(replay), galleryCamera: { before: cameraBefore.transform, after: cameraAfter.transform, beforeScale: cameraBefore.scale, afterScale: cameraAfter.scale } };
   });
 
-  observations.contracts.forEach(({ id, before, middle, after }) => {
+  observations.contracts.forEach(({ id, before, middle, after, settled }) => {
     assert.ok(before.from > 0.9, `${id} source must still cover the pre-boundary frame`);
-    assert.ok(after.to > 0.9, `${id} target must cover the post-boundary frame`);
+    if (id === "seven-world-gallery->outro") {
+      assert.ok(after.from > 0.9, `${id} must keep the gallery visible at narration start`);
+      assert.ok(settled.to > 0.9, `${id} target must cover the completed handoff`);
+    } else {
+      assert.ok(after.to > 0.9, `${id} target must cover the post-boundary frame`);
+    }
     assert.ok(middle.from + middle.to + middle.veil > 0.82, `${id} must not flash uncovered at the dip`);
     assert.deepEqual(middle.fromRect, before.fromRect, `${id} source scene must not slide`);
     assert.deepEqual(middle.toRect, before.toRect, `${id} target scene must not slide`);
@@ -247,20 +346,60 @@ test("transition boundaries consume real geometry masks and seek reversibly", as
     assert.ok(middle.contract.occlusionShape, `${id} must resolve a topology-specific occlusion shape`);
     assert.ok(middle.contract.occlusionNode, `${id} must identify the consumed occlusion node`);
     assert.ok(middle.contract.occlusionBbox?.[2] > 0 && middle.contract.occlusionBbox?.[3] > 0, `${id} needs a visible occlusion geometry`);
-    assert.notEqual(middle.contract.occlusionClip, "", `${id} occlusion must expose a clip or mask`);
-    assert.ok(middle.contract.occlusionOpacity > 0, `${id} occlusion must be visible during match`);
     assert.equal(middle.contract.occlusionFallback, false, `${id} must not synthesize a fallback occluder`);
     assert.ok(middle.contract.sourceBbox?.[2] > 0 && middle.contract.sourceBbox?.[3] > 0, `${id} needs an outgoing match geometry`);
     assert.ok(middle.contract.targetBbox?.[2] > 0 && middle.contract.targetBbox?.[3] > 0, `${id} needs an incoming match geometry`);
-    assert.notEqual(middle.contract.sourceClip, "", `${id} outgoing geometry must expose a mask`);
-    assert.notEqual(middle.contract.targetClip, "", `${id} incoming geometry must expose a mask`);
-    assert.ok(middle.contract.sourceOpacity > 0, `${id} outgoing geometry must be visible during match`);
-    assert.ok(middle.contract.targetOpacity > 0, `${id} incoming geometry must be visible during match`);
+    assert.equal(middle.contract.sourceNodeUntouched, true, `${id} must not overwrite the selected outgoing source node`);
+    assert.equal(middle.contract.targetNodeUntouched, true, `${id} must not overwrite the selected incoming source node`);
+    assert.deepEqual(
+      middle.contract.geometryLayers.map(({ side }) => side),
+      ["occlusion", "outgoing-match", "incoming-match"],
+      `${id} must use three independent runtime geometry layers`
+    );
+    assert.equal(new Set(middle.contract.geometryLayers.map(({ nodeId }) => nodeId)).size, 3, `${id} runtime geometry nodes must not overlap`);
+    middle.contract.geometryLayers.forEach((geometry) => {
+      assert.ok(geometry.geometry, `${id} ${geometry.side} must resolve geometry through the runtime registry`);
+      assert.ok(geometry.bbox[2] > 0 && geometry.bbox[3] > 0, `${id} ${geometry.side} needs a visible bbox`);
+      assert.notEqual(geometry.clip, "none|none|none", `${id} ${geometry.side} must apply its clip or mask`);
+    });
+    assert.ok(middle.contract.geometryLayers[0].opacity > 0, `${id} occlusion and match geometry must coexist`);
+    assert.ok(middle.contract.geometryLayers[1].opacity > 0, `${id} outgoing match geometry must coexist with occlusion`);
   });
   assert.ok(new Set(observations.contracts.map(({ middle }) => middle.contract.shape)).size >= 5, "topology-specific matches must use different shape parameters");
   assert.equal(observations.reversible, true, "gallery seeking must be deterministic and reversible");
   assert.notEqual(observations.galleryCamera.before, observations.galleryCamera.after, "gallery withdrawal must cross the first outro narration");
   assert.notEqual(observations.galleryCamera.beforeScale, observations.galleryCamera.afterScale, "gallery camera scale must change across 147s");
+  assert.equal(await page.locator("[data-scene-layer]").getAttribute("data-transition-geometry-ready"), "true");
+  assert.equal(await page.locator("[data-scene-layer]").getAttribute("data-transition-geometry-count"), "17");
+});
+
+test("gallery remains visibly in motion through the opening outro narration", async () => {
+  const samples = [];
+  for (const seek of [146.8, 147.2, 148.4, 149.2]) {
+    const state = await page.evaluate(async (time) => {
+      const timeline = window.__timelines["footsteps-return"];
+      timeline.time(time, false).pause();
+      await new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+      const gallery = document.querySelector('[data-scene-id="seven-world-gallery"]');
+      const camera = gallery.querySelector("[data-gallery-camera]");
+      return {
+        seek: time,
+        galleryOpacity: Number(getComputedStyle(gallery).opacity),
+        cameraTransform: getComputedStyle(camera).transform
+      };
+    }, seek);
+    state.pixels = await pixelMetrics(await page.screenshot());
+    samples.push(state);
+  }
+
+  assert.ok(samples[0].galleryOpacity > 0.7, "gallery must still cover most of the frame at 146.8s");
+  assert.ok(samples[1].galleryOpacity > 0.55, "gallery must remain visible after narration begins at 147.2s");
+  assert.ok(samples[2].galleryOpacity > 0.16, "gallery must still be present during withdrawal at 148.4s");
+  assert.ok(samples[3].galleryOpacity < samples[2].galleryOpacity, "gallery must finish darkening after the visible handoff");
+  assert.equal(new Set(samples.map(({ cameraTransform }) => cameraTransform)).size, 4, "camera motion must continue through 149.2s");
+  assert.ok(samples[2].pixels.variance > 2, "148.4s must contain visible spatial variation");
+  assert.ok(samples[2].pixels.nonPureColorRatio > 0.01, "148.4s must not be a pure-color frame");
+  assert.ok(samples[3].pixels.variance < samples[2].pixels.variance, "the handoff must darken after 148.4s");
 });
 
 test("transition evidence capture plan is native 4K and reproducible", async () => {
@@ -280,9 +419,23 @@ test("transition evidence capture plan is native 4K and reproducible", async () 
     assert.deepEqual([...artifact.subarray(0, 8)], [137, 80, 78, 71, 13, 10, 26, 10]);
     assert.equal(artifact.readUInt32BE(16), 3840);
     assert.equal(artifact.readUInt32BE(20), 2160);
+    assert.ok(frame.contractId, `${frame.id} must name its contract`);
+    assert.ok(frame.phase, `${frame.id} must name its transition phase`);
+    assert.equal(typeof frame.seek, "number");
+    assert.ok(frame.expectedGeometry, `${frame.id} must declare expected geometry`);
   });
   const manifest = JSON.parse(fs.readFileSync(path.join(ROOT, "artifacts/pv-transition-scenes-task7-manifest.json"), "utf8"));
   assert.deepEqual(manifest.viewport, { width: 3840, height: 2160, deviceScaleFactor: 1 });
   assert.equal(manifest.native4k, true);
   assert.equal(fs.existsSync(path.join(ROOT, "artifacts/pv-transition-scenes-task7-contact-sheet.png")), true);
+  for (const frame of manifest.frames) {
+    assert.equal(frame.contractId, transitionCapturePlan.find(({ id }) => id === frame.id).contractId);
+    assert.deepEqual(frame.expectedGeometry, transitionCapturePlan.find(({ id }) => id === frame.id).expectedGeometry);
+    assert.ok(frame.observation?.geometry?.length >= 3, `${frame.id} must record key geometry bboxes`);
+    frame.observation.geometry.forEach((geometry) => {
+      assert.ok(geometry.bbox?.width > 0 && geometry.bbox?.height > 0, `${frame.id} ${geometry.side} bbox must be visible`);
+    });
+    assert.ok(frame.pixels?.variance > 1.5, `${frame.id} must contain non-flat visual content`);
+    assert.ok(frame.pixels?.nonPureColorRatio > 0.005, `${frame.id} must not be near-pure black`);
+  }
 });

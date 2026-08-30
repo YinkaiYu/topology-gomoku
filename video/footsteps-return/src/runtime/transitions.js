@@ -22,6 +22,7 @@ const profile = (id, shape, clipPath, maskImage = "none") => freeze({
 });
 
 export const TRANSITION_GEOMETRIES = freeze({
+  "intro-board-edge": profile("intro-board-edge", "intro-edge", "polygon(3% 16%, 94% 4%, 100% 84%, 11% 98%)"),
   "board-edge": profile("board-edge", "edge", "polygon(3% 16%, 94% 4%, 100% 84%, 11% 98%)"),
   "plane-silhouette": profile("plane-silhouette", "plane", "polygon(5% 17%, 95% 6%, 91% 91%, 8% 84%)"),
   "plane-board": profile("plane-board", "plane", "polygon(8% 12%, 92% 12%, 92% 88%, 8% 88%)"),
@@ -54,14 +55,58 @@ export const TRANSITION_GEOMETRIES = freeze({
   "end-card-darkness": profile("end-card-darkness", "closing-light", "circle(23% at 50% 50%)", "radial-gradient(circle at 50% 50%, #000 0 70%, transparent 77%)")
 });
 
+const matchGeometry = (id, outgoingGeometryId, incomingGeometryId) => freeze({
+  id,
+  outgoingGeometryId,
+  incomingGeometryId
+});
+
+export const TRANSITION_MATCH_GEOMETRIES = freeze(Object.fromEntries([
+  matchGeometry("board-edge->plane-silhouette", "board-edge", "plane-silhouette"),
+  matchGeometry("plane-silhouette->plane-board", "plane-silhouette", "plane-board"),
+  matchGeometry("plane-board->cylinder-silhouette", "plane-board", "cylinder-silhouette"),
+  matchGeometry("cylinder-silhouette->cylinder-board", "cylinder-silhouette", "cylinder-board"),
+  matchGeometry("cylinder-section->torus-inner-ring", "cylinder-section", "torus-inner-ring"),
+  matchGeometry("torus-silhouette->torus-board", "torus-silhouette", "torus-board"),
+  matchGeometry("torus-inner-ring->mobius-twist-center", "torus-inner-ring", "mobius-twist-center"),
+  matchGeometry("mobius-silhouette->mobius-board", "mobius-silhouette", "mobius-board"),
+  matchGeometry("mobius-grazing-mirror->klein-cross", "mobius-grazing-mirror", "klein-cross"),
+  matchGeometry("klein-silhouette->klein-board", "klein-silhouette", "klein-board"),
+  matchGeometry("klein-cross->projective-crosscap", "klein-cross", "projective-crosscap"),
+  matchGeometry("projective-silhouette->projective-board", "projective-silhouette", "projective-board"),
+  matchGeometry("projective-reflection->sphere-horizon", "projective-reflection", "sphere-horizon"),
+  matchGeometry("sphere-silhouette->sphere-board", "sphere-silhouette", "sphere-board"),
+  matchGeometry("sphere-horizon->gallery-sphere", "sphere-horizon", "gallery-sphere"),
+  matchGeometry("gallery-sphere->outro-darkness", "gallery-sphere", "outro-darkness"),
+  matchGeometry("outro-darkness->end-card-darkness", "outro-darkness", "end-card-darkness")
+].map((entry) => [entry.id, entry])));
+
+function geometryResolutionError({ contractId, selector: geometrySelector, side, geometryId }) {
+  return new Error(`transition ${contractId} ${side} selector "${geometrySelector}" failed to resolve geometry "${geometryId}"`);
+}
+
+function resolveGeometryProfile(geometryId, side, context) {
+  const geometry = TRANSITION_GEOMETRIES[geometryId];
+  if (!geometry) throw geometryResolutionError({ ...context, side, geometryId });
+  return geometry;
+}
+
+export function resolveTransitionMatchGeometry(matchId, side, context) {
+  const match = TRANSITION_MATCH_GEOMETRIES[matchId];
+  const geometryId = side === "outgoing-match"
+    ? match?.outgoingGeometryId
+    : side === "incoming-match"
+      ? match?.incomingGeometryId
+      : null;
+  if (!geometryId) throw geometryResolutionError({ ...context, side, geometryId: matchId });
+  return resolveGeometryProfile(geometryId, side, context);
+}
+
 function selector(attribute, value) {
   return `[${attribute}="${value}"]`;
 }
 
-const transition = (from, to, occlusionSource, matchSource, matchTarget, note) => {
-  const sourceGeometry = TRANSITION_GEOMETRIES[matchSource] ?? TRANSITION_GEOMETRIES["board-edge"];
-  const targetGeometry = TRANSITION_GEOMETRIES[matchTarget] ?? TRANSITION_GEOMETRIES["board-edge"];
-  const occlusionGeometry = TRANSITION_GEOMETRIES[occlusionSource] ?? sourceGeometry;
+const transition = (from, to, occlusionSource, matchSource, matchTarget, note, handoff = null) => {
   const matchId = `${matchSource}->${matchTarget}`;
   return freeze({
     id: `${from}--${to}`,
@@ -77,18 +122,17 @@ const transition = (from, to, occlusionSource, matchSource, matchTarget, note) =
       mode: "real-geometry",
       source: occlusionSource,
       selector: selector("data-occlusion", occlusionSource),
-      geometry: occlusionGeometry
+      geometryId: occlusionSource
     }),
     match: freeze({
       id: matchId,
       outgoingSelector: selector("data-match-shape", matchSource),
-      incomingSelector: selector("data-match-shape", matchTarget),
-      outgoingGeometry: sourceGeometry,
-      incomingGeometry: targetGeometry
+      incomingSelector: selector("data-match-shape", matchTarget)
     }),
     focusPull: FOCUS_PULL,
     colorDip: BLACK_DIP,
-    silhouetteMatch: freeze({ source: matchSource, target: matchTarget, note })
+    silhouetteMatch: freeze({ source: matchSource, target: matchTarget, note }),
+    handoff: handoff ? freeze(handoff) : null
   });
 };
 
@@ -108,7 +152,12 @@ export const transitionContracts = freeze([
   transition("chapter-projective", "chapter-card-sphere", "projective-crosscap", "projective-reflection", "sphere-horizon", "the reflected crosscap closes into a spherical horizon"),
   transition("chapter-card-sphere", "chapter-sphere", "sphere-horizon", "sphere-silhouette", "sphere-board", "the horizon contour resolves to the real board"),
   transition("chapter-sphere", "seven-world-gallery", "sphere-horizon", "sphere-horizon", "gallery-sphere", "the final horizon opens into the dark gallery"),
-  transition("seven-world-gallery", "outro", "gallery-sphere", "gallery-sphere", "outro-darkness", "the withdrawn gallery leaves an unmarked dark field"),
+  transition("seven-world-gallery", "outro", "gallery-sphere", "gallery-sphere", "outro-darkness", "the withdrawn gallery leaves an unmarked dark field", {
+    outgoingAt: TRANSITION_DURATION,
+    outgoingDuration: 2.28,
+    incomingAt: 0.42,
+    incomingDuration: 2.48
+  }),
   transition("outro", "end-card", "outro-darkness", "outro-darkness", "end-card-darkness", "the last black dip leaves the title card its cadence")
 ]);
 
@@ -137,92 +186,170 @@ function createTransitionLayer(documentRef, stage, contract) {
   layer.dataset.transitionMatch = contract.matchId;
   layer.dataset.transitionSource = contract.silhouetteMatch.source;
   layer.dataset.transitionTarget = contract.silhouetteMatch.target;
+  layer.dataset.occlusionConsumed = "false";
   layer.setAttribute("aria-hidden", "true");
   layer.style.position = "absolute";
   layer.style.inset = "0";
   layer.style.zIndex = "20";
   layer.style.pointerEvents = "none";
-  layer.style.backgroundColor = "#060908";
-  layer.style.opacity = "0";
+
+  const dip = documentRef.createElement("div");
+  dip.className = "pv-transition-dip-layer";
+  dip.dataset.transitionDip = contract.id;
+  dip.setAttribute("aria-hidden", "true");
+  layer.append(dip);
   stage.append(layer);
-  return layer;
+  return { layer, dip };
 }
 
-function fallbackGeometry(documentRef, scene, attribute, value) {
-  const element = documentRef.createElement("span");
-  element.className = "pv-transition-geometry pv-transition-geometry--fallback";
-  element.dataset[attribute === "data-match-shape" ? "matchShape" : "occlusion"] = value;
-  element.setAttribute("aria-hidden", "true");
-  scene.append(element);
-  return element;
+function preferredGeometrySource(candidates) {
+  return candidates.find((element) => element.matches(
+    ".chapter-exit-occlusion__shape, [data-match-role], [data-outro-closing-light]"
+  )) ?? candidates[0];
 }
 
-function resolveGeometry(documentRef, scene, attribute, value) {
+function resolveGeometrySource(scene, geometrySelector, contractId, side) {
   requireElement(scene, "transition scene");
-  const candidates = [...scene.querySelectorAll(selector(attribute, value))];
-  if (attribute === "data-occlusion") {
-    const chapterShape = candidates.find((element) => element.matches(".chapter-exit-occlusion__shape"));
-    if (chapterShape) return chapterShape;
+  let candidates;
+  try {
+    candidates = [...scene.querySelectorAll(geometrySelector)];
+  } catch {
+    throw geometryResolutionError({ contractId, selector: geometrySelector, side, geometryId: "source-node" });
   }
-  return candidates[0] ?? fallbackGeometry(documentRef, scene, attribute, value);
+  const source = preferredGeometrySource(candidates);
+  if (!source) throw geometryResolutionError({ contractId, selector: geometrySelector, side, geometryId: "source-node" });
+  return source;
 }
 
-function consumeGeometry(element, geometry, role) {
-  element.classList.add("pv-transition-geometry");
-  element.dataset.transitionGeometry = geometry.id;
-  element.dataset.transitionGeometryRole = role;
-  element.dataset.transitionGeometryShape = geometry.shape;
-  element.style.clipPath = geometry.clipPath;
-  element.style.webkitClipPath = geometry.clipPath;
-  element.style.maskImage = geometry.maskImage;
-  element.style.webkitMaskImage = geometry.maskImage;
-  element.style.setProperty("--transition-geometry-width", `${geometry.width}px`);
-  element.style.setProperty("--transition-geometry-height", `${geometry.height}px`);
-  return element;
+function geometryBinding(contract, side, source, geometry, geometrySelector) {
+  return freeze({
+    contractId: contract.id,
+    side,
+    source,
+    selector: geometrySelector,
+    geometry,
+    matchId: side === "occlusion" ? null : contract.matchId
+  });
 }
 
-function animateGeometry(timeline, element, start, duration, persistent) {
-  const endOpacity = persistent ? 0.2 : 0;
+export function validateTransitionGeometryBindings(sceneRegistry, contracts = transitionContracts) {
+  if (!sceneRegistry || typeof sceneRegistry !== "object") throw new TypeError("transition scene registry is required");
+  const bindings = new Map();
+  contracts.forEach((contract) => {
+    const from = sceneRegistry[contract.from];
+    const to = sceneRegistry[contract.to];
+    requireElement(from, `transition ${contract.id} source scene`);
+    requireElement(to, `transition ${contract.id} target scene`);
+    const occlusion = geometryBinding(
+      contract,
+      "occlusion",
+      resolveGeometrySource(from, contract.occlusion.selector, contract.id, "occlusion"),
+      resolveGeometryProfile(contract.occlusion.geometryId, "occlusion", {
+        contractId: contract.id,
+        selector: contract.occlusion.selector
+      }),
+      contract.occlusion.selector
+    );
+    const outgoing = geometryBinding(
+      contract,
+      "outgoing-match",
+      resolveGeometrySource(from, contract.match.outgoingSelector, contract.id, "outgoing-match"),
+      resolveTransitionMatchGeometry(contract.matchId, "outgoing-match", {
+        contractId: contract.id,
+        selector: contract.match.outgoingSelector
+      }),
+      contract.match.outgoingSelector
+    );
+    const incoming = geometryBinding(
+      contract,
+      "incoming-match",
+      resolveGeometrySource(to, contract.match.incomingSelector, contract.id, "incoming-match"),
+      resolveTransitionMatchGeometry(contract.matchId, "incoming-match", {
+        contractId: contract.id,
+        selector: contract.match.incomingSelector
+      }),
+      contract.match.incomingSelector
+    );
+    bindings.set(contract.id, freeze({ occlusion, outgoing, incoming }));
+  });
+  return bindings;
+}
+
+function createGeometryRuntimeNode(documentRef, runtime, binding, index) {
+  const { geometry, side, contractId, selector: geometrySelector, source, matchId } = binding;
+  const node = documentRef.createElement("div");
+  node.className = `pv-transition-geometry-layer pv-transition-geometry-layer--${side}`;
+  node.dataset.transitionGeometrySide = side;
+  node.dataset.transitionGeometryNode = `${contractId}:${side}`;
+  node.dataset.transitionGeometry = geometry.id;
+  node.dataset.transitionGeometryShape = geometry.shape;
+  node.dataset.transitionGeometrySelector = geometrySelector;
+  node.dataset.transitionGeometrySource = source.className || source.tagName.toLowerCase();
+  node.dataset.transitionGeometryApplied = "false";
+  if (matchId) node.dataset.transitionMatchId = matchId;
+  node.style.zIndex = String(index + 2);
+  node.style.width = `${geometry.width}px`;
+  node.style.height = `${geometry.height}px`;
+  node.style.marginLeft = `${geometry.width / -2}px`;
+  node.style.marginTop = `${geometry.height / -2}px`;
+  node.style.clipPath = geometry.clipPath;
+  node.style.webkitClipPath = geometry.clipPath;
+  node.style.maskImage = geometry.maskImage;
+  node.style.webkitMaskImage = geometry.maskImage;
+  node.style.setProperty("--transition-geometry-width", `${geometry.width}px`);
+  node.style.setProperty("--transition-geometry-height", `${geometry.height}px`);
+  runtime.append(node);
+  if (!node.style.clipPath && (!node.style.maskImage || node.style.maskImage === "none")) {
+    throw geometryResolutionError({ contractId, selector: geometrySelector, side, geometryId: geometry.id });
+  }
+  node.dataset.transitionGeometryApplied = "true";
+  return node;
+}
+
+function createContractGeometryRuntime(documentRef, runtime, contract, binding) {
+  const occlusion = createGeometryRuntimeNode(documentRef, runtime, binding.occlusion, 0);
+  const outgoing = createGeometryRuntimeNode(documentRef, runtime, binding.outgoing, 1);
+  const incoming = createGeometryRuntimeNode(documentRef, runtime, binding.incoming, 2);
+  const allApplied = [occlusion, outgoing, incoming]
+    .every((node) => node.dataset.transitionGeometryApplied === "true");
+  if (!allApplied) {
+    throw new Error(`transition ${contract.id} geometry runtime was not fully applied`);
+  }
+  runtime.dataset.occlusionConsumed = "true";
+  runtime.dataset.transitionOcclusionGeometry = binding.occlusion.geometry.id;
+  runtime.dataset.transitionOcclusionShape = binding.occlusion.geometry.shape;
+  runtime.dataset.transitionOcclusionNode = binding.occlusion.source.className || binding.occlusion.source.tagName.toLowerCase();
+  runtime.dataset.transitionGeometry = `${binding.outgoing.geometry.id}|${binding.incoming.geometry.id}`;
+  runtime.dataset.transitionShape = `${binding.outgoing.geometry.shape}->${binding.incoming.geometry.shape}`;
+  return { occlusion, outgoing, incoming };
+}
+
+function animateGeometry(timeline, element, {
+  start,
+  revealDuration,
+  peakOpacity,
+  fadeAt,
+  fadeDuration,
+  endOpacity = 0
+}) {
   timeline.fromTo(element, {
     opacity: 0,
     scale: 0.94,
-    filter: "brightness(0.18) blur(8px)"
+    filter: "brightness(0.2) blur(8px)"
   }, {
-    opacity: 0.86,
+    opacity: peakOpacity,
     scale: 1,
-    filter: "brightness(0.62) blur(0px)",
-    duration: duration * 0.58,
+    filter: "brightness(0.78) blur(0px)",
+    duration: revealDuration,
     ease: "sine.inOut",
     immediateRender: false
   }, start);
   timeline.to(element, {
     opacity: endOpacity,
-    duration: duration * 0.28,
+    duration: fadeDuration,
     ease: "sine.inOut",
     immediateRender: false
-  }, start + duration * 0.58);
-}
-
-function isPersistentGeometry(element) {
-  return element.matches("[data-chapter-exit-occlusion] .chapter-exit-occlusion__shape, [data-chapter-board], [data-intro-board-edge], [data-gallery-shape]");
-}
-
-function consumeContractGeometry(documentRef, from, to, contract, layer) {
-  const occlusion = resolveGeometry(documentRef, from, "data-occlusion", contract.occlusion.source);
-  const outgoing = resolveGeometry(documentRef, from, "data-match-shape", contract.silhouetteMatch.source);
-  const incoming = resolveGeometry(documentRef, to, "data-match-shape", contract.silhouetteMatch.target);
-  consumeGeometry(occlusion, contract.occlusion.geometry, "occlusion");
-  occlusion.dataset.transitionOcclusionConsumed = "true";
-  occlusion.dataset.transitionOcclusionContract = contract.occlusion.source;
-  consumeGeometry(outgoing, contract.match.outgoingGeometry, "outgoing-match");
-  consumeGeometry(incoming, contract.match.incomingGeometry, "incoming-match");
-  layer.dataset.occlusionConsumed = "true";
-  layer.dataset.transitionOcclusionGeometry = contract.occlusion.geometry.id;
-  layer.dataset.transitionOcclusionShape = contract.occlusion.geometry.shape;
-  layer.dataset.transitionOcclusionNode = occlusion.className || occlusion.tagName.toLowerCase();
-  layer.dataset.transitionGeometry = `${contract.match.outgoingGeometry.id}|${contract.match.incomingGeometry.id}`;
-  layer.dataset.transitionShape = `${contract.match.outgoingGeometry.shape}->${contract.match.incomingGeometry.shape}`;
-  return { occlusion, outgoing, incoming };
+  }, fadeAt);
 }
 
 export function addCinematicTransition(timeline, {
@@ -232,35 +359,63 @@ export function addCinematicTransition(timeline, {
   to,
   contract,
   start,
-  duration = TRANSITION_DURATION
+  duration = TRANSITION_DURATION,
+  geometryBinding: binding = null
 }) {
   if (!timeline?.to || !timeline?.fromTo || !timeline?.set) throw new TypeError("GSAP timeline is required for cinematic transitions");
   requireElement(from, "transition source");
   requireElement(to, "transition target");
-  const layer = createTransitionLayer(documentRef, stage, contract);
-  const { occlusion, outgoing, incoming } = consumeContractGeometry(documentRef, from, to, contract, layer);
+  const resolvedBinding = binding ?? validateTransitionGeometryBindings({ [contract.from]: from, [contract.to]: to }, [contract]).get(contract.id);
+  const { layer, dip: dipLayer } = createTransitionLayer(documentRef, stage, contract);
+  const { occlusion, outgoing, incoming } = createContractGeometryRuntime(documentRef, layer, contract, resolvedBinding);
   const focus = contract.focusPull;
   const dip = contract.colorDip;
-  timeline.set(layer, { opacity: 0, scale: 1, filter: "blur(0px)" }, start);
+  const handoff = contract.handoff ?? {
+    outgoingAt: 0,
+    outgoingDuration: duration,
+    incomingAt: 0,
+    incomingDuration: duration
+  };
+  timeline.set(layer, { opacity: 1, scale: 1, filter: "blur(0px)" }, start);
+  timeline.set(dipLayer, { opacity: 0 }, start);
   timeline.fromTo(from, { filter: "blur(0px)" }, {
     filter: `blur(${focus.outgoingBlur}px)`,
-    opacity: contract.from === "seven-world-gallery" ? 0.2 : 0,
-    duration,
+    opacity: 0,
+    duration: handoff.outgoingDuration,
     ease: focus.ease,
     immediateRender: false
-  }, start);
+  }, start + handoff.outgoingAt);
   timeline.fromTo(to, { filter: `blur(${focus.incomingBlur}px)`, opacity: 0 }, {
     filter: "blur(0px)",
     opacity: 1,
-    duration,
+    duration: handoff.incomingDuration,
     ease: focus.ease,
     immediateRender: false
-  }, start);
-  timeline.to(layer, { opacity: dip.peak, duration: dip.duration, ease: "power2.in", immediateRender: false }, start + dip.at);
-  timeline.to(layer, { opacity: 0, duration: dip.releaseDuration, ease: "power2.out" }, start + dip.releaseAt);
-  if (occlusion !== outgoing) animateGeometry(timeline, occlusion, start + duration * 0.04, duration * 0.82, true);
-  animateGeometry(timeline, outgoing, start + duration * 0.08, duration * 0.82, isPersistentGeometry(outgoing));
-  animateGeometry(timeline, incoming, start + duration * 0.18, duration * 0.82, isPersistentGeometry(incoming));
+  }, start + handoff.incomingAt);
+  timeline.to(dipLayer, { opacity: dip.peak, duration: dip.duration, ease: "power2.in", immediateRender: false }, start + dip.at);
+  timeline.to(dipLayer, { opacity: 0, duration: dip.releaseDuration, ease: "power2.out" }, start + dip.releaseAt);
+  animateGeometry(timeline, occlusion, {
+    start: start + duration * 0.04,
+    revealDuration: duration * 0.46,
+    peakOpacity: 0.72,
+    fadeAt: start + duration * 0.56,
+    fadeDuration: duration * 0.32
+  });
+  animateGeometry(timeline, outgoing, {
+    start: start + duration * 0.08,
+    revealDuration: duration * 0.44,
+    peakOpacity: 0.7,
+    fadeAt: start + duration * 0.58,
+    fadeDuration: duration * 0.3
+  });
+  const incomingHold = contract.to.startsWith("chapter-card-") ? 0.36 : 0.18;
+  animateGeometry(timeline, incoming, {
+    start: start + duration * 0.18,
+    revealDuration: duration * 0.42,
+    peakOpacity: 0.76,
+    fadeAt: start + duration + incomingHold,
+    fadeDuration: 0.28
+  });
   return layer;
 }
 

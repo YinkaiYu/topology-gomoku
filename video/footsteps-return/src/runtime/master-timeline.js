@@ -8,7 +8,13 @@ import { createSevenWorldGalleryScene, addSevenWorldGalleryMotion } from "../../
 import { createOutroScene } from "../../compositions/outro.js";
 import { createPlaceholderScene, createSceneRegistry } from "../../compositions/shared/scene.js";
 import { addTopologyChapterMotion } from "./topology-surfaces.js";
-import { addCinematicTransition, getTransitionContract, TRANSITION_DURATION, validateTransitionContracts } from "./transitions.js";
+import {
+  addCinematicTransition,
+  getTransitionContract,
+  TRANSITION_DURATION,
+  validateTransitionContracts,
+  validateTransitionGeometryBindings
+} from "./transitions.js";
 
 export function buildMasterTimeline({ document: documentRef, gsap, stage, sceneFactories = {} }) {
   if (!gsap?.timeline) {
@@ -36,6 +42,7 @@ export function buildMasterTimeline({ document: documentRef, gsap, stage, sceneF
   });
 
   validateTransitionContracts(timelineDefinition.scenes);
+  const transitionGeometryBindings = validateTransitionGeometryBindings(registry.scenes);
 
   const timeline = gsap.timeline({ paused: true });
   const elements = scenePairs.map(({ element }) => element);
@@ -55,7 +62,8 @@ export function buildMasterTimeline({ document: documentRef, gsap, stage, sceneF
         to: element,
         contract,
         start: transitionStart,
-        duration: TRANSITION_DURATION
+        duration: TRANSITION_DURATION,
+        geometryBinding: transitionGeometryBindings.get(contract.id)
       });
     }
 
@@ -82,6 +90,9 @@ export function buildMasterTimeline({ document: documentRef, gsap, stage, sceneF
       }
     }
   });
+
+  stage.dataset.transitionGeometryReady = "true";
+  stage.dataset.transitionGeometryCount = String(transitionGeometryBindings.size);
 
   timeline.set(stage, { opacity: 1 }, timelineDefinition.duration);
 
