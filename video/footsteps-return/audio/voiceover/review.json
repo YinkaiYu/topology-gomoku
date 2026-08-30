@@ -1,0 +1,455 @@
+{
+  "schemaVersion": 1,
+  "trackPurpose": "replaceable-rhythm-track",
+  "resolvedVoice": {
+    "engine": "Kokoro-82M",
+    "phonemizer": "eSpeak NG",
+    "requestedId": "zm_yunyang",
+    "resolvedId": "zm_yunyang",
+    "gender": "male",
+    "speed": 0.88,
+    "fallback": null
+  },
+  "replacementContract": "Replace captures/voiceover/<cue-id>.wav one-for-one without changing cue IDs.",
+  "synthesisRuntime": {
+    "python": ".venv/Scripts/python.exe via HYPERFRAMES_PYTHON",
+    "packages": [
+      "kokoro-onnx==0.6.1 (MIT)",
+      "soundfile==0.14.0 (BSD-3-Clause)"
+    ],
+    "model": "Kokoro-82M / kokoro-v1.0.onnx + voices-v1.0.bin (Apache-2.0)",
+    "installCommand": "uv add kokoro-onnx soundfile"
+  },
+  "paceCalibration": {
+    "cueIds": [
+      "intro-boundary",
+      "intro-roads",
+      "intro-invitation"
+    ],
+    "candidates": [
+      {
+        "speed": 0.84,
+        "aggregateDurationSeconds": 20.35
+      },
+      {
+        "speed": 0.88,
+        "aggregateDurationSeconds": 19.56,
+        "selected": true
+      },
+      {
+        "speed": 0.92,
+        "aggregateDurationSeconds": 18.77
+      }
+    ],
+    "rationale": "0.88 retains the requested mature, restrained rhythm without stretching the composition or chasing the 165-second reference."
+  },
+  "auditionMethod": "sample-count, hash, waveform envelope, peak/RMS, silence, duration, and 4K caption-sync inspection",
+  "nativeListening": {
+    "status": "required-before-final-mix",
+    "reason": "This agent host cannot present returned audio to the model for a truthful subjective Mandarin audition.",
+    "asrAssist": "HyperFrames transcribe was attempted with Whisper small/zh and returned whisper_unavailable."
+  },
+  "trackDisposition": "rhythm-track-ready; native Mandarin pronunciation review required before final mix",
+  "unacceptableCues": [],
+  "cues": [
+    {
+      "id": "intro-boundary",
+      "replacementId": "intro-boundary",
+      "status": "automated-signal-review-passed",
+      "pronunciation": "native-listener-review-required",
+      "cadence": "tempo-calibrated-at-0.88",
+      "notes": [
+        "Wording remains locked to the approved Task 2 script.",
+        "No pronunciation edits are authorized from automated inspection alone."
+      ],
+      "signal": {
+        "durationSeconds": 3.498667,
+        "peakDbfs": -4.692,
+        "rmsDbfs": -26.495,
+        "activeRatio": 0.512421,
+        "leadingSilenceSeconds": 0.164854,
+        "trailingSilenceSeconds": 0.100062
+      }
+    },
+    {
+      "id": "intro-roads",
+      "replacementId": "intro-roads",
+      "status": "automated-signal-review-passed",
+      "pronunciation": "native-listener-review-required",
+      "cadence": "tempo-calibrated-at-0.88",
+      "notes": [
+        "Wording remains locked to the approved Task 2 script.",
+        "No pronunciation edits are authorized from automated inspection alone."
+      ],
+      "signal": {
+        "durationSeconds": 8.832,
+        "peakDbfs": -2.768,
+        "rmsDbfs": -26.608,
+        "activeRatio": 0.522147,
+        "leadingSilenceSeconds": 0.121146,
+        "trailingSilenceSeconds": 0.124896
+      }
+    },
+    {
+      "id": "intro-invitation",
+      "replacementId": "intro-invitation",
+      "status": "automated-signal-review-passed",
+      "pronunciation": "native-listener-review-required",
+      "cadence": "tempo-calibrated-at-0.88",
+      "notes": [
+        "Wording remains locked to the approved Task 2 script.",
+        "No pronunciation edits are authorized from automated inspection alone."
+      ],
+      "signal": {
+        "durationSeconds": 7.232,
+        "peakDbfs": -4.068,
+        "rmsDbfs": -26.748,
+        "activeRatio": 0.521971,
+        "leadingSilenceSeconds": 0.133521,
+        "trailingSilenceSeconds": 0.109021
+      }
+    },
+    {
+      "id": "plane-order",
+      "replacementId": "plane-order",
+      "status": "automated-signal-review-passed",
+      "pronunciation": "native-listener-review-required",
+      "cadence": "tempo-calibrated-at-0.88",
+      "notes": [
+        "Wording remains locked to the approved Task 2 script.",
+        "No pronunciation edits are authorized from automated inspection alone."
+      ],
+      "signal": {
+        "durationSeconds": 9.92,
+        "peakDbfs": -3.633,
+        "rmsDbfs": -27.03,
+        "activeRatio": 0.522585,
+        "leadingSilenceSeconds": 0.132167,
+        "trailingSilenceSeconds": 0.117646
+      }
+    },
+    {
+      "id": "cylinder-cycle",
+      "replacementId": "cylinder-cycle",
+      "status": "automated-signal-review-passed",
+      "pronunciation": "native-listener-review-required",
+      "cadence": "tempo-calibrated-at-0.88",
+      "notes": [
+        "Wording remains locked to the approved Task 2 script.",
+        "No pronunciation edits are authorized from automated inspection alone."
+      ],
+      "signal": {
+        "durationSeconds": 7.978667,
+        "peakDbfs": -5.885,
+        "rmsDbfs": -27.364,
+        "activeRatio": 0.523448,
+        "leadingSilenceSeconds": 0.119625,
+        "trailingSilenceSeconds": 0.153646
+      }
+    },
+    {
+      "id": "cylinder-distance",
+      "replacementId": "cylinder-distance",
+      "status": "automated-signal-review-passed",
+      "pronunciation": "native-listener-review-required",
+      "cadence": "tempo-calibrated-at-0.88",
+      "notes": [
+        "Wording remains locked to the approved Task 2 script.",
+        "No pronunciation edits are authorized from automated inspection alone."
+      ],
+      "signal": {
+        "durationSeconds": 4.16,
+        "peakDbfs": -3.823,
+        "rmsDbfs": -27.007,
+        "activeRatio": 0.534721,
+        "leadingSilenceSeconds": 0.10975,
+        "trailingSilenceSeconds": 0.098604
+      }
+    },
+    {
+      "id": "torus-cycles",
+      "replacementId": "torus-cycles",
+      "status": "automated-signal-review-passed",
+      "pronunciation": "native-listener-review-required",
+      "cadence": "tempo-calibrated-at-0.88",
+      "notes": [
+        "Wording remains locked to the approved Task 2 script.",
+        "No pronunciation edits are authorized from automated inspection alone."
+      ],
+      "signal": {
+        "durationSeconds": 7.424,
+        "peakDbfs": -3.701,
+        "rmsDbfs": -27.184,
+        "activeRatio": 0.513349,
+        "leadingSilenceSeconds": 0.116833,
+        "trailingSilenceSeconds": 0.125583
+      }
+    },
+    {
+      "id": "torus-shortest-path",
+      "replacementId": "torus-shortest-path",
+      "status": "automated-signal-review-passed",
+      "pronunciation": "native-listener-review-required",
+      "cadence": "tempo-calibrated-at-0.88",
+      "notes": [
+        "Wording remains locked to the approved Task 2 script.",
+        "No pronunciation edits are authorized from automated inspection alone."
+      ],
+      "signal": {
+        "durationSeconds": 5.056,
+        "peakDbfs": -5.283,
+        "rmsDbfs": -26.958,
+        "activeRatio": 0.518353,
+        "leadingSilenceSeconds": 0.14275,
+        "trailingSilenceSeconds": 0.089354
+      }
+    },
+    {
+      "id": "mobius-turn",
+      "replacementId": "mobius-turn",
+      "status": "automated-signal-review-passed",
+      "pronunciation": "native-listener-review-required",
+      "cadence": "tempo-calibrated-at-0.88",
+      "notes": [
+        "Wording remains locked to the approved Task 2 script.",
+        "No pronunciation edits are authorized from automated inspection alone."
+      ],
+      "signal": {
+        "durationSeconds": 7.829333,
+        "peakDbfs": -2.805,
+        "rmsDbfs": -27.203,
+        "activeRatio": 0.51935,
+        "leadingSilenceSeconds": 0.123146,
+        "trailingSilenceSeconds": 0.088688
+      }
+    },
+    {
+      "id": "mobius-one-side",
+      "replacementId": "mobius-one-side",
+      "status": "automated-signal-review-passed",
+      "pronunciation": "native-listener-review-required",
+      "cadence": "tempo-calibrated-at-0.88",
+      "notes": [
+        "Wording remains locked to the approved Task 2 script.",
+        "No pronunciation edits are authorized from automated inspection alone."
+      ],
+      "signal": {
+        "durationSeconds": 3.584,
+        "peakDbfs": -4.34,
+        "rmsDbfs": -26.769,
+        "activeRatio": 0.520932,
+        "leadingSilenceSeconds": 0.132,
+        "trailingSilenceSeconds": 0.097021
+      }
+    },
+    {
+      "id": "klein-two-returns",
+      "replacementId": "klein-two-returns",
+      "status": "automated-signal-review-passed",
+      "pronunciation": "native-listener-review-required",
+      "cadence": "tempo-calibrated-at-0.88",
+      "notes": [
+        "Wording remains locked to the approved Task 2 script.",
+        "No pronunciation edits are authorized from automated inspection alone."
+      ],
+      "signal": {
+        "durationSeconds": 9.557333,
+        "peakDbfs": -2.915,
+        "rmsDbfs": -27.298,
+        "activeRatio": 0.522572,
+        "leadingSilenceSeconds": 0.154479,
+        "trailingSilenceSeconds": 0.123167
+      }
+    },
+    {
+      "id": "klein-memory",
+      "replacementId": "klein-memory",
+      "status": "automated-signal-review-passed",
+      "pronunciation": "native-listener-review-required",
+      "cadence": "tempo-calibrated-at-0.88",
+      "notes": [
+        "Wording remains locked to the approved Task 2 script.",
+        "No pronunciation edits are authorized from automated inspection alone."
+      ],
+      "signal": {
+        "durationSeconds": 2.474667,
+        "peakDbfs": -7.115,
+        "rmsDbfs": -27.442,
+        "activeRatio": 0.522503,
+        "leadingSilenceSeconds": 0.149958,
+        "trailingSilenceSeconds": 0.102208
+      }
+    },
+    {
+      "id": "projective-reflection",
+      "replacementId": "projective-reflection",
+      "status": "automated-signal-review-passed",
+      "pronunciation": "native-listener-review-required",
+      "cadence": "tempo-calibrated-at-0.88",
+      "notes": [
+        "Wording remains locked to the approved Task 2 script.",
+        "No pronunciation edits are authorized from automated inspection alone."
+      ],
+      "signal": {
+        "durationSeconds": 7.808,
+        "peakDbfs": -3.337,
+        "rmsDbfs": -26.859,
+        "activeRatio": 0.517821,
+        "leadingSilenceSeconds": 0.108313,
+        "trailingSilenceSeconds": 0.094479
+      }
+    },
+    {
+      "id": "projective-twin",
+      "replacementId": "projective-twin",
+      "status": "automated-signal-review-passed",
+      "pronunciation": "native-listener-review-required",
+      "cadence": "tempo-calibrated-at-0.88",
+      "notes": [
+        "Wording remains locked to the approved Task 2 script.",
+        "No pronunciation edits are authorized from automated inspection alone."
+      ],
+      "signal": {
+        "durationSeconds": 4.245333,
+        "peakDbfs": -2.783,
+        "rmsDbfs": -25.916,
+        "activeRatio": 0.533429,
+        "leadingSilenceSeconds": 0.154917,
+        "trailingSilenceSeconds": 0.087333
+      }
+    },
+    {
+      "id": "sphere-closure",
+      "replacementId": "sphere-closure",
+      "status": "automated-signal-review-passed",
+      "pronunciation": "native-listener-review-required",
+      "cadence": "tempo-calibrated-at-0.88",
+      "notes": [
+        "Wording remains locked to the approved Task 2 script.",
+        "No pronunciation edits are authorized from automated inspection alone."
+      ],
+      "signal": {
+        "durationSeconds": 10.176,
+        "peakDbfs": -2.767,
+        "rmsDbfs": -26.844,
+        "activeRatio": 0.518841,
+        "leadingSilenceSeconds": 0.047729,
+        "trailingSilenceSeconds": 0.088604
+      }
+    },
+    {
+      "id": "sphere-map",
+      "replacementId": "sphere-map",
+      "status": "automated-signal-review-passed",
+      "pronunciation": "native-listener-review-required",
+      "cadence": "tempo-calibrated-at-0.88",
+      "notes": [
+        "Wording remains locked to the approved Task 2 script.",
+        "No pronunciation edits are authorized from automated inspection alone."
+      ],
+      "signal": {
+        "durationSeconds": 5.184,
+        "peakDbfs": -4.603,
+        "rmsDbfs": -26.829,
+        "activeRatio": 0.508813,
+        "leadingSilenceSeconds": 0.165042,
+        "trailingSilenceSeconds": 0.084917
+      }
+    },
+    {
+      "id": "sphere-boundary",
+      "replacementId": "sphere-boundary",
+      "status": "automated-signal-review-passed",
+      "pronunciation": "native-listener-review-required",
+      "cadence": "tempo-calibrated-at-0.88",
+      "notes": [
+        "Wording remains locked to the approved Task 2 script.",
+        "No pronunciation edits are authorized from automated inspection alone."
+      ],
+      "signal": {
+        "durationSeconds": 4.501333,
+        "peakDbfs": -4.453,
+        "rmsDbfs": -26.385,
+        "activeRatio": 0.512492,
+        "leadingSilenceSeconds": 0.120521,
+        "trailingSilenceSeconds": 0.093146
+      }
+    },
+    {
+      "id": "outro-invocation",
+      "replacementId": "outro-invocation",
+      "status": "automated-signal-review-passed",
+      "pronunciation": "native-listener-review-required",
+      "cadence": "tempo-calibrated-at-0.88",
+      "notes": [
+        "Wording remains locked to the approved Task 2 script.",
+        "No pronunciation edits are authorized from automated inspection alone."
+      ],
+      "signal": {
+        "durationSeconds": 1.685333,
+        "peakDbfs": -3.584,
+        "rmsDbfs": -26.025,
+        "activeRatio": 0.499543,
+        "leadingSilenceSeconds": 0.140375,
+        "trailingSilenceSeconds": 0.098229
+      }
+    },
+    {
+      "id": "outro-connection",
+      "replacementId": "outro-connection",
+      "status": "automated-signal-review-passed",
+      "pronunciation": "native-listener-review-required",
+      "cadence": "tempo-calibrated-at-0.88",
+      "notes": [
+        "Wording remains locked to the approved Task 2 script.",
+        "No pronunciation edits are authorized from automated inspection alone."
+      ],
+      "signal": {
+        "durationSeconds": 5.312,
+        "peakDbfs": -2.88,
+        "rmsDbfs": -26.933,
+        "activeRatio": 0.522739,
+        "leadingSilenceSeconds": 0.159792,
+        "trailingSilenceSeconds": 0.074813
+      }
+    },
+    {
+      "id": "outro-stone",
+      "replacementId": "outro-stone",
+      "status": "automated-signal-review-passed",
+      "pronunciation": "native-listener-review-required",
+      "cadence": "tempo-calibrated-at-0.88",
+      "notes": [
+        "Wording remains locked to the approved Task 2 script.",
+        "No pronunciation edits are authorized from automated inspection alone."
+      ],
+      "signal": {
+        "durationSeconds": 3.882667,
+        "peakDbfs": -7.22,
+        "rmsDbfs": -27.16,
+        "activeRatio": 0.540211,
+        "leadingSilenceSeconds": 0.170396,
+        "trailingSilenceSeconds": 0.098937
+      }
+    },
+    {
+      "id": "outro-world",
+      "replacementId": "outro-world",
+      "status": "automated-signal-review-passed",
+      "pronunciation": "native-listener-review-required",
+      "cadence": "tempo-calibrated-at-0.88",
+      "notes": [
+        "Wording remains locked to the approved Task 2 script.",
+        "No pronunciation edits are authorized from automated inspection alone."
+      ],
+      "signal": {
+        "durationSeconds": 3.050667,
+        "peakDbfs": -3,
+        "rmsDbfs": -26.378,
+        "activeRatio": 0.523601,
+        "leadingSilenceSeconds": 0.161833,
+        "trailingSilenceSeconds": 0.113646
+      }
+    }
+  ]
+}

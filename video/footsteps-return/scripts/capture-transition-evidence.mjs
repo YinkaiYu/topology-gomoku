@@ -3,6 +3,7 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { chromium } from "playwright";
 import { masterTimeline } from "../src/data/timeline.js";
+import { voiceoverSchedule } from "../src/data/captions.js";
 import { transitionContracts } from "../src/runtime/transitions.js";
 import { startStaticServer } from "./serve-app.mjs";
 
@@ -22,6 +23,8 @@ function transitionBoundary(from, to) {
 }
 
 const expectedGeometry = (occlusion, outgoing, incoming) => Object.freeze({ occlusion, outgoing, incoming });
+const outroNarrationStart = voiceoverSchedule.find(({ cueId }) => cueId === "outro-invocation")?.start;
+if (!Number.isFinite(outroNarrationStart)) throw new Error("outro-invocation must have a generated narration start");
 
 const frame = (id, seek, phase, contractId, geometry, filename, description) => Object.freeze({
   id,
@@ -40,8 +43,8 @@ export const transitionCapturePlan = Object.freeze([
   frame("cylinder-to-torus-post", sceneStart("chapter-card-torus") + 0.02, "post", "chapter-cylinder--chapter-card-torus", expectedGeometry("cylinder-section", "cylinder-section", "torus-inner-ring"), "task7-cylinder-to-torus-post.png", "incoming torus ring held through the delayed card reveal"),
   frame("torus-to-mobius-mid", transitionBoundary("chapter-torus", "chapter-card-mobius") + 0.31, "mid", "chapter-torus--chapter-card-mobius", expectedGeometry("torus-aperture", "torus-inner-ring", "mobius-twist-center"), "task7-torus-to-mobius-mid.png", "torus aperture matched to the Möbius twist center"),
   frame("mobius-to-klein-mid", transitionBoundary("chapter-mobius", "chapter-card-klein") + 0.31, "mid", "chapter-mobius--chapter-card-klein", expectedGeometry("mobius-ribbon", "mobius-grazing-mirror", "klein-cross"), "task7-mobius-to-klein-mid.png", "Möbius grazing mirror matched to the Klein crossing"),
-  frame("gallery-withdrawal-before-outro", 146.9, "overlap-before", "seven-world-gallery--outro", expectedGeometry("gallery-sphere", "gallery-sphere", "outro-darkness"), "task7-gallery-withdrawal-146.90s.png", "gallery withdrawal immediately before the first outro narration cue"),
-  frame("gallery-withdrawal-during-outro", 148.4, "overlap-during", "seven-world-gallery--outro", expectedGeometry("gallery-sphere", "gallery-sphere", "outro-darkness"), "task7-gallery-withdrawal-148.40s.png", "gallery withdrawal continuing under the first outro narration cue")
+  frame("gallery-withdrawal-before-outro", outroNarrationStart - 0.52, "overlap-before", "seven-world-gallery--outro", expectedGeometry("gallery-sphere", "gallery-sphere", "outro-darkness"), "task7-gallery-withdrawal-before-outro.png", "gallery withdrawal immediately before the first outro narration cue"),
+  frame("gallery-withdrawal-during-outro", outroNarrationStart + 1.4, "overlap-during", "seven-world-gallery--outro", expectedGeometry("gallery-sphere", "gallery-sphere", "outro-darkness"), "task7-gallery-withdrawal-during-outro.png", "gallery withdrawal continuing under the first outro narration cue")
 ]);
 
 async function measurePixels(page, png) {
@@ -131,7 +134,7 @@ async function settle(page, seek) {
 }
 
 async function observe(page, planned) {
-  return page.evaluate(({ id, seek, contractId }) => {
+  return page.evaluate(({ id, seek, contractId, outroNarrationStart: narrationStart }) => {
     const layer = document.querySelector(`[data-pv-transition-layer="${contractId}"]`);
     const gallery = document.querySelector('[data-scene-id="seven-world-gallery"]');
     const camera = gallery?.querySelector("[data-gallery-camera]");
@@ -175,10 +178,10 @@ async function observe(page, planned) {
       galleryCamera: camera ? {
         transform: getComputedStyle(camera).transform,
         position: camera.dataset.galleryCameraPosition,
-        overlapsOutroNarration: seek >= 147 && seek <= 149.2
+        overlapsOutroNarration: seek >= narrationStart && seek <= narrationStart + 2.2
       } : null
     };
-  }, planned);
+  }, { ...planned, outroNarrationStart });
 }
 
 export async function captureTransitionEvidence({ projectRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..") } = {}) {

@@ -1,5 +1,6 @@
 import { fileURLToPath } from "node:url";
 import path from "node:path";
+import { buildVoiceover } from "./build-voiceover.mjs";
 import { runHyperframes } from "./hyperframes-cli.mjs";
 
 export const voiceOutput = "video/footsteps-return/captures/narration.wav";
@@ -21,11 +22,19 @@ export function buildVoiceArgs(args) {
   return ["tts", ...args, "--output", voiceOutput];
 }
 
-function main() {
-  const result = runHyperframes(buildVoiceArgs(process.argv.slice(2)));
+async function main() {
+  const args = process.argv.slice(2);
+  if (args.length === 0) {
+    await buildVoiceover();
+    return;
+  }
+  const result = runHyperframes(buildVoiceArgs(args));
   process.exitCode = result.status ?? 1;
 }
 
 if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
-  main();
+  main().catch((error) => {
+    console.error(error instanceof Error ? error.stack : error);
+    process.exitCode = 1;
+  });
 }

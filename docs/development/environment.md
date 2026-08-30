@@ -1,6 +1,6 @@
 # 开发环境与依赖
 
-仓库以 Node.js 运行测试与 H5 校验，以 PowerShell 执行 Windows 构建脚本；Python 只用于确定性生成拓扑 SVG 和内嵌字体子集。
+仓库以 Node.js 运行测试与 H5 校验，以 PowerShell 执行 Windows 构建脚本；Python 用于确定性生成拓扑 SVG、内嵌字体子集与 PV 的本地 Kokoro 节奏配音。
 
 ## 基础工具
 
@@ -26,6 +26,8 @@ npm run pv:lint
 npm run pv:validate
 npm run pv:inspect
 npm run pv:preview
+npm run pv:voice
+node ./video/footsteps-return/scripts/capture-caption-evidence.mjs
 ```
 
 - `npm run check` 同时执行逻辑测试、H5 包校验和文档检查。
@@ -33,7 +35,8 @@ npm run pv:preview
 - `npm run release:check-versions -- X.Y.Z` 仅供维护者在稳定同步后检查 `main` 与三个发行分支的统一游戏版本。
 - `npm run pv:doctor` 检查 PV 所需的 Node.js 22、FFmpeg、eSpeak NG、MuseScore 4 与仓库字体/拓扑资产；`pv:lint`、`pv:validate`、`pv:inspect` 依次执行合成静态、综合运行时质量门与布局检查。
 - `npm run pv:game-render:verify` 在 Chromium 中验证 PV 专用的透明真实游戏渲染层：四角 alpha、教学文字抑制、纸张纹理禁用、相同状态像素哈希、形变与旋转差异。HyperFrames 通过同源 `render-game.html` 的 `gameRender.selectShot()` 与显式 `gameRender.render(state)` 驱动同一个持久 iframe/Canvas；它不会按墙钟自行播放，也不生成逐帧图片或中间视频。
-- `npm run pv:voice -- <文字或文本文件>` 强制将 TTS 媒体写入被忽略的 PV 采集目录；`npm run pv:score -- <score.mscz>` 转发到本机 MuseScore 4。渲染只使用 `pv:render:draft` 与 `pv:render:4k`，输出固定为 4K/60fps。
+- `npm run pv:voice` 读取锁定的 `audio/voiceover/script.json`，以 Kokoro-82M `zm_yunyang` / speed 0.88 生成 21 个可替换 cue WAV，归一化为 48kHz 单声道 16-bit PCM，再按实际采样时长重建字幕与 183.352 秒弹性时间线；`npm run pv:voice -- <文字或文本文件>` 仍保留单条 TTS 包装器，并强制写入被忽略的 PV 采集目录。
+- `node ./video/footsteps-return/scripts/capture-caption-evidence.mjs` 在真实 Chromium 中重放字幕，输出 6 张原生 4K 长期证据和本地忽略的 1920×1080 / 30fps / 69 秒字幕专审视频；`npm run pv:score -- <score.mscz>` 转发到本机 MuseScore 4。完整渲染只使用 `pv:render:draft` 与 `pv:render:4k`，输出固定为 4K/60fps。
 - 首次同步需要下载 `uv.lock` 中的依赖；之后会复用锁定环境与本地缓存。
 
 ## Python 环境
@@ -45,6 +48,8 @@ npm run pv:preview
 - 精确解析结果记录在 `uv.lock`，必须提交。
 - 调整依赖使用 `uv add` 或 `uv remove`；不得直接向 `.venv` 执行 `pip install`。
 - CI 或只读验证优先使用 `uv sync --locked` / `uv run --locked`，锁文件过期时应失败而不是静默更新。
+- HyperFrames 的 Windows TTS 子进程通过 `HYPERFRAMES_PYTHON=.venv/Scripts/python.exe` 使用同一受控环境；不要向系统 Python 或用户级 site-packages 安装依赖。
+- PV TTS 的直接依赖为 `kokoro-onnx==0.6.1`（MIT）与 `soundfile==0.14.0`（BSD-3-Clause），安装 / 锁定命令为 `uv add kokoro-onnx soundfile`。Kokoro-82M 模型与 voice pack 为 Apache-2.0，HyperFrames 首次生成时从 `thewh1teagle/kokoro-onnx` 的 `model-files-v1.0` release 下载到 `%USERPROFILE%\.cache\hyperframes\tts\`；模型、voice pack、`.venv` 与 WAV 都不提交。
 
 ## 字体子集
 

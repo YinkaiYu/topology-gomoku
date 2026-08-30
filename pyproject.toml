@@ -6,6 +6,8 @@ requires-python = ">=3.12,<3.13"
 dependencies = [
   "brotli>=1.1,<2",
   "fonttools>=4.55,<5",
+  "kokoro-onnx>=0.6.1",
+  "soundfile>=0.14.0",
 ]
 
 [tool.uv]

@@ -1,0 +1,110 @@
+{
+  "task": "task8-captions",
+  "viewport": {
+    "width": 3840,
+    "height": 2160,
+    "deviceScaleFactor": 1
+  },
+  "native4k": true,
+  "frames": [
+    {
+      "id": "intro-boundary-01",
+      "seek": 0.5533333333333333,
+      "text": "人们总把棋盘的边缘视作尽头",
+      "filename": "task8-intro-boundary-01.png",
+      "path": "artifacts/pv-caption-scenes-task8/task8-intro-boundary-01.png",
+      "expectedText": "人们总把棋盘的边缘视作尽头",
+      "visibleCount": 1,
+      "lineCount": 1,
+      "width": 1144,
+      "safeWidth": 3456,
+      "fontFamily": "Topo Serif",
+      "fontSize": 88,
+      "opacity": 1
+    },
+    {
+      "id": "plane-order-02",
+      "seek": 28.524524333333332,
+      "text": "方庭以有限的秩序收容第一条五连",
+      "filename": "task8-plane-order-02.png",
+      "path": "artifacts/pv-caption-scenes-task8/task8-plane-order-02.png",
+      "expectedText": "方庭以有限的秩序收容第一条五连",
+      "visibleCount": 1,
+      "lineCount": 1,
+      "width": 1320,
+      "safeWidth": 3456,
+      "fontFamily": "Topo Serif",
+      "fontSize": 88,
+      "opacity": 1
+    },
+    {
+      "id": "cylinder-distance-01",
+      "seek": 49.654667333333336,
+      "text": "只拥有一重循环的世界，该如何丈量远近？",
+      "filename": "task8-cylinder-distance-01.png",
+      "path": "artifacts/pv-caption-scenes-task8/task8-cylinder-distance-01.png",
+      "expectedText": "只拥有一重循环的世界，该如何丈量远近？",
+      "visibleCount": 1,
+      "lineCount": 1,
+      "width": 1672,
+      "safeWidth": 3456,
+      "fontFamily": "Topo Serif",
+      "fontSize": 88,
+      "opacity": 1
+    },
+    {
+      "id": "klein-two-returns-03",
+      "seek": 101.98570033333334,
+      "text": "两种归来共处一界：一条路保持原样",
+      "filename": "task8-klein-two-returns-03.png",
+      "path": "artifacts/pv-caption-scenes-task8/task8-klein-two-returns-03.png",
+      "expectedText": "两种归来共处一界：一条路保持原样",
+      "visibleCount": 1,
+      "lineCount": 1,
+      "width": 1408,
+      "safeWidth": 3456,
+      "fontFamily": "Topo Serif",
+      "fontSize": 88,
+      "opacity": 1
+    },
+    {
+      "id": "sphere-boundary-01",
+      "seek": 151.01333333333332,
+      "text": "所谓边界，或许只是观察世界时留下的痕迹",
+      "filename": "task8-sphere-boundary-01.png",
+      "path": "artifacts/pv-caption-scenes-task8/task8-sphere-boundary-01.png",
+      "expectedText": "所谓边界，或许只是观察世界时留下的痕迹",
+      "visibleCount": 1,
+      "lineCount": 1,
+      "width": 1672,
+      "safeWidth": 3456,
+      "fontFamily": "Topo Serif",
+      "fontSize": 88,
+      "opacity": 1
+    },
+    {
+      "id": "outro-world-01",
+      "seek": 175.51466633333334,
+      "text": "然后，去看见世界本来的样子吧",
+      "filename": "task8-outro-world-01.png",
+      "path": "artifacts/pv-caption-scenes-task8/task8-outro-world-01.png",
+      "expectedText": "然后，去看见世界本来的样子吧",
+      "visibleCount": 1,
+      "lineCount": 1,
+      "width": 1232,
+      "safeWidth": 3456,
+      "fontFamily": "Topo Serif",
+      "fontSize": 88,
+      "opacity": 1
+    }
+  ],
+  "reviewRender": {
+    "path": "video/footsteps-return/renders/footsteps-return-caption-review.mp4",
+    "width": 1920,
+    "height": 1080,
+    "fps": 30,
+    "durationSeconds": 69,
+    "bytes": 451491,
+    "sha256": "ec8a153f20d8302a1cbb43618061aff1823d08cf3b229dd6ca464ac424ab7552"
+  }
+}

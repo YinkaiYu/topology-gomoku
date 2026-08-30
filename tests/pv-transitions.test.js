@@ -336,7 +336,8 @@ test("gallery contains seven unique surfaces and only real Task 3/6 path IDs", a
 });
 
 test("transition boundaries consume real geometry masks and seek reversibly", async () => {
-  const observations = await page.evaluate(() => {
+  const observations = await page.evaluate(async () => {
+    const { voiceoverSchedule } = await import("/src/data/captions.js");
     const timeline = window.__timelines["footsteps-return"];
     const scenes = [...document.querySelectorAll("[data-scene-id]")];
     const transitionLayers = [...document.querySelectorAll("[data-pv-transition-layer]")];
@@ -423,8 +424,9 @@ test("transition boundaries consume real geometry masks and seek reversibly", as
       const scale = Number(transform.match(/matrix\(([^,]+)/)?.[1] || 1);
       return { transform, scale };
     };
-    const cameraBefore = cameraSample(146.9);
-    const cameraAfter = cameraSample(148.4);
+    const firstOutroNarrationStart = voiceoverSchedule.find(({ cueId }) => cueId === "outro-invocation").start;
+    const cameraBefore = cameraSample(firstOutroNarrationStart - 0.52);
+    const cameraAfter = cameraSample(firstOutroNarrationStart + 1.4);
     const galleryStart = Number(document.querySelector('[data-scene-id="seven-world-gallery"]').dataset.sceneStart);
     const seek = (time) => {
       timeline.time(time, false).pause();
@@ -481,14 +483,18 @@ test("transition boundaries consume real geometry masks and seek reversibly", as
   assert.ok(new Set(observations.contracts.map(({ middle }) => middle.contract.shape)).size >= 5, "topology-specific matches must use different shape parameters");
   assert.equal(observations.reversible, true, "gallery seeking must be deterministic and reversible");
   assert.notEqual(observations.galleryCamera.before, observations.galleryCamera.after, "gallery withdrawal must cross the first outro narration");
-  assert.notEqual(observations.galleryCamera.beforeScale, observations.galleryCamera.afterScale, "gallery camera scale must change across 147s");
+  assert.notEqual(observations.galleryCamera.beforeScale, observations.galleryCamera.afterScale, "gallery camera scale must change across the first outro narration");
   assert.equal(await page.locator("[data-scene-layer]").getAttribute("data-transition-geometry-ready"), "true");
   assert.equal(await page.locator("[data-scene-layer]").getAttribute("data-transition-geometry-count"), "17");
 });
 
 test("gallery remains visibly in motion through the opening outro narration", async () => {
+  const firstOutroNarrationStart = await page.evaluate(async () => {
+    const { voiceoverSchedule } = await import("/src/data/captions.js");
+    return voiceoverSchedule.find(({ cueId }) => cueId === "outro-invocation").start;
+  });
   const samples = [];
-  for (const seek of [146.8, 147.2, 148.4, 149.2]) {
+  for (const seek of [firstOutroNarrationStart - 0.62, firstOutroNarrationStart + 0.2, firstOutroNarrationStart + 1.4, firstOutroNarrationStart + 2.2]) {
     const state = await page.evaluate(async (time) => {
       const timeline = window.__timelines["footsteps-return"];
       timeline.time(time, false).pause();
@@ -501,18 +507,18 @@ test("gallery remains visibly in motion through the opening outro narration", as
         cameraTransform: getComputedStyle(camera).transform
       };
     }, seek);
-    state.pixels = await pixelMetrics(await page.screenshot());
+    state.pixels = await pixelMetrics(await page.screenshot({ clip: { x: 0, y: 0, width: 3840, height: 1800 } }));
     samples.push(state);
   }
 
-  assert.ok(samples[0].galleryOpacity > 0.7, "gallery must still cover most of the frame at 146.8s");
-  assert.ok(samples[1].galleryOpacity > 0.55, "gallery must remain visible after narration begins at 147.2s");
-  assert.ok(samples[2].galleryOpacity > 0.16, "gallery must still be present during withdrawal at 148.4s");
+  assert.ok(samples[0].galleryOpacity > 0.7, "gallery must still cover most of the frame immediately before outro narration");
+  assert.ok(samples[1].galleryOpacity > 0.55, "gallery must remain visible after outro narration begins");
+  assert.ok(samples[2].galleryOpacity > 0.16, "gallery must still be present during the narrated withdrawal");
   assert.ok(samples[3].galleryOpacity < samples[2].galleryOpacity, "gallery must finish darkening after the visible handoff");
-  assert.equal(new Set(samples.map(({ cameraTransform }) => cameraTransform)).size, 4, "camera motion must continue through 149.2s");
-  assert.ok(samples[2].pixels.variance > 2, "148.4s must contain visible spatial variation");
-  assert.ok(samples[2].pixels.nonPureColorRatio > 0.01, "148.4s must not be a pure-color frame");
-  assert.ok(samples[3].pixels.variance < samples[2].pixels.variance, "the handoff must darken after 148.4s");
+  assert.equal(new Set(samples.map(({ cameraTransform }) => cameraTransform)).size, 4, "camera motion must continue throughout the narrated handoff");
+  assert.ok(samples[2].pixels.variance > 2, "the narrated withdrawal must contain visible spatial variation");
+  assert.ok(samples[2].pixels.nonPureColorRatio > 0.01, "the narrated withdrawal must not be a pure-color frame");
+  assert.ok(samples[3].pixels.variance < samples[2].pixels.variance, "the handoff must darken after the narrated withdrawal");
 });
 
 test("evidence validation rejects a replacement PNG containing only black pixels", async () => {
@@ -592,9 +598,11 @@ test("evidence validation rejects recorded runtime geometry that disagrees with 
 });
 
 test("evidence validation rejects manifest geometry that disagrees with the live runtime", async () => {
+  const { transitionCapturePlan } = await import("../video/footsteps-return/scripts/capture-transition-evidence.mjs");
+  const reference = transitionCapturePlan.find(({ id }) => id === "cylinder-to-torus-post");
   const tampered = {
     id: "cylinder-to-torus-post",
-    seek: 50.02,
+    seek: reference.seek,
     contractId: "chapter-cylinder--chapter-card-torus",
     expectedGeometry: {
       occlusion: "cylinder-section",
@@ -651,9 +659,9 @@ test("transition evidence capture plan is native 4K and reproducible", async () 
     if (frame.id === "cylinder-to-torus-post") {
       const incoming = liveGeometry.find(({ side }) => side === "incoming-match");
       assert.equal(incoming.geometry, "torus-inner-ring");
-      assert.ok(incoming.opacity > 0, "50.02s incoming torus-inner-ring must remain visible");
-      assert.ok(incoming.bbox.width > 0 && incoming.bbox.height > 0, "50.02s incoming torus-inner-ring must have a valid bbox");
-      assert.ok(decodedPixels.variance > 1.5 && decodedPixels.nonPureColorRatio > 0.005, "50.02s PNG must contain non-black pixels");
+      assert.ok(incoming.opacity > 0, "the incoming torus-inner-ring must remain visible in the post-boundary evidence");
+      assert.ok(incoming.bbox.width > 0 && incoming.bbox.height > 0, "the incoming torus-inner-ring must have a valid bbox");
+      assert.ok(decodedPixels.variance > 1.5 && decodedPixels.nonPureColorRatio > 0.005, "the post-boundary PNG must contain non-black pixels");
     }
   }
 });

@@ -1,0 +1,235 @@
+{
+  "schemaVersion": 1,
+  "language": "zh-CN",
+  "purpose": "replaceable-rhythm-track",
+  "voice": {
+    "engine": "Kokoro-82M",
+    "phonemizer": "eSpeak NG",
+    "requestedId": "zm_yunyang",
+    "gender": "male",
+    "speed": 0.88,
+    "fallback": null
+  },
+  "output": {
+    "directory": "video/footsteps-return/captures/voiceover",
+    "format": "wav",
+    "sampleRateHz": 48000,
+    "channels": 1
+  },
+  "cues": [
+    {
+      "id": "intro-boundary",
+      "semanticGroup": "intro",
+      "text": "人们总把棋盘的边缘视作尽头。",
+      "outputFile": "video/footsteps-return/captures/voiceover/intro-boundary.wav",
+      "captions": [
+        { "id": "intro-boundary-01", "spokenText": "人们总把棋盘的边缘视作尽头。", "visibleText": "人们总把棋盘的边缘视作尽头" }
+      ]
+    },
+    {
+      "id": "intro-roads",
+      "semanticGroup": "intro",
+      "text": "可那些消失在边界上的道路并未中断。它们在另一处接缝后延续，将遥远的落点重新变为近邻。",
+      "outputFile": "video/footsteps-return/captures/voiceover/intro-roads.wav",
+      "captions": [
+        { "id": "intro-roads-01", "spokenText": "可那些消失在边界上的道路并未中断。", "visibleText": "可那些消失在边界上的道路并未中断" },
+        { "id": "intro-roads-02", "spokenText": "它们在另一处接缝后延续，", "visibleText": "它们在另一处接缝后延续" },
+        { "id": "intro-roads-03", "spokenText": "将遥远的落点重新变为近邻。", "visibleText": "将遥远的落点重新变为近邻" }
+      ]
+    },
+    {
+      "id": "intro-invitation",
+      "semanticGroup": "intro",
+      "text": "现在，落子之人啊，循着隐藏的连接前行吧。七种世界，将在你面前依次展开。",
+      "outputFile": "video/footsteps-return/captures/voiceover/intro-invitation.wav",
+      "captions": [
+        { "id": "intro-invitation-01", "spokenText": "现在，落子之人啊，", "visibleText": "现在，落子之人啊" },
+        { "id": "intro-invitation-02", "spokenText": "循着隐藏的连接前行吧。", "visibleText": "循着隐藏的连接前行吧" },
+        { "id": "intro-invitation-03", "spokenText": "七种世界，将在你面前依次展开。", "visibleText": "七种世界，将在你面前依次展开" }
+      ]
+    },
+    {
+      "id": "plane-order",
+      "semanticGroup": "plane",
+      "text": "边界分明，方向笔直，胜负都在眼前。方庭以有限的秩序收容第一条五连，也由此埋下对所有边界的疑问。",
+      "outputFile": "video/footsteps-return/captures/voiceover/plane-order.wav",
+      "captions": [
+        { "id": "plane-order-01", "spokenText": "边界分明，方向笔直，胜负都在眼前。", "visibleText": "边界分明，方向笔直，胜负都在眼前" },
+        { "id": "plane-order-02", "spokenText": "方庭以有限的秩序收容第一条五连，", "visibleText": "方庭以有限的秩序收容第一条五连" },
+        { "id": "plane-order-03", "spokenText": "也由此埋下对所有边界的疑问。", "visibleText": "也由此埋下对所有边界的疑问" }
+      ]
+    },
+    {
+      "id": "cylinder-cycle",
+      "semanticGroup": "cylinder",
+      "text": "左右相接，上下仍被截断。横向的路绕过世界回到身后，纵向的路却有始有终。",
+      "outputFile": "video/footsteps-return/captures/voiceover/cylinder-cycle.wav",
+      "captions": [
+        { "id": "cylinder-cycle-01", "spokenText": "左右相接，上下仍被截断。", "visibleText": "左右相接，上下仍被截断" },
+        { "id": "cylinder-cycle-02", "spokenText": "横向的路绕过世界回到身后，", "visibleText": "横向的路绕过世界回到身后" },
+        { "id": "cylinder-cycle-03", "spokenText": "纵向的路却有始有终。", "visibleText": "纵向的路却有始有终" }
+      ]
+    },
+    {
+      "id": "cylinder-distance",
+      "semanticGroup": "cylinder",
+      "text": "只拥有一重循环的世界，该如何丈量远近？",
+      "outputFile": "video/footsteps-return/captures/voiceover/cylinder-distance.wav",
+      "captions": [
+        { "id": "cylinder-distance-01", "spokenText": "只拥有一重循环的世界，该如何丈量远近？", "visibleText": "只拥有一重循环的世界，该如何丈量远近？" }
+      ]
+    },
+    {
+      "id": "torus-cycles",
+      "semanticGroup": "torus",
+      "text": "四边相接，两个方向各自成环。一条斜线可以先越过上边，再从左侧归来。",
+      "outputFile": "video/footsteps-return/captures/voiceover/torus-cycles.wav",
+      "captions": [
+        { "id": "torus-cycles-01", "spokenText": "四边相接，两个方向各自成环。", "visibleText": "四边相接，两个方向各自成环" },
+        { "id": "torus-cycles-02", "spokenText": "一条斜线可以先越过上边，", "visibleText": "一条斜线可以先越过上边" },
+        { "id": "torus-cycles-03", "spokenText": "再从左侧归来。", "visibleText": "再从左侧归来" }
+      ]
+    },
+    {
+      "id": "torus-shortest-path",
+      "semanticGroup": "torus",
+      "text": "两重循环交织之处，最短的道路往往藏在视野之外。",
+      "outputFile": "video/footsteps-return/captures/voiceover/torus-shortest-path.wav",
+      "captions": [
+        { "id": "torus-shortest-path-01", "spokenText": "两重循环交织之处，", "visibleText": "两重循环交织之处" },
+        { "id": "torus-shortest-path-02", "spokenText": "最短的道路往往藏在视野之外。", "visibleText": "最短的道路往往藏在视野之外" }
+      ]
+    },
+    {
+      "id": "mobius-turn",
+      "semanticGroup": "mobius",
+      "text": "左右边界相接，却带着一次翻转。沿同一面环行一周，归来时上下已经交换。",
+      "outputFile": "video/footsteps-return/captures/voiceover/mobius-turn.wav",
+      "captions": [
+        { "id": "mobius-turn-01", "spokenText": "左右边界相接，却带着一次翻转。", "visibleText": "左右边界相接，却带着一次翻转" },
+        { "id": "mobius-turn-02", "spokenText": "沿同一面环行一周，", "visibleText": "沿同一面环行一周" },
+        { "id": "mobius-turn-03", "spokenText": "归来时上下已经交换。", "visibleText": "归来时上下已经交换" }
+      ]
+    },
+    {
+      "id": "mobius-one-side",
+      "semanticGroup": "mobius",
+      "text": "只有一面的世界，正反又该如何分辨？",
+      "outputFile": "video/footsteps-return/captures/voiceover/mobius-one-side.wav",
+      "captions": [
+        { "id": "mobius-one-side-01", "spokenText": "只有一面的世界，正反又该如何分辨？", "visibleText": "只有一面的世界，正反又该如何分辨？" }
+      ]
+    },
+    {
+      "id": "klein-two-returns",
+      "semanticGroup": "klein",
+      "text": "一组边界如圆环般相接，另一组边界让方向翻转。两种归来共处一界：一条路保持原样，一条路带回倒影。",
+      "outputFile": "video/footsteps-return/captures/voiceover/klein-two-returns.wav",
+      "captions": [
+        { "id": "klein-two-returns-01", "spokenText": "一组边界如圆环般相接，", "visibleText": "一组边界如圆环般相接" },
+        { "id": "klein-two-returns-02", "spokenText": "另一组边界让方向翻转。", "visibleText": "另一组边界让方向翻转" },
+        { "id": "klein-two-returns-03", "spokenText": "两种归来共处一界：一条路保持原样，", "visibleText": "两种归来共处一界：一条路保持原样" },
+        { "id": "klein-two-returns-04", "spokenText": "一条路带回倒影。", "visibleText": "一条路带回倒影" }
+      ]
+    },
+    {
+      "id": "klein-memory",
+      "semanticGroup": "klein",
+      "text": "路径会记住你选择的环绕。",
+      "outputFile": "video/footsteps-return/captures/voiceover/klein-memory.wav",
+      "captions": [
+        { "id": "klein-memory-01", "spokenText": "路径会记住你选择的环绕。", "visibleText": "路径会记住你选择的环绕" }
+      ]
+    },
+    {
+      "id": "projective-reflection",
+      "semanticGroup": "projective",
+      "text": "上下左右，全都通向各自的倒影。一次越界改变方向，两次倒映使棋路重新吻合。",
+      "outputFile": "video/footsteps-return/captures/voiceover/projective-reflection.wav",
+      "captions": [
+        { "id": "projective-reflection-01", "spokenText": "上下左右，全都通向各自的倒影。", "visibleText": "上下左右，全都通向各自的倒影" },
+        { "id": "projective-reflection-02", "spokenText": "一次越界改变方向，", "visibleText": "一次越界改变方向" },
+        { "id": "projective-reflection-03", "spokenText": "两次倒映使棋路重新吻合。", "visibleText": "两次倒映使棋路重新吻合" }
+      ]
+    },
+    {
+      "id": "projective-twin",
+      "semanticGroup": "projective",
+      "text": "在双生的世界里，每次远行，都会遇见另一个自己。",
+      "outputFile": "video/footsteps-return/captures/voiceover/projective-twin.wav",
+      "captions": [
+        { "id": "projective-twin-01", "spokenText": "在双生的世界里，每次远行，", "visibleText": "在双生的世界里，每次远行" },
+        { "id": "projective-twin-02", "spokenText": "都会遇见另一个自己。", "visibleText": "都会遇见另一个自己" }
+      ]
+    },
+    {
+      "id": "sphere-closure",
+      "semanticGroup": "sphere",
+      "text": "在最后的世界，棋路离开一条边，便会沿相邻的方向继续。四条边依次归向彼此，方形的棋盘也随之闭合成球。",
+      "outputFile": "video/footsteps-return/captures/voiceover/sphere-closure.wav",
+      "captions": [
+        { "id": "sphere-closure-01", "spokenText": "在最后的世界，棋路离开一条边，", "visibleText": "在最后的世界，棋路离开一条边" },
+        { "id": "sphere-closure-02", "spokenText": "便会沿相邻的方向继续。", "visibleText": "便会沿相邻的方向继续" },
+        { "id": "sphere-closure-03", "spokenText": "四条边依次归向彼此，", "visibleText": "四条边依次归向彼此" },
+        { "id": "sphere-closure-04", "spokenText": "方形的棋盘也随之闭合成球。", "visibleText": "方形的棋盘也随之闭合成球" }
+      ]
+    },
+    {
+      "id": "sphere-map",
+      "semanticGroup": "sphere",
+      "text": "人们为了看清完整的世界，将它展开成一张有边的图。",
+      "outputFile": "video/footsteps-return/captures/voiceover/sphere-map.wav",
+      "captions": [
+        { "id": "sphere-map-01", "spokenText": "人们为了看清完整的世界，", "visibleText": "人们为了看清完整的世界" },
+        { "id": "sphere-map-02", "spokenText": "将它展开成一张有边的图。", "visibleText": "将它展开成一张有边的图" }
+      ]
+    },
+    {
+      "id": "sphere-boundary",
+      "semanticGroup": "sphere",
+      "text": "所谓边界，或许只是观察世界时留下的痕迹。",
+      "outputFile": "video/footsteps-return/captures/voiceover/sphere-boundary.wav",
+      "captions": [
+        { "id": "sphere-boundary-01", "spokenText": "所谓边界，或许只是观察世界时留下的痕迹。", "visibleText": "所谓边界，或许只是观察世界时留下的痕迹" }
+      ]
+    },
+    {
+      "id": "outro-invocation",
+      "semanticGroup": "outro",
+      "text": "现在，落子之人。",
+      "outputFile": "video/footsteps-return/captures/voiceover/outro-invocation.wav",
+      "captions": [
+        { "id": "outro-invocation-01", "spokenText": "现在，落子之人。", "visibleText": "现在，落子之人" }
+      ]
+    },
+    {
+      "id": "outro-connection",
+      "semanticGroup": "outro",
+      "text": "七种世界已经显现，但最后的连接，仍等待你亲手完成。",
+      "outputFile": "video/footsteps-return/captures/voiceover/outro-connection.wav",
+      "captions": [
+        { "id": "outro-connection-01", "spokenText": "七种世界已经显现，", "visibleText": "七种世界已经显现" },
+        { "id": "outro-connection-02", "spokenText": "但最后的连接，仍等待你亲手完成。", "visibleText": "但最后的连接，仍等待你亲手完成" }
+      ]
+    },
+    {
+      "id": "outro-stone",
+      "semanticGroup": "outro",
+      "text": "若你已经理解边界的意义，就落下那颗棋子。",
+      "outputFile": "video/footsteps-return/captures/voiceover/outro-stone.wav",
+      "captions": [
+        { "id": "outro-stone-01", "spokenText": "若你已经理解边界的意义，", "visibleText": "若你已经理解边界的意义" },
+        { "id": "outro-stone-02", "spokenText": "就落下那颗棋子。", "visibleText": "就落下那颗棋子" }
+      ]
+    },
+    {
+      "id": "outro-world",
+      "semanticGroup": "outro",
+      "text": "然后，去看见世界本来的样子吧。",
+      "outputFile": "video/footsteps-return/captures/voiceover/outro-world.wav",
+      "captions": [
+        { "id": "outro-world-01", "spokenText": "然后，去看见世界本来的样子吧。", "visibleText": "然后，去看见世界本来的样子吧" }
+      ]
+    }
+  ]
+}

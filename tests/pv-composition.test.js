@@ -55,6 +55,7 @@ test.after(async () => {
 });
 
 test("4K master stage synchronously registers every scene on one paused timeline", async () => {
+  const { masterTimeline } = await import("../video/footsteps-return/src/data/timeline.js");
   const contract = await page.evaluate(() => {
     const root = document.querySelector('[data-composition-id="footsteps-return"]');
     const timeline = window.__timelines?.["footsteps-return"];
@@ -81,9 +82,9 @@ test("4K master stage synchronously registers every scene on one paused timeline
     width: "3840",
     height: "2160",
     fps: "60",
-    duration: "165",
+    duration: String(masterTimeline.duration),
     paused: true,
-    timelineDuration: 165,
+    timelineDuration: masterTimeline.duration,
     registryIds: expectedSceneIds,
     domSceneIds: expectedSceneIds,
     hasInfiniteRepeat: false,

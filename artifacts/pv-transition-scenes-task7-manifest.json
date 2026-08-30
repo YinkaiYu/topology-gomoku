@@ -9,7 +9,7 @@
   "frames": [
     {
       "id": "cylinder-to-torus-pre",
-      "seek": 49.550000000000004,
+      "seek": 56.151334000000006,
       "phase": "pre",
       "contractId": "chapter-cylinder--chapter-card-torus",
       "expectedGeometry": {
@@ -26,10 +26,10 @@
         "deviceScaleFactor": 1
       },
       "native4k": true,
-      "timelineTime": 49.55,
+      "timelineTime": 56.151334,
       "observation": {
         "id": "cylinder-to-torus-pre",
-        "seek": 49.550000000000004,
+        "seek": 56.151334000000006,
         "contractId": "chapter-cylinder--chapter-card-torus",
         "renderReady": true,
         "layer": {
@@ -126,7 +126,7 @@
     },
     {
       "id": "cylinder-to-torus-mid",
-      "seek": 49.690000000000005,
+      "seek": 56.291334000000006,
       "phase": "mid",
       "contractId": "chapter-cylinder--chapter-card-torus",
       "expectedGeometry": {
@@ -143,10 +143,10 @@
         "deviceScaleFactor": 1
       },
       "native4k": true,
-      "timelineTime": 49.69,
+      "timelineTime": 56.291334,
       "observation": {
         "id": "cylinder-to-torus-mid",
-        "seek": 49.690000000000005,
+        "seek": 56.291334000000006,
         "contractId": "chapter-cylinder--chapter-card-torus",
         "renderReady": true,
         "layer": {
@@ -243,7 +243,7 @@
     },
     {
       "id": "cylinder-to-torus-post",
-      "seek": 50.02,
+      "seek": 56.621334000000004,
       "phase": "post",
       "contractId": "chapter-cylinder--chapter-card-torus",
       "expectedGeometry": {
@@ -260,10 +260,10 @@
         "deviceScaleFactor": 1
       },
       "native4k": true,
-      "timelineTime": 50.02,
+      "timelineTime": 56.621334,
       "observation": {
         "id": "cylinder-to-torus-post",
-        "seek": 50.02,
+        "seek": 56.621334000000004,
         "contractId": "chapter-cylinder--chapter-card-torus",
         "renderReady": true,
         "layer": {
@@ -360,7 +360,7 @@
     },
     {
       "id": "torus-to-mobius-mid",
-      "seek": 66.69,
+      "seek": 75.471334,
       "phase": "mid",
       "contractId": "chapter-torus--chapter-card-mobius",
       "expectedGeometry": {
@@ -377,10 +377,10 @@
         "deviceScaleFactor": 1
       },
       "native4k": true,
-      "timelineTime": 66.69,
+      "timelineTime": 75.471334,
       "observation": {
         "id": "torus-to-mobius-mid",
-        "seek": 66.69,
+        "seek": 75.471334,
         "contractId": "chapter-torus--chapter-card-mobius",
         "renderReady": true,
         "layer": {
@@ -477,7 +477,7 @@
     },
     {
       "id": "mobius-to-klein-mid",
-      "seek": 82.69,
+      "seek": 93.584667,
       "phase": "mid",
       "contractId": "chapter-mobius--chapter-card-klein",
       "expectedGeometry": {
@@ -494,10 +494,10 @@
         "deviceScaleFactor": 1
       },
       "native4k": true,
-      "timelineTime": 82.69,
+      "timelineTime": 93.584667,
       "observation": {
         "id": "mobius-to-klein-mid",
-        "seek": 82.69,
+        "seek": 93.584667,
         "contractId": "chapter-mobius--chapter-card-klein",
         "renderReady": true,
         "layer": {
@@ -594,7 +594,7 @@
     },
     {
       "id": "gallery-withdrawal-before-outro",
-      "seek": 146.9,
+      "seek": 162.901333,
       "phase": "overlap-before",
       "contractId": "seven-world-gallery--outro",
       "expectedGeometry": {
@@ -602,19 +602,19 @@
         "outgoing": "gallery-sphere",
         "incoming": "outro-darkness"
       },
-      "filename": "task7-gallery-withdrawal-146.90s.png",
+      "filename": "task7-gallery-withdrawal-before-outro.png",
       "description": "gallery withdrawal immediately before the first outro narration cue",
-      "path": "artifacts/pv-transition-scenes-task7/task7-gallery-withdrawal-146.90s.png",
+      "path": "artifacts/pv-transition-scenes-task7/task7-gallery-withdrawal-before-outro.png",
       "viewport": {
         "width": 3840,
         "height": 2160,
         "deviceScaleFactor": 1
       },
       "native4k": true,
-      "timelineTime": 146.9,
+      "timelineTime": 162.901333,
       "observation": {
         "id": "gallery-withdrawal-before-outro",
-        "seek": 146.9,
+        "seek": 162.901333,
         "contractId": "seven-world-gallery--outro",
         "renderReady": true,
         "layer": {
@@ -626,10 +626,10 @@
           "source": "gallery-sphere",
           "target": "outro-darkness",
           "sourceBbox": {
-            "x": 2523.869873046875,
-            "y": 1119.5865478515625,
-            "width": 617.453125,
-            "height": 617.453125
+            "x": 2534.60009765625,
+            "y": 1122.3626708984375,
+            "width": 627.494140625,
+            "height": 627.494140625
           },
           "targetBbox": {
             "x": 0,
@@ -644,14 +644,14 @@
             "geometry": "gallery-sphere",
             "shape": "gallery-sphere",
             "matchId": null,
-            "opacity": 0.0292,
+            "opacity": 0.5571,
             "clipPath": "circle(37% at 50% 50%)",
             "maskImage": "radial-gradient(circle, rgb(0, 0, 0) 0px, rgb(0, 0, 0) 78%, rgba(0, 0, 0, 0) 82%)",
             "bbox": {
-              "x": 1560,
-              "y": 720,
-              "width": 720,
-              "height": 720
+              "x": 1564.89599609375,
+              "y": 724.89599609375,
+              "width": 710.2080078125,
+              "height": 710.2080078125
             }
           },
           {
@@ -659,14 +659,14 @@
             "geometry": "gallery-sphere",
             "shape": "gallery-sphere",
             "matchId": "gallery-sphere->outro-darkness",
-            "opacity": 0.0322,
+            "opacity": 0.4836,
             "clipPath": "circle(37% at 50% 50%)",
             "maskImage": "radial-gradient(circle, rgb(0, 0, 0) 0px, rgb(0, 0, 0) 78%, rgba(0, 0, 0, 0) 82%)",
             "bbox": {
-              "x": 1560,
-              "y": 720,
-              "width": 720,
-              "height": 720
+              "x": 1566.696044921875,
+              "y": 726.6959838867188,
+              "width": 706.608154296875,
+              "height": 706.6079711914062
             }
           },
           {
@@ -674,44 +674,44 @@
             "geometry": "outro-darkness",
             "shape": "dark-aperture",
             "matchId": "gallery-sphere->outro-darkness",
-            "opacity": 0.76,
+            "opacity": 0.2812,
             "clipPath": "circle(25% at 50% 50%)",
             "maskImage": "radial-gradient(circle, rgb(0, 0, 0) 0px, rgb(0, 0, 0) 74%, rgba(0, 0, 0, 0) 80%)",
             "bbox": {
-              "x": 1560,
-              "y": 720,
-              "width": 720,
-              "height": 720
+              "x": 1573.6080322265625,
+              "y": 733.6080322265625,
+              "width": 692.7840576171875,
+              "height": 692.7840576171875
             }
           }
         ],
         "galleryCamera": {
-          "transform": "matrix(0.842872, -0.0147021, 0.0147021, 0.842872, 0, 0)",
+          "transform": "matrix(0.857993, -0.0135264, 0.0135264, 0.857993, 0, 0)",
           "position": "withdrawn-center",
           "overlapsOutroNarration": false
         }
       },
       "pixels": {
-        "mean": 18.54802211934061,
-        "variance": 1199.7100772765473,
-        "nonPureColorRatio": 0.36551697530864197,
+        "mean": 20.34129886831825,
+        "variance": 1391.2465955023058,
+        "nonPureColorRatio": 0.21912037037037038,
         "background": {
-          "red": 4,
-          "green": 8,
-          "blue": 7
+          "red": 6,
+          "green": 9,
+          "blue": 8
         },
         "contentBbox": {
-          "x": 67,
-          "y": 44,
-          "width": 348,
-          "height": 172,
-          "pixelRatio": 0.14030864197530865
+          "x": 64,
+          "y": 42,
+          "width": 354,
+          "height": 175,
+          "pixelRatio": 0.13447530864197532
         }
       }
     },
     {
       "id": "gallery-withdrawal-during-outro",
-      "seek": 148.4,
+      "seek": 164.821333,
       "phase": "overlap-during",
       "contractId": "seven-world-gallery--outro",
       "expectedGeometry": {
@@ -719,19 +719,19 @@
         "outgoing": "gallery-sphere",
         "incoming": "outro-darkness"
       },
-      "filename": "task7-gallery-withdrawal-148.40s.png",
+      "filename": "task7-gallery-withdrawal-during-outro.png",
       "description": "gallery withdrawal continuing under the first outro narration cue",
-      "path": "artifacts/pv-transition-scenes-task7/task7-gallery-withdrawal-148.40s.png",
+      "path": "artifacts/pv-transition-scenes-task7/task7-gallery-withdrawal-during-outro.png",
       "viewport": {
         "width": 3840,
         "height": 2160,
         "deviceScaleFactor": 1
       },
       "native4k": true,
-      "timelineTime": 148.4,
+      "timelineTime": 164.821333,
       "observation": {
         "id": "gallery-withdrawal-during-outro",
-        "seek": 148.4,
+        "seek": 164.821333,
         "contractId": "seven-world-gallery--outro",
         "renderReady": true,
         "layer": {
@@ -743,10 +743,10 @@
           "source": "gallery-sphere",
           "target": "outro-darkness",
           "sourceBbox": {
-            "x": 2485.0322265625,
-            "y": 1110.1563720703125,
-            "width": 580.83203125,
-            "height": 580.8321533203125
+            "x": 2483.394775390625,
+            "y": 1109.7786865234375,
+            "width": 579.279541015625,
+            "height": 579.2794189453125
           },
           "targetBbox": {
             "x": 0,
@@ -803,26 +803,26 @@
           }
         ],
         "galleryCamera": {
-          "transform": "matrix(0.788182, -0.0185291, 0.0185291, 0.788182, 0, 0)",
+          "transform": "matrix(0.785878, -0.0186767, 0.0186767, 0.785878, 0, 0)",
           "position": "withdrawn-center",
           "overlapsOutroNarration": true
         }
       },
       "pixels": {
-        "mean": 8.677397119343281,
-        "variance": 61.68331764206759,
-        "nonPureColorRatio": 0.09614969135802469,
+        "mean": 8.184547325101663,
+        "variance": 73.59867548095247,
+        "nonPureColorRatio": 0.07876543209876544,
         "background": {
           "red": 4,
           "green": 7,
           "blue": 6
         },
         "contentBbox": {
-          "x": 86,
+          "x": 87,
           "y": 50,
-          "width": 317,
-          "height": 159,
-          "pixelRatio": 0.07691358024691358
+          "width": 316,
+          "height": 198,
+          "pixelRatio": 0.07752314814814815
         }
       }
     }

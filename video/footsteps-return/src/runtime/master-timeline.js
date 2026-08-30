@@ -8,6 +8,7 @@ import { createSevenWorldGalleryScene, addSevenWorldGalleryMotion } from "../../
 import { createOutroScene } from "../../compositions/outro.js";
 import { createPlaceholderScene, createSceneRegistry } from "../../compositions/shared/scene.js";
 import { addTopologyChapterMotion } from "./topology-surfaces.js";
+import { addCaptionTrack } from "./captions.js";
 import {
   addCinematicTransition,
   getTransitionContract,
@@ -93,6 +94,8 @@ export function buildMasterTimeline({ document: documentRef, gsap, stage, sceneF
 
   stage.dataset.transitionGeometryReady = "true";
   stage.dataset.transitionGeometryCount = String(transitionGeometryBindings.size);
+
+  addCaptionTrack(timeline, { document: documentRef });
 
   timeline.set(stage, { opacity: 1 }, timelineDefinition.duration);
 

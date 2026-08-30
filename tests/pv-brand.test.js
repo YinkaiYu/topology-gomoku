@@ -170,6 +170,7 @@ test("the final identity stays authored-hidden through pre-roll and reveals reve
   const samples = await page.evaluate(() => {
     const timeline = window.__timelines["footsteps-return"];
     const scene = document.querySelector('[data-scene-id="end-card"]');
+    const sceneStart = Number(scene.dataset.sceneStart);
     const read = (time) => {
       timeline.time(time, false).pause();
       const opacity = (selector) => Number(getComputedStyle(scene.querySelector(selector)).opacity);
@@ -182,8 +183,8 @@ test("the final identity stays authored-hidden through pre-roll and reveals reve
         logo: opacity("[data-iop-mark]")
       };
     };
-    const forward = [160.5, 161, 161.17, 161.55, 162.1, 164.8].map(read);
-    const rewind = read(160.5);
+    const forward = [sceneStart - 0.5, sceneStart, sceneStart + 0.17, sceneStart + 0.55, sceneStart + 1.1, sceneStart + 3.8].map(read);
+    const rewind = read(sceneStart - 0.5);
     return { forward, rewind };
   });
 
