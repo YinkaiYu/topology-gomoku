@@ -287,6 +287,61 @@ def prepare_staging_directory(output_directory: pathlib.Path) -> pathlib.Path:
     return staging
 
 
+def transactional_replace_batch(
+    replacements: list[tuple[pathlib.Path, pathlib.Path]],
+    *,
+    replace_operation: Callable[[pathlib.Path, pathlib.Path], None] = os.replace,
+) -> None:
+    """Replace a complete cue set or restore every original destination."""
+    normalized = [(candidate.resolve(), destination.resolve()) for candidate, destination in replacements]
+    if not normalized:
+        raise ValueError("transactional replacement requires at least one file")
+    candidates = [candidate for candidate, _destination in normalized]
+    destinations = [destination for _candidate, destination in normalized]
+    if len(set(candidates)) != len(candidates) or len(set(destinations)) != len(destinations):
+        raise ValueError("transactional replacement paths must be unique")
+    if any(not candidate.is_file() for candidate in candidates):
+        raise ValueError("every transactional replacement candidate must exist before commit")
+
+    backups: list[tuple[pathlib.Path, pathlib.Path, bool]] = []
+    preserve_backups = False
+    try:
+        for index, (candidate, destination) in enumerate(normalized):
+            destination.parent.mkdir(parents=True, exist_ok=True)
+            backup = candidate.parent / f".rollback-{index:02d}-{destination.name}"
+            backup.unlink(missing_ok=True)
+            existed = destination.is_file()
+            if destination.exists() and not existed:
+                raise ValueError(f"transaction destination is not a file: {destination}")
+            if existed:
+                shutil.copy2(destination, backup)
+            backups.append((destination, backup, existed))
+
+        for candidate, destination in normalized:
+            replace_operation(candidate, destination)
+    except Exception as error:
+        rollback_errors: list[str] = []
+        for destination, backup, existed in reversed(backups):
+            try:
+                if existed:
+                    os.replace(backup, destination)
+                else:
+                    destination.unlink(missing_ok=True)
+            except Exception as rollback_error:
+                rollback_errors.append(f"{destination}: {rollback_error}")
+        if rollback_errors:
+            preserve_backups = True
+            raise RuntimeError(
+                "final voice commit failed and rollback was incomplete; recoverable backups remain in staging: "
+                f"{'; '.join(rollback_errors)}"
+            ) from error
+        raise
+    finally:
+        if not preserve_backups:
+            for _destination, backup, _existed in backups:
+                backup.unlink(missing_ok=True)
+
+
 def generate_batch() -> dict[str, Any]:
     import numpy as np
     import torch
@@ -364,15 +419,22 @@ def generate_batch() -> dict[str, Any]:
             generated.append(record)
             print(json.dumps({"event": "final-cue-generated", "index": index + 1, "count": 21, **record}, ensure_ascii=False))
 
+        replacements: list[tuple[pathlib.Path, pathlib.Path]] = []
         for cue in script["cues"]:
             staged_path = staging / f"{cue['id']}.wav"
             destination = (ROOT / cue["outputFile"]).resolve()
             if destination.parent != output_directory:
                 raise ValueError(f"unsafe final cue destination {destination}")
-            os.replace(staged_path, destination)
+            replacements.append((staged_path, destination))
+        transactional_replace_batch(replacements)
         staging.rmdir()
     except Exception:
         if staging.exists():
+            retained_backups = [child for child in staging.iterdir() if child.name.startswith(".rollback-")]
+            if retained_backups:
+                raise RuntimeError(
+                    f"final voice rollback needs manual recovery; retained {len(retained_backups)} backups in {staging}"
+                )
             for child in staging.iterdir():
                 if child.is_file() and child.suffix.lower() == ".wav":
                     child.unlink()

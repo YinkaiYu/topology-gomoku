@@ -888,7 +888,7 @@ function narrationDensityEvidence() {
   };
 }
 
-function cylinderStereoEvidence(celloWave, celloSha256) {
+function cylinderStereoEvidence(plan, celloWave, celloSha256) {
   const window = (startSeconds, endSeconds) => {
     const leftRmsDbfs = toDb(channelWindowRms(celloWave, 0, startSeconds, endSeconds));
     const rightRmsDbfs = toDb(channelWindowRms(celloWave, 1, startSeconds, endSeconds));
@@ -900,8 +900,10 @@ function cylinderStereoEvidence(celloWave, celloSha256) {
       leftMinusRightRmsDb: round(leftRmsDbfs - rightRmsDbfs, 2)
     };
   };
-  const earlyWindow = window(38, 42.5);
-  const lateWindow = window(52, 56);
+  const declared = plan.reviewWindows?.cylinderStereoMotion;
+  if (!declared?.early || !declared?.late) throw new Error("score plan must declare retimed Cylinder review windows");
+  const earlyWindow = window(declared.early.startSeconds, declared.early.endSeconds);
+  const lateWindow = window(declared.late.startSeconds, declared.late.endSeconds);
   return {
     stemId: "cello",
     sourceStemSha256: celloSha256,
@@ -939,7 +941,7 @@ function chapterRenderProfiles(plan, stemPaths) {
 }
 
 function chapterJoinContinuity(plan, masterWave) {
-  const joins = plan.joins.filter(({ to }) => to !== "outro").map(({ from, to, boundary }) => ({
+  const joins = plan.joins.map(({ from, to, boundary }) => ({
     from,
     to,
     boundarySeconds: boundary,
@@ -948,9 +950,27 @@ function chapterJoinContinuity(plan, masterWave) {
   }));
   return {
     boundaryCount: joins.length,
-    method: "RMS of the exact rendered master PCM in a 500 ms window centered on every chapter boundary from intro→Plane through Sphere→gallery; MIDI tests separately require overlapping sounding notes and pickups.",
+    method: "RMS of the exact rendered master PCM in a 500 ms window centered on all nine composed joins from intro→Plane through gallery→outro; MIDI tests separately require overlapping sounding notes and pickups.",
     minimumCenteredWindowRmsDbfs: Math.min(...joins.map(({ centeredWindowRmsDbfs }) => centeredWindowRmsDbfs)),
     joins
+  };
+}
+
+function lateTimelineCoverage(plan, masterWave) {
+  const midi = new Midi(fs.readFileSync(path.join(scoreRoot, "master.mid")));
+  const noteEnds = midi.tracks.flatMap((track) => track.notes.map((note) => note.time + note.duration));
+  const lastNotatedEventEndSeconds = Math.max(...noteEnds);
+  const outro = plan.form.find(({ id }) => id === "outro");
+  const endCard = plan.form.find(({ id }) => id === "end-card");
+  if (!outro || !endCard) throw new Error("late timeline coverage requires outro and end-card form sections");
+  return {
+    source: "generated master.mid exact note ends plus exact rendered master PCM form windows",
+    lastNotatedEventEndSeconds: round(lastNotatedEventEndSeconds),
+    tailSilenceSeconds: round(plan.timeline.durationSeconds - lastNotatedEventEndSeconds),
+    outroWindowSeconds: [outro.start, outro.end],
+    outroRmsDbfs: round(toDb(windowRms(masterWave, outro.start, outro.end)), 2),
+    endCardTailWindowSeconds: [endCard.start, Math.min(endCard.end, lastNotatedEventEndSeconds)],
+    endCardTailRmsDbfs: round(toDb(windowRms(masterWave, endCard.start, Math.min(endCard.end, lastNotatedEventEndSeconds))), 2)
   };
 }
 
@@ -1014,6 +1034,12 @@ function audioMetadata(filePath) {
   };
 }
 
+function timelineLabel(seconds) {
+  const minutes = Math.floor(seconds / 60);
+  const remaining = (seconds - minutes * 60).toFixed(3).padStart(6, "0");
+  return `${minutes}:${remaining}`;
+}
+
 function evidenceSvg(plan, masterWave, masterStats, fingerprint, objectiveChecks) {
   const width = 1800;
   const height = 1040;
@@ -1061,7 +1087,7 @@ function evidenceSvg(plan, masterWave, masterStats, fingerprint, objectiveChecks
   <text x="120" y="246" class="label">Waveform envelope aligned to final timeline</text>
   <line x1="120" y1="405" x2="1680" y2="405" stroke="#34444d"/>
   <polygon points="${topPoints} ${bottomPoints}" fill="#bed0d8" opacity="0.82"/>
-  <text x="120" y="584" class="axis">0:00</text><text x="900" y="584" text-anchor="middle" class="axis">1:31.676</text><text x="1680" y="584" text-anchor="end" class="axis">3:03.352</text>
+  <text x="120" y="584" class="axis">${timelineLabel(0)}</text><text x="900" y="584" text-anchor="middle" class="axis">${timelineLabel(plan.timeline.durationSeconds / 2)}</text><text x="1680" y="584" text-anchor="end" class="axis">${timelineLabel(plan.timeline.durationSeconds)}</text>
   <text x="120" y="640" class="label">Nine-band spectral fingerprint (windowed whole-score samples)</text>
   <line x1="120" y1="900" x2="1680" y2="900" stroke="#34444d"/>
   ${bars}
@@ -1116,9 +1142,10 @@ function analyzeRender() {
   const narrationWindowDensity = narrationDensityEvidence();
   const cello = stems.find(({ id }) => id === "cello");
   const celloWave = parseWave(path.join(renderedStemRoot, "cello.wav"));
-  const cylinderStereoMotion = cylinderStereoEvidence(celloWave, cello.sha256);
+  const cylinderStereoMotion = cylinderStereoEvidence(plan, celloWave, cello.sha256);
   const renderedChapterProfiles = chapterRenderProfiles(plan, stemPaths);
   const renderedJoinContinuity = chapterJoinContinuity(plan, masterWave);
+  const renderedLateTimelineCoverage = lateTimelineCoverage(plan, masterWave);
   const objectiveChecks = {
     silenceOrMissingAudio: !Number.isFinite(master.rmsDbfs) || master.rmsDbfs < -80,
     clippingDetected: master.peakDbfs >= -0.01,
@@ -1129,6 +1156,7 @@ function analyzeRender() {
     cylinderStereoMotion,
     chapterRenderProfiles: renderedChapterProfiles,
     chapterJoinContinuity: renderedJoinContinuity,
+    lateTimelineCoverage: renderedLateTimelineCoverage,
     spectrumFingerprint: fingerprint,
     stemsWithSignal: stems.filter(({ rmsDbfs }) => Number.isFinite(rmsDbfs) && rmsDbfs > -80).length,
     durationConsistent: [master, ...stems].every(({ durationSeconds }) => Math.abs(durationSeconds - plan.timeline.durationSeconds) < 1 / plan.render.sampleRate)

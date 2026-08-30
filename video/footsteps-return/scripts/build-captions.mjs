@@ -75,8 +75,14 @@ function validateSource(script, timing) {
   if (script.cues.some((cue) => cue.captions.map(({ spokenText }) => spokenText).join("") !== cue.text)) {
     throw new Error("caption clauses must reconstruct each approved narration cue verbatim");
   }
-  if (script.cues.some((cue) => cue.captions.some(({ visibleText }) => /[。.]/.test(visibleText)))) {
-    throw new Error("visible captions cannot contain full stops");
+  const captionCount = script.cues.reduce((sum, cue) => sum + cue.captions.length, 0);
+  if (captionCount !== 46) throw new Error(`final runtime captions must contain exactly 46 entries, got ${captionCount}`);
+  if (script.cues.some((cue) => cue.captions.some(({ visibleText }) => /\p{P}/u.test(visibleText)))) {
+    throw new Error("visible captions cannot contain punctuation");
+  }
+  if (script.cues.some((cue) => cue.captions.some(({ spokenText, visibleText }) =>
+    visibleText !== spokenText.replace(/\p{P}/gu, "")))) {
+    throw new Error("visible captions must equal spoken clauses with Unicode punctuation removed");
   }
   const timings = new Map(timing.cues.map((cue) => [cue.id, cue]));
   for (const cue of script.cues) {
@@ -250,9 +256,140 @@ function updateStaticDuration(duration) {
   writeFileSync(indexPath, next);
 }
 
+function scoreFormTargets(timeline) {
+  const scenes = new Map(timeline.scenes.map((scene) => [scene.id, scene]));
+  const start = (id) => {
+    const scene = scenes.get(id);
+    if (!scene) throw new Error(`missing score boundary scene ${id}`);
+    return scene.start;
+  };
+  const end = (id) => {
+    const scene = scenes.get(id);
+    if (!scene) throw new Error(`missing score boundary scene ${id}`);
+    return round(scene.start + scene.duration);
+  };
+  return new Map([
+    ["intro", { start: start("intro"), end: start("chapter-card-plane") }],
+    ["plane", { start: start("chapter-card-plane"), end: start("chapter-card-cylinder") }],
+    ["cylinder", { start: start("chapter-card-cylinder"), end: start("chapter-card-torus") }],
+    ["torus", { start: start("chapter-card-torus"), end: start("chapter-card-mobius") }],
+    ["mobius", { start: start("chapter-card-mobius"), end: start("chapter-card-klein") }],
+    ["klein", { start: start("chapter-card-klein"), end: start("chapter-card-projective") }],
+    ["projective", { start: start("chapter-card-projective"), end: start("chapter-card-sphere") }],
+    ["sphere", { start: start("chapter-card-sphere"), end: start("seven-world-gallery") }],
+    ["gallery", { start: start("seven-world-gallery"), end: start("outro") }],
+    ["outro", { start: start("outro"), end: start("end-card") }],
+    ["end-card", { start: start("end-card"), end: end("end-card") }]
+  ]);
+}
+
 function updateScoreTimeline(timeline) {
   const plan = readJson(scorePlanPath);
   const duration = timeline.duration;
+  const sourceForm = new Map(plan.form.map((section) => [section.id, { start: section.start, end: section.end }]));
+  const targetForm = scoreFormTargets(timeline);
+  if (plan.form.some(({ id }) => !targetForm.has(id)) || targetForm.size !== plan.form.length) {
+    throw new Error("score form and final picture scene boundaries must have a one-to-one mapping");
+  }
+  const sectionScale = (sectionId) => {
+    const source = sourceForm.get(sectionId);
+    const target = targetForm.get(sectionId);
+    if (!source || !target || !(source.end > source.start)) throw new Error(`cannot retime score section ${sectionId}`);
+    return (target.end - target.start) / (source.end - source.start);
+  };
+  const retimeAbsolute = (seconds, sectionId) => {
+    const source = sourceForm.get(sectionId);
+    const target = targetForm.get(sectionId);
+    return round(target.start + (seconds - source.start) * sectionScale(sectionId));
+  };
+  const retimeDuration = (seconds, sectionId) => round(seconds * sectionScale(sectionId));
+
+  const originalForm = plan.retiming?.sourceFormSections
+    ?? plan.form.map(({ id, start, end }) => ({ id, start, end }));
+  plan.retiming = {
+    schemaVersion: 1,
+    sourceFormSections: originalForm,
+    targetDurationSeconds: duration,
+    method: "Section-aware affine retiming of every gesture start, note offset/duration, repeat interval, pan automation point and chapter join. The approved independent motives, orchestration and harmonic palettes remain intact while musical form follows the final VoiceDesign picture boundaries; no legacy-score tail padding.",
+    sectionBoundaries: plan.form.map(({ id }) => ({ id, ...targetForm.get(id) }))
+  };
+  plan.gestures = plan.gestures.map((gesture) => {
+    const sectionId = gesture.sectionId;
+    return {
+      ...gesture,
+      start: retimeAbsolute(gesture.start, sectionId),
+      ...(gesture.repeat ? {
+        repeat: { ...gesture.repeat, every: retimeDuration(gesture.repeat.every, sectionId) }
+      } : {}),
+      events: gesture.events.map((event) => ({
+        ...event,
+        offset: retimeDuration(event.offset, sectionId),
+        duration: retimeDuration(event.duration, sectionId)
+      })),
+      ...(gesture.automation ? {
+        automation: Object.fromEntries(Object.entries(gesture.automation).map(([controller, points]) => [
+          controller,
+          points.map((point) => ({ ...point, time: retimeAbsolute(point.time, sectionId) }))
+        ]))
+      } : {})
+    };
+  });
+  plan.joins = plan.joins.map((join) => {
+    const boundary = targetForm.get(join.from).end;
+    const overlapStart = retimeAbsolute(join.boundary - join.overlapSeconds, join.from);
+    return {
+      ...join,
+      boundary,
+      overlapSeconds: round(boundary - overlapStart)
+    };
+  });
+  plan.form = plan.form.map((section) => {
+    const target = targetForm.get(section.id);
+    if (section.id === "outro") {
+      return {
+        ...section,
+        ...target,
+        resolution: "A D6/9 chord starts near 206.313 seconds and decays naturally across the end-card entrance until about 211.682."
+      };
+    }
+    if (section.id === "end-card") {
+      return {
+        ...section,
+        ...target,
+        identity: "The bright D6/9 tail survives the logo entrance; only the final 2.358 seconds carry deliberate rest after its natural release.",
+        resolution: "Natural decay, then a short intentional hold; no hard fade and no legacy-score tail padding."
+      };
+    }
+    return { ...section, ...target };
+  });
+  const legacyCylinderWindows = {
+    early: { startSeconds: 38, endSeconds: 42.5 },
+    late: { startSeconds: 52, endSeconds: 56 }
+  };
+  const cylinderWindows = plan.reviewWindows?.cylinderStereoMotion ?? legacyCylinderWindows;
+  plan.reviewWindows = {
+    ...(plan.reviewWindows ?? {}),
+    cylinderStereoMotion: Object.fromEntries(Object.entries(cylinderWindows).map(([id, window]) => [id, {
+      startSeconds: retimeAbsolute(window.startSeconds, "cylinder"),
+      endSeconds: retimeAbsolute(window.endSeconds, "cylinder")
+    }]))
+  };
+  const keySectionIds = ["intro", "plane", "cylinder", "torus", "mobius", "klein", "projective", "sphere"];
+  plan.render.keySignatureChanges = plan.render.keySignatureChanges.map((change, index) => ({
+    ...change,
+    measure: Math.floor(targetForm.get(keySectionIds[index]).start / 4) + 1
+  }));
+  const meterSectionIds = ["intro", "mobius", "klein"];
+  plan.render.timeSignatureChanges = plan.render.timeSignatureChanges.map((change, index) => ({
+    ...change,
+    measure: Math.floor(targetForm.get(meterSectionIds[index]).start / 4) + 1
+  }));
+  plan.render.perceivedPulseBpmBySection = Object.fromEntries(
+    Object.entries(plan.render.perceivedPulseBpmBySection).map(([sectionId, bpm]) => [
+      sectionId,
+      round(bpm / sectionScale(sectionId))
+    ])
+  );
   const completeMeasures = Math.floor(duration / 4);
   let measureCount = completeMeasures + 1;
   let lastMeasureDivisions = Math.round((duration - completeMeasures * 4) * plan.render.divisionsPerQuarter);
@@ -290,7 +427,7 @@ function updateScoreTimeline(timeline) {
     lastMeasureDivisions,
     notatedLastMeasureDivisions,
     notatedDurationSeconds,
-    tailPolicy: `Score events end at ${finalEventEnd.toFixed(3)}. MusicXML uses an import-safe 1/32-note grid through ${notatedDurationSeconds.toFixed(3)}; rendered files add ${Math.round((duration - notatedDurationSeconds) * 1000)} ms of digital silence and are trimmed to the measured ${duration.toFixed(3)}-second final VoiceDesign timeline.`
+    tailPolicy: `Retimed score events reach ${finalEventEnd.toFixed(3)}, leaving only ${(duration - finalEventEnd).toFixed(3)} seconds of intentional end-card release/rest. MusicXML uses an import-safe 1/32-note grid through ${notatedDurationSeconds.toFixed(3)} and rendered files are trimmed to the measured ${duration.toFixed(3)}-second final VoiceDesign timeline; no 183.352-second legacy master is tail-padded.`
   };
   writeFileSync(scorePlanPath, `${JSON.stringify(plan, null, 2)}\n`);
 }

@@ -21,6 +21,7 @@
     { "cueId": "cylinder-cycle", "category": "ordinary-lexical-risk", "focus": "重点核听有始有终；primary ASR 写作有时有终。" },
     { "cueId": "cylinder-distance", "category": "ordinary-lexical-risk", "focus": "重点核听丈量远近；primary ASR 写作障粮远境。" },
     { "cueId": "mobius-turn", "category": "topology-term-risk", "focus": "重点核听沿同一面环行；primary ASR 写作颜同一面环形。" },
+    { "cueId": "klein-two-returns", "category": "ordinary-lexical-risk", "focus": "重点核听归来；primary ASR 写作亏来。" },
     { "cueId": "klein-memory", "category": "mixed-script-variant-and-ordinary-lexical-risk", "focus": "重点核听路径；primary 主要为繁体偏差，但 secondary 写作入境。" },
     { "cueId": "projective-reflection", "category": "topology-term-risk", "focus": "重点核听倒映使棋路重新吻合；primary ASR 有多处同音词分歧。" },
     { "cueId": "projective-twin", "category": "script-variant-dominant", "focus": "primary ASR 语词一致但输出繁体；仍需连续人审确认。" },

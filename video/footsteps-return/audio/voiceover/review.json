@@ -56,7 +56,7 @@
     },
     "reviewPolicy": {
       "file": "video/footsteps-return/audio/voiceover/asr-review.json",
-      "sha256": "4e34060e039e62613c4db871ed215bc3892f26c12297500d5b064f9ae826965f"
+      "sha256": "0f7f3d7016a995bc77f950562fee49ef15880ad5ad3827301138cd28c26e025f"
     },
     "corpusReferenceCharacters": 515,
     "corpusEditDistance": 130,
@@ -226,6 +226,19 @@
               "editDistance": 3,
               "cer": 0.1
             }
+          },
+          "requiredAction": "Native Mandarin reviewer must hear this cue in the continuous timeline; ASR agreement or disagreement is not an intelligibility pass."
+        },
+        {
+          "cueId": "klein-two-returns",
+          "category": "ordinary-lexical-risk",
+          "focus": "重点核听归来；primary ASR 写作亏来。",
+          "primaryTranscript": "一组边界如圆环般相接另一组边界让方向翻转两种亏来共处一界一条路保持原样一条路带回倒影",
+          "primaryRawCer": 0.02381,
+          "primaryDiagnosticScriptVariantFoldCer": 0.02381,
+          "focusedCrossCheck": {
+            "status": "not-selected",
+            "reason": "primary raw CER 0.023810 is below focused threshold 0.300000"
           },
           "requiredAction": "Native Mandarin reviewer must hear this cue in the continuous timeline; ASR agreement or disagreement is not an intelligibility pass."
         },
@@ -428,7 +441,7 @@
         "modelRevision": "973afd24965f72e36ca33b3055d56a652f456b4d",
         "device": "cpu",
         "status": "completed",
-        "seconds": 42.317
+        "seconds": 43.932
       },
       {
         "engine": "transformers WhisperForConditionalGeneration",
@@ -450,10 +463,10 @@
           "outro-world"
         ],
         "status": "completed",
-        "seconds": 67.87
+        "seconds": 69.159
       }
     ],
-    "totalSeconds": 110.574,
+    "totalSeconds": 113.452,
     "limitation": "ASR is an objective aid only and does not replace native Mandarin listening; no cue is accepted solely from CER."
   },
   "continuousReview": {
@@ -1025,6 +1038,11 @@
           "foldedCharacters": 0,
           "editDistance": 1,
           "cer": 0.02381
+        },
+        "manualReviewFocus": {
+          "cueId": "klein-two-returns",
+          "category": "ordinary-lexical-risk",
+          "focus": "重点核听归来；primary ASR 写作亏来。"
         }
       }
     },

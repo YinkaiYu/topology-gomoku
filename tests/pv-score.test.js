@@ -241,6 +241,30 @@ test("score plan is locked to the measured master timeline and declares an origi
   assert.ok(Array.isArray(plan.joins) && plan.joins.length >= 8);
   assert.ok(plan.joins.every(({ overlapSeconds, pickupGestureId, pivot }) =>
     overlapSeconds >= 0.25 && pickupGestureId && pivot), "every structural join needs an audible overlap, pickup and pivot");
+  assert.deepEqual(plan.form.map(({ id, start, end }) => ({ id, start, end })), [
+    { id: "intro", start: 0, end: 26.42 },
+    { id: "plane", start: 26.42, end: 43.64 },
+    { id: "cylinder", start: 43.64, end: 64.66 },
+    { id: "torus", start: 64.66, end: 86.16 },
+    { id: "mobius", start: 86.16, end: 105.82 },
+    { id: "klein", start: 105.82, end: 126.6 },
+    { id: "projective", start: 126.6, end: 148.42 },
+    { id: "sphere", start: 148.42, end: 175.24 },
+    { id: "gallery", start: 175.24, end: 182.24 },
+    { id: "outro", start: 182.24, end: 210.04 },
+    { id: "end-card", start: 210.04, end: 214.04 }
+  ], "all eleven score sections must align with the expanded picture/voice scene boundaries");
+  const finalEventEnd = Math.max(...plan.gestures.flatMap((gesture) => {
+    const repeat = gesture.repeat ?? { count: 1, every: 0 };
+    return gesture.events.map((event) => gesture.start + (repeat.count - 1) * repeat.every + event.offset + event.duration);
+  }));
+  assert.ok(finalEventEnd >= 210.04, `final cadence must reach the end card, got ${finalEventEnd.toFixed(3)}s`);
+  assert.ok(plan.timeline.durationSeconds - finalEventEnd < 4,
+    `score must not substitute a ${Math.round(plan.timeline.durationSeconds - finalEventEnd)}s padded tail for recomposition`);
+  assert.deepEqual(plan.reviewWindows.cylinderStereoMotion, {
+    early: { startSeconds: 43.904814, endSeconds: 48.92587 },
+    late: { startSeconds: 59.525877, endSeconds: 63.989037 }
+  });
 });
 
 test("deterministic builder emits a real 11-part master and one single-part score/MIDI per stem", () => {
@@ -302,43 +326,43 @@ test("generated MIDI realizes seven independent chapter worlds rather than one t
   assert.equal(midi.header.tempos.length, 1);
   assert.ok(Math.abs(midi.header.tempos[0].bpm - 60) < 0.001);
   assert.deepEqual(midi.header.timeSignatures.map(({ timeSignature }) => timeSignature), [[4, 4], [8, 8], [4, 4]]);
-  assert.deepEqual(midi.header.keySignatures.map(({ ticks }) => ticks), [0, 20000, 36000, 56000, 76000, 92000, 112000, 128000]);
+  assert.deepEqual(midi.header.keySignatures.map(({ ticks }) => ticks), [0, 24000, 40000, 64000, 84000, 104000, 124000, 148000]);
   assert.deepEqual(midi.tracks.map(({ name }) => name), EXPECTED_PARTS.map(([, name]) => name));
 
   const piano = trackByName(midi, "Piano");
-  notesAt(piano, [2.25, 3, 4.125, 4.5, 5.25], [62, 65, 67, 69, 72]);
-  notesAt(piano, [22, 22.75, 23.25, 24.375, 24.875, 25.625, 26.375],
+  notesAt(piano, [2.764541, 3.686054, 5.068325, 5.529082, 6.450595], [62, 65, 67, 69, 72]);
+  notesAt(piano, [26.946696, 27.740976, 28.270497, 29.461917, 29.991438, 30.785718, 31.579998],
     [62, 66, 64, 69, 68, 71, 74]);
 
   const bassClarinet = trackByName(midi, "Bass Clarinet");
-  notesAt(bassClarinet, [38.25, 38.75, 39.25, 40.25, 40.75, 41.5],
+  notesAt(bassClarinet, [44.183761, 44.741656, 45.299552, 46.415342, 46.973237, 47.81008],
     [58, 62, 60, 65, 63, 67]);
   const cello = trackByName(midi, "Cello");
-  notesAt(cello, [38, 39.25, 40.5, 41.75], [46, 53, 48, 55]);
+  notesAt(cello, [43.904814, 45.299552, 46.694289, 48.089027], [46, 53, 48, 55]);
   const pan = cello.controlChanges[10] ?? [];
-  assert.ok(pan.some((event) => event.time >= 37.7 && event.time < 39 && event.value < 0.2));
-  assert.ok(pan.some((event) => event.time > 53 && event.time < 56.7 && event.value > 0.8));
+  assert.ok(pan.some((event) => event.time >= 43.5 && event.time < 45 && event.value < 0.2));
+  assert.ok(pan.some((event) => event.time > 60 && event.time < 64.8 && event.value > 0.8));
 
-  notesAt(piano, [57, 57.5, 58.25, 59, 59.5, 60.5], [52, 59, 57, 61, 56, 64]);
+  notesAt(piano, [65.106888, 65.667368, 66.508088, 67.348807, 67.909287, 69.030246], [52, 59, 57, 61, 56, 64]);
   const celesta = trackByName(midi, "Celesta");
-  notesAt(celesta, [58.1, 58.85, 59.35, 60.35, 61.1], [79, 81, 78, 84, 83]);
+  notesAt(celesta, [66.339944, 67.180663, 67.741143, 68.862102, 69.702822], [79, 81, 78, 84, 83]);
 
   const viola = trackByName(midi, "Viola");
-  notesAt(viola, [76, 76.75, 77.5, 78.5, 79.25, 80], [60, 66, 63, 69, 67, 61]);
+  notesAt(viola, [86.397338, 87.211379, 88.02542, 89.110808, 89.92485, 90.738891], [60, 66, 63, 69, 67, 61]);
 
-  notesAt(trackByName(midi, "Violin I"), [94.25, 94.75, 95.25, 96], [81, 75, 78, 86]);
-  notesAt(bassClarinet, [95.75, 96.25, 96.75, 97.5], [38, 45, 46, 51]);
+  notesAt(trackByName(midi, "Violin I"), [106.214182, 106.768848, 107.323514, 108.155512], [81, 75, 78, 86]);
+  notesAt(bassClarinet, [107.87818, 108.432845, 108.987511, 109.81951], [38, 45, 46, 51]);
 
-  notesAt(celesta, [112.75, 113.5, 114.25, 115.25, 116, 117], [76, 83, 78, 82, 80, 87]);
+  notesAt(celesta, [126.743501, 127.616146, 128.488791, 129.652317, 130.524962, 131.688489], [76, 83, 78, 82, 80, 87]);
 
-  notesAt(piano, [131.5, 132.25, 133, 134, 135, 135.75, 136.5, 137.5, 138.25, 139.25],
+  notesAt(piano, [148.549142, 149.356282, 150.163422, 151.239608, 152.315795, 153.122935, 153.930074, 155.006261, 155.813401, 156.889587],
     [62, 64, 66, 69, 67, 71, 69, 66, 76, 74]);
-  const sphereWindow = [131.38, 156.301333];
+  const sphereWindow = [148.42, 175.24];
   for (const name of EXPECTED_PARTS.map(([, name]) => name)) {
     assert.ok(trackByName(midi, name).notes.some((note) => note.time >= sphereWindow[0] && note.time < sphereWindow[1]),
       `${name} must participate in the Sphere expansion`);
   }
-  const resolution = piano.notes.filter((note) => Math.abs(note.time - 177.2) < 0.012).map(({ midi: pitch }) => pitch);
+  const resolution = piano.notes.filter((note) => Math.abs(note.time - 206.312703) < 0.012).map(({ midi: pitch }) => pitch);
   assert.deepEqual(resolution, [38, 45, 50, 54, 59, 64], "the suite must release into a bright D6/9 cadence");
 });
 
@@ -346,14 +370,15 @@ test("generated MIDI overlaps chapter joins with pickups and never substitutes l
   runBuilder();
   const midi = new Midi(fs.readFileSync(path.join(SCORE_ROOT, "master.mid")));
   const expectedJoins = [
-    { boundary: 21.502667, outgoing: ["Double Bass", 20.95], pickup: ["Piano", 21.25] },
-    { boundary: 37.762667, outgoing: ["Piano", 37.35], pickup: ["Bass Clarinet", 37.45] },
-    { boundary: 56.601334, outgoing: ["Cello", 56.25], pickup: ["Celesta", 56.25] },
-    { boundary: 75.781334, outgoing: ["Celesta", 75.4], pickup: ["Viola", 75.3] },
-    { boundary: 93.894667, outgoing: ["Viola", 93.5], pickup: ["Restrained Percussion", 93.45] },
-    { boundary: 112.626667, outgoing: ["Restrained Percussion", 112.35], pickup: ["Celesta", 112.2] },
-    { boundary: 131.38, outgoing: ["Choir Aahs", 131.1], pickup: ["French Horn", 130.9] },
-    { boundary: 156.301333, outgoing: ["Violin I", 156], pickup: ["Celesta", 155.8] }
+    { boundary: 26.42, outgoing: ["Double Bass", 25.740946], pickup: ["Piano", 26.152415] },
+    { boundary: 43.64, outgoing: ["Piano", 43.202969], pickup: ["Bass Clarinet", 43.291129] },
+    { boundary: 64.66, outgoing: ["Cello", 64.267985], pickup: ["Celesta", 64.266169] },
+    { boundary: 86.16, outgoing: ["Celesta", 85.73254], pickup: ["Viola", 85.637566] },
+    { boundary: 105.82, outgoing: ["Viola", 105.391633], pickup: ["Restrained Percussion", 105.326717] },
+    { boundary: 126.6, outgoing: ["Restrained Percussion", 126.293085], pickup: ["Celesta", 126.103562] },
+    { boundary: 148.42, outgoing: ["Choir Aahs", 148.094213], pickup: ["French Horn", 147.903431] },
+    { boundary: 175.24, outgoing: ["Violin I", 174.91571], pickup: ["Celesta", 174.738667] },
+    { boundary: 182.24, outgoing: ["Viola", 181.838667], pickup: ["Piano", 181.544885] }
   ];
   for (const { boundary, outgoing: [outgoingPart, outgoingStart], pickup: [pickupPart, pickupStart] } of expectedJoins) {
     const outgoing = trackByName(midi, outgoingPart).notes.find((note) => Math.abs(note.time - outgoingStart) <= 0.012);
@@ -502,10 +527,19 @@ test("tracked render metadata proves 48 kHz stereo master/stems and records hone
   assert.ok(new Set(profiles.map(({ dominantPart }) => dominantPart)).size >= 6,
     "real rendered chapters must not collapse to one lead timbre");
   const continuity = review.objectiveChecks.chapterJoinContinuity;
-  assert.equal(continuity.boundaryCount, 8);
+  assert.equal(continuity.boundaryCount, 9);
   assert.ok(continuity.minimumCenteredWindowRmsDbfs > -65);
   assert.ok(continuity.joins.every(({ centeredWindowRmsDbfs }) => Number.isFinite(centeredWindowRmsDbfs)));
+  const coverage = review.objectiveChecks.lateTimelineCoverage;
+  assert.ok(coverage.lastNotatedEventEndSeconds >= 210.04);
+  assert.ok(coverage.tailSilenceSeconds < 4);
+  assert.ok(coverage.outroRmsDbfs > -65);
+  assert.ok(coverage.endCardTailRmsDbfs > -80);
   assert.equal(review.evidence.type, "waveform-spectrum-form-contact-sheet");
+  const evidenceSvg = fs.readFileSync(path.join(SCORE_ROOT, "review-evidence.svg"), "utf8");
+  assert.match(evidenceSvg, />1:47\.020</);
+  assert.match(evidenceSvg, />3:34\.040</);
+  assert.doesNotMatch(evidenceSvg, /1:31\.676|3:03\.352/);
 });
 
 const renderedCelloPath = path.join(SCORE_ROOT, "rendered", "stems", "cello.wav");
@@ -519,8 +553,11 @@ test("real MuseScore cello stem moves from left to right across the Cylinder win
   const wave = parsePcmWave(renderedCelloPath);
   assert.equal(wave.sampleRate, 48000);
   assert.equal(wave.channels.length, 2);
-  const earlyBalance = channelRmsDb(wave, 0, 38, 42.5) - channelRmsDb(wave, 1, 38, 42.5);
-  const lateBalance = channelRmsDb(wave, 0, 52, 56) - channelRmsDb(wave, 1, 52, 56);
+  const { early, late } = readJson(path.join("audio", "score", "score-plan.json")).reviewWindows.cylinderStereoMotion;
+  const earlyBalance = channelRmsDb(wave, 0, early.startSeconds, early.endSeconds)
+    - channelRmsDb(wave, 1, early.startSeconds, early.endSeconds);
+  const lateBalance = channelRmsDb(wave, 0, late.startSeconds, late.endSeconds)
+    - channelRmsDb(wave, 1, late.startSeconds, late.endSeconds);
   assert.ok(earlyBalance >= 3, `Cylinder must begin left-weighted, got ${earlyBalance.toFixed(2)} dB`);
   assert.ok(lateBalance <= -3, `Cylinder must finish right-weighted, got ${lateBalance.toFixed(2)} dB`);
   assert.ok(earlyBalance - lateBalance >= 6, "Cylinder must produce an audible left-to-right swing");

@@ -2,9 +2,9 @@
   "schemaVersion": 1,
   "timelineDurationSeconds": 214.04,
   "source": {
-    "scorePlanSha256": "96af37ed7033a50ecbc1a5f32abee5d71b49cb41c5f59f90f37a911675c66b86",
-    "masterMusicXmlSha256": "7f422cc3d65e520fcabf352617943580b291b65318e60594211585807ffda268",
-    "masterMidiSha256": "c9e49b4d56944da1f48105668ea507fb52d32aa715a93df36bc6ed10a2a84b64"
+    "scorePlanSha256": "f74e9cd5a1233803ad3048342756c43fcbc1fc7d452517bff51258606d5b8588",
+    "masterMusicXmlSha256": "4825a3a84361a52c0ca8a7221f62ed97be7170dc08f4833fb219d08fad0ac123",
+    "masterMidiSha256": "88c4d8a558a9121ca807d6c9e27a69cf57e71293df6414d4d3338a6c5d41fe67"
   },
   "renderer": {
     "museScore": "MuseScore4 4.7.4",
@@ -16,146 +16,146 @@
   },
   "master": {
     "path": "audio/score/rendered/master.wav",
-    "sha256": "b8fe626c3cce4eef176bcf9c35ca96ee3aabc4998385986cd28fb56f37d8aed1",
+    "sha256": "e6ad4232d95faa78d05dffd9fd2733afd2f9e13c12990bd15eae8ec5cc41b72a",
     "sampleRate": 48000,
     "channels": 2,
     "bitDepth": 24,
     "durationSeconds": 214.04,
-    "peakDbfs": -18.616,
-    "rmsDbfs": -41.428
+    "peakDbfs": -18.711,
+    "rmsDbfs": -40.889
   },
   "stems": [
     {
       "id": "piano",
       "name": "Piano",
       "path": "audio/score/rendered/stems/piano.wav",
-      "sha256": "3a5100984bc281f2b6a3e511f2285748c22ae38ccf0ebc40b91c65625be11097",
+      "sha256": "7cff2f2356f06aa0e5ec34deeb2ba404a7176741155a02305204c84123c9b1ce",
       "sampleRate": 48000,
       "channels": 2,
       "bitDepth": 24,
       "durationSeconds": 214.04,
-      "peakDbfs": -11.757,
-      "rmsDbfs": -38.303
+      "peakDbfs": -11.785,
+      "rmsDbfs": -38.224
     },
     {
       "id": "celesta",
       "name": "Celesta",
       "path": "audio/score/rendered/stems/celesta.wav",
-      "sha256": "eefb6c4e62ee005257df49ab9d2b70d4af7fc37a50a1c4cd474b7e326cc9da11",
+      "sha256": "80ea523add0c9fa45d8f4a96e49c5765a07642b9c796b2179aac457f8331da88",
       "sampleRate": 48000,
       "channels": 2,
       "bitDepth": 24,
       "durationSeconds": 214.04,
-      "peakDbfs": -16.327,
-      "rmsDbfs": -43.703
+      "peakDbfs": -16.329,
+      "rmsDbfs": -43.786
     },
     {
       "id": "violin-i",
       "name": "Violin I",
       "path": "audio/score/rendered/stems/violin-i.wav",
-      "sha256": "2384394c2e7d8837da9c59a24a5c4cca83a8a459dad727e230acff0bab447a7c",
+      "sha256": "6040afc77211041824166205e92fb13670216fe1b871dd96ecd3d9b0f69b3bf8",
       "sampleRate": 48000,
       "channels": 2,
       "bitDepth": 24,
       "durationSeconds": 214.04,
-      "peakDbfs": -8.389,
-      "rmsDbfs": -37.203
+      "peakDbfs": -8.185,
+      "rmsDbfs": -36.653
     },
     {
       "id": "violin-ii",
       "name": "Violin II",
       "path": "audio/score/rendered/stems/violin-ii.wav",
-      "sha256": "36c1370d86108db446b00ba5bb95c9a3a15fb4591482cea19c3af2eb12cca745",
+      "sha256": "b9e00763d880296b43824712aa490ee1f3fdeae69a8ad7df1e0b18680abe7bde",
       "sampleRate": 48000,
       "channels": 2,
       "bitDepth": 24,
       "durationSeconds": 214.04,
-      "peakDbfs": -19.958,
-      "rmsDbfs": -43.163
+      "peakDbfs": -20.142,
+      "rmsDbfs": -42.708
     },
     {
       "id": "viola",
       "name": "Viola",
       "path": "audio/score/rendered/stems/viola.wav",
-      "sha256": "c4728e729b5ba3bb604527c7579f0e0817d3958ac3496d4839e10f998dc341e4",
+      "sha256": "85910897eb565ed214b78c4c96361c9a157e3981832b41d25e0a828053d368ff",
       "sampleRate": 48000,
       "channels": 2,
       "bitDepth": 24,
       "durationSeconds": 214.04,
-      "peakDbfs": -15.456,
-      "rmsDbfs": -39.566
+      "peakDbfs": -15.558,
+      "rmsDbfs": -39.248
     },
     {
       "id": "cello",
       "name": "Cello",
       "path": "audio/score/rendered/stems/cello.wav",
-      "sha256": "7eaae7d167ffa2eb72c71d638cd8e25a8c1120cf5bf2b769e53aa107873b5f69",
+      "sha256": "ed003dae757c60366efd45b89898be3fee66ea747d86561787e85788f1f6cca8",
       "sampleRate": 48000,
       "channels": 2,
       "bitDepth": 24,
       "durationSeconds": 214.04,
-      "peakDbfs": -10.939,
-      "rmsDbfs": -38.145
+      "peakDbfs": -10.831,
+      "rmsDbfs": -37.633
     },
     {
       "id": "double-bass",
       "name": "Double Bass",
       "path": "audio/score/rendered/stems/double-bass.wav",
-      "sha256": "6d8df7a22ab7c7344277f449a3f35d154bfd5ea03a6ad077665a1dfa22a235f7",
+      "sha256": "c7f73e4d712730c847c9158e3e7c0393b10599cfc3462f761cd4e1cf5dde11cc",
       "sampleRate": 48000,
       "channels": 2,
       "bitDepth": 24,
       "durationSeconds": 214.04,
-      "peakDbfs": -20.08,
-      "rmsDbfs": -42.586
+      "peakDbfs": -19.983,
+      "rmsDbfs": -41.757
     },
     {
       "id": "french-horn",
       "name": "French Horn",
       "path": "audio/score/rendered/stems/french-horn.wav",
-      "sha256": "80944bb91e1535917943592e27c27bba18fc01a3a66d1178744d39d1850ac7be",
+      "sha256": "81f914201ae2c76b4a28c01aec24df91d624cde99b9397b21d25df1cb2f4dc3f",
       "sampleRate": 48000,
       "channels": 2,
       "bitDepth": 24,
       "durationSeconds": 214.04,
-      "peakDbfs": -13.402,
-      "rmsDbfs": -35.802
+      "peakDbfs": -13.45,
+      "rmsDbfs": -34.848
     },
     {
       "id": "bass-clarinet",
       "name": "Bass Clarinet",
       "path": "audio/score/rendered/stems/bass-clarinet.wav",
-      "sha256": "628e348b188701f3cfd399532704175559cbcd4722de255659c28b4b41c7dcd8",
+      "sha256": "98ee14ab827d2a87c41da05ef0ceb0f446dc2d71196a12357258b44aa6141d85",
       "sampleRate": 48000,
       "channels": 2,
       "bitDepth": 24,
       "durationSeconds": 214.04,
-      "peakDbfs": -16.043,
-      "rmsDbfs": -40.436
+      "peakDbfs": -15.806,
+      "rmsDbfs": -39.778
     },
     {
       "id": "choir-aahs",
       "name": "Choir Aahs",
       "path": "audio/score/rendered/stems/choir-aahs.wav",
-      "sha256": "7bc9bf5cb717f1f4da48798691b75eff313c04d4afea0d3b2ab31ca93a701f14",
+      "sha256": "b3802eb67318a0d2df05cb87df157783e64bfbcdf89b0f84e19b083f21f15093",
       "sampleRate": 48000,
       "channels": 2,
       "bitDepth": 24,
       "durationSeconds": 214.04,
-      "peakDbfs": -21.715,
-      "rmsDbfs": -47.28
+      "peakDbfs": -21.41,
+      "rmsDbfs": -46.711
     },
     {
       "id": "restrained-percussion",
       "name": "Restrained Percussion",
       "path": "audio/score/rendered/stems/restrained-percussion.wav",
-      "sha256": "2cc43dd041ca25ee06bd8f958698999dfca52eaf4affc39f8a9801886bfb2922",
+      "sha256": "fed8f3aa0fbc49eb935296f5e6a7542b4ecf0ebb2a8b279b95d4c12c05c88915",
       "sampleRate": 48000,
       "channels": 2,
       "bitDepth": 24,
       "durationSeconds": 214.04,
-      "peakDbfs": -15.537,
-      "rmsDbfs": -47.398
+      "peakDbfs": -15.212,
+      "rmsDbfs": -47.382
     }
   ]
 }

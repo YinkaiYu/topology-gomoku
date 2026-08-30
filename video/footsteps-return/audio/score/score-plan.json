@@ -441,8 +441,8 @@
     {
       "from": "intro",
       "to": "plane",
-      "boundary": 21.502667,
-      "overlapSeconds": 0.552667,
+      "boundary": 26.42,
+      "overlapSeconds": 0.679054,
       "pickupGestureId": "plane-piano-pickup",
       "outgoingGestureId": "intro-bass-boundary",
       "pivot": "D/A harmonics become the piano pickup"
@@ -450,8 +450,8 @@
     {
       "from": "plane",
       "to": "cylinder",
-      "boundary": 37.762667,
-      "overlapSeconds": 0.412667,
+      "boundary": 43.64,
+      "overlapSeconds": 0.437031,
       "pickupGestureId": "cylinder-clarinet-pickup",
       "outgoingGestureId": "plane-piano-relay",
       "pivot": "A/D piano resonance rounds into B-flat clarinet"
@@ -459,8 +459,8 @@
     {
       "from": "cylinder",
       "to": "torus",
-      "boundary": 56.601334,
-      "overlapSeconds": 0.351334,
+      "boundary": 64.66,
+      "overlapSeconds": 0.392015,
       "pickupGestureId": "torus-celesta-pickup",
       "outgoingGestureId": "cylinder-cello-exit",
       "pivot": "rightmost pizzicato C/G becomes a high celesta intersection"
@@ -468,8 +468,8 @@
     {
       "from": "torus",
       "to": "mobius",
-      "boundary": 75.781334,
-      "overlapSeconds": 0.481334,
+      "boundary": 86.16,
+      "overlapSeconds": 0.539556,
       "pickupGestureId": "mobius-viola-pickup",
       "outgoingGestureId": "torus-celesta-mesh",
       "pivot": "celesta F-sharp/C-sharp folds into octatonic viola C/F-sharp"
@@ -477,8 +477,8 @@
     {
       "from": "mobius",
       "to": "klein",
-      "boundary": 93.894667,
-      "overlapSeconds": 0.444667,
+      "boundary": 105.82,
+      "overlapSeconds": 0.482636,
       "pickupGestureId": "klein-metal-pickup",
       "outgoingGestureId": "mobius-viola-exit",
       "pivot": "viola D/A is struck into metallic D/E-flat propulsion"
@@ -486,8 +486,8 @@
     {
       "from": "klein",
       "to": "projective",
-      "boundary": 112.626667,
-      "overlapSeconds": 0.426667,
+      "boundary": 126.6,
+      "overlapSeconds": 0.473315,
       "pickupGestureId": "projective-celesta-pickup",
       "outgoingGestureId": "klein-metal-exit",
       "pivot": "metallic E/B overtone becomes cold celesta E/B"
@@ -495,8 +495,8 @@
     {
       "from": "projective",
       "to": "sphere",
-      "boundary": 131.38,
-      "overlapSeconds": 0.48,
+      "boundary": 148.42,
+      "overlapSeconds": 0.558493,
       "pickupGestureId": "sphere-horn-pickup",
       "outgoingGestureId": "projective-choir-boundary",
       "pivot": "choir D/A plane acquires a bright horn F-sharp"
@@ -504,8 +504,8 @@
     {
       "from": "sphere",
       "to": "gallery",
-      "boundary": 156.301333,
-      "overlapSeconds": 0.501333,
+      "boundary": 175.24,
+      "overlapSeconds": 0.539528,
       "pickupGestureId": "gallery-celesta-pickup",
       "outgoingGestureId": "sphere-violin-relay",
       "pivot": "violin D/A crest breaks into a celesta mosaic"
@@ -513,7 +513,7 @@
     {
       "from": "gallery",
       "to": "outro",
-      "boundary": 163.301333,
+      "boundary": 182.24,
       "overlapSeconds": 0.401333,
       "pickupGestureId": "outro-piano-pickup",
       "outgoingGestureId": "gallery-string-relay",
@@ -656,7 +656,7 @@
     {
       "id": "intro",
       "start": 0,
-      "end": 21.502667,
+      "end": 26.42,
       "identity": "A compact, unevenly accented D–F–G–A–C signal appears in piano against buoyant bass harmonics and celesta air; it is a prologue emblem, not the chapter melody.",
       "density": "sparse but forward-moving",
       "narrationStrategy": "Short attacks and open fifths leave the speech presence band unfilled.",
@@ -664,8 +664,8 @@
     },
     {
       "id": "plane",
-      "start": 21.502667,
-      "end": 37.762667,
+      "start": 26.42,
+      "end": 43.64,
       "identity": "An independent D-Lydian piano theme with a clear hook, translucent string refractions and restrained upper bass clarinet.",
       "density": "transparent chamber song",
       "narrationStrategy": "Piano phrases answer sentence gaps; strings avoid continuous midrange doubling.",
@@ -673,8 +673,8 @@
     },
     {
       "id": "cylinder",
-      "start": 37.762667,
-      "end": 56.601334,
+      "start": 43.64,
+      "end": 64.66,
       "identity": "B-flat-Mixolydian bass clarinet curves over one-direction cello pizzicato, viola offbeats and a 3+3 percussion orbit that travels left to right.",
       "density": "light cyclic propulsion",
       "narrationStrategy": "Detached strings and rounded wind notes preserve consonant clarity.",
@@ -682,8 +682,8 @@
     },
     {
       "id": "torus",
-      "start": 56.601334,
-      "end": 75.781334,
+      "start": 64.66,
+      "end": 86.16,
       "identity": "Piano and celesta carry two unrelated motives on 4.75- and 5.25-second periods, gradually shortening until their attacks mesh.",
       "density": "two independent kinetic layers",
       "narrationStrategy": "The two keyboards alternate register and do not accumulate a continuous pad.",
@@ -691,8 +691,8 @@
     },
     {
       "id": "mobius",
-      "start": 75.781334,
-      "end": 93.894667,
+      "start": 86.16,
+      "end": 105.82,
       "identity": "A C-octatonic viola line in 3+2+3/8 folds around bass clarinet responses and reverse-envelope string textures; mysterious, alert and unsentimental.",
       "density": "asymmetric folded chamber texture",
       "narrationStrategy": "Lead and response trade the center register; reverse-bow colours stay soft and high.",
@@ -700,8 +700,8 @@
     },
     {
       "id": "klein",
-      "start": 93.894667,
-      "end": 112.626667,
+      "start": 105.82,
+      "end": 126.6,
       "identity": "D-Phrygian-dominant high and low ensembles trade jagged 6/8 calls, metallic strikes and increasingly compressed register jumps.",
       "density": "dramatic antiphonal propulsion",
       "narrationStrategy": "High and low blocks alternate rather than stack beneath narration.",
@@ -709,8 +709,8 @@
     },
     {
       "id": "projective",
-      "start": 112.626667,
-      "end": 131.38,
+      "start": 126.6,
+      "end": 148.42,
       "identity": "An E-Lydian celesta figure and its oblique string mirror hover around chamber choir and glass-like percussion in a cold transcendent plane.",
       "density": "luminous divided ensemble",
       "narrationStrategy": "Choir is vowel-only and pianissimo; celesta attacks are discrete, never a constant shimmer.",
@@ -718,8 +718,8 @@
     },
     {
       "id": "sphere",
-      "start": 131.38,
-      "end": 156.301333,
+      "start": 148.42,
+      "end": 175.24,
       "identity": "A new broad D-major melody grows from piano and horn through full strings, bass clarinet, restrained percussion and choir to a bright orchestral crest.",
       "density": "broad accumulating orchestra with breathing gaps",
       "narrationStrategy": "The full ensemble enters in layers; sustained inner parts thin during sentence centers.",
@@ -727,8 +727,8 @@
     },
     {
       "id": "gallery",
-      "start": 156.301333,
-      "end": 163.301333,
+      "start": 175.24,
+      "end": 182.24,
       "identity": "Short, recognizably different timbral fragments pass through the ensemble as one forward-moving mosaic.",
       "density": "quick timbral relay",
       "narrationStrategy": "The first seven seconds are narration-free; texture narrows before outro speech.",
@@ -736,21 +736,21 @@
     },
     {
       "id": "outro",
-      "start": 163.301333,
-      "end": 179.352,
+      "start": 182.24,
+      "end": 210.04,
       "identity": "Piano, horn and choir turn the accumulated energy into a warm D-major closing paragraph rather than returning to the mournful rejected theme.",
       "density": "broad to gently focused",
       "narrationStrategy": "Melodic attacks fall between phrase centers and the final chord begins after the last spoken emphasis.",
-      "resolution": "A D6/9 chord starts at 177.2 seconds and decays naturally to 180.3."
+      "resolution": "A D6/9 chord starts near 206.313 seconds and decays naturally across the end-card entrance until about 211.682."
     },
     {
       "id": "end-card",
-      "start": 179.352,
-      "end": 183.352,
-      "identity": "The bright D6/9 tail survives the logo entrance; the last 3.052 seconds carry deliberate final silence.",
+      "start": 210.04,
+      "end": 214.04,
+      "identity": "The bright D6/9 tail survives the logo entrance; only the final 2.358 seconds carry deliberate rest after its natural release.",
       "density": "tail to silence",
       "narrationStrategy": "No new attack and no added noise floor.",
-      "resolution": "Natural decay, then silence; no hard fade truncates the cadence."
+      "resolution": "Natural decay, then a short intentional hold; no hard fade and no legacy-score tail padding."
     }
   ],
   "parts": [
@@ -959,16 +959,16 @@
     "bitDepth": 24,
     "soundProfile": "MuseScore Basic",
     "perceivedPulseBpmBySection": {
-      "intro": 76,
-      "plane": 84,
-      "cylinder": 120,
-      "torus": 114,
-      "mobius": 120,
-      "klein": 132,
-      "projective": 72,
-      "sphere": 88,
+      "intro": 61.854757,
+      "plane": 79.317073,
+      "cylinder": 107.5471,
+      "torus": 101.698605,
+      "mobius": 110.55951,
+      "klein": 118.990568,
+      "projective": 61.880842,
+      "sphere": 81.77022,
       "gallery": 108,
-      "outro": 76
+      "outro": 43.879521
     },
     "timeSignatureChanges": [
       {
@@ -977,12 +977,12 @@
         "beatType": 4
       },
       {
-        "measure": 20,
+        "measure": 22,
         "beats": "3+2+3",
         "beatType": 8
       },
       {
-        "measure": 24,
+        "measure": 27,
         "beats": "4",
         "beatType": 4
       }
@@ -994,43 +994,43 @@
         "mode": "minor"
       },
       {
-        "measure": 6,
+        "measure": 7,
         "fifths": 2,
         "mode": "major"
       },
       {
-        "measure": 10,
+        "measure": 11,
         "fifths": -2,
         "mode": "major"
       },
       {
-        "measure": 15,
+        "measure": 17,
         "fifths": 3,
         "mode": "major"
       },
       {
-        "measure": 20,
+        "measure": 22,
         "fifths": 0,
         "mode": "none"
       },
       {
-        "measure": 24,
+        "measure": 27,
         "fifths": -1,
         "mode": "none"
       },
       {
-        "measure": 29,
+        "measure": 32,
         "fifths": 4,
         "mode": "major"
       },
       {
-        "measure": 33,
+        "measure": 38,
         "fifths": 2,
         "mode": "major"
       }
     ],
     "spatialization": "MuseScore renders every stem; score-audio.mjs applies declared equal-power stereo positions and Cylinder automation to those real PCM stems before the final stem sum.",
-    "tailPolicy": "Score events end at 180.300. MusicXML uses an import-safe 1/32-note grid through 214.000; rendered files add 40 ms of digital silence and are trimmed to the measured 214.040-second final VoiceDesign timeline.",
+    "tailPolicy": "Retimed score events reach 211.682, leaving only 2.358 seconds of intentional end-card release/rest. MusicXML uses an import-safe 1/32-note grid through 214.000 and rendered files are trimmed to the measured 214.040-second final VoiceDesign timeline; no 183.352-second legacy master is tail-padded.",
     "normalization": "FFmpeg converts MuseScore output to 48 kHz stereo PCM, sums spatialized stems, and applies a transparent -1 dBFS safety limiter only if needed."
   },
   "gestures": [
@@ -1040,46 +1040,46 @@
       "part": "piano",
       "technique": "clear, dry accents; no rubato",
       "dynamic": "mp",
-      "start": 2.25,
+      "start": 2.764541,
       "events": [
         {
           "offset": 0,
           "pitches": [
             62
           ],
-          "duration": 0.4,
+          "duration": 0.491474,
           "velocity": 0.5
         },
         {
-          "offset": 0.75,
+          "offset": 0.921514,
           "pitches": [
             65
           ],
-          "duration": 0.3,
+          "duration": 0.368605,
           "velocity": 0.48
         },
         {
-          "offset": 1.875,
+          "offset": 2.303784,
           "pitches": [
             67
           ],
-          "duration": 0.22,
+          "duration": 0.270311,
           "velocity": 0.53
         },
         {
-          "offset": 2.25,
+          "offset": 2.764541,
           "pitches": [
             69
           ],
-          "duration": 0.45,
+          "duration": 0.552908,
           "velocity": 0.49
         },
         {
-          "offset": 3,
+          "offset": 3.686054,
           "pitches": [
             72
           ],
-          "duration": 1.1,
+          "duration": 1.351553,
           "velocity": 0.46
         }
       ]
@@ -1090,7 +1090,7 @@
       "part": "piano",
       "technique": "open fifths, lightly pedalled",
       "dynamic": "p",
-      "start": 9,
+      "start": 11.058163,
       "events": [
         {
           "offset": 0,
@@ -1099,37 +1099,37 @@
             57,
             64
           ],
-          "duration": 1.2,
+          "duration": 1.474422,
           "velocity": 0.34
         },
         {
-          "offset": 2,
+          "offset": 2.45737,
           "pitches": [
             54,
             59,
             66
           ],
-          "duration": 1.1,
+          "duration": 1.351553,
           "velocity": 0.35
         },
         {
-          "offset": 4,
+          "offset": 4.914739,
           "pitches": [
             55,
             62,
             69
           ],
-          "duration": 1.4,
+          "duration": 1.720159,
           "velocity": 0.36
         },
         {
-          "offset": 6.2,
+          "offset": 7.617846,
           "pitches": [
             57,
             64,
             71
           ],
-          "duration": 1.3,
+          "duration": 1.59729,
           "velocity": 0.34
         }
       ]
@@ -1140,38 +1140,38 @@
       "part": "celesta",
       "technique": "single airborne points",
       "dynamic": "pp",
-      "start": 6.9,
+      "start": 8.477925,
       "events": [
         {
           "offset": 0,
           "pitches": [
             79
           ],
-          "duration": 0.35,
+          "duration": 0.43004,
           "velocity": 0.3
         },
         {
-          "offset": 3.5,
+          "offset": 4.300397,
           "pitches": [
             83
           ],
-          "duration": 0.4,
+          "duration": 0.491474,
           "velocity": 0.31
         },
         {
-          "offset": 7,
+          "offset": 8.600794,
           "pitches": [
             86
           ],
-          "duration": 0.45,
+          "duration": 0.552908,
           "velocity": 0.3
         },
         {
-          "offset": 10.5,
+          "offset": 12.90119,
           "pitches": [
             81
           ],
-          "duration": 0.5,
+          "duration": 0.614342,
           "velocity": 0.28
         }
       ]
@@ -1182,30 +1182,30 @@
       "part": "double-bass",
       "technique": "natural harmonics, buoyant not elegiac",
       "dynamic": "pp",
-      "start": 4,
+      "start": 4.914739,
       "events": [
         {
           "offset": 0,
           "pitches": [
             50
           ],
-          "duration": 1.8,
+          "duration": 2.211633,
           "velocity": 0.26
         },
         {
-          "offset": 5.5,
+          "offset": 6.757766,
           "pitches": [
             57
           ],
-          "duration": 1.5,
+          "duration": 1.843027,
           "velocity": 0.25
         },
         {
-          "offset": 10,
+          "offset": 12.286848,
           "pitches": [
             62
           ],
-          "duration": 1.6,
+          "duration": 1.965896,
           "velocity": 0.24
         }
       ]
@@ -1216,30 +1216,30 @@
       "part": "violin-ii",
       "technique": "flautando harmonics",
       "dynamic": "ppp",
-      "start": 12,
+      "start": 14.744218,
       "events": [
         {
           "offset": 0,
           "pitches": [
             81
           ],
-          "duration": 2,
+          "duration": 2.45737,
           "velocity": 0.2
         },
         {
-          "offset": 4,
+          "offset": 4.914739,
           "pitches": [
             83
           ],
-          "duration": 1.5,
+          "duration": 1.843027,
           "velocity": 0.2
         },
         {
-          "offset": 7,
+          "offset": 8.600794,
           "pitches": [
             78
           ],
-          "duration": 1.2,
+          "duration": 1.474422,
           "velocity": 0.19
         }
       ]
@@ -1250,7 +1250,7 @@
       "part": "double-bass",
       "technique": "D/A harmonic hinge",
       "dynamic": "pp",
-      "start": 20.95,
+      "start": 25.740946,
       "events": [
         {
           "offset": 0,
@@ -1258,7 +1258,7 @@
             50,
             57
           ],
-          "duration": 1,
+          "duration": 1.228685,
           "velocity": 0.27
         }
       ]
@@ -1269,22 +1269,22 @@
       "part": "piano",
       "technique": "two-note anacrusis, lucid",
       "dynamic": "mp",
-      "start": 21.25,
+      "start": 26.152415,
       "events": [
         {
           "offset": 0,
           "pitches": [
             57
           ],
-          "duration": 0.3,
+          "duration": 0.317712,
           "velocity": 0.45
         },
         {
-          "offset": 0.45,
+          "offset": 0.476568,
           "pitches": [
             61
           ],
-          "duration": 0.3,
+          "duration": 0.317712,
           "velocity": 0.47
         }
       ]
@@ -1295,62 +1295,62 @@
       "part": "piano",
       "technique": "cantabile but rhythmically clear",
       "dynamic": "mf",
-      "start": 22,
+      "start": 26.946696,
       "events": [
         {
           "offset": 0,
           "pitches": [
             62
           ],
-          "duration": 0.55,
+          "duration": 0.582472,
           "velocity": 0.58
         },
         {
-          "offset": 0.75,
+          "offset": 0.79428,
           "pitches": [
             66
           ],
-          "duration": 0.3,
+          "duration": 0.317712,
           "velocity": 0.6
         },
         {
-          "offset": 1.25,
+          "offset": 1.323801,
           "pitches": [
             64
           ],
-          "duration": 0.75,
+          "duration": 0.79428,
           "velocity": 0.55
         },
         {
-          "offset": 2.375,
+          "offset": 2.515221,
           "pitches": [
             69
           ],
-          "duration": 0.3,
+          "duration": 0.317712,
           "velocity": 0.62
         },
         {
-          "offset": 2.875,
+          "offset": 3.044742,
           "pitches": [
             68
           ],
-          "duration": 0.5,
+          "duration": 0.52952,
           "velocity": 0.56
         },
         {
-          "offset": 3.625,
+          "offset": 3.839022,
           "pitches": [
             71
           ],
-          "duration": 0.5,
+          "duration": 0.52952,
           "velocity": 0.59
         },
         {
-          "offset": 4.375,
+          "offset": 4.633303,
           "pitches": [
             74
           ],
-          "duration": 1.35,
+          "duration": 1.429705,
           "velocity": 0.57
         }
       ]
@@ -1361,62 +1361,62 @@
       "part": "piano",
       "technique": "theme opened upward",
       "dynamic": "mp",
-      "start": 28.3,
+      "start": 33.618652,
       "events": [
         {
           "offset": 0,
           "pitches": [
             64
           ],
-          "duration": 0.4,
+          "duration": 0.423616,
           "velocity": 0.49
         },
         {
-          "offset": 0.6,
+          "offset": 0.635424,
           "pitches": [
             69
           ],
-          "duration": 0.35,
+          "duration": 0.370664,
           "velocity": 0.51
         },
         {
-          "offset": 1.2,
+          "offset": 1.270849,
           "pitches": [
             66
           ],
-          "duration": 0.65,
+          "duration": 0.688376,
           "velocity": 0.48
         },
         {
-          "offset": 2.1,
+          "offset": 2.223985,
           "pitches": [
             73
           ],
-          "duration": 0.35,
+          "duration": 0.370664,
           "velocity": 0.53
         },
         {
-          "offset": 2.7,
+          "offset": 2.85941,
           "pitches": [
             71
           ],
-          "duration": 0.55,
+          "duration": 0.582472,
           "velocity": 0.5
         },
         {
-          "offset": 3.55,
+          "offset": 3.759594,
           "pitches": [
             68
           ],
-          "duration": 0.55,
+          "duration": 0.582472,
           "velocity": 0.47
         },
         {
-          "offset": 4.4,
+          "offset": 4.659779,
           "pitches": [
             74
           ],
-          "duration": 1.2,
+          "duration": 1.270849,
           "velocity": 0.5
         }
       ]
@@ -1427,7 +1427,7 @@
       "part": "piano",
       "technique": "bright suspended cadence into relay",
       "dynamic": "mp",
-      "start": 34.6,
+      "start": 40.290607,
       "events": [
         {
           "offset": 0,
@@ -1436,36 +1436,36 @@
             62,
             66
           ],
-          "duration": 0.65,
+          "duration": 0.688376,
           "velocity": 0.44
         },
         {
-          "offset": 1,
+          "offset": 1.059041,
           "pitches": [
             61,
             64,
             69
           ],
-          "duration": 0.65,
+          "duration": 0.688376,
           "velocity": 0.45
         },
         {
-          "offset": 2,
+          "offset": 2.118081,
           "pitches": [
             62,
             66,
             71
           ],
-          "duration": 0.65,
+          "duration": 0.688376,
           "velocity": 0.46
         },
         {
-          "offset": 2.75,
+          "offset": 2.912362,
           "pitches": [
             57,
             62
           ],
-          "duration": 0.6,
+          "duration": 0.635424,
           "velocity": 0.4
         }
       ]
@@ -1476,54 +1476,54 @@
       "part": "violin-i",
       "technique": "transparent harmonics, never lead",
       "dynamic": "pp",
-      "start": 23,
+      "start": 28.005736,
       "events": [
         {
           "offset": 0,
           "pitches": [
             78
           ],
-          "duration": 1.2,
+          "duration": 1.270849,
           "velocity": 0.28
         },
         {
-          "offset": 2,
+          "offset": 2.118081,
           "pitches": [
             81
           ],
-          "duration": 1,
+          "duration": 1.059041,
           "velocity": 0.28
         },
         {
-          "offset": 4,
+          "offset": 4.236162,
           "pitches": [
             83
           ],
-          "duration": 1.2,
+          "duration": 1.270849,
           "velocity": 0.29
         },
         {
-          "offset": 6,
+          "offset": 6.354244,
           "pitches": [
             85
           ],
-          "duration": 1.3,
+          "duration": 1.376753,
           "velocity": 0.29
         },
         {
-          "offset": 8,
+          "offset": 8.472325,
           "pitches": [
             86
           ],
-          "duration": 1.2,
+          "duration": 1.270849,
           "velocity": 0.3
         },
         {
-          "offset": 10,
+          "offset": 10.590406,
           "pitches": [
             81
           ],
-          "duration": 1.5,
+          "duration": 1.588561,
           "velocity": 0.27
         }
       ]
@@ -1534,46 +1534,46 @@
       "part": "violin-ii",
       "technique": "sul tasto, separated breaths",
       "dynamic": "pp",
-      "start": 22.5,
+      "start": 27.476216,
       "events": [
         {
           "offset": 0,
           "pitches": [
             69
           ],
-          "duration": 2,
+          "duration": 2.118081,
           "velocity": 0.24
         },
         {
-          "offset": 2.5,
+          "offset": 2.647601,
           "pitches": [
             71
           ],
-          "duration": 1.5,
+          "duration": 1.588561,
           "velocity": 0.24
         },
         {
-          "offset": 4.5,
+          "offset": 4.765683,
           "pitches": [
             74
           ],
-          "duration": 2,
+          "duration": 2.118081,
           "velocity": 0.25
         },
         {
-          "offset": 7,
+          "offset": 7.413284,
           "pitches": [
             76
           ],
-          "duration": 1.5,
+          "duration": 1.588561,
           "velocity": 0.25
         },
         {
-          "offset": 9,
+          "offset": 9.531365,
           "pitches": [
             73
           ],
-          "duration": 2,
+          "duration": 2.118081,
           "velocity": 0.24
         }
       ]
@@ -1584,7 +1584,7 @@
       "part": "viola",
       "technique": "light divisi dyads",
       "dynamic": "pp",
-      "start": 22.5,
+      "start": 27.476216,
       "events": [
         {
           "offset": 0,
@@ -1592,43 +1592,43 @@
             54,
             61
           ],
-          "duration": 2,
+          "duration": 2.118081,
           "velocity": 0.24
         },
         {
-          "offset": 2.5,
+          "offset": 2.647601,
           "pitches": [
             57,
             64
           ],
-          "duration": 1.5,
+          "duration": 1.588561,
           "velocity": 0.24
         },
         {
-          "offset": 4.5,
+          "offset": 4.765683,
           "pitches": [
             59,
             66
           ],
-          "duration": 2,
+          "duration": 2.118081,
           "velocity": 0.25
         },
         {
-          "offset": 7,
+          "offset": 7.413284,
           "pitches": [
             61,
             68
           ],
-          "duration": 1.5,
+          "duration": 1.588561,
           "velocity": 0.25
         },
         {
-          "offset": 9,
+          "offset": 9.531365,
           "pitches": [
             62,
             69
           ],
-          "duration": 2,
+          "duration": 2.118081,
           "velocity": 0.24
         }
       ]
@@ -1639,46 +1639,46 @@
       "part": "cello",
       "technique": "sul tasto, no lamenting vibrato",
       "dynamic": "pp",
-      "start": 22.5,
+      "start": 27.476216,
       "events": [
         {
           "offset": 0,
           "pitches": [
             38
           ],
-          "duration": 2,
+          "duration": 2.118081,
           "velocity": 0.25
         },
         {
-          "offset": 2.5,
+          "offset": 2.647601,
           "pitches": [
             42
           ],
-          "duration": 1.5,
+          "duration": 1.588561,
           "velocity": 0.25
         },
         {
-          "offset": 4.5,
+          "offset": 4.765683,
           "pitches": [
             40
           ],
-          "duration": 2,
+          "duration": 2.118081,
           "velocity": 0.25
         },
         {
-          "offset": 7,
+          "offset": 7.413284,
           "pitches": [
             45
           ],
-          "duration": 1.5,
+          "duration": 1.588561,
           "velocity": 0.26
         },
         {
-          "offset": 9,
+          "offset": 9.531365,
           "pitches": [
             50
           ],
-          "duration": 2,
+          "duration": 2.118081,
           "velocity": 0.25
         }
       ]
@@ -1689,46 +1689,46 @@
       "part": "bass-clarinet",
       "technique": "upper register, restrained woodwind",
       "dynamic": "p",
-      "start": 27.9,
+      "start": 33.195035,
       "events": [
         {
           "offset": 0,
           "pitches": [
             73
           ],
-          "duration": 0.6,
+          "duration": 0.635424,
           "velocity": 0.34
         },
         {
-          "offset": 1,
+          "offset": 1.059041,
           "pitches": [
             71
           ],
-          "duration": 0.6,
+          "duration": 0.635424,
           "velocity": 0.33
         },
         {
-          "offset": 2,
+          "offset": 2.118081,
           "pitches": [
             68
           ],
-          "duration": 0.7,
+          "duration": 0.741328,
           "velocity": 0.33
         },
         {
-          "offset": 3.2,
+          "offset": 3.38893,
           "pitches": [
             66
           ],
-          "duration": 0.7,
+          "duration": 0.741328,
           "velocity": 0.32
         },
         {
-          "offset": 4.4,
+          "offset": 4.659779,
           "pitches": [
             64
           ],
-          "duration": 1,
+          "duration": 1.059041,
           "velocity": 0.31
         }
       ]
@@ -1739,14 +1739,14 @@
       "part": "bass-clarinet",
       "technique": "rounded breath pickup",
       "dynamic": "mp",
-      "start": 37.45,
+      "start": 43.291129,
       "events": [
         {
           "offset": 0,
           "pitches": [
             58
           ],
-          "duration": 0.35,
+          "duration": 0.390527,
           "velocity": 0.45
         }
       ]
@@ -1757,54 +1757,54 @@
       "part": "bass-clarinet",
       "technique": "rounded, lightly detached",
       "dynamic": "mf",
-      "start": 38.25,
+      "start": 44.183761,
       "events": [
         {
           "offset": 0,
           "pitches": [
             58
           ],
-          "duration": 0.28,
+          "duration": 0.312421,
           "velocity": 0.55
         },
         {
-          "offset": 0.5,
+          "offset": 0.557895,
           "pitches": [
             62
           ],
-          "duration": 0.28,
+          "duration": 0.312421,
           "velocity": 0.57
         },
         {
-          "offset": 1,
+          "offset": 1.11579,
           "pitches": [
             60
           ],
-          "duration": 0.65,
+          "duration": 0.725264,
           "velocity": 0.52
         },
         {
-          "offset": 2,
+          "offset": 2.23158,
           "pitches": [
             65
           ],
-          "duration": 0.28,
+          "duration": 0.312421,
           "velocity": 0.58
         },
         {
-          "offset": 2.5,
+          "offset": 2.789475,
           "pitches": [
             63
           ],
-          "duration": 0.5,
+          "duration": 0.557895,
           "velocity": 0.53
         },
         {
-          "offset": 3.25,
+          "offset": 3.626318,
           "pitches": [
             67
           ],
-          "duration": 0.85,
+          "duration": 0.948422,
           "velocity": 0.55
         }
       ]
@@ -1815,54 +1815,54 @@
       "part": "bass-clarinet",
       "technique": "second orbit, wider curve",
       "dynamic": "mp",
-      "start": 43.6,
+      "start": 50.153239,
       "events": [
         {
           "offset": 0,
           "pitches": [
             58
           ],
-          "duration": 0.28,
+          "duration": 0.312421,
           "velocity": 0.48
         },
         {
-          "offset": 0.5,
+          "offset": 0.557895,
           "pitches": [
             63
           ],
-          "duration": 0.28,
+          "duration": 0.312421,
           "velocity": 0.5
         },
         {
-          "offset": 1,
+          "offset": 1.11579,
           "pitches": [
             60
           ],
-          "duration": 0.65,
+          "duration": 0.725264,
           "velocity": 0.47
         },
         {
-          "offset": 2,
+          "offset": 2.23158,
           "pitches": [
             67
           ],
-          "duration": 0.28,
+          "duration": 0.312421,
           "velocity": 0.52
         },
         {
-          "offset": 2.5,
+          "offset": 2.789475,
           "pitches": [
             65
           ],
-          "duration": 0.5,
+          "duration": 0.557895,
           "velocity": 0.49
         },
         {
-          "offset": 3.25,
+          "offset": 3.626318,
           "pitches": [
             70
           ],
-          "duration": 0.85,
+          "duration": 0.948422,
           "velocity": 0.5
         }
       ]
@@ -1873,54 +1873,54 @@
       "part": "bass-clarinet",
       "technique": "third orbit, compact",
       "dynamic": "mp",
-      "start": 49,
+      "start": 56.178506,
       "events": [
         {
           "offset": 0,
           "pitches": [
             62
           ],
-          "duration": 0.25,
+          "duration": 0.278948,
           "velocity": 0.46
         },
         {
-          "offset": 0.45,
+          "offset": 0.502106,
           "pitches": [
             65
           ],
-          "duration": 0.25,
+          "duration": 0.278948,
           "velocity": 0.48
         },
         {
-          "offset": 0.9,
+          "offset": 1.004211,
           "pitches": [
             63
           ],
-          "duration": 0.55,
+          "duration": 0.613685,
           "velocity": 0.45
         },
         {
-          "offset": 1.75,
+          "offset": 1.952633,
           "pitches": [
             67
           ],
-          "duration": 0.25,
+          "duration": 0.278948,
           "velocity": 0.49
         },
         {
-          "offset": 2.2,
+          "offset": 2.454738,
           "pitches": [
             65
           ],
-          "duration": 0.45,
+          "duration": 0.502106,
           "velocity": 0.46
         },
         {
-          "offset": 2.9,
+          "offset": 3.235792,
           "pitches": [
             70
           ],
-          "duration": 0.8,
+          "duration": 0.892632,
           "velocity": 0.47
         }
       ]
@@ -1931,38 +1931,38 @@
       "part": "bass-clarinet",
       "technique": "curve closes without stopping",
       "dynamic": "p",
-      "start": 54.1,
+      "start": 61.869036,
       "events": [
         {
           "offset": 0,
           "pitches": [
             65
           ],
-          "duration": 0.35,
+          "duration": 0.390527,
           "velocity": 0.38
         },
         {
-          "offset": 0.6,
+          "offset": 0.669474,
           "pitches": [
             63
           ],
-          "duration": 0.35,
+          "duration": 0.390527,
           "velocity": 0.37
         },
         {
-          "offset": 1.2,
+          "offset": 1.338948,
           "pitches": [
             60
           ],
-          "duration": 0.5,
+          "duration": 0.557895,
           "velocity": 0.36
         },
         {
-          "offset": 1.9,
+          "offset": 2.120001,
           "pitches": [
             58
           ],
-          "duration": 0.7,
+          "duration": 0.781053,
           "velocity": 0.34
         }
       ]
@@ -1973,10 +1973,10 @@
       "part": "cello",
       "technique": "pizzicato, dry travelling pulse",
       "dynamic": "mp",
-      "start": 38,
+      "start": 43.904814,
       "repeat": {
         "count": 3,
-        "every": 5
+        "every": 5.578951
       },
       "playback": {
         "pizzicato": true
@@ -1984,23 +1984,23 @@
       "automation": {
         "pan": [
           {
-            "time": 37.8,
+            "time": 43.681656,
             "value": 0.1
           },
           {
-            "time": 42,
+            "time": 48.367975,
             "value": 0.28
           },
           {
-            "time": 47,
+            "time": 53.946926,
             "value": 0.48
           },
           {
-            "time": 52,
+            "time": 59.525877,
             "value": 0.72
           },
           {
-            "time": 56.4,
+            "time": 64.435353,
             "value": 0.9
           }
         ]
@@ -2011,31 +2011,31 @@
           "pitches": [
             46
           ],
-          "duration": 0.35,
+          "duration": 0.390527,
           "velocity": 0.47
         },
         {
-          "offset": 1.25,
+          "offset": 1.394738,
           "pitches": [
             53
           ],
-          "duration": 0.35,
+          "duration": 0.390527,
           "velocity": 0.49
         },
         {
-          "offset": 2.5,
+          "offset": 2.789475,
           "pitches": [
             48
           ],
-          "duration": 0.35,
+          "duration": 0.390527,
           "velocity": 0.47
         },
         {
-          "offset": 3.75,
+          "offset": 4.184213,
           "pitches": [
             55
           ],
-          "duration": 0.35,
+          "duration": 0.390527,
           "velocity": 0.5
         }
       ]
@@ -2046,7 +2046,7 @@
       "part": "cello",
       "technique": "pizzicato, final rightward reach",
       "dynamic": "mp",
-      "start": 53,
+      "start": 60.641667,
       "playback": {
         "pizzicato": true
       },
@@ -2056,31 +2056,31 @@
           "pitches": [
             46
           ],
-          "duration": 0.35,
+          "duration": 0.390527,
           "velocity": 0.44
         },
         {
-          "offset": 1.1,
+          "offset": 1.227369,
           "pitches": [
             53
           ],
-          "duration": 0.35,
+          "duration": 0.390527,
           "velocity": 0.45
         },
         {
-          "offset": 2.15,
+          "offset": 2.398949,
           "pitches": [
             48
           ],
-          "duration": 0.35,
+          "duration": 0.390527,
           "velocity": 0.43
         },
         {
-          "offset": 3.25,
+          "offset": 3.626318,
           "pitches": [
             55
           ],
-          "duration": 0.5,
+          "duration": 0.557895,
           "velocity": 0.44
         }
       ]
@@ -2091,10 +2091,10 @@
       "part": "viola",
       "technique": "pizzicato offbeats",
       "dynamic": "p",
-      "start": 38.625,
+      "start": 44.602183,
       "repeat": {
         "count": 3,
-        "every": 5
+        "every": 5.578951
       },
       "playback": {
         "pizzicato": true
@@ -2105,31 +2105,31 @@
           "pitches": [
             58
           ],
-          "duration": 0.25,
+          "duration": 0.278948,
           "velocity": 0.35
         },
         {
-          "offset": 1.25,
+          "offset": 1.394738,
           "pitches": [
             60
           ],
-          "duration": 0.25,
+          "duration": 0.278948,
           "velocity": 0.36
         },
         {
-          "offset": 2.5,
+          "offset": 2.789475,
           "pitches": [
             63
           ],
-          "duration": 0.25,
+          "duration": 0.278948,
           "velocity": 0.35
         },
         {
-          "offset": 3.75,
+          "offset": 4.184213,
           "pitches": [
             65
           ],
-          "duration": 0.25,
+          "duration": 0.278948,
           "velocity": 0.36
         }
       ]
@@ -2140,10 +2140,10 @@
       "part": "double-bass",
       "technique": "pizzicato, rounded foundation",
       "dynamic": "p",
-      "start": 38,
+      "start": 43.904814,
       "repeat": {
         "count": 3,
-        "every": 6
+        "every": 6.694741
       },
       "playback": {
         "pizzicato": true
@@ -2154,31 +2154,31 @@
           "pitches": [
             34
           ],
-          "duration": 0.5,
+          "duration": 0.557895,
           "velocity": 0.34
         },
         {
-          "offset": 1.5,
+          "offset": 1.673685,
           "pitches": [
             41
           ],
-          "duration": 0.5,
+          "duration": 0.557895,
           "velocity": 0.35
         },
         {
-          "offset": 3,
+          "offset": 3.347371,
           "pitches": [
             36
           ],
-          "duration": 0.5,
+          "duration": 0.557895,
           "velocity": 0.34
         },
         {
-          "offset": 4.5,
+          "offset": 5.021056,
           "pitches": [
             43
           ],
-          "duration": 0.5,
+          "duration": 0.557895,
           "velocity": 0.35
         }
       ]
@@ -2189,7 +2189,7 @@
       "part": "french-horn",
       "technique": "soft stopped warmth",
       "dynamic": "pp",
-      "start": 42,
+      "start": 48.367975,
       "events": [
         {
           "offset": 0,
@@ -2197,25 +2197,25 @@
             46,
             53
           ],
-          "duration": 1,
+          "duration": 1.11579,
           "velocity": 0.27
         },
         {
-          "offset": 5,
+          "offset": 5.578951,
           "pitches": [
             48,
             55
           ],
-          "duration": 1,
+          "duration": 1.11579,
           "velocity": 0.27
         },
         {
-          "offset": 10,
+          "offset": 11.157902,
           "pitches": [
             51,
             58
           ],
-          "duration": 1.2,
+          "duration": 1.338948,
           "velocity": 0.28
         }
       ]
@@ -2226,54 +2226,54 @@
       "part": "restrained-percussion",
       "technique": "soft wood/metal 3+3 cycle",
       "dynamic": "p",
-      "start": 38,
+      "start": 43.904814,
       "events": [
         {
           "offset": 0,
           "pitches": [
             52
           ],
-          "duration": 0.2,
+          "duration": 0.223158,
           "velocity": 0.3
         },
         {
-          "offset": 3,
+          "offset": 3.347371,
           "pitches": [
             59
           ],
-          "duration": 0.18,
+          "duration": 0.200842,
           "velocity": 0.27
         },
         {
-          "offset": 6,
+          "offset": 6.694741,
           "pitches": [
             52
           ],
-          "duration": 0.2,
+          "duration": 0.223158,
           "velocity": 0.31
         },
         {
-          "offset": 9,
+          "offset": 10.042112,
           "pitches": [
             59
           ],
-          "duration": 0.18,
+          "duration": 0.200842,
           "velocity": 0.27
         },
         {
-          "offset": 12,
+          "offset": 13.389482,
           "pitches": [
             52
           ],
-          "duration": 0.2,
+          "duration": 0.223158,
           "velocity": 0.3
         },
         {
-          "offset": 15,
+          "offset": 16.736853,
           "pitches": [
             59
           ],
-          "duration": 0.18,
+          "duration": 0.200842,
           "velocity": 0.26
         }
       ]
@@ -2284,14 +2284,14 @@
       "part": "celesta",
       "technique": "single crossing point",
       "dynamic": "p",
-      "start": 56.25,
+      "start": 64.266169,
       "events": [
         {
           "offset": 0,
           "pitches": [
             79
           ],
-          "duration": 0.4,
+          "duration": 0.448384,
           "velocity": 0.39
         }
       ]
@@ -2302,10 +2302,10 @@
       "part": "piano",
       "technique": "first independent cycle, dry",
       "dynamic": "mp",
-      "start": 57,
+      "start": 65.106888,
       "repeat": {
         "count": 3,
-        "every": 4.75
+        "every": 5.324557
       },
       "events": [
         {
@@ -2313,47 +2313,47 @@
           "pitches": [
             52
           ],
-          "duration": 0.35,
+          "duration": 0.392336,
           "velocity": 0.47
         },
         {
-          "offset": 0.5,
+          "offset": 0.56048,
           "pitches": [
             59
           ],
-          "duration": 0.45,
+          "duration": 0.504432,
           "velocity": 0.5
         },
         {
-          "offset": 1.25,
+          "offset": 1.401199,
           "pitches": [
             57
           ],
-          "duration": 0.45,
+          "duration": 0.504432,
           "velocity": 0.47
         },
         {
-          "offset": 2,
+          "offset": 2.241919,
           "pitches": [
             61
           ],
-          "duration": 0.3,
+          "duration": 0.336288,
           "velocity": 0.52
         },
         {
-          "offset": 2.5,
+          "offset": 2.802398,
           "pitches": [
             56
           ],
-          "duration": 0.65,
+          "duration": 0.728624,
           "velocity": 0.46
         },
         {
-          "offset": 3.5,
+          "offset": 3.923358,
           "pitches": [
             64
           ],
-          "duration": 0.7,
+          "duration": 0.784672,
           "velocity": 0.49
         }
       ]
@@ -2364,10 +2364,10 @@
       "part": "celesta",
       "technique": "second independent cycle, crystalline",
       "dynamic": "mp",
-      "start": 58.1,
+      "start": 66.339944,
       "repeat": {
         "count": 3,
-        "every": 5.25
+        "every": 5.885036
       },
       "events": [
         {
@@ -2375,39 +2375,39 @@
           "pitches": [
             79
           ],
-          "duration": 0.4,
+          "duration": 0.448384,
           "velocity": 0.45
         },
         {
-          "offset": 0.75,
+          "offset": 0.840719,
           "pitches": [
             81
           ],
-          "duration": 0.3,
+          "duration": 0.336288,
           "velocity": 0.47
         },
         {
-          "offset": 1.25,
+          "offset": 1.401199,
           "pitches": [
             78
           ],
-          "duration": 0.65,
+          "duration": 0.728624,
           "velocity": 0.43
         },
         {
-          "offset": 2.25,
+          "offset": 2.522158,
           "pitches": [
             84
           ],
-          "duration": 0.4,
+          "duration": 0.448384,
           "velocity": 0.48
         },
         {
-          "offset": 3,
+          "offset": 3.362878,
           "pitches": [
             83
           ],
-          "duration": 0.8,
+          "duration": 0.896767,
           "velocity": 0.44
         }
       ]
@@ -2418,54 +2418,54 @@
       "part": "piano",
       "technique": "cycles shorten and interlock",
       "dynamic": "mf",
-      "start": 71.2,
+      "start": 81.024511,
       "events": [
         {
           "offset": 0,
           "pitches": [
             52
           ],
-          "duration": 0.3,
+          "duration": 0.336288,
           "velocity": 0.52
         },
         {
-          "offset": 0.55,
+          "offset": 0.616528,
           "pitches": [
             61
           ],
-          "duration": 0.25,
+          "duration": 0.28024,
           "velocity": 0.55
         },
         {
-          "offset": 1.05,
+          "offset": 1.177007,
           "pitches": [
             57
           ],
-          "duration": 0.3,
+          "duration": 0.336288,
           "velocity": 0.51
         },
         {
-          "offset": 1.6,
+          "offset": 1.793535,
           "pitches": [
             64
           ],
-          "duration": 0.25,
+          "duration": 0.28024,
           "velocity": 0.56
         },
         {
-          "offset": 2.15,
+          "offset": 2.410063,
           "pitches": [
             56
           ],
-          "duration": 0.3,
+          "duration": 0.336288,
           "velocity": 0.52
         },
         {
-          "offset": 2.75,
+          "offset": 3.082638,
           "pitches": [
             59
           ],
-          "duration": 0.6,
+          "duration": 0.672576,
           "velocity": 0.5
         }
       ]
@@ -2476,54 +2476,54 @@
       "part": "celesta",
       "technique": "meshed lattice into fold",
       "dynamic": "mf",
-      "start": 72.75,
+      "start": 82.761998,
       "events": [
         {
           "offset": 0,
           "pitches": [
             76
           ],
-          "duration": 0.3,
+          "duration": 0.336288,
           "velocity": 0.5
         },
         {
-          "offset": 0.55,
+          "offset": 0.616528,
           "pitches": [
             83
           ],
-          "duration": 0.25,
+          "duration": 0.28024,
           "velocity": 0.53
         },
         {
-          "offset": 1.05,
+          "offset": 1.177007,
           "pitches": [
             80
           ],
-          "duration": 0.3,
+          "duration": 0.336288,
           "velocity": 0.5
         },
         {
-          "offset": 1.55,
+          "offset": 1.737487,
           "pitches": [
             87
           ],
-          "duration": 0.25,
+          "duration": 0.28024,
           "velocity": 0.54
         },
         {
-          "offset": 2.15,
+          "offset": 2.410063,
           "pitches": [
             78
           ],
-          "duration": 0.3,
+          "duration": 0.336288,
           "velocity": 0.49
         },
         {
-          "offset": 2.65,
+          "offset": 2.970542,
           "pitches": [
             85
           ],
-          "duration": 0.65,
+          "duration": 0.728624,
           "velocity": 0.5
         }
       ]
@@ -2534,10 +2534,10 @@
       "part": "violin-ii",
       "technique": "light detached intersections",
       "dynamic": "p",
-      "start": 57.5,
+      "start": 65.667368,
       "repeat": {
         "count": 4,
-        "every": 4.5
+        "every": 5.044317
       },
       "events": [
         {
@@ -2545,31 +2545,31 @@
           "pitches": [
             71
           ],
-          "duration": 0.5,
+          "duration": 0.56048,
           "velocity": 0.33
         },
         {
-          "offset": 1.25,
+          "offset": 1.401199,
           "pitches": [
             74
           ],
-          "duration": 0.45,
+          "duration": 0.504432,
           "velocity": 0.34
         },
         {
-          "offset": 2.5,
+          "offset": 2.802398,
           "pitches": [
             78
           ],
-          "duration": 0.5,
+          "duration": 0.56048,
           "velocity": 0.35
         },
         {
-          "offset": 3.75,
+          "offset": 4.203597,
           "pitches": [
             81
           ],
-          "duration": 0.45,
+          "duration": 0.504432,
           "velocity": 0.34
         }
       ]
@@ -2580,7 +2580,7 @@
       "part": "viola",
       "technique": "soft dyadic corners",
       "dynamic": "pp",
-      "start": 56.9,
+      "start": 64.994792,
       "events": [
         {
           "offset": 0,
@@ -2588,61 +2588,61 @@
             52,
             59
           ],
-          "duration": 0.4,
+          "duration": 0.448384,
           "velocity": 0.27
         },
         {
-          "offset": 2.5,
+          "offset": 2.802398,
           "pitches": [
             56,
             61
           ],
-          "duration": 0.4,
+          "duration": 0.448384,
           "velocity": 0.28
         },
         {
-          "offset": 5,
+          "offset": 5.604797,
           "pitches": [
             57,
             64
           ],
-          "duration": 0.4,
+          "duration": 0.448384,
           "velocity": 0.28
         },
         {
-          "offset": 7.5,
+          "offset": 8.407195,
           "pitches": [
             52,
             61
           ],
-          "duration": 0.4,
+          "duration": 0.448384,
           "velocity": 0.27
         },
         {
-          "offset": 10,
+          "offset": 11.209593,
           "pitches": [
             56,
             64
           ],
-          "duration": 0.4,
+          "duration": 0.448384,
           "velocity": 0.28
         },
         {
-          "offset": 12.5,
+          "offset": 14.011992,
           "pitches": [
             57,
             61
           ],
-          "duration": 0.4,
+          "duration": 0.448384,
           "velocity": 0.27
         },
         {
-          "offset": 15,
+          "offset": 16.81439,
           "pitches": [
             52,
             59
           ],
-          "duration": 0.5,
+          "duration": 0.56048,
           "velocity": 0.27
         }
       ]
@@ -2653,7 +2653,7 @@
       "part": "double-bass",
       "technique": "pizzicato resonance at lattice corners",
       "dynamic": "pp",
-      "start": 57,
+      "start": 65.106888,
       "playback": {
         "pizzicato": true
       },
@@ -2663,31 +2663,31 @@
           "pitches": [
             40
           ],
-          "duration": 0.65,
+          "duration": 0.728624,
           "velocity": 0.29
         },
         {
-          "offset": 4.75,
+          "offset": 5.324557,
           "pitches": [
             35
           ],
-          "duration": 0.65,
+          "duration": 0.728624,
           "velocity": 0.29
         },
         {
-          "offset": 9.5,
+          "offset": 10.649114,
           "pitches": [
             40
           ],
-          "duration": 0.65,
+          "duration": 0.728624,
           "velocity": 0.3
         },
         {
-          "offset": 14.25,
+          "offset": 15.97367,
           "pitches": [
             33
           ],
-          "duration": 0.75,
+          "duration": 0.840719,
           "velocity": 0.28
         }
       ]
@@ -2698,22 +2698,22 @@
       "part": "restrained-percussion",
       "technique": "two soft intersection marks",
       "dynamic": "pp",
-      "start": 64,
+      "start": 72.953604,
       "events": [
         {
           "offset": 0,
           "pitches": [
             59
           ],
-          "duration": 0.22,
+          "duration": 0.246611,
           "velocity": 0.24
         },
         {
-          "offset": 6,
+          "offset": 6.725756,
           "pitches": [
             52
           ],
-          "duration": 0.22,
+          "duration": 0.246611,
           "velocity": 0.23
         }
       ]
@@ -2724,7 +2724,7 @@
       "part": "viola",
       "technique": "up-bow pickup into the fold",
       "dynamic": "mp",
-      "start": 75.3,
+      "start": 85.637566,
       "playback": {
         "pizzicato": false
       },
@@ -2734,7 +2734,7 @@
           "pitches": [
             60
           ],
-          "duration": 0.55,
+          "duration": 0.596964,
           "velocity": 0.43
         }
       ]
@@ -2745,54 +2745,54 @@
       "part": "viola",
       "technique": "3+2+3 octatonic fold",
       "dynamic": "mf",
-      "start": 76,
+      "start": 86.397338,
       "events": [
         {
           "offset": 0,
           "pitches": [
             60
           ],
-          "duration": 0.45,
+          "duration": 0.488425,
           "velocity": 0.52
         },
         {
-          "offset": 0.75,
+          "offset": 0.814041,
           "pitches": [
             66
           ],
-          "duration": 0.45,
+          "duration": 0.488425,
           "velocity": 0.54
         },
         {
-          "offset": 1.5,
+          "offset": 1.628082,
           "pitches": [
             63
           ],
-          "duration": 0.7,
+          "duration": 0.759772,
           "velocity": 0.5
         },
         {
-          "offset": 2.5,
+          "offset": 2.713471,
           "pitches": [
             69
           ],
-          "duration": 0.45,
+          "duration": 0.488425,
           "velocity": 0.55
         },
         {
-          "offset": 3.25,
+          "offset": 3.527512,
           "pitches": [
             67
           ],
-          "duration": 0.45,
+          "duration": 0.488425,
           "velocity": 0.51
         },
         {
-          "offset": 4,
+          "offset": 4.341553,
           "pitches": [
             61
           ],
-          "duration": 0.9,
+          "duration": 0.976849,
           "velocity": 0.49
         }
       ]
@@ -2803,54 +2803,54 @@
       "part": "viola",
       "technique": "fold seen from reverse side",
       "dynamic": "mp",
-      "start": 82,
+      "start": 92.909667,
       "events": [
         {
           "offset": 0,
           "pitches": [
             61
           ],
-          "duration": 0.45,
+          "duration": 0.488425,
           "velocity": 0.45
         },
         {
-          "offset": 0.75,
+          "offset": 0.814041,
           "pitches": [
             67
           ],
-          "duration": 0.45,
+          "duration": 0.488425,
           "velocity": 0.47
         },
         {
-          "offset": 1.5,
+          "offset": 1.628082,
           "pitches": [
             69
           ],
-          "duration": 0.7,
+          "duration": 0.759772,
           "velocity": 0.48
         },
         {
-          "offset": 2.5,
+          "offset": 2.713471,
           "pitches": [
             63
           ],
-          "duration": 0.45,
+          "duration": 0.488425,
           "velocity": 0.46
         },
         {
-          "offset": 3.25,
+          "offset": 3.527512,
           "pitches": [
             66
           ],
-          "duration": 0.45,
+          "duration": 0.488425,
           "velocity": 0.47
         },
         {
-          "offset": 4,
+          "offset": 4.341553,
           "pitches": [
             60
           ],
-          "duration": 0.9,
+          "duration": 0.976849,
           "velocity": 0.44
         }
       ]
@@ -2861,54 +2861,54 @@
       "part": "viola",
       "technique": "asymmetry compressed",
       "dynamic": "mf",
-      "start": 87.75,
+      "start": 99.15065,
       "events": [
         {
           "offset": 0,
           "pitches": [
             60
           ],
-          "duration": 0.35,
+          "duration": 0.379886,
           "velocity": 0.49
         },
         {
-          "offset": 0.5,
+          "offset": 0.542694,
           "pitches": [
             63
           ],
-          "duration": 0.35,
+          "duration": 0.379886,
           "velocity": 0.5
         },
         {
-          "offset": 1,
+          "offset": 1.085388,
           "pitches": [
             66
           ],
-          "duration": 0.55,
+          "duration": 0.596964,
           "velocity": 0.52
         },
         {
-          "offset": 1.75,
+          "offset": 1.89943,
           "pitches": [
             61
           ],
-          "duration": 0.35,
+          "duration": 0.379886,
           "velocity": 0.48
         },
         {
-          "offset": 2.25,
+          "offset": 2.442124,
           "pitches": [
             69
           ],
-          "duration": 0.45,
+          "duration": 0.488425,
           "velocity": 0.54
         },
         {
-          "offset": 3,
+          "offset": 3.256165,
           "pitches": [
             67
           ],
-          "duration": 0.75,
+          "duration": 0.814041,
           "velocity": 0.5
         }
       ]
@@ -2919,7 +2919,7 @@
       "part": "viola",
       "technique": "D/A hinge, bow pressure releases",
       "dynamic": "p",
-      "start": 93.5,
+      "start": 105.391633,
       "events": [
         {
           "offset": 0,
@@ -2927,7 +2927,7 @@
             62,
             69
           ],
-          "duration": 0.6,
+          "duration": 0.651233,
           "velocity": 0.36
         }
       ]
@@ -2938,38 +2938,38 @@
       "part": "bass-clarinet",
       "technique": "shadow response, never plaintive",
       "dynamic": "mp",
-      "start": 80.5,
+      "start": 91.281585,
       "events": [
         {
           "offset": 0,
           "pitches": [
             49
           ],
-          "duration": 0.5,
+          "duration": 0.542694,
           "velocity": 0.42
         },
         {
-          "offset": 0.75,
+          "offset": 0.814041,
           "pitches": [
             55
           ],
-          "duration": 0.5,
+          "duration": 0.542694,
           "velocity": 0.45
         },
         {
-          "offset": 1.75,
+          "offset": 1.89943,
           "pitches": [
             52
           ],
-          "duration": 0.75,
+          "duration": 0.814041,
           "velocity": 0.43
         },
         {
-          "offset": 2.75,
+          "offset": 2.984818,
           "pitches": [
             58
           ],
-          "duration": 1,
+          "duration": 1.085388,
           "velocity": 0.44
         }
       ]
@@ -2980,38 +2980,38 @@
       "part": "bass-clarinet",
       "technique": "compressed shadow response",
       "dynamic": "mp",
-      "start": 86.5,
+      "start": 97.793915,
       "events": [
         {
           "offset": 0,
           "pitches": [
             58
           ],
-          "duration": 0.45,
+          "duration": 0.488425,
           "velocity": 0.43
         },
         {
-          "offset": 0.7,
+          "offset": 0.759772,
           "pitches": [
             52
           ],
-          "duration": 0.45,
+          "duration": 0.488425,
           "velocity": 0.41
         },
         {
-          "offset": 1.55,
+          "offset": 1.682352,
           "pitches": [
             55
           ],
-          "duration": 0.65,
+          "duration": 0.705502,
           "velocity": 0.44
         },
         {
-          "offset": 2.55,
+          "offset": 2.76774,
           "pitches": [
             49
           ],
-          "duration": 0.9,
+          "duration": 0.976849,
           "velocity": 0.4
         }
       ]
@@ -3022,7 +3022,7 @@
       "part": "bass-clarinet",
       "technique": "short D/A underside",
       "dynamic": "p",
-      "start": 91.2,
+      "start": 102.89524,
       "events": [
         {
           "offset": 0,
@@ -3030,7 +3030,7 @@
             50,
             57
           ],
-          "duration": 0.8,
+          "duration": 0.868311,
           "velocity": 0.34
         }
       ]
@@ -3041,46 +3041,46 @@
       "part": "violin-i",
       "technique": "sul ponticello, grow toward release",
       "dynamic": "pp",
-      "start": 76.2,
+      "start": 86.614415,
       "events": [
         {
           "offset": 0,
           "pitches": [
             84
           ],
-          "duration": 2.2,
+          "duration": 2.387854,
           "velocity": 0.24
         },
         {
-          "offset": 3,
+          "offset": 3.256165,
           "pitches": [
             81
           ],
-          "duration": 2,
+          "duration": 2.170777,
           "velocity": 0.25
         },
         {
-          "offset": 6,
+          "offset": 6.51233,
           "pitches": [
             87
           ],
-          "duration": 1.8,
+          "duration": 1.953699,
           "velocity": 0.27
         },
         {
-          "offset": 9,
+          "offset": 9.768495,
           "pitches": [
             78
           ],
-          "duration": 2,
+          "duration": 2.170777,
           "velocity": 0.26
         },
         {
-          "offset": 12,
+          "offset": 13.02466,
           "pitches": [
             84
           ],
-          "duration": 2.2,
+          "duration": 2.387854,
           "velocity": 0.25
         }
       ]
@@ -3091,46 +3091,46 @@
       "part": "violin-ii",
       "technique": "flautando, reverse-envelope relay",
       "dynamic": "pp",
-      "start": 77,
+      "start": 87.482726,
       "events": [
         {
           "offset": 0,
           "pitches": [
             75
           ],
-          "duration": 2,
+          "duration": 2.170777,
           "velocity": 0.22
         },
         {
-          "offset": 3.2,
+          "offset": 3.473243,
           "pitches": [
             79
           ],
-          "duration": 2,
+          "duration": 2.170777,
           "velocity": 0.23
         },
         {
-          "offset": 6.4,
+          "offset": 6.946485,
           "pitches": [
             76
           ],
-          "duration": 2,
+          "duration": 2.170777,
           "velocity": 0.24
         },
         {
-          "offset": 9.6,
+          "offset": 10.419728,
           "pitches": [
             82
           ],
-          "duration": 2,
+          "duration": 2.170777,
           "velocity": 0.24
         },
         {
-          "offset": 12.8,
+          "offset": 13.89297,
           "pitches": [
             73
           ],
-          "duration": 1.8,
+          "duration": 1.953699,
           "velocity": 0.22
         }
       ]
@@ -3141,7 +3141,7 @@
       "part": "cello",
       "technique": "arco, dry octatonic anchors",
       "dynamic": "p",
-      "start": 76,
+      "start": 86.397338,
       "playback": {
         "pizzicato": false
       },
@@ -3151,55 +3151,55 @@
           "pitches": [
             48
           ],
-          "duration": 1,
+          "duration": 1.085388,
           "velocity": 0.32
         },
         {
-          "offset": 2.5,
+          "offset": 2.713471,
           "pitches": [
             54
           ],
-          "duration": 1,
+          "duration": 1.085388,
           "velocity": 0.33
         },
         {
-          "offset": 5,
+          "offset": 5.426942,
           "pitches": [
             51
           ],
-          "duration": 1,
+          "duration": 1.085388,
           "velocity": 0.32
         },
         {
-          "offset": 7.5,
+          "offset": 8.140412,
           "pitches": [
             57
           ],
-          "duration": 1,
+          "duration": 1.085388,
           "velocity": 0.34
         },
         {
-          "offset": 10,
+          "offset": 10.853883,
           "pitches": [
             48
           ],
-          "duration": 1,
+          "duration": 1.085388,
           "velocity": 0.31
         },
         {
-          "offset": 12.5,
+          "offset": 13.567354,
           "pitches": [
             54
           ],
-          "duration": 1,
+          "duration": 1.085388,
           "velocity": 0.32
         },
         {
-          "offset": 15,
+          "offset": 16.280825,
           "pitches": [
             50
           ],
-          "duration": 1.5,
+          "duration": 1.628082,
           "velocity": 0.33
         }
       ]
@@ -3210,30 +3210,30 @@
       "part": "celesta",
       "technique": "three cold fold points",
       "dynamic": "pp",
-      "start": 83,
+      "start": 93.995056,
       "events": [
         {
           "offset": 0,
           "pitches": [
             90
           ],
-          "duration": 0.2,
+          "duration": 0.217078,
           "velocity": 0.3
         },
         {
-          "offset": 4,
+          "offset": 4.341553,
           "pitches": [
             85
           ],
-          "duration": 0.2,
+          "duration": 0.217078,
           "velocity": 0.29
         },
         {
-          "offset": 8,
+          "offset": 8.683107,
           "pitches": [
             88
           ],
-          "duration": 0.3,
+          "duration": 0.325616,
           "velocity": 0.3
         }
       ]
@@ -3244,30 +3244,30 @@
       "part": "restrained-percussion",
       "technique": "three soft metal breaths",
       "dynamic": "pp",
-      "start": 78.5,
+      "start": 89.110808,
       "events": [
         {
           "offset": 0,
           "pitches": [
             59
           ],
-          "duration": 0.25,
+          "duration": 0.271347,
           "velocity": 0.22
         },
         {
-          "offset": 6.5,
+          "offset": 7.055024,
           "pitches": [
             52
           ],
-          "duration": 0.25,
+          "duration": 0.271347,
           "velocity": 0.22
         },
         {
-          "offset": 13,
+          "offset": 14.110048,
           "pitches": [
             59
           ],
-          "duration": 0.25,
+          "duration": 0.271347,
           "velocity": 0.21
         }
       ]
@@ -3278,14 +3278,14 @@
       "part": "restrained-percussion",
       "technique": "metallic hinge into propulsion",
       "dynamic": "mp",
-      "start": 93.45,
+      "start": 105.326717,
       "events": [
         {
           "offset": 0,
           "pitches": [
             59
           ],
-          "duration": 0.6,
+          "duration": 0.665599,
           "velocity": 0.4
         }
       ]
@@ -3296,38 +3296,38 @@
       "part": "violin-i",
       "technique": "hard-edged high antiphon",
       "dynamic": "mf",
-      "start": 94.25,
+      "start": 106.214182,
       "events": [
         {
           "offset": 0,
           "pitches": [
             81
           ],
-          "duration": 0.3,
+          "duration": 0.332799,
           "velocity": 0.58
         },
         {
-          "offset": 0.5,
+          "offset": 0.554666,
           "pitches": [
             75
           ],
-          "duration": 0.3,
+          "duration": 0.332799,
           "velocity": 0.56
         },
         {
-          "offset": 1,
+          "offset": 1.109332,
           "pitches": [
             78
           ],
-          "duration": 0.45,
+          "duration": 0.499199,
           "velocity": 0.6
         },
         {
-          "offset": 1.75,
+          "offset": 1.94133,
           "pitches": [
             86
           ],
-          "duration": 0.6,
+          "duration": 0.665599,
           "velocity": 0.62
         }
       ]
@@ -3338,38 +3338,38 @@
       "part": "bass-clarinet",
       "technique": "low antiphon, accented",
       "dynamic": "mf",
-      "start": 95.75,
+      "start": 107.87818,
       "events": [
         {
           "offset": 0,
           "pitches": [
             38
           ],
-          "duration": 0.3,
+          "duration": 0.332799,
           "velocity": 0.56
         },
         {
-          "offset": 0.5,
+          "offset": 0.554666,
           "pitches": [
             45
           ],
-          "duration": 0.3,
+          "duration": 0.332799,
           "velocity": 0.57
         },
         {
-          "offset": 1,
+          "offset": 1.109332,
           "pitches": [
             46
           ],
-          "duration": 0.45,
+          "duration": 0.499199,
           "velocity": 0.59
         },
         {
-          "offset": 1.75,
+          "offset": 1.94133,
           "pitches": [
             51
           ],
-          "duration": 0.6,
+          "duration": 0.665599,
           "velocity": 0.58
         }
       ]
@@ -3380,38 +3380,38 @@
       "part": "violin-i",
       "technique": "high answer shortened",
       "dynamic": "f",
-      "start": 99,
+      "start": 111.483507,
       "events": [
         {
           "offset": 0,
           "pitches": [
             86
           ],
-          "duration": 0.28,
+          "duration": 0.310613,
           "velocity": 0.62
         },
         {
-          "offset": 0.45,
+          "offset": 0.499199,
           "pitches": [
             78
           ],
-          "duration": 0.28,
+          "duration": 0.310613,
           "velocity": 0.6
         },
         {
-          "offset": 0.9,
+          "offset": 0.998398,
           "pitches": [
             75
           ],
-          "duration": 0.4,
+          "duration": 0.443733,
           "velocity": 0.59
         },
         {
-          "offset": 1.55,
+          "offset": 1.719464,
           "pitches": [
             81
           ],
-          "duration": 0.55,
+          "duration": 0.610132,
           "velocity": 0.63
         }
       ]
@@ -3422,38 +3422,38 @@
       "part": "bass-clarinet",
       "technique": "low answer shortened",
       "dynamic": "mf",
-      "start": 100.5,
+      "start": 113.147505,
       "events": [
         {
           "offset": 0,
           "pitches": [
             51
           ],
-          "duration": 0.28,
+          "duration": 0.310613,
           "velocity": 0.57
         },
         {
-          "offset": 0.45,
+          "offset": 0.499199,
           "pitches": [
             46
           ],
-          "duration": 0.28,
+          "duration": 0.310613,
           "velocity": 0.58
         },
         {
-          "offset": 0.9,
+          "offset": 0.998398,
           "pitches": [
             45
           ],
-          "duration": 0.4,
+          "duration": 0.443733,
           "velocity": 0.56
         },
         {
-          "offset": 1.55,
+          "offset": 1.719464,
           "pitches": [
             38
           ],
-          "duration": 0.55,
+          "duration": 0.610132,
           "velocity": 0.58
         }
       ]
@@ -3464,38 +3464,38 @@
       "part": "violin-i",
       "technique": "registers closing in",
       "dynamic": "f",
-      "start": 103.75,
+      "start": 116.752833,
       "events": [
         {
           "offset": 0,
           "pitches": [
             78
           ],
-          "duration": 0.25,
+          "duration": 0.277333,
           "velocity": 0.64
         },
         {
-          "offset": 0.4,
+          "offset": 0.443733,
           "pitches": [
             81
           ],
-          "duration": 0.25,
+          "duration": 0.277333,
           "velocity": 0.65
         },
         {
-          "offset": 0.8,
+          "offset": 0.887465,
           "pitches": [
             75
           ],
-          "duration": 0.35,
+          "duration": 0.388266,
           "velocity": 0.62
         },
         {
-          "offset": 1.4,
+          "offset": 1.553064,
           "pitches": [
             86
           ],
-          "duration": 0.5,
+          "duration": 0.554666,
           "velocity": 0.66
         }
       ]
@@ -3506,38 +3506,38 @@
       "part": "bass-clarinet",
       "technique": "registers closing in below",
       "dynamic": "mf",
-      "start": 105.5,
+      "start": 118.694163,
       "events": [
         {
           "offset": 0,
           "pitches": [
             45
           ],
-          "duration": 0.25,
+          "duration": 0.277333,
           "velocity": 0.58
         },
         {
-          "offset": 0.4,
+          "offset": 0.443733,
           "pitches": [
             51
           ],
-          "duration": 0.25,
+          "duration": 0.277333,
           "velocity": 0.6
         },
         {
-          "offset": 0.8,
+          "offset": 0.887465,
           "pitches": [
             46
           ],
-          "duration": 0.35,
+          "duration": 0.388266,
           "velocity": 0.59
         },
         {
-          "offset": 1.4,
+          "offset": 1.553064,
           "pitches": [
             38
           ],
-          "duration": 0.5,
+          "duration": 0.554666,
           "velocity": 0.6
         }
       ]
@@ -3548,7 +3548,7 @@
       "part": "violin-i",
       "technique": "compressed high dyads",
       "dynamic": "f",
-      "start": 108.5,
+      "start": 122.022158,
       "events": [
         {
           "offset": 0,
@@ -3556,25 +3556,25 @@
             75,
             81
           ],
-          "duration": 0.55,
+          "duration": 0.610132,
           "velocity": 0.62
         },
         {
-          "offset": 1,
+          "offset": 1.109332,
           "pitches": [
             78,
             86
           ],
-          "duration": 0.55,
+          "duration": 0.610132,
           "velocity": 0.65
         },
         {
-          "offset": 2,
+          "offset": 2.218663,
           "pitches": [
             74,
             81
           ],
-          "duration": 0.7,
+          "duration": 0.776532,
           "velocity": 0.61
         }
       ]
@@ -3585,7 +3585,7 @@
       "part": "bass-clarinet",
       "technique": "compressed low dyads",
       "dynamic": "mf",
-      "start": 109.2,
+      "start": 122.79869,
       "events": [
         {
           "offset": 0,
@@ -3593,16 +3593,16 @@
             38,
             45
           ],
-          "duration": 0.6,
+          "duration": 0.665599,
           "velocity": 0.56
         },
         {
-          "offset": 1.5,
+          "offset": 1.663997,
           "pitches": [
             39,
             46
           ],
-          "duration": 0.7,
+          "duration": 0.776532,
           "velocity": 0.58
         }
       ]
@@ -3613,7 +3613,7 @@
       "part": "cello",
       "technique": "forceful low replies",
       "dynamic": "mf",
-      "start": 96.1,
+      "start": 108.266446,
       "events": [
         {
           "offset": 0,
@@ -3621,34 +3621,34 @@
             38,
             45
           ],
-          "duration": 0.55,
+          "duration": 0.610132,
           "velocity": 0.5
         },
         {
-          "offset": 3.4,
+          "offset": 3.771728,
           "pitches": [
             43,
             50
           ],
-          "duration": 0.55,
+          "duration": 0.610132,
           "velocity": 0.52
         },
         {
-          "offset": 6.8,
+          "offset": 7.543455,
           "pitches": [
             39,
             46
           ],
-          "duration": 0.55,
+          "duration": 0.610132,
           "velocity": 0.51
         },
         {
-          "offset": 10.2,
+          "offset": 11.315183,
           "pitches": [
             38,
             45
           ],
-          "duration": 0.8,
+          "duration": 0.887465,
           "velocity": 0.53
         }
       ]
@@ -3659,7 +3659,7 @@
       "part": "double-bass",
       "technique": "pizzicato propulsion below antiphony",
       "dynamic": "mf",
-      "start": 95.7,
+      "start": 107.822713,
       "playback": {
         "pizzicato": true
       },
@@ -3669,55 +3669,55 @@
           "pitches": [
             38
           ],
-          "duration": 0.45,
+          "duration": 0.499199,
           "velocity": 0.5
         },
         {
-          "offset": 2,
+          "offset": 2.218663,
           "pitches": [
             33
           ],
-          "duration": 0.45,
+          "duration": 0.499199,
           "velocity": 0.52
         },
         {
-          "offset": 4,
+          "offset": 4.437327,
           "pitches": [
             34
           ],
-          "duration": 0.45,
+          "duration": 0.499199,
           "velocity": 0.51
         },
         {
-          "offset": 6,
+          "offset": 6.65599,
           "pitches": [
             39
           ],
-          "duration": 0.45,
+          "duration": 0.499199,
           "velocity": 0.53
         },
         {
-          "offset": 8,
+          "offset": 8.874653,
           "pitches": [
             38
           ],
-          "duration": 0.45,
+          "duration": 0.499199,
           "velocity": 0.52
         },
         {
-          "offset": 10,
+          "offset": 11.093316,
           "pitches": [
             33
           ],
-          "duration": 0.45,
+          "duration": 0.499199,
           "velocity": 0.54
         },
         {
-          "offset": 12,
+          "offset": 13.31198,
           "pitches": [
             38
           ],
-          "duration": 0.8,
+          "duration": 0.887465,
           "velocity": 0.53
         }
       ]
@@ -3728,54 +3728,54 @@
       "part": "violin-ii",
       "technique": "dry high offbeats",
       "dynamic": "mp",
-      "start": 96.7,
+      "start": 108.932045,
       "events": [
         {
           "offset": 0,
           "pitches": [
             70
           ],
-          "duration": 0.35,
+          "duration": 0.388266,
           "velocity": 0.43
         },
         {
-          "offset": 2.2,
+          "offset": 2.44053,
           "pitches": [
             75
           ],
-          "duration": 0.35,
+          "duration": 0.388266,
           "velocity": 0.45
         },
         {
-          "offset": 4.4,
+          "offset": 4.881059,
           "pitches": [
             73
           ],
-          "duration": 0.35,
+          "duration": 0.388266,
           "velocity": 0.44
         },
         {
-          "offset": 6.6,
+          "offset": 7.321589,
           "pitches": [
             78
           ],
-          "duration": 0.35,
+          "duration": 0.388266,
           "velocity": 0.46
         },
         {
-          "offset": 8.8,
+          "offset": 9.762118,
           "pitches": [
             75
           ],
-          "duration": 0.35,
+          "duration": 0.388266,
           "velocity": 0.45
         },
         {
-          "offset": 11,
+          "offset": 12.202648,
           "pitches": [
             81
           ],
-          "duration": 0.5,
+          "duration": 0.554666,
           "velocity": 0.47
         }
       ]
@@ -3786,7 +3786,7 @@
       "part": "piano",
       "technique": "low dry chord strikes",
       "dynamic": "mf",
-      "start": 97.2,
+      "start": 109.48671,
       "events": [
         {
           "offset": 0,
@@ -3795,37 +3795,37 @@
             45,
             51
           ],
-          "duration": 0.4,
+          "duration": 0.443733,
           "velocity": 0.52
         },
         {
-          "offset": 3.6,
+          "offset": 3.993594,
           "pitches": [
             39,
             46,
             54
           ],
-          "duration": 0.4,
+          "duration": 0.443733,
           "velocity": 0.54
         },
         {
-          "offset": 7.2,
+          "offset": 7.987188,
           "pitches": [
             38,
             45,
             50
           ],
-          "duration": 0.4,
+          "duration": 0.443733,
           "velocity": 0.53
         },
         {
-          "offset": 10.8,
+          "offset": 11.980782,
           "pitches": [
             39,
             46,
             51
           ],
-          "duration": 0.55,
+          "duration": 0.610132,
           "velocity": 0.55
         }
       ]
@@ -3836,7 +3836,7 @@
       "part": "french-horn",
       "technique": "stopped horn, structural only",
       "dynamic": "mp",
-      "start": 98.2,
+      "start": 110.596042,
       "events": [
         {
           "offset": 0,
@@ -3844,34 +3844,34 @@
             50,
             57
           ],
-          "duration": 0.8,
+          "duration": 0.887465,
           "velocity": 0.42
         },
         {
-          "offset": 4,
+          "offset": 4.437327,
           "pitches": [
             51,
             58
           ],
-          "duration": 0.8,
+          "duration": 0.887465,
           "velocity": 0.44
         },
         {
-          "offset": 8,
+          "offset": 8.874653,
           "pitches": [
             54,
             61
           ],
-          "duration": 0.8,
+          "duration": 0.887465,
           "velocity": 0.45
         },
         {
-          "offset": 11.5,
+          "offset": 12.757314,
           "pitches": [
             52,
             59
           ],
-          "duration": 0.7,
+          "duration": 0.776532,
           "velocity": 0.43
         }
       ]
@@ -3882,38 +3882,38 @@
       "part": "restrained-percussion",
       "technique": "controlled metallic propulsion",
       "dynamic": "mf",
-      "start": 97.8,
+      "start": 110.152309,
       "events": [
         {
           "offset": 0,
           "pitches": [
             52
           ],
-          "duration": 0.25,
+          "duration": 0.277333,
           "velocity": 0.42
         },
         {
-          "offset": 3.7,
+          "offset": 4.104527,
           "pitches": [
             59
           ],
-          "duration": 0.25,
+          "duration": 0.277333,
           "velocity": 0.44
         },
         {
-          "offset": 7.4,
+          "offset": 8.209054,
           "pitches": [
             52
           ],
-          "duration": 0.25,
+          "duration": 0.277333,
           "velocity": 0.43
         },
         {
-          "offset": 11.1,
+          "offset": 12.313581,
           "pitches": [
             59
           ],
-          "duration": 0.25,
+          "duration": 0.277333,
           "velocity": 0.45
         }
       ]
@@ -3924,14 +3924,14 @@
       "part": "restrained-percussion",
       "technique": "E/B overtone relay",
       "dynamic": "p",
-      "start": 112.35,
+      "start": 126.293085,
       "events": [
         {
           "offset": 0,
           "pitches": [
             59
           ],
-          "duration": 0.75,
+          "duration": 0.831999,
           "velocity": 0.32
         }
       ]
@@ -3942,14 +3942,14 @@
       "part": "celesta",
       "technique": "cold E/B pickup",
       "dynamic": "mp",
-      "start": 112.2,
+      "start": 126.103562,
       "events": [
         {
           "offset": 0,
           "pitches": [
             83
           ],
-          "duration": 0.3,
+          "duration": 0.349058,
           "velocity": 0.46
         }
       ]
@@ -3960,54 +3960,54 @@
       "part": "celesta",
       "technique": "glass-like oblique figure",
       "dynamic": "mf",
-      "start": 112.75,
+      "start": 126.743501,
       "events": [
         {
           "offset": 0,
           "pitches": [
             76
           ],
-          "duration": 0.4,
+          "duration": 0.465411,
           "velocity": 0.53
         },
         {
-          "offset": 0.75,
+          "offset": 0.872645,
           "pitches": [
             83
           ],
-          "duration": 0.4,
+          "duration": 0.465411,
           "velocity": 0.55
         },
         {
-          "offset": 1.5,
+          "offset": 1.74529,
           "pitches": [
             78
           ],
-          "duration": 0.65,
+          "duration": 0.756292,
           "velocity": 0.51
         },
         {
-          "offset": 2.5,
+          "offset": 2.908816,
           "pitches": [
             82
           ],
-          "duration": 0.4,
+          "duration": 0.465411,
           "velocity": 0.56
         },
         {
-          "offset": 3.25,
+          "offset": 3.781461,
           "pitches": [
             80
           ],
-          "duration": 0.65,
+          "duration": 0.756292,
           "velocity": 0.52
         },
         {
-          "offset": 4.25,
+          "offset": 4.944988,
           "pitches": [
             87
           ],
-          "duration": 0.7,
+          "duration": 0.814469,
           "velocity": 0.54
         }
       ]
@@ -4018,54 +4018,54 @@
       "part": "celesta",
       "technique": "oblique figure reflected",
       "dynamic": "mp",
-      "start": 119,
+      "start": 134.015542,
       "events": [
         {
           "offset": 0,
           "pitches": [
             87
           ],
-          "duration": 0.4,
+          "duration": 0.465411,
           "velocity": 0.48
         },
         {
-          "offset": 0.75,
+          "offset": 0.872645,
           "pitches": [
             80
           ],
-          "duration": 0.4,
+          "duration": 0.465411,
           "velocity": 0.47
         },
         {
-          "offset": 1.5,
+          "offset": 1.74529,
           "pitches": [
             82
           ],
-          "duration": 0.65,
+          "duration": 0.756292,
           "velocity": 0.49
         },
         {
-          "offset": 2.5,
+          "offset": 2.908816,
           "pitches": [
             78
           ],
-          "duration": 0.4,
+          "duration": 0.465411,
           "velocity": 0.46
         },
         {
-          "offset": 3.25,
+          "offset": 3.781461,
           "pitches": [
             83
           ],
-          "duration": 0.65,
+          "duration": 0.756292,
           "velocity": 0.5
         },
         {
-          "offset": 4.25,
+          "offset": 4.944988,
           "pitches": [
             76
           ],
-          "duration": 0.7,
+          "duration": 0.814469,
           "velocity": 0.45
         }
       ]
@@ -4076,7 +4076,7 @@
       "part": "celesta",
       "technique": "mirror planes converge",
       "dynamic": "mf",
-      "start": 125,
+      "start": 140.996701,
       "events": [
         {
           "offset": 0,
@@ -4084,43 +4084,43 @@
             76,
             83
           ],
-          "duration": 0.45,
+          "duration": 0.523587,
           "velocity": 0.5
         },
         {
-          "offset": 1.1,
+          "offset": 1.279879,
           "pitches": [
             78,
             82
           ],
-          "duration": 0.45,
+          "duration": 0.523587,
           "velocity": 0.51
         },
         {
-          "offset": 2.2,
+          "offset": 2.559758,
           "pitches": [
             80,
             87
           ],
-          "duration": 0.55,
+          "duration": 0.63994,
           "velocity": 0.52
         },
         {
-          "offset": 3.5,
+          "offset": 4.072343,
           "pitches": [
             78,
             83
           ],
-          "duration": 0.55,
+          "duration": 0.63994,
           "velocity": 0.5
         },
         {
-          "offset": 4.8,
+          "offset": 5.584927,
           "pitches": [
             76,
             82
           ],
-          "duration": 0.7,
+          "duration": 0.814469,
           "velocity": 0.48
         }
       ]
@@ -4131,54 +4131,54 @@
       "part": "violin-i",
       "technique": "flautando oblique mirror",
       "dynamic": "p",
-      "start": 114.25,
+      "start": 128.488791,
       "events": [
         {
           "offset": 0,
           "pitches": [
             88
           ],
-          "duration": 0.5,
+          "duration": 0.581763,
           "velocity": 0.38
         },
         {
-          "offset": 0.8,
+          "offset": 0.930821,
           "pitches": [
             81
           ],
-          "duration": 0.5,
+          "duration": 0.581763,
           "velocity": 0.37
         },
         {
-          "offset": 1.6,
+          "offset": 1.861642,
           "pitches": [
             86
           ],
-          "duration": 0.7,
+          "duration": 0.814469,
           "velocity": 0.39
         },
         {
-          "offset": 2.7,
+          "offset": 3.141522,
           "pitches": [
             82
           ],
-          "duration": 0.5,
+          "duration": 0.581763,
           "velocity": 0.36
         },
         {
-          "offset": 3.5,
+          "offset": 4.072343,
           "pitches": [
             84
           ],
-          "duration": 0.7,
+          "duration": 0.814469,
           "velocity": 0.38
         },
         {
-          "offset": 4.6,
+          "offset": 5.352222,
           "pitches": [
             79
           ],
-          "duration": 0.8,
+          "duration": 0.930821,
           "velocity": 0.35
         }
       ]
@@ -4189,62 +4189,62 @@
       "part": "violin-ii",
       "technique": "cold divided string plane",
       "dynamic": "pp",
-      "start": 113.5,
+      "start": 127.616146,
       "events": [
         {
           "offset": 0,
           "pitches": [
             71
           ],
-          "duration": 2,
+          "duration": 2.327053,
           "velocity": 0.24
         },
         {
-          "offset": 2.5,
+          "offset": 2.908816,
           "pitches": [
             75
           ],
-          "duration": 2,
+          "duration": 2.327053,
           "velocity": 0.25
         },
         {
-          "offset": 5,
+          "offset": 5.817633,
           "pitches": [
             73
           ],
-          "duration": 2,
+          "duration": 2.327053,
           "velocity": 0.24
         },
         {
-          "offset": 7.5,
+          "offset": 8.726449,
           "pitches": [
             78
           ],
-          "duration": 2,
+          "duration": 2.327053,
           "velocity": 0.25
         },
         {
-          "offset": 10,
+          "offset": 11.635265,
           "pitches": [
             76
           ],
-          "duration": 2,
+          "duration": 2.327053,
           "velocity": 0.24
         },
         {
-          "offset": 12.5,
+          "offset": 14.544081,
           "pitches": [
             80
           ],
-          "duration": 2,
+          "duration": 2.327053,
           "velocity": 0.25
         },
         {
-          "offset": 15,
+          "offset": 17.452898,
           "pitches": [
             74
           ],
-          "duration": 2,
+          "duration": 2.327053,
           "velocity": 0.23
         }
       ]
@@ -4255,7 +4255,7 @@
       "part": "viola",
       "technique": "sul tasto divided plane",
       "dynamic": "pp",
-      "start": 114,
+      "start": 128.197909,
       "events": [
         {
           "offset": 0,
@@ -4263,43 +4263,43 @@
             52,
             59
           ],
-          "duration": 2.2,
+          "duration": 2.559758,
           "velocity": 0.23
         },
         {
-          "offset": 3,
+          "offset": 3.49058,
           "pitches": [
             56,
             63
           ],
-          "duration": 2.2,
+          "duration": 2.559758,
           "velocity": 0.24
         },
         {
-          "offset": 6,
+          "offset": 6.981159,
           "pitches": [
             54,
             61
           ],
-          "duration": 2.2,
+          "duration": 2.559758,
           "velocity": 0.23
         },
         {
-          "offset": 9,
+          "offset": 10.471739,
           "pitches": [
             58,
             65
           ],
-          "duration": 2.2,
+          "duration": 2.559758,
           "velocity": 0.24
         },
         {
-          "offset": 12,
+          "offset": 13.962318,
           "pitches": [
             52,
             59
           ],
-          "duration": 2.5,
+          "duration": 2.908816,
           "velocity": 0.23
         }
       ]
@@ -4310,46 +4310,46 @@
       "part": "cello",
       "technique": "harmonic foundation, no vibrato",
       "dynamic": "ppp",
-      "start": 113.2,
+      "start": 127.267088,
       "events": [
         {
           "offset": 0,
           "pitches": [
             40
           ],
-          "duration": 2.5,
+          "duration": 2.908816,
           "velocity": 0.2
         },
         {
-          "offset": 3.2,
+          "offset": 3.723285,
           "pitches": [
             47
           ],
-          "duration": 2.5,
+          "duration": 2.908816,
           "velocity": 0.21
         },
         {
-          "offset": 6.4,
+          "offset": 7.44657,
           "pitches": [
             42
           ],
-          "duration": 2.5,
+          "duration": 2.908816,
           "velocity": 0.2
         },
         {
-          "offset": 9.6,
+          "offset": 11.169854,
           "pitches": [
             49
           ],
-          "duration": 2.5,
+          "duration": 2.908816,
           "velocity": 0.21
         },
         {
-          "offset": 12.8,
+          "offset": 14.893139,
           "pitches": [
             38
           ],
-          "duration": 2.8,
+          "duration": 3.257874,
           "velocity": 0.2
         }
       ]
@@ -4360,7 +4360,7 @@
       "part": "choir-aahs",
       "technique": "aah only, chamber choir",
       "dynamic": "ppp",
-      "start": 113.2,
+      "start": 127.267088,
       "events": [
         {
           "offset": 0,
@@ -4368,54 +4368,54 @@
             64,
             71
           ],
-          "duration": 2.5,
+          "duration": 2.908816,
           "velocity": 0.19
         },
         {
-          "offset": 3,
+          "offset": 3.49058,
           "pitches": [
             68,
             75
           ],
-          "duration": 2.5,
+          "duration": 2.908816,
           "velocity": 0.2
         },
         {
-          "offset": 6,
+          "offset": 6.981159,
           "pitches": [
             66,
             73
           ],
-          "duration": 2.5,
+          "duration": 2.908816,
           "velocity": 0.19
         },
         {
-          "offset": 9,
+          "offset": 10.471739,
           "pitches": [
             70,
             77
           ],
-          "duration": 2.5,
+          "duration": 2.908816,
           "velocity": 0.2
         },
         {
-          "offset": 12,
+          "offset": 13.962318,
           "pitches": [
             64,
             71,
             78
           ],
-          "duration": 2.8,
+          "duration": 3.257874,
           "velocity": 0.2
         },
         {
-          "offset": 15.2,
+          "offset": 17.685603,
           "pitches": [
             62,
             69,
             76
           ],
-          "duration": 2.5,
+          "duration": 2.908816,
           "velocity": 0.19
         }
       ]
@@ -4426,7 +4426,7 @@
       "part": "choir-aahs",
       "technique": "brief D/A boundary plane",
       "dynamic": "pp",
-      "start": 131.1,
+      "start": 148.094213,
       "events": [
         {
           "offset": 0,
@@ -4434,7 +4434,7 @@
             62,
             69
           ],
-          "duration": 0.6,
+          "duration": 0.698116,
           "velocity": 0.22
         }
       ]
@@ -4445,30 +4445,30 @@
       "part": "restrained-percussion",
       "technique": "three discrete glass points",
       "dynamic": "pp",
-      "start": 113.2,
+      "start": 127.267088,
       "events": [
         {
           "offset": 0,
           "pitches": [
             81
           ],
-          "duration": 0.2,
+          "duration": 0.232705,
           "velocity": 0.25
         },
         {
-          "offset": 7,
+          "offset": 8.144686,
           "pitches": [
             59
           ],
-          "duration": 0.2,
+          "duration": 0.232705,
           "velocity": 0.24
         },
         {
-          "offset": 14,
+          "offset": 16.289371,
           "pitches": [
             81
           ],
-          "duration": 0.2,
+          "duration": 0.232705,
           "velocity": 0.25
         }
       ]
@@ -4479,7 +4479,7 @@
       "part": "french-horn",
       "technique": "bright anacrusis, niente to mp",
       "dynamic": "mp",
-      "start": 130.9,
+      "start": 147.903431,
       "events": [
         {
           "offset": 0,
@@ -4487,7 +4487,7 @@
             54,
             61
           ],
-          "duration": 0.7,
+          "duration": 0.75333,
           "velocity": 0.46
         }
       ]
@@ -4498,86 +4498,86 @@
       "part": "piano",
       "technique": "broad D-major melody, forward",
       "dynamic": "mf",
-      "start": 131.5,
+      "start": 148.549142,
       "events": [
         {
           "offset": 0,
           "pitches": [
             62
           ],
-          "duration": 0.5,
+          "duration": 0.538093,
           "velocity": 0.58
         },
         {
-          "offset": 0.75,
+          "offset": 0.80714,
           "pitches": [
             64
           ],
-          "duration": 0.5,
+          "duration": 0.538093,
           "velocity": 0.59
         },
         {
-          "offset": 1.5,
+          "offset": 1.61428,
           "pitches": [
             66
           ],
-          "duration": 0.75,
+          "duration": 0.80714,
           "velocity": 0.62
         },
         {
-          "offset": 2.5,
+          "offset": 2.690466,
           "pitches": [
             69
           ],
-          "duration": 0.75,
+          "duration": 0.80714,
           "velocity": 0.64
         },
         {
-          "offset": 3.5,
+          "offset": 3.766652,
           "pitches": [
             67
           ],
-          "duration": 0.5,
+          "duration": 0.538093,
           "velocity": 0.6
         },
         {
-          "offset": 4.25,
+          "offset": 4.573792,
           "pitches": [
             71
           ],
-          "duration": 0.5,
+          "duration": 0.538093,
           "velocity": 0.63
         },
         {
-          "offset": 5,
+          "offset": 5.380932,
           "pitches": [
             69
           ],
-          "duration": 0.75,
+          "duration": 0.80714,
           "velocity": 0.61
         },
         {
-          "offset": 6,
+          "offset": 6.457118,
           "pitches": [
             66
           ],
-          "duration": 0.5,
+          "duration": 0.538093,
           "velocity": 0.59
         },
         {
-          "offset": 6.75,
+          "offset": 7.264258,
           "pitches": [
             76
           ],
-          "duration": 0.75,
+          "duration": 0.80714,
           "velocity": 0.65
         },
         {
-          "offset": 7.75,
+          "offset": 8.340445,
           "pitches": [
             74
           ],
-          "duration": 1.25,
+          "duration": 1.345233,
           "velocity": 0.63
         }
       ]
@@ -4588,7 +4588,7 @@
       "part": "piano",
       "technique": "melody broadened in chords",
       "dynamic": "f",
-      "start": 141.5,
+      "start": 159.311007,
       "events": [
         {
           "offset": 0,
@@ -4597,57 +4597,57 @@
             62,
             69
           ],
-          "duration": 0.8,
+          "duration": 0.860949,
           "velocity": 0.64
         },
         {
-          "offset": 1.25,
+          "offset": 1.345233,
           "pitches": [
             55,
             64,
             71
           ],
-          "duration": 0.8,
+          "duration": 0.860949,
           "velocity": 0.65
         },
         {
-          "offset": 2.5,
+          "offset": 2.690466,
           "pitches": [
             57,
             66,
             74
           ],
-          "duration": 1,
+          "duration": 1.076186,
           "velocity": 0.68
         },
         {
-          "offset": 4,
+          "offset": 4.304746,
           "pitches": [
             59,
             67,
             76
           ],
-          "duration": 0.8,
+          "duration": 0.860949,
           "velocity": 0.67
         },
         {
-          "offset": 5.25,
+          "offset": 5.649979,
           "pitches": [
             61,
             69,
             78
           ],
-          "duration": 0.8,
+          "duration": 0.860949,
           "velocity": 0.68
         },
         {
-          "offset": 6.5,
+          "offset": 6.995212,
           "pitches": [
             62,
             71,
             81
           ],
-          "duration": 1.4,
+          "duration": 1.506661,
           "velocity": 0.7
         }
       ]
@@ -4658,7 +4658,7 @@
       "part": "piano",
       "technique": "bright release, not final cadence",
       "dynamic": "mf",
-      "start": 150.5,
+      "start": 168.996684,
       "events": [
         {
           "offset": 0,
@@ -4667,37 +4667,37 @@
             69,
             76
           ],
-          "duration": 0.8,
+          "duration": 0.860949,
           "velocity": 0.57
         },
         {
-          "offset": 1.2,
+          "offset": 1.291424,
           "pitches": [
             62,
             67,
             74
           ],
-          "duration": 0.8,
+          "duration": 0.860949,
           "velocity": 0.56
         },
         {
-          "offset": 2.4,
+          "offset": 2.582847,
           "pitches": [
             61,
             66,
             73
           ],
-          "duration": 0.8,
+          "duration": 0.860949,
           "velocity": 0.55
         },
         {
-          "offset": 3.8,
+          "offset": 4.089508,
           "pitches": [
             62,
             66,
             69
           ],
-          "duration": 1.2,
+          "duration": 1.291424,
           "velocity": 0.58
         }
       ]
@@ -4708,54 +4708,54 @@
       "part": "celesta",
       "technique": "high horizon glints",
       "dynamic": "p",
-      "start": 133,
+      "start": 150.163422,
       "events": [
         {
           "offset": 0,
           "pitches": [
             90
           ],
-          "duration": 0.3,
+          "duration": 0.322856,
           "velocity": 0.34
         },
         {
-          "offset": 3.5,
+          "offset": 3.766652,
           "pitches": [
             93
           ],
-          "duration": 0.3,
+          "duration": 0.322856,
           "velocity": 0.35
         },
         {
-          "offset": 7,
+          "offset": 7.533305,
           "pitches": [
             88
           ],
-          "duration": 0.35,
+          "duration": 0.376665,
           "velocity": 0.34
         },
         {
-          "offset": 10.5,
+          "offset": 11.299957,
           "pitches": [
             95
           ],
-          "duration": 0.35,
+          "duration": 0.376665,
           "velocity": 0.36
         },
         {
-          "offset": 14,
+          "offset": 15.06661,
           "pitches": [
             90
           ],
-          "duration": 0.4,
+          "duration": 0.430475,
           "velocity": 0.34
         },
         {
-          "offset": 18,
+          "offset": 19.371355,
           "pitches": [
             93
           ],
-          "duration": 0.4,
+          "duration": 0.430475,
           "velocity": 0.35
         }
       ]
@@ -4766,94 +4766,94 @@
       "part": "violin-i",
       "technique": "cantabile, broad not plaintive",
       "dynamic": "mf",
-      "start": 132,
+      "start": 149.087236,
       "events": [
         {
           "offset": 0,
           "pitches": [
             74
           ],
-          "duration": 1.5,
+          "duration": 1.61428,
           "velocity": 0.5
         },
         {
-          "offset": 2,
+          "offset": 2.152373,
           "pitches": [
             78
           ],
-          "duration": 1.5,
+          "duration": 1.61428,
           "velocity": 0.52
         },
         {
-          "offset": 4,
+          "offset": 4.304746,
           "pitches": [
             76
           ],
-          "duration": 1.5,
+          "duration": 1.61428,
           "velocity": 0.51
         },
         {
-          "offset": 6,
+          "offset": 6.457118,
           "pitches": [
             81
           ],
-          "duration": 1.5,
+          "duration": 1.61428,
           "velocity": 0.54
         },
         {
-          "offset": 8,
+          "offset": 8.609491,
           "pitches": [
             79
           ],
-          "duration": 1.5,
+          "duration": 1.61428,
           "velocity": 0.53
         },
         {
-          "offset": 10,
+          "offset": 10.761864,
           "pitches": [
             83
           ],
-          "duration": 1.5,
+          "duration": 1.61428,
           "velocity": 0.56
         },
         {
-          "offset": 12,
+          "offset": 12.914237,
           "pitches": [
             81
           ],
-          "duration": 1.5,
+          "duration": 1.61428,
           "velocity": 0.55
         },
         {
-          "offset": 14,
+          "offset": 15.06661,
           "pitches": [
             86
           ],
-          "duration": 1.5,
+          "duration": 1.61428,
           "velocity": 0.58
         },
         {
-          "offset": 16,
+          "offset": 17.218983,
           "pitches": [
             83
           ],
-          "duration": 1.5,
+          "duration": 1.61428,
           "velocity": 0.56
         },
         {
-          "offset": 18,
+          "offset": 19.371355,
           "pitches": [
             90
           ],
-          "duration": 1.8,
+          "duration": 1.937136,
           "velocity": 0.59
         },
         {
-          "offset": 21,
+          "offset": 22.599915,
           "pitches": [
             86
           ],
-          "duration": 1.5,
+          "duration": 1.61428,
           "velocity": 0.55
         }
       ]
@@ -4864,7 +4864,7 @@
       "part": "violin-i",
       "technique": "D/A crest relay",
       "dynamic": "mp",
-      "start": 156,
+      "start": 174.91571,
       "events": [
         {
           "offset": 0,
@@ -4872,7 +4872,7 @@
             74,
             81
           ],
-          "duration": 0.6,
+          "duration": 0.645712,
           "velocity": 0.45
         }
       ]
@@ -4883,86 +4883,86 @@
       "part": "violin-ii",
       "technique": "broad inner counterline",
       "dynamic": "mp",
-      "start": 134,
+      "start": 151.239608,
       "events": [
         {
           "offset": 0,
           "pitches": [
             69
           ],
-          "duration": 1.5,
+          "duration": 1.61428,
           "velocity": 0.42
         },
         {
-          "offset": 2,
+          "offset": 2.152373,
           "pitches": [
             71
           ],
-          "duration": 1.5,
+          "duration": 1.61428,
           "velocity": 0.43
         },
         {
-          "offset": 4,
+          "offset": 4.304746,
           "pitches": [
             74
           ],
-          "duration": 1.5,
+          "duration": 1.61428,
           "velocity": 0.45
         },
         {
-          "offset": 6,
+          "offset": 6.457118,
           "pitches": [
             73
           ],
-          "duration": 1.5,
+          "duration": 1.61428,
           "velocity": 0.43
         },
         {
-          "offset": 8,
+          "offset": 8.609491,
           "pitches": [
             76
           ],
-          "duration": 1.5,
+          "duration": 1.61428,
           "velocity": 0.46
         },
         {
-          "offset": 10,
+          "offset": 10.761864,
           "pitches": [
             74
           ],
-          "duration": 1.5,
+          "duration": 1.61428,
           "velocity": 0.44
         },
         {
-          "offset": 12,
+          "offset": 12.914237,
           "pitches": [
             78
           ],
-          "duration": 1.5,
+          "duration": 1.61428,
           "velocity": 0.47
         },
         {
-          "offset": 14,
+          "offset": 15.06661,
           "pitches": [
             76
           ],
-          "duration": 1.5,
+          "duration": 1.61428,
           "velocity": 0.45
         },
         {
-          "offset": 16,
+          "offset": 17.218983,
           "pitches": [
             81
           ],
-          "duration": 1.8,
+          "duration": 1.937136,
           "velocity": 0.48
         },
         {
-          "offset": 19,
+          "offset": 20.447542,
           "pitches": [
             78
           ],
-          "duration": 1.5,
+          "duration": 1.61428,
           "velocity": 0.45
         }
       ]
@@ -4973,7 +4973,7 @@
       "part": "viola",
       "technique": "open inner motion",
       "dynamic": "mp",
-      "start": 133.5,
+      "start": 150.701515,
       "events": [
         {
           "offset": 0,
@@ -4981,79 +4981,79 @@
             54,
             61
           ],
-          "duration": 1.5,
+          "duration": 1.61428,
           "velocity": 0.39
         },
         {
-          "offset": 2.2,
+          "offset": 2.36761,
           "pitches": [
             55,
             62
           ],
-          "duration": 1.5,
+          "duration": 1.61428,
           "velocity": 0.4
         },
         {
-          "offset": 4.4,
+          "offset": 4.73522,
           "pitches": [
             57,
             64
           ],
-          "duration": 1.5,
+          "duration": 1.61428,
           "velocity": 0.41
         },
         {
-          "offset": 6.6,
+          "offset": 7.10283,
           "pitches": [
             59,
             66
           ],
-          "duration": 1.5,
+          "duration": 1.61428,
           "velocity": 0.42
         },
         {
-          "offset": 8.8,
+          "offset": 9.47044,
           "pitches": [
             61,
             68
           ],
-          "duration": 1.5,
+          "duration": 1.61428,
           "velocity": 0.43
         },
         {
-          "offset": 11,
+          "offset": 11.838051,
           "pitches": [
             62,
             69
           ],
-          "duration": 1.5,
+          "duration": 1.61428,
           "velocity": 0.44
         },
         {
-          "offset": 13.2,
+          "offset": 14.205661,
           "pitches": [
             64,
             71
           ],
-          "duration": 1.5,
+          "duration": 1.61428,
           "velocity": 0.45
         },
         {
-          "offset": 15.4,
+          "offset": 16.573271,
           "pitches": [
             62,
             69
           ],
-          "duration": 1.8,
+          "duration": 1.937136,
           "velocity": 0.43
         },
         {
-          "offset": 18.2,
+          "offset": 19.586593,
           "pitches": [
             57,
             66
           ],
-          "duration": 2,
+          "duration": 2.152373,
           "velocity": 0.42
         }
       ]
@@ -5064,7 +5064,7 @@
       "part": "cello",
       "technique": "arco foundation, measured swells",
       "dynamic": "mp",
-      "start": 132.5,
+      "start": 149.625329,
       "playback": {
         "pizzicato": false
       },
@@ -5074,71 +5074,71 @@
           "pitches": [
             38
           ],
-          "duration": 2,
+          "duration": 2.152373,
           "velocity": 0.4
         },
         {
-          "offset": 2.5,
+          "offset": 2.690466,
           "pitches": [
             42
           ],
-          "duration": 2,
+          "duration": 2.152373,
           "velocity": 0.41
         },
         {
-          "offset": 5,
+          "offset": 5.380932,
           "pitches": [
             43
           ],
-          "duration": 2,
+          "duration": 2.152373,
           "velocity": 0.42
         },
         {
-          "offset": 7.5,
+          "offset": 8.071398,
           "pitches": [
             45
           ],
-          "duration": 2,
+          "duration": 2.152373,
           "velocity": 0.43
         },
         {
-          "offset": 10,
+          "offset": 10.761864,
           "pitches": [
             47
           ],
-          "duration": 2,
+          "duration": 2.152373,
           "velocity": 0.44
         },
         {
-          "offset": 12.5,
+          "offset": 13.45233,
           "pitches": [
             50
           ],
-          "duration": 2,
+          "duration": 2.152373,
           "velocity": 0.45
         },
         {
-          "offset": 15,
+          "offset": 16.142796,
           "pitches": [
             45
           ],
-          "duration": 2,
+          "duration": 2.152373,
           "velocity": 0.43
         },
         {
-          "offset": 17.5,
+          "offset": 18.833262,
           "pitches": [
             50
           ],
-          "duration": 2.5,
+          "duration": 2.690466,
           "velocity": 0.45
         },
         {
-          "offset": 20.5,
+          "offset": 22.061821,
           "pitches": [
             38
           ],
-          "duration": 2.5,
+          "duration": 2.690466,
           "velocity": 0.44
         }
       ]
@@ -5149,7 +5149,7 @@
       "part": "double-bass",
       "technique": "arco, broad bright foundation",
       "dynamic": "mp",
-      "start": 132,
+      "start": 149.087236,
       "playback": {
         "pizzicato": false
       },
@@ -5159,63 +5159,63 @@
           "pitches": [
             38
           ],
-          "duration": 2.2,
+          "duration": 2.36761,
           "velocity": 0.38
         },
         {
-          "offset": 3,
+          "offset": 3.228559,
           "pitches": [
             33
           ],
-          "duration": 2.2,
+          "duration": 2.36761,
           "velocity": 0.39
         },
         {
-          "offset": 6,
+          "offset": 6.457118,
           "pitches": [
             35
           ],
-          "duration": 2.2,
+          "duration": 2.36761,
           "velocity": 0.4
         },
         {
-          "offset": 9,
+          "offset": 9.685678,
           "pitches": [
             37
           ],
-          "duration": 2.2,
+          "duration": 2.36761,
           "velocity": 0.41
         },
         {
-          "offset": 12,
+          "offset": 12.914237,
           "pitches": [
             38
           ],
-          "duration": 2.2,
+          "duration": 2.36761,
           "velocity": 0.42
         },
         {
-          "offset": 15,
+          "offset": 16.142796,
           "pitches": [
             33
           ],
-          "duration": 2.2,
+          "duration": 2.36761,
           "velocity": 0.41
         },
         {
-          "offset": 18,
+          "offset": 19.371355,
           "pitches": [
             38
           ],
-          "duration": 2.8,
+          "duration": 3.013322,
           "velocity": 0.43
         },
         {
-          "offset": 22,
+          "offset": 23.676101,
           "pitches": [
             38
           ],
-          "duration": 1.8,
+          "duration": 1.937136,
           "velocity": 0.42
         }
       ]
@@ -5226,78 +5226,78 @@
       "part": "french-horn",
       "technique": "noble and restrained",
       "dynamic": "mf",
-      "start": 132.5,
+      "start": 149.625329,
       "events": [
         {
           "offset": 0,
           "pitches": [
             62
           ],
-          "duration": 1.5,
+          "duration": 1.61428,
           "velocity": 0.52
         },
         {
-          "offset": 2.25,
+          "offset": 2.421419,
           "pitches": [
             66
           ],
-          "duration": 1.25,
+          "duration": 1.345233,
           "velocity": 0.54
         },
         {
-          "offset": 4.25,
+          "offset": 4.573792,
           "pitches": [
             69
           ],
-          "duration": 1.5,
+          "duration": 1.61428,
           "velocity": 0.56
         },
         {
-          "offset": 6.5,
+          "offset": 6.995212,
           "pitches": [
             67
           ],
-          "duration": 1.25,
+          "duration": 1.345233,
           "velocity": 0.53
         },
         {
-          "offset": 8.5,
+          "offset": 9.147585,
           "pitches": [
             71
           ],
-          "duration": 1.5,
+          "duration": 1.61428,
           "velocity": 0.57
         },
         {
-          "offset": 11,
+          "offset": 11.838051,
           "pitches": [
             69
           ],
-          "duration": 1.5,
+          "duration": 1.61428,
           "velocity": 0.55
         },
         {
-          "offset": 13.5,
+          "offset": 14.528517,
           "pitches": [
             74
           ],
-          "duration": 1.75,
+          "duration": 1.883326,
           "velocity": 0.59
         },
         {
-          "offset": 16.5,
+          "offset": 17.757076,
           "pitches": [
             71
           ],
-          "duration": 1.5,
+          "duration": 1.61428,
           "velocity": 0.56
         },
         {
-          "offset": 19.5,
+          "offset": 20.985635,
           "pitches": [
             74
           ],
-          "duration": 2,
+          "duration": 2.152373,
           "velocity": 0.58
         }
       ]
@@ -5308,70 +5308,70 @@
       "part": "bass-clarinet",
       "technique": "warm middle counterline",
       "dynamic": "mp",
-      "start": 143,
+      "start": 160.925286,
       "events": [
         {
           "offset": 0,
           "pitches": [
             50
           ],
-          "duration": 0.7,
+          "duration": 0.75333,
           "velocity": 0.41
         },
         {
-          "offset": 1,
+          "offset": 1.076186,
           "pitches": [
             54
           ],
-          "duration": 0.7,
+          "duration": 0.75333,
           "velocity": 0.43
         },
         {
-          "offset": 2,
+          "offset": 2.152373,
           "pitches": [
             52
           ],
-          "duration": 0.7,
+          "duration": 0.75333,
           "velocity": 0.42
         },
         {
-          "offset": 3,
+          "offset": 3.228559,
           "pitches": [
             57
           ],
-          "duration": 0.7,
+          "duration": 0.75333,
           "velocity": 0.44
         },
         {
-          "offset": 4,
+          "offset": 4.304746,
           "pitches": [
             55
           ],
-          "duration": 0.7,
+          "duration": 0.75333,
           "velocity": 0.43
         },
         {
-          "offset": 5,
+          "offset": 5.380932,
           "pitches": [
             59
           ],
-          "duration": 0.7,
+          "duration": 0.75333,
           "velocity": 0.45
         },
         {
-          "offset": 6,
+          "offset": 6.457118,
           "pitches": [
             57
           ],
-          "duration": 0.7,
+          "duration": 0.75333,
           "velocity": 0.43
         },
         {
-          "offset": 7,
+          "offset": 7.533305,
           "pitches": [
             62
           ],
-          "duration": 1.2,
+          "duration": 1.291424,
           "velocity": 0.46
         }
       ]
@@ -5382,7 +5382,7 @@
       "part": "choir-aahs",
       "technique": "aah only, bright and light",
       "dynamic": "p",
-      "start": 139,
+      "start": 156.62054,
       "events": [
         {
           "offset": 0,
@@ -5390,53 +5390,53 @@
             62,
             69
           ],
-          "duration": 2.2,
+          "duration": 2.36761,
           "velocity": 0.27
         },
         {
-          "offset": 3,
+          "offset": 3.228559,
           "pitches": [
             64,
             71
           ],
-          "duration": 2.2,
+          "duration": 2.36761,
           "velocity": 0.28
         },
         {
-          "offset": 6,
+          "offset": 6.457118,
           "pitches": [
             66,
             73
           ],
-          "duration": 2.2,
+          "duration": 2.36761,
           "velocity": 0.29
         },
         {
-          "offset": 9,
+          "offset": 9.685678,
           "pitches": [
             69,
             76
           ],
-          "duration": 2.2,
+          "duration": 2.36761,
           "velocity": 0.3
         },
         {
-          "offset": 12,
+          "offset": 12.914237,
           "pitches": [
             71,
             78
           ],
-          "duration": 2.2,
+          "duration": 2.36761,
           "velocity": 0.31
         },
         {
-          "offset": 15,
+          "offset": 16.142796,
           "pitches": [
             69,
             74,
             81
           ],
-          "duration": 2.8,
+          "duration": 3.013322,
           "velocity": 0.32
         }
       ]
@@ -5447,38 +5447,38 @@
       "part": "restrained-percussion",
       "technique": "four restrained culmination marks",
       "dynamic": "mp",
-      "start": 137,
+      "start": 154.468168,
       "events": [
         {
           "offset": 0,
           "pitches": [
             52
           ],
-          "duration": 0.25,
+          "duration": 0.269047,
           "velocity": 0.34
         },
         {
-          "offset": 5,
+          "offset": 5.380932,
           "pitches": [
             59
           ],
-          "duration": 0.3,
+          "duration": 0.322856,
           "velocity": 0.36
         },
         {
-          "offset": 10,
+          "offset": 10.761864,
           "pitches": [
             36
           ],
-          "duration": 0.35,
+          "duration": 0.376665,
           "velocity": 0.38
         },
         {
-          "offset": 15,
+          "offset": 16.142796,
           "pitches": [
             59
           ],
-          "duration": 0.35,
+          "duration": 0.376665,
           "velocity": 0.37
         }
       ]
@@ -5489,7 +5489,7 @@
       "part": "celesta",
       "technique": "mosaic pickup from Sphere",
       "dynamic": "mp",
-      "start": 155.8,
+      "start": 174.738667,
       "events": [
         {
           "offset": 0,
@@ -5507,7 +5507,7 @@
       "part": "celesta",
       "technique": "quick crystalline fragments",
       "dynamic": "mp",
-      "start": 156.6,
+      "start": 175.538667,
       "events": [
         {
           "offset": 0,
@@ -5581,7 +5581,7 @@
       "part": "piano",
       "technique": "short dry fragments",
       "dynamic": "mp",
-      "start": 157,
+      "start": 175.938667,
       "events": [
         {
           "offset": 0,
@@ -5627,7 +5627,7 @@
       "part": "violin-ii",
       "technique": "quick timbral relay",
       "dynamic": "p",
-      "start": 156.8,
+      "start": 175.738667,
       "events": [
         {
           "offset": 0,
@@ -5677,7 +5677,7 @@
       "part": "viola",
       "technique": "A/E relay into outro",
       "dynamic": "p",
-      "start": 162.9,
+      "start": 181.838667,
       "events": [
         {
           "offset": 0,
@@ -5696,22 +5696,22 @@
       "part": "piano",
       "technique": "final D-major anacrusis",
       "dynamic": "mp",
-      "start": 162.9,
+      "start": 181.544885,
       "events": [
         {
           "offset": 0,
           "pitches": [
             57
           ],
-          "duration": 0.25,
+          "duration": 0.433004,
           "velocity": 0.45
         },
         {
-          "offset": 0.35,
+          "offset": 0.606205,
           "pitches": [
             61
           ],
-          "duration": 0.25,
+          "duration": 0.433004,
           "velocity": 0.47
         }
       ]
@@ -5722,94 +5722,94 @@
       "part": "piano",
       "technique": "warm, clear closing paragraph",
       "dynamic": "mf",
-      "start": 163.8,
+      "start": 183.103699,
       "events": [
         {
           "offset": 0,
           "pitches": [
             62
           ],
-          "duration": 0.5,
+          "duration": 0.866008,
           "velocity": 0.55
         },
         {
-          "offset": 0.75,
+          "offset": 1.299011,
           "pitches": [
             66
           ],
-          "duration": 0.5,
+          "duration": 0.866008,
           "velocity": 0.57
         },
         {
-          "offset": 1.5,
+          "offset": 2.598023,
           "pitches": [
             64
           ],
-          "duration": 0.6,
+          "duration": 1.039209,
           "velocity": 0.54
         },
         {
-          "offset": 2.5,
+          "offset": 4.330038,
           "pitches": [
             69
           ],
-          "duration": 0.6,
+          "duration": 1.039209,
           "velocity": 0.59
         },
         {
-          "offset": 3.5,
+          "offset": 6.062053,
           "pitches": [
             71
           ],
-          "duration": 0.6,
+          "duration": 1.039209,
           "velocity": 0.6
         },
         {
-          "offset": 4.5,
+          "offset": 7.794069,
           "pitches": [
             74
           ],
-          "duration": 1.2,
+          "duration": 2.078418,
           "velocity": 0.61
         },
         {
-          "offset": 6.4,
+          "offset": 11.084898,
           "pitches": [
             71
           ],
-          "duration": 0.5,
+          "duration": 0.866008,
           "velocity": 0.55
         },
         {
-          "offset": 7.2,
+          "offset": 12.47051,
           "pitches": [
             69
           ],
-          "duration": 0.5,
+          "duration": 0.866008,
           "velocity": 0.54
         },
         {
-          "offset": 8,
+          "offset": 13.856122,
           "pitches": [
             66
           ],
-          "duration": 0.7,
+          "duration": 1.212411,
           "velocity": 0.56
         },
         {
-          "offset": 9,
+          "offset": 15.588137,
           "pitches": [
             64
           ],
-          "duration": 0.7,
+          "duration": 1.212411,
           "velocity": 0.53
         },
         {
-          "offset": 10.2,
+          "offset": 17.666556,
           "pitches": [
             62
           ],
-          "duration": 1.2,
+          "duration": 2.078418,
           "velocity": 0.55
         }
       ]
@@ -5820,7 +5820,7 @@
       "part": "piano",
       "technique": "D6/9, luminous and still",
       "dynamic": "mf",
-      "start": 177.2,
+      "start": 206.312703,
       "events": [
         {
           "offset": 0,
@@ -5832,7 +5832,7 @@
             59,
             64
           ],
-          "duration": 3.1,
+          "duration": 5.369247,
           "velocity": 0.57
         }
       ]
@@ -5843,64 +5843,64 @@
       "part": "french-horn",
       "technique": "restrained broad answer",
       "dynamic": "mp",
-      "start": 164.4,
+      "start": 184.142908,
       "events": [
         {
           "offset": 0,
           "pitches": [
             54
           ],
-          "duration": 1.2,
+          "duration": 2.078418,
           "velocity": 0.43
         },
         {
-          "offset": 2,
+          "offset": 3.46403,
           "pitches": [
             57
           ],
-          "duration": 1.2,
+          "duration": 2.078418,
           "velocity": 0.45
         },
         {
-          "offset": 4,
+          "offset": 6.928061,
           "pitches": [
             61
           ],
-          "duration": 1.2,
+          "duration": 2.078418,
           "velocity": 0.46
         },
         {
-          "offset": 6,
+          "offset": 10.392091,
           "pitches": [
             59
           ],
-          "duration": 1.2,
+          "duration": 2.078418,
           "velocity": 0.44
         },
         {
-          "offset": 8,
+          "offset": 13.856122,
           "pitches": [
             62
           ],
-          "duration": 1.5,
+          "duration": 2.598023,
           "velocity": 0.47
         },
         {
-          "offset": 10.5,
+          "offset": 18.18616,
           "pitches": [
             54,
             61
           ],
-          "duration": 2,
+          "duration": 3.46403,
           "velocity": 0.45
         },
         {
-          "offset": 12.8,
+          "offset": 22.169795,
           "pitches": [
             54,
             61
           ],
-          "duration": 3.1,
+          "duration": 5.369247,
           "velocity": 0.42
         }
       ]
@@ -5911,7 +5911,7 @@
       "part": "choir-aahs",
       "technique": "aah only, warm halo",
       "dynamic": "pp",
-      "start": 164,
+      "start": 183.450102,
       "events": [
         {
           "offset": 0,
@@ -5919,53 +5919,53 @@
             62,
             69
           ],
-          "duration": 2,
+          "duration": 3.46403,
           "velocity": 0.25
         },
         {
-          "offset": 2.6,
+          "offset": 4.50324,
           "pitches": [
             64,
             71
           ],
-          "duration": 2,
+          "duration": 3.46403,
           "velocity": 0.26
         },
         {
-          "offset": 5.2,
+          "offset": 9.006479,
           "pitches": [
             66,
             73
           ],
-          "duration": 2,
+          "duration": 3.46403,
           "velocity": 0.27
         },
         {
-          "offset": 7.8,
+          "offset": 13.509719,
           "pitches": [
             69,
             76
           ],
-          "duration": 2,
+          "duration": 3.46403,
           "velocity": 0.28
         },
         {
-          "offset": 10.4,
+          "offset": 18.012959,
           "pitches": [
             66,
             71
           ],
-          "duration": 2,
+          "duration": 3.46403,
           "velocity": 0.27
         },
         {
-          "offset": 13.2,
+          "offset": 22.862601,
           "pitches": [
             62,
             66,
             71
           ],
-          "duration": 3.1,
+          "duration": 5.369247,
           "velocity": 0.26
         }
       ]
@@ -5976,63 +5976,63 @@
       "part": "violin-i",
       "technique": "dolce, broad release",
       "dynamic": "p",
-      "start": 164.2,
+      "start": 183.796505,
       "events": [
         {
           "offset": 0,
           "pitches": [
             74
           ],
-          "duration": 1.3,
+          "duration": 2.25162,
           "velocity": 0.36
         },
         {
-          "offset": 2,
+          "offset": 3.46403,
           "pitches": [
             78
           ],
-          "duration": 1.3,
+          "duration": 2.25162,
           "velocity": 0.38
         },
         {
-          "offset": 4,
+          "offset": 6.928061,
           "pitches": [
             76
           ],
-          "duration": 1.3,
+          "duration": 2.25162,
           "velocity": 0.37
         },
         {
-          "offset": 6,
+          "offset": 10.392091,
           "pitches": [
             81
           ],
-          "duration": 1.3,
+          "duration": 2.25162,
           "velocity": 0.39
         },
         {
-          "offset": 8,
+          "offset": 13.856122,
           "pitches": [
             78
           ],
-          "duration": 1.5,
+          "duration": 2.598023,
           "velocity": 0.37
         },
         {
-          "offset": 10.5,
+          "offset": 18.18616,
           "pitches": [
             74
           ],
-          "duration": 2,
+          "duration": 3.46403,
           "velocity": 0.36
         },
         {
-          "offset": 13,
+          "offset": 22.516198,
           "pitches": [
             74,
             81
           ],
-          "duration": 3.1,
+          "duration": 5.369247,
           "velocity": 0.35
         }
       ]
@@ -6043,55 +6043,55 @@
       "part": "violin-ii",
       "technique": "sul tasto closing support",
       "dynamic": "pp",
-      "start": 164.5,
+      "start": 184.31611,
       "events": [
         {
           "offset": 0,
           "pitches": [
             69
           ],
-          "duration": 1.8,
+          "duration": 3.117627,
           "velocity": 0.3
         },
         {
-          "offset": 2.5,
+          "offset": 4.330038,
           "pitches": [
             71
           ],
-          "duration": 1.8,
+          "duration": 3.117627,
           "velocity": 0.31
         },
         {
-          "offset": 5,
+          "offset": 8.660076,
           "pitches": [
             73
           ],
-          "duration": 1.8,
+          "duration": 3.117627,
           "velocity": 0.32
         },
         {
-          "offset": 7.5,
+          "offset": 12.990114,
           "pitches": [
             76
           ],
-          "duration": 1.8,
+          "duration": 3.117627,
           "velocity": 0.33
         },
         {
-          "offset": 10,
+          "offset": 17.320152,
           "pitches": [
             71
           ],
-          "duration": 2,
+          "duration": 3.46403,
           "velocity": 0.31
         },
         {
-          "offset": 12.7,
+          "offset": 21.996594,
           "pitches": [
             69,
             78
           ],
-          "duration": 3.1,
+          "duration": 5.369247,
           "velocity": 0.3
         }
       ]
@@ -6102,7 +6102,7 @@
       "part": "double-bass",
       "technique": "arco, natural decay",
       "dynamic": "p",
-      "start": 164,
+      "start": 183.450102,
       "playback": {
         "pizzicato": false
       },
@@ -6112,42 +6112,173 @@
           "pitches": [
             38
           ],
-          "duration": 2,
+          "duration": 3.46403,
           "velocity": 0.34
         },
         {
-          "offset": 3,
+          "offset": 5.196046,
           "pitches": [
             33
           ],
-          "duration": 2,
+          "duration": 3.46403,
           "velocity": 0.34
         },
         {
-          "offset": 6,
+          "offset": 10.392091,
           "pitches": [
             35
           ],
-          "duration": 2,
+          "duration": 3.46403,
           "velocity": 0.35
         },
         {
-          "offset": 9,
+          "offset": 15.588137,
           "pitches": [
             38
           ],
-          "duration": 2.5,
+          "duration": 4.330038,
           "velocity": 0.36
         },
         {
-          "offset": 13.2,
+          "offset": 22.862601,
           "pitches": [
             38
           ],
-          "duration": 3.1,
+          "duration": 5.369247,
           "velocity": 0.35
         }
       ]
     }
-  ]
+  ],
+  "retiming": {
+    "schemaVersion": 1,
+    "sourceFormSections": [
+      {
+        "id": "intro",
+        "start": 0,
+        "end": 21.502667
+      },
+      {
+        "id": "plane",
+        "start": 21.502667,
+        "end": 37.762667
+      },
+      {
+        "id": "cylinder",
+        "start": 37.762667,
+        "end": 56.601334
+      },
+      {
+        "id": "torus",
+        "start": 56.601334,
+        "end": 75.781334
+      },
+      {
+        "id": "mobius",
+        "start": 75.781334,
+        "end": 93.894667
+      },
+      {
+        "id": "klein",
+        "start": 93.894667,
+        "end": 112.626667
+      },
+      {
+        "id": "projective",
+        "start": 112.626667,
+        "end": 131.38
+      },
+      {
+        "id": "sphere",
+        "start": 131.38,
+        "end": 156.301333
+      },
+      {
+        "id": "gallery",
+        "start": 156.301333,
+        "end": 163.301333
+      },
+      {
+        "id": "outro",
+        "start": 163.301333,
+        "end": 179.352
+      },
+      {
+        "id": "end-card",
+        "start": 179.352,
+        "end": 183.352
+      }
+    ],
+    "targetDurationSeconds": 214.04,
+    "method": "Section-aware affine retiming of every gesture start, note offset/duration, repeat interval, pan automation point and chapter join. The approved independent motives, orchestration and harmonic palettes remain intact while musical form follows the final VoiceDesign picture boundaries; no legacy-score tail padding.",
+    "sectionBoundaries": [
+      {
+        "id": "intro",
+        "start": 0,
+        "end": 26.42
+      },
+      {
+        "id": "plane",
+        "start": 26.42,
+        "end": 43.64
+      },
+      {
+        "id": "cylinder",
+        "start": 43.64,
+        "end": 64.66
+      },
+      {
+        "id": "torus",
+        "start": 64.66,
+        "end": 86.16
+      },
+      {
+        "id": "mobius",
+        "start": 86.16,
+        "end": 105.82
+      },
+      {
+        "id": "klein",
+        "start": 105.82,
+        "end": 126.6
+      },
+      {
+        "id": "projective",
+        "start": 126.6,
+        "end": 148.42
+      },
+      {
+        "id": "sphere",
+        "start": 148.42,
+        "end": 175.24
+      },
+      {
+        "id": "gallery",
+        "start": 175.24,
+        "end": 182.24
+      },
+      {
+        "id": "outro",
+        "start": 182.24,
+        "end": 210.04
+      },
+      {
+        "id": "end-card",
+        "start": 210.04,
+        "end": 214.04
+      }
+    ]
+  },
+  "reviewWindows": {
+    "cylinderStereoMotion": {
+      "early": {
+        "startSeconds": 43.904814,
+        "endSeconds": 48.92587
+      },
+      "late": {
+        "startSeconds": 59.525877,
+        "endSeconds": 63.989037
+      }
+    }
+  }
 }

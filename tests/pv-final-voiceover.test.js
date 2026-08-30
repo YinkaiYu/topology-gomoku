@@ -4,7 +4,9 @@ const test = require("node:test");
 const assert = require("node:assert/strict");
 const crypto = require("node:crypto");
 const fs = require("node:fs");
+const os = require("node:os");
 const path = require("node:path");
+const { spawnSync } = require("node:child_process");
 
 const ROOT = path.resolve(__dirname, "..");
 const PV_ROOT = path.join(ROOT, "video", "footsteps-return");
@@ -137,6 +139,59 @@ test("the final batch consumes all 21 approved script cues byte-for-byte and rec
   });
 });
 
+test("21-file final voice replacement rolls every destination back after a mid-commit failure", () => {
+  const temporaryRoot = fs.mkdtempSync(path.join(os.tmpdir(), "pv-final-voice-transaction-"));
+  const modulePath = path.join(PV_ROOT, "scripts", "generate_final_voiceover.py");
+  const program = String.raw`
+import importlib.util
+import os
+import pathlib
+import sys
+
+module_path = pathlib.Path(sys.argv[1])
+root = pathlib.Path(sys.argv[2])
+spec = importlib.util.spec_from_file_location("pv_final_voice", module_path)
+module = importlib.util.module_from_spec(spec)
+spec.loader.exec_module(module)
+staging = root / "staging"
+destination = root / "destination"
+staging.mkdir()
+destination.mkdir()
+replacements = []
+for index in range(21):
+    candidate = staging / f"new-{index:02d}.wav"
+    target = destination / f"cue-{index:02d}.wav"
+    candidate.write_bytes(f"new-{index}".encode())
+    target.write_bytes(f"old-{index}".encode())
+    replacements.append((candidate, target))
+
+def fail_third_candidate(source, target):
+    if pathlib.Path(source).name == "new-02.wav":
+        raise OSError("injected mid-commit failure")
+    os.replace(source, target)
+
+try:
+    module.transactional_replace_batch(replacements, replace_operation=fail_third_candidate)
+except OSError as error:
+    assert "injected mid-commit failure" in str(error)
+else:
+    raise AssertionError("failure injection did not interrupt the commit")
+
+for index, (_candidate, target) in enumerate(replacements):
+    assert target.read_bytes() == f"old-{index}".encode(), target
+assert not list(staging.glob(".rollback-*"))
+`;
+  try {
+    const result = spawnSync("uv", ["run", "--locked", "python", "-c", program, modulePath, temporaryRoot], {
+      cwd: ROOT,
+      encoding: "utf8"
+    });
+    assert.equal(result.status, 0, `transaction test failed\nstdout:\n${result.stdout}\nstderr:\n${result.stderr}`);
+  } finally {
+    fs.rmSync(temporaryRoot, { recursive: true, force: true });
+  }
+});
+
 test("tracked final metadata is fresh, non-overlapping, caption-synchronized and honest about ASR limits", () => {
   const config = readFinalConfig();
   const timingPath = path.join(VOICE_ROOT, "timing.json");
@@ -265,6 +320,18 @@ test("high raw-CER cues stay explicit and receive focused independent ASR corrob
   });
   assert.ok(asr.manualReview.focusCues.some(({ primaryRawCer }) => primaryRawCer < policy.focusedCrossCheck.threshold),
     "ordinary/topology term disagreements below the high-CER threshold must still remain explicit listening targets");
+  const kleinPolicy = policy.manualReviewFocus.find(({ cueId }) => cueId === "klein-two-returns");
+  const kleinFocus = asr.manualReview.focusCues.find(({ cueId }) => cueId === "klein-two-returns");
+  const kleinEvidence = review.cues.find(({ id }) => id === "klein-two-returns").asr;
+  assert.deepEqual(kleinPolicy?.category, "ordinary-lexical-risk");
+  assert.match(kleinPolicy?.focus ?? "", /归来/);
+  assert.match(kleinPolicy?.focus ?? "", /亏来/);
+  assert.ok(kleinFocus, "归来→亏来 must remain an explicit native-listening target even below the high-CER threshold");
+  assert.equal(kleinFocus.focusedCrossCheck.status, "not-selected");
+  assert.match(kleinEvidence.normalizedReference, /归来/);
+  assert.match(kleinEvidence.normalizedTranscript, /亏来/);
+  assert.notEqual(kleinEvidence.normalizedTranscript, kleinEvidence.normalizedReference,
+    "ordinary lexical substitutions must never be silently folded away as topology terminology");
 });
 
 test("all ignored final cue WAVs and the continuous review master match committed measurements", { skip: !REQUIRE_FINAL_WAVS }, () => {

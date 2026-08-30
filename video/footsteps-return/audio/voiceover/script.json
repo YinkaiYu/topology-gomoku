@@ -46,9 +46,9 @@
       "text": "现在，落子之人啊，循着隐藏的连接前行吧。七种世界，将在你面前依次展开。",
       "outputFile": "video/footsteps-return/captures/voiceover/intro-invitation.wav",
       "captions": [
-        { "id": "intro-invitation-01", "spokenText": "现在，落子之人啊，", "visibleText": "现在，落子之人啊" },
+        { "id": "intro-invitation-01", "spokenText": "现在，落子之人啊，", "visibleText": "现在落子之人啊" },
         { "id": "intro-invitation-02", "spokenText": "循着隐藏的连接前行吧。", "visibleText": "循着隐藏的连接前行吧" },
-        { "id": "intro-invitation-03", "spokenText": "七种世界，将在你面前依次展开。", "visibleText": "七种世界，将在你面前依次展开" }
+        { "id": "intro-invitation-03", "spokenText": "七种世界，将在你面前依次展开。", "visibleText": "七种世界将在你面前依次展开" }
       ]
     },
     {
@@ -57,7 +57,7 @@
       "text": "边界分明，方向笔直，胜负都在眼前。方庭以有限的秩序收容第一条五连，也由此埋下对所有边界的疑问。",
       "outputFile": "video/footsteps-return/captures/voiceover/plane-order.wav",
       "captions": [
-        { "id": "plane-order-01", "spokenText": "边界分明，方向笔直，胜负都在眼前。", "visibleText": "边界分明，方向笔直，胜负都在眼前" },
+        { "id": "plane-order-01", "spokenText": "边界分明，方向笔直，胜负都在眼前。", "visibleText": "边界分明方向笔直胜负都在眼前" },
         { "id": "plane-order-02", "spokenText": "方庭以有限的秩序收容第一条五连，", "visibleText": "方庭以有限的秩序收容第一条五连" },
         { "id": "plane-order-03", "spokenText": "也由此埋下对所有边界的疑问。", "visibleText": "也由此埋下对所有边界的疑问" }
       ]
@@ -68,7 +68,7 @@
       "text": "左右相接，上下仍被截断。横向的路绕过世界回到身后，纵向的路却有始有终。",
       "outputFile": "video/footsteps-return/captures/voiceover/cylinder-cycle.wav",
       "captions": [
-        { "id": "cylinder-cycle-01", "spokenText": "左右相接，上下仍被截断。", "visibleText": "左右相接，上下仍被截断" },
+        { "id": "cylinder-cycle-01", "spokenText": "左右相接，上下仍被截断。", "visibleText": "左右相接上下仍被截断" },
         { "id": "cylinder-cycle-02", "spokenText": "横向的路绕过世界回到身后，", "visibleText": "横向的路绕过世界回到身后" },
         { "id": "cylinder-cycle-03", "spokenText": "纵向的路却有始有终。", "visibleText": "纵向的路却有始有终" }
       ]
@@ -79,7 +79,7 @@
       "text": "只拥有一重循环的世界，该如何丈量远近？",
       "outputFile": "video/footsteps-return/captures/voiceover/cylinder-distance.wav",
       "captions": [
-        { "id": "cylinder-distance-01", "spokenText": "只拥有一重循环的世界，该如何丈量远近？", "visibleText": "只拥有一重循环的世界，该如何丈量远近？" }
+        { "id": "cylinder-distance-01", "spokenText": "只拥有一重循环的世界，该如何丈量远近？", "visibleText": "只拥有一重循环的世界该如何丈量远近" }
       ]
     },
     {
@@ -88,7 +88,7 @@
       "text": "四边相接，两个方向各自成环。一条斜线可以先越过上边，再从左侧归来。",
       "outputFile": "video/footsteps-return/captures/voiceover/torus-cycles.wav",
       "captions": [
-        { "id": "torus-cycles-01", "spokenText": "四边相接，两个方向各自成环。", "visibleText": "四边相接，两个方向各自成环" },
+        { "id": "torus-cycles-01", "spokenText": "四边相接，两个方向各自成环。", "visibleText": "四边相接两个方向各自成环" },
         { "id": "torus-cycles-02", "spokenText": "一条斜线可以先越过上边，", "visibleText": "一条斜线可以先越过上边" },
         { "id": "torus-cycles-03", "spokenText": "再从左侧归来。", "visibleText": "再从左侧归来" }
       ]
@@ -109,7 +109,7 @@
       "text": "左右边界相接，却带着一次翻转。沿同一面环行一周，归来时上下已经交换。",
       "outputFile": "video/footsteps-return/captures/voiceover/mobius-turn.wav",
       "captions": [
-        { "id": "mobius-turn-01", "spokenText": "左右边界相接，却带着一次翻转。", "visibleText": "左右边界相接，却带着一次翻转" },
+        { "id": "mobius-turn-01", "spokenText": "左右边界相接，却带着一次翻转。", "visibleText": "左右边界相接却带着一次翻转" },
         { "id": "mobius-turn-02", "spokenText": "沿同一面环行一周，", "visibleText": "沿同一面环行一周" },
         { "id": "mobius-turn-03", "spokenText": "归来时上下已经交换。", "visibleText": "归来时上下已经交换" }
       ]
@@ -120,7 +120,7 @@
       "text": "只有一面的世界，正反又该如何分辨？",
       "outputFile": "video/footsteps-return/captures/voiceover/mobius-one-side.wav",
       "captions": [
-        { "id": "mobius-one-side-01", "spokenText": "只有一面的世界，正反又该如何分辨？", "visibleText": "只有一面的世界，正反又该如何分辨？" }
+        { "id": "mobius-one-side-01", "spokenText": "只有一面的世界，正反又该如何分辨？", "visibleText": "只有一面的世界正反又该如何分辨" }
       ]
     },
     {
@@ -131,7 +131,7 @@
       "captions": [
         { "id": "klein-two-returns-01", "spokenText": "一组边界如圆环般相接，", "visibleText": "一组边界如圆环般相接" },
         { "id": "klein-two-returns-02", "spokenText": "另一组边界让方向翻转。", "visibleText": "另一组边界让方向翻转" },
-        { "id": "klein-two-returns-03", "spokenText": "两种归来共处一界：一条路保持原样，", "visibleText": "两种归来共处一界：一条路保持原样" },
+        { "id": "klein-two-returns-03", "spokenText": "两种归来共处一界：一条路保持原样，", "visibleText": "两种归来共处一界一条路保持原样" },
         { "id": "klein-two-returns-04", "spokenText": "一条路带回倒影。", "visibleText": "一条路带回倒影" }
       ]
     },
@@ -150,7 +150,7 @@
       "text": "上下左右，全都通向各自的倒影。一次越界改变方向，两次倒映使棋路重新吻合。",
       "outputFile": "video/footsteps-return/captures/voiceover/projective-reflection.wav",
       "captions": [
-        { "id": "projective-reflection-01", "spokenText": "上下左右，全都通向各自的倒影。", "visibleText": "上下左右，全都通向各自的倒影" },
+        { "id": "projective-reflection-01", "spokenText": "上下左右，全都通向各自的倒影。", "visibleText": "上下左右全都通向各自的倒影" },
         { "id": "projective-reflection-02", "spokenText": "一次越界改变方向，", "visibleText": "一次越界改变方向" },
         { "id": "projective-reflection-03", "spokenText": "两次倒映使棋路重新吻合。", "visibleText": "两次倒映使棋路重新吻合" }
       ]
@@ -161,7 +161,7 @@
       "text": "在双生的世界里，每次远行，都会遇见另一个自己。",
       "outputFile": "video/footsteps-return/captures/voiceover/projective-twin.wav",
       "captions": [
-        { "id": "projective-twin-01", "spokenText": "在双生的世界里，每次远行，", "visibleText": "在双生的世界里，每次远行" },
+        { "id": "projective-twin-01", "spokenText": "在双生的世界里，每次远行，", "visibleText": "在双生的世界里每次远行" },
         { "id": "projective-twin-02", "spokenText": "都会遇见另一个自己。", "visibleText": "都会遇见另一个自己" }
       ]
     },
@@ -171,7 +171,7 @@
       "text": "在最后的世界，棋路离开一条边，便会沿相邻的方向继续。四条边依次归向彼此，方形的棋盘也随之闭合成球。",
       "outputFile": "video/footsteps-return/captures/voiceover/sphere-closure.wav",
       "captions": [
-        { "id": "sphere-closure-01", "spokenText": "在最后的世界，棋路离开一条边，", "visibleText": "在最后的世界，棋路离开一条边" },
+        { "id": "sphere-closure-01", "spokenText": "在最后的世界，棋路离开一条边，", "visibleText": "在最后的世界棋路离开一条边" },
         { "id": "sphere-closure-02", "spokenText": "便会沿相邻的方向继续。", "visibleText": "便会沿相邻的方向继续" },
         { "id": "sphere-closure-03", "spokenText": "四条边依次归向彼此，", "visibleText": "四条边依次归向彼此" },
         { "id": "sphere-closure-04", "spokenText": "方形的棋盘也随之闭合成球。", "visibleText": "方形的棋盘也随之闭合成球" }
@@ -193,7 +193,7 @@
       "text": "所谓边界，或许只是观察世界时留下的痕迹。",
       "outputFile": "video/footsteps-return/captures/voiceover/sphere-boundary.wav",
       "captions": [
-        { "id": "sphere-boundary-01", "spokenText": "所谓边界，或许只是观察世界时留下的痕迹。", "visibleText": "所谓边界，或许只是观察世界时留下的痕迹" }
+        { "id": "sphere-boundary-01", "spokenText": "所谓边界，或许只是观察世界时留下的痕迹。", "visibleText": "所谓边界或许只是观察世界时留下的痕迹" }
       ]
     },
     {
@@ -202,7 +202,7 @@
       "text": "现在，落子之人。",
       "outputFile": "video/footsteps-return/captures/voiceover/outro-invocation.wav",
       "captions": [
-        { "id": "outro-invocation-01", "spokenText": "现在，落子之人。", "visibleText": "现在，落子之人" }
+        { "id": "outro-invocation-01", "spokenText": "现在，落子之人。", "visibleText": "现在落子之人" }
       ]
     },
     {
@@ -212,7 +212,7 @@
       "outputFile": "video/footsteps-return/captures/voiceover/outro-connection.wav",
       "captions": [
         { "id": "outro-connection-01", "spokenText": "七种世界已经显现，", "visibleText": "七种世界已经显现" },
-        { "id": "outro-connection-02", "spokenText": "但最后的连接，仍等待你亲手完成。", "visibleText": "但最后的连接，仍等待你亲手完成" }
+        { "id": "outro-connection-02", "spokenText": "但最后的连接，仍等待你亲手完成。", "visibleText": "但最后的连接仍等待你亲手完成" }
       ]
     },
     {
@@ -231,7 +231,7 @@
       "text": "然后，去看见世界本来的样子吧。",
       "outputFile": "video/footsteps-return/captures/voiceover/outro-world.wav",
       "captions": [
-        { "id": "outro-world-01", "spokenText": "然后，去看见世界本来的样子吧。", "visibleText": "然后，去看见世界本来的样子吧" }
+        { "id": "outro-world-01", "spokenText": "然后，去看见世界本来的样子吧。", "visibleText": "然后去看见世界本来的样子吧" }
       ]
     }
   ]

@@ -64,7 +64,7 @@ test("voiceover script keeps the approved narration verbatim with cue-level fina
   });
 });
 
-test("captions split long narration on complete semantic clauses and omit visible full stops", async () => {
+test("captions split long narration into exactly 46 punctuation-free single-line entries", async () => {
   const [{ narrationCues }, { captionCues, captionStyle, voiceoverSchedule }] = await Promise.all([
     load("video/footsteps-return/src/data/narration.js"),
     load("video/footsteps-return/src/data/captions.js")
@@ -85,6 +85,7 @@ test("captions split long narration on complete semantic clauses and omit visibl
   assert.equal(captionStyle.glow, "none");
   assert.equal(captionStyle.wordAnimation, false);
 
+  assert.equal(captionCues.length, 46);
   narrationCues.forEach((narration) => {
     const clauses = captionCues.filter(({ narrationCueId }) => narrationCueId === narration.id);
     assert.ok(clauses.length > 0, `${narration.id} needs captions`);
@@ -93,7 +94,9 @@ test("captions split long narration on complete semantic clauses and omit visibl
       assert.ok(clauses.length > 1, `${narration.id} must split instead of shrinking or wrapping`);
     }
     clauses.forEach((caption) => {
-      assert.doesNotMatch(caption.text, /[。.]/, `${caption.id} must omit visible full stops`);
+      assert.doesNotMatch(caption.text, /\p{P}/u, `${caption.id} must omit every visible punctuation mark`);
+      assert.equal(caption.text, caption.spokenText.replace(/\p{P}/gu, ""),
+        `${caption.id} may preserve punctuation only in spoken narration`);
       assert.equal(caption.fadeInFrames, 7);
       assert.equal(caption.fadeOutFrames, 7);
       assert.equal(caption.hardClearAt, caption.end);
@@ -101,10 +104,17 @@ test("captions split long narration on complete semantic clauses and omit visibl
     });
   });
 
-  const spokenQuestions = narrationCues.filter(({ spokenText }) => spokenText.endsWith("？")).map(({ id }) => id);
-  const visibleQuestions = captionCues.filter(({ text }) => text.endsWith("？")).map(({ narrationCueId }) => narrationCueId);
-  assert.deepEqual(visibleQuestions, spokenQuestions);
+  assert.ok(captionCues.some(({ spokenText }) => /[，。：？]/u.test(spokenText)),
+    "spoken narration must retain punctuation for synthesis and prosody");
   assert.deepEqual(voiceoverSchedule.map(({ cueId }) => cueId), narrationCues.map(({ id }) => id));
+});
+
+test("caption builder rejects any visible Unicode punctuation before emitting runtime data", async () => {
+  const { buildCaptionArtifacts } = await load("video/footsteps-return/scripts/build-captions.mjs");
+  const script = readJson("script.json");
+  const timing = readJson("timing.json");
+  script.cues[0].captions[0].visibleText += "，";
+  assert.throws(() => buildCaptionArtifacts({ script, timing, write: false }), /visible captions cannot contain punctuation/i);
 });
 
 test("PV font and stylesheet URLs carry the dedicated subset cache key", () => {

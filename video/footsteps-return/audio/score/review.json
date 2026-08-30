@@ -1,11 +1,11 @@
 {
   "schemaVersion": 1,
-  "masterSha256": "b8fe626c3cce4eef176bcf9c35ca96ee3aabc4998385986cd28fb56f37d8aed1",
+  "masterSha256": "e6ad4232d95faa78d05dffd9fd2733afd2f9e13c12990bd15eae8ec5cc41b72a",
   "reviewAsset": {
     "path": "audio/score/review/score-review.opus",
     "codec": "Opus 48 kbps VBR",
-    "bytes": 1335132,
-    "sha256": "759e059c4b1c59104477f61eaa5bb70f39bedd5fc9ad0fb07bfe6f1c837a57da",
+    "bytes": 1550672,
+    "sha256": "2981b65bcb33c903b8b2a92efcca9364ee4133bbb97cda6fa77faf864b0dc416",
     "versionControl": "ignored local audition file"
   },
   "subjectiveListening": {
@@ -23,16 +23,16 @@
   "objectiveChecks": {
     "silenceOrMissingAudio": false,
     "clippingDetected": false,
-    "masterPeakDbfs": -18.616,
-    "masterRmsDbfs": -41.428,
+    "masterPeakDbfs": -18.711,
+    "masterRmsDbfs": -40.889,
     "voiceScoreComparison": {
       "cueCount": 21,
       "presenceBandHz": [
         180,
         4500
       ],
-      "minimumVoiceToScoreRmsMarginDb": 12.3,
-      "minimumVoiceToScorePresenceBandMarginDb": 10.35,
+      "minimumVoiceToScoreRmsMarginDb": 11.92,
+      "minimumVoiceToScorePresenceBandMarginDb": 9.72,
       "method": "Actual dry voice cue PCM is hash-verified against timing.json, then compared with the exact score-master timeline window using broadband RMS and a cascaded first-order 180 Hz high-pass / 4500 Hz low-pass presence-band RMS. Digital-silence windows use a deterministic -240 dBFS analysis floor so every reported margin remains finite.",
       "cues": [
         {
@@ -41,11 +41,11 @@
           "timelineEndSeconds": 4.5,
           "voiceSha256": "825be46e0acccd950d1f1bb4e0c1c1e1474d411524bf00c8f394b444051523cd",
           "voiceRmsDbfs": -22,
-          "scoreRmsDbfs": -53.88,
-          "voiceToScoreRmsMarginDb": 31.88,
+          "scoreRmsDbfs": -55.51,
+          "voiceToScoreRmsMarginDb": 33.51,
           "voicePresenceBandRmsDbfs": -26.53,
-          "scorePresenceBandRmsDbfs": -54.85,
-          "voiceToScorePresenceBandMarginDb": 28.31
+          "scorePresenceBandRmsDbfs": -56.49,
+          "voiceToScorePresenceBandMarginDb": 29.96
         },
         {
           "id": "intro-roads",
@@ -53,11 +53,11 @@
           "timelineEndSeconds": 14.86,
           "voiceSha256": "246ce63602ef6ff58083798c1fcf1d501b3305f3219914fc98a9d3f04b701e60",
           "voiceRmsDbfs": -22,
-          "scoreRmsDbfs": -54,
-          "voiceToScoreRmsMarginDb": 32,
+          "scoreRmsDbfs": -53.31,
+          "voiceToScoreRmsMarginDb": 31.31,
           "voicePresenceBandRmsDbfs": -25.7,
-          "scorePresenceBandRmsDbfs": -55.03,
-          "voiceToScorePresenceBandMarginDb": 29.33
+          "scorePresenceBandRmsDbfs": -54.27,
+          "voiceToScorePresenceBandMarginDb": 28.57
         },
         {
           "id": "intro-invitation",
@@ -65,11 +65,11 @@
           "timelineEndSeconds": 25.62,
           "voiceSha256": "642100d571b12388389cbedb3ba2d8ca8ad2baf1750f71cd703a7a6883cf2cda",
           "voiceRmsDbfs": -22,
-          "scoreRmsDbfs": -49.53,
-          "voiceToScoreRmsMarginDb": 27.53,
+          "scoreRmsDbfs": -57.23,
+          "voiceToScoreRmsMarginDb": 35.23,
           "voicePresenceBandRmsDbfs": -25.32,
-          "scorePresenceBandRmsDbfs": -50.54,
-          "voiceToScorePresenceBandMarginDb": 25.23
+          "scorePresenceBandRmsDbfs": -58.25,
+          "voiceToScorePresenceBandMarginDb": 32.93
         },
         {
           "id": "plane-order",
@@ -77,11 +77,11 @@
           "timelineEndSeconds": 40.72,
           "voiceSha256": "13d8b894b7a840588dcdbeaa4dea0f301c046f6f5d316c5a126e5d2368f35513",
           "voiceRmsDbfs": -22,
-          "scoreRmsDbfs": -45.19,
-          "voiceToScoreRmsMarginDb": 23.19,
+          "scoreRmsDbfs": -46.7,
+          "voiceToScoreRmsMarginDb": 24.7,
           "voicePresenceBandRmsDbfs": -23.72,
-          "scorePresenceBandRmsDbfs": -46.51,
-          "voiceToScorePresenceBandMarginDb": 22.79
+          "scorePresenceBandRmsDbfs": -47.68,
+          "voiceToScorePresenceBandMarginDb": 23.95
         },
         {
           "id": "cylinder-cycle",
@@ -89,11 +89,11 @@
           "timelineEndSeconds": 56.5,
           "voiceSha256": "6e150c87a9b42564ef3361379a78d766e0e564e15a5c77e4c2f1c0dbcbc08ee4",
           "voiceRmsDbfs": -22,
-          "scoreRmsDbfs": -45.84,
-          "voiceToScoreRmsMarginDb": 23.84,
+          "scoreRmsDbfs": -44.36,
+          "voiceToScoreRmsMarginDb": 22.36,
           "voicePresenceBandRmsDbfs": -24.77,
-          "scorePresenceBandRmsDbfs": -47.46,
-          "voiceToScorePresenceBandMarginDb": 22.7
+          "scorePresenceBandRmsDbfs": -45.96,
+          "voiceToScorePresenceBandMarginDb": 21.19
         },
         {
           "id": "cylinder-distance",
@@ -101,11 +101,11 @@
           "timelineEndSeconds": 61.74,
           "voiceSha256": "e1dd285bdfd49d68c5e761e5a437fff27b9615857540d81649911456a606404a",
           "voiceRmsDbfs": -22,
-          "scoreRmsDbfs": -47.4,
-          "voiceToScoreRmsMarginDb": 25.4,
+          "scoreRmsDbfs": -45.59,
+          "voiceToScoreRmsMarginDb": 23.59,
           "voicePresenceBandRmsDbfs": -25.85,
-          "scorePresenceBandRmsDbfs": -48.4,
-          "voiceToScorePresenceBandMarginDb": 22.55
+          "scorePresenceBandRmsDbfs": -47.15,
+          "voiceToScorePresenceBandMarginDb": 21.3
         },
         {
           "id": "torus-cycles",
@@ -113,11 +113,11 @@
           "timelineEndSeconds": 77.44,
           "voiceSha256": "e6e74ddbe1e982acac0938fbbeb4cf10a1eddcc8e1e4dad0cdb9f24cb282aa4a",
           "voiceRmsDbfs": -22,
-          "scoreRmsDbfs": -44.61,
-          "voiceToScoreRmsMarginDb": 22.61,
+          "scoreRmsDbfs": -47.8,
+          "voiceToScoreRmsMarginDb": 25.8,
           "voicePresenceBandRmsDbfs": -23.94,
-          "scorePresenceBandRmsDbfs": -45.59,
-          "voiceToScorePresenceBandMarginDb": 21.65
+          "scorePresenceBandRmsDbfs": -48.78,
+          "voiceToScorePresenceBandMarginDb": 24.85
         },
         {
           "id": "torus-shortest-path",
@@ -125,11 +125,11 @@
           "timelineEndSeconds": 83.24,
           "voiceSha256": "4d5f7d54a3ceb29207004b42fda2c4e6893ce7d91cc8aa9a26e90627b27fcfcf",
           "voiceRmsDbfs": -22,
-          "scoreRmsDbfs": -43.03,
-          "voiceToScoreRmsMarginDb": 21.03,
+          "scoreRmsDbfs": -45.94,
+          "voiceToScoreRmsMarginDb": 23.94,
           "voicePresenceBandRmsDbfs": -24.77,
-          "scorePresenceBandRmsDbfs": -44.35,
-          "voiceToScorePresenceBandMarginDb": 19.58
+          "scorePresenceBandRmsDbfs": -46.92,
+          "voiceToScorePresenceBandMarginDb": 22.15
         },
         {
           "id": "mobius-turn",
@@ -137,11 +137,11 @@
           "timelineEndSeconds": 98.38,
           "voiceSha256": "2be1e9f3bf5ea5229aa02a95be55f838082778321e314e1903cc6731beabf975",
           "voiceRmsDbfs": -22,
-          "scoreRmsDbfs": -41.23,
-          "voiceToScoreRmsMarginDb": 19.23,
+          "scoreRmsDbfs": -43.67,
+          "voiceToScoreRmsMarginDb": 21.67,
           "voicePresenceBandRmsDbfs": -24.99,
-          "scorePresenceBandRmsDbfs": -43.44,
-          "voiceToScorePresenceBandMarginDb": 18.45
+          "scorePresenceBandRmsDbfs": -45.11,
+          "voiceToScorePresenceBandMarginDb": 20.12
         },
         {
           "id": "mobius-one-side",
@@ -149,11 +149,11 @@
           "timelineEndSeconds": 102.9,
           "voiceSha256": "ecaa969d8042564f52342168d8bbf325e486770db136668bd4dedd8e4ce3eb5c",
           "voiceRmsDbfs": -22,
-          "scoreRmsDbfs": -38.39,
-          "voiceToScoreRmsMarginDb": 16.39,
+          "scoreRmsDbfs": -42.84,
+          "voiceToScoreRmsMarginDb": 20.84,
           "voicePresenceBandRmsDbfs": -25.7,
-          "scorePresenceBandRmsDbfs": -40.18,
-          "voiceToScorePresenceBandMarginDb": 14.48
+          "scorePresenceBandRmsDbfs": -44.11,
+          "voiceToScorePresenceBandMarginDb": 18.4
         },
         {
           "id": "klein-two-returns",
@@ -161,11 +161,11 @@
           "timelineEndSeconds": 120.6,
           "voiceSha256": "01de36256bd25a0390bdf42de8db0c0c606a0a4cdcbd1dfea1ffe2618a89332b",
           "voiceRmsDbfs": -22,
-          "scoreRmsDbfs": -41.59,
-          "voiceToScoreRmsMarginDb": 19.59,
+          "scoreRmsDbfs": -37.93,
+          "voiceToScoreRmsMarginDb": 15.93,
           "voicePresenceBandRmsDbfs": -24.62,
-          "scorePresenceBandRmsDbfs": -42.94,
-          "voiceToScorePresenceBandMarginDb": 18.32
+          "scorePresenceBandRmsDbfs": -39.99,
+          "voiceToScorePresenceBandMarginDb": 15.37
         },
         {
           "id": "klein-memory",
@@ -173,11 +173,11 @@
           "timelineEndSeconds": 123.68,
           "voiceSha256": "40c763005d783f0458b7cea094b1acff23943b17591753c0101b7b613e18c711",
           "voiceRmsDbfs": -22,
-          "scoreRmsDbfs": -48.37,
-          "voiceToScoreRmsMarginDb": 26.37,
+          "scoreRmsDbfs": -36.42,
+          "voiceToScoreRmsMarginDb": 14.42,
           "voicePresenceBandRmsDbfs": -24.4,
-          "scorePresenceBandRmsDbfs": -49.06,
-          "voiceToScorePresenceBandMarginDb": 24.66
+          "scorePresenceBandRmsDbfs": -38.21,
+          "voiceToScorePresenceBandMarginDb": 13.81
         },
         {
           "id": "projective-reflection",
@@ -185,11 +185,11 @@
           "timelineEndSeconds": 138.98,
           "voiceSha256": "1da574c1d6824a52b1d7a48b7b8f5527349ce3871a150383ba150302c5e031ba",
           "voiceRmsDbfs": -22,
-          "scoreRmsDbfs": -36.21,
-          "voiceToScoreRmsMarginDb": 14.21,
+          "scoreRmsDbfs": -49.37,
+          "voiceToScoreRmsMarginDb": 27.37,
           "voicePresenceBandRmsDbfs": -25.4,
-          "scorePresenceBandRmsDbfs": -37.48,
-          "voiceToScorePresenceBandMarginDb": 12.08
+          "scorePresenceBandRmsDbfs": -50.31,
+          "voiceToScorePresenceBandMarginDb": 24.91
         },
         {
           "id": "projective-twin",
@@ -197,11 +197,11 @@
           "timelineEndSeconds": 145.5,
           "voiceSha256": "a3769726960a2844faceb89fe0de4ae5590492dfed041277965d404c78fa7437",
           "voiceRmsDbfs": -22,
-          "scoreRmsDbfs": -34.3,
-          "voiceToScoreRmsMarginDb": 12.3,
+          "scoreRmsDbfs": -46.35,
+          "voiceToScoreRmsMarginDb": 24.35,
           "voicePresenceBandRmsDbfs": -25.3,
-          "scorePresenceBandRmsDbfs": -35.65,
-          "voiceToScorePresenceBandMarginDb": 10.35
+          "scorePresenceBandRmsDbfs": -47.07,
+          "voiceToScorePresenceBandMarginDb": 21.77
         },
         {
           "id": "sphere-closure",
@@ -209,11 +209,11 @@
           "timelineEndSeconds": 163.84,
           "voiceSha256": "c83fa1d04822dc10d2b7b7f0fe145af9d7c178410b4c92f46c1cd9b70f675ed2",
           "voiceRmsDbfs": -22,
-          "scoreRmsDbfs": -39.5,
-          "voiceToScoreRmsMarginDb": 17.5,
+          "scoreRmsDbfs": -34.65,
+          "voiceToScoreRmsMarginDb": 12.65,
           "voicePresenceBandRmsDbfs": -25.05,
-          "scorePresenceBandRmsDbfs": -40.75,
-          "voiceToScorePresenceBandMarginDb": 15.7
+          "scorePresenceBandRmsDbfs": -36,
+          "voiceToScorePresenceBandMarginDb": 10.95
         },
         {
           "id": "sphere-map",
@@ -221,11 +221,11 @@
           "timelineEndSeconds": 169.24,
           "voiceSha256": "8620a5e1fa385efe84d0b680cbf49e9f4a9daa34f3d21fb87acc3389781684a5",
           "voiceRmsDbfs": -22,
-          "scoreRmsDbfs": -42.05,
-          "voiceToScoreRmsMarginDb": 20.05,
+          "scoreRmsDbfs": -33.92,
+          "voiceToScoreRmsMarginDb": 11.92,
           "voicePresenceBandRmsDbfs": -25.45,
-          "scorePresenceBandRmsDbfs": -43.09,
-          "voiceToScorePresenceBandMarginDb": 17.64
+          "scorePresenceBandRmsDbfs": -35.16,
+          "voiceToScorePresenceBandMarginDb": 9.72
         },
         {
           "id": "sphere-boundary",
@@ -233,11 +233,11 @@
           "timelineEndSeconds": 174.32,
           "voiceSha256": "ab33353e1b4963db28d31153dfc41757cfdce842e9613ae10f85d125ff5f6ea8",
           "voiceRmsDbfs": -22,
-          "scoreRmsDbfs": -41.58,
-          "voiceToScoreRmsMarginDb": 19.58,
+          "scoreRmsDbfs": -35.21,
+          "voiceToScoreRmsMarginDb": 13.21,
           "voicePresenceBandRmsDbfs": -24.5,
-          "scorePresenceBandRmsDbfs": -42.53,
-          "voiceToScorePresenceBandMarginDb": 18.03
+          "scorePresenceBandRmsDbfs": -36.62,
+          "voiceToScorePresenceBandMarginDb": 12.12
         },
         {
           "id": "outro-invocation",
@@ -245,11 +245,11 @@
           "timelineEndSeconds": 187.24,
           "voiceSha256": "c06b070c7dc429a7ea8498e1b34acc78bbb22c2c2e527e9f578f5e93ff2efac1",
           "voiceRmsDbfs": -22,
-          "scoreRmsDbfs": -121.71,
-          "voiceToScoreRmsMarginDb": 99.71,
+          "scoreRmsDbfs": -43.4,
+          "voiceToScoreRmsMarginDb": 21.4,
           "voicePresenceBandRmsDbfs": -24.71,
-          "scorePresenceBandRmsDbfs": -123.05,
-          "voiceToScorePresenceBandMarginDb": 98.35
+          "scorePresenceBandRmsDbfs": -44.73,
+          "voiceToScorePresenceBandMarginDb": 20.02
         },
         {
           "id": "outro-connection",
@@ -257,11 +257,11 @@
           "timelineEndSeconds": 196.64,
           "voiceSha256": "82627095212c083c45950da7f0a77010553d5f02a371704aedc58e2ba81f87a5",
           "voiceRmsDbfs": -22,
-          "scoreRmsDbfs": -240,
-          "voiceToScoreRmsMarginDb": 218,
+          "scoreRmsDbfs": -42.15,
+          "voiceToScoreRmsMarginDb": 20.15,
           "voicePresenceBandRmsDbfs": -24.03,
-          "scorePresenceBandRmsDbfs": -240,
-          "voiceToScorePresenceBandMarginDb": 215.97
+          "scorePresenceBandRmsDbfs": -43.07,
+          "voiceToScorePresenceBandMarginDb": 19.04
         },
         {
           "id": "outro-stone",
@@ -269,11 +269,11 @@
           "timelineEndSeconds": 204.52,
           "voiceSha256": "4b5deb574b349f8e46528f4937a3599a971ac29efed46e3c0b65372be6fa30b6",
           "voiceRmsDbfs": -22,
-          "scoreRmsDbfs": -240,
-          "voiceToScoreRmsMarginDb": 218,
+          "scoreRmsDbfs": -41.45,
+          "voiceToScoreRmsMarginDb": 19.45,
           "voicePresenceBandRmsDbfs": -25.16,
-          "scorePresenceBandRmsDbfs": -240,
-          "voiceToScorePresenceBandMarginDb": 214.84
+          "scorePresenceBandRmsDbfs": -42.51,
+          "voiceToScorePresenceBandMarginDb": 17.35
         },
         {
           "id": "outro-world",
@@ -281,177 +281,177 @@
           "timelineEndSeconds": 209.12,
           "voiceSha256": "53b7cc81ce03098f37e5786ab8277ee05cf38dd0b412d5f2539827f770a8c113",
           "voiceRmsDbfs": -22,
-          "scoreRmsDbfs": -240,
-          "voiceToScoreRmsMarginDb": 218,
+          "scoreRmsDbfs": -38.9,
+          "voiceToScoreRmsMarginDb": 16.9,
           "voicePresenceBandRmsDbfs": -25.36,
-          "scorePresenceBandRmsDbfs": -240,
-          "voiceToScorePresenceBandMarginDb": 214.64
+          "scorePresenceBandRmsDbfs": -40.04,
+          "voiceToScorePresenceBandMarginDb": 14.67
         }
       ]
     },
     "narrationWindowDensity": {
       "cueCount": 21,
       "source": "generated master.mid note-on events and sounding-note intervals",
-      "maximumNoteOnsetsPerSecond": 6.17,
-      "maximumSimultaneousPitches": 12,
+      "maximumNoteOnsetsPerSecond": 5.95,
+      "maximumSimultaneousPitches": 16,
       "cues": [
         {
           "id": "intro-boundary",
-          "noteOnsets": 4,
-          "noteOnsetsPerSecond": 0.98,
-          "maximumSimultaneousPitches": 2
+          "noteOnsets": 2,
+          "noteOnsetsPerSecond": 0.49,
+          "maximumSimultaneousPitches": 1
         },
         {
           "id": "intro-roads",
-          "noteOnsets": 16,
-          "noteOnsetsPerSecond": 1.6,
-          "maximumSimultaneousPitches": 5
+          "noteOnsets": 14,
+          "noteOnsetsPerSecond": 1.4,
+          "maximumSimultaneousPitches": 4
         },
         {
           "id": "intro-invitation",
-          "noteOnsets": 22,
-          "noteOnsetsPerSecond": 2.12,
-          "maximumSimultaneousPitches": 6
+          "noteOnsets": 11,
+          "noteOnsetsPerSecond": 1.06,
+          "maximumSimultaneousPitches": 5
         },
         {
           "id": "plane-order",
-          "noteOnsets": 37,
-          "noteOnsetsPerSecond": 3.4,
+          "noteOnsets": 39,
+          "noteOnsetsPerSecond": 3.58,
           "maximumSimultaneousPitches": 7
         },
         {
           "id": "cylinder-cycle",
-          "noteOnsets": 33,
-          "noteOnsetsPerSecond": 3.5,
+          "noteOnsets": 35,
+          "noteOnsetsPerSecond": 3.71,
           "maximumSimultaneousPitches": 6
         },
         {
           "id": "cylinder-distance",
-          "noteOnsets": 20,
-          "noteOnsetsPerSecond": 4.1,
-          "maximumSimultaneousPitches": 4
+          "noteOnsets": 17,
+          "noteOnsetsPerSecond": 3.48,
+          "maximumSimultaneousPitches": 5
         },
         {
           "id": "torus-cycles",
-          "noteOnsets": 38,
-          "noteOnsetsPerSecond": 4.06,
+          "noteOnsets": 34,
+          "noteOnsetsPerSecond": 3.63,
           "maximumSimultaneousPitches": 5
         },
         {
           "id": "torus-shortest-path",
-          "noteOnsets": 15,
-          "noteOnsetsPerSecond": 2.76,
-          "maximumSimultaneousPitches": 4
-        },
-        {
-          "id": "mobius-turn",
-          "noteOnsets": 30,
-          "noteOnsetsPerSecond": 3.41,
-          "maximumSimultaneousPitches": 6
-        },
-        {
-          "id": "mobius-one-side",
-          "noteOnsets": 20,
-          "noteOnsetsPerSecond": 4.81,
+          "noteOnsets": 23,
+          "noteOnsetsPerSecond": 4.23,
           "maximumSimultaneousPitches": 5
         },
         {
+          "id": "mobius-turn",
+          "noteOnsets": 25,
+          "noteOnsetsPerSecond": 2.84,
+          "maximumSimultaneousPitches": 5
+        },
+        {
+          "id": "mobius-one-side",
+          "noteOnsets": 15,
+          "noteOnsetsPerSecond": 3.61,
+          "maximumSimultaneousPitches": 6
+        },
+        {
           "id": "klein-two-returns",
-          "noteOnsets": 45,
-          "noteOnsetsPerSecond": 3.96,
-          "maximumSimultaneousPitches": 8
+          "noteOnsets": 50,
+          "noteOnsetsPerSecond": 4.4,
+          "maximumSimultaneousPitches": 5
         },
         {
           "id": "klein-memory",
-          "noteOnsets": 10,
-          "noteOnsetsPerSecond": 3.68,
-          "maximumSimultaneousPitches": 7
+          "noteOnsets": 14,
+          "noteOnsetsPerSecond": 5.15,
+          "maximumSimultaneousPitches": 6
         },
         {
           "id": "projective-reflection",
-          "noteOnsets": 38,
-          "noteOnsetsPerSecond": 4.24,
-          "maximumSimultaneousPitches": 9
+          "noteOnsets": 31,
+          "noteOnsetsPerSecond": 3.46,
+          "maximumSimultaneousPitches": 8
         },
         {
           "id": "projective-twin",
-          "noteOnsets": 38,
-          "noteOnsetsPerSecond": 6.17,
-          "maximumSimultaneousPitches": 12
+          "noteOnsets": 20,
+          "noteOnsetsPerSecond": 3.25,
+          "maximumSimultaneousPitches": 10
         },
         {
           "id": "sphere-closure",
-          "noteOnsets": 44,
-          "noteOnsetsPerSecond": 3.67,
-          "maximumSimultaneousPitches": 11
+          "noteOnsets": 66,
+          "noteOnsetsPerSecond": 5.5,
+          "maximumSimultaneousPitches": 12
         },
         {
           "id": "sphere-map",
-          "noteOnsets": 18,
-          "noteOnsetsPerSecond": 3.57,
-          "maximumSimultaneousPitches": 7
+          "noteOnsets": 30,
+          "noteOnsetsPerSecond": 5.95,
+          "maximumSimultaneousPitches": 14
         },
         {
           "id": "sphere-boundary",
-          "noteOnsets": 14,
-          "noteOnsetsPerSecond": 2.97,
-          "maximumSimultaneousPitches": 7
+          "noteOnsets": 20,
+          "noteOnsetsPerSecond": 4.24,
+          "maximumSimultaneousPitches": 11
         },
         {
           "id": "outro-invocation",
-          "noteOnsets": 0,
-          "noteOnsetsPerSecond": 0,
-          "maximumSimultaneousPitches": 0
+          "noteOnsets": 9,
+          "noteOnsetsPerSecond": 1.84,
+          "maximumSimultaneousPitches": 7
         },
         {
           "id": "outro-connection",
-          "noteOnsets": 0,
-          "noteOnsetsPerSecond": 0,
-          "maximumSimultaneousPitches": 0
+          "noteOnsets": 17,
+          "noteOnsetsPerSecond": 1.88,
+          "maximumSimultaneousPitches": 7
         },
         {
           "id": "outro-stone",
-          "noteOnsets": 0,
-          "noteOnsetsPerSecond": 0,
-          "maximumSimultaneousPitches": 0
+          "noteOnsets": 12,
+          "noteOnsetsPerSecond": 1.6,
+          "maximumSimultaneousPitches": 8
         },
         {
           "id": "outro-world",
-          "noteOnsets": 0,
-          "noteOnsetsPerSecond": 0,
-          "maximumSimultaneousPitches": 0
+          "noteOnsets": 16,
+          "noteOnsetsPerSecond": 3.77,
+          "maximumSimultaneousPitches": 16
         }
       ]
     },
     "cylinderStereoMotion": {
       "stemId": "cello",
-      "sourceStemSha256": "7eaae7d167ffa2eb72c71d638cd8e25a8c1120cf5bf2b769e53aa107873b5f69",
+      "sourceStemSha256": "ed003dae757c60366efd45b89898be3fee66ea747d86561787e85788f1f6cca8",
       "automationConsumer": "scripts/score-audio.mjs equal-power PCM spatializer applied to the real MuseScore Basic cello stem",
       "earlyWindow": {
-        "startSeconds": 38,
-        "endSeconds": 42.5,
-        "leftRmsDbfs": -36.55,
-        "rightRmsDbfs": -42.88,
-        "leftMinusRightRmsDb": 6.33
+        "startSeconds": 43.904814,
+        "endSeconds": 48.92587,
+        "leftRmsDbfs": -36.54,
+        "rightRmsDbfs": -42.75,
+        "leftMinusRightRmsDb": 6.21
       },
       "lateWindow": {
-        "startSeconds": 52,
-        "endSeconds": 56,
-        "leftRmsDbfs": -42.68,
-        "rightRmsDbfs": -36.97,
-        "leftMinusRightRmsDb": -5.71
+        "startSeconds": 59.525877,
+        "endSeconds": 63.989037,
+        "leftRmsDbfs": -43.06,
+        "rightRmsDbfs": -37.66,
+        "leftMinusRightRmsDb": -5.41
       },
-      "leftToRightSwingDb": 12.04
+      "leftToRightSwingDb": 11.62
     },
     "chapterRenderProfiles": [
       {
         "chapterId": "plane",
-        "startSeconds": 21.502667,
-        "endSeconds": 37.762667,
+        "startSeconds": 26.42,
+        "endSeconds": 43.64,
         "stemRmsDbfs": [
           {
             "id": "piano",
-            "rmsDbfs": -35.95
+            "rmsDbfs": -36
           },
           {
             "id": "celesta",
@@ -459,23 +459,23 @@
           },
           {
             "id": "violin-i",
-            "rmsDbfs": -50.66
+            "rmsDbfs": -50.77
           },
           {
             "id": "violin-ii",
-            "rmsDbfs": -48.88
+            "rmsDbfs": -48.83
           },
           {
             "id": "viola",
-            "rmsDbfs": -46.26
+            "rmsDbfs": -46.13
           },
           {
             "id": "cello",
-            "rmsDbfs": -46.64
+            "rmsDbfs": -46.51
           },
           {
             "id": "double-bass",
-            "rmsDbfs": -61.85
+            "rmsDbfs": -61.52
           },
           {
             "id": "french-horn",
@@ -483,7 +483,7 @@
           },
           {
             "id": "bass-clarinet",
-            "rmsDbfs": -45.43
+            "rmsDbfs": -44.86
           },
           {
             "id": "choir-aahs",
@@ -520,16 +520,16 @@
       },
       {
         "chapterId": "cylinder",
-        "startSeconds": 37.762667,
-        "endSeconds": 56.601334,
+        "startSeconds": 43.64,
+        "endSeconds": 64.66,
         "stemRmsDbfs": [
           {
             "id": "piano",
-            "rmsDbfs": -57.22
+            "rmsDbfs": -58.27
           },
           {
             "id": "celesta",
-            "rmsDbfs": -56.88
+            "rmsDbfs": -57.3
           },
           {
             "id": "violin-i",
@@ -541,23 +541,23 @@
           },
           {
             "id": "viola",
-            "rmsDbfs": -50.6
+            "rmsDbfs": -50.1
           },
           {
             "id": "cello",
-            "rmsDbfs": -39.26
+            "rmsDbfs": -39.55
           },
           {
             "id": "double-bass",
-            "rmsDbfs": -45.44
+            "rmsDbfs": -45.28
           },
           {
             "id": "french-horn",
-            "rmsDbfs": -49.4
+            "rmsDbfs": -49.47
           },
           {
             "id": "bass-clarinet",
-            "rmsDbfs": -34.39
+            "rmsDbfs": -34.05
           },
           {
             "id": "choir-aahs",
@@ -565,7 +565,7 @@
           },
           {
             "id": "restrained-percussion",
-            "rmsDbfs": -45.68
+            "rmsDbfs": -46.09
           }
         ],
         "dominantPart": "bass-clarinet",
@@ -595,16 +595,16 @@
       },
       {
         "chapterId": "torus",
-        "startSeconds": 56.601334,
-        "endSeconds": 75.781334,
+        "startSeconds": 64.66,
+        "endSeconds": 86.16,
         "stemRmsDbfs": [
           {
             "id": "piano",
-            "rmsDbfs": -37.97
+            "rmsDbfs": -38.31
           },
           {
             "id": "celesta",
-            "rmsDbfs": -37.89
+            "rmsDbfs": -38.27
           },
           {
             "id": "violin-i",
@@ -612,19 +612,19 @@
           },
           {
             "id": "violin-ii",
-            "rmsDbfs": -43.11
+            "rmsDbfs": -43.35
           },
           {
             "id": "viola",
-            "rmsDbfs": -49.65
+            "rmsDbfs": -49.51
           },
           {
             "id": "cello",
-            "rmsDbfs": -48.35
+            "rmsDbfs": -46.17
           },
           {
             "id": "double-bass",
-            "rmsDbfs": -58.01
+            "rmsDbfs": -57.57
           },
           {
             "id": "french-horn",
@@ -632,7 +632,7 @@
           },
           {
             "id": "bass-clarinet",
-            "rmsDbfs": -57.55
+            "rmsDbfs": -61.06
           },
           {
             "id": "choir-aahs",
@@ -640,7 +640,7 @@
           },
           {
             "id": "restrained-percussion",
-            "rmsDbfs": -56.36
+            "rmsDbfs": -56.83
           }
         ],
         "dominantPart": "celesta",
@@ -651,8 +651,8 @@
           "cello",
           "viola",
           "restrained-percussion",
-          "bass-clarinet",
           "double-bass",
+          "bass-clarinet",
           "violin-i",
           "french-horn",
           "choir-aahs"
@@ -664,38 +664,38 @@
           "cello",
           "viola",
           "restrained-percussion",
-          "bass-clarinet",
-          "double-bass"
+          "double-bass",
+          "bass-clarinet"
         ]
       },
       {
         "chapterId": "mobius",
-        "startSeconds": 75.781334,
-        "endSeconds": 93.894667,
+        "startSeconds": 86.16,
+        "endSeconds": 105.82,
         "stemRmsDbfs": [
           {
             "id": "piano",
-            "rmsDbfs": -100.85
+            "rmsDbfs": -104.83
           },
           {
             "id": "celesta",
-            "rmsDbfs": -57.33
+            "rmsDbfs": -56.79
           },
           {
             "id": "violin-i",
-            "rmsDbfs": -50.1
+            "rmsDbfs": -50.02
           },
           {
             "id": "violin-ii",
-            "rmsDbfs": -49.21
+            "rmsDbfs": -49.1
           },
           {
             "id": "viola",
-            "rmsDbfs": -33.79
+            "rmsDbfs": -33.87
           },
           {
             "id": "cello",
-            "rmsDbfs": -39.58
+            "rmsDbfs": -39.56
           },
           {
             "id": "double-bass",
@@ -707,7 +707,7 @@
           },
           {
             "id": "bass-clarinet",
-            "rmsDbfs": -38.41
+            "rmsDbfs": -38.23
           },
           {
             "id": "choir-aahs",
@@ -715,7 +715,7 @@
           },
           {
             "id": "restrained-percussion",
-            "rmsDbfs": -49.39
+            "rmsDbfs": -49.55
           }
         ],
         "dominantPart": "viola",
@@ -744,44 +744,44 @@
       },
       {
         "chapterId": "klein",
-        "startSeconds": 93.894667,
-        "endSeconds": 112.626667,
+        "startSeconds": 105.82,
+        "endSeconds": 126.6,
         "stemRmsDbfs": [
           {
             "id": "piano",
-            "rmsDbfs": -39.61
+            "rmsDbfs": -40.02
           },
           {
             "id": "celesta",
-            "rmsDbfs": -51.87
+            "rmsDbfs": -52.3
           },
           {
             "id": "violin-i",
-            "rmsDbfs": -30.35
+            "rmsDbfs": -30.29
           },
           {
             "id": "violin-ii",
-            "rmsDbfs": -43.87
+            "rmsDbfs": -43.33
           },
           {
             "id": "viola",
-            "rmsDbfs": -54.14
+            "rmsDbfs": -53.67
           },
           {
             "id": "cello",
-            "rmsDbfs": -32.84
+            "rmsDbfs": -32.44
           },
           {
             "id": "double-bass",
-            "rmsDbfs": -38.86
+            "rmsDbfs": -37.94
           },
           {
             "id": "french-horn",
-            "rmsDbfs": -36.52
+            "rmsDbfs": -36.25
           },
           {
             "id": "bass-clarinet",
-            "rmsDbfs": -34.79
+            "rmsDbfs": -34.37
           },
           {
             "id": "choir-aahs",
@@ -789,7 +789,7 @@
           },
           {
             "id": "restrained-percussion",
-            "rmsDbfs": -39.74
+            "rmsDbfs": -40.17
           }
         ],
         "dominantPart": "violin-i",
@@ -821,8 +821,8 @@
       },
       {
         "chapterId": "projective",
-        "startSeconds": 112.626667,
-        "endSeconds": 131.38,
+        "startSeconds": 126.6,
+        "endSeconds": 148.42,
         "stemRmsDbfs": [
           {
             "id": "piano",
@@ -830,23 +830,23 @@
           },
           {
             "id": "celesta",
-            "rmsDbfs": -35.98
+            "rmsDbfs": -37.02
           },
           {
             "id": "violin-i",
-            "rmsDbfs": -47.13
+            "rmsDbfs": -46.8
           },
           {
             "id": "violin-ii",
-            "rmsDbfs": -47.95
+            "rmsDbfs": -47.91
           },
           {
             "id": "viola",
-            "rmsDbfs": -45.34
+            "rmsDbfs": -45.33
           },
           {
             "id": "cello",
-            "rmsDbfs": -59.04
+            "rmsDbfs": -58.95
           },
           {
             "id": "double-bass",
@@ -854,19 +854,19 @@
           },
           {
             "id": "french-horn",
-            "rmsDbfs": -44.65
+            "rmsDbfs": -45.1
           },
           {
             "id": "bass-clarinet",
-            "rmsDbfs": -92.07
+            "rmsDbfs": -95.01
           },
           {
             "id": "choir-aahs",
-            "rmsDbfs": -57.58
+            "rmsDbfs": -57.56
           },
           {
             "id": "restrained-percussion",
-            "rmsDbfs": -55.55
+            "rmsDbfs": -57.19
           }
         ],
         "dominantPart": "celesta",
@@ -896,24 +896,24 @@
       },
       {
         "chapterId": "sphere",
-        "startSeconds": 131.38,
-        "endSeconds": 156.301333,
+        "startSeconds": 148.42,
+        "endSeconds": 175.24,
         "stemRmsDbfs": [
           {
             "id": "piano",
-            "rmsDbfs": -32.1
+            "rmsDbfs": -32.43
           },
           {
             "id": "celesta",
-            "rmsDbfs": -50.24
+            "rmsDbfs": -49.6
           },
           {
             "id": "violin-i",
-            "rmsDbfs": -30.84
+            "rmsDbfs": -30.81
           },
           {
             "id": "violin-ii",
-            "rmsDbfs": -35.35
+            "rmsDbfs": -35.38
           },
           {
             "id": "viola",
@@ -921,27 +921,27 @@
           },
           {
             "id": "cello",
-            "rmsDbfs": -31.37
+            "rmsDbfs": -31.35
           },
           {
             "id": "double-bass",
-            "rmsDbfs": -35.16
+            "rmsDbfs": -35.18
           },
           {
             "id": "french-horn",
-            "rmsDbfs": -28.24
+            "rmsDbfs": -28.22
           },
           {
             "id": "bass-clarinet",
-            "rmsDbfs": -38.95
+            "rmsDbfs": -39.33
           },
           {
             "id": "choir-aahs",
-            "rmsDbfs": -38.81
+            "rmsDbfs": -38.9
           },
           {
             "id": "restrained-percussion",
-            "rmsDbfs": -43.58
+            "rmsDbfs": -43.9
           }
         ],
         "dominantPart": "french-horn",
@@ -949,8 +949,8 @@
           "french-horn",
           "violin-i",
           "cello",
-          "piano",
           "viola",
+          "piano",
           "double-bass",
           "violin-ii",
           "choir-aahs",
@@ -962,8 +962,8 @@
           "french-horn",
           "violin-i",
           "cello",
-          "piano",
           "viola",
+          "piano",
           "double-bass",
           "violin-ii",
           "choir-aahs",
@@ -974,128 +974,153 @@
       }
     ],
     "chapterJoinContinuity": {
-      "boundaryCount": 8,
-      "method": "RMS of the exact rendered master PCM in a 500 ms window centered on every chapter boundary from intro→Plane through Sphere→gallery; MIDI tests separately require overlapping sounding notes and pickups.",
-      "minimumCenteredWindowRmsDbfs": -51.3,
+      "boundaryCount": 9,
+      "method": "RMS of the exact rendered master PCM in a 500 ms window centered on all nine composed joins from intro→Plane through gallery→outro; MIDI tests separately require overlapping sounding notes and pickups.",
+      "minimumCenteredWindowRmsDbfs": -49.7,
       "joins": [
         {
           "from": "intro",
           "to": "plane",
-          "boundarySeconds": 21.502667,
+          "boundarySeconds": 26.42,
           "centeredWindowSeconds": [
-            21.252667,
-            21.752667
+            26.17,
+            26.67
           ],
-          "centeredWindowRmsDbfs": -51.3
+          "centeredWindowRmsDbfs": -49.7
         },
         {
           "from": "plane",
           "to": "cylinder",
-          "boundarySeconds": 37.762667,
+          "boundarySeconds": 43.64,
           "centeredWindowSeconds": [
-            37.512667,
-            38.012667
+            43.39,
+            43.89
           ],
-          "centeredWindowRmsDbfs": -45.5
+          "centeredWindowRmsDbfs": -44.67
         },
         {
           "from": "cylinder",
           "to": "torus",
-          "boundarySeconds": 56.601334,
+          "boundarySeconds": 64.66,
           "centeredWindowSeconds": [
-            56.351334,
-            56.851334
+            64.41,
+            64.91
           ],
-          "centeredWindowRmsDbfs": -42.64
+          "centeredWindowRmsDbfs": -41.39
         },
         {
           "from": "torus",
           "to": "mobius",
-          "boundarySeconds": 75.781334,
+          "boundarySeconds": 86.16,
           "centeredWindowSeconds": [
-            75.531334,
-            76.031334
+            85.91,
+            86.41
           ],
-          "centeredWindowRmsDbfs": -45.44
+          "centeredWindowRmsDbfs": -46.05
         },
         {
           "from": "mobius",
           "to": "klein",
-          "boundarySeconds": 93.894667,
+          "boundarySeconds": 105.82,
           "centeredWindowSeconds": [
-            93.644667,
-            94.144667
+            105.57,
+            106.07
           ],
-          "centeredWindowRmsDbfs": -45.24
+          "centeredWindowRmsDbfs": -45.02
         },
         {
           "from": "klein",
           "to": "projective",
-          "boundarySeconds": 112.626667,
+          "boundarySeconds": 126.6,
           "centeredWindowSeconds": [
-            112.376667,
-            112.876667
+            126.35,
+            126.85
           ],
-          "centeredWindowRmsDbfs": -45.07
+          "centeredWindowRmsDbfs": -46.56
         },
         {
           "from": "projective",
           "to": "sphere",
-          "boundarySeconds": 131.38,
+          "boundarySeconds": 148.42,
           "centeredWindowSeconds": [
-            131.13,
-            131.63
+            148.17,
+            148.67
           ],
-          "centeredWindowRmsDbfs": -40.74
+          "centeredWindowRmsDbfs": -40.8
         },
         {
           "from": "sphere",
           "to": "gallery",
-          "boundarySeconds": 156.301333,
+          "boundarySeconds": 175.24,
           "centeredWindowSeconds": [
-            156.051333,
-            156.551333
+            174.99,
+            175.49
           ],
-          "centeredWindowRmsDbfs": -41.63
+          "centeredWindowRmsDbfs": -40.38
+        },
+        {
+          "from": "gallery",
+          "to": "outro",
+          "boundarySeconds": 182.24,
+          "centeredWindowSeconds": [
+            181.99,
+            182.49
+          ],
+          "centeredWindowRmsDbfs": -45.28
         }
       ]
+    },
+    "lateTimelineCoverage": {
+      "source": "generated master.mid exact note ends plus exact rendered master PCM form windows",
+      "lastNotatedEventEndSeconds": 211.682,
+      "tailSilenceSeconds": 2.358,
+      "outroWindowSeconds": [
+        182.24,
+        210.04
+      ],
+      "outroRmsDbfs": -41.36,
+      "endCardTailWindowSeconds": [
+        210.04,
+        211.682
+      ],
+      "endCardTailRmsDbfs": -38.59
     },
     "spectrumFingerprint": [
       {
         "frequencyHz": 63,
-        "db": -78.06
+        "db": -71.78
       },
       {
         "frequencyHz": 125,
-        "db": -80.07
+        "db": -76.2
       },
       {
         "frequencyHz": 250,
-        "db": -77.47
+        "db": -77.76
       },
       {
         "frequencyHz": 500,
-        "db": -75.69
+        "db": -70.84
       },
       {
         "frequencyHz": 1000,
-        "db": -83.04
+        "db": -80.04
       },
       {
         "frequencyHz": 2000,
-        "db": -83.02
+        "db": -86.41
       },
       {
         "frequencyHz": 4000,
-        "db": -91.15
+        "db": -96.46
       },
       {
         "frequencyHz": 8000,
-        "db": -108.09
+        "db": -106.05
       },
       {
         "frequencyHz": 16000,
-        "db": -143.58
+        "db": -142.43
       }
     ],
     "stemsWithSignal": 11,
