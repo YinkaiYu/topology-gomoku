@@ -30,6 +30,8 @@ export function createIntroScene(documentRef, sceneDefinition) {
   const board = decorative(documentRef, "intro-board-edge");
   board.dataset.introBoardEdge = "";
   board.dataset.boardSource = "game-render-adapter";
+  board.dataset.occlusion = "intro-board-edge";
+  board.dataset.matchShape = "board-edge";
   const gameFrame = documentRef.createElement("iframe");
   gameFrame.className = "intro-board-edge__game-render";
   gameFrame.dataset.introGameRender = "";

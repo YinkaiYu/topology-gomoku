@@ -159,9 +159,13 @@ body {
 }
 
 .chapter-exit-occlusion__shape {
+  position: absolute;
+  left: 50%;
+  top: 50%;
   display: block;
   width: 78%;
   height: 78%;
+  margin: -39% 0 0 -39%;
   object-fit: contain;
   opacity: 0.2;
   filter: brightness(0.16) saturate(0.45) contrast(1.2);
@@ -212,6 +216,22 @@ body {
   opacity: 0;
   filter: brightness(0.62) saturate(0.7);
   transform: scale(0.985);
+  transform-origin: center;
+}
+
+.chapter-card__match-geometry {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  display: block;
+  width: 720px;
+  height: 720px;
+  margin: auto;
+  object-fit: contain;
+  opacity: 0;
+  filter: brightness(0.22) saturate(0.56) blur(8px);
+  pointer-events: none;
+  transform: scale(0.94);
   transform-origin: center;
 }
 
@@ -367,6 +387,15 @@ body {
   padding: var(--safe-top) 360px var(--safe-bottom);
 }
 
+.end-card__closing-aperture {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background: radial-gradient(ellipse at 50% 50%, rgba(6, 9, 8, 0.18) 0 8%, rgba(6, 9, 8, 0.76) 34%, rgba(6, 9, 8, 0.98) 78%);
+  opacity: 0.22;
+  pointer-events: none;
+}
+
 .end-card__glow {
   position: absolute;
   right: -420px;
@@ -449,10 +478,39 @@ body {
   transform: scale(0.94);
 }
 
+.outro-composition {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: rgba(6, 9, 8, 0.56);
+}
+
+.outro-aperture {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  background: radial-gradient(ellipse at 50% 50%, rgba(6, 9, 8, 0.08) 0 12%, rgba(6, 9, 8, 0.58) 44%, rgba(6, 9, 8, 0.96) 82%);
+  opacity: 0.78;
+  pointer-events: none;
+}
+
+.outro-aperture__closing-light {
+  display: block;
+  width: 560px;
+  height: 560px;
+  border: 1px solid rgba(242, 239, 231, 0.14);
+  border-radius: 50%;
+  box-shadow: 0 0 120px rgba(242, 239, 231, 0.06), inset 0 0 88px rgba(6, 9, 8, 0.78);
+  opacity: 0.28;
+}
+
 .pv-transition-layer {
   display: block;
   overflow: hidden;
   contain: strict;
+  isolation: isolate;
   will-change: opacity;
 }
 
@@ -502,25 +560,27 @@ body {
   pointer-events: none;
 }
 
-.seven-world-gallery__surface {
+.seven-world-gallery__canvas {
   display: block;
   width: 100%;
   height: 100%;
-  object-fit: contain;
-  opacity: 0.72;
-  filter: brightness(0.78) saturate(0.76) contrast(1.06);
+  border: 0;
+  background: transparent;
+  opacity: 0.78;
+  filter: brightness(0.82) saturate(0.78) contrast(1.06);
 }
 
-.seven-world-gallery__paths {
+.seven-world-gallery__adapter {
   position: absolute;
-  inset: 14%;
-  width: 72%;
-  height: 72%;
-  overflow: visible;
+  left: -1px;
+  top: -1px;
+  width: 1px;
+  height: 1px;
+  border: 0;
+  opacity: 0;
   pointer-events: none;
 }
 
-.seven-world-gallery__paths [data-gallery-path] {
-  opacity: 0;
-  filter: drop-shadow(0 0 8px color-mix(in srgb, var(--gallery-light) 28%, transparent));
+.seven-world-gallery__shape[data-match-shape] {
+  --match-light: var(--gallery-light);
 }

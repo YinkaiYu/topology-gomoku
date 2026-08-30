@@ -1,0 +1,347 @@
+{
+  "task": "task7-transitions",
+  "viewport": {
+    "width": 3840,
+    "height": 2160,
+    "deviceScaleFactor": 1
+  },
+  "native4k": true,
+  "frames": [
+    {
+      "id": "cylinder-to-torus-pre",
+      "seek": 49.300000000000004,
+      "phase": "pre",
+      "transition": "chapter-cylinder--chapter-card-torus",
+      "filename": "task7-cylinder-to-torus-pre.png",
+      "description": "cylinder section before the torus inner-ring match begins",
+      "path": "artifacts/pv-transition-scenes-task7/task7-cylinder-to-torus-pre.png",
+      "viewport": {
+        "width": 3840,
+        "height": 2160,
+        "deviceScaleFactor": 1
+      },
+      "native4k": true,
+      "timelineTime": 49.3,
+      "observation": {
+        "id": "cylinder-to-torus-pre",
+        "seek": 49.300000000000004,
+        "transition": "chapter-cylinder--chapter-card-torus",
+        "renderReady": true,
+        "layer": {
+          "occlusion": "cylinder-section",
+          "occlusionGeometry": "cylinder-section",
+          "occlusionConsumed": true,
+          "match": "cylinder-section->torus-inner-ring",
+          "shape": "cylinder-section->torus-inner-ring",
+          "source": "cylinder-section",
+          "target": "torus-inner-ring",
+          "sourceBbox": {
+            "x": -524.071533203125,
+            "y": -1081.0244140625,
+            "width": 4888.158203125,
+            "height": 2749.580078125
+          },
+          "targetBbox": {
+            "x": 1581.5999755859375,
+            "y": 741.5999755859375,
+            "width": 676.7999267578125,
+            "height": 676.7999267578125
+          }
+        },
+        "galleryCamera": {
+          "transform": "none",
+          "position": "center",
+          "overlapsOutroNarration": false
+        }
+      }
+    },
+    {
+      "id": "cylinder-to-torus-mid",
+      "seek": 49.690000000000005,
+      "phase": "mid",
+      "transition": "chapter-cylinder--chapter-card-torus",
+      "filename": "task7-cylinder-to-torus-mid.png",
+      "description": "cylinder section matched to the torus inner ring during the black dip",
+      "path": "artifacts/pv-transition-scenes-task7/task7-cylinder-to-torus-mid.png",
+      "viewport": {
+        "width": 3840,
+        "height": 2160,
+        "deviceScaleFactor": 1
+      },
+      "native4k": true,
+      "timelineTime": 49.69,
+      "observation": {
+        "id": "cylinder-to-torus-mid",
+        "seek": 49.690000000000005,
+        "transition": "chapter-cylinder--chapter-card-torus",
+        "renderReady": true,
+        "layer": {
+          "occlusion": "cylinder-section",
+          "occlusionGeometry": "cylinder-section",
+          "occlusionConsumed": true,
+          "match": "cylinder-section->torus-inner-ring",
+          "shape": "cylinder-section->torus-inner-ring",
+          "source": "cylinder-section",
+          "target": "torus-inner-ring",
+          "sourceBbox": {
+            "x": 126.48486328125,
+            "y": -715.087646484375,
+            "width": 3587.0458984375,
+            "height": 2017.70654296875
+          },
+          "targetBbox": {
+            "x": 1565.219970703125,
+            "y": 725.219970703125,
+            "width": 709.56005859375,
+            "height": 709.56005859375
+          }
+        },
+        "galleryCamera": {
+          "transform": "none",
+          "position": "center",
+          "overlapsOutroNarration": false
+        }
+      }
+    },
+    {
+      "id": "cylinder-to-torus-post",
+      "seek": 50.02,
+      "phase": "post",
+      "transition": "chapter-cylinder--chapter-card-torus",
+      "filename": "task7-cylinder-to-torus-post.png",
+      "description": "torus card after the cylinder-to-torus handoff",
+      "path": "artifacts/pv-transition-scenes-task7/task7-cylinder-to-torus-post.png",
+      "viewport": {
+        "width": 3840,
+        "height": 2160,
+        "deviceScaleFactor": 1
+      },
+      "native4k": true,
+      "timelineTime": 50.02,
+      "observation": {
+        "id": "cylinder-to-torus-post",
+        "seek": 50.02,
+        "transition": "chapter-cylinder--chapter-card-torus",
+        "renderReady": true,
+        "layer": {
+          "occlusion": "cylinder-section",
+          "occlusionGeometry": "cylinder-section",
+          "occlusionConsumed": true,
+          "match": "cylinder-section->torus-inner-ring",
+          "shape": "cylinder-section->torus-inner-ring",
+          "source": "cylinder-section",
+          "target": "torus-inner-ring",
+          "sourceBbox": {
+            "x": 122.890625,
+            "y": -717.109375,
+            "width": 3594.234375,
+            "height": 2021.75
+          },
+          "targetBbox": {
+            "x": 1560,
+            "y": 720,
+            "width": 720,
+            "height": 720
+          }
+        },
+        "galleryCamera": {
+          "transform": "none",
+          "position": "center",
+          "overlapsOutroNarration": false
+        }
+      }
+    },
+    {
+      "id": "torus-to-mobius-mid",
+      "seek": 66.69,
+      "phase": "mid",
+      "transition": "chapter-torus--chapter-card-mobius",
+      "filename": "task7-torus-to-mobius-mid.png",
+      "description": "torus aperture matched to the Möbius twist center",
+      "path": "artifacts/pv-transition-scenes-task7/task7-torus-to-mobius-mid.png",
+      "viewport": {
+        "width": 3840,
+        "height": 2160,
+        "deviceScaleFactor": 1
+      },
+      "native4k": true,
+      "timelineTime": 66.69,
+      "observation": {
+        "id": "torus-to-mobius-mid",
+        "seek": 66.69,
+        "transition": "chapter-torus--chapter-card-mobius",
+        "renderReady": true,
+        "layer": {
+          "occlusion": "torus-aperture",
+          "occlusionGeometry": "torus-aperture",
+          "occlusionConsumed": true,
+          "match": "torus-inner-ring->mobius-twist-center",
+          "shape": "torus-inner-ring->mobius-twist-center",
+          "source": "torus-inner-ring",
+          "target": "mobius-twist-center",
+          "sourceBbox": {
+            "x": 126.48486328125,
+            "y": -715.087646484375,
+            "width": 3587.0458984375,
+            "height": 2017.70654296875
+          },
+          "targetBbox": {
+            "x": 1565.219970703125,
+            "y": 725.219970703125,
+            "width": 709.56005859375,
+            "height": 709.56005859375
+          }
+        },
+        "galleryCamera": {
+          "transform": "none",
+          "position": "center",
+          "overlapsOutroNarration": false
+        }
+      }
+    },
+    {
+      "id": "mobius-to-klein-mid",
+      "seek": 82.69,
+      "phase": "mid",
+      "transition": "chapter-mobius--chapter-card-klein",
+      "filename": "task7-mobius-to-klein-mid.png",
+      "description": "Möbius grazing mirror matched to the Klein crossing",
+      "path": "artifacts/pv-transition-scenes-task7/task7-mobius-to-klein-mid.png",
+      "viewport": {
+        "width": 3840,
+        "height": 2160,
+        "deviceScaleFactor": 1
+      },
+      "native4k": true,
+      "timelineTime": 82.69,
+      "observation": {
+        "id": "mobius-to-klein-mid",
+        "seek": 82.69,
+        "transition": "chapter-mobius--chapter-card-klein",
+        "renderReady": true,
+        "layer": {
+          "occlusion": "mobius-ribbon",
+          "occlusionGeometry": "mobius-ribbon",
+          "occlusionConsumed": true,
+          "match": "mobius-grazing-mirror->klein-cross",
+          "shape": "mobius-grazing-mirror->klein-cross",
+          "source": "mobius-grazing-mirror",
+          "target": "klein-cross",
+          "sourceBbox": {
+            "x": 126.48486328125,
+            "y": -715.087646484375,
+            "width": 3587.0458984375,
+            "height": 2017.70654296875
+          },
+          "targetBbox": {
+            "x": 1565.219970703125,
+            "y": 725.219970703125,
+            "width": 709.56005859375,
+            "height": 709.56005859375
+          }
+        },
+        "galleryCamera": {
+          "transform": "none",
+          "position": "center",
+          "overlapsOutroNarration": false
+        }
+      }
+    },
+    {
+      "id": "gallery-withdrawal-before-outro",
+      "seek": 146.9,
+      "phase": "overlap-before",
+      "transition": "seven-world-gallery--outro",
+      "filename": "task7-gallery-withdrawal-146.90s.png",
+      "description": "gallery withdrawal immediately before the first outro narration cue",
+      "path": "artifacts/pv-transition-scenes-task7/task7-gallery-withdrawal-146.90s.png",
+      "viewport": {
+        "width": 3840,
+        "height": 2160,
+        "deviceScaleFactor": 1
+      },
+      "native4k": true,
+      "timelineTime": 146.9,
+      "observation": {
+        "id": "gallery-withdrawal-before-outro",
+        "seek": 146.9,
+        "transition": "seven-world-gallery--outro",
+        "renderReady": true,
+        "layer": {
+          "occlusion": "gallery-sphere",
+          "occlusionGeometry": "gallery-sphere",
+          "occlusionConsumed": true,
+          "match": "gallery-sphere->outro-darkness",
+          "shape": "gallery-sphere->dark-aperture",
+          "source": "gallery-sphere",
+          "target": "outro-darkness",
+          "sourceBbox": {
+            "x": 2523.869873046875,
+            "y": 1119.5865478515625,
+            "width": 617.453125,
+            "height": 617.453125
+          },
+          "targetBbox": {
+            "x": 0,
+            "y": 0,
+            "width": 3840,
+            "height": 2160
+          }
+        },
+        "galleryCamera": {
+          "transform": "matrix(0.842872, -0.0147021, 0.0147021, 0.842872, 0, 0)",
+          "position": "withdrawn-center",
+          "overlapsOutroNarration": false
+        }
+      }
+    },
+    {
+      "id": "gallery-withdrawal-during-outro",
+      "seek": 148.4,
+      "phase": "overlap-during",
+      "transition": "seven-world-gallery--outro",
+      "filename": "task7-gallery-withdrawal-148.40s.png",
+      "description": "gallery withdrawal continuing under the first outro narration cue",
+      "path": "artifacts/pv-transition-scenes-task7/task7-gallery-withdrawal-148.40s.png",
+      "viewport": {
+        "width": 3840,
+        "height": 2160,
+        "deviceScaleFactor": 1
+      },
+      "native4k": true,
+      "timelineTime": 148.4,
+      "observation": {
+        "id": "gallery-withdrawal-during-outro",
+        "seek": 148.4,
+        "transition": "seven-world-gallery--outro",
+        "renderReady": true,
+        "layer": {
+          "occlusion": "gallery-sphere",
+          "occlusionGeometry": "gallery-sphere",
+          "occlusionConsumed": true,
+          "match": "gallery-sphere->outro-darkness",
+          "shape": "gallery-sphere->dark-aperture",
+          "source": "gallery-sphere",
+          "target": "outro-darkness",
+          "sourceBbox": {
+            "x": 2485.0322265625,
+            "y": 1110.1563720703125,
+            "width": 580.83203125,
+            "height": 580.8321533203125
+          },
+          "targetBbox": {
+            "x": 0,
+            "y": 0,
+            "width": 3840,
+            "height": 2160
+          }
+        },
+        "galleryCamera": {
+          "transform": "matrix(0.788182, -0.0185291, 0.0185291, 0.788182, 0, 0)",
+          "position": "withdrawn-center",
+          "overlapsOutroNarration": true
+        }
+      }
+    }
+  ]
+}

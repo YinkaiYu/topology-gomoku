@@ -33,7 +33,7 @@ const EXPECTED = Object.freeze({
     evidence: { kind: "single-cycle", cycles: 1, edgeAction: "opposite-sides-preserved" },
     demos: ["horizontal-wrap"],
     morph: "native",
-    exit: "cylinder-wall"
+    exit: "cylinder-section"
   },
   torus: {
     light: "#385f78",

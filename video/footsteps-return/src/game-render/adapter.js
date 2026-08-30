@@ -141,7 +141,10 @@ export class GameRenderAdapter {
     this.demo = demo;
     this.buffers.clear();
     this.ready = (async () => {
-      const configuredRoot = new URLSearchParams(window.location.search).get("sourceRoot") || "/app";
+      const configuredRoot = new URLSearchParams(window.location.search).get("sourceRoot")
+        || this.frame.dataset?.sourceRoot
+        || new URL(this.frame.getAttribute("src") || this.frame.src || window.location.href, window.location.href).searchParams.get("sourceRoot")
+        || "/app";
       const sourceRoot = new URL(`${configuredRoot.replace(/\/$/, "")}/`, window.location.href);
       const hookUrl = new URL("./src/game-render/hook.js", window.location.href);
       const [htmlResponse, gameResponse] = await Promise.all([

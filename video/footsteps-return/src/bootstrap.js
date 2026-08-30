@@ -3,6 +3,7 @@ import { prepareIntroScene } from "../compositions/intro.js";
 import { fitCompositionText } from "./runtime/fit-text.js";
 import { buildMasterTimeline } from "./runtime/master-timeline.js";
 import { prepareTopologyChapterScenes } from "./runtime/topology-surfaces.js";
+import { prepareSevenWorldGalleryScenes } from "../compositions/seven-worlds.js";
 
 export const composition = Object.freeze({
   id: "footsteps-return",
@@ -41,7 +42,11 @@ export function bootstrapComposition({
     hostWindow.__pvChapterControllers = controllers;
     return controllers;
   });
-  hostWindow.__renderReady = Promise.all([fontsReady, introReady, chaptersReady]).then(() => {
+  const galleryReady = prepareSevenWorldGalleryScenes(registry).then((controllers) => {
+    hostWindow.__pvGalleryControllers = controllers;
+    return controllers;
+  });
+  hostWindow.__renderReady = Promise.all([fontsReady, introReady, chaptersReady, galleryReady]).then(() => {
     fitCompositionText(root);
     documentRef.documentElement.dataset.renderReady = "true";
     return Object.freeze({ composition, sceneIds: Object.keys(registry) });

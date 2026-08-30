@@ -5,6 +5,7 @@ import { addEndCardReveal, createEndCardScene } from "../../compositions/end-car
 import { addIntroReveal, createIntroScene } from "../../compositions/intro.js";
 import { createChapterScene } from "../../compositions/chapters/index.js";
 import { createSevenWorldGalleryScene, addSevenWorldGalleryMotion } from "../../compositions/seven-worlds.js";
+import { createOutroScene } from "../../compositions/outro.js";
 import { createPlaceholderScene, createSceneRegistry } from "../../compositions/shared/scene.js";
 import { addTopologyChapterMotion } from "./topology-surfaces.js";
 import { addCinematicTransition, getTransitionContract, TRANSITION_DURATION, validateTransitionContracts } from "./transitions.js";
@@ -23,7 +24,8 @@ export function buildMasterTimeline({ document: documentRef, gsap, stage, sceneF
       chapter: ({ document, definition: scene }) => createChapterScene(document, scene),
       "end-card": ({ document, definition: scene }) => createEndCardScene(document, scene),
       intro: ({ document, definition: scene }) => createIntroScene(document, scene),
-      "seven-world-gallery": ({ document, definition: scene }) => createSevenWorldGalleryScene(document, scene)
+      "seven-world-gallery": ({ document, definition: scene }) => createSevenWorldGalleryScene(document, scene),
+      outro: ({ document, definition: scene }) => createOutroScene(document, scene)
     };
     const defaultFactory = defaultFactories[definition.kind]
       ?? (({ document, definition: scene }) => createPlaceholderScene(document, scene));

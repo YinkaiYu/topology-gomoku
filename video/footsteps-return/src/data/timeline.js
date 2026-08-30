@@ -20,7 +20,7 @@ export const masterTimeline = Object.freeze({
     freezeScene({ id: "chapter-projective", kind: "chapter", chapterId: "projective", start: 103, duration: 12, narrationCueIds: ["projective-reflection", "projective-twin"], transition: { kind: "surface-occlusion", target: "chapter-card-sphere" } }),
     freezeScene({ id: "chapter-card-sphere", kind: "chapter-card", chapterId: "sphere", start: 117, duration: 3, narrationCueIds: [], transition: { kind: "match-cut", target: "chapter-sphere" } }),
     freezeScene({ id: "chapter-sphere", kind: "chapter", chapterId: "sphere", start: 120, duration: 20, narrationCueIds: ["sphere-closure", "sphere-map", "sphere-boundary"], transition: { kind: "surface-occlusion", target: "seven-world-gallery" } }),
-    freezeScene({ id: "seven-world-gallery", kind: "seven-world-gallery", start: 140, duration: 7, narrationCueIds: [], transition: { kind: "match-cut", target: "outro" } }),
+    freezeScene({ id: "seven-world-gallery", kind: "seven-world-gallery", start: 140, duration: 9.2, narrationCueIds: [], transition: { kind: "match-cut", target: "outro" } }),
     freezeScene({ id: "outro", kind: "outro", start: 147, duration: 14, narrationCueIds: ["outro-invocation", "outro-connection", "outro-stone", "outro-world"], transition: { kind: "fade-to-black", target: "end-card" } }),
     freezeScene({ id: "end-card", kind: "end-card", start: 161, duration: 4, narrationCueIds: [], transition: { kind: "hold", target: null } })
   ]),

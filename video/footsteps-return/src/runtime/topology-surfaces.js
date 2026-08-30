@@ -10,6 +10,20 @@ const smooth = (value) => {
 };
 const freeze = (value) => Object.freeze(value);
 
+const EXIT_MATCH_SHAPES = Object.freeze({
+  "plane-shadow": "plane-shadow",
+  "cylinder-section": "cylinder-section",
+  "torus-aperture": "torus-inner-ring",
+  "mobius-ribbon": "mobius-grazing-mirror",
+  "klein-neck": "klein-cross",
+  "projective-crosscap": "projective-crosscap",
+  "sphere-horizon": "sphere-horizon"
+});
+
+const EXIT_MATCH_ALTERNATES = Object.freeze({
+  projective: "projective-reflection"
+});
+
 function frozenPoint(value) {
   return freeze({ scale: value.scale, x: value.x, y: value.y, z: value.z });
 }
@@ -392,14 +406,27 @@ export function createTopologyChapterScene(documentRef, sceneDefinition, definit
   const occluder = documentRef.createElement("div");
   occluder.className = "chapter-exit-occlusion";
   occluder.dataset.chapterExitOcclusion = definition.id;
+  occluder.dataset.occlusion = definition.exitOcclusion.geometry;
   occluder.dataset.occlusionGeometry = definition.exitOcclusion.geometry;
   occluder.dataset.layoutIgnore = "";
   occluder.setAttribute("aria-hidden", "true");
-  const occluderShape = documentRef.createElement("img");
-  occluderShape.className = "chapter-exit-occlusion__shape";
-  occluderShape.src = `./assets/topology/${definition.id}.svg`;
-  occluderShape.alt = "";
+  const createOcclusionShape = (matchShape, role) => {
+    const shape = documentRef.createElement("img");
+    shape.className = `chapter-exit-occlusion__shape chapter-exit-occlusion__shape--${role}`;
+    shape.dataset.occlusion = definition.exitOcclusion.geometry;
+    shape.dataset.matchShape = matchShape;
+    shape.dataset.matchGeometryAsset = `./assets/topology/${definition.id}.svg`;
+    shape.dataset.matchRole = role;
+    shape.src = `./assets/topology/${definition.id}.svg`;
+    shape.alt = "";
+    return shape;
+  };
+  const occluderShape = createOcclusionShape(EXIT_MATCH_SHAPES[definition.exitOcclusion.geometry] ?? definition.exitOcclusion.geometry, "primary");
   occluder.append(occluderShape);
+  const alternateMatch = EXIT_MATCH_ALTERNATES[definition.id];
+  if (alternateMatch) occluder.append(createOcclusionShape(alternateMatch, "alternate"));
+  board.dataset.matchShape = `${definition.id}-board`;
+  board.dataset.occlusion = `${definition.id}-board`;
 
   composition.append(atmosphere, surface, board, occluder);
   const scene = createSceneElement(documentRef, sceneDefinition, composition);

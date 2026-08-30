@@ -16,6 +16,14 @@ export function createEndCardScene(documentRef, sceneDefinition) {
   const card = documentRef.createElement("div");
   card.className = "end-card";
 
+  const closingAperture = documentRef.createElement("div");
+  closingAperture.className = "end-card__closing-aperture";
+  closingAperture.dataset.endCardClosingAperture = "";
+  closingAperture.dataset.occlusion = "end-card-darkness";
+  closingAperture.dataset.matchShape = "end-card-darkness";
+  closingAperture.dataset.matchGeometry = "dark-aperture";
+  closingAperture.setAttribute("aria-hidden", "true");
+
   const glow = documentRef.createElement("div");
   glow.className = "end-card__glow";
   glow.dataset.layoutIgnore = "";
@@ -51,7 +59,7 @@ export function createEndCardScene(documentRef, sceneDefinition) {
   institute.append(logo);
 
   identity.append(copy, divider, institute);
-  card.append(glow, identity);
+  card.append(closingAperture, glow, identity);
   return createSceneElement(documentRef, sceneDefinition, card);
 }
 

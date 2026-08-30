@@ -6,7 +6,7 @@ export const cylinderChapter = defineChapterScene({
   identity: { light: "#3f8c87", cameraPath: "axial-side-closure" },
   evidence: { kind: "single-cycle", cycles: 1, edgeAction: "opposite-sides-preserved" },
   entryTransition: { kind: "match-cut" },
-  exitOcclusion: { kind: "surface-occlusion", geometry: "cylinder-wall" },
+  exitOcclusion: { kind: "surface-occlusion", geometry: "cylinder-section" },
   morphMode: "native",
   camera: {
     from: { scale: 0.965, x: 1, y: -2, z: 0 },

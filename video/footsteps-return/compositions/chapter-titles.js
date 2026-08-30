@@ -10,6 +10,36 @@ const chapterAppearance = Object.freeze({
   sphere: Object.freeze({ light: "#c79244", silhouette: "sphere.svg" })
 });
 
+const chapterMatchShapes = Object.freeze({
+  plane: "plane-silhouette",
+  cylinder: "cylinder-silhouette",
+  torus: "torus-silhouette",
+  mobius: "mobius-silhouette",
+  klein: "klein-silhouette",
+  projective: "projective-silhouette",
+  sphere: "sphere-silhouette"
+});
+
+const chapterEntryMatchShapes = Object.freeze({
+  plane: "plane-silhouette",
+  cylinder: "cylinder-silhouette",
+  torus: "torus-inner-ring",
+  mobius: "mobius-twist-center",
+  klein: "klein-cross",
+  projective: "projective-crosscap",
+  sphere: "sphere-horizon"
+});
+
+const chapterOcclusionShapes = Object.freeze({
+  plane: "plane-silhouette",
+  cylinder: "cylinder-section",
+  torus: "torus-inner-ring",
+  mobius: "mobius-twist-center",
+  klein: "klein-cross",
+  projective: "projective-crosscap",
+  sphere: "sphere-horizon"
+});
+
 export const chapterTitleTiming = Object.freeze({
   ambient: Object.freeze({ volumeAt: 0.14, volumeDuration: 1.15, silhouetteAt: 0.2, silhouetteDuration: 0.92 }),
   phaseA: Object.freeze({ actAt: 0.24, actDuration: 0.42, chapterAt: 0.3, chapterDuration: 0.58, heroAt: 1.04 }),
@@ -52,6 +82,23 @@ export function createChapterTitleScene(documentRef, sceneDefinition, chapter) {
   silhouette.alt = "";
   silhouette.setAttribute("aria-hidden", "true");
 
+  const createMatchGeometry = (shape, role, occlusionShape = shape) => {
+    const matchGeometry = documentRef.createElement("img");
+    matchGeometry.className = `chapter-card__match-geometry chapter-card__match-geometry--${role}`;
+    matchGeometry.dataset.matchShape = shape;
+    matchGeometry.dataset.occlusion = occlusionShape;
+    matchGeometry.dataset.matchGeometryAsset = `./assets/topology/${chapter.id}.svg`;
+    matchGeometry.dataset.matchRole = role;
+    matchGeometry.src = `./assets/topology/${chapter.id}.svg`;
+    matchGeometry.alt = "";
+    matchGeometry.setAttribute("aria-hidden", "true");
+    return matchGeometry;
+  };
+  const matchGeometry = createMatchGeometry(chapterMatchShapes[chapter.id], "outgoing", chapterOcclusionShapes[chapter.id]);
+  const entryMatchGeometry = chapterEntryMatchShapes[chapter.id] === chapterMatchShapes[chapter.id]
+    ? null
+    : createMatchGeometry(chapterEntryMatchShapes[chapter.id], "entry");
+
   const copy = documentRef.createElement("div");
   copy.className = "chapter-card__copy";
   const topSlot = documentRef.createElement("div");
@@ -67,7 +114,9 @@ export function createChapterTitleScene(documentRef, sceneDefinition, chapter) {
   topSlot.append(act, topology);
   copy.append(topSlot, chapterName);
 
-  card.append(volume, silhouette, copy);
+  card.append(volume, silhouette, matchGeometry);
+  if (entryMatchGeometry) card.append(entryMatchGeometry);
+  card.append(copy);
   return createSceneElement(documentRef, sceneDefinition, card);
 }
 

@@ -1,41 +1,39 @@
-# Task 7 report: seven-world gallery and cinematic transitions
+# Task 7 修复报告：七流形汇聚与电影化转场
 
-## Outcome
+日期：2026-08-30
+分支：`codex/seven-realms-pv`
+范围：Task 7 Fix round 1；未启动完整 FFmpeg render。
 
-- Added `runtime/transitions.js` with one explicit contract for every adjacent pair in the 18-scene master timeline. Every contract uses the same four-stage cinematic grammar: real-geometry occlusion, controlled focus pull, short black color dip, and silhouette match-cut. The runtime animates only opacity, filter, and scale; no page movement or decorative connector layer is introduced.
-- Wired the contracts into `runtime/master-timeline.js`, preserving the existing chapter exits from Task 6. Chapter exit geometry is used as the outgoing match source where available, while chapter cards and the gallery use their real silhouette targets. The transition veil is fixed to the stage and does not alter scene bounds.
-- Added `compositions/seven-worlds.js`. The gallery mounts exactly seven unique surfaces in chapter order, with the existing Task 3/6 demo paths as the only illuminated paths. Klein keeps its two real demos as separate paths; no synthetic multi-boundary path or extra gallery copy is created. Surfaces reveal in a restrained stagger, then the camera withdraws once over a finite timeline.
-- Added gallery/veil styling and updated the PV design contract plus long-lived QA evidence. The gallery keyframe contact sheet is [`artifacts/pv-seven-world-gallery-task7-contact-sheet.png`](../../../artifacts/pv-seven-world-gallery-task7-contact-sheet.png).
+## 收敛结果
 
-## Transition contracts
+- 17 对相邻 scene 保持显式 transition contract；runtime 现在从当前出口与下一 scene 查询真实 `data-occlusion` / `data-match-shape` 节点，并消费各自的 clip/mask、shape、opacity 与 focus pull 参数。不存在 fallback geometry；cylinder 出口使用真实 `cylinder-section`，并与 torus `torus-inner-ring` 对接。
+- Task 6 七章出口补齐真实几何查询接口；章节牌为同一节点集合提供 entry/outgoing match geometry，Klein、Möbius、projective 等拓扑使用不同轮廓参数。outro 与 end-card 增加 dark aperture / closing-light 节点，gallery→outro→end-card 不跳过 silhouette 阶段。
+- gallery 移除 SVG/polyline 路径 overlay，挂载七个独立的 `GameRenderAdapter` 实例与透明 Canvas；每个实例只使用一个真实 Task 3/6 demo/path ID，完成 final-five / morph / rotation 映射后按章节顺序点亮。
+- gallery duration 调整为 9.2s；camera withdrawal 由 142.8s 延续至 149.2s，与 147s 首条 outro narration 重叠，并保留 161s end-card 的尾音空间。
 
-| Boundary | Contracted match |
-| --- | --- |
-| Cylinder → Torus | cylinder section → torus inner ring |
-| Torus → Möbius | torus inner ring → Möbius twist center |
-| Möbius → Klein | Möbius grazing mirror → Klein crossing |
-| All other adjacent pairs | existing chapter exit geometry / next silhouette with the same focus-pull and black-dip grammar |
+## 可复现视觉证据
 
-The gallery has no visible title, chapter card, summary sentence, or extra label. It leaves the final outro interval intact for the later title-card cadence.
+运行 `node video/footsteps-return/scripts/capture-transition-evidence.mjs` 会在 `artifacts/pv-transition-scenes-task7/` 输出 7 张原生 3840×2160、deviceScaleFactor 1 的静帧，并生成联系表与 manifest：
 
-## TDD and browser evidence
+- cylinder→torus：49.30s / 49.69s / 50.02s（前 / 中 / 后）
+- torus→Möbius：66.69s 中段
+- Möbius→Klein：82.69s 中段
+- gallery withdrawal：146.90s 与 148.40s（后者覆盖 147s outro narration）
 
-- RED: `node --test tests/pv-transitions.test.js` initially failed because the transition runtime and gallery scene did not exist.
-- GREEN: `node --test tests/pv-transitions.test.js` passes 3/3. It checks all 17 adjacent contracts, prohibited transition families, exact seven-shape uniqueness, exact real path IDs/source module, no gallery copy, boundary coverage, unchanged scene bounds, and deterministic reversible seeking.
-- The same 3840 × 2160 Chromium page was used for the gallery middle/withdrawal keyframes. The contact sheet was visually inspected: all seven silhouettes remain distinct and once-only, the two Klein paths remain separate, and the camera withdrawal is a scale pull rather than page motion.
+manifest 同时保存 transition selector、occlusion geometry、消费状态、source/target bbox 与 camera transform；联系表仅作导航，独立原帧均已落盘。完整成片交由 Task 11。
 
-## Verification
+## 验证
 
-- `npm test`: 126/126 passed.
-- `npm run pv:lint`: 0 errors, 0 warnings.
-- `npm run pv:validate` / `npm run pv:inspect`: manifest, runtime, layout (0 issues / 9 samples), motion, and contrast checks passed.
-- `npm run validate`: package validation passed.
-- `npm run docs:check`: documentation validation passed.
-- `npm run pv:game-render:verify`: paths 8/8, crossings 10, reversible=yes, nativeMorph=6, RAF queue ≤ 1.
-- `git diff --check`: passed.
+- `node --test tests/pv-transitions.test.js`：通过（4/4）
+- `node --test tests/pv-chapters.test.js`：通过（7/7）
+- `npm test`：通过（127/127）
+- `npm run pv:lint`、`npm run pv:validate`、`npm run pv:inspect`：通过（0 errors / 0 warnings）
+- `npm run pv:game-render:verify`：通过（paths 8/8、crossings 10、可逆）
+- `npm run pv:doctor`：通过（可通过 doctor discovery 找到 FFmpeg / FFprobe 工具链）
+- `npm run docs:check` 与 `git diff --check`：通过
+- `node video/footsteps-return/scripts/capture-transition-evidence.mjs`：通过（7 帧、联系表、manifest）
+- FFmpeg/FFprobe：当前 shell 未提供直接 callable 路径，未启动 draft/full render；记录为非阻塞关注点，Task 11 使用 `pv:doctor` 发现的路径处理。
 
-## Rendering note
+## 自查
 
-The low-bitrate review render was not produced because this environment does not expose FFmpeg/FFprobe on `PATH`. This is a non-blocking environment note for Task 11; Task 11 should use the paths discovered by `pv:doctor`/the local toolchain before producing the complete 4K render. No release media was added to Git.
-
-Documentation impact: `video/footsteps-return/DESIGN.md` now records the gallery and transition contract, and `docs/design/qa.md` records the reproducible gallery evidence. No game rules, platform adapter contract, or SemVer changed.
+未引入 wipe / slide / translate 页面移动、持续跨屏连接线、额外 gallery 标题或总结句；timeline 仍为 165s、60fps、可逆 seek、无无限循环。变更与视觉证据已写入 `docs/design/qa.md`。
