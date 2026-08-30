@@ -7,6 +7,8 @@ const zlib = require("node:zlib");
 const ROOT = path.resolve(__dirname, "..");
 const APP_ROOT = path.join(ROOT, "app");
 const FONT_ROOT = path.join(APP_ROOT, "assets", "fonts");
+const PV_ROOT = path.join(ROOT, "video", "chapter-teaser");
+const PV_FONT_ROOT = path.join(PV_ROOT, "assets", "fonts");
 const TEXT_EXTENSIONS = new Set([".html", ".css", ".js", ".json"]);
 const FONT_WEIGHTS = ["400", "600", "700"];
 const WOFF2_TAGS = [
@@ -155,9 +157,9 @@ function appTextFiles(directory) {
   });
 }
 
-function requiredNonAsciiCodepoints() {
+function requiredNonAsciiCodepoints(root = APP_ROOT) {
   const codepoints = new Set();
-  appTextFiles(APP_ROOT).forEach((file) => {
+  appTextFiles(root).forEach((file) => {
     for (const character of fs.readFileSync(file, "utf8")) {
       if (character.codePointAt(0) > 0x7f && !/\s/u.test(character)) {
         codepoints.add(character.codePointAt(0));
@@ -172,6 +174,21 @@ test("所有应用文本都由三个内嵌字体字重完整覆盖", () => {
   assert.ok(required.length > 200, "expected the complete application character set");
   FONT_WEIGHTS.forEach((weight) => {
     const fontPath = path.join(FONT_ROOT, `noto-serif-sc-${weight}.woff2`);
+    const cmap = readCmap(fs.readFileSync(fontPath));
+    const missing = required.filter((codepoint) => !cmap.has(codepoint));
+    assert.deepEqual(
+      missing,
+      [],
+      `${path.basename(fontPath)} missing: ${missing.map((value) => String.fromCodePoint(value)).join("")}`
+    );
+  });
+});
+
+test("章节预告全部文本都由专用内嵌字体字重完整覆盖", () => {
+  const required = requiredNonAsciiCodepoints(PV_ROOT);
+  assert.ok(required.length > 100, "expected the chapter teaser character set");
+  FONT_WEIGHTS.forEach((weight) => {
+    const fontPath = path.join(PV_FONT_ROOT, `topo-serif-pv-${weight}.woff2`);
     const cmap = readCmap(fs.readFileSync(fontPath));
     const missing = required.filter((codepoint) => !cmap.has(codepoint));
     assert.deepEqual(

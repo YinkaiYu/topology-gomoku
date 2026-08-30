@@ -1,0 +1,200 @@
+{
+  "schemaVersion": 1,
+  "title": "七界足迹",
+  "render": {
+    "fps": 60,
+    "master": { "width": 3840, "height": 2160 },
+    "review": { "width": 1920, "height": 1080 },
+    "sampleRate": 48000,
+    "titleFrames": 216,
+    "titleTransformFrame": 108,
+    "defaultCueGapFrames": 18,
+    "paragraphGapFrames": 36
+  },
+  "palette": {
+    "void": "#070908",
+    "voidLift": "#111715",
+    "paper": "#f2efe7",
+    "ink": "#21302c",
+    "connection": "#3f8c87",
+    "twist": "#c79244",
+    "danger": "#d95b4f",
+    "spatial": "#8b7556"
+  },
+  "intro": {
+    "id": "intro",
+    "preRollFrames": 84,
+    "postRollFrames": 72,
+    "cues": [
+      { "text": "人们总把棋盘的边缘视作尽头", "pauseAfterFrames": 30 },
+      { "text": "可那些消失在边界上的道路并未中断", "pauseAfterFrames": 18 },
+      { "text": "它们在另一处接缝后延续", "pauseAfterFrames": 12 },
+      { "text": "将遥远的落点重新变为近邻", "pauseAfterFrames": 36 },
+      { "text": "现在，落子之人啊，循着隐藏的连接前行吧", "pauseAfterFrames": 18 },
+      { "text": "七种世界，将在你面前依次展开", "pauseAfterFrames": 0 }
+    ]
+  },
+  "chapters": [
+    {
+      "id": "plane",
+      "act": "ACT. PROLOGUE",
+      "chapter": "方庭",
+      "manifold": "平面",
+      "width": 7,
+      "height": 7,
+      "start": [1, 3],
+      "direction": 0,
+      "accent": "#ded7c6",
+      "preRollFrames": 36,
+      "postRollFrames": 96,
+      "cues": [
+        { "text": "边界分明，方向笔直，胜负都在眼前", "pauseAfterFrames": 18 },
+        { "text": "方庭以有限的秩序收容第一条五连", "pauseAfterFrames": 12 },
+        { "text": "也由此埋下对所有边界的疑问", "pauseAfterFrames": 0 }
+      ]
+    },
+    {
+      "id": "cylinder",
+      "act": "ACT. I",
+      "chapter": "回廊",
+      "manifold": "圆柱面",
+      "width": 7,
+      "height": 6,
+      "start": [5, 2],
+      "direction": 0,
+      "accent": "#68aaa2",
+      "preRollFrames": 36,
+      "postRollFrames": 96,
+      "cues": [
+        { "text": "左右相接，上下仍被截断", "pauseAfterFrames": 18 },
+        { "text": "横向的路绕过世界回到身后", "pauseAfterFrames": 12 },
+        { "text": "纵向的路却有始有终", "pauseAfterFrames": 24 },
+        { "text": "只拥有一重循环的世界，该如何丈量远近？", "pauseAfterFrames": 0 }
+      ]
+    },
+    {
+      "id": "torus",
+      "act": "ACT. II",
+      "chapter": "环游",
+      "manifold": "环面",
+      "width": 7,
+      "height": 6,
+      "start": [1, 0],
+      "direction": 5,
+      "accent": "#667fac",
+      "preRollFrames": 36,
+      "postRollFrames": 96,
+      "cues": [
+        { "text": "四边相接，两个方向各自成环", "pauseAfterFrames": 18 },
+        { "text": "一条斜线可以先越过上边", "pauseAfterFrames": 12 },
+        { "text": "再从左侧归来", "pauseAfterFrames": 24 },
+        { "text": "两重循环交织之处", "pauseAfterFrames": 12 },
+        { "text": "最短的道路往往藏在视野之外", "pauseAfterFrames": 0 }
+      ]
+    },
+    {
+      "id": "mobius",
+      "act": "ACT. III",
+      "chapter": "扭带",
+      "manifold": "莫比乌斯环",
+      "width": 8,
+      "height": 6,
+      "start": [6, 0],
+      "direction": 1,
+      "accent": "#c28a48",
+      "preRollFrames": 36,
+      "postRollFrames": 96,
+      "cues": [
+        { "text": "左右边界相接，却带着一次翻转", "pauseAfterFrames": 18 },
+        { "text": "沿同一面环行一周", "pauseAfterFrames": 12 },
+        { "text": "归来时上下已经交换", "pauseAfterFrames": 24 },
+        { "text": "只有一面的世界，正反又该如何分辨？", "pauseAfterFrames": 0 }
+      ]
+    },
+    {
+      "id": "klein",
+      "act": "ACT. IV",
+      "chapter": "瓶界",
+      "manifold": "克莱因瓶",
+      "width": 7,
+      "height": 6,
+      "start": [1, 0],
+      "direction": 5,
+      "accent": "#aa7448",
+      "preRollFrames": 36,
+      "postRollFrames": 96,
+      "cues": [
+        { "text": "一组边界如圆环般相接", "pauseAfterFrames": 12 },
+        { "text": "另一组边界让方向翻转", "pauseAfterFrames": 18 },
+        { "text": "两种归来共处一界", "pauseAfterFrames": 12 },
+        { "text": "一条路保持原样，一条路带回倒影", "pauseAfterFrames": 24 },
+        { "text": "路径会记住你选择的环绕", "pauseAfterFrames": 0 }
+      ]
+    },
+    {
+      "id": "projective",
+      "act": "ACT. V",
+      "chapter": "双生",
+      "manifold": "实射影平面",
+      "width": 8,
+      "height": 8,
+      "start": [1, 0],
+      "direction": 5,
+      "accent": "#8374a8",
+      "preRollFrames": 36,
+      "postRollFrames": 96,
+      "cues": [
+        { "text": "上下左右，全都通向各自的倒影", "pauseAfterFrames": 18 },
+        { "text": "一次越界改变方向", "pauseAfterFrames": 12 },
+        { "text": "两次倒映使棋路重新吻合", "pauseAfterFrames": 24 },
+        { "text": "在双生的世界里", "pauseAfterFrames": 12 },
+        { "text": "每次远行，都会遇见另一个自己", "pauseAfterFrames": 0 }
+      ]
+    },
+    {
+      "id": "sphere",
+      "act": "ACT. VI",
+      "chapter": "归圆",
+      "manifold": "球面",
+      "width": 7,
+      "height": 7,
+      "start": [1, 0],
+      "direction": 5,
+      "accent": "#d7d0ad",
+      "preRollFrames": 36,
+      "postRollFrames": 132,
+      "cues": [
+        { "text": "在最后的世界", "pauseAfterFrames": 12 },
+        { "text": "棋路离开一条边，便会沿相邻的方向继续", "pauseAfterFrames": 18 },
+        { "text": "四条边依次归向彼此", "pauseAfterFrames": 12 },
+        { "text": "方形的棋盘也随之闭合成球", "pauseAfterFrames": 30 },
+        { "text": "人们为了看清完整的世界", "pauseAfterFrames": 12 },
+        { "text": "将它展开成一张有边的图", "pauseAfterFrames": 24 },
+        { "text": "所谓边界，或许只是观察世界时留下的痕迹", "pauseAfterFrames": 0 }
+      ]
+    }
+  ],
+  "tableau": {
+    "id": "seven-worlds",
+    "durationFrames": 480
+  },
+  "finale": {
+    "id": "finale",
+    "preRollFrames": 48,
+    "postRollFrames": 96,
+    "cues": [
+      { "text": "现在，落子之人", "pauseAfterFrames": 18 },
+      { "text": "七种世界已经显现", "pauseAfterFrames": 12 },
+      { "text": "但最后的连接，仍等待你亲手完成", "pauseAfterFrames": 30 },
+      { "text": "若你已经理解边界的意义", "pauseAfterFrames": 12 },
+      { "text": "就落下那颗棋子", "pauseAfterFrames": 24 },
+      { "text": "然后，去看见世界本来的样子吧", "pauseAfterFrames": 0 }
+    ]
+  },
+  "endCard": {
+    "id": "end-card",
+    "durationFrames": 390,
+    "gameTitle": "拓扑五子棋",
+    "institution": "中国科学院物理研究所"
+  }
+}
