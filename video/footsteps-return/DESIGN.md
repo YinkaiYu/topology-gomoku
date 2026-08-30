@@ -32,20 +32,20 @@
 - 使用仓库内嵌的 `Topo Serif`（400/600/700）。标题为 600 或 700，说明与字幕为 400；不以系统字体回退作为正常结果。
 - 主标题最小 96px，章节标题最小 72px；4K 字幕初始字号固定 88px，只允许在 84–96px 范围内重新审定，不通过压字距或缩字硬塞。数字使用 `font-variant-numeric: tabular-nums`。
 - 通用底部安全边界为 144px；字幕另用独立的 `--caption-baseline-bottom: 180px`，由零高 DOM 基线标记在字体就绪后校正到距画布底边 180px（误差不超过 1px），可见字形包围盒不得越过安全边界。字幕始终单行、居中；每个语义分句独立成 cue，上一 cue 结束即 hard clear，任何时刻只允许一个 caption group 可见。
-- 字幕只使用白字与 4px 黑描边，整行 7 帧淡入、7 帧淡出。禁止底板、胶囊、投影、发光、逐字 / 逐词运动、卡拉 OK 高亮、整屏遮罩与两行回退；句号不显示，有语义的问号保留。
+- 46 条运行时字幕只使用白字与 4px 黑描边，整行 7 帧淡入、7 帧淡出；每条均为单行，且可见文本不含任何 Unicode 标点（包括句号、逗号、冒号与问号）。旁白合成文本中的书面标点与停顿韵律保持不变。禁止底板、胶囊、投影、发光、逐字 / 逐词运动、卡拉 OK 高亮、整屏遮罩与两行回退。
 
 ## 正式旁白与实测时间线
 
 - 旁白逐字采用 Task 2 定稿，章节牌的 `ACT.`、关卡名与流形名只在画面显影；正文中的“方庭”正常保留。章节牌期间旁白与字幕都为零。
 - 正式旁白固定为 Task 8C 已选 F `cold-witness`：`Qwen/Qwen3-TTS-12Hz-1.7B-VoiceDesign@0e711a1c0aa5aad30654426e0d11f67716c1211e` 在 CPU 上通过官方 `generate_voice_design` 生成，复用获批 timbre/shared-delivery 原文。21 个 cue 使用确定性独立 seed，在完整候选批次验证后才原子替换本地 `captures/voiceover/`；无 speaker、参考音频、克隆、CustomVoice/Base 或 fallback。旧 Kokoro/eSpeak 轨仅保留历史来源记录，不进入正式音频。
-- 21 条干声均为 48 kHz / mono / PCM-16，目标 RMS -22 dBFS、峰值上限 -7 dBFS，未截词且未时间压缩。实测旁白把合成时间线从旧节奏锚点 183.352 秒自然扩展到 214.040 秒；字幕、scene/gallery/outro 边界、转场证据与 score 补齐时长均由同一时间线重建。
+- 21 条干声均为 48 kHz / mono / PCM-16，目标 RMS -22 dBFS、峰值上限 -7 dBFS，未截词且未时间压缩。实测旁白把合成时间线从旧节奏锚点 183.352 秒自然扩展到 214.040 秒；字幕、scene/gallery/outro 边界与转场证据均由同一时间线重建。获批配乐则按新的章节边界与旁白窗口重新安排七章 form、103 个 gesture 和 9 个连续 join，并从作曲源完整重渲染为 214.040 秒，不是在 183.352 秒旧母带后补零。
 - 本地 `openai/whisper-small@973afd…` 的原始 corpus CER 为 0.252427，仅作风险筛查；raw CER ≥ 0.30 的 11 条由 `openai/whisper-large-v3-turbo@41f01f…` 聚焦交叉验证。原始 transcript/CER、简繁体诊断值和普通词/拓扑词重点核听项同时保留，不据此宣告可懂度通过；214.040 秒连续干声审听母版仍标记 `user-review-required`。
 
 ## 原创配乐与音效
 
 - 配乐的原创结构细胞固定为 D–F–G–A–C；它在 intro 以短促节奏形出现，并在 gallery / outro 可追踪回归。七章不共享旋律，只在结构铰点使用不超过 625 ms 的 D/A 边界音响。所有旋律、节奏与配器均为本项目原创；不导入、描摹、转录或变形参考 PV 音乐。`audio/score/score-plan.json` 是可审查作曲源，生成的 MusicXML / MIDI 与每个声部 stem 必须由它确定性重建。
 - 七章是七个独立音乐世界：Plane 为 D Lydian 的钢琴清亮主题；Cylinder 为 B-flat Mixolydian 的低音单簧管、拨弦与横向循环；Torus 让钢琴 / 钢片琴的 4.75 / 5.25 秒周期交织；Mobius 以 C octatonic、3+2+3/8、viola / bass clarinet 和反向弓纹理折返；Klein 以 D Phrygian dominant 的高低声部对答及金属推进；Projective 以 E Lydian 的 celesta、玻璃点、弱合唱和冷弦形成镜像空间；Sphere 由 D major 钢琴、全弦、克制圆号与轻合唱完整展开，最终释放到 D6/9。
-- 每个结构边界都由跨线乐句、提前进入的 pickup、和声枢纽、节奏或音色接力连接，不以长沉默充当转场。旁白期间以稀疏短音、分离音区和受控复音让出中频；gallery 继续 Sphere 的动势，outro 收束各章残影；最终和弦在 180.300 秒结束，末尾 3.052 秒保留真实静默重量。
+- 每个结构边界都由跨线乐句、提前进入的 pickup、和声枢纽、节奏或音色接力连接，不以长沉默充当转场。旁白期间以稀疏短音、分离音区和受控复音让出中频；gallery 继续 Sphere 的动势，outro 收束各章残影。实际渲染 PCM 证明 outro 182.240–210.040 秒仍有音乐活动（RMS -41.36 dBFS），end-card 210.040–211.682 秒的最终事件 / 和弦尾部 RMS 为 -38.59 dBFS；最后记谱事件在 211.682 秒结束，至 214.040 秒只保留 2.358 秒有意的释放静默。
 - SFX 只允许落子、跨缝、曲面弯曲、镜头遮蔽与换章低频五类，全部由固定 seed 的方程合成，不使用外部录音或持续轰鸣。声音资源、SoundFont、模型与构建工具许可统一登记在 `assets/audio-licenses.json`；每项外部依赖必须引用仓库保存的实际 LICENSE / COPYING / 模型卡及 SHA-256，并区分发布音频输入与仅构建工具。
 - 发布前必须由人类完成配乐、旁白与 SFX 的主观听审。自动证据只可声明静音、削波、时长、实际 stem 的章节主导配器、跨章连续性、MIDI 声部密度、真实干声 PCM 与配乐的 RMS / 180–4500 Hz 比较、声像迁移、波形与频谱；代理无法可信试听时必须明确保留该限制。
 
