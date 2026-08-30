@@ -1,15 +1,35 @@
+param(
+  [string]$ProjectRoot
+)
+
 $ErrorActionPreference = 'Stop'
 
-$projectRoot = Split-Path -Parent $PSScriptRoot
+if ([string]::IsNullOrWhiteSpace($ProjectRoot)) {
+  $projectRoot = Split-Path -Parent $PSScriptRoot
+} else {
+  $projectRoot = [System.IO.Path]::GetFullPath($ProjectRoot)
+}
 $projectRootPrefix = $projectRoot.TrimEnd([System.IO.Path]::DirectorySeparatorChar) + [System.IO.Path]::DirectorySeparatorChar
 $errors = [System.Collections.Generic.List[string]]::new()
-$markdownFiles = @(
-  Get-ChildItem -LiteralPath $projectRoot -Recurse -Force -File -Filter '*.md' |
-    Where-Object {
-      $relative = $_.FullName.Substring($projectRootPrefix.Length)
-      $relative -notmatch '^(?:\.git|\.worktrees|node_modules|\.venv|\.uv-cache)(?:[\\/]|$)'
+$excludedDirectories = [System.Collections.Generic.HashSet[string]]::new([System.StringComparer]::OrdinalIgnoreCase)
+@('.git', '.worktrees', 'node_modules', '.venv', '.uv-cache') | ForEach-Object {
+  [void]$excludedDirectories.Add($_)
+}
+$pendingDirectories = [System.Collections.Generic.Stack[string]]::new()
+$pendingDirectories.Push($projectRoot)
+$markdownFileList = [System.Collections.Generic.List[System.IO.FileInfo]]::new()
+while ($pendingDirectories.Count -gt 0) {
+  $directory = $pendingDirectories.Pop()
+  foreach ($file in Get-ChildItem -LiteralPath $directory -Force -File -Filter '*.md') {
+    $markdownFileList.Add($file)
+  }
+  foreach ($child in Get-ChildItem -LiteralPath $directory -Force -Directory) {
+    if (-not $excludedDirectories.Contains($child.Name)) {
+      $pendingDirectories.Push($child.FullName)
     }
-)
+  }
+}
+$markdownFiles = @($markdownFileList | Sort-Object FullName)
 
 foreach ($file in $markdownFiles) {
   $content = Get-Content -LiteralPath $file.FullName -Raw

@@ -1,0 +1,53 @@
+{
+  "schemaVersion": 1,
+  "purpose": "mandarin-male-performance-auditions",
+  "textSource": {
+    "scriptPath": "video/footsteps-return/audio/voiceover/script.json",
+    "cueIds": ["intro-boundary"],
+    "text": "人们总把棋盘的边缘视作尽头。"
+  },
+  "model": {
+    "id": "Qwen/Qwen3-TTS-12Hz-0.6B-CustomVoice",
+    "revision": "85e237c12c027371202489a0ec509ded67b5e4b5",
+    "package": {
+      "name": "qwen-tts",
+      "version": "0.1.1"
+    },
+    "language": "Chinese",
+    "speaker": "Uncle_Fu",
+    "device": "cpu",
+    "referenceAudio": null
+  },
+  "styles": [
+    {
+      "id": "documentary",
+      "seed": 83001,
+      "instruction": "请用成熟、清晰的标准普通话，像克制庄重的科学或宇宙纪录片旁白一样不疾不徐地朗读；不要悲伤，不要使用新闻播音腔，句尾收束干净。"
+    },
+    {
+      "id": "adventure",
+      "seed": 83002,
+      "instruction": "请用成熟的标准普通话，带着探索感与向前的动力，坚定而有精神地朗读；轻微强调关键意象，不要喊叫，不要使用广告腔，不要戏剧化。"
+    },
+    {
+      "id": "contemplative",
+      "seed": 83003,
+      "instruction": "请用成熟、圆润的标准普通话，低沉但清晰，平静、舒展而神秘地朗读；不要悲伤，不要拖尾，不要使用播音腔。"
+    }
+  ],
+  "generation": {
+    "maxNewTokens": 512,
+    "doSample": true,
+    "topK": 50,
+    "temperature": 1.0,
+    "repetitionPenalty": 1.05
+  },
+  "output": {
+    "directory": "video/footsteps-return/captures/voice-auditions",
+    "sampleRateHz": 48000,
+    "channels": 1,
+    "subtype": "PCM_16",
+    "targetRmsDbfs": -22,
+    "peakCeilingDbfs": -1
+  }
+}

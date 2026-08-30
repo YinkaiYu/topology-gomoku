@@ -1,0 +1,71 @@
+{
+  "schemaVersion": 1,
+  "status": "user-review-required",
+  "configSha256": "54ed72fb4fef0eeeaae00aac7a7fdff96f76a14a3b942dd07f065fd2f8b2521e",
+  "text": "人们总把棋盘的边缘视作尽头。",
+  "model": {
+    "id": "Qwen/Qwen3-TTS-12Hz-0.6B-CustomVoice",
+    "revision": "85e237c12c027371202489a0ec509ded67b5e4b5",
+    "package": {
+      "name": "qwen-tts",
+      "version": "0.1.1"
+    },
+    "language": "Chinese",
+    "speaker": "Uncle_Fu"
+  },
+  "normalization": {
+    "directory": "video/footsteps-return/captures/voice-auditions",
+    "sampleRateHz": 48000,
+    "channels": 1,
+    "subtype": "PCM_16",
+    "targetRmsDbfs": -22,
+    "peakCeilingDbfs": -1
+  },
+  "outputs": [
+    {
+      "style": "documentary",
+      "instruction": "请用成熟、清晰的标准普通话，像克制庄重的科学或宇宙纪录片旁白一样不疾不徐地朗读；不要悲伤，不要使用新闻播音腔，句尾收束干净。",
+      "seed": 83001,
+      "file": "video/footsteps-return/captures/voice-auditions/documentary.wav",
+      "sourceSampleRateHz": 24000,
+      "normalizedSampleRateHz": 48000,
+      "channels": 1,
+      "subtype": "PCM_16",
+      "durationSeconds": 3.2,
+      "peakDbfs": -7.0655,
+      "rmsDbfs": -22.0,
+      "sha256": "ae6a9ee2c7d7f78eea40708ac668c55adbe53f726975748e26dac9be8e4dde7d",
+      "status": "user-review-required"
+    },
+    {
+      "style": "adventure",
+      "instruction": "请用成熟的标准普通话，带着探索感与向前的动力，坚定而有精神地朗读；轻微强调关键意象，不要喊叫，不要使用广告腔，不要戏剧化。",
+      "seed": 83002,
+      "file": "video/footsteps-return/captures/voice-auditions/adventure.wav",
+      "sourceSampleRateHz": 24000,
+      "normalizedSampleRateHz": 48000,
+      "channels": 1,
+      "subtype": "PCM_16",
+      "durationSeconds": 4.96,
+      "peakDbfs": -6.6373,
+      "rmsDbfs": -22.0,
+      "sha256": "8c494114d24a09e7ab98f09c8cd0a35bde6eaf6f20476df06aa0d458b5404675",
+      "status": "user-review-required"
+    },
+    {
+      "style": "contemplative",
+      "instruction": "请用成熟、圆润的标准普通话，低沉但清晰，平静、舒展而神秘地朗读；不要悲伤，不要拖尾，不要使用播音腔。",
+      "seed": 83003,
+      "file": "video/footsteps-return/captures/voice-auditions/contemplative.wav",
+      "sourceSampleRateHz": 24000,
+      "normalizedSampleRateHz": 48000,
+      "channels": 1,
+      "subtype": "PCM_16",
+      "durationSeconds": 3.76,
+      "peakDbfs": -5.7672,
+      "rmsDbfs": -22.0,
+      "sha256": "a6649392fbf0eea9ec51d989f4b9f5b8b89f88176a2abb4a68df3e08f2bb6f94",
+      "status": "user-review-required"
+    }
+  ]
+}

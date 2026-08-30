@@ -1,0 +1,23 @@
+{
+  "schemaVersion": 1,
+  "package": {
+    "name": "qwen-tts",
+    "version": "0.1.1",
+    "spdx": "Apache-2.0",
+    "sourceUrl": "https://files.pythonhosted.org/packages/31/01/95f3ae26f5b7eb2105f69ad2c15af5a28b9ebdd1258a0b27541f5ebd6225/qwen_tts-0.1.1-py3-none-any.whl",
+    "distributionSha256": "11a290d8dabc7ef91a90c54478c8ab19b3edb1d85c0882313721892bdc4af15d",
+    "licenseArchivePath": "qwen_tts-0.1.1.dist-info/licenses/LICENSE",
+    "licenseFile": "assets/licenses/audio/qwen3-tts-0.1.1-apache-2.0.txt",
+    "licenseSha256": "a44a6081c73ad75f0255bb2bb5cab74ef1829565a895a24e53a4f11290ab7655"
+  },
+  "model": {
+    "id": "Qwen/Qwen3-TTS-12Hz-0.6B-CustomVoice",
+    "revision": "85e237c12c027371202489a0ec509ded67b5e4b5",
+    "spdx": "Apache-2.0",
+    "sourceUrl": "https://huggingface.co/Qwen/Qwen3-TTS-12Hz-0.6B-CustomVoice/raw/85e237c12c027371202489a0ec509ded67b5e4b5/README.md",
+    "sourceSha256": "1e3adeecc7a72d6756fdb77c2847f8e994195e105b51206a7a5c049b0dfa48a8",
+    "modelCardFile": "assets/licenses/audio/qwen3-tts-model-card-85e237c.md",
+    "modelCardSha256": "f010321beea475a26a048ab9f8ba69c7fdb1242745d90a047a3e08b336bf923b",
+    "savedNormalization": "source text with trailing whitespace trimmed and one final LF"
+  }
+}

@@ -1,6 +1,6 @@
 # 开发环境与依赖
 
-仓库以 Node.js 运行测试与 H5 校验，以 PowerShell 执行 Windows 构建脚本；Python 用于确定性生成拓扑 SVG、内嵌字体子集与 PV 的本地 Kokoro 节奏配音。
+仓库以 Node.js 运行测试与 H5 校验，以 PowerShell 执行 Windows 构建脚本；Python 用于确定性生成拓扑 SVG、内嵌字体子集、PV 的本地节奏配音与 Qwen3-TTS 配音试听。
 
 ## 基础工具
 
@@ -27,6 +27,7 @@ npm run pv:validate
 npm run pv:inspect
 npm run pv:preview
 npm run pv:voice
+npm run pv:voice:auditions
 npm run pv:score
 node ./video/footsteps-return/scripts/capture-caption-evidence.mjs
 ```
@@ -37,6 +38,7 @@ node ./video/footsteps-return/scripts/capture-caption-evidence.mjs
 - `npm run pv:doctor` 检查 PV 所需的 Node.js 22、FFmpeg、eSpeak NG、MuseScore 4 与仓库字体/拓扑资产；`pv:lint`、`pv:validate`、`pv:inspect` 依次执行合成静态、综合运行时质量门与布局检查。
 - `npm run pv:game-render:verify` 在 Chromium 中验证 PV 专用的透明真实游戏渲染层：四角 alpha、教学文字抑制、纸张纹理禁用、相同状态像素哈希、形变与旋转差异。HyperFrames 通过同源 `render-game.html` 的 `gameRender.selectShot()` 与显式 `gameRender.render(state)` 驱动同一个持久 iframe/Canvas；它不会按墙钟自行播放，也不生成逐帧图片或中间视频。
 - `npm run pv:voice` 读取锁定的 `audio/voiceover/script.json`，以 Kokoro-82M `zm_yunyang` / speed 0.88 生成 21 个可替换 cue WAV，归一化为 48kHz 单声道 16-bit PCM，再按实际采样时长重建字幕与 183.352 秒弹性时间线；`npm run pv:voice -- <文字或文本文件>` 仍保留单条 TTS 包装器，并强制写入被忽略的 PV 采集目录。
+- `npm run pv:voice:auditions` 仅用锁定 revision `85e237c12c027371202489a0ec509ded67b5e4b5` 的官方 `Qwen/Qwen3-TTS-12Hz-0.6B-CustomVoice` 与内置普通话男声 `Uncle_Fu`，在 CPU 上生成同一开场原文的 documentary / adventure / contemplative 三条试听；它不生成或替换 21 条正式 cue。WAV 固定写入被忽略的 `captures/voice-auditions/`，归一化为 48kHz 单声道 PCM-16；加 `-- --verify` 可据已提交 manifest 复核本地 WAV 的格式、响度与 SHA-256。
 - `node ./video/footsteps-return/scripts/capture-caption-evidence.mjs` 在真实 Chromium 中重放字幕，输出 6 张原生 4K 长期证据和本地忽略的 1920×1080 / 30fps / 69 秒字幕专审视频。
 - `npm run pv:score` 从可审查的 `audio/score/score-plan.json` 确定性生成 11 声部 MusicXML / MIDI、逐声部 stem 与 5 类原创合成 SFX；doctor 必须把 MuseScore 4 / FFmpeg 解析为真实存在的绝对路径。MuseScore Basic 先真实渲染每条 stem，`score-audio.mjs` 再在这些 PCM 上消费静态声场和 Cylinder 横向自动化，FFmpeg 由同一批 stem 求和生成 48kHz 立体声母带。WAV 与低码率 Opus 审听件本地忽略；提交的 `render-metadata.json`、`review.json` 与 SVG 联系表记录时长、SHA-256、峰值、RMS、真实干声对比、MIDI 密度、章节 stem 主导配器、跨章连续性、声像迁移、波形 / 频谱及未完成的人类主观审听边界。完整视频渲染只使用 `pv:render:draft` 与 `pv:render:4k`，输出固定为 4K/60fps。
 - 首次同步需要下载 `uv.lock` 中的依赖；之后会复用锁定环境与本地缓存。
@@ -51,7 +53,7 @@ node ./video/footsteps-return/scripts/capture-caption-evidence.mjs
 - 调整依赖使用 `uv add` 或 `uv remove`；不得直接向 `.venv` 执行 `pip install`。
 - CI 或只读验证优先使用 `uv sync --locked` / `uv run --locked`，锁文件过期时应失败而不是静默更新。
 - HyperFrames 的 Windows TTS 子进程通过 `HYPERFRAMES_PYTHON=.venv/Scripts/python.exe` 使用同一受控环境；不要向系统 Python 或用户级 site-packages 安装依赖。
-- PV TTS 的直接依赖为 `kokoro-onnx==0.6.1`（MIT）与 `soundfile==0.14.0`（BSD-3-Clause），安装 / 锁定命令为 `uv add kokoro-onnx soundfile`。Kokoro-82M 模型与 voice pack 为 Apache-2.0，HyperFrames 首次生成时从 `thewh1teagle/kokoro-onnx` 的 `model-files-v1.0` release 下载到 `%USERPROFILE%\.cache\hyperframes\tts\`；模型、voice pack、`.venv` 与 WAV 都不提交。
+- PV TTS 的直接依赖为 `kokoro-onnx==0.6.1`（MIT）、`qwen-tts==0.1.1`（Apache-2.0）与 `soundfile==0.14.0`（BSD-3-Clause），依赖只通过 `uv add` / `uv remove` 和 `uv.lock` 调整。Qwen 试听把模型仓库固定到不可变 revision 并保存官方包 LICENSE、模型卡及其 SHA-256 证据；模型快照进入 Hugging Face 本机缓存，`.venv`、模型权重与 WAV 都不提交。Kokoro-82M 模型与 voice pack 为 Apache-2.0，HyperFrames 首次生成时从 `thewh1teagle/kokoro-onnx` 的 `model-files-v1.0` release 下载到 `%USERPROFILE%\.cache\hyperframes\tts\`。
 
 ## 字体子集
 
