@@ -24,6 +24,7 @@ export const captionStyle = Object.freeze({
   maxFontSize: 96,
   fadeFrames: 7,
   safeWidth: 3456,
+  safeBottom: 144,
   baselineBottom: 180,
   color: "#ffffff",
   strokeColor: "#000000",
@@ -247,24 +248,39 @@ export async function measureCaptionLayout(captions) {
     const measurements = await page.evaluate((cues) => {
       const timeline = window.__timelines["footsteps-return"];
       const group = document.querySelector("[data-caption-group]");
+      const root = document.querySelector('[data-composition-id="footsteps-return"]');
+      const rootRect = root.getBoundingClientRect();
+      const rootStyle = getComputedStyle(root);
       return cues.map((cue) => {
         timeline.time(cue.start + (cue.fadeInFrames + 1) / 60, false).pause();
         const text = document.querySelector(`[data-caption-cue="${cue.id}"]`);
+        const copy = text.querySelector("[data-caption-copy]");
+        const marker = text.querySelector("[data-caption-baseline-marker]");
         const range = document.createRange();
-        range.selectNodeContents(text);
+        range.selectNodeContents(copy);
         return {
           id: cue.id,
           text: text.textContent,
           lineCount: range.getClientRects().length,
           width: range.getBoundingClientRect().width,
           safeWidth: group.getBoundingClientRect().width,
-          font: getComputedStyle(text).fontFamily
+          font: getComputedStyle(text).fontFamily,
+          baselineReady: group.dataset.captionBaselineReady,
+          baselineBottom: rootRect.bottom - marker.getBoundingClientRect().top,
+          glyphBottom: rootRect.bottom - copy.getBoundingClientRect().bottom,
+          safeBottom: Number.parseFloat(rootStyle.getPropertyValue("--safe-bottom"))
         };
       });
     }, captions);
-    const failure = measurements.find(({ text, id, lineCount, width, safeWidth, font }) => {
+    const failure = measurements.find(({ text, id, lineCount, width, safeWidth, font, baselineReady, baselineBottom, glyphBottom, safeBottom }) => {
       const cue = captions.find((candidate) => candidate.id === id);
-      return text !== cue.text || lineCount !== 1 || width > safeWidth + 0.5 || !font.includes("Topo Serif");
+      return text !== cue.text
+        || lineCount !== 1
+        || width > safeWidth + 0.5
+        || !font.includes("Topo Serif")
+        || baselineReady !== "true"
+        || Math.abs(baselineBottom - captionStyle.baselineBottom) > 1
+        || glyphBottom < safeBottom - 0.5;
     });
     if (failure) throw new Error(`caption layout failed: ${JSON.stringify(failure)}`);
     return measurements;

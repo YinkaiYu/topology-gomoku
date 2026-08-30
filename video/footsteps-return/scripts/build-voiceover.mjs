@@ -191,7 +191,7 @@ function buildReview(script, timing) {
       ],
       rationale: "0.88 retains the requested mature, restrained rhythm without stretching the composition or chasing the 165-second reference."
     },
-    auditionMethod: "sample-count, hash, waveform envelope, peak/RMS, silence, duration, and 4K caption-sync inspection",
+    auditionMethod: "sample-count, file hash, peak/RMS, active-sample ratio, leading/trailing silence, duration, and 4K caption-sync inspection",
     nativeListening: {
       status: "required-before-final-mix",
       reason: "This agent host cannot present returned audio to the model for a truthful subjective Mandarin audition.",

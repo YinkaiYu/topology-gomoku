@@ -2,6 +2,7 @@ import { masterTimeline } from "./data/timeline.js";
 import { prepareIntroScene } from "../compositions/intro.js";
 import { fitCompositionText } from "./runtime/fit-text.js";
 import { buildMasterTimeline } from "./runtime/master-timeline.js";
+import { alignCaptionBaselines } from "./runtime/captions.js";
 import { prepareTopologyChapterScenes } from "./runtime/topology-surfaces.js";
 import { prepareSevenWorldGalleryScenes } from "../compositions/seven-worlds.js";
 
@@ -48,6 +49,7 @@ export function bootstrapComposition({
   });
   hostWindow.__renderReady = Promise.all([fontsReady, introReady, chaptersReady, galleryReady]).then(() => {
     fitCompositionText(root);
+    alignCaptionBaselines({ document: documentRef, root });
     documentRef.documentElement.dataset.renderReady = "true";
     return Object.freeze({ composition, sceneIds: Object.keys(registry) });
   });

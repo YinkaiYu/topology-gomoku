@@ -41,6 +41,8 @@ test("voiceover script keeps the approved narration verbatim with cue-level repl
   assert.equal(review.nativeListening.status, "required-before-final-mix");
   assert.match(review.nativeListening.asrAssist, /whisper_unavailable/);
   assert.equal(review.trackDisposition, "rhythm-track-ready; native Mandarin pronunciation review required before final mix");
+  assert.doesNotMatch(review.auditionMethod, /waveform envelope/i, "review must not claim an unrecorded waveform envelope");
+  assert.match(review.auditionMethod, /peak\/RMS, active-sample ratio, leading\/trailing silence/);
   assert.deepEqual(script.cues.map(({ id, text }) => ({ id, text })), narrationCues.map(({ id, spokenText }) => ({ id, text: spokenText })));
   assert.deepEqual(timing.cues.map(({ id }) => id), narrationCues.map(({ id }) => id));
   timing.cues.forEach((cue) => {
@@ -74,6 +76,7 @@ test("captions split long narration on complete semantic clauses and omit visibl
   assert.equal(captionStyle.maxFontSize, 96);
   assert.equal(captionStyle.fadeFrames, 7);
   assert.equal(captionStyle.safeWidth, 3456);
+  assert.equal(captionStyle.safeBottom, 144);
   assert.equal(captionStyle.baselineBottom, 180);
   assert.equal(captionStyle.color, "#ffffff");
   assert.equal(captionStyle.strokeColor, "#000000");
@@ -102,6 +105,15 @@ test("captions split long narration on complete semantic clauses and omit visibl
   const visibleQuestions = captionCues.filter(({ text }) => text.endsWith("？")).map(({ narrationCueId }) => narrationCueId);
   assert.deepEqual(visibleQuestions, spokenQuestions);
   assert.deepEqual(voiceoverSchedule.map(({ cueId }) => cueId), narrationCues.map(({ id }) => id));
+});
+
+test("PV font and stylesheet URLs carry the dedicated subset cache key", () => {
+  const html = fs.readFileSync(path.join(PV_ROOT, "index.html"), "utf8");
+  const style = fs.readFileSync(path.join(PV_ROOT, "src", "styles.css"), "utf8");
+  assert.match(html, /src\/styles\.css\?fontset=pv-task8-r1/);
+  ["400", "600", "700"].forEach((weight) => {
+    assert.match(style, new RegExp(`noto-serif-sc-${weight}\\.woff2\\?fontset=pv-task8-r1`));
+  });
 });
 
 test("caption and narration schedules never overlap and stay inside their owning non-card scenes", async () => {
@@ -156,10 +168,16 @@ test("real Chromium keeps every Topo Serif caption on one 4K line with the appro
     for (const cue of cues) {
       timeline.time(cue.start + (cue.fadeInFrames + 1) / 60, false).pause();
       const text = document.querySelector(`[data-caption-cue="${cue.id}"]`);
+      const copy = text.querySelector("[data-caption-copy]");
+      const marker = text.querySelector("[data-caption-baseline-marker]");
       const range = document.createRange();
-      range.selectNodeContents(text);
+      range.selectNodeContents(copy ?? text);
       const style = getComputedStyle(text);
-      const groupStyle = getComputedStyle(group);
+      const root = document.querySelector('[data-composition-id="footsteps-return"]');
+      const rootStyle = getComputedStyle(root);
+      const rootRect = root.getBoundingClientRect();
+      const copyRect = (copy ?? text).getBoundingClientRect();
+      const markerRect = marker?.getBoundingClientRect();
       output.push({
         id: cue.id,
         expectedText: cue.text,
@@ -179,7 +197,14 @@ test("real Chromium keeps every Topo Serif caption on one 4K line with the appro
         boxShadow: style.boxShadow,
         filter: style.filter,
         groupOpacity: Number(style.opacity),
-        groupBottom: Number.parseFloat(groupStyle.bottom)
+        baselineReady: group.dataset.captionBaselineReady,
+        baselineBottom: markerRect ? rootRect.bottom - markerRect.top : null,
+        markerHeight: markerRect?.height ?? null,
+        glyphTop: copyRect.top - rootRect.top,
+        glyphBottom: rootRect.bottom - copyRect.bottom,
+        safeTop: Number.parseFloat(rootStyle.getPropertyValue("--safe-top")),
+        safeBottom: Number.parseFloat(rootStyle.getPropertyValue("--safe-bottom")),
+        captionBaselineBottom: Number.parseFloat(rootStyle.getPropertyValue("--caption-baseline-bottom"))
       });
     }
     return output;
@@ -201,8 +226,15 @@ test("real Chromium keeps every Topo Serif caption on one 4K line with the appro
     assert.equal(sample.boxShadow, "none");
     assert.equal(sample.filter, "none");
     assert.ok(sample.groupOpacity > 0.99, `${sample.id} must finish its whole-line fade`);
-    assert.equal(sample.groupBottom, 180);
+    assert.equal(sample.baselineReady, "true");
+    assert.ok(Math.abs(sample.baselineBottom - 180) <= 1, `${sample.id} baseline bottom ${sample.baselineBottom}`);
+    assert.ok(sample.markerHeight <= 0.01, `${sample.id} baseline marker must be zero-height`);
+    assert.ok(sample.glyphTop >= sample.safeTop - 0.5, `${sample.id} glyph top leaves the safe area`);
+    assert.ok(sample.glyphBottom >= sample.safeBottom - 0.5, `${sample.id} glyph bottom ${sample.glyphBottom} leaves the safe area`);
+    assert.equal(sample.safeBottom, 144);
+    assert.equal(sample.captionBaselineBottom, 180);
   });
+  assert.ok(Math.max(...samples.map(({ baselineBottom }) => baselineBottom)) - Math.min(...samples.map(({ baselineBottom }) => baselineBottom)) <= 0.01);
 });
 
 test("caption hard clears, chapter cards stay empty, and arbitrary seeks are reversible", async () => {
@@ -244,7 +276,10 @@ test("caption hard clears, chapter cards stay empty, and arbitrary seeks are rev
 });
 
 test("caption review evidence is native 4K and the local caption-only render is reproducible", async () => {
-  const { captionReviewPlan } = await load("video/footsteps-return/scripts/capture-caption-evidence.mjs");
+  const [{ captionReviewPlan }, { captionCues }] = await Promise.all([
+    load("video/footsteps-return/scripts/capture-caption-evidence.mjs"),
+    load("video/footsteps-return/src/data/captions.js")
+  ]);
   const manifest = JSON.parse(fs.readFileSync(path.join(ROOT, "artifacts", "pv-caption-scenes-task8-manifest.json"), "utf8"));
   assert.deepEqual(captionReviewPlan.map(({ id }) => id), [
     "intro-boundary-01",
@@ -256,12 +291,22 @@ test("caption review evidence is native 4K and the local caption-only render is 
   ]);
   assert.deepEqual(manifest.viewport, { width: 3840, height: 2160, deviceScaleFactor: 1 });
   assert.equal(manifest.native4k, true);
+  assert.deepEqual(manifest.cueMeasurements.map(({ id }) => id), captionCues.map(({ id }) => id));
+  manifest.cueMeasurements.forEach((measurement) => {
+    assert.equal(measurement.lineCount, 1);
+    assert.ok(measurement.width <= measurement.safeWidth + 0.5);
+    assert.ok(Math.abs(measurement.baselineBottom - 180) <= 1);
+    assert.ok(measurement.glyphBottom >= 143.5);
+    assert.equal(measurement.baselineReady, "true");
+  });
   assert.deepEqual(manifest.frames.map(({ id }) => id), captionReviewPlan.map(({ id }) => id));
   manifest.frames.forEach((frame) => {
     assert.equal(frame.lineCount, 1);
     assert.ok(frame.width <= frame.safeWidth + 0.5);
     assert.equal(frame.fontFamily, "Topo Serif");
     assert.equal(frame.visibleCount, 1);
+    assert.ok(Math.abs(frame.baselineBottom - 180) <= 1);
+    assert.ok(frame.glyphBottom >= 143.5);
     const png = fs.readFileSync(path.join(ROOT, frame.path));
     assert.deepEqual([...png.subarray(0, 8)], [137, 80, 78, 71, 13, 10, 26, 10]);
     assert.equal(png.readUInt32BE(16), 3840);

@@ -165,12 +165,13 @@ test("终章标题作为同一字体文本运行且字体资源带版本缓存�
   const html = fs.readFileSync(path.join(ROOT, "app", "index.html"), "utf8");
   const style = fs.readFileSync(path.join(ROOT, "app", "assets", "style.css"), "utf8");
   const packageVersion = JSON.parse(fs.readFileSync(path.join(ROOT, "package.json"), "utf8")).version;
-  assert.match(html, new RegExp(`href="\\.\\/assets\\/style\\.css\\?v=${packageVersion.replace(/\./g, "\\.")}"`));
+  assert.equal(packageVersion, "1.37.2", "PV font expansion must not change the game SemVer");
+  assert.match(html, new RegExp(`href="\\.\\/assets\\/style\\.css\\?v=${packageVersion.replace(/\./g, "\\.")}(&amp;|&)fontset=pv-task8-r1"`));
   assert.match(html, /<span class="level-name">归圆<\/span>/);
   assert.doesNotMatch(html, /optical-title-rise/);
   assert.match(style, /\.level-name\s*\{[^}]*font-weight:\s*700/s);
   ["400", "600", "700"].forEach((weight) => {
-    assert.match(style, new RegExp(`noto-serif-sc-${weight}\\.woff2\\?v=${packageVersion.replace(/\./g, "\\.")}`));
+    assert.match(style, new RegExp(`noto-serif-sc-${weight}\\.woff2\\?v=${packageVersion.replace(/\./g, "\\.")}&fontset=pv-task8-r1`));
   });
 });
 

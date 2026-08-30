@@ -2,7 +2,7 @@
 
 Requires fontTools with Brotli support. Pass a full Noto Serif SC variable font
 with --source or set TOPO_SERIF_SOURCE. The generated subsets include printable
-ASCII plus every non-ASCII character present in app text sources.
+ASCII plus every non-ASCII character present in app and PV visible-text sources.
 """
 
 from __future__ import annotations
@@ -18,18 +18,36 @@ from fontTools.varLib.instancer import instantiateVariableFont
 
 ROOT = Path(__file__).resolve().parents[1]
 APP_ROOT = ROOT / "app"
+PV_ROOT = ROOT / "video" / "footsteps-return"
 FONT_ROOT = APP_ROOT / "assets" / "fonts"
-TEXT_EXTENSIONS = {".html", ".css", ".js", ".json"}
+TEXT_EXTENSIONS = {".html", ".css", ".js", ".json", ".txt"}
 WEIGHTS = (400, 600, 700)
 DEFAULT_WINDOWS_SOURCE = Path(r"C:\Windows\Fonts\NotoSerifSC-VF.ttf")
+PV_TEXT_SOURCES = (
+    PV_ROOT / "index.html",
+    PV_ROOT / "src",
+    PV_ROOT / "compositions",
+    PV_ROOT / "audio" / "voiceover" / "script.json",
+    PV_ROOT / "assets" / "transcript.txt",
+)
+
+
+def text_paths(source: Path):
+    if source.is_file():
+        if source.suffix.lower() in TEXT_EXTENSIONS:
+            yield source
+        return
+    if source.is_dir():
+        for path in source.rglob("*"):
+            if path.is_file() and path.suffix.lower() in TEXT_EXTENSIONS:
+                yield path
 
 
 def required_codepoints() -> set[int]:
     codepoints = set(range(0x20, 0x7F))
-    for path in APP_ROOT.rglob("*"):
-        if not path.is_file() or path.suffix.lower() not in TEXT_EXTENSIONS:
-            continue
-        codepoints.update(ord(character) for character in path.read_text(encoding="utf-8") if ord(character) > 0x7F)
+    for source in (APP_ROOT, *PV_TEXT_SOURCES):
+        for path in text_paths(source):
+            codepoints.update(ord(character) for character in path.read_text(encoding="utf-8") if ord(character) > 0x7F)
     return codepoints
 
 

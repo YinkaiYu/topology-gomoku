@@ -14,6 +14,7 @@ export const captionStyle = deepFreeze({
   "maxFontSize": 96,
   "fadeFrames": 7,
   "safeWidth": 3456,
+  "safeBottom": 144,
   "baselineBottom": 180,
   "color": "#ffffff",
   "strokeColor": "#000000",

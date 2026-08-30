@@ -1,6 +1,6 @@
 @font-face {
   font-family: "Topo Serif";
-  src: url("/assets/fonts/noto-serif-sc-400.woff2") format("woff2");
+  src: url("/assets/fonts/noto-serif-sc-400.woff2?fontset=pv-task8-r1") format("woff2");
   font-style: normal;
   font-weight: 400;
   font-display: block;
@@ -8,7 +8,7 @@
 
 @font-face {
   font-family: "Topo Serif";
-  src: url("/assets/fonts/noto-serif-sc-600.woff2") format("woff2");
+  src: url("/assets/fonts/noto-serif-sc-600.woff2?fontset=pv-task8-r1") format("woff2");
   font-style: normal;
   font-weight: 600;
   font-display: block;
@@ -16,7 +16,7 @@
 
 @font-face {
   font-family: "Topo Serif";
-  src: url("/assets/fonts/noto-serif-sc-700.woff2") format("woff2");
+  src: url("/assets/fonts/noto-serif-sc-700.woff2?fontset=pv-task8-r1") format("woff2");
   font-style: normal;
   font-weight: 700;
   font-display: block;
@@ -45,7 +45,8 @@ body {
   --safe-left: 192px;
   --safe-right: 192px;
   --safe-top: 144px;
-  --safe-bottom: 180px;
+  --safe-bottom: 144px;
+  --caption-baseline-bottom: 180px;
   position: relative;
   isolation: isolate;
   background-color: #060908;
@@ -330,6 +331,15 @@ body {
   -webkit-text-stroke: 4px #000;
   paint-order: stroke fill;
   white-space: nowrap;
+  transform: translateY(var(--caption-baseline-shift, 0px));
+}
+
+.caption-group__baseline-marker {
+  display: inline-block;
+  width: 0;
+  height: 0;
+  overflow: hidden;
+  vertical-align: baseline;
 }
 
 .intro-composition,

@@ -106,6 +106,8 @@ test("safe-area tokens and caption layer keep one visible caption group", async 
     const captionGroups = [...document.querySelectorAll("[data-caption-group]")];
     return {
       safeArea: ["--safe-left", "--safe-right", "--safe-top", "--safe-bottom"].map((token) => styles.getPropertyValue(token).trim()),
+      captionBaselineBottom: styles.getPropertyValue("--caption-baseline-bottom").trim(),
+      captionBaselineReady: captionGroups[0]?.dataset.captionBaselineReady,
       captionCount: captionGroups.length,
       visibleCaptionCount: captionGroups.filter((node) => {
         const style = getComputedStyle(node);
@@ -115,7 +117,9 @@ test("safe-area tokens and caption layer keep one visible caption group", async 
   });
 
   assert.deepEqual(contract, {
-    safeArea: ["192px", "192px", "144px", "180px"],
+    safeArea: ["192px", "192px", "144px", "144px"],
+    captionBaselineBottom: "180px",
+    captionBaselineReady: "true",
     captionCount: 1,
     visibleCaptionCount: 1
   });

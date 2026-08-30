@@ -8,7 +8,7 @@
 - 实际运行 `npm run pv:voice`，使用 Kokoro-82M 中文男声 `zm_yunyang`、speed 0.88、eSpeak NG phonemizer 生成 21 个 cue WAV。全部归一化为 48kHz / mono / 16-bit PCM，并按采样数记录 duration、SHA-256、peak、RMS、active ratio 与首尾静音。
 - 21 cue 的实测 peak 为 -7.220 至 -2.767 dBFS、RMS 为 -27.442 至 -25.916 dBFS、active ratio 为 0.499543 至 0.540211；`timing.json` 的 resolved voice 为 `zm_yunyang`，`fallback=null`。
 - 实际 WAV 时长驱动章节、旁白和字幕排程，母版由 165 秒参考弹性扩展为 183.352 秒；没有加速句子。gallery 仍比 outro 早 7 秒开始、持续 9.2 秒，与第一条片尾旁白保持退镜重叠。
-- 21 条旁白拆为 46 个完整语义字幕 cue：白字、4px 黑描边、Topo Serif 88px、底边 180px、整行 7 帧淡入 / 淡出、cue 结束 hard clear；无底板、投影、发光、逐字与两行回退。句号省略，2 个语义问号保留。
+- 21 条旁白拆为 46 个完整语义字幕 cue：白字、4px 黑描边、Topo Serif 88px、基线距底 180px、整行 7 帧淡入 / 淡出、cue 结束 hard clear；无底板、投影、发光、逐字与两行回退。句号省略，2 个语义问号保留。
 - 真实 Chromium 在 3840×2160 逐条测量 46 cue；全部单行、同一基线、最多一个可见 caption group。最宽 `cylinder-distance-01` 与 `sphere-boundary-01` 均为 1672 / 3456px，无需缩字或压字距。
 
 计数澄清：`script.json` 的 21 个旁白 cue 合计定义 46 个 caption cue，生成的 `captionCues` 与 review render 都是 46 / 46。早期进度中出现的“47”是误计；`index.html` 另有 1 个无文本的静态 `<p data-caption-text>` 启动占位，运行时会由 `replaceChildren()` 移除，不是字幕定义。合法零字幕区为 7 个章节牌、无旁白 gallery 与 end card；21 个旁白 cue 均至少映射 1 个字幕 cue，没有遗漏。
@@ -25,7 +25,7 @@
 
 `review.json` 记录逐 cue 信号检查、运行时 / 许可、三档校准与一对一替换契约。HyperFrames Whisper small/zh 辅助转写真实返回 `whisper_unavailable`；当前代理也无法对返回音频作可信的中文主观听审，因此没有虚构“已试听”。节奏轨可供剪辑，最终混音前仍需中文母语者逐 cue 复核发音与听感，且不得擅自改词。
 
-`capture-caption-evidence.mjs` 生成 6 张原生 4K 代表帧、manifest 与联系表；联系表 SHA-256 为 `bea7256645f776f227905407424e79bd12d23a722a2382c4c8c74c433702b8e5`。同时用 doctor 找到的 FFmpeg 9.0.1 生成本地忽略的 46-cue 字幕专审视频：1920×1080、30fps、69 秒、451491 bytes、SHA-256 `ec8a153f20d8302a1cbb43618061aff1823d08cf3b229dd6ca464ac424ab7552`。
+`capture-caption-evidence.mjs` 生成 6 张原生 4K 代表帧、全量 46 cue DOM 测量 manifest 与联系表；联系表 SHA-256 为 `e3fbf399704e6b35c1e0a783d55850f38c8e154b42808b5a015944c5948ce629`。同时用 doctor 找到的 FFmpeg 9.0.1 生成本地忽略的 46-cue 字幕专审视频：1920×1080、30fps、69 秒、457435 bytes、SHA-256 `bd5ce910306aad801c07b84d20a780f1d039f535822aea46beae9203ae0f735c`。
 
 时间轴改变后，旧 Task 7 绝对时刻断言已改为读取生成场景 / cue 时间，并重录 7 张原生 4K 过场证据；当前 gallery / outro 重叠证据为 162.90 与 164.82 秒，联系表 SHA-256 `197c9d499b0e3b6fd858bfe4c5f8e2e4f28771be0039d1e67b7a03d4706efe61`。
 
@@ -39,3 +39,11 @@
 - `npm run validate`：23 package files 通过；`npm run docs:check`：37 Markdown files 通过；`git diff --check`：通过。
 
 文档影响：更新 `video/footsteps-return/DESIGN.md` 的字幕 / 旁白契约、`docs/development/environment.md` 的受控 Kokoro 环境与许可、`docs/design/qa.md` 的 Task 7 动态时间证据及 Task 8 字幕证据。
+
+## Fix round 1：字体、真实基线与信号证据
+
+- RED：直接解析三份 WOFF2 `cmap` 后，扩展的 PV 可见文案集稳定复现 135 个缺字；审查指出的 232 个字幕字符缺口为其中 114 个。旧 CSS 的 `bottom: 180px` 实测只是 line-box 底，真实基线距底为 195.59px；旧 `review.json` 还声称了未持久化的 waveform envelope。
+- GREEN：字体收集范围现覆盖 `app/` 及 PV 的 `index.html`、`src/`、`compositions/`、`script.json`、transcript；`npm run fonts:subset` 经既有 `uv run --locked` 生成 400 / 600 / 700 三字重并同步两套 PV 字体，共覆盖 464 codepoints。三份真实 `cmap` 对 app 与 PV 可见字符均为零缺字；游戏 SemVer 保持 1.37.2，stylesheet / font URL 使用独立 `fontset=pv-task8-r1` 缓存键。
+- GREEN：通用 `--safe-bottom` 调整为 144px，字幕使用独立 `--caption-baseline-bottom: 180px`；字体就绪后以每 cue 的零高 DOM marker 校正真实基线。3840×2160 Chromium 全量 46 cue 实测 baselineBottom 均为 180px、可见 glyphBottom 均为 155px，全部单行且宽度不超过 3456px。
+- GREEN：`review.json` 与生成器只声明实际记录的 file hash、peak/RMS、active-sample ratio、首尾静音及 duration，不再声称 waveform envelope；重新运行 `npm run pv:voice` 仍为真实 `zm_yunyang` 21/21、183.352 秒、46/46 字幕。
+- Fix 验证：字体 / 字幕 / 合成定向测试 35/35；`npm test` 145/145；`npm run validate` 23 package files / 1980.3 KB；`npm run docs:check` 38 Markdown；PV doctor、lint、validate、inspect 全绿（0 errors、0 warnings、0 layout issues、5/5 contrast）；`git diff --check` 通过。

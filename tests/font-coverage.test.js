@@ -7,6 +7,7 @@ const zlib = require("node:zlib");
 const ROOT = path.resolve(__dirname, "..");
 const APP_ROOT = path.join(ROOT, "app");
 const FONT_ROOT = path.join(APP_ROOT, "assets", "fonts");
+const PV_ROOT = path.join(ROOT, "video", "footsteps-return");
 const TEXT_EXTENSIONS = new Set([".html", ".css", ".js", ".json"]);
 const FONT_WEIGHTS = ["400", "600", "700"];
 const WOFF2_TAGS = [
@@ -178,6 +179,38 @@ test("所有应用文本都由三个内嵌字体字重完整覆盖", () => {
       missing,
       [],
       `${path.basename(fontPath)} missing: ${missing.map((value) => String.fromCodePoint(value)).join("")}`
+    );
+  });
+});
+
+test("PV 字幕与可见文案都由三个 Topo Serif 字重的真实 cmap 覆盖", async () => {
+  const { captionCues } = await import(new URL("../video/footsteps-return/src/data/captions.js", `file://${__filename}`).href);
+  const visibleSources = [
+    path.join(PV_ROOT, "index.html"),
+    path.join(PV_ROOT, "src", "data", "narration.js"),
+    path.join(PV_ROOT, "src", "data", "chapters.js"),
+    path.join(PV_ROOT, "compositions", "intro.js"),
+    path.join(PV_ROOT, "compositions", "chapter-titles.js"),
+    path.join(PV_ROOT, "compositions", "end-card.js"),
+    path.join(PV_ROOT, "compositions", "outro.js"),
+    path.join(PV_ROOT, "audio", "voiceover", "script.json"),
+    path.join(PV_ROOT, "assets", "transcript.txt")
+  ];
+  const visibleCopy = `${captionCues.map(({ text }) => text).join("")}\n${visibleSources.map((file) => fs.readFileSync(file, "utf8")).join("\n")}`;
+  const required = [...new Set([...visibleCopy]
+    .map((character) => character.codePointAt(0))
+    .filter((codepoint) => codepoint > 0x7f))]
+    .sort((left, right) => left - right);
+
+  assert.ok(required.length > 230, "expected the complete PV character set");
+  FONT_WEIGHTS.forEach((weight) => {
+    const fontPath = path.join(FONT_ROOT, `noto-serif-sc-${weight}.woff2`);
+    const cmap = readCmap(fs.readFileSync(fontPath));
+    const missing = required.filter((codepoint) => !cmap.has(codepoint));
+    assert.deepEqual(
+      missing,
+      [],
+      `${path.basename(fontPath)} missing PV copy: ${missing.map((value) => String.fromCodePoint(value)).join("")}`
     );
   });
 });

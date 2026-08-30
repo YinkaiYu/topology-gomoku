@@ -52,8 +52,13 @@ async function inspectCaption(page, planned) {
   return page.evaluate(({ id, text: expectedText }) => {
     const group = document.querySelector("[data-caption-group]");
     const node = document.querySelector(`[data-caption-cue="${id}"]`);
+    const copy = node.querySelector("[data-caption-copy]");
+    const marker = node.querySelector("[data-caption-baseline-marker]");
+    const root = document.querySelector('[data-composition-id="footsteps-return"]');
+    const rootRect = root.getBoundingClientRect();
+    const rootStyle = getComputedStyle(root);
     const range = document.createRange();
-    range.selectNodeContents(node);
+    range.selectNodeContents(copy);
     const style = getComputedStyle(node);
     const visibleCount = [...group.querySelectorAll("[data-caption-cue]")]
       .filter((candidate) => Number(getComputedStyle(candidate).opacity) > 0.001).length;
@@ -66,9 +71,29 @@ async function inspectCaption(page, planned) {
       safeWidth: group.getBoundingClientRect().width,
       fontFamily: style.fontFamily.replaceAll('"', ""),
       fontSize: Number.parseFloat(style.fontSize),
-      opacity: Number(style.opacity)
+      opacity: Number(style.opacity),
+      baselineReady: group.dataset.captionBaselineReady,
+      baselineBottom: rootRect.bottom - marker.getBoundingClientRect().top,
+      glyphTop: copy.getBoundingClientRect().top - rootRect.top,
+      glyphBottom: rootRect.bottom - copy.getBoundingClientRect().bottom,
+      safeTop: Number.parseFloat(rootStyle.getPropertyValue("--safe-top")),
+      safeBottom: Number.parseFloat(rootStyle.getPropertyValue("--safe-bottom"))
     };
   }, planned);
+}
+
+function assertCaptionInspection(planned, inspection) {
+  if (inspection.text !== planned.text
+    || inspection.visibleCount !== 1
+    || inspection.lineCount !== 1
+    || inspection.width > inspection.safeWidth + 0.5
+    || inspection.opacity < 0.99
+    || inspection.baselineReady !== "true"
+    || Math.abs(inspection.baselineBottom - 180) > 1
+    || inspection.glyphTop < inspection.safeTop - 0.5
+    || inspection.glyphBottom < inspection.safeBottom - 0.5) {
+    throw new Error(`caption evidence inspection failed: ${JSON.stringify({ ...planned, ...inspection })}`);
+  }
 }
 
 function contactSheetMarkup(frames) {
@@ -145,13 +170,19 @@ export async function captureCaptionEvidence() {
     const page = await browser.newPage({ viewport: { width: viewport.width, height: viewport.height }, deviceScaleFactor: viewport.deviceScaleFactor });
     await page.goto(`${server.url}/index.html`, { waitUntil: "networkidle" });
     await page.evaluate(() => window.__renderReady);
+    const cueMeasurements = [];
+    for (const cue of captionCues) {
+      const planned = { id: cue.id, seek: cue.start + (cue.fadeInFrames + 1) / 60, text: cue.text };
+      await settle(page, planned.seek);
+      const inspection = await inspectCaption(page, planned);
+      assertCaptionInspection(planned, inspection);
+      cueMeasurements.push(Object.freeze({ id: cue.id, ...inspection }));
+    }
     const frames = [];
     for (const planned of captionReviewPlan) {
       await settle(page, planned.seek);
       const inspection = await inspectCaption(page, planned);
-      if (inspection.text !== planned.text || inspection.visibleCount !== 1 || inspection.lineCount !== 1 || inspection.width > inspection.safeWidth + 0.5 || inspection.opacity < 0.99) {
-        throw new Error(`caption evidence inspection failed: ${JSON.stringify({ ...planned, ...inspection })}`);
-      }
+      assertCaptionInspection(planned, inspection);
       const screenshot = await page.screenshot();
       await writeFile(path.join(captureDirectory, planned.filename), screenshot);
       frames.push(Object.freeze({ ...planned, ...inspection }));
@@ -169,10 +200,10 @@ export async function captureCaptionEvidence() {
     const reviewRender = await buildCaptionOnlyRender(page, path.join(projectRoot, "renders"));
     await writeFile(
       path.join(repositoryRoot, `${artifactDirectory}-manifest.json`),
-      `${JSON.stringify({ task: "task8-captions", viewport, native4k: true, frames, reviewRender }, null, 2)}\n`,
+      `${JSON.stringify({ task: "task8-captions", viewport, native4k: true, cueMeasurements, frames, reviewRender }, null, 2)}\n`,
       "utf8"
     );
-    return Object.freeze({ frames, reviewRender });
+    return Object.freeze({ cueMeasurements, frames, reviewRender });
   } finally {
     await browser.close();
     await server.close();

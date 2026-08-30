@@ -15,8 +15,16 @@ export function addCaptionTrack(timeline, {
     element.className = "caption-group__text";
     element.dataset.captionText = "";
     element.dataset.captionCue = cue.id;
-    element.textContent = cue.text;
     element.setAttribute("aria-hidden", "true");
+    const copy = documentRef.createElement("span");
+    copy.className = "caption-group__copy";
+    copy.dataset.captionCopy = "";
+    copy.textContent = cue.text;
+    const baselineMarker = documentRef.createElement("span");
+    baselineMarker.className = "caption-group__baseline-marker";
+    baselineMarker.dataset.captionBaselineMarker = "";
+    baselineMarker.setAttribute("aria-hidden", "true");
+    element.append(copy, baselineMarker);
     group.append(element);
     return element;
   });
@@ -44,5 +52,28 @@ export function addCaptionTrack(timeline, {
   group.dataset.captionFadeFrames = String(captionStyle.fadeFrames);
   group.dataset.captionCueCount = String(cues.length);
   group.dataset.captionHardClear = "true";
+  group.dataset.captionBaselineReady = "false";
   return { group, elements, cueCount: cues.length };
+}
+
+export function alignCaptionBaselines({ document: documentRef, root, baselineBottom } = {}) {
+  const compositionRoot = root ?? documentRef.querySelector('[data-composition-id="footsteps-return"]');
+  const group = compositionRoot?.querySelector("[data-caption-group]");
+  if (!compositionRoot || !group) throw new Error("caption baseline alignment needs the composition root and caption group");
+  const cssBaselineBottom = Number.parseFloat(compositionRoot.ownerDocument.defaultView.getComputedStyle(compositionRoot).getPropertyValue("--caption-baseline-bottom"));
+  const resolvedBaselineBottom = baselineBottom ?? cssBaselineBottom;
+  if (!Number.isFinite(resolvedBaselineBottom)) throw new Error("caption baseline token must resolve to pixels");
+  const elements = [...group.querySelectorAll("[data-caption-cue]")];
+  const targetY = compositionRoot.getBoundingClientRect().bottom - resolvedBaselineBottom;
+
+  elements.forEach((element) => element.style.removeProperty("--caption-baseline-shift"));
+  elements.forEach((element) => {
+    const marker = element.querySelector("[data-caption-baseline-marker]");
+    if (!marker) throw new Error(`caption ${element.dataset.captionCue} is missing its baseline marker`);
+    const shift = targetY - marker.getBoundingClientRect().top;
+    element.style.setProperty("--caption-baseline-shift", `${shift}px`);
+  });
+  group.dataset.captionBaselineReady = "true";
+  group.dataset.captionBaselineBottom = String(resolvedBaselineBottom);
+  return elements.length;
 }
