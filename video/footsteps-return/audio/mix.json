@@ -185,7 +185,7 @@
                              },
                    "sfx":  {
                                "continuousBed":  false,
-                               "policy":  "Only the 21 retimed editorial cues are instantiated; silence is the default SFX bed and no low-frequency tail is synthesized.",
+                               "policy":  "Only the 21 semantic picture-event cues are instantiated; silence is the default SFX bed and no low-frequency tail is synthesized.",
                                "ducking":  {
                                                "sidechain":  "narration",
                                                "threshold":  0.018,
@@ -200,6 +200,9 @@
                                                 "category":  "chapter-low-punctuation",
                                                 "generatorId":  "chapter-sub-pulse-v1",
                                                 "sceneId":  "chapter-card-plane",
+                                                "event":  {
+                                                              "kind":  "scene-start"
+                                                          },
                                                 "startSeconds":  26.42,
                                                 "durationSeconds":  1.12,
                                                 "gainDb":  -2,
@@ -211,6 +214,9 @@
                                                 "category":  "chapter-low-punctuation",
                                                 "generatorId":  "chapter-sub-pulse-v1",
                                                 "sceneId":  "chapter-card-cylinder",
+                                                "event":  {
+                                                              "kind":  "scene-start"
+                                                          },
                                                 "startSeconds":  43.64,
                                                 "durationSeconds":  1.12,
                                                 "gainDb":  -3,
@@ -222,6 +228,9 @@
                                                 "category":  "chapter-low-punctuation",
                                                 "generatorId":  "chapter-sub-pulse-v1",
                                                 "sceneId":  "chapter-card-torus",
+                                                "event":  {
+                                                              "kind":  "scene-start"
+                                                          },
                                                 "startSeconds":  64.66,
                                                 "durationSeconds":  1.12,
                                                 "gainDb":  -3,
@@ -233,6 +242,9 @@
                                                 "category":  "chapter-low-punctuation",
                                                 "generatorId":  "chapter-sub-pulse-v1",
                                                 "sceneId":  "chapter-card-mobius",
+                                                "event":  {
+                                                              "kind":  "scene-start"
+                                                          },
                                                 "startSeconds":  86.16,
                                                 "durationSeconds":  1.12,
                                                 "gainDb":  -4,
@@ -244,6 +256,9 @@
                                                 "category":  "chapter-low-punctuation",
                                                 "generatorId":  "chapter-sub-pulse-v1",
                                                 "sceneId":  "chapter-card-klein",
+                                                "event":  {
+                                                              "kind":  "scene-start"
+                                                          },
                                                 "startSeconds":  105.82,
                                                 "durationSeconds":  1.12,
                                                 "gainDb":  -2,
@@ -255,6 +270,9 @@
                                                 "category":  "chapter-low-punctuation",
                                                 "generatorId":  "chapter-sub-pulse-v1",
                                                 "sceneId":  "chapter-card-projective",
+                                                "event":  {
+                                                              "kind":  "scene-start"
+                                                          },
                                                 "startSeconds":  126.6,
                                                 "durationSeconds":  1.12,
                                                 "gainDb":  -4,
@@ -266,6 +284,9 @@
                                                 "category":  "chapter-low-punctuation",
                                                 "generatorId":  "chapter-sub-pulse-v1",
                                                 "sceneId":  "chapter-card-sphere",
+                                                "event":  {
+                                                              "kind":  "scene-start"
+                                                          },
                                                 "startSeconds":  148.42,
                                                 "durationSeconds":  1.12,
                                                 "gainDb":  -2,
@@ -277,7 +298,12 @@
                                                 "category":  "stone-placement",
                                                 "generatorId":  "stone-soft-slate-v1",
                                                 "sceneId":  "chapter-plane",
-                                                "startSeconds":  32.898504,
+                                                "event":  {
+                                                              "kind":  "drop-complete",
+                                                              "demoId":  "ordinary-five",
+                                                              "step":  1
+                                                          },
+                                                "startSeconds":  31.245833333333,
                                                 "durationSeconds":  0.42,
                                                 "gainDb":  -1,
                                                 "file":  "video/footsteps-return/audio/sfx/generated/stone-placement.wav",
@@ -288,7 +314,12 @@
                                                 "category":  "stone-placement",
                                                 "generatorId":  "stone-soft-slate-v1",
                                                 "sceneId":  "chapter-cylinder",
-                                                "startSeconds":  51.536819,
+                                                "event":  {
+                                                              "kind":  "drop-complete",
+                                                              "demoId":  "horizontal-wrap",
+                                                              "step":  3
+                                                          },
+                                                "startSeconds":  52.513333333333,
                                                 "durationSeconds":  0.42,
                                                 "gainDb":  -2,
                                                 "file":  "video/footsteps-return/audio/sfx/generated/stone-placement.wav",
@@ -299,7 +330,12 @@
                                                 "category":  "stone-placement",
                                                 "generatorId":  "stone-soft-slate-v1",
                                                 "sceneId":  "chapter-torus",
-                                                "startSeconds":  72.034417,
+                                                "event":  {
+                                                              "kind":  "drop-complete",
+                                                              "demoId":  "two-seam-diagonal",
+                                                              "step":  2
+                                                          },
+                                                "startSeconds":  72.1955,
                                                 "durationSeconds":  0.42,
                                                 "gainDb":  -2,
                                                 "file":  "video/footsteps-return/audio/sfx/generated/stone-placement.wav",
@@ -310,7 +346,12 @@
                                                 "category":  "stone-placement",
                                                 "generatorId":  "stone-soft-slate-v1",
                                                 "sceneId":  "chapter-mobius",
-                                                "startSeconds":  95.861924,
+                                                "event":  {
+                                                              "kind":  "drop-complete",
+                                                              "demoId":  "reflected-crossing",
+                                                              "step":  3
+                                                          },
+                                                "startSeconds":  94.51525,
                                                 "durationSeconds":  0.42,
                                                 "gainDb":  -3,
                                                 "file":  "video/footsteps-return/audio/sfx/generated/stone-placement.wav",
@@ -321,7 +362,12 @@
                                                 "category":  "stone-placement",
                                                 "generatorId":  "stone-soft-slate-v1",
                                                 "sceneId":  "chapter-sphere",
-                                                "startSeconds":  157.761298,
+                                                "event":  {
+                                                              "kind":  "drop-complete",
+                                                              "demoId":  "adjacent-edge-turn",
+                                                              "step":  3
+                                                          },
+                                                "startSeconds":  160.264770833333,
                                                 "durationSeconds":  0.42,
                                                 "gainDb":  -2,
                                                 "file":  "video/footsteps-return/audio/sfx/generated/stone-placement.wav",
@@ -332,7 +378,11 @@
                                                 "category":  "stone-placement",
                                                 "generatorId":  "stone-soft-slate-v1",
                                                 "sceneId":  "outro",
-                                                "startSeconds":  198.657196,
+                                                "event":  {
+                                                              "kind":  "caption-start",
+                                                              "captionId":  "outro-stone-02"
+                                                          },
+                                                "startSeconds":  201.484333333333,
                                                 "durationSeconds":  0.42,
                                                 "gainDb":  0,
                                                 "file":  "video/footsteps-return/audio/sfx/generated/stone-placement.wav",
@@ -343,7 +393,13 @@
                                                 "category":  "seam-crossing",
                                                 "generatorId":  "seam-glide-v1",
                                                 "sceneId":  "chapter-cylinder",
-                                                "startSeconds":  53.076609,
+                                                "event":  {
+                                                              "kind":  "crossing-breathe",
+                                                              "demoId":  "horizontal-wrap",
+                                                              "step":  3,
+                                                              "breathPhase":  0.62
+                                                          },
+                                                "startSeconds":  50.855020833333,
                                                 "durationSeconds":  0.76,
                                                 "gainDb":  -2,
                                                 "file":  "video/footsteps-return/audio/sfx/generated/seam-crossing.wav",
@@ -354,7 +410,13 @@
                                                 "category":  "seam-crossing",
                                                 "generatorId":  "seam-glide-v1",
                                                 "sceneId":  "chapter-torus",
-                                                "startSeconds":  74.791977,
+                                                "event":  {
+                                                              "kind":  "crossing-breathe",
+                                                              "demoId":  "two-seam-diagonal",
+                                                              "step":  2,
+                                                              "breathPhase":  0.62
+                                                          },
+                                                "startSeconds":  70.6764375,
                                                 "durationSeconds":  0.76,
                                                 "gainDb":  -3,
                                                 "file":  "video/footsteps-return/audio/sfx/generated/seam-crossing.wav",
@@ -365,7 +427,13 @@
                                                 "category":  "seam-crossing",
                                                 "generatorId":  "seam-glide-v1",
                                                 "sceneId":  "chapter-projective",
-                                                "startSeconds":  135.388503,
+                                                "event":  {
+                                                              "kind":  "crossing-breathe",
+                                                              "demoId":  "mirrored-crossings",
+                                                              "step":  3,
+                                                              "breathPhase":  0.62
+                                                          },
+                                                "startSeconds":  135.318229166667,
                                                 "durationSeconds":  0.76,
                                                 "gainDb":  -4,
                                                 "file":  "video/footsteps-return/audio/sfx/generated/seam-crossing.wav",
@@ -376,7 +444,11 @@
                                                 "category":  "surface-bend",
                                                 "generatorId":  "surface-flex-v1",
                                                 "sceneId":  "chapter-torus",
-                                                "startSeconds":  83.580298,
+                                                "event":  {
+                                                              "kind":  "morph-start",
+                                                              "demoId":  "two-seam-diagonal"
+                                                          },
+                                                "startSeconds":  77.589875,
                                                 "durationSeconds":  1.28,
                                                 "gainDb":  -4,
                                                 "file":  "video/footsteps-return/audio/sfx/generated/surface-bend.wav",
@@ -387,7 +459,11 @@
                                                 "category":  "surface-bend",
                                                 "generatorId":  "surface-flex-v1",
                                                 "sceneId":  "chapter-mobius",
-                                                "startSeconds":  102.482792,
+                                                "event":  {
+                                                              "kind":  "morph-start",
+                                                              "demoId":  "reflected-crossing"
+                                                          },
+                                                "startSeconds":  97.296833333333,
                                                 "durationSeconds":  1.28,
                                                 "gainDb":  -3,
                                                 "file":  "video/footsteps-return/audio/sfx/generated/surface-bend.wav",
@@ -398,7 +474,11 @@
                                                 "category":  "surface-bend",
                                                 "generatorId":  "surface-flex-v1",
                                                 "sceneId":  "chapter-sphere",
-                                                "startSeconds":  173.710381,
+                                                "event":  {
+                                                              "kind":  "morph-start",
+                                                              "demoId":  "adjacent-edge-turn"
+                                                          },
+                                                "startSeconds":  164.936520833333,
                                                 "durationSeconds":  1.28,
                                                 "gainDb":  -4,
                                                 "file":  "video/footsteps-return/audio/sfx/generated/surface-bend.wav",
@@ -409,7 +489,10 @@
                                                 "category":  "camera-occlusion",
                                                 "generatorId":  "occlusion-air-v1",
                                                 "sceneId":  "chapter-plane",
-                                                "startSeconds":  40.947212,
+                                                "event":  {
+                                                              "kind":  "exit-occlusion-start"
+                                                          },
+                                                "startSeconds":  40.92,
                                                 "durationSeconds":  0.92,
                                                 "gainDb":  -3,
                                                 "file":  "video/footsteps-return/audio/sfx/generated/camera-occlusion.wav",
@@ -420,7 +503,10 @@
                                                 "category":  "camera-occlusion",
                                                 "generatorId":  "occlusion-air-v1",
                                                 "sceneId":  "chapter-klein",
-                                                "startSeconds":  123.264609,
+                                                "event":  {
+                                                              "kind":  "exit-occlusion-start"
+                                                          },
+                                                "startSeconds":  123.88,
                                                 "durationSeconds":  0.92,
                                                 "gainDb":  -4,
                                                 "file":  "video/footsteps-return/audio/sfx/generated/camera-occlusion.wav",
@@ -469,11 +555,11 @@
                                             "sfx",
                                             "webgl"
                                         ],
-                      "policy":  "The render promise resolves only after named visual gates, the measured mix manifest, and final master audio metadata are ready."
+                      "policy":  "The render promise resolves only after named visual gates and a full-byte SHA-256 authentication of the final master against the measured mix manifest."
                   },
     "output":  {
                    "status":  "measured",
-                   "sha256":  "52f5dc2f38501c07ef145abbbfaaca78d681dc88278ed3efdcf674b3c62479c8",
+                   "sha256":  "e43bf4a56b6e6f16058f866dd87b8478227fbfb5017af862a9722642f33d5ade",
                    "bytes":  61643622,
                    "format":  {
                                   "container":  "wav",
@@ -484,7 +570,7 @@
                               },
                    "measurements":  {
                                         "integratedLufs":  -14.06,
-                                        "loudnessRangeLu":  7.2,
+                                        "loudnessRangeLu":  7.3,
                                         "truePeakDbtp":  -1.19,
                                         "thresholdLufs":  -24.75
                                     },
@@ -497,6 +583,6 @@
                                                "status":  "not-completed",
                                                "note":  "No agent listening claim is made. Native Mandarin intelligibility, musical balance, and SFX masking remain user-review-required after the draft export."
                                            },
-                   "renderContractSha256":  "4b17719718d3fd97ad8c1417f3016fdb7f23c2c0a919eec89229cfdf74f16f90"
+                   "renderContractSha256":  "1d258decce5ddd161df4e290f23b48d34be43230a841e22fd824b4c6d06636be"
                }
 }

@@ -19,11 +19,11 @@
     "peakCeilingDbfs": -9,
     "note": "Cues are editorial punctuation only. Silence is the default bed."
   },
-  "retiming": {
+  "semanticTiming": {
     "schemaVersion": 1,
-    "sourceTimelineDurationSeconds": 183.352,
-    "targetTimelineDurationSeconds": 214.04,
-    "method": "Section-aware affine retiming from the rejected rhythm-track picture form to the final VoiceDesign scene boundaries. Every editorial cue keeps its original purpose and relative position inside the corresponding picture section; no SFX bed or tail padding is introduced."
+    "sampleRate": 48000,
+    "resolver": "src/runtime/sfx-timing.js",
+    "method": "Cue onsets resolve from the current master scene start, chapterFrameAt render phase, exit-occluder tween, or measured caption event, then bind to the first active 48 kHz sample."
   },
   "generators": [
     {
@@ -68,26 +68,26 @@
     }
   ],
   "cues": [
-    { "id": "card-plane-low", "category": "chapter-low-punctuation", "generatorId": "chapter-sub-pulse-v1", "sceneId": "chapter-card-plane", "time": 26.42, "duration": 1.12, "gainDb": -2, "purpose": "Plane chapter card arrival" },
-    { "id": "card-cylinder-low", "category": "chapter-low-punctuation", "generatorId": "chapter-sub-pulse-v1", "sceneId": "chapter-card-cylinder", "time": 43.64, "duration": 1.12, "gainDb": -3, "purpose": "Cylinder chapter card arrival" },
-    { "id": "card-torus-low", "category": "chapter-low-punctuation", "generatorId": "chapter-sub-pulse-v1", "sceneId": "chapter-card-torus", "time": 64.66, "duration": 1.12, "gainDb": -3, "purpose": "Torus chapter card arrival" },
-    { "id": "card-mobius-low", "category": "chapter-low-punctuation", "generatorId": "chapter-sub-pulse-v1", "sceneId": "chapter-card-mobius", "time": 86.16, "duration": 1.12, "gainDb": -4, "purpose": "Mobius chapter card arrival" },
-    { "id": "card-klein-low", "category": "chapter-low-punctuation", "generatorId": "chapter-sub-pulse-v1", "sceneId": "chapter-card-klein", "time": 105.82, "duration": 1.12, "gainDb": -2, "purpose": "Klein chapter card arrival" },
-    { "id": "card-projective-low", "category": "chapter-low-punctuation", "generatorId": "chapter-sub-pulse-v1", "sceneId": "chapter-card-projective", "time": 126.6, "duration": 1.12, "gainDb": -4, "purpose": "Projective chapter card arrival" },
-    { "id": "card-sphere-low", "category": "chapter-low-punctuation", "generatorId": "chapter-sub-pulse-v1", "sceneId": "chapter-card-sphere", "time": 148.42, "duration": 1.12, "gainDb": -2, "purpose": "Sphere chapter card arrival" },
-    { "id": "stone-plane", "category": "stone-placement", "generatorId": "stone-soft-slate-v1", "sceneId": "chapter-plane", "time": 32.898504, "duration": 0.42, "gainDb": -1, "purpose": "First visible Plane placement" },
-    { "id": "stone-cylinder", "category": "stone-placement", "generatorId": "stone-soft-slate-v1", "sceneId": "chapter-cylinder", "time": 51.536819, "duration": 0.42, "gainDb": -2, "purpose": "Cylinder placement after horizontal return" },
-    { "id": "stone-torus", "category": "stone-placement", "generatorId": "stone-soft-slate-v1", "sceneId": "chapter-torus", "time": 72.034417, "duration": 0.42, "gainDb": -2, "purpose": "Torus crossing placement" },
-    { "id": "stone-mobius", "category": "stone-placement", "generatorId": "stone-soft-slate-v1", "sceneId": "chapter-mobius", "time": 95.861924, "duration": 0.42, "gainDb": -3, "purpose": "Mobius inverted-side placement" },
-    { "id": "stone-sphere", "category": "stone-placement", "generatorId": "stone-soft-slate-v1", "sceneId": "chapter-sphere", "time": 157.761298, "duration": 0.42, "gainDb": -2, "purpose": "Sphere closure placement" },
-    { "id": "stone-outro", "category": "stone-placement", "generatorId": "stone-soft-slate-v1", "sceneId": "outro", "time": 198.657196, "duration": 0.42, "gainDb": 0, "purpose": "Final human placement; the last foreground SFX" },
-    { "id": "seam-cylinder", "category": "seam-crossing", "generatorId": "seam-glide-v1", "sceneId": "chapter-cylinder", "time": 53.076609, "duration": 0.76, "gainDb": -2, "purpose": "Single horizontal wrap" },
-    { "id": "seam-torus", "category": "seam-crossing", "generatorId": "seam-glide-v1", "sceneId": "chapter-torus", "time": 74.791977, "duration": 0.76, "gainDb": -3, "purpose": "First of two Torus direction crossings" },
-    { "id": "seam-projective", "category": "seam-crossing", "generatorId": "seam-glide-v1", "sceneId": "chapter-projective", "time": 135.388503, "duration": 0.76, "gainDb": -4, "purpose": "Mirrored Projective return" },
-    { "id": "bend-torus", "category": "surface-bend", "generatorId": "surface-flex-v1", "sceneId": "chapter-torus", "time": 83.580298, "duration": 1.28, "gainDb": -4, "purpose": "Torus surface hands off to Mobius" },
-    { "id": "bend-mobius", "category": "surface-bend", "generatorId": "surface-flex-v1", "sceneId": "chapter-mobius", "time": 102.482792, "duration": 1.28, "gainDb": -3, "purpose": "One-sided surface turns away" },
-    { "id": "bend-sphere", "category": "surface-bend", "generatorId": "surface-flex-v1", "sceneId": "chapter-sphere", "time": 173.710381, "duration": 1.28, "gainDb": -4, "purpose": "Closed surface opens into gallery" },
-    { "id": "occlusion-plane", "category": "camera-occlusion", "generatorId": "occlusion-air-v1", "sceneId": "chapter-plane", "time": 40.947212, "duration": 0.92, "gainDb": -3, "purpose": "Plane surface passes camera" },
-    { "id": "occlusion-klein", "category": "camera-occlusion", "generatorId": "occlusion-air-v1", "sceneId": "chapter-klein", "time": 123.264609, "duration": 0.92, "gainDb": -4, "purpose": "Klein neck masks the frame" }
+    { "id": "card-plane-low", "category": "chapter-low-punctuation", "generatorId": "chapter-sub-pulse-v1", "sceneId": "chapter-card-plane", "event": { "kind": "scene-start" }, "time": 26.42, "duration": 1.12, "gainDb": -2, "purpose": "Plane chapter card arrival" },
+    { "id": "card-cylinder-low", "category": "chapter-low-punctuation", "generatorId": "chapter-sub-pulse-v1", "sceneId": "chapter-card-cylinder", "event": { "kind": "scene-start" }, "time": 43.64, "duration": 1.12, "gainDb": -3, "purpose": "Cylinder chapter card arrival" },
+    { "id": "card-torus-low", "category": "chapter-low-punctuation", "generatorId": "chapter-sub-pulse-v1", "sceneId": "chapter-card-torus", "event": { "kind": "scene-start" }, "time": 64.66, "duration": 1.12, "gainDb": -3, "purpose": "Torus chapter card arrival" },
+    { "id": "card-mobius-low", "category": "chapter-low-punctuation", "generatorId": "chapter-sub-pulse-v1", "sceneId": "chapter-card-mobius", "event": { "kind": "scene-start" }, "time": 86.16, "duration": 1.12, "gainDb": -4, "purpose": "Mobius chapter card arrival" },
+    { "id": "card-klein-low", "category": "chapter-low-punctuation", "generatorId": "chapter-sub-pulse-v1", "sceneId": "chapter-card-klein", "event": { "kind": "scene-start" }, "time": 105.82, "duration": 1.12, "gainDb": -2, "purpose": "Klein chapter card arrival" },
+    { "id": "card-projective-low", "category": "chapter-low-punctuation", "generatorId": "chapter-sub-pulse-v1", "sceneId": "chapter-card-projective", "event": { "kind": "scene-start" }, "time": 126.6, "duration": 1.12, "gainDb": -4, "purpose": "Projective chapter card arrival" },
+    { "id": "card-sphere-low", "category": "chapter-low-punctuation", "generatorId": "chapter-sub-pulse-v1", "sceneId": "chapter-card-sphere", "event": { "kind": "scene-start" }, "time": 148.42, "duration": 1.12, "gainDb": -2, "purpose": "Sphere chapter card arrival" },
+    { "id": "stone-plane", "category": "stone-placement", "generatorId": "stone-soft-slate-v1", "sceneId": "chapter-plane", "event": { "kind": "drop-complete", "demoId": "ordinary-five", "step": 1 }, "time": 31.245833333333, "duration": 0.42, "gainDb": -1, "purpose": "First visible Plane placement" },
+    { "id": "stone-cylinder", "category": "stone-placement", "generatorId": "stone-soft-slate-v1", "sceneId": "chapter-cylinder", "event": { "kind": "drop-complete", "demoId": "horizontal-wrap", "step": 3 }, "time": 52.513333333333, "duration": 0.42, "gainDb": -2, "purpose": "Cylinder placement after horizontal return" },
+    { "id": "stone-torus", "category": "stone-placement", "generatorId": "stone-soft-slate-v1", "sceneId": "chapter-torus", "event": { "kind": "drop-complete", "demoId": "two-seam-diagonal", "step": 2 }, "time": 72.1955, "duration": 0.42, "gainDb": -2, "purpose": "Torus placement after the first crossing" },
+    { "id": "stone-mobius", "category": "stone-placement", "generatorId": "stone-soft-slate-v1", "sceneId": "chapter-mobius", "event": { "kind": "drop-complete", "demoId": "reflected-crossing", "step": 3 }, "time": 94.51525, "duration": 0.42, "gainDb": -3, "purpose": "Mobius inverted-side placement" },
+    { "id": "stone-sphere", "category": "stone-placement", "generatorId": "stone-soft-slate-v1", "sceneId": "chapter-sphere", "event": { "kind": "drop-complete", "demoId": "adjacent-edge-turn", "step": 3 }, "time": 160.264770833333, "duration": 0.42, "gainDb": -2, "purpose": "Sphere edge-turn closure placement" },
+    { "id": "stone-outro", "category": "stone-placement", "generatorId": "stone-soft-slate-v1", "sceneId": "outro", "event": { "kind": "caption-start", "captionId": "outro-stone-02" }, "time": 201.484333333333, "duration": 0.42, "gainDb": 0, "purpose": "Narration-synchronous final human placement; the last foreground SFX" },
+    { "id": "seam-cylinder", "category": "seam-crossing", "generatorId": "seam-glide-v1", "sceneId": "chapter-cylinder", "event": { "kind": "crossing-breathe", "demoId": "horizontal-wrap", "step": 3, "breathPhase": 0.62 }, "time": 50.855020833333, "duration": 0.76, "gainDb": -2, "purpose": "Single horizontal wrap" },
+    { "id": "seam-torus", "category": "seam-crossing", "generatorId": "seam-glide-v1", "sceneId": "chapter-torus", "event": { "kind": "crossing-breathe", "demoId": "two-seam-diagonal", "step": 2, "breathPhase": 0.62 }, "time": 70.6764375, "duration": 0.76, "gainDb": -3, "purpose": "First of two Torus direction crossings" },
+    { "id": "seam-projective", "category": "seam-crossing", "generatorId": "seam-glide-v1", "sceneId": "chapter-projective", "event": { "kind": "crossing-breathe", "demoId": "mirrored-crossings", "step": 3, "breathPhase": 0.62 }, "time": 135.318229166667, "duration": 0.76, "gainDb": -4, "purpose": "Second mirrored Projective return" },
+    { "id": "bend-torus", "category": "surface-bend", "generatorId": "surface-flex-v1", "sceneId": "chapter-torus", "event": { "kind": "morph-start", "demoId": "two-seam-diagonal" }, "time": 77.589875, "duration": 1.28, "gainDb": -4, "purpose": "Torus surface begins its formed-state morph" },
+    { "id": "bend-mobius", "category": "surface-bend", "generatorId": "surface-flex-v1", "sceneId": "chapter-mobius", "event": { "kind": "morph-start", "demoId": "reflected-crossing" }, "time": 97.296833333333, "duration": 1.28, "gainDb": -3, "purpose": "One-sided surface begins its formed-state morph" },
+    { "id": "bend-sphere", "category": "surface-bend", "generatorId": "surface-flex-v1", "sceneId": "chapter-sphere", "event": { "kind": "morph-start", "demoId": "adjacent-edge-turn" }, "time": 164.936520833333, "duration": 1.28, "gainDb": -4, "purpose": "Closed surface begins its formed-state morph" },
+    { "id": "occlusion-plane", "category": "camera-occlusion", "generatorId": "occlusion-air-v1", "sceneId": "chapter-plane", "event": { "kind": "exit-occlusion-start" }, "time": 40.92, "duration": 0.92, "gainDb": -3, "purpose": "Plane exit occluder begins passing the camera" },
+    { "id": "occlusion-klein", "category": "camera-occlusion", "generatorId": "occlusion-air-v1", "sceneId": "chapter-klein", "event": { "kind": "exit-occlusion-start" }, "time": 123.88, "duration": 0.92, "gainDb": -4, "purpose": "Klein-neck exit occluder begins masking the frame" }
   ]
 }

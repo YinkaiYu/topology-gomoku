@@ -10,6 +10,12 @@ const smooth = (value) => {
 };
 const freeze = (value) => Object.freeze(value);
 
+export const CHAPTER_MOTION_TIMING = freeze({
+  progressStartOffsetSeconds: 0.22,
+  progressEndOffsetSeconds: 1.18,
+  exitOcclusionDurationSeconds: 0.72
+});
+
 const EXIT_MATCH_SHAPES = Object.freeze({
   "plane-shadow": "plane-shadow",
   "cylinder-section": "cylinder-section",
@@ -444,19 +450,19 @@ export function addTopologyChapterMotion(timeline, scene, start, duration) {
   timeline.from(board, { opacity: 0, filter: "blur(5px)", duration: 0.66, ease: "power3.out", immediateRender: false }, start + 0.16);
   timeline.to(progress, {
     value: 1,
-    duration: Math.max(1, duration - 1.18),
+    duration: Math.max(1, duration - CHAPTER_MOTION_TIMING.progressEndOffsetSeconds),
     ease: "none",
     onUpdate() {
       scene.__chapterController?.renderProgress(progress.value);
     }
-  }, start + 0.22);
+  }, start + CHAPTER_MOTION_TIMING.progressStartOffsetSeconds);
   timeline.fromTo(occluder, { opacity: 0, scale: 0.94 }, {
     opacity: 1,
     scale: 1,
-    duration: 0.72,
+    duration: CHAPTER_MOTION_TIMING.exitOcclusionDurationSeconds,
     ease: "power2.in",
     immediateRender: false
-  }, start + duration - 0.72);
+  }, start + duration - CHAPTER_MOTION_TIMING.exitOcclusionDurationSeconds);
 }
 
 export async function prepareTopologyChapterScenes(registry) {

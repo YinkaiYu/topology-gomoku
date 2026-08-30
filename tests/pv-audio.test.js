@@ -112,6 +112,22 @@ function measureDuckingReduction(inputFiles, filterPrelude, beforeLabel, afterLa
 
 const REAL_AUDIO = realAudioAvailability();
 
+test("the browser SHA-256 implementation authenticates a stream without buffering it for Web Crypto", async () => {
+  const { IncrementalSha256 } = await import("../video/footsteps-return/src/runtime/incremental-sha256.js");
+  for (const length of [0, 55, 56, 63, 64, 65, 65_537]) {
+    const bytes = Buffer.alloc(length);
+    for (let index = 0; index < bytes.length; index += 1) bytes[index] = (index * 37 + 19) & 0xff;
+    const expected = crypto.createHash("sha256").update(bytes).digest("hex");
+    const hasher = new IncrementalSha256();
+    for (let start = 0; start < bytes.length; start += (start % 97) + 1) {
+      const end = Math.min(bytes.length, start + (start % 97) + 1);
+      hasher.update(new Uint8Array(bytes.buffer, bytes.byteOffset + start, end - start));
+    }
+    assert.equal(hasher.digestHex(), expected, `streamed SHA-256 length ${length}`);
+    assert.throws(() => hasher.update(new Uint8Array([1])), /already finalized/);
+  }
+});
+
 function readWav(filePath) {
   const buffer = fs.readFileSync(filePath);
   assert.equal(buffer.toString("ascii", 0, 4), "RIFF", `${filePath} must be RIFF`);
@@ -185,6 +201,7 @@ test("the integrated audio manifest binds the measured F narration, retimed scor
   const sfxRender = readJson(path.join(PV_ROOT, "audio", "sfx", "render-metadata.json"));
   const { masterTimeline } = await import("../video/footsteps-return/src/data/timeline.js");
   const { canonicalMixRenderContract } = await import("../video/footsteps-return/src/runtime/mix-contract.js");
+  const { resolveSfxCueEvent } = await import("../video/footsteps-return/src/runtime/sfx-timing.js");
 
   assert.equal(mix.schemaVersion, 1);
   assert.deepEqual(mix.composition, {
@@ -221,15 +238,60 @@ test("the integrated audio manifest binds the measured F narration, retimed scor
   assert.equal(mix.inputs.sfx.cues.length, 21);
   const renderedSfx = new Map(sfxRender.files.map((file) => [file.id, file]));
   const generatorById = new Map(sfxPlan.generators.map((generator) => [generator.id, generator]));
+  const expectedSemanticEvents = new Map([
+    ["card-plane-low", { kind: "scene-start" }],
+    ["card-cylinder-low", { kind: "scene-start" }],
+    ["card-torus-low", { kind: "scene-start" }],
+    ["card-mobius-low", { kind: "scene-start" }],
+    ["card-klein-low", { kind: "scene-start" }],
+    ["card-projective-low", { kind: "scene-start" }],
+    ["card-sphere-low", { kind: "scene-start" }],
+    ["stone-plane", { kind: "drop-complete", demoId: "ordinary-five", step: 1 }],
+    ["stone-cylinder", { kind: "drop-complete", demoId: "horizontal-wrap", step: 3 }],
+    ["stone-torus", { kind: "drop-complete", demoId: "two-seam-diagonal", step: 2 }],
+    ["stone-mobius", { kind: "drop-complete", demoId: "reflected-crossing", step: 3 }],
+    ["stone-sphere", { kind: "drop-complete", demoId: "adjacent-edge-turn", step: 3 }],
+    ["stone-outro", { kind: "caption-start", captionId: "outro-stone-02" }],
+    ["seam-cylinder", { kind: "crossing-breathe", demoId: "horizontal-wrap", step: 3, breathPhase: 0.62 }],
+    ["seam-torus", { kind: "crossing-breathe", demoId: "two-seam-diagonal", step: 2, breathPhase: 0.62 }],
+    ["seam-projective", { kind: "crossing-breathe", demoId: "mirrored-crossings", step: 3, breathPhase: 0.62 }],
+    ["bend-torus", { kind: "morph-start", demoId: "two-seam-diagonal" }],
+    ["bend-mobius", { kind: "morph-start", demoId: "reflected-crossing" }],
+    ["bend-sphere", { kind: "morph-start", demoId: "adjacent-edge-turn" }],
+    ["occlusion-plane", { kind: "exit-occlusion-start" }],
+    ["occlusion-klein", { kind: "exit-occlusion-start" }]
+  ]);
   mix.inputs.sfx.cues.forEach((cue, index) => {
     const planned = sfxPlan.cues[index];
     const generator = generatorById.get(planned.generatorId);
     const rendered = renderedSfx.get(planned.generatorId);
+    assert.deepEqual(planned.event, expectedSemanticEvents.get(planned.id), `${planned.id} needs an explicit canonical picture event`);
+    const resolved = resolveSfxCueEvent(planned);
+    assert.equal(Math.round(planned.time * 48_000), resolved.sampleIndex, `${planned.id} must start on the first active sample of its semantic event`);
+    assert.equal(resolved.scene.id, planned.sceneId);
+    if (planned.event.kind === "drop-complete") {
+      assert.equal(resolved.frame.phase, "drop");
+      assert.equal(resolved.frame.demo, planned.event.demoId);
+      assert.equal(resolved.frame.pendingStep, planned.event.step);
+      assert.ok(Math.abs(resolved.frame.dropProgress - 1) <= 1e-9);
+    } else if (planned.event.kind === "crossing-breathe") {
+      assert.equal(resolved.frame.phase, "breathe");
+      assert.equal(resolved.frame.demo, planned.event.demoId);
+      assert.equal(resolved.frame.pendingStep, planned.event.step);
+      assert.ok(resolved.frame.crossings.includes(planned.event.step));
+      assert.ok(Math.abs(resolved.frame.breathPhase - planned.event.breathPhase) <= 1e-9);
+    } else if (planned.event.kind === "morph-start") {
+      assert.equal(resolved.frame.phase, "win-hold");
+      assert.equal(resolved.frameAfter.phase, "morph");
+      assert.equal(resolved.frameAfter.demo, planned.event.demoId);
+      assert.ok(resolved.frameAfter.morphProgress > 0 && resolved.frameAfter.morphProgress < 0.001);
+    }
     assert.deepEqual(cue, {
       id: planned.id,
       category: planned.category,
       generatorId: planned.generatorId,
       sceneId: planned.sceneId,
+      event: planned.event,
       startSeconds: planned.time,
       durationSeconds: planned.duration,
       gainDb: planned.gainDb,
@@ -278,7 +340,7 @@ test("the integrated audio manifest binds the measured F narration, retimed scor
   assert.equal(Number(unionDuration.toFixed(6)), 18.32);
   assert.equal(Number((unionDuration / mix.composition.durationSeconds * 100).toFixed(3)), 8.559);
   assert.equal(maximumConcurrency, 1);
-  assert.equal(Number(Math.max(...sfxIntervals.map(({ end }) => end)).toFixed(6)), 199.077196);
+  assert.equal(Number(Math.max(...sfxIntervals.map(({ end }) => end)).toFixed(6)), 201.904333);
   assert.ok(Math.max(...sfxIntervals.map(({ end }) => end)) < 210.04);
 
   assert.deepEqual(masterTimeline.scenes.map(({ kind }) => kind), [
@@ -464,6 +526,10 @@ test("the browser binds one final master audio track and proves all named render
       return {
         audioCount: document.querySelectorAll("[data-master-audio]").length,
         src: audio?.getAttribute("src"),
+        currentSrc: audio?.currentSrc,
+        source: audio?.dataset.source,
+        authenticatedSha256: audio?.dataset.authenticatedSha256,
+        authenticatedBytes: audio?.dataset.authenticatedBytes,
         start: audio?.dataset.start,
         duration: audio?.dataset.duration,
         trackIndex: audio?.dataset.trackIndex,
@@ -487,7 +553,12 @@ test("the browser binds one final master audio track and proves all named render
       };
     });
     assert.equal(contract.audioCount, 1);
-    assert.equal(contract.src, "./audio/mix/footsteps-return-draft.wav");
+    assert.match(contract.src, /^blob:/);
+    assert.match(contract.currentSrc, /^blob:/);
+    assert.equal(contract.source, "./audio/mix/footsteps-return-draft.wav");
+    const mix = readJson(MIX_PATH);
+    assert.equal(contract.authenticatedSha256, mix.output.sha256);
+    assert.equal(contract.authenticatedBytes, String(mix.output.bytes));
     assert.equal(contract.start, "0");
     assert.equal(contract.duration, "214.04");
     assert.equal(contract.trackIndex, "20");
@@ -510,7 +581,46 @@ test("the browser binds one final master audio track and proves all named render
     assert.equal(contract.rootReady, "true");
     assert.deepEqual(Object.keys(contract.gates), ["fonts", "liveGameAdapter", "narration", "score", "sfx", "webgl"]);
     Object.entries(contract.gates).forEach(([name, gate]) => assert.equal(gate.ready, true, `${name}: ${gate.detail}`));
+    for (const name of ["narration", "score", "sfx"]) {
+      assert.match(contract.gates[name].detail, /^authenticated master is bound to a manifest declaring /);
+      assert.doesNotMatch(contract.gates[name].detail, /present in the final master/);
+    }
     assert.deepEqual(ready.readiness, contract.gates);
+  } finally {
+    await browser.close();
+    await server.close();
+  }
+});
+
+test("browser render readiness rejects a same-duration master whose bytes do not match the measured mix", { skip: !(REAL_AUDIO.inputs && REAL_AUDIO.output) }, async () => {
+  const { chromium } = require("playwright");
+  const { startStaticServer } = await import("../video/footsteps-return/scripts/serve-app.mjs");
+  const mix = readJson(MIX_PATH);
+  const scoreOnlyMaster = fs.readFileSync(projectPath(mix.inputs.score.file));
+  const scoreWav = readWav(projectPath(mix.inputs.score.file));
+  assert.equal(scoreWav.frameCount, EXPECTED_FRAME_COUNT, "substitution fixture must retain the exact 214.040-second frame count");
+  assert.notEqual(crypto.createHash("sha256").update(scoreOnlyMaster).digest("hex"), mix.output.sha256);
+  const server = await startStaticServer({ root: PV_ROOT });
+  const browser = await chromium.launch({ headless: true });
+  try {
+    const page = await browser.newPage({ viewport: { width: 3840, height: 2160 } });
+    await page.route("**/audio/mix/footsteps-return-draft.wav", (route) => route.fulfill({
+      status: 200,
+      contentType: "audio/wav",
+      body: scoreOnlyMaster
+    }));
+    await page.goto(`${server.url}/index.html`, { waitUntil: "networkidle" });
+    const outcome = await page.evaluate(async () => {
+      try {
+        await window.__renderReady;
+        return { resolved: true, message: "" };
+      } catch (error) {
+        return { resolved: false, message: error.message };
+      }
+    });
+    assert.equal(outcome.resolved, false, "same-duration score-only bytes must not satisfy final-audio readiness");
+    assert.match(outcome.message, /final master audio SHA-256 mismatch/);
+    assert.equal(await page.evaluate(() => document.documentElement.dataset.renderReady), "false");
   } finally {
     await browser.close();
     await server.close();

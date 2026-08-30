@@ -4,6 +4,17 @@ export const RENDER_API_METHODS = Object.freeze(["selectShot", "render", "render
 const clamp = (value) => Math.max(0, Math.min(1, Number(value) || 0));
 const COMPLETION_HANDOFF_END = 0.4;
 
+export function chapterPhaseUnits(demo) {
+  const units = [{ phase: "establish", weight: 1 }];
+  const crossings = new Set(demo.crossings);
+  for (let step = 1; step <= 5; step += 1) {
+    if (crossings.has(step)) units.push({ phase: "breathe", step, weight: 2 });
+    units.push({ phase: "drop", step, weight: 1 });
+  }
+  units.push({ phase: "win-hold", step: 5, weight: 1.25 }, { phase: "morph", weight: 4 }, { phase: "settled", weight: 1 }, { phase: "rotation", weight: 1.5 });
+  return Object.freeze(units.map(Object.freeze));
+}
+
 export function normalizeRenderState(value = {}) {
   return Object.freeze({
     topology: String(value.topology || "plane"),
@@ -20,13 +31,7 @@ export function normalizeRenderState(value = {}) {
 }
 
 export function chapterStateAt(definition, demo, progress) {
-  const units = [{ phase: "establish", weight: 1 }];
-  const crossings = new Set(demo.crossings);
-  for (let step = 1; step <= 5; step += 1) {
-    if (crossings.has(step)) units.push({ phase: "breathe", step, weight: 2 });
-    units.push({ phase: "drop", step, weight: 1 });
-  }
-  units.push({ phase: "win-hold", step: 5, weight: 1.25 }, { phase: "morph", weight: 4 }, { phase: "settled", weight: 1 }, { phase: "rotation", weight: 1.5 });
+  const units = chapterPhaseUnits(demo);
   const total = units.reduce((sum, unit) => sum + unit.weight, 0);
   let cursor = clamp(progress) * total;
   let selected = units.at(-1);

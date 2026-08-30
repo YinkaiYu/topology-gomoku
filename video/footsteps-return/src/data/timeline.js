@@ -11,7 +11,7 @@ export const masterTimeline = Object.freeze({
   audio: Object.freeze([
     freezeCue({ id: "narration-bus", role: "narration", start: 0.42, duration: 208.7, cueCount: 21, manifest: "audio/mix.json" }),
     freezeCue({ id: "score-master", role: "score", start: 0, duration: compositionTiming.duration, cueCount: 1, manifest: "audio/mix.json" }),
-    freezeCue({ id: "sfx-bus", role: "sfx", start: 26.42, duration: 172.657196, cueCount: 21, manifest: "audio/mix.json" }),
+    freezeCue({ id: "sfx-bus", role: "sfx", start: 26.42, duration: 175.484333333333, cueCount: 21, manifest: "audio/mix.json" }),
     freezeCue({ id: "final-mix", role: "master", start: 0, duration: compositionTiming.duration, cueCount: 1, manifest: "audio/mix.json" })
   ])
 });
