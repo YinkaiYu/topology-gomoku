@@ -58,6 +58,7 @@
 | 关卡卡片进入棋盘 | [`进入前`](../../artifacts/qa-level-card-entry-before-v1361.png)、[`回弹中`](../../artifacts/qa-level-card-entry-mid-v1361.png)、[`稳定态`](../../artifacts/qa-level-card-entry-settled-v1361.png) |
 | 棋盘返回关卡卡片 | [`收束中`](../../artifacts/qa-level-card-return-mid-v1361.png)、[`稳定态`](../../artifacts/qa-level-card-return-settled-v1361.png) |
 | AI 难度文案与内嵌字体 | [`artifacts/qa-ai-difficulty-labels-v1363.png`](../../artifacts/qa-ai-difficulty-labels-v1363.png) |
+| 章节预告 PV「七界足迹」4K 关键帧 | [`artifacts/qa-chapter-teaser-pv-4k-contact-sheet.png`](../../artifacts/qa-chapter-teaser-pv-4k-contact-sheet.png) |
 
 较早截图只用于回归和问题溯源，不自动成为新设计的视觉真相。出现冲突时，以最新已确认实现、视觉设计语言和同状态实机/预览证据为准。
 
@@ -66,6 +67,10 @@
 液态滑块与开关惯性在 390 × 844 视口完成点击、连续拖动和释放验收：拖动保持柔性追随，直接点击采用独立的距离感知节奏；桌面跨两档点击为 740 ms，修改前同一操作在 220 ms 已越过目标停靠点，优化后仍保留可见滑行并最终准确停靠。触摸与手写笔使用更重的跟随和停靠节奏；点击轨道或目标档位只产生惯性位移，只有直接按住可移动玻璃体才出现挤压与折射。桌面本地预览与 Bilibili Toy 手机预览均于 2026-08-28 获得明确确认，自动检查、包结构校验和控制台检查均通过。
 
 难度滑块的连续拖动在 390 × 844 H5 预览中完成回归：指针按住玻璃滑块时，位移逐帧直接跟随输入，只对液态形变保留缓动；释放后再恢复距离感知的吸附与单次回弹。这样避免移动 WebView 在每个指针帧中断并重启位移动画造成抖动，同时保持点击跳档和释放停靠的原有质感。
+
+章节预告 PV「七界足迹」于 2026-08-30 在 `codex/chapter-teaser-pv` 独立 worktree 中完成首轮 4K 静态 QA。`dev` 基线没有章节预告 PV，结果证据以 3840 × 2160、60 fps 的确定性时间线生成；联系表覆盖序章、七组两阶段章节牌、七章真实棋路与拓扑曲面、七界回望、终章和片尾，共 32 个关键状态。可用 `npm run pv:keyframes` 在 `.tmp/chapter-teaser/keyframes-4k/` 重建相同视口的关键帧和联系表。
+
+该联系表只验证构图、留白、章节色、两行标题变换、棋路到曲面的视觉递进、单行字幕安全区与片尾品牌层级；转场连续性、60 fps 运动、旁白可懂度、各章配乐辨识度和音画同步必须以完整 1080p60 审阅版复核。当前预览确认状态为“待用户审阅”，用户明确确认前不得把任务分支合回 `dev`，也不得提前生成作为发行交付的 4K 母版。
 
 ## 新证据记录模板
 
