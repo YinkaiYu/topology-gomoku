@@ -1,7 +1,10 @@
 import copy
 import importlib.util
+import json
 import pathlib
+import tempfile
 import unittest
+from unittest import mock
 
 
 ROOT = pathlib.Path(__file__).resolve().parents[1]
@@ -214,6 +217,55 @@ class QwenVoiceAuditionTests(unittest.TestCase):
 
         with self.assertRaisesRegex(ValueError, "sharedDeliveryClause|contract"):
             generator.verify_manifest(config, malformed, verify_wavs=False)
+
+    def test_contract_rejects_identity_based_and_clone_voice_design_language(self):
+        generator = load_generator()
+        config = generator.read_json(generator.CONFIG_PATH)
+        prohibited_prompts = {
+            "real-narrator-imitation": "模仿知名真人旁白演员的标志性声线。",
+            "voice-actor-clone": "克隆某配音演员的声纹并复刻其表演。",
+            "character-work-copy": "模仿某角色在知名作品中的声音。",
+            "english-reference": "Use reference audio to imitate a famous real actor.",
+            "english-clone": "Clone the voiceprint of a named voice actor.",
+            "english-character": "Sound like a named character from a film.",
+        }
+        for name, prompt in prohibited_prompts.items():
+            with self.subTest(name=name):
+                malformed = copy.deepcopy(config)
+                voice = malformed["voiceDesign"]["voices"][0]
+                voice["timbreClause"] = prompt
+                voice["instruction"] = prompt + malformed["voiceDesign"]["sharedDeliveryClause"]
+                with self.assertRaisesRegex(ValueError, "identity|prohibited|approved|timbre"):
+                    generator.validate_contract(malformed)
+
+    def test_manifest_verifier_rejects_tampered_voice_design_source_sample_rate(self):
+        generator, config, manifest = self.load_manifest_subject()
+        malformed = copy.deepcopy(manifest)
+        malformed["outputs"][3]["sourceSampleRateHz"] = 12345
+
+        with self.assertRaisesRegex(ValueError, "sourceSampleRateHz|source format|contract"):
+            generator.verify_manifest(config, malformed, verify_wavs=False)
+
+    def test_voice_design_provenance_rejects_tampered_identity_license_hash_and_urls(self):
+        generator = load_generator()
+        config = generator.read_json(generator.CONFIG_PATH)
+        evidence = generator.read_json(generator.LICENSE_EVIDENCE_PATH)
+        mutations = {
+            "id": lambda value: value["voiceDesignModel"].__setitem__("id", "attacker/voice-model"),
+            "spdx": lambda value: value["voiceDesignModel"].__setitem__("spdx", "Proprietary"),
+            "source-hash": lambda value: value["voiceDesignModel"].__setitem__("sourceSha256", "0" * 64),
+            "source-url": lambda value: value["voiceDesignModel"].__setitem__("sourceUrl", "https://attacker.invalid/proprietary"),
+            "revision-url": lambda value: value["voiceDesignModel"].__setitem__("revisionUrl", "https://attacker.invalid/proprietary"),
+        }
+        for name, mutate in mutations.items():
+            with self.subTest(name=name), tempfile.TemporaryDirectory() as directory:
+                malformed = copy.deepcopy(evidence)
+                mutate(malformed)
+                evidence_path = pathlib.Path(directory) / "evidence.json"
+                evidence_path.write_text(json.dumps(malformed), encoding="utf-8")
+                with mock.patch.object(generator, "LICENSE_EVIDENCE_PATH", evidence_path):
+                    with self.assertRaisesRegex(ValueError, "VoiceDesign|evidence|provenance|license|source|revision"):
+                        generator.validate_license_evidence(config)
 
 
 if __name__ == "__main__":

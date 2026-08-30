@@ -8,6 +8,7 @@ import math
 import os
 import pathlib
 import random
+import re
 import time
 from typing import Any
 
@@ -17,6 +18,41 @@ PV_ROOT = ROOT / "video" / "footsteps-return"
 CONFIG_PATH = PV_ROOT / "audio" / "voiceover" / "auditions.json"
 MANIFEST_PATH = PV_ROOT / "audio" / "voiceover" / "audition-manifest.json"
 LICENSE_EVIDENCE_PATH = PV_ROOT / "assets" / "licenses" / "audio" / "qwen3-tts-license-evidence.json"
+
+VOICE_DESIGN_MODEL_ID = "Qwen/Qwen3-TTS-12Hz-1.7B-VoiceDesign"
+VOICE_DESIGN_REVISION = "0e711a1c0aa5aad30654426e0d11f67716c1211e"
+VOICE_DESIGN_SOURCE_SAMPLE_RATE_HZ = 24000
+VOICE_DESIGN_SHARED_DELIVERY_CLAUSE = (
+    "使用成熟、自然的标准普通话；以庄重、克制的电影感旁白朗读；辅音清楚，字词易懂；"
+    "保持平静而向前的推进；不要悲伤、煽情、广告腔、新闻播音腔、喊叫或拖长句尾。"
+)
+VOICE_DESIGN_APPROVED_TIMBRES = (
+    ("D", "deep-baritone", "约45岁的原创男性声线；低男中音至男低音音域；胸腔共鸣强；音质浓密、稳定、清晰，绝不含混。"),
+    ("E", "epic-narrator", "原创男性声线；宽广低音域；厚重而有空间感；具有统领性的电影尺度，但不做戏剧化夸张。"),
+    ("F", "cold-witness", "原创男性声线；低沉、干燥、冷峻、受控；略带距离感；轮廓坚硬而干净；神秘而不阴郁。"),
+    ("G", "warm-scholar", "原创成熟男性声线；理性而温暖；像可信赖的科学叙事者；低中频圆润饱满。"),
+    ("H", "weathered-traveler", "原创年长男性声线；久经风霜；有纹理与岁月感，但不嘶哑、不虚弱、不悲情，也不模仿任何真人。"),
+    ("I", "resolute-guide", "原创男性声线；比D与H略年轻，但仍低沉结实；果决、向前推进、安静而英勇。"),
+)
+VOICE_DESIGN_SAFE_NEGATION = "不模仿任何真人"
+VOICE_DESIGN_PROHIBITED_PATTERNS = (
+    re.compile(r"真人|演员|配音员|配音演员|角色|作品|模仿|仿照|仿制|克隆|复刻|声纹|参考音频|参考录音|参考\s*WAV", re.IGNORECASE),
+    re.compile(r"\b(?:actor|actress|performer|character|imitat(?:e|es|ed|ing|ion)|mimic(?:s|ed|king)?|clon(?:e|es|ed|ing)|replicat(?:e|es|ed|ing|ion)|voice\s*print|voiceprint)\b", re.IGNORECASE),
+    re.compile(r"\breal[ -]?(?:person|people|human|actor|performer)\b", re.IGNORECASE),
+    re.compile(r"\b(?:reference|prompt)[ -]?(?:audio|recording|wav)\b", re.IGNORECASE),
+    re.compile(r"\b(?:sound|sounds)[ -]?like\b|\bin[ -]?the[ -]?voice[ -]?of\b|\bimpression[ -]?of\b", re.IGNORECASE),
+)
+VOICE_DESIGN_EXPECTED_EVIDENCE = {
+    "id": VOICE_DESIGN_MODEL_ID,
+    "revision": VOICE_DESIGN_REVISION,
+    "spdx": "Apache-2.0",
+    "revisionUrl": f"https://huggingface.co/{VOICE_DESIGN_MODEL_ID}/tree/{VOICE_DESIGN_REVISION}",
+    "sourceUrl": f"https://huggingface.co/{VOICE_DESIGN_MODEL_ID}/raw/{VOICE_DESIGN_REVISION}/README.md",
+    "sourceSha256": "621b7e88f1867bc03d817176fc1f7f55f4b5a70654b2a07fdcda1e169efb024b",
+    "modelCardFile": "assets/licenses/audio/qwen3-tts-voice-design-model-card-0e711a1.md",
+    "modelCardSha256": "cef0ef3f5366898466254afaebddb4ba1cd2e9d6dad376a3705b55cfcc8e0f92",
+    "savedNormalization": "source line trailing whitespace trimmed, LF line endings and one final LF",
+}
 
 
 def sha256_bytes(data: bytes) -> str:
@@ -29,6 +65,13 @@ def sha256_file(path: pathlib.Path) -> str:
 
 def read_json(path: pathlib.Path) -> dict[str, Any]:
     return json.loads(path.read_text(encoding="utf-8"))
+
+
+def reject_identity_or_clone_language(*clauses: str) -> None:
+    candidate = "\n".join(clauses).replace(VOICE_DESIGN_SAFE_NEGATION, "")
+    for pattern in VOICE_DESIGN_PROHIBITED_PATTERNS:
+        if pattern.search(candidate):
+            raise ValueError("VoiceDesign prompt contains prohibited identity or voice-clone language")
 
 
 def generate_custom_voice_with_instruction(
@@ -128,8 +171,8 @@ def validate_contract(config: dict[str, Any]) -> None:
         raise ValueError("VoiceDesign audition text must remain byte-identical to the two committed cues")
     voice_model = voice_design["model"]
     expected_voice_model = {
-        "id": "Qwen/Qwen3-TTS-12Hz-1.7B-VoiceDesign",
-        "revision": "0e711a1c0aa5aad30654426e0d11f67716c1211e",
+        "id": VOICE_DESIGN_MODEL_ID,
+        "revision": VOICE_DESIGN_REVISION,
         "package": {"name": "qwen-tts", "version": "0.1.1"},
         "language": "Chinese",
         "device": "cpu",
@@ -140,21 +183,25 @@ def validate_contract(config: dict[str, Any]) -> None:
     if voice_model != expected_voice_model or "speaker" in voice_model:
         raise ValueError("D-I must use only the official 1.7B VoiceDesign path with no speaker or reference audio")
     voices = voice_design["voices"]
-    expected_voice_ids = [
-        "deep-baritone",
-        "epic-narrator",
-        "cold-witness",
-        "warm-scholar",
-        "weathered-traveler",
-        "resolute-guide",
-    ]
-    if [voice["auditionId"] for voice in voices] != list("DEFGHI"):
-        raise ValueError("VoiceDesign auditions must be exactly D-I")
-    if [voice["id"] for voice in voices] != expected_voice_ids:
-        raise ValueError("VoiceDesign timbre ids are missing, duplicated, unknown or out of order")
     shared_delivery = voice_design["sharedDeliveryClause"]
-    if not shared_delivery.strip() or len({voice["timbreClause"] for voice in voices}) != 6:
-        raise ValueError("D-I require one shared delivery clause and six distinct timbre clauses")
+    if shared_delivery != VOICE_DESIGN_SHARED_DELIVERY_CLAUSE:
+        raise ValueError("VoiceDesign shared delivery clause is not the approved committed clause")
+    for voice in voices:
+        reject_identity_or_clone_language(
+            voice["timbreClause"],
+            shared_delivery,
+            voice["instruction"],
+        )
+    approved_timbres = [
+        {"auditionId": audition_id, "id": voice_id, "timbreClause": timbre_clause}
+        for audition_id, voice_id, timbre_clause in VOICE_DESIGN_APPROVED_TIMBRES
+    ]
+    actual_timbres = [
+        {key: voice[key] for key in ("auditionId", "id", "timbreClause")}
+        for voice in voices
+    ]
+    if actual_timbres != approved_timbres:
+        raise ValueError("VoiceDesign auditions must use exactly the approved D-I timbre ids and clauses")
     if len({voice["seed"] for voice in voices}) != 1:
         raise ValueError("D-I must use one fixed seed")
     for voice in voices:
@@ -190,6 +237,8 @@ def validate_license_evidence(config: dict[str, Any]) -> None:
     if model["revision"] != config["model"]["revision"]:
         raise ValueError("license evidence and generation config must pin the same model revision")
     voice_model = evidence["voiceDesignModel"]
+    if voice_model != VOICE_DESIGN_EXPECTED_EVIDENCE:
+        raise ValueError("VoiceDesign provenance evidence fields do not match the approved immutable source")
     voice_model_card = PV_ROOT / voice_model["modelCardFile"]
     if sha256_file(voice_model_card) != voice_model["modelCardSha256"]:
         raise ValueError("saved Qwen VoiceDesign model card hash does not match evidence")
@@ -373,6 +422,7 @@ def verify_manifest(
             "instruction": style["instruction"],
             "seed": style["seed"],
             "file": f"{config['output']['directory']}/{style['id']}.wav",
+            "sourceSampleRateHz": VOICE_DESIGN_SOURCE_SAMPLE_RATE_HZ,
             "normalizedSampleRateHz": config["output"]["sampleRateHz"],
             "channels": config["output"]["channels"],
             "subtype": config["output"]["subtype"],
@@ -394,6 +444,7 @@ def verify_manifest(
             "instruction": voice["instruction"],
             "seed": voice["seed"],
             "file": f"{config['output']['directory']}/{voice['id']}.wav",
+            "sourceSampleRateHz": VOICE_DESIGN_SOURCE_SAMPLE_RATE_HZ,
             "normalizedSampleRateHz": config["output"]["sampleRateHz"],
             "channels": config["output"]["channels"],
             "subtype": config["output"]["subtype"],

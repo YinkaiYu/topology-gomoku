@@ -60,3 +60,30 @@ A/B/C retained their previous hashes `ae6a9ee2c7d7f78eea40708ac668c55adbe53f7269
 ## Subjective limits
 
 Automated checks establish provenance, path safety, deterministic controls, audio validity and level matching; they do not establish that a timbre sounds sufficiently low, weighty, cold, solemn, restrained, cinematic or distinct in human perception. No audition is approved by this task. A human must listen to D–I, compare diction, phrase endings, identity separation and emotional restraint, and explicitly select or reject a voice before any later full-batch narration work. The rejected C remains in this audition-only manifest for matrix completeness and is not made a dependency of later full-batch generation.
+
+## Fix round 1: production safety and verifier binding
+
+Review found that the first implementation documented the no-identity/no-clone boundary but did not fully enforce it in production, did not bind `sourceSampleRateHz`, and only partially validated the VoiceDesign provenance object.
+
+The fix began with a focused Python RED against the unmodified production code. The suite contained 11 tests and reported 12 expected subtest failures because no exception was raised for:
+
+- six synchronized D-clause/instruction mutations covering a famous real narrator actor, voice-actor clone/voiceprint, character/work copying, English reference-audio imitation, English voice cloning and an English named film character;
+- a D manifest `sourceSampleRateHz` mutation from 24000 to 12345;
+- VoiceDesign evidence mutations for model ID, SPDX, raw source SHA-256, attacker/proprietary source URL and attacker/proprietary revision URL.
+
+Production now applies two layers before generation or WAV verification:
+
+- An exact D–I allowlist binds every audition letter, timbre ID, approved timbre clause and the shared delivery clause. A Chinese/English prohibited-language scanner rejects identity, actor/performer, character/work, imitation, cloning/replication, voiceprint and reference-audio language. The already approved H phrase `不模仿任何真人` is treated only as a literal negative safety statement; removing or extending it still fails the allowlist or scanner.
+- Static manifest verification binds the Qwen VoiceDesign source rate to 24000 Hz along with the existing 48 kHz mono PCM-16 output fields. Provenance verification binds the complete saved VoiceDesign record: ID, immutable revision, Apache-2.0 SPDX, raw source hash and URL, revision URL, evidence path/hash/normalization, model-card contents and config revision.
+
+No WAV or manifest was regenerated in this fix round. The focused GREEN was Python 11/11, Node 7/7 and public verifier `{"event": "auditions-verified", "count": 9}` with the previously generated A–I hashes unchanged.
+
+Fix-round commands and outputs:
+
+- `uv run --locked python -m unittest tests/test_qwen_voice_auditions.py -v` (RED): `FAILED (failures=12)` across the 11-test suite, all caused by the missing production rejections above.
+- The same focused Python command (GREEN): `Ran 11 tests ... OK`.
+- `node --test tests/pv-voice-auditions.test.js`: 7/7 passed with no skips.
+- `uv run --locked python video/footsteps-return/scripts/generate_voice_auditions.py --verify`: `{"event": "auditions-verified", "count": 9}`.
+- `npm test`: 163/163 passed with no failures or skips.
+- `npm run docs:check`: documentation validation passed for 48 Markdown files.
+- `git diff --check`: exited 0.
