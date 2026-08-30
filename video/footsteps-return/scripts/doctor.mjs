@@ -103,6 +103,15 @@ function runMuseScore() {
   process.exitCode = result.status ?? 1;
 }
 
+function printScoreToolsJson() {
+  const musescore = findMuseScore();
+  const ffmpeg = findFfmpeg();
+  console.log(JSON.stringify({ musescore, ffmpeg }));
+  if (!musescore || !ffmpeg) {
+    process.exitCode = 1;
+  }
+}
+
 export function runDoctor() {
   let failed = false;
 
@@ -139,6 +148,8 @@ export function runDoctor() {
 if (process.argv[1] && path.resolve(process.argv[1]) === scriptPath) {
   if (process.argv[2] === "--musescore") {
     runMuseScore();
+  } else if (process.argv[2] === "--score-tools-json") {
+    printScoreToolsJson();
   } else {
     runDoctor();
   }

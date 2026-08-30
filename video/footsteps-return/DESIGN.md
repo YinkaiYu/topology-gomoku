@@ -40,6 +40,14 @@
 - 节奏轨由 Kokoro-82M 的中文男声 `zm_yunyang` 以 0.88 speed 生成，eSpeak NG 只承担音素化。21 个旁白 cue 各自保持稳定 replacement ID，WAV 在本地 `captures/voiceover/` 逐条生成，允许后续真人录音一对一替换。
 - 母版时长由归一化 WAV 的实际采样数、受保护停顿与章节牌阅读时间生成；当前节奏轨得到 183.352 秒，不以加速旁白追赶 165 秒参考。gallery 从片尾旁白前持续退镜，并在第一条片尾旁白期间保持可见重叠。
 
+## 原创配乐与音效
+
+- 配乐核心细胞固定为 D–F–G–A–C，所有旋律、节奏与配器均为本项目原创；不导入、描摹、转录或变形参考 PV 音乐。`audio/score/score-plan.json` 是可审查作曲源，生成的 MusicXML / MIDI 与每个声部 stem 必须由它确定性重建。
+- 七章身份依次为：Plane 稳定原题；Cylinder 单循环横向运动；Torus 两个错位周期；Mobius 逆行轮廓与反向包络；Klein 低音单簧管原题和大提琴倒影对位；Projective 钢片琴 / 冷弦镜像 canon；Sphere 由钢琴、全弦、克制圆号与轻合唱完成展开和 D 小调解决。章节边界各自收句或换气，不机械循环、硬切或以淡出掩盖未解决乐句。
+- 旁白期间以稀疏短音和分离音区让出中频，章牌只保留低频标点。gallery 继续上一章和声，outro 让五音脚步放慢回归；最终和弦在 180.300 秒自然衰减，末尾 3.052 秒保持真实静默。
+- SFX 只允许落子、跨缝、曲面弯曲、镜头遮蔽与换章低频五类，全部由固定 seed 的方程合成，不使用外部录音或持续轰鸣。声音资源、SoundFont、模型与构建工具许可统一登记在 `assets/audio-licenses.json`。
+- 发布前必须由人类完成配乐、旁白与 SFX 的主观听审。自动证据只可声明静音、削波、时长、声部密度、旁白窗口余量、波形与频谱；代理无法可信试听时必须明确保留该限制。
+
 ## 章节牌
 
 - 章节牌只有两级视觉层级。阶段 A 的上层为单行 `ACT. III`、下层为关卡名 `扭带`；阶段 B 在同一上层槽位切换为流形名 `莫比乌斯环`，下层 `扭带` 的位置、透明度与字号保持不变。
@@ -69,4 +77,4 @@
 
 ## 资产边界
 
-合成直接复用 `app/assets/fonts/` 中的 Topo Serif 字体，以及 `app/assets/topologies/` 和 `app/assets/silhouettes/` 中的现有拓扑 SVG。生成的配音、配乐、临时帧序列与渲染文件一律留在本地生成目录，不纳入 Git；只有 `docs/design/qa.md` 登记的精选基线或联系表可进入 `artifacts/` 作为长期回归证据。
+合成直接复用 `app/assets/fonts/` 中的 Topo Serif 字体，以及 `app/assets/topologies/` 和 `app/assets/silhouettes/` 中的现有拓扑 SVG。生成的配音 WAV、配乐 WAV、低码率审听件、临时帧序列与视频渲染文件一律留在本地生成目录，不纳入 Git；作曲计划、MusicXML / MIDI、许可、渲染元数据与可复现 SVG 音频证据纳入版本控制。只有 `docs/design/qa.md` 登记的精选视觉基线或联系表可进入 `artifacts/` 作为长期视觉回归证据。

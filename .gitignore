@@ -17,3 +17,4 @@ video/footsteps-return/renders/
 video/footsteps-return/.hyperframes/
 video/footsteps-return/**/*.wav
 video/footsteps-return/**/*.png
+video/footsteps-return/audio/score/review/*.opus

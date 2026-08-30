@@ -20,7 +20,7 @@
     "pv:preview": "hyperframes preview ./video/footsteps-return --no-open",
     "pv:game-render:verify": "node ./video/footsteps-return/scripts/verify-game-render.mjs",
     "pv:voice": "node ./video/footsteps-return/scripts/voice.mjs",
-    "pv:score": "node ./video/footsteps-return/scripts/doctor.mjs --musescore",
+    "pv:score": "powershell -NoProfile -ExecutionPolicy Bypass -File ./video/footsteps-return/scripts/render-score.ps1",
     "pv:render:draft": "hyperframes render ./video/footsteps-return --fps 60 --quality draft --output ./video/footsteps-return/renders/footsteps-return-draft.mp4",
     "pv:render:4k": "hyperframes render ./video/footsteps-return --fps 60 --quality high --resolution landscape-4k --output ./video/footsteps-return/renders/footsteps-return-4k.mp4"
   },

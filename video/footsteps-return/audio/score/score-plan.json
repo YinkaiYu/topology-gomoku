@@ -1,0 +1,246 @@
+{
+  "schemaVersion": 1,
+  "title": "Footsteps Return — Seven Topological Realms",
+  "composerCredit": "Original score composed for Topology Gomoku",
+  "copyright": "Original project score; no third-party composition",
+  "sourceMusic": {
+    "importedOrTranscribedReferenceMusic": false,
+    "externalSourceFiles": [],
+    "declaration": "Every pitched and rhythmic event is original to this project. No reference-PV music was imported, traced, transcribed, or transformed."
+  },
+  "motif": {
+    "name": "returning-footsteps cell",
+    "spelling": ["D", "F", "G", "A", "C"],
+    "pitchClasses": [2, 5, 7, 9, 0],
+    "primeMidi": [62, 65, 67, 69, 72],
+    "intervalsSemitones": [3, 2, 2, 3],
+    "dramaturgy": "Five unequal steps make one recognizable path. Register, spacing, rhythm, order and orchestral ownership change with each topology; the source cell remains traceable."
+  },
+  "timeline": {
+    "source": "src/data/captions.js compositionTiming (Task 8 measured voice timeline)",
+    "durationSeconds": 183.352,
+    "scenes": [
+      { "id": "intro", "kind": "intro", "chapterId": null, "start": 0, "duration": 21.502667 },
+      { "id": "chapter-card-plane", "kind": "chapter-card", "chapterId": "plane", "start": 21.502667, "duration": 3 },
+      { "id": "chapter-plane", "kind": "chapter", "chapterId": "plane", "start": 24.502667, "duration": 11.26 },
+      { "id": "chapter-card-cylinder", "kind": "chapter-card", "chapterId": "cylinder", "start": 37.762667, "duration": 3 },
+      { "id": "chapter-cylinder", "kind": "chapter", "chapterId": "cylinder", "start": 40.762667, "duration": 13.838667 },
+      { "id": "chapter-card-torus", "kind": "chapter-card", "chapterId": "torus", "start": 56.601334, "duration": 3 },
+      { "id": "chapter-torus", "kind": "chapter", "chapterId": "torus", "start": 59.601334, "duration": 14.18 },
+      { "id": "chapter-card-mobius", "kind": "chapter-card", "chapterId": "mobius", "start": 75.781334, "duration": 3 },
+      { "id": "chapter-mobius", "kind": "chapter", "chapterId": "mobius", "start": 78.781334, "duration": 13.113333 },
+      { "id": "chapter-card-klein", "kind": "chapter-card", "chapterId": "klein", "start": 93.894667, "duration": 3 },
+      { "id": "chapter-klein", "kind": "chapter", "chapterId": "klein", "start": 96.894667, "duration": 13.732 },
+      { "id": "chapter-card-projective", "kind": "chapter-card", "chapterId": "projective", "start": 112.626667, "duration": 3 },
+      { "id": "chapter-projective", "kind": "chapter", "chapterId": "projective", "start": 115.626667, "duration": 13.753333 },
+      { "id": "chapter-card-sphere", "kind": "chapter-card", "chapterId": "sphere", "start": 131.38, "duration": 3 },
+      { "id": "chapter-sphere", "kind": "chapter", "chapterId": "sphere", "start": 134.38, "duration": 21.921333 },
+      { "id": "seven-world-gallery", "kind": "seven-world-gallery", "chapterId": null, "start": 156.301333, "duration": 9.2 },
+      { "id": "outro", "kind": "outro", "chapterId": null, "start": 163.301333, "duration": 16.050667 },
+      { "id": "end-card", "kind": "end-card", "chapterId": null, "start": 179.352, "duration": 4 }
+    ]
+  },
+  "form": [
+    { "id": "intro", "start": 0, "end": 21.502667, "identity": "The cell is discovered one pitch at a time: sparse piano, double-bass harmonics and unfilled air.", "density": "very sparse", "narrationStrategy": "No sustained midrange beneath sentences; at least 1.2 seconds of breath around clause endings.", "resolution": "C5 hangs into silence before the Plane card." },
+    { "id": "plane", "start": 21.502667, "end": 37.762667, "identity": "Stable prime-form statement D–F–G–A–C in even quarter-note footsteps, answered without distortion.", "density": "sparse chamber", "narrationStrategy": "Piano carries identity; strings answer above and below the Chinese male-voice band.", "resolution": "A compact D/A chamber cadence completes before the next card." },
+    { "id": "cylinder", "start": 37.762667, "end": 56.601334, "identity": "One five-step cello pizzicato loop travels from left to right while the vertical harmony remains bounded.", "density": "single ostinato", "narrationStrategy": "Short pizzicati leave consonants unobscured; no pad under the two narration cues.", "resolution": "The third orbit lengthens its last C and releases before Torus." },
+    { "id": "torus", "start": 56.601334, "end": 75.781334, "identity": "Two pentatonic cycles use different internal spacing and periods, drifting in and out of coincidence.", "density": "two interlocked lines", "narrationStrategy": "Violin II and viola stay light and separated by register; piano only marks structural corners.", "resolution": "Both cycles stop independently, leaving a full-beat seam into Mobius." },
+    { "id": "mobius", "start": 75.781334, "end": 93.894667, "identity": "The prime contour returns in retrograde C–A–G–F–D; bow crescendi create a reverse-envelope illusion without sampled reversal.", "density": "mirrored sparse", "narrationStrategy": "High glass attacks are short; the central speech band remains mostly empty.", "resolution": "The reversed line lands on D and the suspended metal breath dies before Klein." },
+    { "id": "klein", "start": 93.894667, "end": 112.626667, "identity": "Bass clarinet states the prime cell while cello answers with its pitch-set mirror in staggered counterpoint.", "density": "dark contrapuntal", "narrationStrategy": "Low lines trade rather than double; horn and bass-drum punctuation remain below narration.", "resolution": "Counterpoint contracts to D/A, followed by a clean card breath." },
+    { "id": "projective", "start": 112.626667, "end": 131.38, "identity": "Celesta prime and violin mirror enter 1.5 seconds apart as a glassy mirrored canon, held by weak choir and cold strings.", "density": "transparent canon", "narrationStrategy": "Choir is pianissimo and vowel-only; high-frequency attacks avoid continuous shimmer.", "resolution": "Canon voices exchange direction once, then meet on D/A before Sphere." },
+    { "id": "sphere", "start": 131.38, "end": 156.301333, "identity": "The complete cell expands in piano and passes through full strings, restrained horn and light choir toward a voiced D-minor cadence.", "density": "broad but breathing", "narrationStrategy": "Long orchestral tones sit around, not on, narration; horn appears only at harmonic hinges.", "resolution": "D2–A2–D3–F3–A3 resolves completely at 152.8 seconds, not by fade." },
+    { "id": "gallery", "start": 156.301333, "end": 163.301333, "identity": "Short memories of prior cells cross-register while the Sphere cadence continues forward.", "density": "receding mosaic", "narrationStrategy": "No narration in the first seven seconds; material thins before the overlapping outro begins.", "resolution": "Celesta closes upward while strings hand a single D to the outro." },
+    { "id": "outro", "start": 163.301333, "end": 179.352, "identity": "The prime footsteps return slowly in piano, then descend A–F–D into the final sonority.", "density": "progressively sparse", "narrationStrategy": "Each piano event falls between phrase centers; all sustained voices taper before the logo hold.", "resolution": "Final D/A/D/F chord is allowed to decay past the first end-card second." },
+    { "id": "end-card", "start": 179.352, "end": 183.352, "identity": "Residual D sonority until 180.3 seconds, then 3.052 seconds of real silence.", "density": "tail to silence", "narrationStrategy": "No new attack and no noise floor added.", "resolution": "Silence carries the last 3.052 seconds; no hard fade truncates a phrase." }
+  ],
+  "parts": [
+    { "id": "piano", "scoreId": "P1", "name": "Piano", "abbreviation": "Pno.", "gmProgram": 0, "midiChannel": 0, "clef": "grand", "staves": 2, "concertRange": [28, 96], "instrumentSound": "keyboard.piano.grand", "role": "motif, cadence and negative space" },
+    { "id": "celesta", "scoreId": "P2", "name": "Celesta", "abbreviation": "Cel.", "gmProgram": 8, "midiChannel": 1, "clef": "treble", "staves": 1, "concertRange": [60, 108], "instrumentSound": "keyboard.celesta", "role": "glass, retrograde and canon light" },
+    { "id": "violin-i", "scoreId": "P3", "name": "Violin I", "abbreviation": "Vln. I", "gmProgram": 40, "midiChannel": 2, "clef": "treble", "staves": 1, "concertRange": [55, 103], "instrumentSound": "strings.violin", "role": "upper contour and Sphere expansion" },
+    { "id": "violin-ii", "scoreId": "P4", "name": "Violin II", "abbreviation": "Vln. II", "gmProgram": 40, "midiChannel": 3, "clef": "treble", "staves": 1, "concertRange": [55, 96], "instrumentSound": "strings.violin", "role": "Torus cycle and cold inner line" },
+    { "id": "viola", "scoreId": "P5", "name": "Viola", "abbreviation": "Vla.", "gmProgram": 41, "midiChannel": 4, "clef": "alto", "staves": 1, "concertRange": [48, 88], "instrumentSound": "strings.viola", "role": "second Torus cycle and middle contour" },
+    { "id": "cello", "scoreId": "P6", "name": "Cello", "abbreviation": "Vc.", "gmProgram": 42, "midiChannel": 5, "clef": "bass", "staves": 1, "concertRange": [36, 76], "instrumentSound": "strings.cello", "role": "Cylinder orbit and Klein mirror" },
+    { "id": "double-bass", "scoreId": "P7", "name": "Double Bass", "abbreviation": "Cb.", "gmProgram": 43, "midiChannel": 6, "clef": "bass", "staves": 1, "concertRange": [28, 67], "instrumentSound": "strings.contrabass", "role": "harmonic air, pedals and cadence weight" },
+    { "id": "french-horn", "scoreId": "P8", "name": "French Horn", "abbreviation": "Hn.", "gmProgram": 60, "midiChannel": 7, "clef": "treble", "staves": 1, "concertRange": [34, 77], "instrumentSound": "brass.french-horn", "role": "restrained structural warmth" },
+    { "id": "bass-clarinet", "scoreId": "P9", "name": "Bass Clarinet", "abbreviation": "B. cl.", "gmProgram": 71, "midiChannel": 8, "clef": "treble", "staves": 1, "concertRange": [34, 77], "instrumentSound": "wind.reed.clarinet.bass", "role": "Klein prime line and dark outro memory" },
+    { "id": "choir-aahs", "scoreId": "P10", "name": "Choir Aahs", "abbreviation": "Ch.", "gmProgram": 52, "midiChannel": 10, "clef": "treble", "staves": 1, "concertRange": [48, 81], "instrumentSound": "voice.choir", "role": "weak vowel halo, never text" },
+    { "id": "restrained-percussion", "scoreId": "P11", "name": "Restrained Percussion", "abbreviation": "Perc.", "gmProgram": 0, "midiChannel": 9, "clef": "percussion", "staves": 1, "concertRange": [35, 81], "instrumentSound": "drum.group.set", "role": "muted bass drum, soft tam-tam and suspended cymbal punctuation" }
+  ],
+  "render": {
+    "tempoBpm": 60,
+    "timeSignature": [4, 4],
+    "divisionsPerQuarter": 1000,
+    "measureCount": 46,
+    "lastMeasureDivisions": 3352,
+    "notationGridMilliseconds": 125,
+    "notatedLastMeasureDivisions": 3250,
+    "notatedDurationSeconds": 183.25,
+    "sampleRate": 48000,
+    "channels": 2,
+    "bitDepth": 24,
+    "soundProfile": "MuseScore Basic",
+    "tailPolicy": "Score events end at 180.300. MusicXML uses an import-safe 1/32-note grid through 183.250; rendered files add 102 ms of silence and are trimmed to the measured 183.352-second master without fading an unresolved phrase.",
+    "normalization": "FFmpeg converts MuseScore output to 48 kHz stereo PCM and applies a transparent -1 dBFS safety limiter only if needed."
+  },
+  "gestures": [
+    { "id": "intro-piano-cell", "sectionId": "intro", "part": "piano", "technique": "una-corda, molto spazio", "dynamic": "pp", "start": 2.4, "events": [
+      { "offset": 0, "pitches": [62], "duration": 2.4, "velocity": 0.31 }, { "offset": 4.4, "pitches": [65], "duration": 2.2, "velocity": 0.3 }, { "offset": 8.4, "pitches": [67], "duration": 2.1, "velocity": 0.31 }, { "offset": 11.9, "pitches": [69], "duration": 2.4, "velocity": 0.32 }, { "offset": 15.6, "pitches": [72], "duration": 2.7, "velocity": 0.3 }
+    ] },
+    { "id": "intro-bass-harmonics", "sectionId": "intro", "part": "double-bass", "technique": "natural harmonics, senza vibrato", "dynamic": "ppp", "start": 4.8, "events": [
+      { "offset": 0, "pitches": [62], "duration": 3, "velocity": 0.22 }, { "offset": 7.4, "pitches": [57], "duration": 3.2, "velocity": 0.21 }, { "offset": 14, "pitches": [62], "duration": 2.4, "velocity": 0.2 }
+    ] },
+    { "id": "plane-piano-prime", "sectionId": "plane", "part": "piano", "technique": "plain, connected footsteps", "dynamic": "mp", "start": 24.7, "events": [
+      { "offset": 0, "pitches": [62], "duration": 0.82, "velocity": 0.48 }, { "offset": 1, "pitches": [65], "duration": 0.82, "velocity": 0.5 }, { "offset": 2, "pitches": [67], "duration": 0.82, "velocity": 0.51 }, { "offset": 3, "pitches": [69], "duration": 0.82, "velocity": 0.52 }, { "offset": 4, "pitches": [72], "duration": 1.8, "velocity": 0.5 },
+      { "offset": 6.7, "pitches": [72], "duration": 0.58, "velocity": 0.42 }, { "offset": 7.45, "pitches": [69], "duration": 0.58, "velocity": 0.41 }, { "offset": 8.2, "pitches": [67], "duration": 0.58, "velocity": 0.4 }, { "offset": 8.95, "pitches": [65], "duration": 0.58, "velocity": 0.39 }, { "offset": 9.7, "pitches": [62], "duration": 1.35, "velocity": 0.4 }
+    ] },
+    { "id": "plane-violin-answer", "sectionId": "plane", "part": "violin-i", "technique": "dolce, senza vibrato", "dynamic": "p", "start": 29.8, "events": [
+      { "offset": 0, "pitches": [74], "duration": 0.78, "velocity": 0.38 }, { "offset": 1, "pitches": [77], "duration": 0.78, "velocity": 0.39 }, { "offset": 2, "pitches": [79], "duration": 0.78, "velocity": 0.4 }, { "offset": 3, "pitches": [81], "duration": 0.78, "velocity": 0.4 }, { "offset": 4, "pitches": [84], "duration": 2.2, "velocity": 0.37 }
+    ] },
+    { "id": "plane-inner-strings", "sectionId": "plane", "part": "violin-ii", "technique": "sul tasto", "dynamic": "pp", "start": 24.55, "events": [
+      { "offset": 0, "pitches": [69], "duration": 3.8, "velocity": 0.3 }, { "offset": 4.05, "pitches": [72], "duration": 3.6, "velocity": 0.3 }, { "offset": 7.95, "pitches": [74], "duration": 3.0, "velocity": 0.31 }
+    ] },
+    { "id": "plane-viola-foundation", "sectionId": "plane", "part": "viola", "technique": "sul tasto", "dynamic": "pp", "start": 24.55, "events": [
+      { "offset": 0, "pitches": [50, 57], "duration": 3.8, "velocity": 0.28 }, { "offset": 4.05, "pitches": [53, 60], "duration": 3.6, "velocity": 0.28 }, { "offset": 7.95, "pitches": [55, 62], "duration": 3.0, "velocity": 0.29 }
+    ] },
+    { "id": "plane-cello-foundation", "sectionId": "plane", "part": "cello", "technique": "arco, poco vibrato", "dynamic": "p", "start": 24.55, "events": [
+      { "offset": 0, "pitches": [38], "duration": 3.8, "velocity": 0.34 }, { "offset": 4.05, "pitches": [41], "duration": 3.6, "velocity": 0.34 }, { "offset": 7.95, "pitches": [43], "duration": 3.0, "velocity": 0.34 }
+    ] },
+    { "id": "plane-bass-pedal", "sectionId": "plane", "part": "double-bass", "technique": "arco", "dynamic": "pp", "start": 24.5, "events": [
+      { "offset": 0, "pitches": [38], "duration": 5.2, "velocity": 0.28 }, { "offset": 5.5, "pitches": [33], "duration": 3.8, "velocity": 0.27 }, { "offset": 9.6, "pitches": [38], "duration": 2.2, "velocity": 0.29 }
+    ] },
+    { "id": "plane-horn-cadence", "sectionId": "plane", "part": "french-horn", "technique": "stopped warmth, no swell", "dynamic": "pp", "start": 34.2, "events": [
+      { "offset": 0, "pitches": [50, 57], "duration": 1.5, "velocity": 0.28 }
+    ] },
+    { "id": "cylinder-cello-orbit", "sectionId": "cylinder", "part": "cello", "technique": "pizzicato, lateral motion", "dynamic": "p", "start": 41.2, "repeat": { "count": 3, "every": 5.2 }, "events": [
+      { "offset": 0, "pitches": [50], "duration": 0.42, "velocity": 0.43 }, { "offset": 0.65, "pitches": [53], "duration": 0.42, "velocity": 0.44 }, { "offset": 1.3, "pitches": [55], "duration": 0.42, "velocity": 0.45 }, { "offset": 1.95, "pitches": [57], "duration": 0.42, "velocity": 0.46 }, { "offset": 2.8, "pitches": [60], "duration": 1, "velocity": 0.41 }
+    ], "automation": { "pan": [
+      { "time": 40.8, "value": 0.18 }, { "time": 46, "value": 0.42 }, { "time": 51.2, "value": 0.68 }, { "time": 55.8, "value": 0.82 }
+    ] } },
+    { "id": "cylinder-piano-bounds", "sectionId": "cylinder", "part": "piano", "technique": "dry dyads", "dynamic": "pp", "start": 40.95, "events": [
+      { "offset": 0, "pitches": [50, 57], "duration": 2, "velocity": 0.3 }, { "offset": 5.25, "pitches": [53, 60], "duration": 2, "velocity": 0.3 }, { "offset": 10.45, "pitches": [55, 62], "duration": 2.4, "velocity": 0.31 }
+    ] },
+    { "id": "cylinder-high-axis", "sectionId": "cylinder", "part": "violin-i", "technique": "natural harmonic, immobile", "dynamic": "ppp", "start": 41.1, "events": [
+      { "offset": 0, "pitches": [81], "duration": 4.2, "velocity": 0.2 }, { "offset": 5, "pitches": [79], "duration": 4.2, "velocity": 0.2 }, { "offset": 10, "pitches": [81], "duration": 4.0, "velocity": 0.2 }
+    ] },
+    { "id": "cylinder-bass-bounds", "sectionId": "cylinder", "part": "double-bass", "technique": "arco, senza vibrato", "dynamic": "pp", "start": 40.9, "events": [
+      { "offset": 0, "pitches": [38], "duration": 4.9, "velocity": 0.27 }, { "offset": 5.2, "pitches": [36], "duration": 4.9, "velocity": 0.26 }, { "offset": 10.4, "pitches": [38], "duration": 4.7, "velocity": 0.27 }
+    ] },
+    { "id": "torus-cycle-a", "sectionId": "torus", "part": "violin-ii", "technique": "light detaché", "dynamic": "p", "start": 59.9, "repeat": { "count": 3, "every": 5.1 }, "events": [
+      { "offset": 0, "pitches": [74], "duration": 0.48, "velocity": 0.39 }, { "offset": 0.75, "pitches": [77], "duration": 0.48, "velocity": 0.4 }, { "offset": 1.5, "pitches": [79], "duration": 0.48, "velocity": 0.41 }, { "offset": 2.25, "pitches": [81], "duration": 0.48, "velocity": 0.42 }, { "offset": 3, "pitches": [84], "duration": 0.8, "velocity": 0.38 }
+    ] },
+    { "id": "torus-cycle-b", "sectionId": "torus", "part": "viola", "technique": "light detaché, offset cycle", "dynamic": "p", "start": 61.2, "repeat": { "count": 3, "every": 4.65 }, "events": [
+      { "offset": 0, "pitches": [62], "duration": 0.34, "velocity": 0.37 }, { "offset": 0.5, "pitches": [65], "duration": 0.48, "velocity": 0.38 }, { "offset": 1.25, "pitches": [67], "duration": 0.62, "velocity": 0.39 }, { "offset": 2.25, "pitches": [69], "duration": 0.62, "velocity": 0.4 }, { "offset": 3.25, "pitches": [72], "duration": 1, "velocity": 0.37 }
+    ] },
+    { "id": "torus-celesta-crossings", "sectionId": "torus", "part": "celesta", "technique": "single glass points", "dynamic": "pp", "start": 63.4, "events": [
+      { "offset": 0, "pitches": [86], "duration": 0.7, "velocity": 0.33 }, { "offset": 5.1, "pitches": [81], "duration": 0.7, "velocity": 0.32 }, { "offset": 10.4, "pitches": [84], "duration": 1.1, "velocity": 0.31 }
+    ] },
+    { "id": "torus-piano-corners", "sectionId": "torus", "part": "piano", "technique": "soft, no pedal overlap", "dynamic": "pp", "start": 59.75, "events": [
+      { "offset": 0, "pitches": [38, 45, 50], "duration": 4.35, "velocity": 0.28 }, { "offset": 4.65, "pitches": [43, 50, 55], "duration": 4.15, "velocity": 0.28 }, { "offset": 9.15, "pitches": [45, 52, 57], "duration": 4.3, "velocity": 0.29 }, { "offset": 13.85, "pitches": [38, 45, 50], "duration": 1.7, "velocity": 0.27 }
+    ] },
+    { "id": "torus-bass-corners", "sectionId": "torus", "part": "double-bass", "technique": "pizzicato resonance", "dynamic": "pp", "start": 59.7, "events": [
+      { "offset": 0, "pitches": [38], "duration": 4.8, "velocity": 0.3 }, { "offset": 5.1, "pitches": [31], "duration": 4.5, "velocity": 0.29 }, { "offset": 10, "pitches": [33], "duration": 4.6, "velocity": 0.3 }
+    ] },
+    { "id": "mobius-celesta-retrograde", "sectionId": "mobius", "part": "celesta", "technique": "glass, contour reversed", "dynamic": "p", "start": 79.2, "events": [
+      { "offset": 0, "pitches": [84], "duration": 0.58, "velocity": 0.4 }, { "offset": 0.9, "pitches": [81], "duration": 0.58, "velocity": 0.39 }, { "offset": 1.8, "pitches": [79], "duration": 0.58, "velocity": 0.38 }, { "offset": 2.7, "pitches": [77], "duration": 0.58, "velocity": 0.37 }, { "offset": 3.6, "pitches": [74], "duration": 1.2, "velocity": 0.35 },
+      { "offset": 7, "pitches": [74], "duration": 0.55, "velocity": 0.34 }, { "offset": 7.75, "pitches": [77], "duration": 0.55, "velocity": 0.35 }, { "offset": 8.65, "pitches": [79], "duration": 0.55, "velocity": 0.36 }, { "offset": 9.75, "pitches": [81], "duration": 0.65, "velocity": 0.37 }, { "offset": 11, "pitches": [84], "duration": 1.3, "velocity": 0.34 }
+    ] },
+    { "id": "mobius-violin-reverse-envelope", "sectionId": "mobius", "part": "violin-i", "technique": "sul ponticello, crescendo into each release", "dynamic": "pp", "start": 79, "events": [
+      { "offset": 0, "pitches": [84], "duration": 3.4, "velocity": 0.24 }, { "offset": 4, "pitches": [81], "duration": 3, "velocity": 0.25 }, { "offset": 8, "pitches": [77], "duration": 2.8, "velocity": 0.26 }, { "offset": 11.5, "pitches": [74], "duration": 2.3, "velocity": 0.24 }
+    ] },
+    { "id": "mobius-viola-fold", "sectionId": "mobius", "part": "viola", "technique": "sul ponticello, one-surface line", "dynamic": "pp", "start": 80, "events": [
+      { "offset": 0, "pitches": [62], "duration": 1.4, "velocity": 0.29 }, { "offset": 2, "pitches": [60], "duration": 1.4, "velocity": 0.28 }, { "offset": 4, "pitches": [57], "duration": 1.4, "velocity": 0.28 }, { "offset": 6, "pitches": [55], "duration": 1.4, "velocity": 0.27 }, { "offset": 8, "pitches": [53], "duration": 2.4, "velocity": 0.26 }
+    ] },
+    { "id": "mobius-metal-breath", "sectionId": "mobius", "part": "restrained-percussion", "technique": "bowed suspended cymbal illusion, no roll", "dynamic": "ppp", "start": 78.8, "events": [
+      { "offset": 0, "pitches": [59], "duration": 1.2, "velocity": 0.18 }, { "offset": 8, "pitches": [59], "duration": 1.1, "velocity": 0.17 }, { "offset": 13.6, "pitches": [52], "duration": 0.8, "velocity": 0.16 }
+    ] },
+    { "id": "klein-bass-clarinet-prime", "sectionId": "klein", "part": "bass-clarinet", "technique": "dark, connected", "dynamic": "mp", "start": 97.2, "events": [
+      { "offset": 0, "pitches": [50], "duration": 0.62, "velocity": 0.45 }, { "offset": 0.9, "pitches": [53], "duration": 0.62, "velocity": 0.46 }, { "offset": 1.8, "pitches": [55], "duration": 0.62, "velocity": 0.47 }, { "offset": 2.7, "pitches": [57], "duration": 0.62, "velocity": 0.48 }, { "offset": 3.6, "pitches": [60], "duration": 1.2, "velocity": 0.44 },
+      { "offset": 7.2, "pitches": [50], "duration": 0.58, "velocity": 0.41 }, { "offset": 8.05, "pitches": [53], "duration": 0.58, "velocity": 0.42 }, { "offset": 8.9, "pitches": [55], "duration": 0.58, "velocity": 0.43 }, { "offset": 9.75, "pitches": [57], "duration": 0.58, "velocity": 0.44 }, { "offset": 10.6, "pitches": [60], "duration": 1.35, "velocity": 0.4 }
+    ] },
+    { "id": "klein-cello-mirror", "sectionId": "klein", "part": "cello", "technique": "arco mirror, staggered", "dynamic": "mp", "start": 97.8, "events": [
+      { "offset": 0, "pitches": [60], "duration": 0.62, "velocity": 0.43 }, { "offset": 0.9, "pitches": [57], "duration": 0.62, "velocity": 0.44 }, { "offset": 1.8, "pitches": [55], "duration": 0.62, "velocity": 0.45 }, { "offset": 2.7, "pitches": [53], "duration": 0.62, "velocity": 0.44 }, { "offset": 3.6, "pitches": [50], "duration": 1.2, "velocity": 0.42 },
+      { "offset": 7.8, "pitches": [60], "duration": 0.55, "velocity": 0.38 }, { "offset": 8.65, "pitches": [57], "duration": 0.55, "velocity": 0.39 }, { "offset": 9.5, "pitches": [55], "duration": 0.55, "velocity": 0.4 }, { "offset": 10.35, "pitches": [53], "duration": 0.55, "velocity": 0.39 }, { "offset": 11.2, "pitches": [50], "duration": 1.2, "velocity": 0.37 }
+    ] },
+    { "id": "klein-bass-pedals", "sectionId": "klein", "part": "double-bass", "technique": "arco, molto sostenuto", "dynamic": "p", "start": 96.9, "events": [
+      { "offset": 0, "pitches": [38], "duration": 6.4, "velocity": 0.34 }, { "offset": 6.8, "pitches": [36], "duration": 3.9, "velocity": 0.32 }, { "offset": 11.1, "pitches": [38], "duration": 4.3, "velocity": 0.34 }
+    ] },
+    { "id": "klein-horn-metal", "sectionId": "klein", "part": "french-horn", "technique": "soft stopped horn", "dynamic": "pp", "start": 98.4, "events": [
+      { "offset": 0, "pitches": [50, 57], "duration": 1.8, "velocity": 0.3 }, { "offset": 4.8, "pitches": [48, 55], "duration": 1.8, "velocity": 0.29 }, { "offset": 10, "pitches": [45, 52], "duration": 2.2, "velocity": 0.31 }
+    ] },
+    { "id": "klein-low-punctuation", "sectionId": "klein", "part": "restrained-percussion", "technique": "muted bass drum, felt beater", "dynamic": "pp", "start": 96.9, "events": [
+      { "offset": 0, "pitches": [36], "duration": 0.7, "velocity": 0.27 }, { "offset": 7.8, "pitches": [36], "duration": 0.7, "velocity": 0.25 }, { "offset": 14.4, "pitches": [36], "duration": 0.8, "velocity": 0.24 }
+    ] },
+    { "id": "projective-celesta-canon", "sectionId": "projective", "part": "celesta", "technique": "glass canon, no pedal wash", "dynamic": "p", "start": 115.9, "events": [
+      { "offset": 0, "pitches": [74], "duration": 0.5, "velocity": 0.38 }, { "offset": 0.75, "pitches": [77], "duration": 0.5, "velocity": 0.39 }, { "offset": 1.5, "pitches": [79], "duration": 0.5, "velocity": 0.4 }, { "offset": 2.25, "pitches": [81], "duration": 0.5, "velocity": 0.41 }, { "offset": 3, "pitches": [84], "duration": 0.9, "velocity": 0.37 },
+      { "offset": 7.1, "pitches": [84], "duration": 0.5, "velocity": 0.35 }, { "offset": 7.85, "pitches": [81], "duration": 0.5, "velocity": 0.36 }, { "offset": 8.6, "pitches": [79], "duration": 0.5, "velocity": 0.37 }, { "offset": 9.35, "pitches": [77], "duration": 0.5, "velocity": 0.36 }, { "offset": 10.1, "pitches": [74], "duration": 1.1, "velocity": 0.34 }
+    ] },
+    { "id": "projective-violin-mirror", "sectionId": "projective", "part": "violin-i", "technique": "flautando mirror canon", "dynamic": "pp", "start": 117.4, "events": [
+      { "offset": 0, "pitches": [84], "duration": 0.5, "velocity": 0.34 }, { "offset": 0.75, "pitches": [81], "duration": 0.5, "velocity": 0.35 }, { "offset": 1.5, "pitches": [79], "duration": 0.5, "velocity": 0.36 }, { "offset": 2.25, "pitches": [77], "duration": 0.5, "velocity": 0.35 }, { "offset": 3, "pitches": [74], "duration": 0.9, "velocity": 0.33 },
+      { "offset": 7.1, "pitches": [74], "duration": 0.5, "velocity": 0.32 }, { "offset": 7.85, "pitches": [77], "duration": 0.5, "velocity": 0.33 }, { "offset": 8.6, "pitches": [79], "duration": 0.5, "velocity": 0.34 }, { "offset": 9.35, "pitches": [81], "duration": 0.5, "velocity": 0.33 }, { "offset": 10.1, "pitches": [84], "duration": 1.1, "velocity": 0.31 }
+    ] },
+    { "id": "projective-cold-violin", "sectionId": "projective", "part": "violin-ii", "technique": "sul ponticello, senza vibrato", "dynamic": "ppp", "start": 115.6, "events": [
+      { "offset": 0, "pitches": [74], "duration": 4.8, "velocity": 0.22 }, { "offset": 5.2, "pitches": [72], "duration": 4, "velocity": 0.22 }, { "offset": 9.5, "pitches": [69], "duration": 4.1, "velocity": 0.21 }
+    ] },
+    { "id": "projective-choir-halo", "sectionId": "projective", "part": "choir-aahs", "technique": "closed aah, no text", "dynamic": "ppp", "start": 115.7, "events": [
+      { "offset": 0, "pitches": [62, 69], "duration": 4.9, "velocity": 0.2 }, { "offset": 5.3, "pitches": [65, 72], "duration": 4, "velocity": 0.19 }, { "offset": 9.8, "pitches": [62, 69], "duration": 4.4, "velocity": 0.19 }
+    ] },
+    { "id": "sphere-piano-expanded-cell", "sectionId": "sphere", "part": "piano", "technique": "cantabile, broadening intervals", "dynamic": "mp", "start": 134.7, "events": [
+      { "offset": 0, "pitches": [62], "duration": 0.9, "velocity": 0.5 }, { "offset": 1.2, "pitches": [65], "duration": 1.1, "velocity": 0.51 }, { "offset": 2.8, "pitches": [67], "duration": 1.3, "velocity": 0.52 }, { "offset": 4.6, "pitches": [69], "duration": 1.6, "velocity": 0.53 }, { "offset": 7, "pitches": [72], "duration": 2.4, "velocity": 0.52 },
+      { "offset": 9.7, "pitches": [43, 50, 55, 58], "duration": 2.8, "velocity": 0.44 }, { "offset": 12.8, "pitches": [45, 52, 57, 61], "duration": 2.7, "velocity": 0.46 }, { "offset": 15.8, "pitches": [36, 43, 48, 52, 55], "duration": 2, "velocity": 0.43 }, { "offset": 18.1, "pitches": [38, 45, 50, 53, 57], "duration": 3.4, "velocity": 0.5 }
+    ] },
+    { "id": "sphere-violin-one", "sectionId": "sphere", "part": "violin-i", "technique": "espressivo, restrained vibrato", "dynamic": "mp", "start": 134.6, "events": [
+      { "offset": 0, "pitches": [74], "duration": 3, "velocity": 0.46 }, { "offset": 3.4, "pitches": [77], "duration": 3, "velocity": 0.48 }, { "offset": 6.8, "pitches": [79], "duration": 2.5, "velocity": 0.49 }, { "offset": 9.8, "pitches": [81], "duration": 2.6, "velocity": 0.5 }, { "offset": 12.8, "pitches": [84], "duration": 2.7, "velocity": 0.5 }, { "offset": 15.9, "pitches": [81], "duration": 1.8, "velocity": 0.46 }, { "offset": 18.1, "pitches": [77], "duration": 3.5, "velocity": 0.44 }
+    ] },
+    { "id": "sphere-violin-two", "sectionId": "sphere", "part": "violin-ii", "technique": "warm senza portamento", "dynamic": "p", "start": 134.4, "events": [
+      { "offset": 0, "pitches": [69], "duration": 4, "velocity": 0.38 }, { "offset": 4.3, "pitches": [72], "duration": 3.8, "velocity": 0.39 }, { "offset": 8.4, "pitches": [74], "duration": 3.2, "velocity": 0.4 }, { "offset": 11.9, "pitches": [76], "duration": 3.3, "velocity": 0.41 }, { "offset": 15.5, "pitches": [69], "duration": 2.5, "velocity": 0.39 }, { "offset": 18.3, "pitches": [69], "duration": 3.5, "velocity": 0.4 }
+    ] },
+    { "id": "sphere-viola", "sectionId": "sphere", "part": "viola", "technique": "warm middle voice", "dynamic": "p", "start": 134.4, "events": [
+      { "offset": 0, "pitches": [65], "duration": 4, "velocity": 0.38 }, { "offset": 4.3, "pitches": [64], "duration": 3.8, "velocity": 0.39 }, { "offset": 8.4, "pitches": [67], "duration": 3.2, "velocity": 0.4 }, { "offset": 11.9, "pitches": [61], "duration": 3.3, "velocity": 0.41 }, { "offset": 15.5, "pitches": [65], "duration": 2.5, "velocity": 0.39 }, { "offset": 18.3, "pitches": [65], "duration": 3.5, "velocity": 0.4 }
+    ] },
+    { "id": "sphere-cello", "sectionId": "sphere", "part": "cello", "technique": "legato foundation", "dynamic": "p", "start": 134.4, "events": [
+      { "offset": 0, "pitches": [50], "duration": 4, "velocity": 0.4 }, { "offset": 4.3, "pitches": [48], "duration": 3.8, "velocity": 0.39 }, { "offset": 8.4, "pitches": [43], "duration": 3.2, "velocity": 0.41 }, { "offset": 11.9, "pitches": [45], "duration": 3.3, "velocity": 0.42 }, { "offset": 15.5, "pitches": [48], "duration": 2.5, "velocity": 0.4 }, { "offset": 18.3, "pitches": [50], "duration": 3.5, "velocity": 0.43 }
+    ] },
+    { "id": "sphere-bass", "sectionId": "sphere", "part": "double-bass", "technique": "arco, rooted", "dynamic": "p", "start": 134.4, "events": [
+      { "offset": 0, "pitches": [38], "duration": 4, "velocity": 0.38 }, { "offset": 4.3, "pitches": [36], "duration": 3.8, "velocity": 0.37 }, { "offset": 8.4, "pitches": [31], "duration": 3.2, "velocity": 0.39 }, { "offset": 11.9, "pitches": [33], "duration": 3.3, "velocity": 0.4 }, { "offset": 15.5, "pitches": [36], "duration": 2.5, "velocity": 0.38 }, { "offset": 18.3, "pitches": [38], "duration": 3.5, "velocity": 0.41 }
+    ] },
+    { "id": "sphere-horn", "sectionId": "sphere", "part": "french-horn", "technique": "open, restrained, structural entries only", "dynamic": "p", "start": 135, "events": [
+      { "offset": 0, "pitches": [50, 57], "duration": 2.5, "velocity": 0.37 }, { "offset": 8.3, "pitches": [55, 62], "duration": 2.2, "velocity": 0.39 }, { "offset": 12, "pitches": [57, 61], "duration": 2.2, "velocity": 0.41 }, { "offset": 17.9, "pitches": [50, 57], "duration": 2.7, "velocity": 0.4 }
+    ] },
+    { "id": "sphere-choir", "sectionId": "sphere", "part": "choir-aahs", "technique": "light aah, no text", "dynamic": "pp", "start": 134.6, "events": [
+      { "offset": 0, "pitches": [62, 69], "duration": 3.5, "velocity": 0.26 }, { "offset": 3.8, "pitches": [65, 72], "duration": 3.7, "velocity": 0.27 }, { "offset": 7.9, "pitches": [67, 74], "duration": 3.2, "velocity": 0.28 }, { "offset": 11.6, "pitches": [57, 64], "duration": 3, "velocity": 0.29 }, { "offset": 15.4, "pitches": [60, 67], "duration": 2.2, "velocity": 0.27 }, { "offset": 18.1, "pitches": [62, 65, 69], "duration": 3.5, "velocity": 0.29 }
+    ] },
+    { "id": "sphere-percussion", "sectionId": "sphere", "part": "restrained-percussion", "technique": "felt bass drum and one soft suspended cymbal", "dynamic": "pp", "start": 131.4, "events": [
+      { "offset": 0, "pitches": [36], "duration": 0.8, "velocity": 0.24 }, { "offset": 11.4, "pitches": [36], "duration": 0.8, "velocity": 0.23 }, { "offset": 16.1, "pitches": [59], "duration": 1.1, "velocity": 0.2 }, { "offset": 21.4, "pitches": [36], "duration": 0.8, "velocity": 0.24 }
+    ] },
+    { "id": "gallery-celesta-memories", "sectionId": "gallery", "part": "celesta", "technique": "separated memory fragments", "dynamic": "pp", "start": 156.5, "events": [
+      { "offset": 0, "pitches": [86, 89], "duration": 1.1, "velocity": 0.31 }, { "offset": 2.5, "pitches": [79, 81], "duration": 1, "velocity": 0.29 }, { "offset": 4.7, "pitches": [81, 84], "duration": 1.3, "velocity": 0.28 }
+    ] },
+    { "id": "gallery-piano-memory", "sectionId": "gallery", "part": "piano", "technique": "single-line arpeggio, una corda", "dynamic": "pp", "start": 156.5, "events": [
+      { "offset": 0, "pitches": [50], "duration": 0.55, "velocity": 0.31 }, { "offset": 0.75, "pitches": [53], "duration": 0.55, "velocity": 0.3 }, { "offset": 1.55, "pitches": [57], "duration": 0.8, "velocity": 0.3 }, { "offset": 3.2, "pitches": [55], "duration": 0.6, "velocity": 0.28 }, { "offset": 4.1, "pitches": [50], "duration": 1.2, "velocity": 0.27 }
+    ] },
+    { "id": "gallery-strings", "sectionId": "gallery", "part": "violin-ii", "technique": "flautando, receding", "dynamic": "pp", "start": 156.4, "events": [
+      { "offset": 0, "pitches": [69], "duration": 3.8, "velocity": 0.26 }, { "offset": 4, "pitches": [67], "duration": 2.8, "velocity": 0.24 }
+    ] },
+    { "id": "outro-piano-return", "sectionId": "outro", "part": "piano", "technique": "molto semplice, final pedal released naturally", "dynamic": "p", "start": 163.6, "events": [
+      { "offset": 0, "pitches": [62], "duration": 2, "velocity": 0.42 }, { "offset": 2.7, "pitches": [65], "duration": 1.8, "velocity": 0.41 }, { "offset": 5.3, "pitches": [67], "duration": 1.8, "velocity": 0.4 }, { "offset": 7.9, "pitches": [69], "duration": 1.8, "velocity": 0.4 }, { "offset": 10.6, "pitches": [72], "duration": 1.4, "velocity": 0.38 }, { "offset": 12.6, "pitches": [69], "duration": 0.7, "velocity": 0.36 }, { "offset": 13.5, "pitches": [65], "duration": 0.7, "velocity": 0.34 }, { "offset": 14.4, "pitches": [38, 45, 50, 62], "duration": 2.3, "velocity": 0.4 }
+    ] },
+    { "id": "outro-violin-one", "sectionId": "outro", "part": "violin-i", "technique": "diminuendo, no terminal fade", "dynamic": "pp", "start": 163.4, "events": [
+      { "offset": 0, "pitches": [81], "duration": 3, "velocity": 0.3 }, { "offset": 3.3, "pitches": [79], "duration": 3, "velocity": 0.29 }, { "offset": 6.6, "pitches": [77], "duration": 3, "velocity": 0.28 }, { "offset": 9.9, "pitches": [76], "duration": 2.8, "velocity": 0.26 }, { "offset": 13, "pitches": [74], "duration": 3.9, "velocity": 0.24 }
+    ] },
+    { "id": "outro-violin-two", "sectionId": "outro", "part": "violin-ii", "technique": "sul tasto", "dynamic": "ppp", "start": 163.5, "events": [
+      { "offset": 0, "pitches": [69], "duration": 4.7, "velocity": 0.23 }, { "offset": 5, "pitches": [67], "duration": 4.5, "velocity": 0.22 }, { "offset": 9.8, "pitches": [65], "duration": 3, "velocity": 0.21 }, { "offset": 13.1, "pitches": [69], "duration": 3.7, "velocity": 0.2 }
+    ] },
+    { "id": "outro-bass-clarinet-memory", "sectionId": "outro", "part": "bass-clarinet", "technique": "subtone", "dynamic": "pp", "start": 163.8, "events": [
+      { "offset": 0, "pitches": [50], "duration": 2.4, "velocity": 0.28 }, { "offset": 3.2, "pitches": [48], "duration": 2.4, "velocity": 0.27 }, { "offset": 6.4, "pitches": [45], "duration": 2.8, "velocity": 0.26 }, { "offset": 11.2, "pitches": [50], "duration": 4.3, "velocity": 0.24 }
+    ] },
+    { "id": "outro-horn-tail", "sectionId": "outro", "part": "french-horn", "technique": "open, niente release", "dynamic": "ppp", "start": 176, "events": [
+      { "offset": 0, "pitches": [50, 57], "duration": 3.3, "velocity": 0.22 }
+    ] },
+    { "id": "outro-choir-tail", "sectionId": "outro", "part": "choir-aahs", "technique": "barely voiced aah", "dynamic": "ppp", "start": 175.8, "events": [
+      { "offset": 0, "pitches": [62, 65, 69], "duration": 4, "velocity": 0.18 }
+    ] },
+    { "id": "outro-bass-tail", "sectionId": "outro", "part": "double-bass", "technique": "arco, let ring", "dynamic": "ppp", "start": 176, "events": [
+      { "offset": 0, "pitches": [38], "duration": 4.3, "velocity": 0.2 }
+    ] }
+  ]
+}

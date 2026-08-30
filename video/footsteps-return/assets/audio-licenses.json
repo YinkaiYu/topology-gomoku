@@ -1,0 +1,100 @@
+{
+  "schemaVersion": 1,
+  "project": "Footsteps Return PV",
+  "policy": "Only original composition/SFX and explicitly licensed render or voice resources may enter a released video. No reference-PV audio is an input.",
+  "resources": [
+    {
+      "id": "footsteps-return-original-score",
+      "role": "composition",
+      "external": false,
+      "license": "Original project work",
+      "commercialVideoUse": true,
+      "provenance": "video/footsteps-return/audio/score/score-plan.json",
+      "notes": "Every note and rhythm is declared original; externalSourceFiles is empty."
+    },
+    {
+      "id": "footsteps-return-deterministic-sfx",
+      "role": "sound-effects",
+      "external": false,
+      "license": "Original project work",
+      "commercialVideoUse": true,
+      "provenance": "video/footsteps-return/audio/sfx/sfx-plan.json",
+      "notes": "Waveforms are generated from seeded equations. No recordings or sample packs are used."
+    },
+    {
+      "id": "ms-basic-sf3",
+      "role": "soundfont",
+      "external": true,
+      "license": "MIT",
+      "commercialVideoUse": true,
+      "renderSoundProfile": "MuseScore Basic",
+      "version": "Bundled with MuseScore Studio 4.7.4",
+      "sha256": "5ea2375e8bd7d8e71def1036978c1621e85b66934169b6a2744b27b9b3c2d99c",
+      "licenseFileSha256": "5ad8d737e13c7f01f5b9674872a82a92b4ba253603e8ed14b9db12293550b4b9",
+      "installationRelativePaths": ["sound/MS Basic.sf3", "sound/MS Basic_License.md"],
+      "provenance": "MuseScore Studio's installed MS Basic_License.md and bundled sound/MS Basic.sf3; upstream project: https://github.com/musescore/MuseScore",
+      "requiredNotice": "FluidR3 by Frank Wen; FluidR3Mono by Michael Cowgill; MuseScore_General adaptation by S. Christian Collins; Temple Blocks by Ethan Winer; Drumline Cymbals by Michael Schorsch. The installed companion license states the soundfont is shared under MIT.",
+      "notes": "render-score.ps1 forces --sound-profile 'MuseScore Basic'; it does not use installed Muse Sounds, VSTs, or unrecorded user presets."
+    },
+    {
+      "id": "musescore-studio",
+      "role": "notation-and-audio-renderer",
+      "external": true,
+      "license": "GPL-3.0",
+      "commercialVideoUse": true,
+      "version": "4.7.4",
+      "provenance": "https://github.com/musescore/MuseScore and doctor-discovered local executable",
+      "notes": "Build tool only. Score and exported audio remain project artifacts; MS Basic has its own license entry."
+    },
+    {
+      "id": "ffmpeg-gyan-full-build",
+      "role": "audio-format-normalizer-and-review-encoder",
+      "external": true,
+      "license": "GPL-3.0-or-later",
+      "commercialVideoUse": true,
+      "version": "9.0.1-full_build-www.gyan.dev",
+      "provenance": "https://ffmpeg.org/legal.html and doctor-discovered Gyan.FFmpeg installation",
+      "notes": "Static GPL build reported --enable-gpl --enable-version3. Used as a build tool; not distributed inside the video."
+    },
+    {
+      "id": "kokoro-82m-zm-yunyang",
+      "role": "voice-model-and-voice-pack",
+      "external": true,
+      "license": "Apache-2.0",
+      "commercialVideoUse": true,
+      "version": "model-files-v1.0",
+      "provenance": "https://github.com/thewh1teagle/kokoro-onnx/releases/tag/model-files-v1.0",
+      "notes": "Task 8 voiceover model and selected Chinese voice pack; included here so the PV has one complete audio-resource register."
+    },
+    {
+      "id": "kokoro-onnx-runtime",
+      "role": "voice-render-runtime",
+      "external": true,
+      "license": "MIT",
+      "commercialVideoUse": true,
+      "version": "0.6.1",
+      "provenance": "https://github.com/thewh1teagle/kokoro-onnx",
+      "notes": "Locked by uv for Task 8; build-time runtime only."
+    },
+    {
+      "id": "python-soundfile-runtime",
+      "role": "voice-wave-writer",
+      "external": true,
+      "license": "BSD-3-Clause",
+      "commercialVideoUse": true,
+      "version": "0.14.0",
+      "provenance": "https://github.com/bastibe/python-soundfile",
+      "notes": "Locked by uv for Task 8; build-time runtime only."
+    },
+    {
+      "id": "espeak-ng-phonemizer",
+      "role": "voice-phonemizer",
+      "external": true,
+      "license": "GPL-3.0-or-later",
+      "commercialVideoUse": true,
+      "version": "doctor-discovered local installation",
+      "provenance": "https://github.com/espeak-ng/espeak-ng",
+      "notes": "Text phonemization tool used by the Task 8 Kokoro pipeline; no eSpeak fallback waveform is in the resolved voice render."
+    }
+  ]
+}

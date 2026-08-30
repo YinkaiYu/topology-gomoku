@@ -1,0 +1,75 @@
+{
+  "schemaVersion": 1,
+  "masterSha256": "f38cab2e682708ec4651bb9842799ae1a369ed69cb5021475076ac1b9e6bba7e",
+  "reviewAsset": {
+    "path": "audio/score/review/score-review.opus",
+    "codec": "Opus 48 kbps VBR",
+    "bytes": 1252049,
+    "sha256": "c1955de495c7bade5db2afd2eac6ce5b2e4d90399d2c0a3fad3bcf39ed6b009c",
+    "versionControl": "ignored local audition file"
+  },
+  "subjectiveListening": {
+    "status": "not-completed",
+    "reason": "This agent cannot perform a trustworthy human auditory evaluation of orchestral balance, musical affect, or Chinese-narration intelligibility and will not fabricate one.",
+    "requiredBeforeFinalMix": true,
+    "checklist": [
+      "Listen on studio monitors and ordinary phone speakers.",
+      "Confirm each topology reads as a musical transformation rather than a schema demonstration.",
+      "Confirm speech remains intelligible without aggressive ducking.",
+      "Confirm MS Basic timbre is acceptable or replace it only with a separately licensed, recorded render profile."
+    ]
+  },
+  "objectiveChecks": {
+    "silenceOrMissingAudio": false,
+    "clippingDetected": false,
+    "masterPeakDbfs": -13.643,
+    "masterRmsDbfs": -35.144,
+    "narrationBandHeadroomDb": 14.42,
+    "cueWindowMethod": "Peak-to-loudest-score-RMS margin across all measured narration cue windows",
+    "spectrumFingerprint": [
+      {
+        "frequencyHz": 63,
+        "db": -64.97
+      },
+      {
+        "frequencyHz": 125,
+        "db": -76.54
+      },
+      {
+        "frequencyHz": 250,
+        "db": -83.76
+      },
+      {
+        "frequencyHz": 500,
+        "db": -83.07
+      },
+      {
+        "frequencyHz": 1000,
+        "db": -83.65
+      },
+      {
+        "frequencyHz": 2000,
+        "db": -83.62
+      },
+      {
+        "frequencyHz": 4000,
+        "db": -94.65
+      },
+      {
+        "frequencyHz": 8000,
+        "db": -106.75
+      },
+      {
+        "frequencyHz": 16000,
+        "db": -132.35
+      }
+    ],
+    "stemsWithSignal": 11,
+    "durationConsistent": true
+  },
+  "evidence": {
+    "type": "waveform-spectrum-form-contact-sheet",
+    "path": "audio/score/review-evidence.svg",
+    "method": "Direct PCM parsing, waveform envelope, form alignment and nine-band windowed spectral fingerprint"
+  }
+}

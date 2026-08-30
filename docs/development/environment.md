@@ -27,6 +27,7 @@ npm run pv:validate
 npm run pv:inspect
 npm run pv:preview
 npm run pv:voice
+npm run pv:score
 node ./video/footsteps-return/scripts/capture-caption-evidence.mjs
 ```
 
@@ -36,7 +37,8 @@ node ./video/footsteps-return/scripts/capture-caption-evidence.mjs
 - `npm run pv:doctor` 检查 PV 所需的 Node.js 22、FFmpeg、eSpeak NG、MuseScore 4 与仓库字体/拓扑资产；`pv:lint`、`pv:validate`、`pv:inspect` 依次执行合成静态、综合运行时质量门与布局检查。
 - `npm run pv:game-render:verify` 在 Chromium 中验证 PV 专用的透明真实游戏渲染层：四角 alpha、教学文字抑制、纸张纹理禁用、相同状态像素哈希、形变与旋转差异。HyperFrames 通过同源 `render-game.html` 的 `gameRender.selectShot()` 与显式 `gameRender.render(state)` 驱动同一个持久 iframe/Canvas；它不会按墙钟自行播放，也不生成逐帧图片或中间视频。
 - `npm run pv:voice` 读取锁定的 `audio/voiceover/script.json`，以 Kokoro-82M `zm_yunyang` / speed 0.88 生成 21 个可替换 cue WAV，归一化为 48kHz 单声道 16-bit PCM，再按实际采样时长重建字幕与 183.352 秒弹性时间线；`npm run pv:voice -- <文字或文本文件>` 仍保留单条 TTS 包装器，并强制写入被忽略的 PV 采集目录。
-- `node ./video/footsteps-return/scripts/capture-caption-evidence.mjs` 在真实 Chromium 中重放字幕，输出 6 张原生 4K 长期证据和本地忽略的 1920×1080 / 30fps / 69 秒字幕专审视频；`npm run pv:score -- <score.mscz>` 转发到本机 MuseScore 4。完整渲染只使用 `pv:render:draft` 与 `pv:render:4k`，输出固定为 4K/60fps。
+- `node ./video/footsteps-return/scripts/capture-caption-evidence.mjs` 在真实 Chromium 中重放字幕，输出 6 张原生 4K 长期证据和本地忽略的 1920×1080 / 30fps / 69 秒字幕专审视频。
+- `npm run pv:score` 从可审查的 `audio/score/score-plan.json` 确定性生成 11 声部 MusicXML / MIDI、逐声部 stem 与 5 类原创合成 SFX，再由 doctor 解析出的 MuseScore 4 / FFmpeg 绝对路径强制使用 `MuseScore Basic` 音色渲染 48kHz 立体声母带和 stems。WAV 与低码率 Opus 审听件本地忽略；提交的 `render-metadata.json`、`review.json` 与 SVG 联系表记录时长、SHA-256、峰值、RMS、波形 / 频谱及未完成的人类主观审听边界。完整视频渲染只使用 `pv:render:draft` 与 `pv:render:4k`，输出固定为 4K/60fps。
 - 首次同步需要下载 `uv.lock` 中的依赖；之后会复用锁定环境与本地缓存。
 
 ## Python 环境
@@ -86,4 +88,4 @@ winget install eSpeak-NG.eSpeak-NG
 winget install Musescore.Musescore
 ```
 
-安装完成后重新打开终端，再运行 `npm run pv:doctor`。PV 的 `captures/`、`renders/`、`.hyperframes/`、生成的 WAV 与帧序列均被 Git 忽略；只提交制作说明、源代码、配置与依赖锁文件。
+安装完成后重新打开终端，再运行 `npm run pv:doctor`。PV 的 `captures/`、`renders/`、`.hyperframes/`、生成的 WAV、低码率审听件与帧序列均被 Git 忽略；MusicXML / MIDI 作曲源、渲染元数据、制作说明、源代码、配置与依赖锁文件进入版本控制。配乐渲染固定为安装随附且许可文件可核验的 `MS Basic.sf3`（MIT）；不得静默换用 Muse Sounds、VST 或未登记 SoundFont。
