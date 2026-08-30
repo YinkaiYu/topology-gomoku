@@ -94,6 +94,8 @@ def validate_contract(config: dict[str, Any]) -> None:
         raise ValueError("exactly the three approved performance styles are required")
     if any(not style["instruction"].strip() for style in styles):
         raise ValueError("every performance style requires a natural-language instruction")
+    if len({style["seed"] for style in styles}) != 1:
+        raise ValueError("performance instruction must be the only generation variable across styles")
     output = config["output"]
     output_directory = (ROOT / output["directory"]).resolve()
     captures_root = (PV_ROOT / "captures").resolve()
@@ -241,6 +243,51 @@ def verify_outputs(manifest: dict[str, Any]) -> None:
         raise ValueError("audition peak levels are not reasonably matched")
 
 
+def verify_manifest(config: dict[str, Any], manifest: dict[str, Any]) -> None:
+    validate_contract(config)
+    expected_model = {
+        "id": config["model"]["id"],
+        "revision": config["model"]["revision"],
+        "package": config["model"]["package"],
+        "language": config["model"]["language"],
+        "speaker": config["model"]["speaker"],
+    }
+    if manifest.get("schemaVersion") != 1:
+        raise ValueError("manifest schema version is not supported")
+    if manifest.get("configSha256") != sha256_file(CONFIG_PATH):
+        raise ValueError("manifest config hash is stale")
+    if manifest.get("status") != "user-review-required":
+        raise ValueError("manifest status must remain user-review-required")
+    if manifest.get("text") != config["textSource"]["text"]:
+        raise ValueError("manifest text does not match the approved config text")
+    if manifest.get("model") != expected_model:
+        raise ValueError("manifest model does not match the pinned config model")
+    if manifest.get("normalization") != config["output"]:
+        raise ValueError("manifest normalization does not match the config")
+
+    outputs = manifest.get("outputs")
+    approved_style_ids = [style["id"] for style in config["styles"]]
+    if not isinstance(outputs, list) or len(outputs) != 3:
+        raise ValueError("manifest must contain exactly three approved styles")
+    if [output.get("style") for output in outputs] != approved_style_ids:
+        raise ValueError("manifest styles are missing, duplicated, unknown or out of order")
+    for style, output in zip(config["styles"], outputs, strict=True):
+        expected_static = {
+            "style": style["id"],
+            "instruction": style["instruction"],
+            "seed": style["seed"],
+            "file": f"{config['output']['directory']}/{style['id']}.wav",
+            "normalizedSampleRateHz": config["output"]["sampleRateHz"],
+            "channels": config["output"]["channels"],
+            "subtype": config["output"]["subtype"],
+            "status": "user-review-required",
+        }
+        for field, expected in expected_static.items():
+            if output.get(field) != expected:
+                raise ValueError(f"manifest {style['id']} {field} does not match the config contract")
+    verify_outputs(manifest)
+
+
 def generate() -> dict[str, Any]:
     import numpy as np
     import soundfile as sf
@@ -332,7 +379,7 @@ def generate() -> dict[str, Any]:
         encoding="utf-8",
         newline="\n",
     )
-    verify_outputs(manifest)
+    verify_manifest(config, manifest)
     return manifest
 
 
@@ -345,7 +392,7 @@ def main() -> int:
         validate_contract(config)
         validate_license_evidence(config)
         manifest = read_json(MANIFEST_PATH)
-        verify_outputs(manifest)
+        verify_manifest(config, manifest)
         print(json.dumps({"event": "auditions-verified", "count": len(manifest["outputs"])}))
         return 0
     generate()

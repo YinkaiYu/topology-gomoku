@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "status": "user-review-required",
-  "configSha256": "54ed72fb4fef0eeeaae00aac7a7fdff96f76a14a3b942dd07f065fd2f8b2521e",
+  "configSha256": "13909e9cf876757d34375a75110c60e0dceb993840e7ba6b00516f8ef58d150d",
   "text": "人们总把棋盘的边缘视作尽头。",
   "model": {
     "id": "Qwen/Qwen3-TTS-12Hz-0.6B-CustomVoice",
@@ -19,7 +19,7 @@
     "channels": 1,
     "subtype": "PCM_16",
     "targetRmsDbfs": -22,
-    "peakCeilingDbfs": -1
+    "peakCeilingDbfs": -7
   },
   "outputs": [
     {
@@ -40,31 +40,31 @@
     {
       "style": "adventure",
       "instruction": "请用成熟的标准普通话，带着探索感与向前的动力，坚定而有精神地朗读；轻微强调关键意象，不要喊叫，不要使用广告腔，不要戏剧化。",
-      "seed": 83002,
+      "seed": 83001,
       "file": "video/footsteps-return/captures/voice-auditions/adventure.wav",
       "sourceSampleRateHz": 24000,
       "normalizedSampleRateHz": 48000,
       "channels": 1,
       "subtype": "PCM_16",
-      "durationSeconds": 4.96,
-      "peakDbfs": -6.6373,
+      "durationSeconds": 3.6,
+      "peakDbfs": -7.0,
       "rmsDbfs": -22.0,
-      "sha256": "8c494114d24a09e7ab98f09c8cd0a35bde6eaf6f20476df06aa0d458b5404675",
+      "sha256": "ac8ab5118d19e4f127b9d4bc5590c6254d57a01f72c5721efad133c101d85e6b",
       "status": "user-review-required"
     },
     {
       "style": "contemplative",
       "instruction": "请用成熟、圆润的标准普通话，低沉但清晰，平静、舒展而神秘地朗读；不要悲伤，不要拖尾，不要使用播音腔。",
-      "seed": 83003,
+      "seed": 83001,
       "file": "video/footsteps-return/captures/voice-auditions/contemplative.wav",
       "sourceSampleRateHz": 24000,
       "normalizedSampleRateHz": 48000,
       "channels": 1,
       "subtype": "PCM_16",
-      "durationSeconds": 3.76,
-      "peakDbfs": -5.7672,
+      "durationSeconds": 4.56,
+      "peakDbfs": -7.6952,
       "rmsDbfs": -22.0,
-      "sha256": "a6649392fbf0eea9ec51d989f4b9f5b8b89f88176a2abb4a68df3e08f2bb6f94",
+      "sha256": "9a87dcfd69ce94d474cd86bd76abdc0dabe3f78af7e82c9a62a6a4bc239e52c8",
       "status": "user-review-required"
     }
   ]

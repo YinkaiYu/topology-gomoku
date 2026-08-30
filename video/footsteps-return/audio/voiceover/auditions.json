@@ -26,12 +26,12 @@
     },
     {
       "id": "adventure",
-      "seed": 83002,
+      "seed": 83001,
       "instruction": "请用成熟的标准普通话，带着探索感与向前的动力，坚定而有精神地朗读；轻微强调关键意象，不要喊叫，不要使用广告腔，不要戏剧化。"
     },
     {
       "id": "contemplative",
-      "seed": 83003,
+      "seed": 83001,
       "instruction": "请用成熟、圆润的标准普通话，低沉但清晰，平静、舒展而神秘地朗读；不要悲伤，不要拖尾，不要使用播音腔。"
     }
   ],
@@ -48,6 +48,6 @@
     "channels": 1,
     "subtype": "PCM_16",
     "targetRmsDbfs": -22,
-    "peakCeilingDbfs": -1
+    "peakCeilingDbfs": -7
   }
 }

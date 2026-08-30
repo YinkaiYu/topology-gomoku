@@ -93,6 +93,7 @@ test("Qwen voice auditions lock one approved opening excerpt, Uncle_Fu, and thre
   });
   assert.deepEqual(config.styles.map(({ id }) => id), STYLE_IDS);
   assert.equal(new Set(config.styles.map(({ instruction }) => instruction)).size, 3);
+  assert.equal(new Set(config.styles.map(({ seed }) => seed)).size, 1, "instruction must be the only generation variable across styles");
   config.styles.forEach(({ instruction, seed }) => {
     assert.ok(typeof instruction === "string" && instruction.length >= 30, "each performance instruction must be substantive");
     assert.ok(Number.isSafeInteger(seed), "each style must have a deterministic seed");
@@ -103,7 +104,7 @@ test("Qwen voice auditions lock one approved opening excerpt, Uncle_Fu, and thre
     channels: 1,
     subtype: "PCM_16",
     targetRmsDbfs: -22,
-    peakCeilingDbfs: -1
+    peakCeilingDbfs: -7
   });
   assert.match(packageJson.scripts["pv:voice:auditions"], /^uv run python /);
   assert.doesNotMatch(packageJson.scripts["pv:voice:auditions"], /kokoro|espeak|edge/i);
@@ -161,6 +162,7 @@ test("audition manifest keeps directly comparable deterministic review metadata"
   assert.deepEqual(manifest.outputs.map(({ style }) => style), STYLE_IDS);
   manifest.outputs.forEach((output, index) => {
     assert.equal(output.instruction, config.styles[index].instruction);
+    assert.equal(output.seed, config.styles[index].seed);
     assert.equal(output.file, `${config.output.directory}/${output.style}.wav`);
     assert.ok(Number.isInteger(output.sourceSampleRateHz) && output.sourceSampleRateHz > 0);
     assert.equal(output.normalizedSampleRateHz, 48000);

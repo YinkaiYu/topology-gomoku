@@ -1,3 +1,4 @@
+import copy
 import importlib.util
 import pathlib
 import unittest
@@ -70,6 +71,50 @@ class FakeOfficialWrapper:
 
 
 class QwenVoiceAuditionTests(unittest.TestCase):
+    def load_manifest_subject(self):
+        generator = load_generator()
+        self.assertTrue(hasattr(generator, "verify_manifest"), "manifest contract verifier must exist")
+        return generator, generator.read_json(generator.CONFIG_PATH), generator.read_json(generator.MANIFEST_PATH)
+
+    def test_manifest_verifier_rejects_missing_duplicate_and_unknown_styles(self):
+        generator, config, manifest = self.load_manifest_subject()
+        mutations = {
+            "missing": lambda outputs: outputs.pop(),
+            "duplicate": lambda outputs: outputs.__setitem__(1, {**outputs[1], "style": outputs[0]["style"]}),
+            "unknown": lambda outputs: outputs.__setitem__(1, {**outputs[1], "style": "broadcast"}),
+        }
+        for name, mutate in mutations.items():
+            with self.subTest(name=name):
+                malformed = copy.deepcopy(manifest)
+                mutate(malformed["outputs"])
+                with self.assertRaisesRegex(ValueError, "styles|three"):
+                    generator.verify_manifest(config, malformed)
+
+    def test_manifest_verifier_rejects_stale_config_hash(self):
+        generator, config, manifest = self.load_manifest_subject()
+        malformed = copy.deepcopy(manifest)
+        malformed["configSha256"] = "0" * 64
+
+        with self.assertRaisesRegex(ValueError, "config|stale"):
+            generator.verify_manifest(config, malformed)
+
+    def test_manifest_verifier_rejects_mutated_static_contract_fields(self):
+        generator, config, manifest = self.load_manifest_subject()
+        mutations = {
+            "text": lambda value: value.__setitem__("text", "改写的旁白。"),
+            "model": lambda value: value["model"].__setitem__("id", "unapproved/model"),
+            "instruction": lambda value: value["outputs"][0].__setitem__("instruction", "新闻播音腔"),
+            "path": lambda value: value["outputs"][0].__setitem__("file", "outside.wav"),
+            "root-status": lambda value: value.__setitem__("status", "approved"),
+            "output-status": lambda value: value["outputs"][0].__setitem__("status", "approved"),
+        }
+        for name, mutate in mutations.items():
+            with self.subTest(name=name):
+                malformed = copy.deepcopy(manifest)
+                mutate(malformed)
+                with self.assertRaisesRegex(ValueError, "manifest|text|model|instruction|file|status"):
+                    generator.verify_manifest(config, malformed)
+
     def test_pinned_snapshot_download_avoids_windows_symlink_probe_race(self):
         self.assertTrue(GENERATOR_PATH.exists(), "Qwen audition generator must exist")
         generator = load_generator()
