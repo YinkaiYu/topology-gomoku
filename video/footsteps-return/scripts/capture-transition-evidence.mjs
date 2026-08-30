@@ -59,6 +59,18 @@ async function measurePixels(page, png) {
     let luminanceSum = 0;
     let luminanceSquareSum = 0;
     let nonPureColorPixels = 0;
+    const corners = [
+      [data[0], data[1], data[2]],
+      [data[(canvas.width - 1) * 4], data[(canvas.width - 1) * 4 + 1], data[(canvas.width - 1) * 4 + 2]],
+      [data[(canvas.height - 1) * canvas.width * 4], data[(canvas.height - 1) * canvas.width * 4 + 1], data[(canvas.height - 1) * canvas.width * 4 + 2]],
+      [data[(pixelCount - 1) * 4], data[(pixelCount - 1) * 4 + 1], data[(pixelCount - 1) * 4 + 2]]
+    ];
+    const background = [0, 1, 2].map((channel) => Math.round(corners.reduce((sum, color) => sum + color[channel], 0) / corners.length));
+    let contentPixels = 0;
+    let minX = canvas.width;
+    let minY = canvas.height;
+    let maxX = -1;
+    let maxY = -1;
     for (let index = 0; index < data.length; index += 4) {
       const red = data[index];
       const green = data[index + 1];
@@ -69,12 +81,30 @@ async function measurePixels(page, png) {
       if (Math.max(red, green, blue) - Math.min(red, green, blue) >= 5 || luminance >= 13) {
         nonPureColorPixels += 1;
       }
+      if (Math.max(Math.abs(red - background[0]), Math.abs(green - background[1]), Math.abs(blue - background[2])) >= 6) {
+        const pixelIndex = index / 4;
+        const x = pixelIndex % canvas.width;
+        const y = Math.floor(pixelIndex / canvas.width);
+        contentPixels += 1;
+        minX = Math.min(minX, x);
+        minY = Math.min(minY, y);
+        maxX = Math.max(maxX, x);
+        maxY = Math.max(maxY, y);
+      }
     }
     const mean = luminanceSum / pixelCount;
     return {
       mean,
       variance: luminanceSquareSum / pixelCount - mean * mean,
-      nonPureColorRatio: nonPureColorPixels / pixelCount
+      nonPureColorRatio: nonPureColorPixels / pixelCount,
+      background: { red: background[0], green: background[1], blue: background[2] },
+      contentBbox: contentPixels > 0 ? {
+        x: minX,
+        y: minY,
+        width: maxX - minX + 1,
+        height: maxY - minY + 1,
+        pixelRatio: contentPixels / pixelCount
+      } : null
     };
   }, `data:image/png;base64,${png.toString("base64")}`);
   return Object.freeze(metrics);

@@ -35,6 +35,18 @@ async function pixelMetrics(png) {
     let luminanceSum = 0;
     let luminanceSquareSum = 0;
     let nonPureColorPixels = 0;
+    const corners = [
+      [data[0], data[1], data[2]],
+      [data[(canvas.width - 1) * 4], data[(canvas.width - 1) * 4 + 1], data[(canvas.width - 1) * 4 + 2]],
+      [data[(canvas.height - 1) * canvas.width * 4], data[(canvas.height - 1) * canvas.width * 4 + 1], data[(canvas.height - 1) * canvas.width * 4 + 2]],
+      [data[(pixelCount - 1) * 4], data[(pixelCount - 1) * 4 + 1], data[(pixelCount - 1) * 4 + 2]]
+    ];
+    const background = [0, 1, 2].map((channel) => Math.round(corners.reduce((sum, color) => sum + color[channel], 0) / corners.length));
+    let contentPixels = 0;
+    let minX = canvas.width;
+    let minY = canvas.height;
+    let maxX = -1;
+    let maxY = -1;
     for (let index = 0; index < data.length; index += 4) {
       const red = data[index];
       const green = data[index + 1];
@@ -45,14 +57,99 @@ async function pixelMetrics(png) {
       if (Math.max(red, green, blue) - Math.min(red, green, blue) >= 5 || luminance >= 13) {
         nonPureColorPixels += 1;
       }
+      if (Math.max(Math.abs(red - background[0]), Math.abs(green - background[1]), Math.abs(blue - background[2])) >= 6) {
+        const pixelIndex = index / 4;
+        const x = pixelIndex % canvas.width;
+        const y = Math.floor(pixelIndex / canvas.width);
+        contentPixels += 1;
+        minX = Math.min(minX, x);
+        minY = Math.min(minY, y);
+        maxX = Math.max(maxX, x);
+        maxY = Math.max(maxY, y);
+      }
     }
     const mean = luminanceSum / pixelCount;
     return {
       mean,
       variance: luminanceSquareSum / pixelCount - mean * mean,
-      nonPureColorRatio: nonPureColorPixels / pixelCount
+      nonPureColorRatio: nonPureColorPixels / pixelCount,
+      background: { red: background[0], green: background[1], blue: background[2] },
+      contentBbox: contentPixels > 0 ? {
+        x: minX,
+        y: minY,
+        width: maxX - minX + 1,
+        height: maxY - minY + 1,
+        pixelRatio: contentPixels / pixelCount
+      } : null
     };
   }, `data:image/png;base64,${png.toString("base64")}`);
+}
+
+function assertClose(actual, expected, tolerance, message) {
+  assert.ok(Number.isFinite(actual), `${message}: actual value must be finite`);
+  assert.ok(Number.isFinite(expected), `${message}: recorded value must be finite`);
+  assert.ok(Math.abs(actual - expected) <= tolerance, `${message}: expected ${actual} to be within ${tolerance} of ${expected}`);
+}
+
+function assertEvidencePixelMetrics(id, actual, recorded) {
+  assert.ok(actual.variance > 1.5, `${id} must contain non-flat visual content`);
+  assert.ok(actual.nonPureColorRatio > 0.005, `${id} must not be a black or pure-color frame`);
+  assert.ok(actual.contentBbox?.width > 0 && actual.contentBbox?.height > 0, `${id} must have a non-background content bbox`);
+  assert.ok(actual.contentBbox?.pixelRatio > 0.002, `${id} content bbox must contain a meaningful number of pixels`);
+  assertClose(actual.mean, recorded.mean, 0.15, `${id} decoded mean`);
+  assertClose(actual.variance, recorded.variance, Math.max(0.75, recorded.variance * 0.1), `${id} decoded variance`);
+  assertClose(actual.nonPureColorRatio, recorded.nonPureColorRatio, 0.005, `${id} decoded non-pure-color ratio`);
+  for (const key of ["x", "y", "width", "height"]) {
+    assertClose(actual.contentBbox[key], recorded.contentBbox?.[key], 2, `${id} decoded content bbox ${key}`);
+  }
+  assertClose(actual.contentBbox.pixelRatio, recorded.contentBbox?.pixelRatio, 0.005, `${id} decoded content bbox pixel ratio`);
+}
+
+async function liveGeometryAt(frame) {
+  return page.evaluate(async ({ seek, contractId }) => {
+    const timeline = window.__timelines["footsteps-return"];
+    timeline.time(seek, false).pause();
+    await new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+    const layer = document.querySelector(`[data-pv-transition-layer="${contractId}"]`);
+    if (!layer) return null;
+    return [...layer.querySelectorAll("[data-transition-geometry-side]")].map((node) => {
+      const rect = node.getBoundingClientRect();
+      return {
+        side: node.dataset.transitionGeometrySide,
+        geometry: node.dataset.transitionGeometry,
+        opacity: Number(getComputedStyle(node).opacity),
+        bbox: { x: rect.x, y: rect.y, width: rect.width, height: rect.height }
+      };
+    });
+  }, frame);
+}
+
+function assertLiveGeometryMatches(frame, liveGeometry, recordedGeometry = null) {
+  assert.ok(liveGeometry, `${frame.id} must resolve live geometry for ${frame.contractId}`);
+  assert.deepEqual(liveGeometry.map(({ side }) => side), ["occlusion", "outgoing-match", "incoming-match"]);
+  if (recordedGeometry) {
+    assert.deepEqual(recordedGeometry.map(({ side }) => side), liveGeometry.map(({ side }) => side), `${frame.id} manifest must record all three live geometry sides`);
+  }
+  const expectedBySide = {
+    occlusion: frame.expectedGeometry.occlusion,
+    "outgoing-match": frame.expectedGeometry.outgoing,
+    "incoming-match": frame.expectedGeometry.incoming
+  };
+  for (const live of liveGeometry) {
+    const expected = expectedBySide[live.side];
+    assert.equal(live.geometry, expected, `${frame.id} ${live.side} expected ${expected} but live runtime used ${live.geometry}`);
+    assert.ok(Number.isFinite(live.opacity) && live.opacity >= 0 && live.opacity <= 1, `${frame.id} ${live.side} must expose a finite live opacity`);
+    assert.ok(live.bbox.width > 0 && live.bbox.height > 0, `${frame.id} ${live.side} must expose a valid live bbox`);
+    if (recordedGeometry) {
+      const recorded = recordedGeometry.find(({ side }) => side === live.side);
+      assert.ok(recorded, `${frame.id} manifest must record ${live.side}`);
+      assert.equal(recorded.geometry, live.geometry, `${frame.id} ${live.side} recorded geometry must match live runtime`);
+      assertClose(live.opacity, recorded.opacity, 0.02, `${frame.id} ${live.side} live opacity`);
+      for (const key of ["x", "y", "width", "height"]) {
+        assertClose(live.bbox[key], recorded.bbox?.[key], 2, `${frame.id} ${live.side} live bbox ${key}`);
+      }
+    }
+  }
 }
 
 let browser;
@@ -402,6 +499,37 @@ test("gallery remains visibly in motion through the opening outro narration", as
   assert.ok(samples[3].pixels.variance < samples[2].pixels.variance, "the handoff must darken after 148.4s");
 });
 
+test("evidence validation rejects a replacement PNG containing only black pixels", async () => {
+  const fixture = await browser.newPage({ viewport: { width: 3840, height: 2160 }, deviceScaleFactor: 1 });
+  await fixture.setContent("<style>html,body{margin:0;width:100%;height:100%;background:#000}</style>");
+  const blackMetrics = await pixelMetrics(await fixture.screenshot());
+  await fixture.close();
+
+  assert.throws(
+    () => assertEvidencePixelMetrics("pure-black-fixture", blackMetrics, blackMetrics),
+    /pure-black-fixture.*non-flat visual content/
+  );
+});
+
+test("evidence validation rejects manifest geometry that disagrees with the live runtime", async () => {
+  const tampered = {
+    id: "cylinder-to-torus-post",
+    seek: 50.02,
+    contractId: "chapter-cylinder--chapter-card-torus",
+    expectedGeometry: {
+      occlusion: "cylinder-section",
+      outgoing: "cylinder-section",
+      incoming: "tampered-inner-ring"
+    }
+  };
+  const liveGeometry = await liveGeometryAt(tampered);
+
+  assert.throws(
+    () => assertLiveGeometryMatches(tampered, liveGeometry),
+    /cylinder-to-torus-post incoming-match.*tampered-inner-ring.*torus-inner-ring/
+  );
+});
+
 test("transition evidence capture plan is native 4K and reproducible", async () => {
   const { transitionCapturePlan } = await import("../video/footsteps-return/scripts/capture-transition-evidence.mjs");
   assert.equal(transitionCapturePlan.length, 7);
@@ -415,10 +543,6 @@ test("transition evidence capture plan is native 4K and reproducible", async () 
     "gallery-withdrawal-during-outro"
   ]);
   transitionCapturePlan.forEach((frame) => {
-    const artifact = fs.readFileSync(path.join(ROOT, frame.path));
-    assert.deepEqual([...artifact.subarray(0, 8)], [137, 80, 78, 71, 13, 10, 26, 10]);
-    assert.equal(artifact.readUInt32BE(16), 3840);
-    assert.equal(artifact.readUInt32BE(20), 2160);
     assert.ok(frame.contractId, `${frame.id} must name its contract`);
     assert.ok(frame.phase, `${frame.id} must name its transition phase`);
     assert.equal(typeof frame.seek, "number");
@@ -428,14 +552,28 @@ test("transition evidence capture plan is native 4K and reproducible", async () 
   assert.deepEqual(manifest.viewport, { width: 3840, height: 2160, deviceScaleFactor: 1 });
   assert.equal(manifest.native4k, true);
   assert.equal(fs.existsSync(path.join(ROOT, "artifacts/pv-transition-scenes-task7-contact-sheet.png")), true);
+  assert.deepEqual(manifest.frames.map(({ id }) => id), transitionCapturePlan.map(({ id }) => id));
   for (const frame of manifest.frames) {
-    assert.equal(frame.contractId, transitionCapturePlan.find(({ id }) => id === frame.id).contractId);
-    assert.deepEqual(frame.expectedGeometry, transitionCapturePlan.find(({ id }) => id === frame.id).expectedGeometry);
-    assert.ok(frame.observation?.geometry?.length >= 3, `${frame.id} must record key geometry bboxes`);
-    frame.observation.geometry.forEach((geometry) => {
-      assert.ok(geometry.bbox?.width > 0 && geometry.bbox?.height > 0, `${frame.id} ${geometry.side} bbox must be visible`);
-    });
-    assert.ok(frame.pixels?.variance > 1.5, `${frame.id} must contain non-flat visual content`);
-    assert.ok(frame.pixels?.nonPureColorRatio > 0.005, `${frame.id} must not be near-pure black`);
+    const planned = transitionCapturePlan.find(({ id }) => id === frame.id);
+    assert.equal(frame.contractId, planned.contractId);
+    assert.equal(frame.seek, planned.seek);
+    assert.deepEqual(frame.expectedGeometry, planned.expectedGeometry);
+
+    const artifact = fs.readFileSync(path.join(ROOT, frame.path));
+    assert.deepEqual([...artifact.subarray(0, 8)], [137, 80, 78, 71, 13, 10, 26, 10]);
+    assert.equal(artifact.readUInt32BE(16), 3840);
+    assert.equal(artifact.readUInt32BE(20), 2160);
+    const decodedPixels = await pixelMetrics(artifact);
+    assertEvidencePixelMetrics(frame.id, decodedPixels, frame.pixels);
+
+    const liveGeometry = await liveGeometryAt(frame);
+    assertLiveGeometryMatches(frame, liveGeometry, frame.observation?.geometry);
+    if (frame.id === "cylinder-to-torus-post") {
+      const incoming = liveGeometry.find(({ side }) => side === "incoming-match");
+      assert.equal(incoming.geometry, "torus-inner-ring");
+      assert.ok(incoming.opacity > 0, "50.02s incoming torus-inner-ring must remain visible");
+      assert.ok(incoming.bbox.width > 0 && incoming.bbox.height > 0, "50.02s incoming torus-inner-ring must have a valid bbox");
+      assert.ok(decodedPixels.variance > 1.5 && decodedPixels.nonPureColorRatio > 0.005, "50.02s PNG must contain non-black pixels");
+    }
   }
 });

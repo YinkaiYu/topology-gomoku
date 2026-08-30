@@ -2,7 +2,7 @@
 
 日期：2026-08-30
 分支：`codex/seven-realms-pv`
-范围：Task 7 基础实现与 Fix round 1–2；未启动完整 FFmpeg render。
+范围：Task 7 基础实现与 Fix round 1–3；未启动完整 FFmpeg render。
 
 ## 收敛结果
 
@@ -64,5 +64,28 @@ manifest 同时保存 transition selector、occlusion geometry、消费状态、
 - `npm run pv:inspect`：通过（0 errors / 0 warnings，0 layout issues）。
 - `npm run pv:game-render:verify`：通过（paths 8/8、crossings 10、可逆、原生 morph 6）。
 - `node video/footsteps-return/scripts/capture-transition-evidence.mjs`：通过（7 张原生 4K、联系表、manifest）。
+- `npm run docs:check` 与 `git diff --check`：通过。
+- 按要求未启动完整 FFmpeg render。
+
+## Fix round 3：独立解码 PNG 与实时几何复核
+
+### 根因与实现
+
+- 旧证据测试只检查 PNG 签名与 IHDR 尺寸，随后直接相信 manifest 中的 `pixels` 与 `observation.geometry`；替换实际 PNG 或篡改 geometry 记录都不会被真实内容门禁捕获。
+- 测试现在把 7 张实际 artifact PNG 逐张载入 Chromium `Image`，绘制到 480 × 270 canvas 并从 `getImageData()` 独立重算 mean、variance、non-pure-color ratio，以及相对四角背景色的 content bbox / pixel ratio。实际重算值既要通过非平坦、非纯色与有效 bbox 门槛，也必须在明确容差内匹配 manifest 记录。
+- manifest 的像素记录补入 background 与 `contentBbox`。7 帧实际 content bbox 均有效：三张 cylinder→torus 为 `113×145`、`76×131`、`109×78`；torus→Möbius 为 `114×117`；Möbius→Klein 为 `119×97`；gallery 两帧为 `348×172`、`317×159`（均为 480 × 270 测量坐标）。联系表内容与 SHA-256 保持不变：`87a076df04c7bbc800206fa9dc83eb14cf1106c13e4ffb223ab495342191515a`。
+- 对 manifest 的每个 seek，测试重新驱动真实 composition timeline，读取指定 contract 的 `occlusion` / `outgoing-match` / `incoming-match` 三层 side、geometry、opacity 与 bbox；geometry 逐项匹配 `expectedGeometry`，同时将 opacity/bbox 与记录值做容差复核。50.02s 额外要求 live incoming `torus-inner-ring` opacity > 0、bbox 有效，且实际 PNG 像素非黑。
+
+### RED / GREEN
+
+- RED：新增两个负例后，`node --test tests/pv-transitions.test.js` 得到 7 pass / 2 fail。纯黑 3840 × 2160 PNG 替换 fixture 因缺少独立像素门禁失败；把 50.02s manifest incoming geometry 篡改为 `tampered-inner-ring` 因缺少 live-runtime 对照失败。
+- GREEN：实现独立 PNG 解码、content bbox 门禁与 live geometry 比较后，focused transitions 得到 9/9 pass；两个负例均由目标校验错误拒绝，实际 7 帧均通过像素与实时几何复核。
+
+### Fix round 3 验证
+
+- `node --test tests/pv-transitions.test.js`：通过（9/9，包含实际 PNG 解码、实时 runtime seek 与两个负例）。
+- `npm test`：通过（132/132）。
+- `npm run pv:validate`：通过（manifest valid；Lint / Runtime / Layout / Motion 均 0 issue；Contrast 2/2）。
+- `node video/footsteps-return/scripts/capture-transition-evidence.mjs`：通过（7 张原生 4K 图像保持确定性，manifest 新增 content bbox）。
 - `npm run docs:check` 与 `git diff --check`：通过。
 - 按要求未启动完整 FFmpeg render。

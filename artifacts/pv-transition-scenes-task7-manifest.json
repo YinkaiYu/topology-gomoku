@@ -109,7 +109,19 @@
       "pixels": {
         "mean": 7.079202674885193,
         "variance": 8.219922066707305,
-        "nonPureColorRatio": 0.10270061728395062
+        "nonPureColorRatio": 0.10270061728395062,
+        "background": {
+          "red": 4,
+          "green": 6,
+          "blue": 6
+        },
+        "contentBbox": {
+          "x": 183,
+          "y": 62,
+          "width": 113,
+          "height": 145,
+          "pixelRatio": 0.10622685185185185
+        }
       }
     },
     {
@@ -214,7 +226,19 @@
       "pixels": {
         "mean": 8.072463991781884,
         "variance": 10.713505828509625,
-        "nonPureColorRatio": 0.00816358024691358
+        "nonPureColorRatio": 0.00816358024691358,
+        "background": {
+          "red": 5,
+          "green": 7,
+          "blue": 6
+        },
+        "contentBbox": {
+          "x": 185,
+          "y": 64,
+          "width": 76,
+          "height": 131,
+          "pixelRatio": 0.05064814814814815
+        }
       }
     },
     {
@@ -319,7 +343,19 @@
       "pixels": {
         "mean": 8.358832304517847,
         "variance": 6.130138554416362,
-        "nonPureColorRatio": 0.08858796296296297
+        "nonPureColorRatio": 0.08858796296296297,
+        "background": {
+          "red": 6,
+          "green": 9,
+          "blue": 8
+        },
+        "contentBbox": {
+          "x": 148,
+          "y": 88,
+          "width": 109,
+          "height": 78,
+          "pixelRatio": 0.04003858024691358
+        }
       }
     },
     {
@@ -424,7 +460,19 @@
       "pixels": {
         "mean": 8.236159979434072,
         "variance": 13.049814026450775,
-        "nonPureColorRatio": 0.022546296296296297
+        "nonPureColorRatio": 0.022546296296296297,
+        "background": {
+          "red": 5,
+          "green": 7,
+          "blue": 6
+        },
+        "contentBbox": {
+          "x": 151,
+          "y": 70,
+          "width": 114,
+          "height": 117,
+          "pixelRatio": 0.07078703703703704
+        }
       }
     },
     {
@@ -529,7 +577,19 @@
       "pixels": {
         "mean": 8.903930041152547,
         "variance": 47.216732497273725,
-        "nonPureColorRatio": 0.041103395061728394
+        "nonPureColorRatio": 0.041103395061728394,
+        "background": {
+          "red": 5,
+          "green": 7,
+          "blue": 6
+        },
+        "contentBbox": {
+          "x": 159,
+          "y": 87,
+          "width": 119,
+          "height": 97,
+          "pixelRatio": 0.05570216049382716
+        }
       }
     },
     {
@@ -634,7 +694,19 @@
       "pixels": {
         "mean": 18.54802211934061,
         "variance": 1199.7100772765473,
-        "nonPureColorRatio": 0.36551697530864197
+        "nonPureColorRatio": 0.36551697530864197,
+        "background": {
+          "red": 4,
+          "green": 8,
+          "blue": 7
+        },
+        "contentBbox": {
+          "x": 67,
+          "y": 44,
+          "width": 348,
+          "height": 172,
+          "pixelRatio": 0.14030864197530865
+        }
       }
     },
     {
@@ -739,7 +811,19 @@
       "pixels": {
         "mean": 8.677397119343281,
         "variance": 61.68331764206759,
-        "nonPureColorRatio": 0.09614969135802469
+        "nonPureColorRatio": 0.09614969135802469,
+        "background": {
+          "red": 4,
+          "green": 7,
+          "blue": 6
+        },
+        "contentBbox": {
+          "x": 86,
+          "y": 50,
+          "width": 317,
+          "height": 159,
+          "pixelRatio": 0.07691358024691358
+        }
       }
     }
   ]
