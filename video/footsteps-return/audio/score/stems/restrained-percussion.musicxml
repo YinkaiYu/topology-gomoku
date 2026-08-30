@@ -15,9 +15,11 @@
       <score-instrument id="P11-I36"><instrument-name>Muted Bass Drum</instrument-name><instrument-sound>drum.group.set</instrument-sound></score-instrument>
       <score-instrument id="P11-I52"><instrument-name>Soft Chinese Cymbal</instrument-name><instrument-sound>drum.group.set</instrument-sound></score-instrument>
       <score-instrument id="P11-I59"><instrument-name>Suspended Cymbal</instrument-name><instrument-sound>drum.group.set</instrument-sound></score-instrument>
+      <score-instrument id="P11-I81"><instrument-name>Open Triangle</instrument-name><instrument-sound>drum.group.set</instrument-sound></score-instrument>
       <midi-instrument id="P11-I36"><midi-channel>10</midi-channel><midi-program>1</midi-program><midi-unpitched>36</midi-unpitched><volume>72</volume><pan>0</pan></midi-instrument>
       <midi-instrument id="P11-I52"><midi-channel>10</midi-channel><midi-program>1</midi-program><midi-unpitched>52</midi-unpitched><volume>72</volume><pan>0</pan></midi-instrument>
       <midi-instrument id="P11-I59"><midi-channel>10</midi-channel><midi-program>1</midi-program><midi-unpitched>59</midi-unpitched><volume>72</volume><pan>0</pan></midi-instrument>
+      <midi-instrument id="P11-I81"><midi-channel>10</midi-channel><midi-program>1</midi-program><midi-unpitched>81</midi-unpitched><volume>72</volume><pan>0</pan></midi-instrument>
     </score-part>
   </part-list>
  <part id="P11">
@@ -80,6 +82,9 @@
     </note>
   </measure>
   <measure number="6">
+    <attributes>
+      <key><fifths>2</fifths><mode>major</mode></key>
+    </attributes>
     <direction placement="above">
       <direction-type><rehearsal enclosure="rectangle">I · Plane — prime</rehearsal></direction-type>
       <offset sound="no">1500</offset>
@@ -120,55 +125,214 @@
     </note>
   </measure>
   <measure number="10">
+    <attributes>
+      <key><fifths>-2</fifths><mode>major</mode></key>
+    </attributes>
     <direction placement="above">
       <direction-type><rehearsal enclosure="rectangle">II · Cylinder — one orbit</rehearsal></direction-type>
       <offset sound="no">1750</offset>
     </direction>
+    <direction placement="above">
+      <direction-type><words font-style="italic" font-size="9">soft wood/metal 3+3 cycle</words></direction-type>
+      <offset sound="no">2000</offset>
+    </direction>
+    <direction placement="below">
+      <direction-type><dynamics><p/></dynamics></direction-type>
+      <offset sound="yes">2000</offset>
+    </direction>
     <note>
       <rest/>
-      <duration>4000</duration>
+      <duration>2000</duration>
       <voice>1</voice>
-      <type>whole</type>
+      <type>half</type>
+      <staff>1</staff>
+    </note>
+    <note>
+      <instrument id="P11-I52"/>
+      <unpitched><display-step>E</display-step><display-octave>3</display-octave></unpitched>
+      <duration>250</duration>
+      <voice>1</voice>
+      <type>16th</type>
+      <staff>1</staff>
+    </note>
+    <note>
+      <rest/>
+      <duration>1500</duration>
+      <voice>1</voice>
+      <type>quarter</type>
+      <dot/>
+      <staff>1</staff>
+    </note>
+    <note>
+      <rest/>
+      <duration>250</duration>
+      <voice>1</voice>
+      <type>16th</type>
       <staff>1</staff>
     </note>
   </measure>
   <measure number="11">
     <note>
       <rest/>
-      <duration>4000</duration>
+      <duration>1000</duration>
       <voice>1</voice>
-      <type>whole</type>
+      <type>quarter</type>
+      <staff>1</staff>
+    </note>
+    <note>
+      <instrument id="P11-I59"/>
+      <unpitched><display-step>B</display-step><display-octave>3</display-octave></unpitched>
+      <duration>125</duration>
+      <voice>1</voice>
+      <type>32nd</type>
+      <staff>1</staff>
+    </note>
+    <note>
+      <rest/>
+      <duration>2000</duration>
+      <voice>1</voice>
+      <type>half</type>
+      <staff>1</staff>
+    </note>
+    <note>
+      <rest/>
+      <duration>750</duration>
+      <voice>1</voice>
+      <type>eighth</type>
+      <dot/>
+      <staff>1</staff>
+    </note>
+    <note>
+      <rest/>
+      <duration>125</duration>
+      <voice>1</voice>
+      <type>32nd</type>
       <staff>1</staff>
     </note>
   </measure>
   <measure number="12">
     <note>
-      <rest/>
-      <duration>4000</duration>
+      <instrument id="P11-I52"/>
+      <unpitched><display-step>E</display-step><display-octave>3</display-octave></unpitched>
+      <duration>250</duration>
       <voice>1</voice>
-      <type>whole</type>
+      <type>16th</type>
+      <staff>1</staff>
+    </note>
+    <note>
+      <rest/>
+      <duration>2000</duration>
+      <voice>1</voice>
+      <type>half</type>
+      <staff>1</staff>
+    </note>
+    <note>
+      <rest/>
+      <duration>750</duration>
+      <voice>1</voice>
+      <type>eighth</type>
+      <dot/>
+      <staff>1</staff>
+    </note>
+    <note>
+      <instrument id="P11-I59"/>
+      <unpitched><display-step>B</display-step><display-octave>3</display-octave></unpitched>
+      <duration>125</duration>
+      <voice>1</voice>
+      <type>32nd</type>
+      <staff>1</staff>
+    </note>
+    <note>
+      <rest/>
+      <duration>750</duration>
+      <voice>1</voice>
+      <type>eighth</type>
+      <dot/>
+      <staff>1</staff>
+    </note>
+    <note>
+      <rest/>
+      <duration>125</duration>
+      <voice>1</voice>
+      <type>32nd</type>
       <staff>1</staff>
     </note>
   </measure>
   <measure number="13">
     <note>
       <rest/>
-      <duration>4000</duration>
+      <duration>2000</duration>
       <voice>1</voice>
-      <type>whole</type>
+      <type>half</type>
+      <staff>1</staff>
+    </note>
+    <note>
+      <instrument id="P11-I52"/>
+      <unpitched><display-step>E</display-step><display-octave>3</display-octave></unpitched>
+      <duration>250</duration>
+      <voice>1</voice>
+      <type>16th</type>
+      <staff>1</staff>
+    </note>
+    <note>
+      <rest/>
+      <duration>1500</duration>
+      <voice>1</voice>
+      <type>quarter</type>
+      <dot/>
+      <staff>1</staff>
+    </note>
+    <note>
+      <rest/>
+      <duration>250</duration>
+      <voice>1</voice>
+      <type>16th</type>
       <staff>1</staff>
     </note>
   </measure>
   <measure number="14">
     <note>
       <rest/>
-      <duration>4000</duration>
+      <duration>1000</duration>
       <voice>1</voice>
-      <type>whole</type>
+      <type>quarter</type>
+      <staff>1</staff>
+    </note>
+    <note>
+      <instrument id="P11-I59"/>
+      <unpitched><display-step>B</display-step><display-octave>3</display-octave></unpitched>
+      <duration>125</duration>
+      <voice>1</voice>
+      <type>32nd</type>
+      <staff>1</staff>
+    </note>
+    <note>
+      <rest/>
+      <duration>2000</duration>
+      <voice>1</voice>
+      <type>half</type>
+      <staff>1</staff>
+    </note>
+    <note>
+      <rest/>
+      <duration>750</duration>
+      <voice>1</voice>
+      <type>eighth</type>
+      <dot/>
+      <staff>1</staff>
+    </note>
+    <note>
+      <rest/>
+      <duration>125</duration>
+      <voice>1</voice>
+      <type>32nd</type>
       <staff>1</staff>
     </note>
   </measure>
   <measure number="15">
+    <attributes>
+      <key><fifths>3</fifths><mode>major</mode></key>
+    </attributes>
     <direction placement="above">
       <direction-type><rehearsal enclosure="rectangle">III · Torus — interlocked cycles</rehearsal></direction-type>
       <offset sound="no">625</offset>
@@ -191,20 +355,66 @@
     </note>
   </measure>
   <measure number="17">
+    <direction placement="above">
+      <direction-type><words font-style="italic" font-size="9">two soft intersection marks</words></direction-type>
+    </direction>
+    <direction placement="below">
+      <direction-type><dynamics><pp/></dynamics></direction-type>
+    </direction>
+    <note>
+      <instrument id="P11-I59"/>
+      <unpitched><display-step>B</display-step><display-octave>3</display-octave></unpitched>
+      <duration>250</duration>
+      <voice>1</voice>
+      <type>16th</type>
+      <staff>1</staff>
+    </note>
     <note>
       <rest/>
-      <duration>4000</duration>
+      <duration>3000</duration>
       <voice>1</voice>
-      <type>whole</type>
+      <type>half</type>
+      <dot/>
+      <staff>1</staff>
+    </note>
+    <note>
+      <rest/>
+      <duration>750</duration>
+      <voice>1</voice>
+      <type>eighth</type>
+      <dot/>
       <staff>1</staff>
     </note>
   </measure>
   <measure number="18">
     <note>
       <rest/>
-      <duration>4000</duration>
+      <duration>2000</duration>
       <voice>1</voice>
-      <type>whole</type>
+      <type>half</type>
+      <staff>1</staff>
+    </note>
+    <note>
+      <instrument id="P11-I52"/>
+      <unpitched><display-step>E</display-step><display-octave>3</display-octave></unpitched>
+      <duration>250</duration>
+      <voice>1</voice>
+      <type>16th</type>
+      <staff>1</staff>
+    </note>
+    <note>
+      <rest/>
+      <duration>1500</duration>
+      <voice>1</voice>
+      <type>quarter</type>
+      <dot/>
+      <staff>1</staff>
+    </note>
+    <note>
+      <rest/>
+      <duration>250</duration>
+      <voice>1</voice>
+      <type>16th</type>
       <staff>1</staff>
     </note>
   </measure>
@@ -222,13 +432,17 @@
     </note>
   </measure>
   <measure number="20">
+    <attributes>
+      <key><fifths>0</fifths><mode>none</mode></key>
+      <time><beats>3+2+3</beats><beat-type>8</beat-type></time>
+    </attributes>
     <direction placement="above">
-      <direction-type><words font-style="italic" font-size="9">bowed suspended cymbal illusion, no roll</words></direction-type>
-      <offset sound="no">2750</offset>
+      <direction-type><words font-style="italic" font-size="9">three soft metal breaths</words></direction-type>
+      <offset sound="no">2500</offset>
     </direction>
     <direction placement="below">
-      <direction-type><dynamics><ppp/></dynamics></direction-type>
-      <offset sound="yes">2750</offset>
+      <direction-type><dynamics><pp/></dynamics></direction-type>
+      <offset sound="yes">2500</offset>
     </direction>
     <note>
       <rest/>
@@ -239,31 +453,32 @@
     </note>
     <note>
       <rest/>
-      <duration>750</duration>
+      <duration>500</duration>
       <voice>1</voice>
       <type>eighth</type>
-      <dot/>
       <staff>1</staff>
     </note>
     <note>
       <instrument id="P11-I59"/>
       <unpitched><display-step>B</display-step><display-octave>3</display-octave></unpitched>
-      <tie type="start"/>
-      <duration>1000</duration>
-      <voice>1</voice>
-      <type>quarter</type>
-      <staff>1</staff>
-      <notations><tied type="start"/></notations>
-    </note>
-    <note>
-      <instrument id="P11-I59"/>
-      <unpitched><display-step>B</display-step><display-octave>3</display-octave></unpitched>
-      <tie type="stop"/>
       <duration>250</duration>
       <voice>1</voice>
       <type>16th</type>
       <staff>1</staff>
-      <notations><tied type="stop"/></notations>
+    </note>
+    <note>
+      <rest/>
+      <duration>1000</duration>
+      <voice>1</voice>
+      <type>quarter</type>
+      <staff>1</staff>
+    </note>
+    <note>
+      <rest/>
+      <duration>250</duration>
+      <voice>1</voice>
+      <type>16th</type>
+      <staff>1</staff>
     </note>
   </measure>
   <measure number="21">
@@ -278,6 +493,21 @@
   <measure number="22">
     <note>
       <rest/>
+      <duration>1000</duration>
+      <voice>1</voice>
+      <type>quarter</type>
+      <staff>1</staff>
+    </note>
+    <note>
+      <instrument id="P11-I52"/>
+      <unpitched><display-step>E</display-step><display-octave>3</display-octave></unpitched>
+      <duration>250</duration>
+      <voice>1</voice>
+      <type>16th</type>
+      <staff>1</staff>
+    </note>
+    <note>
+      <rest/>
       <duration>2000</duration>
       <voice>1</voice>
       <type>half</type>
@@ -289,210 +519,96 @@
       <voice>1</voice>
       <type>eighth</type>
       <dot/>
-      <staff>1</staff>
-    </note>
-    <note>
-      <instrument id="P11-I59"/>
-      <unpitched><display-step>B</display-step><display-octave>3</display-octave></unpitched>
-      <tie type="start"/>
-      <duration>1000</duration>
-      <voice>1</voice>
-      <type>quarter</type>
-      <staff>1</staff>
-      <notations><tied type="start"/></notations>
-    </note>
-    <note>
-      <instrument id="P11-I59"/>
-      <unpitched><display-step>B</display-step><display-octave>3</display-octave></unpitched>
-      <tie type="stop"/>
-      <duration>125</duration>
-      <voice>1</voice>
-      <type>32nd</type>
-      <staff>1</staff>
-      <notations><tied type="stop"/></notations>
-    </note>
-    <note>
-      <rest/>
-      <duration>125</duration>
-      <voice>1</voice>
-      <type>32nd</type>
       <staff>1</staff>
     </note>
   </measure>
   <measure number="23">
     <note>
       <rest/>
-      <duration>4000</duration>
+      <duration>3000</duration>
       <voice>1</voice>
-      <type>whole</type>
+      <type>half</type>
+      <dot/>
+      <staff>1</staff>
+    </note>
+    <note>
+      <rest/>
+      <duration>500</duration>
+      <voice>1</voice>
+      <type>eighth</type>
+      <staff>1</staff>
+    </note>
+    <note>
+      <instrument id="P11-I59"/>
+      <unpitched><display-step>B</display-step><display-octave>3</display-octave></unpitched>
+      <duration>250</duration>
+      <voice>1</voice>
+      <type>16th</type>
+      <staff>1</staff>
+    </note>
+    <note>
+      <rest/>
+      <duration>250</duration>
+      <voice>1</voice>
+      <type>16th</type>
       <staff>1</staff>
     </note>
   </measure>
   <measure number="24">
+    <attributes>
+      <key><fifths>-1</fifths><mode>none</mode></key>
+      <time><beats>4</beats><beat-type>4</beat-type></time>
+    </attributes>
     <direction placement="above">
       <direction-type><rehearsal enclosure="rectangle">V · Klein — prime / mirror</rehearsal></direction-type>
       <offset sound="no">1875</offset>
     </direction>
+    <direction placement="above">
+      <direction-type><words font-style="italic" font-size="9">metallic hinge into propulsion</words></direction-type>
+      <offset sound="no">1500</offset>
+    </direction>
+    <direction placement="below">
+      <direction-type><dynamics><mp/></dynamics></direction-type>
+      <offset sound="yes">1500</offset>
+    </direction>
     <note>
       <rest/>
-      <duration>375</duration>
+      <duration>1500</duration>
       <voice>1</voice>
-      <type>16th</type>
+      <type>quarter</type>
       <dot/>
       <staff>1</staff>
     </note>
     <note>
-      <instrument id="P11-I52"/>
-      <unpitched><display-step>E</display-step><display-octave>3</display-octave></unpitched>
-      <tie type="start"/>
-      <duration>750</duration>
+      <instrument id="P11-I59"/>
+      <unpitched><display-step>B</display-step><display-octave>3</display-octave></unpitched>
+      <duration>500</duration>
       <voice>1</voice>
       <type>eighth</type>
-      <dot/>
       <staff>1</staff>
-      <notations><tied type="start"/></notations>
-    </note>
-    <note>
-      <instrument id="P11-I52"/>
-      <unpitched><display-step>E</display-step><display-octave>3</display-octave></unpitched>
-      <tie type="stop"/>
-      <duration>125</duration>
-      <voice>1</voice>
-      <type>32nd</type>
-      <staff>1</staff>
-      <notations><tied type="stop"/></notations>
     </note>
     <note>
       <rest/>
       <duration>2000</duration>
       <voice>1</voice>
       <type>half</type>
-      <staff>1</staff>
-    </note>
-    <note>
-      <rest/>
-      <duration>750</duration>
-      <voice>1</voice>
-      <type>eighth</type>
-      <dot/>
       <staff>1</staff>
     </note>
   </measure>
   <measure number="25">
     <direction placement="above">
-      <direction-type><words font-style="italic" font-size="9">muted bass drum, felt beater</words></direction-type>
-      <offset sound="no">875</offset>
+      <direction-type><words font-style="italic" font-size="9">controlled metallic propulsion</words></direction-type>
+      <offset sound="no">1750</offset>
     </direction>
     <direction placement="below">
-      <direction-type><dynamics><pp/></dynamics></direction-type>
-      <offset sound="yes">875</offset>
+      <direction-type><dynamics><mf/></dynamics></direction-type>
+      <offset sound="yes">1750</offset>
     </direction>
     <note>
       <rest/>
-      <duration>750</duration>
+      <duration>1500</duration>
       <voice>1</voice>
-      <type>eighth</type>
-      <dot/>
-      <staff>1</staff>
-    </note>
-    <note>
-      <rest/>
-      <duration>125</duration>
-      <voice>1</voice>
-      <type>32nd</type>
-      <staff>1</staff>
-    </note>
-    <note>
-      <instrument id="P11-I36"/>
-      <unpitched><display-step>C</display-step><display-octave>2</display-octave></unpitched>
-      <duration>750</duration>
-      <voice>1</voice>
-      <type>eighth</type>
-      <dot/>
-      <staff>1</staff>
-    </note>
-    <note>
-      <rest/>
-      <duration>2000</duration>
-      <voice>1</voice>
-      <type>half</type>
-      <staff>1</staff>
-    </note>
-    <note>
-      <rest/>
-      <duration>375</duration>
-      <voice>1</voice>
-      <type>16th</type>
-      <dot/>
-      <staff>1</staff>
-    </note>
-  </measure>
-  <measure number="26">
-    <note>
-      <rest/>
-      <duration>4000</duration>
-      <voice>1</voice>
-      <type>whole</type>
-      <staff>1</staff>
-    </note>
-  </measure>
-  <measure number="27">
-    <note>
-      <rest/>
-      <duration>750</duration>
-      <voice>1</voice>
-      <type>eighth</type>
-      <dot/>
-      <staff>1</staff>
-    </note>
-    <note>
-      <instrument id="P11-I36"/>
-      <unpitched><display-step>C</display-step><display-octave>2</display-octave></unpitched>
-      <tie type="start"/>
-      <duration>500</duration>
-      <voice>1</voice>
-      <type>eighth</type>
-      <staff>1</staff>
-      <notations><tied type="start"/></notations>
-    </note>
-    <note>
-      <instrument id="P11-I36"/>
-      <unpitched><display-step>C</display-step><display-octave>2</display-octave></unpitched>
-      <tie type="stop"/>
-      <duration>125</duration>
-      <voice>1</voice>
-      <type>32nd</type>
-      <staff>1</staff>
-      <notations><tied type="stop"/></notations>
-    </note>
-    <note>
-      <rest/>
-      <duration>2000</duration>
-      <voice>1</voice>
-      <type>half</type>
-      <staff>1</staff>
-    </note>
-    <note>
-      <rest/>
-      <duration>500</duration>
-      <voice>1</voice>
-      <type>eighth</type>
-      <staff>1</staff>
-    </note>
-    <note>
-      <rest/>
-      <duration>125</duration>
-      <voice>1</voice>
-      <type>32nd</type>
-      <staff>1</staff>
-    </note>
-  </measure>
-  <measure number="28">
-    <note>
-      <rest/>
-      <duration>3000</duration>
-      <voice>1</voice>
-      <type>half</type>
+      <type>quarter</type>
       <dot/>
       <staff>1</staff>
     </note>
@@ -504,38 +620,120 @@
       <staff>1</staff>
     </note>
     <note>
-      <instrument id="P11-I36"/>
-      <unpitched><display-step>C</display-step><display-octave>2</display-octave></unpitched>
-      <tie type="start"/>
+      <instrument id="P11-I52"/>
+      <unpitched><display-step>E</display-step><display-octave>3</display-octave></unpitched>
+      <duration>250</duration>
+      <voice>1</voice>
+      <type>16th</type>
+      <staff>1</staff>
+    </note>
+    <note>
+      <rest/>
+      <duration>2000</duration>
+      <voice>1</voice>
+      <type>half</type>
+      <staff>1</staff>
+    </note>
+  </measure>
+  <measure number="26">
+    <note>
+      <rest/>
+      <duration>1500</duration>
+      <voice>1</voice>
+      <type>quarter</type>
+      <dot/>
+      <staff>1</staff>
+    </note>
+    <note>
+      <instrument id="P11-I59"/>
+      <unpitched><display-step>B</display-step><display-octave>3</display-octave></unpitched>
+      <duration>250</duration>
+      <voice>1</voice>
+      <type>16th</type>
+      <staff>1</staff>
+    </note>
+    <note>
+      <rest/>
+      <duration>2000</duration>
+      <voice>1</voice>
+      <type>half</type>
+      <staff>1</staff>
+    </note>
+    <note>
+      <rest/>
+      <duration>250</duration>
+      <voice>1</voice>
+      <type>16th</type>
+      <staff>1</staff>
+    </note>
+  </measure>
+  <measure number="27">
+    <note>
+      <rest/>
+      <duration>1000</duration>
+      <voice>1</voice>
+      <type>quarter</type>
+      <staff>1</staff>
+    </note>
+    <note>
+      <rest/>
+      <duration>250</duration>
+      <voice>1</voice>
+      <type>16th</type>
+      <staff>1</staff>
+    </note>
+    <note>
+      <instrument id="P11-I52"/>
+      <unpitched><display-step>E</display-step><display-octave>3</display-octave></unpitched>
+      <duration>250</duration>
+      <voice>1</voice>
+      <type>16th</type>
+      <staff>1</staff>
+    </note>
+    <note>
+      <rest/>
+      <duration>2000</duration>
+      <voice>1</voice>
+      <type>half</type>
+      <staff>1</staff>
+    </note>
+    <note>
+      <rest/>
+      <duration>500</duration>
+      <voice>1</voice>
+      <type>eighth</type>
+      <staff>1</staff>
+    </note>
+  </measure>
+  <measure number="28">
+    <note>
+      <rest/>
       <duration>750</duration>
       <voice>1</voice>
       <type>eighth</type>
       <dot/>
       <staff>1</staff>
-      <notations><tied type="start"/></notations>
     </note>
-  </measure>
-  <measure number="29">
-    <direction placement="above">
-      <direction-type><rehearsal enclosure="rectangle">VI · Projective — mirrored canon</rehearsal></direction-type>
-      <offset sound="no">625</offset>
-    </direction>
     <note>
-      <instrument id="P11-I36"/>
-      <unpitched><display-step>C</display-step><display-octave>2</display-octave></unpitched>
-      <tie type="stop"/>
+      <rest/>
       <duration>125</duration>
       <voice>1</voice>
       <type>32nd</type>
       <staff>1</staff>
-      <notations><tied type="stop"/></notations>
+    </note>
+    <note>
+      <instrument id="P11-I59"/>
+      <unpitched><display-step>B</display-step><display-octave>3</display-octave></unpitched>
+      <duration>250</duration>
+      <voice>1</voice>
+      <type>16th</type>
+      <staff>1</staff>
     </note>
     <note>
       <rest/>
-      <duration>3000</duration>
+      <duration>2000</duration>
       <voice>1</voice>
       <type>half</type>
-      <dot/>
       <staff>1</staff>
     </note>
     <note>
@@ -544,6 +742,84 @@
       <voice>1</voice>
       <type>eighth</type>
       <dot/>
+      <staff>1</staff>
+    </note>
+    <note>
+      <rest/>
+      <duration>125</duration>
+      <voice>1</voice>
+      <type>32nd</type>
+      <staff>1</staff>
+    </note>
+  </measure>
+  <measure number="29">
+    <attributes>
+      <key><fifths>4</fifths><mode>major</mode></key>
+    </attributes>
+    <direction placement="above">
+      <direction-type><rehearsal enclosure="rectangle">VI · Projective — mirrored canon</rehearsal></direction-type>
+      <offset sound="no">625</offset>
+    </direction>
+    <direction placement="above">
+      <direction-type><words font-style="italic" font-size="9">E/B overtone relay</words></direction-type>
+      <offset sound="no">375</offset>
+    </direction>
+    <direction placement="below">
+      <direction-type><dynamics><p/></dynamics></direction-type>
+      <offset sound="yes">375</offset>
+    </direction>
+    <direction placement="above">
+      <direction-type><words font-style="italic" font-size="9">three discrete glass points</words></direction-type>
+      <offset sound="no">1250</offset>
+    </direction>
+    <direction placement="below">
+      <direction-type><dynamics><pp/></dynamics></direction-type>
+      <offset sound="yes">1250</offset>
+    </direction>
+    <note>
+      <rest/>
+      <duration>375</duration>
+      <voice>1</voice>
+      <type>16th</type>
+      <dot/>
+      <staff>1</staff>
+    </note>
+    <note>
+      <instrument id="P11-I59"/>
+      <unpitched><display-step>B</display-step><display-octave>3</display-octave></unpitched>
+      <duration>750</duration>
+      <voice>1</voice>
+      <type>eighth</type>
+      <dot/>
+      <staff>1</staff>
+    </note>
+    <note>
+      <rest/>
+      <duration>125</duration>
+      <voice>1</voice>
+      <type>32nd</type>
+      <staff>1</staff>
+    </note>
+    <note>
+      <instrument id="P11-I81"/>
+      <unpitched><display-step>A</display-step><display-octave>5</display-octave></unpitched>
+      <duration>125</duration>
+      <voice>1</voice>
+      <type>32nd</type>
+      <staff>1</staff>
+    </note>
+    <note>
+      <rest/>
+      <duration>2000</duration>
+      <voice>1</voice>
+      <type>half</type>
+      <staff>1</staff>
+    </note>
+    <note>
+      <rest/>
+      <duration>500</duration>
+      <voice>1</voice>
+      <type>eighth</type>
       <staff>1</staff>
     </note>
     <note>
@@ -566,36 +842,45 @@
   <measure number="31">
     <note>
       <rest/>
-      <duration>4000</duration>
+      <duration>250</duration>
       <voice>1</voice>
-      <type>whole</type>
+      <type>16th</type>
+      <staff>1</staff>
+    </note>
+    <note>
+      <instrument id="P11-I59"/>
+      <unpitched><display-step>B</display-step><display-octave>3</display-octave></unpitched>
+      <duration>125</duration>
+      <voice>1</voice>
+      <type>32nd</type>
+      <staff>1</staff>
+    </note>
+    <note>
+      <rest/>
+      <duration>3000</duration>
+      <voice>1</voice>
+      <type>half</type>
+      <dot/>
+      <staff>1</staff>
+    </note>
+    <note>
+      <rest/>
+      <duration>500</duration>
+      <voice>1</voice>
+      <type>eighth</type>
+      <staff>1</staff>
+    </note>
+    <note>
+      <rest/>
+      <duration>125</duration>
+      <voice>1</voice>
+      <type>32nd</type>
       <staff>1</staff>
     </note>
   </measure>
   <measure number="32">
     <note>
       <rest/>
-      <duration>4000</duration>
-      <voice>1</voice>
-      <type>whole</type>
-      <staff>1</staff>
-    </note>
-  </measure>
-  <measure number="33">
-    <direction placement="above">
-      <direction-type><rehearsal enclosure="rectangle">VII · Sphere — full resolution</rehearsal></direction-type>
-      <offset sound="no">3375</offset>
-    </direction>
-    <direction placement="above">
-      <direction-type><words font-style="italic" font-size="9">felt bass drum and one soft suspended cymbal</words></direction-type>
-      <offset sound="no">3375</offset>
-    </direction>
-    <direction placement="below">
-      <direction-type><dynamics><pp/></dynamics></direction-type>
-      <offset sound="yes">3375</offset>
-    </direction>
-    <note>
-      <rest/>
       <duration>3000</duration>
       <voice>1</voice>
       <type>half</type>
@@ -604,63 +889,42 @@
     </note>
     <note>
       <rest/>
-      <duration>375</duration>
-      <voice>1</voice>
-      <type>16th</type>
-      <dot/>
-      <staff>1</staff>
-    </note>
-    <note>
-      <instrument id="P11-I36"/>
-      <unpitched><display-step>C</display-step><display-octave>2</display-octave></unpitched>
-      <tie type="start"/>
-      <duration>500</duration>
-      <voice>1</voice>
-      <type>eighth</type>
-      <staff>1</staff>
-      <notations><tied type="start"/></notations>
-    </note>
-    <note>
-      <instrument id="P11-I36"/>
-      <unpitched><display-step>C</display-step><display-octave>2</display-octave></unpitched>
-      <tie type="stop"/>
-      <tie type="start"/>
-      <duration>125</duration>
-      <voice>1</voice>
-      <type>32nd</type>
-      <staff>1</staff>
-      <notations><tied type="stop"/><tied type="start"/></notations>
-    </note>
-  </measure>
-  <measure number="34">
-    <note>
-      <instrument id="P11-I36"/>
-      <unpitched><display-step>C</display-step><display-octave>2</display-octave></unpitched>
-      <tie type="stop"/>
       <duration>250</duration>
       <voice>1</voice>
       <type>16th</type>
       <staff>1</staff>
-      <notations><tied type="stop"/></notations>
     </note>
     <note>
-      <rest/>
-      <duration>3000</duration>
+      <instrument id="P11-I81"/>
+      <unpitched><display-step>A</display-step><display-octave>5</display-octave></unpitched>
+      <duration>125</duration>
       <voice>1</voice>
-      <type>half</type>
-      <dot/>
+      <type>32nd</type>
       <staff>1</staff>
     </note>
     <note>
       <rest/>
-      <duration>750</duration>
+      <duration>500</duration>
       <voice>1</voice>
       <type>eighth</type>
-      <dot/>
+      <staff>1</staff>
+    </note>
+    <note>
+      <rest/>
+      <duration>125</duration>
+      <voice>1</voice>
+      <type>32nd</type>
       <staff>1</staff>
     </note>
   </measure>
-  <measure number="35">
+  <measure number="33">
+    <attributes>
+      <key><fifths>2</fifths><mode>major</mode></key>
+    </attributes>
+    <direction placement="above">
+      <direction-type><rehearsal enclosure="rectangle">VII · Sphere — full resolution</rehearsal></direction-type>
+      <offset sound="no">3375</offset>
+    </direction>
     <note>
       <rest/>
       <duration>4000</duration>
@@ -669,7 +933,39 @@
       <staff>1</staff>
     </note>
   </measure>
-  <measure number="36">
+  <measure number="34">
+    <note>
+      <rest/>
+      <duration>4000</duration>
+      <voice>1</voice>
+      <type>whole</type>
+      <staff>1</staff>
+    </note>
+  </measure>
+  <measure number="35">
+    <direction placement="above">
+      <direction-type><words font-style="italic" font-size="9">four restrained culmination marks</words></direction-type>
+      <offset sound="no">1000</offset>
+    </direction>
+    <direction placement="below">
+      <direction-type><dynamics><mp/></dynamics></direction-type>
+      <offset sound="yes">1000</offset>
+    </direction>
+    <note>
+      <rest/>
+      <duration>1000</duration>
+      <voice>1</voice>
+      <type>quarter</type>
+      <staff>1</staff>
+    </note>
+    <note>
+      <instrument id="P11-I52"/>
+      <unpitched><display-step>E</display-step><display-octave>3</display-octave></unpitched>
+      <duration>250</duration>
+      <voice>1</voice>
+      <type>16th</type>
+      <staff>1</staff>
+    </note>
     <note>
       <rest/>
       <duration>2000</duration>
@@ -685,33 +981,36 @@
       <dot/>
       <staff>1</staff>
     </note>
+  </measure>
+  <measure number="36">
     <note>
-      <instrument id="P11-I36"/>
-      <unpitched><display-step>C</display-step><display-octave>2</display-octave></unpitched>
-      <tie type="start"/>
-      <duration>750</duration>
+      <rest/>
+      <duration>2000</duration>
       <voice>1</voice>
-      <type>eighth</type>
-      <dot/>
+      <type>half</type>
       <staff>1</staff>
-      <notations><tied type="start"/></notations>
     </note>
     <note>
-      <instrument id="P11-I36"/>
-      <unpitched><display-step>C</display-step><display-octave>2</display-octave></unpitched>
-      <tie type="stop"/>
-      <duration>125</duration>
+      <instrument id="P11-I59"/>
+      <unpitched><display-step>B</display-step><display-octave>3</display-octave></unpitched>
+      <duration>250</duration>
       <voice>1</voice>
-      <type>32nd</type>
+      <type>16th</type>
       <staff>1</staff>
-      <notations><tied type="stop"/></notations>
     </note>
     <note>
       <rest/>
-      <duration>375</duration>
+      <duration>1500</duration>
+      <voice>1</voice>
+      <type>quarter</type>
+      <dot/>
+      <staff>1</staff>
+    </note>
+    <note>
+      <rest/>
+      <duration>250</duration>
       <voice>1</voice>
       <type>16th</type>
-      <dot/>
       <staff>1</staff>
     </note>
   </measure>
@@ -725,6 +1024,15 @@
       <staff>1</staff>
     </note>
     <note>
+      <instrument id="P11-I36"/>
+      <unpitched><display-step>C</display-step><display-octave>2</display-octave></unpitched>
+      <duration>375</duration>
+      <voice>1</voice>
+      <type>16th</type>
+      <dot/>
+      <staff>1</staff>
+    </note>
+    <note>
       <rest/>
       <duration>500</duration>
       <voice>1</voice>
@@ -732,37 +1040,31 @@
       <staff>1</staff>
     </note>
     <note>
-      <instrument id="P11-I59"/>
-      <unpitched><display-step>B</display-step><display-octave>3</display-octave></unpitched>
-      <tie type="start"/>
-      <duration>500</duration>
-      <voice>1</voice>
-      <type>eighth</type>
-      <staff>1</staff>
-      <notations><tied type="start"/></notations>
-    </note>
-  </measure>
-  <measure number="38">
-    <note>
-      <instrument id="P11-I59"/>
-      <unpitched><display-step>B</display-step><display-octave>3</display-octave></unpitched>
-      <tie type="stop"/>
-      <tie type="start"/>
-      <duration>500</duration>
-      <voice>1</voice>
-      <type>eighth</type>
-      <staff>1</staff>
-      <notations><tied type="stop"/><tied type="start"/></notations>
-    </note>
-    <note>
-      <instrument id="P11-I59"/>
-      <unpitched><display-step>B</display-step><display-octave>3</display-octave></unpitched>
-      <tie type="stop"/>
+      <rest/>
       <duration>125</duration>
       <voice>1</voice>
       <type>32nd</type>
       <staff>1</staff>
-      <notations><tied type="stop"/></notations>
+    </note>
+  </measure>
+  <measure number="38">
+    <note>
+      <rest/>
+      <duration>4000</duration>
+      <voice>1</voice>
+      <type>whole</type>
+      <staff>1</staff>
+    </note>
+  </measure>
+  <measure number="39">
+    <note>
+      <instrument id="P11-I59"/>
+      <unpitched><display-step>B</display-step><display-octave>3</display-octave></unpitched>
+      <duration>375</duration>
+      <voice>1</voice>
+      <type>16th</type>
+      <dot/>
+      <staff>1</staff>
     </note>
     <note>
       <rest/>
@@ -774,56 +1076,16 @@
     </note>
     <note>
       <rest/>
-      <duration>375</duration>
+      <duration>500</duration>
       <voice>1</voice>
-      <type>16th</type>
-      <dot/>
+      <type>eighth</type>
       <staff>1</staff>
     </note>
-  </measure>
-  <measure number="39">
     <note>
       <rest/>
-      <duration>750</duration>
-      <voice>1</voice>
-      <type>eighth</type>
-      <dot/>
-      <staff>1</staff>
-    </note>
-    <note>
-      <instrument id="P11-I36"/>
-      <unpitched><display-step>C</display-step><display-octave>2</display-octave></unpitched>
-      <tie type="start"/>
-      <duration>750</duration>
-      <voice>1</voice>
-      <type>eighth</type>
-      <dot/>
-      <staff>1</staff>
-      <notations><tied type="start"/></notations>
-    </note>
-    <note>
-      <instrument id="P11-I36"/>
-      <unpitched><display-step>C</display-step><display-octave>2</display-octave></unpitched>
-      <tie type="stop"/>
       <duration>125</duration>
       <voice>1</voice>
       <type>32nd</type>
-      <staff>1</staff>
-      <notations><tied type="stop"/></notations>
-    </note>
-    <note>
-      <rest/>
-      <duration>2000</duration>
-      <voice>1</voice>
-      <type>half</type>
-      <staff>1</staff>
-    </note>
-    <note>
-      <rest/>
-      <duration>375</duration>
-      <voice>1</voice>
-      <type>16th</type>
-      <dot/>
       <staff>1</staff>
     </note>
   </measure>

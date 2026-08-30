@@ -37,3 +37,38 @@
 - `npm run validate`：23 package files / 1980.3 KB；`npm run docs:check`：40 Markdown files；`git diff --check`：通过（仅既有 Windows LF→CRLF 提示，无 whitespace error）。
 
 文档影响：更新 `video/footsteps-return/DESIGN.md` 的原创音乐 / SFX 契约与忽略边界，更新 `docs/development/environment.md` 的受控 MuseScore Basic 渲染、审查资产和许可要求。
+
+## Rewrite / fix round 1（2026-08-30）
+
+本节取代上方初版音乐结论；上方保留为被用户试听否决版本的历史记录。用户确认的重写要求是：不再用同一旋律做七次变奏，不以悲凉弦乐和琶音感主导，不把沉默当作默认衔接；七章分别拥有独立动机、调式、节奏、主导配器与内部弧线，仅在边界共享极短音响。
+
+### 乐谱本体重写
+
+- `score-plan.json` 已从 50 个旧 gesture 替换为 103 个原创 gesture，仍锁定 Task 8 的 183.352 秒时间线。D–F–G–A–C 以短促节奏细胞在 intro 出现并在 gallery / outro 可追踪回归；`cohesion.sharedChapterMelody = false`，七章只共享不超过 625 ms 的 D/A 边界音响。
+- 七章材料分别为：Plane / D Lydian / 钢琴清亮主题；Cylinder / B-flat Mixolydian / bass clarinet 与移动拨弦的 3+3 周期；Torus / E Mixolydian–G Lydian / piano 4.75 秒与 celesta 5.25 秒错位周期；Mobius / C octatonic / viola、bass clarinet 与 3+2+3/8 折返；Klein / D Phrygian dominant / violin I 高声部与 bass clarinet、cello、double bass 低声部对答及金属推进；Projective / E Lydian / celesta、玻璃点、冷弦和弱合唱；Sphere / D major / piano、全弦、克制 horn、choir 完整展开并释放到 D6/9。
+- 八个章节结构边界都写入跨线 outgoing phrase 和提前进入的 pickup，并各有和声枢纽、节奏或音色接力。生成 MIDI 测试逐个定位双方 note-on，验证 outgoing note 真正越过边界；真实 master 的 500 ms 边界窗口全部有信号，最低为 -51.30 dBFS，不再以长沉默代替转场。
+- MusicXML 现在把章节调号、Mobius 的 3+2+3/8、pizz./arco 播放切换和声场声明写入 MuseScore 实际输入；MIDI 同步写入 3 个拍号和 8 个真实 FF 59 调号事件。所有 11 声部继续通过音域、时值、46 小节覆盖和可计算 tie 检查。
+- 真实 stem 的章节主导音色依次为 piano、bass clarinet、celesta、viola、violin I、celesta、French horn，共出现 6 种主导音色；Sphere 的 11/11 声部均实际发声。该 PCM 结果与独立动机测试共同防止章节再次坍缩为一种音色或同一旋律。
+
+### 上轮四项审查修复
+
+1. **绝对工具路径**：先复现 doctor 输出裸 `ffmpeg`，随后 `render-score.ps1` 因非绝对路径中止。`resolveCommandPath()` 现在通过 `where.exe` / `which` 把可调用命令解析为真实存在的绝对文件；端到端测试直接执行 doctor JSON 中的 MuseScore / FFmpeg 路径并核验版本。当前 doctor 返回 `C:\Program Files\MuseScore 4\bin\MuseScore4.exe` 与 WinGet Gyan.FFmpeg 的绝对 `ffmpeg.exe`，`npm run pv:score` 已完整通过。
+2. **真实 Cylinder 声像**：确认 MuseScore 4.7.4 忽略导入 MusicXML 的动态 pan，旧 cello WAV 在早窗仅 -1.74 dB，未发生左到右迁移。新增 `score-audio.mjs`，对 MuseScore Basic 真实渲染后的 PCM 消费 plan 的等功率声场与 5 点自动化，并以 250 ms 边缘过渡避免首尾单采样跳变，再从同一批 spatialized stems 求和 master。新 cello stem 38–42.5 秒为左重 +6.33 dB、52–56 秒为右重 -5.71 dB，真实摆幅 12.04 dB；测试对同一 WAV 和 metadata SHA-256 计算并核对。
+3. **实际许可文件**：`assets/licenses/audio/` 保存实际 MS Basic license、匹配 MuseScore 4.7.4 的 LICENSE、安装的 Gyan.FFmpeg LICENSE、eSpeak COPYING、Kokoro Apache-2.0、Kokoro-82M 原始模型卡、安装的 kokoro-onnx MIT 与 python-soundfile BSD 文件。`audio-licenses.json` 逐项记录仓库证据路径 / SHA-256 / 来源；只把 `ms-basic-sf3` 与 `kokoro-82m-zm-yunyang` 分类为 `release-audio-input`，MuseScore、FFmpeg、运行时与 phonemizer 均准确分类为 `build-tool-only` / `releasedWithVideo: false`。实际输入资产哈希为 MS Basic `5ea2375e…d99c`、Kokoro ONNX `7d5df8ec…a6c5`、voice pack `bca610b8…bf7d`。
+4. **真实旁白比较**：删除误导性的 `narrationBandHeadroomDb`。分析器读取并逐条 hash 验证 21 个 Task 8 干声 WAV，将每条真实 voice PCM 与 master 的精确时间窗比较；最小 voice-minus-score 宽带 RMS 为 7.07 dB，180–4500 Hz presence-band 为 6.81 dB。另从生成的 `master.mid` 计算旁白窗密度，最大 7.14 note-on/s、最大 16 个同时音高；字段名称、算法说明和数值含义一致。
+
+### 真实渲染与证据
+
+- `npm run pv:score`：MuseScore Studio 4.7.4 / MuseScore Basic 真实渲染 11 stems，经确定性 PCM 声场、FFmpeg stem sum 与格式归一化生成 48 kHz / stereo / 24-bit / 183.352 s master，成功。master SHA-256 `747dd5559e6e53991d842cd8fd1f76acb4ab2146d58c34cf13e6cf6d3ae3fe4e`，peak -18.616 dBFS，RMS -40.755 dBFS；11 stems peak -21.715 至 -8.389 dBFS、RMS -46.726 至 -35.130 dBFS。
+- 当前源哈希：score plan `6db9d640cd3adbb22f4230bc5706f86c398ca7d954312166340e07bd9bfae9fa`、master MusicXML `3e92e3c43d079a62737086f98aa4ce066490d38bce5236888476a4451aeb9cd8`、master MIDI `c9e49b4d56944da1f48105668ea507fb52d32aa715a93df36bc6ed10a2a84b64`。
+- 新审听件 `audio/score/review/score-review.opus` 为忽略的 Opus 48 kbps VBR，1,326,651 bytes，SHA-256 `84c0bd9071f3d683dd991eb26cac1b386b3838f4312708f158573dcc3ea529ce`。`review-evidence.svg` SHA-256 `41187a49221031ac90c42f8dfc3c5c8aeeac6067a0164b4ec586525c0a3a1911`；已渲染为本地 PNG 并目视确认 form、波形、Sphere 展开、outro 收束、最终静默及文本没有裁切。
+- `subjectiveListening.status` 继续如实为 `not-completed`：自动证据证明文件、音符、声部、声像、密度、干声相对电平和跨章连续性，但不冒充人类对情绪、音色审美与旁白最终可懂度的听审。新版仍需用户用审听件确认音乐方向。
+
+### TDD 与完整验证
+
+- 审查复现 RED：`npm run pv:score` 因裸 FFmpeg 路径中止；新 score tests 为 2 pass / 6 fail，分别暴露旧章节材料、静默衔接、无真实许可证据、误名旁白指标和旧 stem 无声像迁移；新增 PCM spatializer 单测先以 module-not-found 失败，首尾平滑断言随后也先暴露单采样跳变再转绿。
+- `node --test tests/pv-score.test.js tests/pv-score-audio.test.js tests/pv-toolchain.test.js`：17/17。
+- `npm test`：155/155；`npm run validate`：23 package files / 1980.3 KB；`npm run docs:check`：42 Markdown files。
+- `npm run pv:doctor`、`npm run pv:lint`、`npm run pv:validate`：通过；HyperFrames 0 errors / 0 warnings、0 layout issues、5/5 contrast。
+
+文档影响：同步改写 `video/footsteps-return/DESIGN.md` 的七个独立音乐世界、连续转场、真实干声 / stem 证据和许可契约；更新 `docs/development/environment.md` 的绝对工具路径、真实 PCM spatialization、stem-sum master 与保存 LICENSE / COPYING / 模型卡要求。

@@ -13,7 +13,7 @@
       <part-name>French Horn</part-name>
       <part-abbreviation>Hn.</part-abbreviation>
       <score-instrument id="P8-I1"><instrument-name>French Horn</instrument-name><instrument-sound>brass.french-horn</instrument-sound></score-instrument>
-      <midi-instrument id="P8-I1"><midi-channel>8</midi-channel><midi-program>61</midi-program><volume>72</volume><pan>0</pan></midi-instrument>
+      <midi-instrument id="P8-I1"><midi-channel>8</midi-channel><midi-program>61</midi-program><volume>72</volume><pan>14.4</pan></midi-instrument>
     </score-part>
   </part-list>
  <part id="P8">
@@ -76,6 +76,9 @@
     </note>
   </measure>
   <measure number="6">
+    <attributes>
+      <key><fifths>2</fifths><mode>major</mode></key>
+    </attributes>
     <direction placement="above">
       <direction-type><rehearsal enclosure="rectangle">I · Plane — prime</rehearsal></direction-type>
       <offset sound="no">1500</offset>
@@ -107,54 +110,18 @@
     </note>
   </measure>
   <measure number="9">
-    <direction placement="above">
-      <direction-type><words font-style="italic" font-size="9">stopped warmth, no swell</words></direction-type>
-      <offset sound="no">2250</offset>
-    </direction>
-    <direction placement="below">
-      <direction-type><dynamics><pp/></dynamics></direction-type>
-      <offset sound="yes">2250</offset>
-    </direction>
     <note>
       <rest/>
-      <duration>2000</duration>
+      <duration>4000</duration>
       <voice>1</voice>
-      <type>half</type>
-      <staff>1</staff>
-    </note>
-    <note>
-      <rest/>
-      <duration>250</duration>
-      <voice>1</voice>
-      <type>16th</type>
-      <staff>1</staff>
-    </note>
-    <note>
-      <pitch><step>D</step><octave>3</octave></pitch>
-      <duration>1500</duration>
-      <voice>1</voice>
-      <type>quarter</type>
-      <dot/>
-      <staff>1</staff>
-    </note>
-    <note>
-      <chord/>
-      <pitch><step>A</step><octave>3</octave></pitch>
-      <duration>1500</duration>
-      <voice>1</voice>
-      <type>quarter</type>
-      <dot/>
-      <staff>1</staff>
-    </note>
-    <note>
-      <rest/>
-      <duration>250</duration>
-      <voice>1</voice>
-      <type>16th</type>
+      <type>whole</type>
       <staff>1</staff>
     </note>
   </measure>
   <measure number="10">
+    <attributes>
+      <key><fifths>-2</fifths><mode>major</mode></key>
+    </attributes>
     <direction placement="above">
       <direction-type><rehearsal enclosure="rectangle">II · Cylinder — one orbit</rehearsal></direction-type>
       <offset sound="no">1750</offset>
@@ -168,20 +135,66 @@
     </note>
   </measure>
   <measure number="11">
+    <direction placement="above">
+      <direction-type><words font-style="italic" font-size="9">soft stopped warmth</words></direction-type>
+      <offset sound="no">2000</offset>
+    </direction>
+    <direction placement="below">
+      <direction-type><dynamics><pp/></dynamics></direction-type>
+      <offset sound="yes">2000</offset>
+    </direction>
     <note>
       <rest/>
-      <duration>4000</duration>
+      <duration>2000</duration>
       <voice>1</voice>
-      <type>whole</type>
+      <type>half</type>
+      <staff>1</staff>
+    </note>
+    <note>
+      <pitch><step>B</step><alter>-1</alter><octave>2</octave></pitch>
+      <duration>1000</duration>
+      <voice>1</voice>
+      <type>quarter</type>
+      <staff>1</staff>
+    </note>
+    <note>
+      <chord/>
+      <pitch><step>F</step><octave>3</octave></pitch>
+      <duration>1000</duration>
+      <voice>1</voice>
+      <type>quarter</type>
+      <staff>1</staff>
+    </note>
+    <note>
+      <rest/>
+      <duration>1000</duration>
+      <voice>1</voice>
+      <type>quarter</type>
       <staff>1</staff>
     </note>
   </measure>
   <measure number="12">
     <note>
       <rest/>
-      <duration>4000</duration>
+      <duration>3000</duration>
       <voice>1</voice>
-      <type>whole</type>
+      <type>half</type>
+      <dot/>
+      <staff>1</staff>
+    </note>
+    <note>
+      <pitch><step>C</step><octave>3</octave></pitch>
+      <duration>1000</duration>
+      <voice>1</voice>
+      <type>quarter</type>
+      <staff>1</staff>
+    </note>
+    <note>
+      <chord/>
+      <pitch><step>G</step><octave>3</octave></pitch>
+      <duration>1000</duration>
+      <voice>1</voice>
+      <type>quarter</type>
       <staff>1</staff>
     </note>
   </measure>
@@ -196,14 +209,63 @@
   </measure>
   <measure number="14">
     <note>
-      <rest/>
-      <duration>4000</duration>
+      <pitch><step>E</step><alter>-1</alter><octave>3</octave></pitch>
+      <tie type="start"/>
+      <duration>1000</duration>
       <voice>1</voice>
-      <type>whole</type>
+      <type>quarter</type>
+      <staff>1</staff>
+      <notations><tied type="start"/></notations>
+    </note>
+    <note>
+      <chord/>
+      <pitch><step>B</step><alter>-1</alter><octave>3</octave></pitch>
+      <tie type="start"/>
+      <duration>1000</duration>
+      <voice>1</voice>
+      <type>quarter</type>
+      <staff>1</staff>
+      <notations><tied type="start"/></notations>
+    </note>
+    <note>
+      <pitch><step>E</step><alter>-1</alter><octave>3</octave></pitch>
+      <tie type="stop"/>
+      <duration>250</duration>
+      <voice>1</voice>
+      <type>16th</type>
+      <staff>1</staff>
+      <notations><tied type="stop"/></notations>
+    </note>
+    <note>
+      <chord/>
+      <pitch><step>B</step><alter>-1</alter><octave>3</octave></pitch>
+      <tie type="stop"/>
+      <duration>250</duration>
+      <voice>1</voice>
+      <type>16th</type>
+      <staff>1</staff>
+      <notations><tied type="stop"/></notations>
+    </note>
+    <note>
+      <rest/>
+      <duration>2000</duration>
+      <voice>1</voice>
+      <type>half</type>
+      <staff>1</staff>
+    </note>
+    <note>
+      <rest/>
+      <duration>750</duration>
+      <voice>1</voice>
+      <type>eighth</type>
+      <dot/>
       <staff>1</staff>
     </note>
   </measure>
   <measure number="15">
+    <attributes>
+      <key><fifths>3</fifths><mode>major</mode></key>
+    </attributes>
     <direction placement="above">
       <direction-type><rehearsal enclosure="rectangle">III · Torus — interlocked cycles</rehearsal></direction-type>
       <offset sound="no">625</offset>
@@ -257,6 +319,10 @@
     </note>
   </measure>
   <measure number="20">
+    <attributes>
+      <key><fifths>0</fifths><mode>none</mode></key>
+      <time><beats>3+2+3</beats><beat-type>8</beat-type></time>
+    </attributes>
     <note>
       <rest/>
       <duration>4000</duration>
@@ -293,6 +359,10 @@
     </note>
   </measure>
   <measure number="24">
+    <attributes>
+      <key><fifths>-1</fifths><mode>none</mode></key>
+      <time><beats>4</beats><beat-type>4</beat-type></time>
+    </attributes>
     <direction placement="above">
       <direction-type><rehearsal enclosure="rectangle">V · Klein — prime / mirror</rehearsal></direction-type>
       <offset sound="no">1875</offset>
@@ -307,12 +377,12 @@
   </measure>
   <measure number="25">
     <direction placement="above">
-      <direction-type><words font-style="italic" font-size="9">soft stopped horn</words></direction-type>
-      <offset sound="no">2375</offset>
+      <direction-type><words font-style="italic" font-size="9">stopped horn, structural only</words></direction-type>
+      <offset sound="no">2250</offset>
     </direction>
     <direction placement="below">
-      <direction-type><dynamics><pp/></dynamics></direction-type>
-      <offset sound="yes">2375</offset>
+      <direction-type><dynamics><mp/></dynamics></direction-type>
+      <offset sound="yes">2250</offset>
     </direction>
     <note>
       <rest/>
@@ -323,198 +393,190 @@
     </note>
     <note>
       <rest/>
-      <duration>375</duration>
+      <duration>250</duration>
       <voice>1</voice>
       <type>16th</type>
-      <dot/>
       <staff>1</staff>
     </note>
     <note>
       <pitch><step>D</step><octave>3</octave></pitch>
-      <tie type="start"/>
-      <duration>1500</duration>
+      <duration>750</duration>
       <voice>1</voice>
-      <type>quarter</type>
+      <type>eighth</type>
       <dot/>
       <staff>1</staff>
-      <notations><tied type="start"/></notations>
     </note>
     <note>
       <chord/>
       <pitch><step>A</step><octave>3</octave></pitch>
-      <tie type="start"/>
-      <duration>1500</duration>
+      <duration>750</duration>
       <voice>1</voice>
-      <type>quarter</type>
+      <type>eighth</type>
       <dot/>
       <staff>1</staff>
-      <notations><tied type="start"/></notations>
     </note>
     <note>
-      <pitch><step>D</step><octave>3</octave></pitch>
-      <tie type="stop"/>
-      <tie type="start"/>
-      <duration>125</duration>
+      <rest/>
+      <duration>1000</duration>
       <voice>1</voice>
-      <type>32nd</type>
+      <type>quarter</type>
       <staff>1</staff>
-      <notations><tied type="stop"/><tied type="start"/></notations>
-    </note>
-    <note>
-      <chord/>
-      <pitch><step>A</step><octave>3</octave></pitch>
-      <tie type="stop"/>
-      <tie type="start"/>
-      <duration>125</duration>
-      <voice>1</voice>
-      <type>32nd</type>
-      <staff>1</staff>
-      <notations><tied type="stop"/><tied type="start"/></notations>
     </note>
   </measure>
   <measure number="26">
     <note>
-      <pitch><step>D</step><octave>3</octave></pitch>
-      <tie type="stop"/>
-      <duration>250</duration>
+      <rest/>
+      <duration>2000</duration>
       <voice>1</voice>
-      <type>16th</type>
+      <type>half</type>
       <staff>1</staff>
-      <notations><tied type="stop"/></notations>
-    </note>
-    <note>
-      <chord/>
-      <pitch><step>A</step><octave>3</octave></pitch>
-      <tie type="stop"/>
-      <duration>250</duration>
-      <voice>1</voice>
-      <type>16th</type>
-      <staff>1</staff>
-      <notations><tied type="stop"/></notations>
     </note>
     <note>
       <rest/>
-      <duration>3000</duration>
+      <duration>250</duration>
       <voice>1</voice>
-      <type>half</type>
-      <dot/>
+      <type>16th</type>
       <staff>1</staff>
     </note>
     <note>
-      <pitch><step>C</step><octave>3</octave></pitch>
-      <tie type="start"/>
+      <pitch><step>E</step><alter>-1</alter><octave>3</octave></pitch>
       <duration>750</duration>
       <voice>1</voice>
       <type>eighth</type>
       <dot/>
       <staff>1</staff>
-      <notations><tied type="start"/></notations>
     </note>
     <note>
       <chord/>
-      <pitch><step>G</step><octave>3</octave></pitch>
-      <tie type="start"/>
+      <pitch><step>B</step><alter>-1</alter><octave>3</octave></pitch>
       <duration>750</duration>
       <voice>1</voice>
       <type>eighth</type>
       <dot/>
       <staff>1</staff>
-      <notations><tied type="start"/></notations>
+    </note>
+    <note>
+      <rest/>
+      <duration>1000</duration>
+      <voice>1</voice>
+      <type>quarter</type>
+      <staff>1</staff>
     </note>
   </measure>
   <measure number="27">
     <note>
-      <pitch><step>C</step><octave>3</octave></pitch>
-      <tie type="stop"/>
-      <duration>1000</duration>
+      <rest/>
+      <duration>2000</duration>
       <voice>1</voice>
-      <type>quarter</type>
+      <type>half</type>
       <staff>1</staff>
-      <notations><tied type="stop"/></notations>
-    </note>
-    <note>
-      <chord/>
-      <pitch><step>G</step><octave>3</octave></pitch>
-      <tie type="stop"/>
-      <duration>1000</duration>
-      <voice>1</voice>
-      <type>quarter</type>
-      <staff>1</staff>
-      <notations><tied type="stop"/></notations>
     </note>
     <note>
       <rest/>
-      <duration>3000</duration>
+      <duration>250</duration>
       <voice>1</voice>
-      <type>half</type>
+      <type>16th</type>
+      <staff>1</staff>
+    </note>
+    <note>
+      <pitch><step>F</step><alter>1</alter><octave>3</octave></pitch>
+      <duration>750</duration>
+      <voice>1</voice>
+      <type>eighth</type>
       <dot/>
+      <staff>1</staff>
+    </note>
+    <note>
+      <chord/>
+      <pitch><step>C</step><alter>1</alter><octave>4</octave></pitch>
+      <duration>750</duration>
+      <voice>1</voice>
+      <type>eighth</type>
+      <dot/>
+      <staff>1</staff>
+    </note>
+    <note>
+      <rest/>
+      <duration>1000</duration>
+      <voice>1</voice>
+      <type>quarter</type>
       <staff>1</staff>
     </note>
   </measure>
   <measure number="28">
     <note>
       <rest/>
-      <duration>375</duration>
-      <voice>1</voice>
-      <type>16th</type>
-      <dot/>
-      <staff>1</staff>
-    </note>
-    <note>
-      <pitch><step>A</step><octave>2</octave></pitch>
-      <tie type="start"/>
-      <duration>2000</duration>
-      <voice>1</voice>
-      <type>half</type>
-      <staff>1</staff>
-      <notations><tied type="start"/></notations>
-    </note>
-    <note>
-      <chord/>
-      <pitch><step>E</step><octave>3</octave></pitch>
-      <tie type="start"/>
-      <duration>2000</duration>
-      <voice>1</voice>
-      <type>half</type>
-      <staff>1</staff>
-      <notations><tied type="start"/></notations>
-    </note>
-    <note>
-      <pitch><step>A</step><octave>2</octave></pitch>
-      <tie type="stop"/>
-      <duration>250</duration>
-      <voice>1</voice>
-      <type>16th</type>
-      <staff>1</staff>
-      <notations><tied type="stop"/></notations>
-    </note>
-    <note>
-      <chord/>
-      <pitch><step>E</step><octave>3</octave></pitch>
-      <tie type="stop"/>
-      <duration>250</duration>
-      <voice>1</voice>
-      <type>16th</type>
-      <staff>1</staff>
-      <notations><tied type="stop"/></notations>
-    </note>
-    <note>
-      <rest/>
-      <duration>1000</duration>
+      <duration>1500</duration>
       <voice>1</voice>
       <type>quarter</type>
+      <dot/>
       <staff>1</staff>
     </note>
     <note>
       <rest/>
-      <duration>375</duration>
+      <duration>250</duration>
       <voice>1</voice>
       <type>16th</type>
+      <staff>1</staff>
+    </note>
+    <note>
+      <pitch><step>E</step><octave>3</octave></pitch>
+      <tie type="start"/>
+      <duration>500</duration>
+      <voice>1</voice>
+      <type>eighth</type>
+      <staff>1</staff>
+      <notations><tied type="start"/></notations>
+    </note>
+    <note>
+      <chord/>
+      <pitch><step>B</step><octave>3</octave></pitch>
+      <tie type="start"/>
+      <duration>500</duration>
+      <voice>1</voice>
+      <type>eighth</type>
+      <staff>1</staff>
+      <notations><tied type="start"/></notations>
+    </note>
+    <note>
+      <pitch><step>E</step><octave>3</octave></pitch>
+      <tie type="stop"/>
+      <duration>125</duration>
+      <voice>1</voice>
+      <type>32nd</type>
+      <staff>1</staff>
+      <notations><tied type="stop"/></notations>
+    </note>
+    <note>
+      <chord/>
+      <pitch><step>B</step><octave>3</octave></pitch>
+      <tie type="stop"/>
+      <duration>125</duration>
+      <voice>1</voice>
+      <type>32nd</type>
+      <staff>1</staff>
+      <notations><tied type="stop"/></notations>
+    </note>
+    <note>
+      <rest/>
+      <duration>1500</duration>
+      <voice>1</voice>
+      <type>quarter</type>
       <dot/>
+      <staff>1</staff>
+    </note>
+    <note>
+      <rest/>
+      <duration>125</duration>
+      <voice>1</voice>
+      <type>32nd</type>
       <staff>1</staff>
     </note>
   </measure>
   <measure number="29">
+    <attributes>
+      <key><fifths>4</fifths><mode>major</mode></key>
+    </attributes>
     <direction placement="above">
       <direction-type><rehearsal enclosure="rectangle">VI · Projective — mirrored canon</rehearsal></direction-type>
       <offset sound="no">625</offset>
@@ -555,238 +617,28 @@
     </note>
   </measure>
   <measure number="33">
+    <attributes>
+      <key><fifths>2</fifths><mode>major</mode></key>
+    </attributes>
     <direction placement="above">
       <direction-type><rehearsal enclosure="rectangle">VII · Sphere — full resolution</rehearsal></direction-type>
       <offset sound="no">3375</offset>
     </direction>
-    <note>
-      <rest/>
-      <duration>4000</duration>
-      <voice>1</voice>
-      <type>whole</type>
-      <staff>1</staff>
-    </note>
-  </measure>
-  <measure number="34">
     <direction placement="above">
-      <direction-type><words font-style="italic" font-size="9">open, restrained, structural entries only</words></direction-type>
-      <offset sound="no">3000</offset>
+      <direction-type><words font-style="italic" font-size="9">bright anacrusis, niente to mp</words></direction-type>
+      <offset sound="no">2875</offset>
     </direction>
     <direction placement="below">
-      <direction-type><dynamics><p/></dynamics></direction-type>
-      <offset sound="yes">3000</offset>
+      <direction-type><dynamics><mp/></dynamics></direction-type>
+      <offset sound="yes">2875</offset>
     </direction>
     <note>
       <rest/>
-      <duration>3000</duration>
-      <voice>1</voice>
-      <type>half</type>
-      <dot/>
-      <staff>1</staff>
-    </note>
-    <note>
-      <pitch><step>D</step><octave>3</octave></pitch>
-      <tie type="start"/>
-      <duration>1000</duration>
-      <voice>1</voice>
-      <type>quarter</type>
-      <staff>1</staff>
-      <notations><tied type="start"/></notations>
-    </note>
-    <note>
-      <chord/>
-      <pitch><step>A</step><octave>3</octave></pitch>
-      <tie type="start"/>
-      <duration>1000</duration>
-      <voice>1</voice>
-      <type>quarter</type>
-      <staff>1</staff>
-      <notations><tied type="start"/></notations>
-    </note>
-  </measure>
-  <measure number="35">
-    <note>
-      <pitch><step>D</step><octave>3</octave></pitch>
-      <tie type="stop"/>
-      <duration>1500</duration>
-      <voice>1</voice>
-      <type>quarter</type>
-      <dot/>
-      <staff>1</staff>
-      <notations><tied type="stop"/></notations>
-    </note>
-    <note>
-      <chord/>
-      <pitch><step>A</step><octave>3</octave></pitch>
-      <tie type="stop"/>
-      <duration>1500</duration>
-      <voice>1</voice>
-      <type>quarter</type>
-      <dot/>
-      <staff>1</staff>
-      <notations><tied type="stop"/></notations>
-    </note>
-    <note>
-      <rest/>
       <duration>2000</duration>
       <voice>1</voice>
       <type>half</type>
       <staff>1</staff>
     </note>
-    <note>
-      <rest/>
-      <duration>500</duration>
-      <voice>1</voice>
-      <type>eighth</type>
-      <staff>1</staff>
-    </note>
-  </measure>
-  <measure number="36">
-    <note>
-      <rest/>
-      <duration>3000</duration>
-      <voice>1</voice>
-      <type>half</type>
-      <dot/>
-      <staff>1</staff>
-    </note>
-    <note>
-      <rest/>
-      <duration>250</duration>
-      <voice>1</voice>
-      <type>16th</type>
-      <staff>1</staff>
-    </note>
-    <note>
-      <pitch><step>G</step><octave>3</octave></pitch>
-      <tie type="start"/>
-      <duration>750</duration>
-      <voice>1</voice>
-      <type>eighth</type>
-      <dot/>
-      <staff>1</staff>
-      <notations><tied type="start"/></notations>
-    </note>
-    <note>
-      <chord/>
-      <pitch><step>D</step><octave>4</octave></pitch>
-      <tie type="start"/>
-      <duration>750</duration>
-      <voice>1</voice>
-      <type>eighth</type>
-      <dot/>
-      <staff>1</staff>
-      <notations><tied type="start"/></notations>
-    </note>
-  </measure>
-  <measure number="37">
-    <note>
-      <pitch><step>G</step><octave>3</octave></pitch>
-      <tie type="stop"/>
-      <duration>1500</duration>
-      <voice>1</voice>
-      <type>quarter</type>
-      <dot/>
-      <staff>1</staff>
-      <notations><tied type="stop"/></notations>
-    </note>
-    <note>
-      <chord/>
-      <pitch><step>D</step><octave>4</octave></pitch>
-      <tie type="stop"/>
-      <duration>1500</duration>
-      <voice>1</voice>
-      <type>quarter</type>
-      <dot/>
-      <staff>1</staff>
-      <notations><tied type="stop"/></notations>
-    </note>
-    <note>
-      <rest/>
-      <duration>1500</duration>
-      <voice>1</voice>
-      <type>quarter</type>
-      <dot/>
-      <staff>1</staff>
-    </note>
-    <note>
-      <pitch><step>A</step><octave>3</octave></pitch>
-      <tie type="start"/>
-      <duration>1000</duration>
-      <voice>1</voice>
-      <type>quarter</type>
-      <staff>1</staff>
-      <notations><tied type="start"/></notations>
-    </note>
-    <note>
-      <chord/>
-      <pitch><step>C</step><alter>1</alter><octave>4</octave></pitch>
-      <tie type="start"/>
-      <duration>1000</duration>
-      <voice>1</voice>
-      <type>quarter</type>
-      <staff>1</staff>
-      <notations><tied type="start"/></notations>
-    </note>
-  </measure>
-  <measure number="38">
-    <note>
-      <pitch><step>A</step><octave>3</octave></pitch>
-      <tie type="stop"/>
-      <tie type="start"/>
-      <duration>1000</duration>
-      <voice>1</voice>
-      <type>quarter</type>
-      <staff>1</staff>
-      <notations><tied type="stop"/><tied type="start"/></notations>
-    </note>
-    <note>
-      <chord/>
-      <pitch><step>C</step><alter>1</alter><octave>4</octave></pitch>
-      <tie type="stop"/>
-      <tie type="start"/>
-      <duration>1000</duration>
-      <voice>1</voice>
-      <type>quarter</type>
-      <staff>1</staff>
-      <notations><tied type="stop"/><tied type="start"/></notations>
-    </note>
-    <note>
-      <pitch><step>A</step><octave>3</octave></pitch>
-      <tie type="stop"/>
-      <duration>250</duration>
-      <voice>1</voice>
-      <type>16th</type>
-      <staff>1</staff>
-      <notations><tied type="stop"/></notations>
-    </note>
-    <note>
-      <chord/>
-      <pitch><step>C</step><alter>1</alter><octave>4</octave></pitch>
-      <tie type="stop"/>
-      <duration>250</duration>
-      <voice>1</voice>
-      <type>16th</type>
-      <staff>1</staff>
-      <notations><tied type="stop"/></notations>
-    </note>
-    <note>
-      <rest/>
-      <duration>2000</duration>
-      <voice>1</voice>
-      <type>half</type>
-      <staff>1</staff>
-    </note>
-    <note>
-      <rest/>
-      <duration>750</duration>
-      <voice>1</voice>
-      <type>eighth</type>
-      <dot/>
-      <staff>1</staff>
-    </note>
-  </measure>
-  <measure number="39">
     <note>
       <rest/>
       <duration>750</duration>
@@ -803,44 +655,21 @@
       <staff>1</staff>
     </note>
     <note>
-      <pitch><step>D</step><octave>3</octave></pitch>
-      <tie type="start"/>
-      <duration>2000</duration>
-      <voice>1</voice>
-      <type>half</type>
-      <staff>1</staff>
-      <notations><tied type="start"/></notations>
-    </note>
-    <note>
-      <chord/>
-      <pitch><step>A</step><octave>3</octave></pitch>
-      <tie type="start"/>
-      <duration>2000</duration>
-      <voice>1</voice>
-      <type>half</type>
-      <staff>1</staff>
-      <notations><tied type="start"/></notations>
-    </note>
-    <note>
-      <pitch><step>D</step><octave>3</octave></pitch>
-      <tie type="stop"/>
+      <pitch><step>F</step><alter>1</alter><octave>3</octave></pitch>
       <duration>750</duration>
       <voice>1</voice>
       <type>eighth</type>
       <dot/>
       <staff>1</staff>
-      <notations><tied type="stop"/></notations>
     </note>
     <note>
       <chord/>
-      <pitch><step>A</step><octave>3</octave></pitch>
-      <tie type="stop"/>
+      <pitch><step>C</step><alter>1</alter><octave>4</octave></pitch>
       <duration>750</duration>
       <voice>1</voice>
       <type>eighth</type>
       <dot/>
       <staff>1</staff>
-      <notations><tied type="stop"/></notations>
     </note>
     <note>
       <rest/>
@@ -848,6 +677,220 @@
       <voice>1</voice>
       <type>16th</type>
       <dot/>
+      <staff>1</staff>
+    </note>
+  </measure>
+  <measure number="34">
+    <direction placement="above">
+      <direction-type><words font-style="italic" font-size="9">noble and restrained</words></direction-type>
+      <offset sound="no">500</offset>
+    </direction>
+    <direction placement="below">
+      <direction-type><dynamics><mf/></dynamics></direction-type>
+      <offset sound="yes">500</offset>
+    </direction>
+    <note>
+      <rest/>
+      <duration>500</duration>
+      <voice>1</voice>
+      <type>eighth</type>
+      <staff>1</staff>
+    </note>
+    <note>
+      <pitch><step>D</step><octave>4</octave></pitch>
+      <duration>1500</duration>
+      <voice>1</voice>
+      <type>quarter</type>
+      <dot/>
+      <staff>1</staff>
+    </note>
+    <note>
+      <rest/>
+      <duration>750</duration>
+      <voice>1</voice>
+      <type>eighth</type>
+      <dot/>
+      <staff>1</staff>
+    </note>
+    <note>
+      <pitch><step>F</step><alter>1</alter><octave>4</octave></pitch>
+      <tie type="start"/>
+      <duration>1000</duration>
+      <voice>1</voice>
+      <type>quarter</type>
+      <staff>1</staff>
+      <notations><tied type="start"/></notations>
+    </note>
+    <note>
+      <pitch><step>F</step><alter>1</alter><octave>4</octave></pitch>
+      <tie type="stop"/>
+      <duration>250</duration>
+      <voice>1</voice>
+      <type>16th</type>
+      <staff>1</staff>
+      <notations><tied type="stop"/></notations>
+    </note>
+  </measure>
+  <measure number="35">
+    <note>
+      <rest/>
+      <duration>750</duration>
+      <voice>1</voice>
+      <type>eighth</type>
+      <dot/>
+      <staff>1</staff>
+    </note>
+    <note>
+      <pitch><step>A</step><octave>4</octave></pitch>
+      <duration>1500</duration>
+      <voice>1</voice>
+      <type>quarter</type>
+      <dot/>
+      <staff>1</staff>
+    </note>
+    <note>
+      <rest/>
+      <duration>750</duration>
+      <voice>1</voice>
+      <type>eighth</type>
+      <dot/>
+      <staff>1</staff>
+    </note>
+    <note>
+      <pitch><step>G</step><octave>4</octave></pitch>
+      <tie type="start"/>
+      <duration>1000</duration>
+      <voice>1</voice>
+      <type>quarter</type>
+      <staff>1</staff>
+      <notations><tied type="start"/></notations>
+    </note>
+  </measure>
+  <measure number="36">
+    <note>
+      <pitch><step>G</step><octave>4</octave></pitch>
+      <tie type="stop"/>
+      <duration>250</duration>
+      <voice>1</voice>
+      <type>16th</type>
+      <staff>1</staff>
+      <notations><tied type="stop"/></notations>
+    </note>
+    <note>
+      <rest/>
+      <duration>750</duration>
+      <voice>1</voice>
+      <type>eighth</type>
+      <dot/>
+      <staff>1</staff>
+    </note>
+    <note>
+      <pitch><step>B</step><octave>4</octave></pitch>
+      <duration>1500</duration>
+      <voice>1</voice>
+      <type>quarter</type>
+      <dot/>
+      <staff>1</staff>
+    </note>
+    <note>
+      <rest/>
+      <duration>1000</duration>
+      <voice>1</voice>
+      <type>quarter</type>
+      <staff>1</staff>
+    </note>
+    <note>
+      <pitch><step>A</step><octave>4</octave></pitch>
+      <tie type="start"/>
+      <duration>500</duration>
+      <voice>1</voice>
+      <type>eighth</type>
+      <staff>1</staff>
+      <notations><tied type="start"/></notations>
+    </note>
+  </measure>
+  <measure number="37">
+    <note>
+      <pitch><step>A</step><octave>4</octave></pitch>
+      <tie type="stop"/>
+      <duration>1000</duration>
+      <voice>1</voice>
+      <type>quarter</type>
+      <staff>1</staff>
+      <notations><tied type="stop"/></notations>
+    </note>
+    <note>
+      <rest/>
+      <duration>1000</duration>
+      <voice>1</voice>
+      <type>quarter</type>
+      <staff>1</staff>
+    </note>
+    <note>
+      <pitch><step>D</step><octave>5</octave></pitch>
+      <tie type="start"/>
+      <duration>1500</duration>
+      <voice>1</voice>
+      <type>quarter</type>
+      <dot/>
+      <staff>1</staff>
+      <notations><tied type="start"/></notations>
+    </note>
+    <note>
+      <pitch><step>D</step><octave>5</octave></pitch>
+      <tie type="stop"/>
+      <duration>250</duration>
+      <voice>1</voice>
+      <type>16th</type>
+      <staff>1</staff>
+      <notations><tied type="stop"/></notations>
+    </note>
+    <note>
+      <rest/>
+      <duration>250</duration>
+      <voice>1</voice>
+      <type>16th</type>
+      <staff>1</staff>
+    </note>
+  </measure>
+  <measure number="38">
+    <note>
+      <rest/>
+      <duration>1000</duration>
+      <voice>1</voice>
+      <type>quarter</type>
+      <staff>1</staff>
+    </note>
+    <note>
+      <pitch><step>B</step><octave>4</octave></pitch>
+      <duration>1500</duration>
+      <voice>1</voice>
+      <type>quarter</type>
+      <dot/>
+      <staff>1</staff>
+    </note>
+    <note>
+      <rest/>
+      <duration>1500</duration>
+      <voice>1</voice>
+      <type>quarter</type>
+      <dot/>
+      <staff>1</staff>
+    </note>
+  </measure>
+  <measure number="39">
+    <note>
+      <pitch><step>D</step><octave>5</octave></pitch>
+      <duration>2000</duration>
+      <voice>1</voice>
+      <type>half</type>
+      <staff>1</staff>
+    </note>
+    <note>
+      <rest/>
+      <duration>2000</duration>
+      <voice>1</voice>
+      <type>half</type>
       <staff>1</staff>
     </note>
   </measure>
@@ -878,76 +921,33 @@
     </note>
   </measure>
   <measure number="42">
-    <note>
-      <rest/>
-      <duration>4000</duration>
-      <voice>1</voice>
-      <type>whole</type>
-      <staff>1</staff>
-    </note>
-  </measure>
-  <measure number="43">
-    <note>
-      <rest/>
-      <duration>4000</duration>
-      <voice>1</voice>
-      <type>whole</type>
-      <staff>1</staff>
-    </note>
-  </measure>
-  <measure number="44">
-    <note>
-      <rest/>
-      <duration>4000</duration>
-      <voice>1</voice>
-      <type>whole</type>
-      <staff>1</staff>
-    </note>
-  </measure>
-  <measure number="45">
     <direction placement="above">
-      <direction-type><rehearsal enclosure="rectangle">End · resonance / silence</rehearsal></direction-type>
-      <offset sound="no">3375</offset>
-    </direction>
-    <direction placement="above">
-      <direction-type><words font-style="italic" font-size="9">open, niente release</words></direction-type>
+      <direction-type><words font-style="italic" font-size="9">restrained broad answer</words></direction-type>
+      <offset sound="no">375</offset>
     </direction>
     <direction placement="below">
-      <direction-type><dynamics><ppp/></dynamics></direction-type>
+      <direction-type><dynamics><mp/></dynamics></direction-type>
+      <offset sound="yes">375</offset>
     </direction>
     <note>
-      <pitch><step>D</step><octave>3</octave></pitch>
-      <tie type="start"/>
-      <duration>3000</duration>
-      <voice>1</voice>
-      <type>half</type>
-      <dot/>
-      <staff>1</staff>
-      <notations><tied type="start"/></notations>
-    </note>
-    <note>
-      <chord/>
-      <pitch><step>A</step><octave>3</octave></pitch>
-      <tie type="start"/>
-      <duration>3000</duration>
-      <voice>1</voice>
-      <type>half</type>
-      <dot/>
-      <staff>1</staff>
-      <notations><tied type="start"/></notations>
-    </note>
-    <note>
-      <pitch><step>D</step><octave>3</octave></pitch>
-      <tie type="stop"/>
-      <duration>250</duration>
+      <rest/>
+      <duration>375</duration>
       <voice>1</voice>
       <type>16th</type>
+      <dot/>
       <staff>1</staff>
-      <notations><tied type="stop"/></notations>
     </note>
     <note>
-      <chord/>
-      <pitch><step>A</step><octave>3</octave></pitch>
+      <pitch><step>F</step><alter>1</alter><octave>3</octave></pitch>
+      <tie type="start"/>
+      <duration>1000</duration>
+      <voice>1</voice>
+      <type>quarter</type>
+      <staff>1</staff>
+      <notations><tied type="start"/></notations>
+    </note>
+    <note>
+      <pitch><step>F</step><alter>1</alter><octave>3</octave></pitch>
       <tie type="stop"/>
       <duration>250</duration>
       <voice>1</voice>
@@ -963,21 +963,284 @@
       <dot/>
       <staff>1</staff>
     </note>
+    <note>
+      <pitch><step>A</step><octave>3</octave></pitch>
+      <tie type="start"/>
+      <duration>1000</duration>
+      <voice>1</voice>
+      <type>quarter</type>
+      <staff>1</staff>
+      <notations><tied type="start"/></notations>
+    </note>
+    <note>
+      <pitch><step>A</step><octave>3</octave></pitch>
+      <tie type="stop"/>
+      <duration>250</duration>
+      <voice>1</voice>
+      <type>16th</type>
+      <staff>1</staff>
+      <notations><tied type="stop"/></notations>
+    </note>
+    <note>
+      <rest/>
+      <duration>375</duration>
+      <voice>1</voice>
+      <type>16th</type>
+      <dot/>
+      <staff>1</staff>
+    </note>
+  </measure>
+  <measure number="43">
+    <note>
+      <rest/>
+      <duration>375</duration>
+      <voice>1</voice>
+      <type>16th</type>
+      <dot/>
+      <staff>1</staff>
+    </note>
+    <note>
+      <pitch><step>C</step><alter>1</alter><octave>4</octave></pitch>
+      <tie type="start"/>
+      <duration>1000</duration>
+      <voice>1</voice>
+      <type>quarter</type>
+      <staff>1</staff>
+      <notations><tied type="start"/></notations>
+    </note>
+    <note>
+      <pitch><step>C</step><alter>1</alter><octave>4</octave></pitch>
+      <tie type="stop"/>
+      <duration>250</duration>
+      <voice>1</voice>
+      <type>16th</type>
+      <staff>1</staff>
+      <notations><tied type="stop"/></notations>
+    </note>
+    <note>
+      <rest/>
+      <duration>750</duration>
+      <voice>1</voice>
+      <type>eighth</type>
+      <dot/>
+      <staff>1</staff>
+    </note>
+    <note>
+      <pitch><step>B</step><octave>3</octave></pitch>
+      <tie type="start"/>
+      <duration>1000</duration>
+      <voice>1</voice>
+      <type>quarter</type>
+      <staff>1</staff>
+      <notations><tied type="start"/></notations>
+    </note>
+    <note>
+      <pitch><step>B</step><octave>3</octave></pitch>
+      <tie type="stop"/>
+      <duration>250</duration>
+      <voice>1</voice>
+      <type>16th</type>
+      <staff>1</staff>
+      <notations><tied type="stop"/></notations>
+    </note>
+    <note>
+      <rest/>
+      <duration>375</duration>
+      <voice>1</voice>
+      <type>16th</type>
+      <dot/>
+      <staff>1</staff>
+    </note>
+  </measure>
+  <measure number="44">
+    <note>
+      <rest/>
+      <duration>375</duration>
+      <voice>1</voice>
+      <type>16th</type>
+      <dot/>
+      <staff>1</staff>
+    </note>
+    <note>
+      <pitch><step>D</step><octave>4</octave></pitch>
+      <duration>1500</duration>
+      <voice>1</voice>
+      <type>quarter</type>
+      <dot/>
+      <staff>1</staff>
+    </note>
+    <note>
+      <rest/>
+      <duration>1000</duration>
+      <voice>1</voice>
+      <type>quarter</type>
+      <staff>1</staff>
+    </note>
+    <note>
+      <pitch><step>F</step><alter>1</alter><octave>3</octave></pitch>
+      <tie type="start"/>
+      <duration>1000</duration>
+      <voice>1</voice>
+      <type>quarter</type>
+      <staff>1</staff>
+      <notations><tied type="start"/></notations>
+    </note>
+    <note>
+      <chord/>
+      <pitch><step>C</step><alter>1</alter><octave>4</octave></pitch>
+      <tie type="start"/>
+      <duration>1000</duration>
+      <voice>1</voice>
+      <type>quarter</type>
+      <staff>1</staff>
+      <notations><tied type="start"/></notations>
+    </note>
+    <note>
+      <pitch><step>F</step><alter>1</alter><octave>3</octave></pitch>
+      <tie type="stop"/>
+      <tie type="start"/>
+      <duration>125</duration>
+      <voice>1</voice>
+      <type>32nd</type>
+      <staff>1</staff>
+      <notations><tied type="stop"/><tied type="start"/></notations>
+    </note>
+    <note>
+      <chord/>
+      <pitch><step>C</step><alter>1</alter><octave>4</octave></pitch>
+      <tie type="stop"/>
+      <tie type="start"/>
+      <duration>125</duration>
+      <voice>1</voice>
+      <type>32nd</type>
+      <staff>1</staff>
+      <notations><tied type="stop"/><tied type="start"/></notations>
+    </note>
+  </measure>
+  <measure number="45">
+    <direction placement="above">
+      <direction-type><rehearsal enclosure="rectangle">End · resonance / silence</rehearsal></direction-type>
+      <offset sound="no">3375</offset>
+    </direction>
+    <note>
+      <pitch><step>F</step><alter>1</alter><octave>3</octave></pitch>
+      <tie type="stop"/>
+      <tie type="start"/>
+      <duration>750</duration>
+      <voice>1</voice>
+      <type>eighth</type>
+      <dot/>
+      <staff>1</staff>
+      <notations><tied type="stop"/><tied type="start"/></notations>
+    </note>
+    <note>
+      <chord/>
+      <pitch><step>C</step><alter>1</alter><octave>4</octave></pitch>
+      <tie type="stop"/>
+      <tie type="start"/>
+      <duration>750</duration>
+      <voice>1</voice>
+      <type>eighth</type>
+      <dot/>
+      <staff>1</staff>
+      <notations><tied type="stop"/><tied type="start"/></notations>
+    </note>
+    <note>
+      <pitch><step>F</step><alter>1</alter><octave>3</octave></pitch>
+      <tie type="stop"/>
+      <duration>125</duration>
+      <voice>1</voice>
+      <type>32nd</type>
+      <staff>1</staff>
+      <notations><tied type="stop"/></notations>
+    </note>
+    <note>
+      <chord/>
+      <pitch><step>C</step><alter>1</alter><octave>4</octave></pitch>
+      <tie type="stop"/>
+      <duration>125</duration>
+      <voice>1</voice>
+      <type>32nd</type>
+      <staff>1</staff>
+      <notations><tied type="stop"/></notations>
+    </note>
+    <note>
+      <rest/>
+      <duration>375</duration>
+      <voice>1</voice>
+      <type>16th</type>
+      <dot/>
+      <staff>1</staff>
+    </note>
+    <note>
+      <pitch><step>F</step><alter>1</alter><octave>3</octave></pitch>
+      <tie type="start"/>
+      <duration>2000</duration>
+      <voice>1</voice>
+      <type>half</type>
+      <staff>1</staff>
+      <notations><tied type="start"/></notations>
+    </note>
+    <note>
+      <chord/>
+      <pitch><step>C</step><alter>1</alter><octave>4</octave></pitch>
+      <tie type="start"/>
+      <duration>2000</duration>
+      <voice>1</voice>
+      <type>half</type>
+      <staff>1</staff>
+      <notations><tied type="start"/></notations>
+    </note>
+    <note>
+      <pitch><step>F</step><alter>1</alter><octave>3</octave></pitch>
+      <tie type="stop"/>
+      <tie type="start"/>
+      <duration>750</duration>
+      <voice>1</voice>
+      <type>eighth</type>
+      <dot/>
+      <staff>1</staff>
+      <notations><tied type="stop"/><tied type="start"/></notations>
+    </note>
+    <note>
+      <chord/>
+      <pitch><step>C</step><alter>1</alter><octave>4</octave></pitch>
+      <tie type="stop"/>
+      <tie type="start"/>
+      <duration>750</duration>
+      <voice>1</voice>
+      <type>eighth</type>
+      <dot/>
+      <staff>1</staff>
+      <notations><tied type="stop"/><tied type="start"/></notations>
+    </note>
   </measure>
   <measure number="46" implicit="yes">
+    <note>
+      <pitch><step>F</step><alter>1</alter><octave>3</octave></pitch>
+      <tie type="stop"/>
+      <duration>250</duration>
+      <voice>1</voice>
+      <type>16th</type>
+      <staff>1</staff>
+      <notations><tied type="stop"/></notations>
+    </note>
+    <note>
+      <chord/>
+      <pitch><step>C</step><alter>1</alter><octave>4</octave></pitch>
+      <tie type="stop"/>
+      <duration>250</duration>
+      <voice>1</voice>
+      <type>16th</type>
+      <staff>1</staff>
+      <notations><tied type="stop"/></notations>
+    </note>
     <note>
       <rest/>
       <duration>3000</duration>
       <voice>1</voice>
       <type>half</type>
       <dot/>
-      <staff>1</staff>
-    </note>
-    <note>
-      <rest/>
-      <duration>250</duration>
-      <voice>1</voice>
-      <type>16th</type>
       <staff>1</staff>
     </note>
   </measure>

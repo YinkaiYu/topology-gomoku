@@ -23,6 +23,25 @@ export function probeCommand(command, args = ["--version"]) {
   return spawnSync(command, args, { encoding: "utf8" });
 }
 
+export function resolveCommandPath(command) {
+  if (!command) {
+    return undefined;
+  }
+  if (path.isAbsolute(command)) {
+    return existsSync(command) ? path.normalize(command) : undefined;
+  }
+  const locator = process.platform === "win32" ? "where.exe" : "which";
+  const result = spawnSync(locator, [command], { encoding: "utf8", windowsHide: true });
+  if (result.status !== 0) {
+    return undefined;
+  }
+  const resolved = String(result.stdout ?? "")
+    .split(/\r?\n/)
+    .map((candidate) => candidate.trim())
+    .find((candidate) => path.isAbsolute(candidate) && existsSync(candidate));
+  return resolved ? path.normalize(resolved) : undefined;
+}
+
 function fromWingetPackage(packagePrefix, relativeExecutable) {
   if (process.platform !== "win32" || !process.env.LOCALAPPDATA) {
     return undefined;
@@ -45,15 +64,23 @@ function fromWingetPackage(packagePrefix, relativeExecutable) {
   }
 }
 
-export function findCallable(candidates, args = ["--version"], probe = probeCommand) {
-  return candidates.find((command) => command && probe(command, args).status === 0);
+export function findCallable(candidates, args = ["--version"], probe = probeCommand, resolve = resolveCommandPath) {
+  for (const command of candidates) {
+    if (command && probe(command, args).status === 0) {
+      const resolved = resolve(command);
+      if (resolved) {
+        return resolved;
+      }
+    }
+  }
+  return undefined;
 }
 
-export function findFfmpeg(probe = probeCommand) {
+export function findFfmpeg(probe = probeCommand, resolve = resolveCommandPath) {
   return findCallable([
     "ffmpeg",
     fromWingetPackage("Gyan.FFmpeg_", path.join("bin", "ffmpeg.exe"))
-  ], ["-version"], probe);
+  ], ["-version"], probe, resolve);
 }
 
 export function findEspeak(probe = probeCommand) {
@@ -78,14 +105,20 @@ export function museScoreMajorVersion(output) {
   return match ? Number.parseInt(match[1], 10) : undefined;
 }
 
-export function findMuseScore({ candidates = museScoreCandidates(), probe = probeCommand } = {}) {
-  return candidates.find((command) => {
+export function findMuseScore({ candidates = museScoreCandidates(), probe = probeCommand, resolve = resolveCommandPath } = {}) {
+  for (const command of candidates) {
     if (!command) {
-      return false;
+      continue;
     }
     const result = probe(command, ["--version"]);
-    return result.status === 0 && museScoreMajorVersion(`${result.stdout ?? ""}\n${result.stderr ?? ""}`) === 4;
-  });
+    if (result.status === 0 && museScoreMajorVersion(`${result.stdout ?? ""}\n${result.stderr ?? ""}`) === 4) {
+      const resolved = resolve(command);
+      if (resolved) {
+        return resolved;
+      }
+    }
+  }
+  return undefined;
 }
 
 function reportMissing(message, remediation) {

@@ -57,14 +57,19 @@ function Invoke-MuseScoreChecked {
 function Render-ScoreFile {
     param(
         [Parameter(Mandatory = $true)][string]$Source,
-        [Parameter(Mandatory = $true)][string]$Destination
+        [Parameter(Mandatory = $true)][string]$Destination,
+        [Parameter(Mandatory = $true)][string]$PartId
     )
     if (-not (Test-Path -LiteralPath $Source -PathType Leaf)) {
         throw "Missing score source: $Source"
     }
     $rawPath = [System.IO.Path]::ChangeExtension($Destination, ".musescore.wav")
+    $normalizedPath = [System.IO.Path]::ChangeExtension($Destination, ".normalized.wav")
     if (Test-Path -LiteralPath $rawPath -PathType Leaf) {
         Remove-Item -LiteralPath $rawPath -Force
+    }
+    if (Test-Path -LiteralPath $normalizedPath -PathType Leaf) {
+        Remove-Item -LiteralPath $normalizedPath -Force
     }
     Invoke-MuseScoreChecked -Arguments @(
         "--sound-profile", "MuseScore Basic",
@@ -77,19 +82,36 @@ function Render-ScoreFile {
     Invoke-Checked -Executable $tools.ffmpeg -Arguments @(
         "-hide_banner", "-loglevel", "error", "-y",
         "-i", $rawPath,
-        "-af", "volume=0.72,alimiter=limit=0.891251:attack=5:release=100:level=disabled,apad=whole_dur=$timelineDuration,atrim=duration=$timelineDuration,asetpts=N/SR/TB",
+        "-af", "volume=0.72,apad=whole_dur=$timelineDuration,atrim=duration=$timelineDuration,asetpts=N/SR/TB",
         "-ar", "48000", "-ac", "2", "-c:a", "pcm_s24le",
-        $Destination
-    ) -Description "FFmpeg normalization for $Destination"
+        $normalizedPath
+    ) -Description "FFmpeg normalization for $PartId"
+    Invoke-Checked -Executable "node" -Arguments @(
+        (Join-Path $scriptDirectory "score-audio.mjs"), "spatialize",
+        "--input", $normalizedPath,
+        "--output", $Destination,
+        "--plan", (Join-Path $scoreRoot "score-plan.json"),
+        "--part", $PartId
+    ) -Description "Deterministic PCM spatialization for $PartId"
     Remove-Item -LiteralPath $rawPath -Force
+    Remove-Item -LiteralPath $normalizedPath -Force
 }
-
-Render-ScoreFile -Source (Join-Path $scoreRoot "master.musicxml") -Destination (Join-Path $renderedRoot "master.wav")
 
 $scorePlan = Get-Content -Raw (Join-Path $scoreRoot "score-plan.json") | ConvertFrom-Json
 foreach ($part in $scorePlan.parts) {
-    Render-ScoreFile -Source (Join-Path $stemSourceRoot "$($part.id).musicxml") -Destination (Join-Path $renderedStemRoot "$($part.id).wav")
+    Render-ScoreFile -Source (Join-Path $stemSourceRoot "$($part.id).musicxml") -Destination (Join-Path $renderedStemRoot "$($part.id).wav") -PartId $part.id
 }
+
+$mixArguments = @("-hide_banner", "-loglevel", "error", "-y")
+foreach ($part in $scorePlan.parts) {
+    $mixArguments += @("-i", (Join-Path $renderedStemRoot "$($part.id).wav"))
+}
+$mixArguments += @(
+    "-filter_complex", "amix=inputs=$($scorePlan.parts.Count):duration=longest:normalize=0,volume=0.25,alimiter=limit=0.891251:attack=5:release=100:level=disabled,apad=whole_dur=$timelineDuration,atrim=duration=$timelineDuration,asetpts=N/SR/TB",
+    "-ar", "48000", "-ac", "2", "-c:a", "pcm_s24le",
+    (Join-Path $renderedRoot "master.wav")
+)
+Invoke-Checked -Executable $tools.ffmpeg -Arguments $mixArguments -Description "Stem-summed spatial master"
 
 Invoke-Checked -Executable $tools.ffmpeg -Arguments @(
     "-hide_banner", "-loglevel", "error", "-y",
@@ -103,4 +125,4 @@ if ($LASTEXITCODE -ne 0) {
     throw "Rendered score analysis failed."
 }
 
-Write-Host "[ok] Rendered MuseScore Basic master and $($scorePlan.parts.Count) stems at 48 kHz / stereo / $timelineDuration seconds."
+Write-Host "[ok] Rendered $($scorePlan.parts.Count) MuseScore Basic stems and their spatial stem-summed master at 48 kHz / stereo / $timelineDuration seconds."

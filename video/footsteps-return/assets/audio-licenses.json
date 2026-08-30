@@ -1,7 +1,7 @@
 {
-  "schemaVersion": 1,
+  "schemaVersion": 2,
   "project": "Footsteps Return PV",
-  "policy": "Only original composition/SFX and explicitly licensed render or voice resources may enter a released video. No reference-PV audio is an input.",
+  "policy": "Only original composition/SFX and explicitly licensed render or voice resources may enter a released video. No reference-PV audio is an input. Saved license evidence is a UTF-8/LF/trailing-whitespace-normalized copy of the cited installed or upstream LICENSE/COPYING/model-card file.",
   "resources": [
     {
       "id": "footsteps-return-original-score",
@@ -25,76 +25,165 @@
       "id": "ms-basic-sf3",
       "role": "soundfont",
       "external": true,
+      "usageClass": "release-audio-input",
+      "releasedWithVideo": false,
+      "incorporatedIntoReleasedAudio": true,
       "license": "MIT",
       "commercialVideoUse": true,
       "renderSoundProfile": "MuseScore Basic",
       "version": "Bundled with MuseScore Studio 4.7.4",
-      "sha256": "5ea2375e8bd7d8e71def1036978c1621e85b66934169b6a2744b27b9b3c2d99c",
-      "licenseFileSha256": "5ad8d737e13c7f01f5b9674872a82a92b4ba253603e8ed14b9db12293550b4b9",
-      "installationRelativePaths": ["sound/MS Basic.sf3", "sound/MS Basic_License.md"],
-      "provenance": "MuseScore Studio's installed MS Basic_License.md and bundled sound/MS Basic.sf3; upstream project: https://github.com/musescore/MuseScore",
-      "requiredNotice": "FluidR3 by Frank Wen; FluidR3Mono by Michael Cowgill; MuseScore_General adaptation by S. Christian Collins; Temple Blocks by Ethan Winer; Drumline Cymbals by Michael Schorsch. The installed companion license states the soundfont is shared under MIT.",
-      "notes": "render-score.ps1 forces --sound-profile 'MuseScore Basic'; it does not use installed Muse Sounds, VSTs, or unrecorded user presets."
+      "licenseEvidence": [
+        {
+          "repositoryPath": "assets/licenses/audio/ms-basic-license.md",
+        "sha256": "bf7db123b5d6c0beb1a37f6e1b11c6f4dfd8fb6abd5d59ff282ea24a5cd932e5",
+          "source": "Installed C:/Program Files/MuseScore 4/sound/MS Basic_License.md; installed-byte SHA-256 5ad8d737e13c7f01f5b9674872a82a92b4ba253603e8ed14b9db12293550b4b9"
+        }
+      ],
+      "assetEvidence": [
+        {
+          "label": "MS Basic.sf3",
+          "installationPath": "C:/Program Files/MuseScore 4/sound/MS Basic.sf3",
+          "bytes": 51278610,
+          "sha256": "5ea2375e8bd7d8e71def1036978c1621e85b66934169b6a2744b27b9b3c2d99c"
+        }
+      ],
+      "provenance": "Installed MuseScore Studio sound/MS Basic.sf3 and its companion MS Basic_License.md.",
+      "requiredNotice": "FluidR3 by Frank Wen; FluidR3Mono by Michael Cowgill; MuseScore_General adaptation by S. Christian Collins; Temple Blocks by Ethan Winer; Drumline Cymbals by Michael Schorsch.",
+      "notes": "render-score.ps1 forces MuseScore Basic. The SF3 is not distributed; its rendered signal is incorporated into the release audio."
     },
     {
       "id": "musescore-studio",
       "role": "notation-and-audio-renderer",
       "external": true,
+      "usageClass": "build-tool-only",
+      "releasedWithVideo": false,
       "license": "GPL-3.0",
       "commercialVideoUse": true,
       "version": "4.7.4",
-      "provenance": "https://github.com/musescore/MuseScore and doctor-discovered local executable",
-      "notes": "Build tool only. Score and exported audio remain project artifacts; MS Basic has its own license entry."
+      "licenseEvidence": [
+        {
+          "repositoryPath": "assets/licenses/audio/musescore-license.txt",
+        "sha256": "73e75f61f0dfce4fd83ad1f3f45d1d6f9ea8cdfd21a92d7a9216d47e5b3bbb88",
+          "source": "MuseScore tag v4.7.4 LICENSE.txt: https://github.com/musescore/MuseScore/blob/v4.7.4/LICENSE.txt"
+        }
+      ],
+      "provenance": "Doctor-discovered local executable; license evidence fixed to the matching upstream release tag.",
+      "notes": "Build tool only. It is not embedded in or distributed with the video."
     },
     {
       "id": "ffmpeg-gyan-full-build",
       "role": "audio-format-normalizer-and-review-encoder",
       "external": true,
+      "usageClass": "build-tool-only",
+      "releasedWithVideo": false,
       "license": "GPL-3.0-or-later",
       "commercialVideoUse": true,
       "version": "9.0.1-full_build-www.gyan.dev",
-      "provenance": "https://ffmpeg.org/legal.html and doctor-discovered Gyan.FFmpeg installation",
-      "notes": "Static GPL build reported --enable-gpl --enable-version3. Used as a build tool; not distributed inside the video."
+      "licenseEvidence": [
+        {
+          "repositoryPath": "assets/licenses/audio/ffmpeg-gyan-license.txt",
+        "sha256": "8ceb4b9ee5adedde47b31e975c1d90c73ad27b6b165a1dcd80c7c545eb65b903",
+        "source": "Installed Gyan.FFmpeg 9.0.1 full_build LICENSE; installed-byte SHA-256 8ceb4b9ee5adedde47b31e975c1d90c73ad27b6b165a1dcd80c7c545eb65b903"
+        }
+      ],
+      "provenance": "Doctor-discovered WinGet Gyan.FFmpeg installation.",
+      "notes": "Build tool only; the executable and libraries are not distributed with the video."
     },
     {
       "id": "kokoro-82m-zm-yunyang",
       "role": "voice-model-and-voice-pack",
       "external": true,
+      "usageClass": "release-audio-input",
+      "releasedWithVideo": false,
+      "incorporatedIntoReleasedAudio": true,
       "license": "Apache-2.0",
       "commercialVideoUse": true,
       "version": "model-files-v1.0",
-      "provenance": "https://github.com/thewh1teagle/kokoro-onnx/releases/tag/model-files-v1.0",
-      "notes": "Task 8 voiceover model and selected Chinese voice pack; included here so the PV has one complete audio-resource register."
+      "licenseEvidence": [
+        {
+          "repositoryPath": "assets/licenses/audio/kokoro-82m-apache-2.0.txt",
+        "sha256": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4",
+          "source": "hexgrad/kokoro upstream LICENSE: https://github.com/hexgrad/kokoro/blob/main/LICENSE"
+        },
+        {
+        "repositoryPath": "assets/licenses/audio/kokoro-82m-model-card.txt",
+        "sha256": "91dcabced89db6f109b8786642f50402d3ee87450e8189589b6f85520e7f4d78",
+          "source": "hexgrad/Kokoro-82M model card with license: apache-2.0: https://huggingface.co/hexgrad/Kokoro-82M/blob/main/README.md"
+        }
+      ],
+      "assetEvidence": [
+        {
+          "label": "kokoro-v1.0.onnx",
+          "cachePath": "C:/Users/Newton/.cache/hyperframes/tts/models/kokoro-v1.0.onnx",
+          "bytes": 325532387,
+          "sha256": "7d5df8ecf7d4b1878015a32686053fd0eebe2bc377234608764cc0ef3636a6c5"
+        },
+        {
+          "label": "voices-v1.0.bin (contains zm_yunyang)",
+          "cachePath": "C:/Users/Newton/.cache/hyperframes/tts/voices/voices-v1.0.bin",
+          "bytes": 28214398,
+          "sha256": "bca610b8308e8d99f32e6fe4197e7ec01679264efed0cac9140fe9c29f1fbf7d"
+        }
+      ],
+      "provenance": "Task 8 dry narration was rendered from the hashed local v1.0 ONNX model and voice pack.",
+      "notes": "Model/voice binaries are not distributed; their rendered narration is incorporated into the release audio."
     },
     {
       "id": "kokoro-onnx-runtime",
       "role": "voice-render-runtime",
       "external": true,
+      "usageClass": "build-tool-only",
+      "releasedWithVideo": false,
       "license": "MIT",
       "commercialVideoUse": true,
       "version": "0.6.1",
-      "provenance": "https://github.com/thewh1teagle/kokoro-onnx",
-      "notes": "Locked by uv for Task 8; build-time runtime only."
+      "licenseEvidence": [
+        {
+          "repositoryPath": "assets/licenses/audio/kokoro-onnx-license.txt",
+        "sha256": "f61fdd0217de9ece8fa699912848d91187d84879fc2e689f0906d0c1299e955e",
+          "source": "Installed .venv kokoro_onnx-0.6.1.dist-info/licenses/LICENSE"
+        }
+      ],
+      "provenance": "Installed locked Python package used during Task 8.",
+      "notes": "Build-time runtime only."
     },
     {
       "id": "python-soundfile-runtime",
       "role": "voice-wave-writer",
       "external": true,
+      "usageClass": "build-tool-only",
+      "releasedWithVideo": false,
       "license": "BSD-3-Clause",
       "commercialVideoUse": true,
       "version": "0.14.0",
-      "provenance": "https://github.com/bastibe/python-soundfile",
-      "notes": "Locked by uv for Task 8; build-time runtime only."
+      "licenseEvidence": [
+        {
+          "repositoryPath": "assets/licenses/audio/python-soundfile-license.txt",
+        "sha256": "0dd2e411fed553ba891845077e5a32c5b726d1bbc46ff31a2118ae1ccf816752",
+          "source": "Installed .venv soundfile-0.14.0.dist-info/LICENSE"
+        }
+      ],
+      "provenance": "Installed locked Python package used during Task 8.",
+      "notes": "Build-time runtime only."
     },
     {
       "id": "espeak-ng-phonemizer",
       "role": "voice-phonemizer",
       "external": true,
+      "usageClass": "build-tool-only",
+      "releasedWithVideo": false,
       "license": "GPL-3.0-or-later",
       "commercialVideoUse": true,
       "version": "doctor-discovered local installation",
-      "provenance": "https://github.com/espeak-ng/espeak-ng",
-      "notes": "Text phonemization tool used by the Task 8 Kokoro pipeline; no eSpeak fallback waveform is in the resolved voice render."
+      "licenseEvidence": [
+        {
+          "repositoryPath": "assets/licenses/audio/espeak-ng-copying.txt",
+        "sha256": "8ceb4b9ee5adedde47b31e975c1d90c73ad27b6b165a1dcd80c7c545eb65b903",
+          "source": "eSpeak NG upstream COPYING: https://github.com/espeak-ng/espeak-ng/blob/master/COPYING"
+        }
+      ],
+      "provenance": "Doctor-discovered local phonemizer used during Task 8.",
+      "notes": "Text phonemization tool only; no eSpeak waveform is present in the resolved narration."
     }
   ]
 }

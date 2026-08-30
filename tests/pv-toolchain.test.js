@@ -4,6 +4,7 @@ const test = require("node:test");
 const assert = require("node:assert/strict");
 const fs = require("node:fs");
 const path = require("node:path");
+const { spawnSync } = require("node:child_process");
 
 const ROOT = path.resolve(__dirname, "..");
 const PV_ROOT = path.join(ROOT, "video", "footsteps-return");
@@ -81,13 +82,34 @@ test("PV 生成媒体与帧序列不进入 Git", () => {
 test("PV doctor 以 FFmpeg 的可执行版本参数探测工具", async () => {
   const doctor = await import(toImportUrl("video/footsteps-return/scripts/doctor.mjs"));
   let invocation;
+  const expectedPath = path.join(ROOT, ".tmp", "ffmpeg-fixture.exe");
   const command = doctor.findFfmpeg((candidate, args) => {
     invocation = { candidate, args };
     return { status: 0 };
-  });
+  }, (candidate) => candidate === "ffmpeg" ? expectedPath : undefined);
 
-  assert.equal(command, "ffmpeg");
+  assert.equal(command, expectedPath);
   assert.deepEqual(invocation, { candidate: "ffmpeg", args: ["-version"] });
+});
+
+test("PV score tool contract returns existing absolute executables end to end", () => {
+  const doctorPath = path.join(PV_ROOT, "scripts", "doctor.mjs");
+  const result = spawnSync(process.execPath, [doctorPath, "--score-tools-json"], {
+    cwd: ROOT,
+    encoding: "utf8"
+  });
+  assert.equal(result.status, 0, `doctor score-tool contract failed\n${result.stderr}`);
+  const resolved = JSON.parse(result.stdout);
+
+  for (const [name, executable, versionArgs] of [
+    ["MuseScore", resolved.musescore, ["--version"]],
+    ["FFmpeg", resolved.ffmpeg, ["-version"]]
+  ]) {
+    assert.ok(path.isAbsolute(executable), `${name} must resolve to an absolute executable, got ${executable}`);
+    assert.ok(fs.statSync(executable).isFile(), `${name} path must name an existing file`);
+    const probe = spawnSync(executable, versionArgs, { encoding: "utf8" });
+    assert.equal(probe.status, 0, `${name} absolute executable must remain callable`);
+  }
 });
 
 test("PV 合成从锁定的本地 GSAP 副本加载，不依赖 CDN", () => {
@@ -111,15 +133,18 @@ test("PV 配音包装器强制将输出写入忽略目录", async () => {
 test("PV doctor 拒绝 MuseScore 3，并接受注入的 MuseScore 4 探测结果", async () => {
   const doctor = await import(toImportUrl("video/footsteps-return/scripts/doctor.mjs"));
   const candidates = ["musescore-fixture"];
+  const resolvedPath = path.join(ROOT, ".tmp", "musescore-fixture.exe");
   const museScore3 = doctor.findMuseScore({
     candidates,
-    probe: () => ({ status: 0, stdout: "MuseScore 3.6.2\n", stderr: "" })
+    probe: () => ({ status: 0, stdout: "MuseScore 3.6.2\n", stderr: "" }),
+    resolve: () => resolvedPath
   });
   const museScore4 = doctor.findMuseScore({
     candidates,
-    probe: () => ({ status: 0, stdout: "MuseScore Studio 4.7.4\n", stderr: "" })
+    probe: () => ({ status: 0, stdout: "MuseScore Studio 4.7.4\n", stderr: "" }),
+    resolve: () => resolvedPath
   });
 
   assert.equal(museScore3, undefined);
-  assert.equal(museScore4, "musescore-fixture");
+  assert.equal(museScore4, resolvedPath);
 });

@@ -5,7 +5,6 @@ import { spawnSync } from "node:child_process";
 import { fileURLToPath } from "node:url";
 import midiPackage from "@tonejs/midi";
 
-import { voiceoverSchedule } from "../src/data/captions.js";
 import { findFfmpeg, findMuseScore } from "./doctor.mjs";
 
 const { Midi } = midiPackage;
@@ -19,6 +18,7 @@ const renderedStemRoot = path.join(renderedRoot, "stems");
 const scorePlanPath = path.join(scoreRoot, "score-plan.json");
 const sfxPlanPath = path.join(pvRoot, "audio", "sfx", "sfx-plan.json");
 const sfxRoot = path.join(pvRoot, "audio", "sfx");
+const voiceTimingPath = path.join(pvRoot, "audio", "voiceover", "timing.json");
 const evidencePath = path.join(scoreRoot, "review-evidence.svg");
 const EPSILON = 1e-7;
 
@@ -66,6 +66,7 @@ function expandGestures(plan) {
           sectionId: gesture.sectionId,
           technique: gesture.technique,
           dynamic: gesture.dynamic,
+          playback: gesture.playback ?? {},
           start: round(gesture.start + repetition * repeat.every + sourceEvent.offset),
           duration: round(sourceEvent.duration),
           pitches: [...sourceEvent.pitches].sort((left, right) => left - right),
@@ -237,6 +238,17 @@ function wordsXml(words, offset, rehearsal = false) {
   ].filter(Boolean).join("\n");
 }
 
+function playbackXml(playback, offset) {
+  if (typeof playback?.pizzicato !== "boolean") return null;
+  return [
+    "    <direction placement=\"below\">",
+    `      <direction-type><words font-style="italic" font-size="8">${playback.pizzicato ? "pizz." : "arco"}</words></direction-type>`,
+    offset ? `      <offset sound="yes">${offset}</offset>` : null,
+    `      <sound pizzicato="${playback.pizzicato ? "yes" : "no"}"/>`,
+    "    </direction>"
+  ].filter(Boolean).join("\n");
+}
+
 function laneEventsForPart(events, part, staff) {
   if (part.staves !== 2) {
     return events;
@@ -332,13 +344,13 @@ function sectionLabel(section) {
 
 function partListXml(parts) {
   return parts.map((part) => {
-    const percussionPitches = part.clef === "percussion" ? [36, 52, 59] : [];
+    const percussionPitches = part.clef === "percussion" ? [36, 52, 59, 81] : [];
     const instruments = percussionPitches.length
-      ? percussionPitches.map((pitch) => `      <score-instrument id="${part.scoreId}-I${pitch}"><instrument-name>${pitch === 36 ? "Muted Bass Drum" : pitch === 52 ? "Soft Chinese Cymbal" : "Suspended Cymbal"}</instrument-name><instrument-sound>${part.instrumentSound}</instrument-sound></score-instrument>`).join("\n")
+      ? percussionPitches.map((pitch) => `      <score-instrument id="${part.scoreId}-I${pitch}"><instrument-name>${pitch === 36 ? "Muted Bass Drum" : pitch === 52 ? "Soft Chinese Cymbal" : pitch === 81 ? "Open Triangle" : "Suspended Cymbal"}</instrument-name><instrument-sound>${part.instrumentSound}</instrument-sound></score-instrument>`).join("\n")
       : `      <score-instrument id="${part.scoreId}-I1"><instrument-name>${xmlEscape(part.name)}</instrument-name><instrument-sound>${part.instrumentSound}</instrument-sound></score-instrument>`;
     const midi = percussionPitches.length
       ? percussionPitches.map((pitch) => `      <midi-instrument id="${part.scoreId}-I${pitch}"><midi-channel>10</midi-channel><midi-program>1</midi-program><midi-unpitched>${pitch}</midi-unpitched><volume>72</volume><pan>0</pan></midi-instrument>`).join("\n")
-      : `      <midi-instrument id="${part.scoreId}-I1"><midi-channel>${part.midiChannel + 1}</midi-channel><midi-program>${part.gmProgram + 1}</midi-program><volume>72</volume><pan>0</pan></midi-instrument>`;
+      : `      <midi-instrument id="${part.scoreId}-I1"><midi-channel>${part.midiChannel + 1}</midi-channel><midi-program>${part.gmProgram + 1}</midi-program><volume>72</volume><pan>${round(part.stereoPosition * 90, 2)}</pan></midi-instrument>`;
     return [
       `    <score-part id="${part.scoreId}">`,
       `      <part-name>${xmlEscape(part.name)}</part-name>`,
@@ -358,7 +370,7 @@ function partBodyXml(plan, part, events, includeSectionMarks) {
     const exactUnits = secondsToDivisions(event.start, plan.render.divisionsPerQuarter, plan.render.tempoBpm);
     const units = Math.round(exactUnits / plan.render.notationGridMilliseconds) * plan.render.notationGridMilliseconds;
     if (!techniqueStarts.has(event.gestureId)) {
-      techniqueStarts.set(event.gestureId, { units, technique: event.technique, dynamic: event.dynamic });
+      techniqueStarts.set(event.gestureId, { units, technique: event.technique, dynamic: event.dynamic, playback: event.playback });
     }
   }
   const measures = durations.map((measureDuration, index) => {
@@ -381,18 +393,25 @@ function partBodyXml(plan, part, events, includeSectionMarks) {
         }
       }
     }
-    for (const { units, technique, dynamic } of techniqueStarts.values()) {
+    for (const { units, technique, dynamic, playback } of techniqueStarts.values()) {
       if (units >= measureStart && units < measureEnd) {
         directions.push(wordsXml(technique, units - measureStart));
         directions.push(dynamicXml(dynamic, units - measureStart));
+        const playbackDirection = playbackXml(playback, units - measureStart);
+        if (playbackDirection) directions.push(playbackDirection);
       }
     }
-    const attributes = index === 0 ? [
+    const keyChange = plan.render.keySignatureChanges?.find(({ measure }) => measure === index + 1);
+    const timeChange = plan.render.timeSignatureChanges?.find(({ measure }) => measure === index + 1);
+    const attributeContent = [
+      index === 0 ? `      <divisions>${plan.render.divisionsPerQuarter}</divisions>` : null,
+      keyChange ? `      <key><fifths>${keyChange.fifths}</fifths><mode>${keyChange.mode}</mode></key>` : null,
+      timeChange ? `      <time><beats>${timeChange.beats}</beats><beat-type>${timeChange.beatType}</beat-type></time>` : null,
+      index === 0 ? clefMarkup(part) : null
+    ].filter(Boolean);
+    const attributes = attributeContent.length ? [
       "    <attributes>",
-      `      <divisions>${plan.render.divisionsPerQuarter}</divisions>`,
-      "      <key><fifths>-1</fifths><mode>minor</mode></key>",
-      "      <time><beats>4</beats><beat-type>4</beat-type></time>",
-      clefMarkup(part),
+      ...attributeContent,
       "    </attributes>"
     ].join("\n") : "";
     const staffOne = renderLane({
@@ -444,12 +463,25 @@ function musicXml(plan, parts, eventsByPart) {
 }
 
 function configureMidiHeader(midi, plan) {
+  const keyNameByFifths = new Map([
+    [-7, "Cb"], [-6, "Gb"], [-5, "Db"], [-4, "Ab"], [-3, "Eb"], [-2, "Bb"], [-1, "F"],
+    [0, "C"], [1, "G"], [2, "D"], [3, "A"], [4, "E"], [5, "B"], [6, "F#"], [7, "C#"]
+  ]);
+  const measureTicks = 4 * plan.render.divisionsPerQuarter;
   midi.header.fromJSON({
     name: plan.title,
     ppq: plan.render.divisionsPerQuarter,
     tempos: [{ bpm: plan.render.tempoBpm, ticks: 0 }],
-    timeSignatures: [{ ticks: 0, timeSignature: plan.render.timeSignature, measures: 0 }],
-    keySignatures: [{ ticks: 0, key: "D", scale: "minor" }],
+    timeSignatures: plan.render.timeSignatureChanges.map(({ measure, beats, beatType }) => ({
+      ticks: (measure - 1) * measureTicks,
+      timeSignature: [String(beats).split("+").reduce((sum, value) => sum + Number(value), 0), beatType],
+      measures: measure - 1
+    })),
+    keySignatures: plan.render.keySignatureChanges.map(({ measure, fifths, mode }) => ({
+      ticks: (measure - 1) * measureTicks,
+      key: keyNameByFifths.get(fifths),
+      scale: mode === "minor" ? "minor" : "major"
+    })),
     meta: plan.form.map((section) => ({
       ticks: secondsToDivisions(section.start, plan.render.divisionsPerQuarter, plan.render.tempoBpm),
       text: sectionLabel(section),
@@ -487,7 +519,23 @@ function midiBytes(plan, parts, eventsByPart, automationByPart) {
       }
     }
   }
-  return midi.toArray();
+  const bytes = midi.toArray();
+  // @tonejs/midi 2.0.28 writes the key-name array index plus seven instead of
+  // the signed circle-of-fifths value. Patch only the emitted FF 59 events so
+  // the deterministic MIDI carries the same real signatures as MusicXML.
+  let keySignatureIndex = 0;
+  for (let index = 0; index + 4 < bytes.length && keySignatureIndex < plan.render.keySignatureChanges.length; index += 1) {
+    if (bytes[index] === 0xff && bytes[index + 1] === 0x59 && bytes[index + 2] === 0x02) {
+      const change = plan.render.keySignatureChanges[keySignatureIndex];
+      bytes[index + 3] = change.fifths < 0 ? 256 + change.fifths : change.fifths;
+      bytes[index + 4] = change.mode === "minor" ? 1 : 0;
+      keySignatureIndex += 1;
+    }
+  }
+  if (keySignatureIndex !== plan.render.keySignatureChanges.length) {
+    throw new Error(`Expected ${plan.render.keySignatureChanges.length} MIDI key signatures, found ${keySignatureIndex}`);
+  }
+  return bytes;
 }
 
 function xorshift32(seed) {
@@ -718,6 +766,194 @@ function windowRms(wave, startSeconds, endSeconds) {
   return Math.sqrt(squareSum / Math.max(1, samples));
 }
 
+function toDb(value) {
+  return value > 0 ? 20 * Math.log10(value) : -Infinity;
+}
+
+function channelWindowRms(wave, channelIndex, startSeconds, endSeconds) {
+  const first = Math.max(0, Math.floor(startSeconds * wave.sampleRate));
+  const last = Math.min(wave.frameCount, Math.ceil(endSeconds * wave.sampleRate));
+  let squareSum = 0;
+  for (let index = first; index < last; index += 1) {
+    squareSum += wave.channels[channelIndex][index] ** 2;
+  }
+  return Math.sqrt(squareSum / Math.max(1, last - first));
+}
+
+function presenceBandRms(wave, startSeconds, endSeconds, lowHz = 180, highHz = 4500) {
+  const warmupStart = Math.max(0, startSeconds - 0.25);
+  const first = Math.floor(warmupStart * wave.sampleRate);
+  const measuredFirst = Math.max(first, Math.floor(startSeconds * wave.sampleRate));
+  const last = Math.min(wave.frameCount, Math.ceil(endSeconds * wave.sampleRate));
+  const dt = 1 / wave.sampleRate;
+  const highPassAlpha = (1 / (2 * Math.PI * lowHz)) / ((1 / (2 * Math.PI * lowHz)) + dt);
+  const lowPassAlpha = dt / ((1 / (2 * Math.PI * highHz)) + dt);
+  let squareSum = 0;
+  let samples = 0;
+  for (const channel of wave.channels) {
+    let previousInput = 0;
+    let highPassed = 0;
+    let bandPassed = 0;
+    for (let index = first; index < last; index += 1) {
+      const input = channel[index];
+      highPassed = highPassAlpha * (highPassed + input - previousInput);
+      previousInput = input;
+      bandPassed += lowPassAlpha * (highPassed - bandPassed);
+      if (index >= measuredFirst) {
+        squareSum += bandPassed * bandPassed;
+        samples += 1;
+      }
+    }
+  }
+  return Math.sqrt(squareSum / Math.max(1, samples));
+}
+
+function voiceScoreEvidence(masterWave) {
+  const timing = readJson(voiceTimingPath);
+  const projectRoot = path.resolve(pvRoot, "..", "..");
+  const cues = timing.cues.map((cue) => {
+    const voicePath = path.resolve(projectRoot, cue.outputFile);
+    if (!fs.existsSync(voicePath)) throw new Error(`Missing actual dry voice cue PCM ${voicePath}`);
+    const actualHash = sha256(voicePath);
+    if (actualHash !== cue.sha256) throw new Error(`Dry voice cue hash mismatch for ${cue.id}`);
+    const voiceWave = parseWave(voicePath);
+    const start = cue.timelineStartSeconds;
+    const end = cue.timelineEndSeconds;
+    const voiceRmsDbfs = toDb(windowRms(voiceWave, 0, voiceWave.durationSeconds));
+    const scoreRmsDbfs = toDb(windowRms(masterWave, start, end));
+    const voicePresenceBandRmsDbfs = toDb(presenceBandRms(voiceWave, 0, voiceWave.durationSeconds));
+    const scorePresenceBandRmsDbfs = toDb(presenceBandRms(masterWave, start, end));
+    return {
+      id: cue.id,
+      timelineStartSeconds: start,
+      timelineEndSeconds: end,
+      voiceSha256: actualHash,
+      voiceRmsDbfs: round(voiceRmsDbfs, 2),
+      scoreRmsDbfs: round(scoreRmsDbfs, 2),
+      voiceToScoreRmsMarginDb: round(voiceRmsDbfs - scoreRmsDbfs, 2),
+      voicePresenceBandRmsDbfs: round(voicePresenceBandRmsDbfs, 2),
+      scorePresenceBandRmsDbfs: round(scorePresenceBandRmsDbfs, 2),
+      voiceToScorePresenceBandMarginDb: round(voicePresenceBandRmsDbfs - scorePresenceBandRmsDbfs, 2)
+    };
+  });
+  return {
+    cueCount: cues.length,
+    presenceBandHz: [180, 4500],
+    minimumVoiceToScoreRmsMarginDb: Math.min(...cues.map(({ voiceToScoreRmsMarginDb }) => voiceToScoreRmsMarginDb)),
+    minimumVoiceToScorePresenceBandMarginDb: Math.min(...cues.map(({ voiceToScorePresenceBandMarginDb }) => voiceToScorePresenceBandMarginDb)),
+    method: "Actual dry voice cue PCM is hash-verified against timing.json, then compared with the exact score-master timeline window using broadband RMS and a cascaded first-order 180 Hz high-pass / 4500 Hz low-pass presence-band RMS.",
+    cues
+  };
+}
+
+function narrationDensityEvidence() {
+  const timing = readJson(voiceTimingPath);
+  const midi = new Midi(fs.readFileSync(path.join(scoreRoot, "master.mid")));
+  const notes = midi.tracks.flatMap((track) => track.notes.map((note) => ({
+    time: note.time,
+    end: note.time + note.duration
+  })));
+  const cues = timing.cues.map((cue) => {
+    const start = cue.timelineStartSeconds;
+    const end = cue.timelineEndSeconds;
+    const duration = end - start;
+    const noteOnsets = notes.filter((note) => note.time >= start && note.time < end).length;
+    const sweep = [];
+    for (const note of notes) {
+      if (note.time < end && note.end > start) {
+        sweep.push({ time: Math.max(start, note.time), delta: 1 });
+        sweep.push({ time: Math.min(end, note.end), delta: -1 });
+      }
+    }
+    sweep.sort((left, right) => left.time - right.time || left.delta - right.delta);
+    let active = 0;
+    let maximumSimultaneousPitches = 0;
+    for (const point of sweep) {
+      active += point.delta;
+      maximumSimultaneousPitches = Math.max(maximumSimultaneousPitches, active);
+    }
+    return {
+      id: cue.id,
+      noteOnsets,
+      noteOnsetsPerSecond: round(noteOnsets / duration, 2),
+      maximumSimultaneousPitches
+    };
+  });
+  return {
+    cueCount: cues.length,
+    source: "generated master.mid note-on events and sounding-note intervals",
+    maximumNoteOnsetsPerSecond: Math.max(...cues.map(({ noteOnsetsPerSecond }) => noteOnsetsPerSecond)),
+    maximumSimultaneousPitches: Math.max(...cues.map(({ maximumSimultaneousPitches }) => maximumSimultaneousPitches)),
+    cues
+  };
+}
+
+function cylinderStereoEvidence(celloWave, celloSha256) {
+  const window = (startSeconds, endSeconds) => {
+    const leftRmsDbfs = toDb(channelWindowRms(celloWave, 0, startSeconds, endSeconds));
+    const rightRmsDbfs = toDb(channelWindowRms(celloWave, 1, startSeconds, endSeconds));
+    return {
+      startSeconds,
+      endSeconds,
+      leftRmsDbfs: round(leftRmsDbfs, 2),
+      rightRmsDbfs: round(rightRmsDbfs, 2),
+      leftMinusRightRmsDb: round(leftRmsDbfs - rightRmsDbfs, 2)
+    };
+  };
+  const earlyWindow = window(38, 42.5);
+  const lateWindow = window(52, 56);
+  return {
+    stemId: "cello",
+    sourceStemSha256: celloSha256,
+    automationConsumer: "scripts/score-audio.mjs equal-power PCM spatializer applied to the real MuseScore Basic cello stem",
+    earlyWindow,
+    lateWindow,
+    leftToRightSwingDb: round(earlyWindow.leftMinusRightRmsDb - lateWindow.leftMinusRightRmsDb, 2)
+  };
+}
+
+function chapterRenderProfiles(plan, stemPaths) {
+  const profiles = plan.chapterWorlds.map(({ id }) => {
+    const section = plan.form.find((candidate) => candidate.id === id);
+    return { chapterId: id, startSeconds: section.start, endSeconds: section.end, stemRmsDbfs: [] };
+  });
+  for (const { part, filePath } of stemPaths) {
+    const wave = parseWave(filePath);
+    for (const profile of profiles) {
+      const rmsDbfs = toDb(windowRms(wave, profile.startSeconds, profile.endSeconds));
+      profile.stemRmsDbfs.push({ id: part.id, rmsDbfs: Number.isFinite(rmsDbfs) ? round(rmsDbfs, 2) : null });
+    }
+  }
+  return profiles.map((profile) => {
+    const rankedParts = profile.stemRmsDbfs
+      .filter(({ rmsDbfs }) => Number.isFinite(rmsDbfs))
+      .sort((left, right) => right.rmsDbfs - left.rmsDbfs)
+      .map(({ id }) => id);
+    return {
+      ...profile,
+      dominantPart: rankedParts[0],
+      rankedParts,
+      activeParts: rankedParts.filter((id) => profile.stemRmsDbfs.find((stem) => stem.id === id).rmsDbfs > -80)
+    };
+  });
+}
+
+function chapterJoinContinuity(plan, masterWave) {
+  const joins = plan.joins.filter(({ to }) => to !== "outro").map(({ from, to, boundary }) => ({
+    from,
+    to,
+    boundarySeconds: boundary,
+    centeredWindowSeconds: [round(boundary - 0.25, 6), round(boundary + 0.25, 6)],
+    centeredWindowRmsDbfs: round(toDb(windowRms(masterWave, boundary - 0.25, boundary + 0.25)), 2)
+  }));
+  return {
+    boundaryCount: joins.length,
+    method: "RMS of the exact rendered master PCM in a 500 ms window centered on every chapter boundary from intro→Plane through Sphere→gallery; MIDI tests separately require overlapping sounding notes and pickups.",
+    minimumCenteredWindowRmsDbfs: Math.min(...joins.map(({ centeredWindowRmsDbfs }) => centeredWindowRmsDbfs)),
+    joins
+  };
+}
+
 function spectrumFingerprint(wave) {
   const frequencies = [63, 125, 250, 500, 1000, 2000, 4000, 8000, 16000];
   const windowSize = 4096;
@@ -778,7 +1014,7 @@ function audioMetadata(filePath) {
   };
 }
 
-function evidenceSvg(plan, masterWave, masterStats, fingerprint) {
+function evidenceSvg(plan, masterWave, masterStats, fingerprint, objectiveChecks) {
   const width = 1800;
   const height = 1040;
   const left = 120;
@@ -820,7 +1056,7 @@ function evidenceSvg(plan, masterWave, masterStats, fingerprint) {
   <rect width="1800" height="1040" fill="#11181c"/>
   <text x="120" y="72" class="title">Footsteps Return · original score evidence</text>
   <text x="120" y="112" class="meta">183.352 s · 48 kHz stereo · MS Basic · SHA-256 ${masterStats.sha256.slice(0, 16)}…</text>
-  <text x="120" y="146" class="meta">Peak ${masterStats.peakDbfs.toFixed(3)} dBFS · RMS ${masterStats.rmsDbfs.toFixed(3)} dBFS · objective signal inspection only</text>
+  <text x="120" y="146" class="meta">Peak ${masterStats.peakDbfs.toFixed(3)} dBFS · RMS ${masterStats.rmsDbfs.toFixed(3)} dBFS · voice/score ≥ ${objectiveChecks.voiceScoreComparison.minimumVoiceToScoreRmsMarginDb.toFixed(2)} dB · Cylinder swing ${objectiveChecks.cylinderStereoMotion.leftToRightSwingDb.toFixed(2)} dB</text>
   ${form}
   <text x="120" y="246" class="label">Waveform envelope aligned to final timeline</text>
   <line x1="120" y1="405" x2="1680" y2="405" stroke="#34444d"/>
@@ -829,7 +1065,7 @@ function evidenceSvg(plan, masterWave, masterStats, fingerprint) {
   <text x="120" y="640" class="label">Nine-band spectral fingerprint (windowed whole-score samples)</text>
   <line x1="120" y1="900" x2="1680" y2="900" stroke="#34444d"/>
   ${bars}
-  <text x="120" y="998" class="meta">Evidence method: PCM parsing, sampled waveform peaks, 4096-sample Hann-window DFT. This does not claim subjective listening.</text>
+  <text x="120" y="998" class="meta">Evidence: exact rendered PCM, hash-verified dry voice PCM, channel-window RMS, MIDI density, waveform peaks and 4096-sample Hann-window DFT. No subjective listening claim.</text>
 </svg>
 `;
 }
@@ -863,28 +1099,36 @@ function analyzeRender() {
       ffmpeg: toolVersion(ffmpeg, ["-version"]),
       soundProfile: plan.render.soundProfile,
       soundfontSha256,
-      pathResolution: "doctor.mjs findMuseScore()/findFfmpeg(); render script never assumes MuseScore or FFmpeg is on PATH"
+      pathResolution: "doctor.mjs resolves MuseScore and FFmpeg to existing absolute executables; render script rejects non-rooted results",
+      masterAssembly: "Every final stem is a real MuseScore Basic MusicXML render. scripts/score-audio.mjs consumes declared stereo placement/automation on the resulting PCM, then FFmpeg sums those exact stems into master.wav."
     },
     master,
     stems
   };
   writeJson(path.join(scoreRoot, "render-metadata.json"), metadata);
 
-  const peakLinear = 10 ** (master.peakDbfs / 20);
-  const maxNarrationRms = Math.max(...voiceoverSchedule.map((cue) => windowRms(masterWave, cue.start, cue.start + cue.duration)));
-  const narrationHeadroom = 20 * Math.log10(peakLinear / Math.max(maxNarrationRms, 1e-12));
   const fingerprint = spectrumFingerprint(masterWave);
   const reviewAssetPath = path.join(scoreRoot, "review", "score-review.opus");
   if (!fs.existsSync(reviewAssetPath)) {
     throw new Error(`Missing low-bitrate review asset ${reviewAssetPath}`);
   }
+  const voiceScoreComparison = voiceScoreEvidence(masterWave);
+  const narrationWindowDensity = narrationDensityEvidence();
+  const cello = stems.find(({ id }) => id === "cello");
+  const celloWave = parseWave(path.join(renderedStemRoot, "cello.wav"));
+  const cylinderStereoMotion = cylinderStereoEvidence(celloWave, cello.sha256);
+  const renderedChapterProfiles = chapterRenderProfiles(plan, stemPaths);
+  const renderedJoinContinuity = chapterJoinContinuity(plan, masterWave);
   const objectiveChecks = {
     silenceOrMissingAudio: !Number.isFinite(master.rmsDbfs) || master.rmsDbfs < -80,
     clippingDetected: master.peakDbfs >= -0.01,
     masterPeakDbfs: master.peakDbfs,
     masterRmsDbfs: master.rmsDbfs,
-    narrationBandHeadroomDb: round(narrationHeadroom, 2),
-    cueWindowMethod: "Peak-to-loudest-score-RMS margin across all measured narration cue windows",
+    voiceScoreComparison,
+    narrationWindowDensity,
+    cylinderStereoMotion,
+    chapterRenderProfiles: renderedChapterProfiles,
+    chapterJoinContinuity: renderedJoinContinuity,
     spectrumFingerprint: fingerprint,
     stemsWithSignal: stems.filter(({ rmsDbfs }) => Number.isFinite(rmsDbfs) && rmsDbfs > -80).length,
     durationConsistent: [master, ...stems].every(({ durationSeconds }) => Math.abs(durationSeconds - plan.timeline.durationSeconds) < 1 / plan.render.sampleRate)
@@ -905,7 +1149,8 @@ function analyzeRender() {
       requiredBeforeFinalMix: true,
       checklist: [
         "Listen on studio monitors and ordinary phone speakers.",
-        "Confirm each topology reads as a musical transformation rather than a schema demonstration.",
+        "Confirm each topology reads as its own musical world rather than one theme in variation.",
+        "Confirm overlaps, pickups, pivots and timbral relays make every chapter join continuous.",
         "Confirm speech remains intelligible without aggressive ducking.",
         "Confirm MS Basic timbre is acceptable or replace it only with a separately licensed, recorded render profile."
       ]
@@ -918,8 +1163,8 @@ function analyzeRender() {
     }
   };
   writeJson(path.join(scoreRoot, "review.json"), review);
-  fs.writeFileSync(evidencePath, evidenceSvg(plan, masterWave, master, fingerprint), "utf8");
-  console.log(`✓ Analyzed rendered score: peak ${master.peakDbfs} dBFS, RMS ${master.rmsDbfs} dBFS, narration-window margin ${objectiveChecks.narrationBandHeadroomDb} dB.`);
+  fs.writeFileSync(evidencePath, evidenceSvg(plan, masterWave, master, fingerprint, objectiveChecks), "utf8");
+  console.log(`✓ Analyzed rendered score: peak ${master.peakDbfs} dBFS, RMS ${master.rmsDbfs} dBFS, minimum dry-voice/score RMS margin ${voiceScoreComparison.minimumVoiceToScoreRmsMarginDb} dB, Cylinder swing ${cylinderStereoMotion.leftToRightSwingDb} dB.`);
 }
 
 if (process.argv.includes("--analyze-render")) {
