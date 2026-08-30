@@ -1,0 +1,172 @@
+{
+  "schemaVersion": 1,
+  "title": "七界足迹原创管弦乐源",
+  "composerCredit": "Original score composed for Topology Gomoku",
+  "copyright": "Original project score; no third-party composition",
+  "sourceDurationSeconds": 183.352,
+  "sourceMusic": {
+    "importedOrTranscribedReferenceMusic": false,
+    "declaration": "Every pitched and rhythmic event is original to this project. No reference-PV music was imported, traced, transcribed, or transformed.",
+    "renderer": "MuseScore 4 with the MuseScore Basic sound profile",
+    "licenses": [
+      "video/chapter-teaser/assets/licenses/audio/musescore-license.txt",
+      "video/chapter-teaser/assets/licenses/audio/ms-basic-license.md"
+    ]
+  },
+  "deepStructure": {
+    "pitchCell": ["D", "F", "G", "A", "C"],
+    "midi": [62, 65, 67, 69, 72],
+    "use": "A compact prologue signal and a sparse long-range memory only; never a melody shared by the seven chapters",
+    "boundarySonority": ["D", "A"],
+    "maximumBoundarySonoritySeconds": 0.625
+  },
+  "chapters": [
+    {
+      "id": "plane",
+      "mode": "D Lydian",
+      "rhythmicIdentity": "lucid 4/4 with a two-note pickup",
+      "leadParts": ["piano"],
+      "supportingPalette": ["violin-i", "violin-ii", "viola", "cello", "bass-clarinet"],
+      "motive": {
+        "pitches": [62, 66, 64, 69, 68, 71, 74],
+        "rhythmSeconds": [0.75, 0.5, 1.125, 0.5, 0.75, 0.75, 1.5]
+      },
+      "character": "Clear, poised and finite; the piano states a complete independent melody while transparent strings refract rather than double it"
+    },
+    {
+      "id": "cylinder",
+      "mode": "B-flat Mixolydian",
+      "rhythmicIdentity": "3+3 cyclical pulse",
+      "leadParts": ["bass-clarinet", "cello"],
+      "supportingPalette": ["viola", "double-bass", "restrained-percussion", "french-horn"],
+      "motive": {
+        "pitches": [58, 62, 60, 65, 63, 67],
+        "rhythmSeconds": [0.5, 0.5, 1, 0.5, 0.75, 1.1]
+      },
+      "character": "Rounded and travelling; a reed-led orbit with pizzicato lateral motion and restrained cyclic percussion"
+    },
+    {
+      "id": "torus",
+      "mode": "E Mixolydian / G Lydian",
+      "rhythmicIdentity": "4.75 against 5.25 second cycles that mesh",
+      "leadParts": ["piano", "celesta"],
+      "supportingPalette": ["violin-ii", "viola", "double-bass"],
+      "motive": {
+        "pitches": [52, 59, 57, 61, 56, 64],
+        "rhythmSeconds": [0.5, 0.75, 0.75, 0.5, 1, 0.7]
+      },
+      "counterMotive": {
+        "pitches": [79, 81, 78, 84, 83],
+        "rhythmSeconds": [0.75, 0.5, 1, 0.75, 0.8]
+      },
+      "character": "Crystalline and interlocked; two genuinely different keyboard cycles mesh without resolving into a common tune"
+    },
+    {
+      "id": "mobius",
+      "mode": "C octatonic",
+      "rhythmicIdentity": "3+2+3/8 additive meter",
+      "leadParts": ["viola", "bass-clarinet"],
+      "supportingPalette": ["violin-i", "violin-ii", "cello", "celesta"],
+      "motive": {
+        "pitches": [60, 66, 63, 69, 67, 61],
+        "rhythmSeconds": [0.75, 0.75, 1, 0.75, 0.75, 1.1]
+      },
+      "character": "Folded and ambiguous; an asymmetrical viola line returns through a darker reed reverse side and compressed bow envelopes"
+    },
+    {
+      "id": "klein",
+      "mode": "D Phrygian dominant",
+      "rhythmicIdentity": "antiphonal 6/8 propulsion",
+      "leadParts": ["violin-i", "bass-clarinet", "cello", "double-bass"],
+      "supportingPalette": ["violin-ii", "piano", "french-horn", "restrained-percussion"],
+      "motive": {
+        "pitches": [81, 75, 78, 86],
+        "rhythmSeconds": [0.5, 0.5, 0.75, 1]
+      },
+      "counterMotive": {
+        "pitches": [38, 45, 46, 51],
+        "rhythmSeconds": [0.5, 0.5, 0.75, 1]
+      },
+      "character": "Propelled and antiphonal; jagged high strings and low reeds collide across a metallic register split"
+    },
+    {
+      "id": "projective",
+      "mode": "E Lydian",
+      "rhythmicIdentity": "mirrored six-pulse canon",
+      "leadParts": ["celesta", "violin-i", "choir-aahs"],
+      "supportingPalette": ["violin-ii", "viola", "cello", "restrained-percussion"],
+      "motive": {
+        "pitches": [76, 83, 78, 82, 80, 87],
+        "rhythmSeconds": [0.75, 0.75, 1, 0.75, 1, 1.1]
+      },
+      "character": "Cold and doubled; celesta, divided strings and a distant wordless choir form an oblique mirrored canon"
+    },
+    {
+      "id": "sphere",
+      "mode": "D major",
+      "rhythmicIdentity": "broad 4/4 anacrusis into a two-bar melody",
+      "leadParts": ["piano", "french-horn", "violin-i", "choir-aahs"],
+      "supportingPalette": ["celesta", "violin-ii", "viola", "cello", "double-bass", "bass-clarinet", "restrained-percussion"],
+      "motive": {
+        "pitches": [62, 64, 66, 69, 67, 71, 69, 66, 76, 74],
+        "rhythmSeconds": [0.75, 0.75, 1, 1, 0.75, 0.75, 1, 0.75, 1, 1.5]
+      },
+      "character": "Open and resolving; piano and horn carry a new broad melody into full strings and a light choral horizon"
+    }
+  ],
+  "timelineAnchors": [
+    { "label": "timeline-start", "sourceSeconds": 0, "target": "start" },
+    { "label": "intro-to-plane-card", "sourceSeconds": 21.502667, "targetSegment": "plane-card", "targetEdge": "start" },
+    { "label": "plane-card-to-plane", "sourceSeconds": 24.502667, "targetSegment": "plane", "targetEdge": "start" },
+    { "label": "plane-to-cylinder-card", "sourceSeconds": 37.762667, "targetSegment": "cylinder-card", "targetEdge": "start" },
+    { "label": "cylinder-card-to-cylinder", "sourceSeconds": 40.762667, "targetSegment": "cylinder", "targetEdge": "start" },
+    { "label": "cylinder-to-torus-card", "sourceSeconds": 56.601334, "targetSegment": "torus-card", "targetEdge": "start" },
+    { "label": "torus-card-to-torus", "sourceSeconds": 59.601334, "targetSegment": "torus", "targetEdge": "start" },
+    { "label": "torus-to-mobius-card", "sourceSeconds": 75.781334, "targetSegment": "mobius-card", "targetEdge": "start" },
+    { "label": "mobius-card-to-mobius", "sourceSeconds": 78.781334, "targetSegment": "mobius", "targetEdge": "start" },
+    { "label": "mobius-to-klein-card", "sourceSeconds": 93.894667, "targetSegment": "klein-card", "targetEdge": "start" },
+    { "label": "klein-card-to-klein", "sourceSeconds": 96.894667, "targetSegment": "klein", "targetEdge": "start" },
+    { "label": "klein-to-projective-card", "sourceSeconds": 112.626667, "targetSegment": "projective-card", "targetEdge": "start" },
+    { "label": "projective-card-to-projective", "sourceSeconds": 115.626667, "targetSegment": "projective", "targetEdge": "start" },
+    { "label": "projective-to-sphere-card", "sourceSeconds": 131.38, "targetSegment": "sphere-card", "targetEdge": "start" },
+    { "label": "sphere-card-to-sphere", "sourceSeconds": 134.38, "targetSegment": "sphere", "targetEdge": "start" },
+    { "label": "sphere-to-tableau", "sourceSeconds": 156.301333, "targetSegment": "seven-worlds", "targetEdge": "start" },
+    { "label": "tableau-to-finale", "sourceSeconds": 163.301333, "targetSegment": "finale", "targetEdge": "start" },
+    { "label": "finale-to-end-card", "sourceSeconds": 179.352, "targetSegment": "end-card", "targetEdge": "start" },
+    { "label": "timeline-end", "sourceSeconds": 183.352, "target": "end" }
+  ],
+  "joins": [
+    { "from": "intro", "to": "plane", "overlapSeconds": 0.552667, "method": "D/A harmonic relay becomes a piano pickup" },
+    { "from": "plane", "to": "cylinder", "overlapSeconds": 0.412667, "method": "piano resonance rounds into B-flat bass clarinet" },
+    { "from": "cylinder", "to": "torus", "overlapSeconds": 0.351334, "method": "travelling pizzicato hands a high intersection to celesta" },
+    { "from": "torus", "to": "mobius", "overlapSeconds": 0.481334, "method": "celesta lattice folds into an octatonic viola pickup" },
+    { "from": "mobius", "to": "klein", "overlapSeconds": 0.444667, "method": "viola D/A is struck into metallic D/E-flat propulsion" },
+    { "from": "klein", "to": "projective", "overlapSeconds": 0.426667, "method": "metallic E/B overtone becomes a cold celesta pickup" },
+    { "from": "projective", "to": "sphere", "overlapSeconds": 0.48, "method": "choir D/A plane acquires a bright horn F-sharp" },
+    { "from": "sphere", "to": "tableau", "overlapSeconds": 0.501333, "method": "violin crest breaks into a celesta mosaic" },
+    { "from": "tableau", "to": "finale", "overlapSeconds": 0.401333, "method": "string A/E relay becomes the final piano anacrusis" }
+  ],
+  "buses": {
+    "piano": [
+      { "id": "piano", "gain": 0.95, "pan": -0.12, "sha256": "1344beecdff48aba5c410515bd6b062c0fa43c3422124550cd287063fad7c26e" },
+      { "id": "celesta", "gain": 0.78, "pan": 0.28, "sha256": "22c28defab9cfe52736b1de8cbb103e4d159144861ae5a1b949acf6d73dabf72" }
+    ],
+    "strings": [
+      { "id": "violin-i", "gain": 0.62, "pan": 0.46, "sha256": "9567bc143386cb008440a728c37427239b8a23e22ee7bdb61bf9b2e50b069a72" },
+      { "id": "violin-ii", "gain": 0.56, "pan": 0.18, "sha256": "0390263dab26fb24fe6e2cba27ca0d251f9dcb009c81fb85af3d6dbb1a558bfe" },
+      { "id": "viola", "gain": 0.64, "pan": -0.18, "sha256": "1a7e7e909c02ea099a79a7e93244d82a2d8931295c95722d36b1d8f772b18dfc" },
+      { "id": "cello", "gain": 0.68, "pan": -0.28, "sha256": "7a05adc5faa78f81733701fe0b2f03b852cf038eada51d0e209ae9d0903273f6" }
+    ],
+    "bass": [
+      { "id": "double-bass", "gain": 0.72, "pan": -0.08, "sha256": "ceae84511a44e50e3bc741d32b2d087e21121bcd8d22cb35a9f50629dc73d6df" },
+      { "id": "bass-clarinet", "gain": 0.86, "pan": -0.38, "sha256": "bde8534aed632ace2519bde75564bcf676699aa790ed5690cfbee39b0758ff36" }
+    ],
+    "choir": [
+      { "id": "choir-aahs", "gain": 0.62, "pan": 0, "sha256": "a3df1a51b5b8edf8bc9d0b5addfa087ba4c3ebdf784ff9b54e9f3948b08ac44c" },
+      { "id": "french-horn", "gain": 0.78, "pan": 0.16, "sha256": "812d9548b2d4909c058cae2c3312872d3c5859016067dabfeae66c5ce977783c" }
+    ],
+    "fx": [
+      { "id": "restrained-percussion", "gain": 0.72, "pan": 0.08, "sha256": "3427bd35cac60bb802c7da4b6c12ea6061f96b62063dbc6e752129c37aa26d85" }
+    ]
+  }
+}

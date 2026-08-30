@@ -1,0 +1,59 @@
+[Script Info]
+; Generated from integer 60 fps cue boundaries by scripts/build-audio.mjs
+ScriptType: v4.00+
+PlayResX: 1920
+PlayResY: 1080
+ScaledBorderAndShadow: yes
+YCbCr Matrix: TV.709
+
+[V4+ Styles]
+Format: Name, Fontname, Fontsize, PrimaryColour, SecondaryColour, OutlineColour, BackColour, Bold, Italic, Underline, StrikeOut, ScaleX, ScaleY, Spacing, Angle, BorderStyle, Outline, Shadow, Alignment, MarginL, MarginR, MarginV, Encoding
+Style: Caption,Topo Serif SC,44,&H00F2EFE7,&H00F2EFE7,&HCC070908,&H00000000,0,0,0,0,100,100,1.2,0,1,2.2,0,2,144,144,90,1
+
+[Events]
+Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
+Dialogue: 0,0:00:01.40,0:00:04.28,Caption,,0,0,0,,人们总把棋盘的边缘视作尽头
+Dialogue: 0,0:00:04.78,0:00:08.22,Caption,,0,0,0,,可那些消失在边界上的道路并未中断
+Dialogue: 0,0:00:08.52,0:00:10.90,Caption,,0,0,0,,它们在另一处接缝后延续
+Dialogue: 0,0:00:11.10,0:00:13.78,Caption,,0,0,0,,将遥远的落点重新变为近邻
+Dialogue: 0,0:00:14.38,0:00:18.48,Caption,,0,0,0,,现在，落子之人啊，循着隐藏的连接前行吧
+Dialogue: 0,0:00:18.78,0:00:21.90,Caption,,0,0,0,,七种世界，将在你面前依次展开
+Dialogue: 0,0:00:27.30,0:00:31.00,Caption,,0,0,0,,边界分明，方向笔直，胜负都在眼前
+Dialogue: 0,0:00:31.30,0:00:34.58,Caption,,0,0,0,,方庭以有限的秩序收容第一条五连
+Dialogue: 0,0:00:34.78,0:00:37.60,Caption,,0,0,0,,也由此埋下对所有边界的疑问
+Dialogue: 0,0:00:43.40,0:00:45.95,Caption,,0,0,0,,左右相接，上下仍被截断
+Dialogue: 0,0:00:46.25,0:00:48.80,Caption,,0,0,0,,横向的路绕过世界回到身后
+Dialogue: 0,0:00:49.00,0:00:50.97,Caption,,0,0,0,,纵向的路却有始有终
+Dialogue: 0,0:00:51.37,0:00:55.15,Caption,,0,0,0,,只拥有一重循环的世界，该如何丈量远近？
+Dialogue: 0,0:01:00.95,0:01:03.90,Caption,,0,0,0,,四边相接，两个方向各自成环
+Dialogue: 0,0:01:04.20,0:01:06.75,Caption,,0,0,0,,一条斜线可以先越过上边
+Dialogue: 0,0:01:06.95,0:01:08.52,Caption,,0,0,0,,再从左侧归来
+Dialogue: 0,0:01:08.92,0:01:10.83,Caption,,0,0,0,,两重循环交织之处
+Dialogue: 0,0:01:11.03,0:01:13.73,Caption,,0,0,0,,最短的道路往往藏在视野之外
+Dialogue: 0,0:01:19.53,0:01:22.62,Caption,,0,0,0,,左右边界相接，却带着一次翻转
+Dialogue: 0,0:01:22.92,0:01:24.80,Caption,,0,0,0,,沿同一面环行一周
+Dialogue: 0,0:01:25.00,0:01:27.22,Caption,,0,0,0,,归来时上下已经交换
+Dialogue: 0,0:01:27.62,0:01:30.93,Caption,,0,0,0,,只有一面的世界，正反又该如何分辨？
+Dialogue: 0,0:01:36.73,0:01:39.07,Caption,,0,0,0,,一组边界如圆环般相接
+Dialogue: 0,0:01:39.27,0:01:41.58,Caption,,0,0,0,,另一组边界让方向翻转
+Dialogue: 0,0:01:41.88,0:01:43.65,Caption,,0,0,0,,两种归来共处一界
+Dialogue: 0,0:01:43.85,0:01:47.10,Caption,,0,0,0,,一条路保持原样，一条路带回倒影
+Dialogue: 0,0:01:47.50,0:01:49.90,Caption,,0,0,0,,路径会记住你选择的环绕
+Dialogue: 0,0:01:55.70,0:01:58.77,Caption,,0,0,0,,上下左右，全都通向各自的倒影
+Dialogue: 0,0:01:59.07,0:02:00.90,Caption,,0,0,0,,一次越界改变方向
+Dialogue: 0,0:02:01.10,0:02:03.65,Caption,,0,0,0,,两次倒映使棋路重新吻合
+Dialogue: 0,0:02:04.05,0:02:05.65,Caption,,0,0,0,,在双生的世界里
+Dialogue: 0,0:02:05.85,0:02:08.88,Caption,,0,0,0,,每次远行，都会遇见另一个自己
+Dialogue: 0,0:02:14.68,0:02:15.92,Caption,,0,0,0,,在最后的世界
+Dialogue: 0,0:02:16.12,0:02:20.05,Caption,,0,0,0,,棋路离开一条边，便会沿相邻的方向继续
+Dialogue: 0,0:02:20.35,0:02:22.38,Caption,,0,0,0,,四条边依次归向彼此
+Dialogue: 0,0:02:22.58,0:02:25.25,Caption,,0,0,0,,方形的棋盘也随之闭合成球
+Dialogue: 0,0:02:25.75,0:02:28.08,Caption,,0,0,0,,人们为了看清完整的世界
+Dialogue: 0,0:02:28.28,0:02:30.85,Caption,,0,0,0,,将它展开成一张有边的图
+Dialogue: 0,0:02:31.25,0:02:35.52,Caption,,0,0,0,,所谓边界，或许只是观察世界时留下的痕迹
+Dialogue: 0,0:02:46.52,0:02:48.10,Caption,,0,0,0,,现在，落子之人
+Dialogue: 0,0:02:48.40,0:02:50.15,Caption,,0,0,0,,七种世界已经显现
+Dialogue: 0,0:02:50.35,0:02:53.77,Caption,,0,0,0,,但最后的连接，仍等待你亲手完成
+Dialogue: 0,0:02:54.27,0:02:56.43,Caption,,0,0,0,,若你已经理解边界的意义
+Dialogue: 0,0:02:56.63,0:02:58.25,Caption,,0,0,0,,就落下那颗棋子
+Dialogue: 0,0:02:58.65,0:03:01.63,Caption,,0,0,0,,然后，去看见世界本来的样子吧

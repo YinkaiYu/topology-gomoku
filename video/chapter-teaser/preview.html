@@ -1,0 +1,187 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Seven Realms Teaser Preview</title>
+  <style>
+    @font-face {
+      font-family: "Topo Serif PV";
+      src: url("./assets/fonts/topo-serif-pv-400.woff2") format("woff2");
+      font-weight: 400;
+      font-display: block;
+    }
+    @font-face {
+      font-family: "Topo Serif PV";
+      src: url("./assets/fonts/topo-serif-pv-600.woff2") format("woff2");
+      font-weight: 600;
+      font-display: block;
+    }
+    @font-face {
+      font-family: "Topo Serif PV";
+      src: url("./assets/fonts/topo-serif-pv-700.woff2") format("woff2");
+      font-weight: 700;
+      font-display: block;
+    }
+    :root {
+      color-scheme: dark;
+      font-family: "Topo Serif PV", serif;
+      background: #070908;
+      color: #f2efe7;
+    }
+    * { box-sizing: border-box; }
+    html, body { width: 100%; min-height: 100%; margin: 0; }
+    body {
+      display: grid;
+      min-height: 100vh;
+      place-items: center;
+      padding: 24px;
+      background: radial-gradient(circle at 50% 42%, #111715 0, #070908 68%);
+    }
+    main { width: min(100%, 1440px); }
+    .stage {
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      overflow: hidden;
+      border: 1px solid rgba(242, 239, 231, 0.12);
+      background: #070908;
+      box-shadow: 0 30px 90px rgba(0, 0, 0, 0.48);
+    }
+    canvas { display: block; width: 100%; height: 100%; }
+    .transport {
+      display: grid;
+      grid-template-columns: auto minmax(0, 1fr) auto;
+      gap: 14px;
+      align-items: center;
+      padding-top: 14px;
+      color: rgba(242, 239, 231, 0.72);
+      font: 400 13px/1.2 ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    button {
+      min-width: 74px;
+      border: 1px solid rgba(242, 239, 231, 0.16);
+      border-radius: 999px;
+      padding: 8px 15px;
+      color: #f2efe7;
+      background: rgba(17, 23, 21, 0.72);
+      cursor: pointer;
+    }
+    button:disabled { cursor: wait; opacity: 0.5; }
+    input[type="range"] { width: 100%; accent-color: #68aaa2; }
+    output { min-width: 150px; text-align: right; }
+    #error {
+      display: none;
+      margin-top: 14px;
+      color: #e5a098;
+      font: 400 13px/1.55 ui-monospace, SFMono-Regular, Consolas, monospace;
+      white-space: pre-wrap;
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <div class="stage"><canvas id="stage" width="1920" height="1080"></canvas></div>
+    <div class="transport">
+      <button id="toggle" type="button" disabled>Play</button>
+      <input id="scrubber" type="range" min="0" max="1" value="0" step="1" disabled aria-label="Frame">
+      <output id="counter">0 / 0</output>
+    </div>
+    <div id="error" role="alert"></div>
+  </main>
+  <script src="../../app/assets/topology.js"></script>
+  <script src="../../app/assets/topology-morph.js"></script>
+  <script src="./src/compositor.js"></script>
+  <script>
+    (async function startPreview() {
+      "use strict";
+      var canvas = document.getElementById("stage");
+      var toggle = document.getElementById("toggle");
+      var scrubber = document.getElementById("scrubber");
+      var counter = document.getElementById("counter");
+      var error = document.getElementById("error");
+      var playing = false;
+      var animationId = 0;
+      var originTime = 0;
+      var originFrame = 0;
+
+      function fail(reason) {
+        error.style.display = "block";
+        error.textContent = String(reason && reason.stack ? reason.stack : reason);
+        toggle.disabled = true;
+        scrubber.disabled = true;
+      }
+
+      try {
+        var responses = await Promise.all([fetch("./story.json"), fetch("./manifest.json")]);
+        if (!responses[0].ok) throw new Error("Unable to load story.json (HTTP " + responses[0].status + ")");
+        if (!responses[1].ok) throw new Error("manifest.json is missing; run the PV audio build first (HTTP " + responses[1].status + ")");
+        var story = await responses[0].json();
+        var manifest = await responses[1].json();
+        var params = new URLSearchParams(location.search);
+        var profileName = params.get("profile") === "master" ? "master" : "review";
+        var profile = story.render[profileName];
+        canvas.width = profile.width;
+        canvas.height = profile.height;
+
+        var logo = new Image();
+        logo.src = "./assets/iop-logo.png";
+        await Promise.all([document.fonts.ready, logo.decode()]);
+        var composition = ChapterTeaserCompositor.createComposition({
+          story: story,
+          manifest: manifest,
+          width: profile.width,
+          height: profile.height,
+          logo: logo
+        });
+        var ctx = canvas.getContext("2d", { alpha: false });
+
+        function showFrame(frame) {
+          frame = Math.max(0, Math.min(composition.totalFrames - 1, Math.round(frame)));
+          composition.renderFrame(ctx, frame);
+          scrubber.value = String(frame);
+          counter.value = frame + " / " + (composition.totalFrames - 1);
+        }
+
+        function tick(now) {
+          if (!playing) return;
+          var elapsedFrames = Math.floor((now - originTime) * composition.fps / 1000);
+          var frame = originFrame + elapsedFrames;
+          if (frame >= composition.totalFrames) {
+            playing = false;
+            toggle.textContent = "Play";
+            showFrame(composition.totalFrames - 1);
+            return;
+          }
+          showFrame(frame);
+          animationId = requestAnimationFrame(tick);
+        }
+
+        toggle.addEventListener("click", function togglePlayback() {
+          playing = !playing;
+          toggle.textContent = playing ? "Pause" : "Play";
+          if (playing) {
+            originFrame = Number(scrubber.value);
+            if (originFrame >= composition.totalFrames - 1) originFrame = 0;
+            originTime = performance.now();
+            cancelAnimationFrame(animationId);
+            animationId = requestAnimationFrame(tick);
+          }
+        });
+        scrubber.addEventListener("input", function scrub() {
+          playing = false;
+          toggle.textContent = "Play";
+          cancelAnimationFrame(animationId);
+          showFrame(Number(scrubber.value));
+        });
+        scrubber.max = String(composition.totalFrames - 1);
+        scrubber.disabled = false;
+        toggle.disabled = false;
+        showFrame(Number(params.get("frame")) || 0);
+        window.chapterTeaserPreview = { composition: composition, showFrame: showFrame, canvas: canvas };
+      } catch (reason) {
+        fail(reason);
+      }
+    })();
+  </script>
+</body>
+</html>

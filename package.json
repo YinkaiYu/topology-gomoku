@@ -11,6 +11,13 @@
     "release:check-versions": "powershell -NoProfile -ExecutionPolicy Bypass -File ./scripts/validate-release-versions.ps1",
     "check": "npm test && npm run validate && npm run docs:check",
     "fonts:subset": "powershell -NoProfile -ExecutionPolicy Bypass -File ./scripts/subset-fonts.ps1",
+    "pv:fonts": "powershell -NoProfile -ExecutionPolicy Bypass -File ./video/chapter-teaser/scripts/subset-fonts.ps1",
+    "pv:audio": "node --expose-gc ./video/chapter-teaser/scripts/build-audio.mjs",
+    "pv:keyframes": "node ./video/chapter-teaser/scripts/render.mjs keyframes --profile master --output ./.tmp/chapter-teaser/keyframes-4k",
+    "pv:serve": "node ./video/chapter-teaser/scripts/serve.mjs",
+    "pv:preview": "node ./video/chapter-teaser/scripts/render.mjs review --profile review",
+    "pv:master": "node ./video/chapter-teaser/scripts/render.mjs master --profile master",
+    "pv:verify": "node ./video/chapter-teaser/scripts/verify-video.mjs --profile review",
     "build": "npm run build:xiaohongshu",
     "build:xiaohongshu": "powershell -NoProfile -ExecutionPolicy Bypass -File ./scripts/build.ps1"
   },
