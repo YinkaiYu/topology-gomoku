@@ -37,10 +37,10 @@ node ./video/footsteps-return/scripts/capture-caption-evidence.mjs
 - `npm run release:check-versions -- X.Y.Z` 仅供维护者在稳定同步后检查 `main` 与三个发行分支的统一游戏版本。
 - `npm run pv:doctor` 检查 PV 所需的 Node.js 22、FFmpeg、eSpeak NG、MuseScore 4 与仓库字体/拓扑资产；`pv:lint`、`pv:validate`、`pv:inspect` 依次执行合成静态、综合运行时质量门与布局检查。
 - `npm run pv:game-render:verify` 在 Chromium 中验证 PV 专用的透明真实游戏渲染层：四角 alpha、教学文字抑制、纸张纹理禁用、相同状态像素哈希、形变与旋转差异。HyperFrames 通过同源 `render-game.html` 的 `gameRender.selectShot()` 与显式 `gameRender.render(state)` 驱动同一个持久 iframe/Canvas；它不会按墙钟自行播放，也不生成逐帧图片或中间视频。
-- `npm run pv:voice` 读取锁定的 `audio/voiceover/script.json`，以 Kokoro-82M `zm_yunyang` / speed 0.88 生成 21 个可替换 cue WAV，归一化为 48kHz 单声道 16-bit PCM，再按实际采样时长重建字幕与 183.352 秒弹性时间线；`npm run pv:voice -- <文字或文本文件>` 仍保留单条 TTS 包装器，并强制写入被忽略的 PV 采集目录。
+- `npm run pv:voice` 读取锁定的 `audio/voiceover/script.json`，只以已批准 F `cold-witness` 的固定 VoiceDesign timbre/shared-delivery 和不可变 Qwen revision 生成 21 个正式 cue；候选整批验证后才原子替换被忽略的 WAV，并按实测采样数重建当前 214.040 秒时间线、单行字幕、连续人审 WAV 及 ASR/CER 证据。正式路径拒绝 speaker、参考音频、克隆与 fallback；`npm run pv:voice -- <文字或文本文件>` 只是 HyperFrames 临时单条工具，不写正式 replacement 路径，也不构成 release-audio provenance。
 - `npm run pv:voice:auditions` 保留锁定 revision `85e237c12c027371202489a0ec509ded67b5e4b5` 的官方 `Qwen/Qwen3-TTS-12Hz-0.6B-CustomVoice` / `Uncle_Fu` A–C 试听，并只用锁定 revision `0e711a1c0aa5aad30654426e0d11f67716c1211e` 的官方 `Qwen/Qwen3-TTS-12Hz-1.7B-VoiceDesign` 在 CPU 上生成 D–I 六种原创普通话男声音色。D–I 不选择 speaker，不读取参考音频或克隆 prompt，只把各自非身份化 timbre clause 与字节一致的 shared delivery clause 交给 `generate_voice_design`；production validator 同时锁定 D–I 的 committed ID/clause allowlist，并拒绝中英文真人、演员、角色、作品、模仿、克隆、复刻、声纹和参考音频等身份化措辞。该命令不生成或替换 21 条正式 cue。A–I WAV 固定写入被忽略的 `captures/voice-auditions/`，归一化为同响度的 48kHz 单声道 PCM-16；加 `-- --verify` 可先校验静态契约、完整来源证据和 source/output format，再据已提交 manifest 复核本地 WAV 的格式、响度与 SHA-256。
-- `node ./video/footsteps-return/scripts/capture-caption-evidence.mjs` 在真实 Chromium 中重放字幕，输出 6 张原生 4K 长期证据和本地忽略的 1920×1080 / 30fps / 69 秒字幕专审视频。
-- `npm run pv:score` 从可审查的 `audio/score/score-plan.json` 确定性生成 11 声部 MusicXML / MIDI、逐声部 stem 与 5 类原创合成 SFX；doctor 必须把 MuseScore 4 / FFmpeg 解析为真实存在的绝对路径。MuseScore Basic 先真实渲染每条 stem，`score-audio.mjs` 再在这些 PCM 上消费静态声场和 Cylinder 横向自动化，FFmpeg 由同一批 stem 求和生成 48kHz 立体声母带。WAV 与低码率 Opus 审听件本地忽略；提交的 `render-metadata.json`、`review.json` 与 SVG 联系表记录时长、SHA-256、峰值、RMS、真实干声对比、MIDI 密度、章节 stem 主导配器、跨章连续性、声像迁移、波形 / 频谱及未完成的人类主观审听边界。完整视频渲染只使用 `pv:render:draft` 与 `pv:render:4k`，输出固定为 4K/60fps。
+- `node ./video/footsteps-return/scripts/capture-caption-evidence.mjs` 在真实 Chromium 中重放字幕，输出 6 张原生 4K 长期证据和本地忽略的 1920×1080 / 30fps / 69 秒字幕专审视频；manifest 绑定当前 `timing.json` SHA-256 与 214.040 秒母版时长，旧时间线证据不能冒充最新结果。
+- `npm run pv:score` 从可审查的 `audio/score/score-plan.json` 确定性生成 11 声部 MusicXML / MIDI、逐声部 stem 与 5 类原创合成 SFX；doctor 必须把 MuseScore 4 / FFmpeg 解析为真实存在的绝对路径。MuseScore Basic 先真实渲染每条 stem，`score-audio.mjs` 再在这些 PCM 上消费静态声场和 Cylinder 横向自动化，FFmpeg 由同一批 stem 求和生成 48kHz 立体声母带并按最终旁白时间线补齐/截取。WAV 与低码率 Opus 审听件本地忽略；提交的 `render-metadata.json`、`review.json` 与 SVG 联系表记录时长、SHA-256、峰值、RMS、21 条实际干声哈希及其真实 score/presence 余量、MIDI 密度、章节 stem 主导配器、跨章连续性、声像迁移、波形 / 频谱及未完成的人类主观审听边界。完整视频渲染只使用 `pv:render:draft` 与 `pv:render:4k`，输出固定为 4K/60fps。
 - 首次同步需要下载 `uv.lock` 中的依赖；之后会复用锁定环境与本地缓存。
 
 ## Python 环境
@@ -53,7 +53,7 @@ node ./video/footsteps-return/scripts/capture-caption-evidence.mjs
 - 调整依赖使用 `uv add` 或 `uv remove`；不得直接向 `.venv` 执行 `pip install`。
 - CI 或只读验证优先使用 `uv sync --locked` / `uv run --locked`，锁文件过期时应失败而不是静默更新。
 - HyperFrames 的 Windows TTS 子进程通过 `HYPERFRAMES_PYTHON=.venv/Scripts/python.exe` 使用同一受控环境；不要向系统 Python 或用户级 site-packages 安装依赖。
-- PV TTS 的直接依赖为 `kokoro-onnx==0.6.1`（MIT）、`qwen-tts==0.1.1`（Apache-2.0）与 `soundfile==0.14.0`（BSD-3-Clause），依赖只通过 `uv add` / `uv remove` 和 `uv.lock` 调整。Qwen 试听把模型仓库固定到不可变 revision 并保存官方包 LICENSE、模型卡及其 SHA-256 证据；模型快照进入 Hugging Face 本机缓存，`.venv`、模型权重与 WAV 都不提交。Kokoro-82M 模型与 voice pack 为 Apache-2.0，HyperFrames 首次生成时从 `thewh1teagle/kokoro-onnx` 的 `model-files-v1.0` release 下载到 `%USERPROFILE%\.cache\hyperframes\tts\`。
+- PV TTS 的直接依赖为 `kokoro-onnx==0.6.1`（MIT，旧节奏轨历史工具）、`qwen-tts==0.1.1`（Apache-2.0，正式 VoiceDesign）与 `soundfile==0.14.0`（BSD-3-Clause），依赖只通过 `uv add` / `uv remove` 和 `uv.lock` 调整。Qwen 模型仓库固定到不可变 revision 并保存官方包 LICENSE、模型卡及其 SHA-256 证据；模型快照进入 Hugging Face 本机缓存，`.venv`、模型权重与 WAV 都不提交。可懂度证据使用锁定 `openai/whisper-small`（Apache-2.0）和仅聚焦高 raw-CER cue 的 `openai/whisper-large-v3-turbo`（MIT）；两者只分析、不生成或修改旁白。Kokoro/eSpeak 只保留拒绝轨的历史来源记录，不再属于 release-audio input。
 
 ## 字体子集
 

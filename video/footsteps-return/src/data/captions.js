@@ -29,133 +29,133 @@ export const voiceoverSchedule = deepFreeze([
   {
     "cueId": "intro-boundary",
     "start": 0.42,
-    "duration": 3.498667,
+    "duration": 4.08,
     "subtitleGroupId": "intro-boundary"
   },
   {
     "cueId": "intro-roads",
-    "start": 4.278667,
-    "duration": 8.832,
+    "start": 4.86,
+    "duration": 10,
     "subtitleGroupId": "intro-roads"
   },
   {
     "cueId": "intro-invitation",
-    "start": 13.470667,
-    "duration": 7.232,
+    "start": 15.22,
+    "duration": 10.4,
     "subtitleGroupId": "intro-invitation"
   },
   {
     "cueId": "plane-order",
-    "start": 24.922667,
-    "duration": 9.92,
+    "start": 29.84,
+    "duration": 10.88,
     "subtitleGroupId": "plane-order"
   },
   {
     "cueId": "cylinder-cycle",
-    "start": 41.182667,
-    "duration": 7.978667,
+    "start": 47.06,
+    "duration": 9.44,
     "subtitleGroupId": "cylinder-cycle"
   },
   {
     "cueId": "cylinder-distance",
-    "start": 49.521334,
-    "duration": 4.16,
+    "start": 56.86,
+    "duration": 4.88,
     "subtitleGroupId": "cylinder-distance"
   },
   {
     "cueId": "torus-cycles",
-    "start": 60.021334,
-    "duration": 7.424,
+    "start": 68.08,
+    "duration": 9.36,
     "subtitleGroupId": "torus-cycles"
   },
   {
     "cueId": "torus-shortest-path",
-    "start": 67.805334,
-    "duration": 5.056,
+    "start": 77.8,
+    "duration": 5.44,
     "subtitleGroupId": "torus-shortest-path"
   },
   {
     "cueId": "mobius-turn",
-    "start": 79.201334,
-    "duration": 7.829333,
+    "start": 89.58,
+    "duration": 8.8,
     "subtitleGroupId": "mobius-turn"
   },
   {
     "cueId": "mobius-one-side",
-    "start": 87.390667,
-    "duration": 3.584,
+    "start": 98.74,
+    "duration": 4.16,
     "subtitleGroupId": "mobius-one-side"
   },
   {
     "cueId": "klein-two-returns",
-    "start": 97.314667,
-    "duration": 9.557333,
+    "start": 109.24,
+    "duration": 11.36,
     "subtitleGroupId": "klein-two-returns"
   },
   {
     "cueId": "klein-memory",
-    "start": 107.232,
-    "duration": 2.474667,
+    "start": 120.96,
+    "duration": 2.72,
     "subtitleGroupId": "klein-memory"
   },
   {
     "cueId": "projective-reflection",
-    "start": 116.046667,
-    "duration": 7.808,
+    "start": 130.02,
+    "duration": 8.96,
     "subtitleGroupId": "projective-reflection"
   },
   {
     "cueId": "projective-twin",
-    "start": 124.214667,
-    "duration": 4.245333,
+    "start": 139.34,
+    "duration": 6.16,
     "subtitleGroupId": "projective-twin"
   },
   {
     "cueId": "sphere-closure",
-    "start": 134.8,
-    "duration": 10.176,
+    "start": 151.84,
+    "duration": 12,
     "subtitleGroupId": "sphere-closure"
   },
   {
     "cueId": "sphere-map",
-    "start": 145.336,
-    "duration": 5.184,
+    "start": 164.2,
+    "duration": 5.04,
     "subtitleGroupId": "sphere-map"
   },
   {
     "cueId": "sphere-boundary",
-    "start": 150.88,
-    "duration": 4.501333,
+    "start": 169.6,
+    "duration": 4.72,
     "subtitleGroupId": "sphere-boundary"
   },
   {
     "cueId": "outro-invocation",
-    "start": 163.421333,
-    "duration": 1.685333,
+    "start": 182.36,
+    "duration": 4.88,
     "subtitleGroupId": "outro-invocation"
   },
   {
     "cueId": "outro-connection",
-    "start": 165.466666,
-    "duration": 5.312,
+    "start": 187.6,
+    "duration": 9.04,
     "subtitleGroupId": "outro-connection"
   },
   {
     "cueId": "outro-stone",
-    "start": 171.138666,
-    "duration": 3.882667,
+    "start": 197,
+    "duration": 7.52,
     "subtitleGroupId": "outro-stone"
   },
   {
     "cueId": "outro-world",
-    "start": 175.381333,
-    "duration": 3.050667,
+    "start": 204.88,
+    "duration": 4.24,
     "subtitleGroupId": "outro-world"
   }
 ]);
 
 export const compositionTiming = deepFreeze({
-  "duration": 183.352,
+  "duration": 214.04,
   "scenes": [
     {
       "id": "intro",
@@ -165,7 +165,7 @@ export const compositionTiming = deepFreeze({
         "target": "chapter-card-plane"
       },
       "start": 0,
-      "duration": 21.502667,
+      "duration": 26.42,
       "narrationCueIds": [
         "intro-boundary",
         "intro-roads",
@@ -181,7 +181,7 @@ export const compositionTiming = deepFreeze({
         "kind": "match-cut",
         "target": "chapter-plane"
       },
-      "start": 21.502667,
+      "start": 26.42,
       "narrationCueIds": []
     },
     {
@@ -192,8 +192,8 @@ export const compositionTiming = deepFreeze({
         "kind": "surface-occlusion",
         "target": "chapter-card-cylinder"
       },
-      "start": 24.502667,
-      "duration": 11.26,
+      "start": 29.42,
+      "duration": 12.22,
       "narrationCueIds": [
         "plane-order"
       ]
@@ -207,7 +207,7 @@ export const compositionTiming = deepFreeze({
         "kind": "match-cut",
         "target": "chapter-cylinder"
       },
-      "start": 37.762667,
+      "start": 43.64,
       "narrationCueIds": []
     },
     {
@@ -218,8 +218,8 @@ export const compositionTiming = deepFreeze({
         "kind": "surface-occlusion",
         "target": "chapter-card-torus"
       },
-      "start": 40.762667,
-      "duration": 13.838667,
+      "start": 46.64,
+      "duration": 16.02,
       "narrationCueIds": [
         "cylinder-cycle",
         "cylinder-distance"
@@ -234,7 +234,7 @@ export const compositionTiming = deepFreeze({
         "kind": "match-cut",
         "target": "chapter-torus"
       },
-      "start": 56.601334,
+      "start": 64.66,
       "narrationCueIds": []
     },
     {
@@ -245,8 +245,8 @@ export const compositionTiming = deepFreeze({
         "kind": "surface-occlusion",
         "target": "chapter-card-mobius"
       },
-      "start": 59.601334,
-      "duration": 14.18,
+      "start": 67.66,
+      "duration": 16.5,
       "narrationCueIds": [
         "torus-cycles",
         "torus-shortest-path"
@@ -261,7 +261,7 @@ export const compositionTiming = deepFreeze({
         "kind": "match-cut",
         "target": "chapter-mobius"
       },
-      "start": 75.781334,
+      "start": 86.16,
       "narrationCueIds": []
     },
     {
@@ -272,8 +272,8 @@ export const compositionTiming = deepFreeze({
         "kind": "surface-occlusion",
         "target": "chapter-card-klein"
       },
-      "start": 78.781334,
-      "duration": 13.113333,
+      "start": 89.16,
+      "duration": 14.66,
       "narrationCueIds": [
         "mobius-turn",
         "mobius-one-side"
@@ -288,7 +288,7 @@ export const compositionTiming = deepFreeze({
         "kind": "match-cut",
         "target": "chapter-klein"
       },
-      "start": 93.894667,
+      "start": 105.82,
       "narrationCueIds": []
     },
     {
@@ -299,8 +299,8 @@ export const compositionTiming = deepFreeze({
         "kind": "surface-occlusion",
         "target": "chapter-card-projective"
       },
-      "start": 96.894667,
-      "duration": 13.732,
+      "start": 108.82,
+      "duration": 15.78,
       "narrationCueIds": [
         "klein-two-returns",
         "klein-memory"
@@ -315,7 +315,7 @@ export const compositionTiming = deepFreeze({
         "kind": "match-cut",
         "target": "chapter-projective"
       },
-      "start": 112.626667,
+      "start": 126.6,
       "narrationCueIds": []
     },
     {
@@ -326,8 +326,8 @@ export const compositionTiming = deepFreeze({
         "kind": "surface-occlusion",
         "target": "chapter-card-sphere"
       },
-      "start": 115.626667,
-      "duration": 13.753333,
+      "start": 129.6,
+      "duration": 16.82,
       "narrationCueIds": [
         "projective-reflection",
         "projective-twin"
@@ -342,7 +342,7 @@ export const compositionTiming = deepFreeze({
         "kind": "match-cut",
         "target": "chapter-sphere"
       },
-      "start": 131.38,
+      "start": 148.42,
       "narrationCueIds": []
     },
     {
@@ -353,8 +353,8 @@ export const compositionTiming = deepFreeze({
         "kind": "surface-occlusion",
         "target": "seven-world-gallery"
       },
-      "start": 134.38,
-      "duration": 21.921333,
+      "start": 151.42,
+      "duration": 23.82,
       "narrationCueIds": [
         "sphere-closure",
         "sphere-map",
@@ -369,7 +369,7 @@ export const compositionTiming = deepFreeze({
         "kind": "match-cut",
         "target": "outro"
       },
-      "start": 156.301333,
+      "start": 175.24,
       "narrationCueIds": []
     },
     {
@@ -379,8 +379,8 @@ export const compositionTiming = deepFreeze({
         "kind": "fade-to-black",
         "target": "end-card"
       },
-      "start": 163.301333,
-      "duration": 16.050667,
+      "start": 182.24,
+      "duration": 27.8,
       "narrationCueIds": [
         "outro-invocation",
         "outro-connection",
@@ -396,7 +396,7 @@ export const compositionTiming = deepFreeze({
         "kind": "hold",
         "target": null
       },
-      "start": 179.352,
+      "start": 210.04,
       "narrationCueIds": []
     }
   ]
@@ -409,504 +409,504 @@ export const captionCues = deepFreeze([
     "spokenText": "人们总把棋盘的边缘视作尽头。",
     "text": "人们总把棋盘的边缘视作尽头",
     "start": 0.42,
-    "end": 3.918667,
+    "end": 4.5,
     "fadeInFrames": 7,
     "fadeOutFrames": 7,
-    "hardClearAt": 3.918667
+    "hardClearAt": 4.5
   },
   {
     "id": "intro-roads-01",
     "narrationCueId": "intro-roads",
     "spokenText": "可那些消失在边界上的道路并未中断。",
     "text": "可那些消失在边界上的道路并未中断",
-    "start": 4.278667,
-    "end": 7.878804,
+    "start": 4.86,
+    "end": 8.938046,
     "fadeInFrames": 7,
     "fadeOutFrames": 7,
-    "hardClearAt": 7.878804
+    "hardClearAt": 8.938046
   },
   {
     "id": "intro-roads-02",
     "narrationCueId": "intro-roads",
     "spokenText": "它们在另一处接缝后延续，",
     "text": "它们在另一处接缝后延续",
-    "start": 7.895471,
-    "end": 10.35206,
+    "start": 8.954713,
+    "end": 11.737408,
     "fadeInFrames": 7,
     "fadeOutFrames": 7,
-    "hardClearAt": 10.35206
+    "hardClearAt": 11.737408
   },
   {
     "id": "intro-roads-03",
     "narrationCueId": "intro-roads",
     "spokenText": "将遥远的落点重新变为近邻。",
     "text": "将遥远的落点重新变为近邻",
-    "start": 10.368727,
-    "end": 13.110667,
+    "start": 11.754075,
+    "end": 14.86,
     "fadeInFrames": 7,
     "fadeOutFrames": 7,
-    "hardClearAt": 13.110667
+    "hardClearAt": 14.86
   },
   {
     "id": "intro-invitation-01",
     "narrationCueId": "intro-invitation",
     "spokenText": "现在，落子之人啊，",
     "text": "现在，落子之人啊",
-    "start": 13.470667,
-    "end": 15.198697,
+    "start": 15.22,
+    "end": 17.708504,
     "fadeInFrames": 7,
     "fadeOutFrames": 7,
-    "hardClearAt": 15.198697
+    "hardClearAt": 17.708504
   },
   {
     "id": "intro-invitation-02",
     "narrationCueId": "intro-invitation",
     "spokenText": "循着隐藏的连接前行吧。",
     "text": "循着隐藏的连接前行吧",
-    "start": 15.215364,
-    "end": 17.573359,
+    "start": 17.725171,
+    "end": 21.120876,
     "fadeInFrames": 7,
     "fadeOutFrames": 7,
-    "hardClearAt": 17.573359
+    "hardClearAt": 21.120876
   },
   {
     "id": "intro-invitation-03",
     "narrationCueId": "intro-invitation",
     "spokenText": "七种世界，将在你面前依次展开。",
     "text": "七种世界，将在你面前依次展开",
-    "start": 17.590026,
-    "end": 20.702667,
+    "start": 21.137543,
+    "end": 25.62,
     "fadeInFrames": 7,
     "fadeOutFrames": 7,
-    "hardClearAt": 20.702667
+    "hardClearAt": 25.62
   },
   {
     "id": "plane-order-01",
     "narrationCueId": "plane-order",
     "spokenText": "边界分明，方向笔直，胜负都在眼前。",
     "text": "边界分明，方向笔直，胜负都在眼前",
-    "start": 24.922667,
-    "end": 28.374525,
+    "start": 29.84,
+    "end": 33.627035,
     "fadeInFrames": 7,
     "fadeOutFrames": 7,
-    "hardClearAt": 28.374525
+    "hardClearAt": 33.627035
   },
   {
     "id": "plane-order-02",
     "narrationCueId": "plane-order",
     "spokenText": "方庭以有限的秩序收容第一条五连，",
     "text": "方庭以有限的秩序收容第一条五连",
-    "start": 28.391191,
-    "end": 31.792416,
+    "start": 33.643701,
+    "end": 37.375187,
     "fadeInFrames": 7,
     "fadeOutFrames": 7,
-    "hardClearAt": 31.792416
+    "hardClearAt": 37.375187
   },
   {
     "id": "plane-order-03",
     "narrationCueId": "plane-order",
     "spokenText": "也由此埋下对所有边界的疑问。",
     "text": "也由此埋下对所有边界的疑问",
-    "start": 31.809083,
-    "end": 34.842667,
+    "start": 37.391853,
+    "end": 40.72,
     "fadeInFrames": 7,
     "fadeOutFrames": 7,
-    "hardClearAt": 34.842667
+    "hardClearAt": 40.72
   },
   {
     "id": "cylinder-cycle-01",
     "narrationCueId": "cylinder-cycle",
     "spokenText": "左右相接，上下仍被截断。",
     "text": "左右相接，上下仍被截断",
-    "start": 41.182667,
-    "end": 43.849317,
+    "start": 47.06,
+    "end": 50.217109,
     "fadeInFrames": 7,
     "fadeOutFrames": 7,
-    "hardClearAt": 43.849317
+    "hardClearAt": 50.217109
   },
   {
     "id": "cylinder-cycle-02",
     "narrationCueId": "cylinder-cycle",
     "spokenText": "横向的路绕过世界回到身后，",
     "text": "横向的路绕过世界回到身后",
-    "start": 43.865983,
-    "end": 46.822331,
+    "start": 50.233776,
+    "end": 53.733865,
     "fadeInFrames": 7,
     "fadeOutFrames": 7,
-    "hardClearAt": 46.822331
+    "hardClearAt": 53.733865
   },
   {
     "id": "cylinder-cycle-03",
     "narrationCueId": "cylinder-cycle",
     "spokenText": "纵向的路却有始有终。",
     "text": "纵向的路却有始有终",
-    "start": 46.838998,
-    "end": 49.161334,
+    "start": 53.750532,
+    "end": 56.5,
     "fadeInFrames": 7,
     "fadeOutFrames": 7,
-    "hardClearAt": 49.161334
+    "hardClearAt": 56.5
   },
   {
     "id": "cylinder-distance-01",
     "narrationCueId": "cylinder-distance",
     "spokenText": "只拥有一重循环的世界，该如何丈量远近？",
     "text": "只拥有一重循环的世界，该如何丈量远近？",
-    "start": 49.521334,
-    "end": 53.681334,
+    "start": 56.86,
+    "end": 61.74,
     "fadeInFrames": 7,
     "fadeOutFrames": 7,
-    "hardClearAt": 53.681334
+    "hardClearAt": 61.74
   },
   {
     "id": "torus-cycles-01",
     "narrationCueId": "torus-cycles",
     "spokenText": "四边相接，两个方向各自成环。",
     "text": "四边相接，两个方向各自成环",
-    "start": 60.021334,
-    "end": 63.129361,
+    "start": 68.08,
+    "end": 72.002181,
     "fadeInFrames": 7,
     "fadeOutFrames": 7,
-    "hardClearAt": 63.129361
+    "hardClearAt": 72.002181
   },
   {
     "id": "torus-cycles-02",
     "narrationCueId": "torus-cycles",
     "spokenText": "一条斜线可以先越过上边，",
     "text": "一条斜线可以先越过上边",
-    "start": 63.146027,
-    "end": 65.835892,
+    "start": 72.018847,
+    "end": 75.413327,
     "fadeInFrames": 7,
     "fadeOutFrames": 7,
-    "hardClearAt": 65.835892
+    "hardClearAt": 75.413327
   },
   {
     "id": "torus-cycles-03",
     "narrationCueId": "torus-cycles",
     "spokenText": "再从左侧归来。",
     "text": "再从左侧归来",
-    "start": 65.852558,
-    "end": 67.445334,
+    "start": 75.429994,
+    "end": 77.44,
     "fadeInFrames": 7,
     "fadeOutFrames": 7,
-    "hardClearAt": 67.445334
+    "hardClearAt": 77.44
   },
   {
     "id": "torus-shortest-path-01",
     "narrationCueId": "torus-shortest-path",
     "spokenText": "两重循环交织之处，",
     "text": "两重循环交织之处",
-    "start": 67.805334,
-    "end": 69.72087,
+    "start": 77.8,
+    "end": 79.861501,
     "fadeInFrames": 7,
     "fadeOutFrames": 7,
-    "hardClearAt": 69.72087
+    "hardClearAt": 79.861501
   },
   {
     "id": "torus-shortest-path-02",
     "narrationCueId": "torus-shortest-path",
     "spokenText": "最短的道路往往藏在视野之外。",
     "text": "最短的道路往往藏在视野之外",
-    "start": 69.737537,
-    "end": 72.861334,
+    "start": 79.878168,
+    "end": 83.24,
     "fadeInFrames": 7,
     "fadeOutFrames": 7,
-    "hardClearAt": 72.861334
+    "hardClearAt": 83.24
   },
   {
     "id": "mobius-turn-01",
     "narrationCueId": "mobius-turn",
     "spokenText": "左右边界相接，却带着一次翻转。",
     "text": "左右边界相接，却带着一次翻转",
-    "start": 79.201334,
-    "end": 82.618989,
+    "start": 89.58,
+    "end": 93.423181,
     "fadeInFrames": 7,
     "fadeOutFrames": 7,
-    "hardClearAt": 82.618989
+    "hardClearAt": 93.423181
   },
   {
     "id": "mobius-turn-02",
     "narrationCueId": "mobius-turn",
     "spokenText": "沿同一面环行一周，",
     "text": "沿同一面环行一周",
-    "start": 82.635655,
-    "end": 84.665113,
+    "start": 93.439848,
+    "end": 95.72199,
     "fadeInFrames": 7,
     "fadeOutFrames": 7,
-    "hardClearAt": 84.665113
+    "hardClearAt": 95.72199
   },
   {
     "id": "mobius-turn-03",
     "narrationCueId": "mobius-turn",
     "spokenText": "归来时上下已经交换。",
     "text": "归来时上下已经交换",
-    "start": 84.68178,
-    "end": 87.030667,
+    "start": 95.738657,
+    "end": 98.38,
     "fadeInFrames": 7,
     "fadeOutFrames": 7,
-    "hardClearAt": 87.030667
+    "hardClearAt": 98.38
   },
   {
     "id": "mobius-one-side-01",
     "narrationCueId": "mobius-one-side",
     "spokenText": "只有一面的世界，正反又该如何分辨？",
     "text": "只有一面的世界，正反又该如何分辨？",
-    "start": 87.390667,
-    "end": 90.974667,
+    "start": 98.74,
+    "end": 102.9,
     "fadeInFrames": 7,
     "fadeOutFrames": 7,
-    "hardClearAt": 90.974667
+    "hardClearAt": 102.9
   },
   {
     "id": "klein-two-returns-01",
     "narrationCueId": "klein-two-returns",
     "spokenText": "一组边界如圆环般相接，",
     "text": "一组边界如圆环般相接",
-    "start": 97.314667,
-    "end": 99.531842,
+    "start": 109.24,
+    "end": 111.87757,
     "fadeInFrames": 7,
     "fadeOutFrames": 7,
-    "hardClearAt": 99.531842
+    "hardClearAt": 111.87757
   },
   {
     "id": "klein-two-returns-02",
     "narrationCueId": "klein-two-returns",
     "spokenText": "另一组边界让方向翻转。",
     "text": "另一组边界让方向翻转",
-    "start": 99.548509,
-    "end": 101.835701,
+    "start": 111.894236,
+    "end": 114.615098,
     "fadeInFrames": 7,
     "fadeOutFrames": 7,
-    "hardClearAt": 101.835701
+    "hardClearAt": 114.615098
   },
   {
     "id": "klein-two-returns-03",
     "narrationCueId": "klein-two-returns",
     "spokenText": "两种归来共处一界：一条路保持原样，",
     "text": "两种归来共处一界：一条路保持原样",
-    "start": 101.852367,
-    "end": 105.204652,
+    "start": 114.631764,
+    "end": 118.619669,
     "fadeInFrames": 7,
     "fadeOutFrames": 7,
-    "hardClearAt": 105.204652
+    "hardClearAt": 118.619669
   },
   {
     "id": "klein-two-returns-04",
     "narrationCueId": "klein-two-returns",
     "spokenText": "一条路带回倒影。",
     "text": "一条路带回倒影",
-    "start": 105.221318,
-    "end": 106.872,
+    "start": 118.636336,
+    "end": 120.6,
     "fadeInFrames": 7,
     "fadeOutFrames": 7,
-    "hardClearAt": 106.872
+    "hardClearAt": 120.6
   },
   {
     "id": "klein-memory-01",
     "narrationCueId": "klein-memory",
     "spokenText": "路径会记住你选择的环绕。",
     "text": "路径会记住你选择的环绕",
-    "start": 107.232,
-    "end": 109.706667,
+    "start": 120.96,
+    "end": 123.68,
     "fadeInFrames": 7,
     "fadeOutFrames": 7,
-    "hardClearAt": 109.706667
+    "hardClearAt": 123.68
   },
   {
     "id": "projective-reflection-01",
     "narrationCueId": "projective-reflection",
     "spokenText": "上下左右，全都通向各自的倒影。",
     "text": "上下左右，全都通向各自的倒影",
-    "start": 116.046667,
-    "end": 119.257158,
+    "start": 130.02,
+    "end": 133.7062,
     "fadeInFrames": 7,
     "fadeOutFrames": 7,
-    "hardClearAt": 119.257158
+    "hardClearAt": 133.7062
   },
   {
     "id": "projective-reflection-02",
     "narrationCueId": "projective-reflection",
     "spokenText": "一次越界改变方向，",
     "text": "一次越界改变方向",
-    "start": 119.273824,
-    "end": 121.180265,
+    "start": 133.722867,
+    "end": 135.911791,
     "fadeInFrames": 7,
     "fadeOutFrames": 7,
-    "hardClearAt": 121.180265
+    "hardClearAt": 135.911791
   },
   {
     "id": "projective-reflection-03",
     "narrationCueId": "projective-reflection",
     "spokenText": "两次倒映使棋路重新吻合。",
     "text": "两次倒映使棋路重新吻合",
-    "start": 121.196931,
-    "end": 123.854667,
+    "start": 135.928458,
+    "end": 138.98,
     "fadeInFrames": 7,
     "fadeOutFrames": 7,
-    "hardClearAt": 123.854667
+    "hardClearAt": 138.98
   },
   {
     "id": "projective-twin-01",
     "narrationCueId": "projective-twin",
     "spokenText": "在双生的世界里，每次远行，",
     "text": "在双生的世界里，每次远行",
-    "start": 124.214667,
-    "end": 126.535752,
+    "start": 139.34,
+    "end": 142.712033,
     "fadeInFrames": 7,
     "fadeOutFrames": 7,
-    "hardClearAt": 126.535752
+    "hardClearAt": 142.712033
   },
   {
     "id": "projective-twin-02",
     "narrationCueId": "projective-twin",
     "spokenText": "都会遇见另一个自己。",
     "text": "都会遇见另一个自己",
-    "start": 126.552419,
-    "end": 128.46,
+    "start": 142.728699,
+    "end": 145.5,
     "fadeInFrames": 7,
     "fadeOutFrames": 7,
-    "hardClearAt": 128.46
+    "hardClearAt": 145.5
   },
   {
     "id": "sphere-closure-01",
     "narrationCueId": "sphere-closure",
     "spokenText": "在最后的世界，棋路离开一条边，",
     "text": "在最后的世界，棋路离开一条边",
-    "start": 134.8,
-    "end": 137.800456,
+    "start": 151.84,
+    "end": 155.380929,
     "fadeInFrames": 7,
     "fadeOutFrames": 7,
-    "hardClearAt": 137.800456
+    "hardClearAt": 155.380929
   },
   {
     "id": "sphere-closure-02",
     "narrationCueId": "sphere-closure",
     "spokenText": "便会沿相邻的方向继续。",
     "text": "便会沿相邻的方向继续",
-    "start": 137.817123,
-    "end": 140.144095,
+    "start": 155.397596,
+    "end": 158.143727,
     "fadeInFrames": 7,
     "fadeOutFrames": 7,
-    "hardClearAt": 140.144095
+    "hardClearAt": 158.143727
   },
   {
     "id": "sphere-closure-03",
     "narrationCueId": "sphere-closure",
     "spokenText": "四条边依次归向彼此，",
     "text": "四条边依次归向彼此",
-    "start": 140.160762,
-    "end": 142.200641,
+    "start": 158.160394,
+    "end": 160.567716,
     "fadeInFrames": 7,
     "fadeOutFrames": 7,
-    "hardClearAt": 142.200641
+    "hardClearAt": 160.567716
   },
   {
     "id": "sphere-closure-04",
     "narrationCueId": "sphere-closure",
     "spokenText": "方形的棋盘也随之闭合成球。",
     "text": "方形的棋盘也随之闭合成球",
-    "start": 142.217307,
-    "end": 144.976,
+    "start": 160.584383,
+    "end": 163.84,
     "fadeInFrames": 7,
     "fadeOutFrames": 7,
-    "hardClearAt": 144.976
+    "hardClearAt": 163.84
   },
   {
     "id": "sphere-map-01",
     "narrationCueId": "sphere-map",
     "spokenText": "人们为了看清完整的世界，",
     "text": "人们为了看清完整的世界",
-    "start": 145.336,
-    "end": 147.882964,
+    "start": 164.2,
+    "end": 166.675987,
     "fadeInFrames": 7,
     "fadeOutFrames": 7,
-    "hardClearAt": 147.882964
+    "hardClearAt": 166.675987
   },
   {
     "id": "sphere-map-02",
     "narrationCueId": "sphere-map",
     "spokenText": "将它展开成一张有边的图。",
     "text": "将它展开成一张有边的图",
-    "start": 147.89963,
-    "end": 150.52,
+    "start": 166.692653,
+    "end": 169.24,
     "fadeInFrames": 7,
     "fadeOutFrames": 7,
-    "hardClearAt": 150.52
+    "hardClearAt": 169.24
   },
   {
     "id": "sphere-boundary-01",
     "narrationCueId": "sphere-boundary",
     "spokenText": "所谓边界，或许只是观察世界时留下的痕迹。",
     "text": "所谓边界，或许只是观察世界时留下的痕迹",
-    "start": 150.88,
-    "end": 155.381333,
+    "start": 169.6,
+    "end": 174.32,
     "fadeInFrames": 7,
     "fadeOutFrames": 7,
-    "hardClearAt": 155.381333
+    "hardClearAt": 174.32
   },
   {
     "id": "outro-invocation-01",
     "narrationCueId": "outro-invocation",
     "spokenText": "现在，落子之人。",
     "text": "现在，落子之人",
-    "start": 163.421333,
-    "end": 165.106666,
+    "start": 182.36,
+    "end": 187.24,
     "fadeInFrames": 7,
     "fadeOutFrames": 7,
-    "hardClearAt": 165.106666
+    "hardClearAt": 187.24
   },
   {
     "id": "outro-connection-01",
     "narrationCueId": "outro-connection",
     "spokenText": "七种世界已经显现，",
     "text": "七种世界已经显现",
-    "start": 165.466666,
-    "end": 167.356259,
+    "start": 187.6,
+    "end": 190.819897,
     "fadeInFrames": 7,
     "fadeOutFrames": 7,
-    "hardClearAt": 167.356259
+    "hardClearAt": 190.819897
   },
   {
     "id": "outro-connection-02",
     "narrationCueId": "outro-connection",
     "spokenText": "但最后的连接，仍等待你亲手完成。",
     "text": "但最后的连接，仍等待你亲手完成",
-    "start": 167.372926,
-    "end": 170.778666,
+    "start": 190.836564,
+    "end": 196.64,
     "fadeInFrames": 7,
     "fadeOutFrames": 7,
-    "hardClearAt": 170.778666
+    "hardClearAt": 196.64
   },
   {
     "id": "outro-stone-01",
     "narrationCueId": "outro-stone",
     "spokenText": "若你已经理解边界的意义，",
     "text": "若你已经理解边界的意义",
-    "start": 171.138666,
-    "end": 173.440575,
+    "start": 197,
+    "end": 201.467663,
     "fadeInFrames": 7,
     "fadeOutFrames": 7,
-    "hardClearAt": 173.440575
+    "hardClearAt": 201.467663
   },
   {
     "id": "outro-stone-02",
     "narrationCueId": "outro-stone",
     "spokenText": "就落下那颗棋子。",
     "text": "就落下那颗棋子",
-    "start": 173.457241,
-    "end": 175.021333,
+    "start": 201.48433,
+    "end": 204.52,
     "fadeInFrames": 7,
     "fadeOutFrames": 7,
-    "hardClearAt": 175.021333
+    "hardClearAt": 204.52
   },
   {
     "id": "outro-world-01",
     "narrationCueId": "outro-world",
     "spokenText": "然后，去看见世界本来的样子吧。",
     "text": "然后，去看见世界本来的样子吧",
-    "start": 175.381333,
-    "end": 178.432,
+    "start": 204.88,
+    "end": 209.12,
     "fadeInFrames": 7,
     "fadeOutFrames": 7,
-    "hardClearAt": 178.432
+    "hardClearAt": 209.12
   }
 ]);

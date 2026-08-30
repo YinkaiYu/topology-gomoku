@@ -90,12 +90,105 @@
       "notes": "Build tool only; the executable and libraries are not distributed with the video."
     },
     {
-      "id": "kokoro-82m-zm-yunyang",
-      "role": "voice-model-and-voice-pack",
+      "id": "qwen3-tts-voice-design-cold-witness",
+      "role": "final-voice-model-and-approved-original-design",
       "external": true,
       "usageClass": "release-audio-input",
       "releasedWithVideo": false,
       "incorporatedIntoReleasedAudio": true,
+      "license": "Apache-2.0",
+      "commercialVideoUse": true,
+      "version": "0e711a1c0aa5aad30654426e0d11f67716c1211e",
+      "licenseEvidence": [
+        {
+          "repositoryPath": "assets/licenses/audio/qwen3-tts-0.1.1-apache-2.0.txt",
+          "sha256": "a44a6081c73ad75f0255bb2bb5cab74ef1829565a895a24e53a4f11290ab7655",
+          "source": "Installed qwen-tts 0.1.1 package LICENSE; Apache-2.0"
+        },
+        {
+          "repositoryPath": "assets/licenses/audio/qwen3-tts-voice-design-model-card-0e711a1.md",
+          "sha256": "cef0ef3f5366898466254afaebddb4ba1cd2e9d6dad376a3705b55cfcc8e0f92",
+          "source": "Immutable Qwen/Qwen3-TTS-12Hz-1.7B-VoiceDesign model card at revision 0e711a1c0aa5aad30654426e0d11f67716c1211e"
+        }
+      ],
+      "assetEvidence": [
+        {
+          "label": "immutable VoiceDesign snapshot config.json",
+          "cachePath": "C:/Users/Newton/.cache/huggingface/hub/models--Qwen--Qwen3-TTS-12Hz-1.7B-VoiceDesign/snapshots/0e711a1c0aa5aad30654426e0d11f67716c1211e/config.json",
+          "bytes": 4421,
+          "sha256": "aecd2cc4c1fe9edef1cb7ca7c401685a43879ad43f3f9e883f1c6760b61731e0"
+        }
+      ],
+      "provenance": "All 21 final cues use the official generate_voice_design API with the exact approved Task 8C F cold-witness timbre and delivery strings; no speaker, clone, prompt/reference audio or fallback is accepted.",
+      "notes": "The model files are not distributed. Their rendered narration is the only synthesized voice incorporated into the release audio. Cue WAV hashes and deterministic seeds are recorded in audio/voiceover/timing.json."
+    },
+    {
+      "id": "qwen-tts-0.1.1-runtime",
+      "role": "final-voice-render-runtime",
+      "external": true,
+      "usageClass": "build-tool-only",
+      "releasedWithVideo": false,
+      "incorporatedIntoReleasedAudio": false,
+      "license": "Apache-2.0",
+      "commercialVideoUse": true,
+      "version": "0.1.1",
+      "licenseEvidence": [
+        {
+          "repositoryPath": "assets/licenses/audio/qwen3-tts-0.1.1-apache-2.0.txt",
+          "sha256": "a44a6081c73ad75f0255bb2bb5cab74ef1829565a895a24e53a4f11290ab7655",
+          "source": "Installed qwen-tts 0.1.1 package LICENSE"
+        }
+      ],
+      "provenance": "Locked Python dependency used to call the model's official VoiceDesign method.",
+      "notes": "Build-time runtime only; the package is not embedded in or distributed with the video."
+    },
+    {
+      "id": "whisper-small-intelligibility-review",
+      "role": "local-chinese-asr-review-model",
+      "external": true,
+      "usageClass": "build-tool-only",
+      "releasedWithVideo": false,
+      "incorporatedIntoReleasedAudio": false,
+      "license": "Apache-2.0",
+      "commercialVideoUse": true,
+      "version": "973afd24965f72e36ca33b3055d56a652f456b4d",
+      "licenseEvidence": [
+        {
+          "repositoryPath": "assets/licenses/audio/whisper-small-license-evidence.json",
+          "sha256": "55121e1af2d58511f54625ab4d8a03f792f66ac1ed06e7039af93347ac331a00",
+          "source": "Pinned openai/whisper-small model-card license evidence and immutable upstream revision"
+        }
+      ],
+      "provenance": "Optional local post-render intelligibility analysis only; it never generates or alters narration.",
+      "notes": "ASR transcripts and CER are evidence only. If the pinned model cannot run, review.json records the blocker and the full continuous human-review WAV remains mandatory."
+    },
+    {
+      "id": "whisper-large-v3-turbo-focused-review",
+      "role": "focused-high-cer-local-chinese-asr-review-model",
+      "external": true,
+      "usageClass": "build-tool-only",
+      "releasedWithVideo": false,
+      "incorporatedIntoReleasedAudio": false,
+      "license": "MIT",
+      "commercialVideoUse": true,
+      "version": "41f01f3fe87f28c78e2fbf8b568835947dd65ed9",
+      "licenseEvidence": [
+        {
+          "repositoryPath": "assets/licenses/audio/whisper-large-v3-turbo-license-evidence.json",
+          "sha256": "0b1c7868e58f47ec0a5f0c8aa20f72f8b458a3746402d0a5f803fca8cea7f829",
+          "source": "Pinned openai/whisper-large-v3-turbo model-card license evidence and immutable upstream revision"
+        }
+      ],
+      "provenance": "Focused corroboration only for cues whose primary raw CER is at least 0.30; it never generates or alters narration.",
+      "notes": "Raw transcripts and raw CER from both ASR models stay visible. Agreement is not treated as an intelligibility pass; native continuous-timeline listening remains required."
+    },
+    {
+      "id": "kokoro-82m-zm-yunyang",
+      "role": "voice-model-and-voice-pack",
+      "external": true,
+      "usageClass": "historical-build-artifact",
+      "releasedWithVideo": false,
+      "incorporatedIntoReleasedAudio": false,
       "license": "Apache-2.0",
       "commercialVideoUse": true,
       "version": "model-files-v1.0",
@@ -125,15 +218,16 @@
           "sha256": "bca610b8308e8d99f32e6fe4197e7ec01679264efed0cac9140fe9c29f1fbf7d"
         }
       ],
-      "provenance": "Task 8 dry narration was rendered from the hashed local v1.0 ONNX model and voice pack.",
-      "notes": "Model/voice binaries are not distributed; their rendered narration is incorporated into the release audio."
+      "provenance": "Task 8 dry narration was rendered from the hashed local v1.0 ONNX model and voice pack, then rejected and replaced by Task 8D.",
+      "notes": "Historical evidence only. No Kokoro waveform is incorporated into the final release narration."
     },
     {
       "id": "kokoro-onnx-runtime",
       "role": "voice-render-runtime",
       "external": true,
-      "usageClass": "build-tool-only",
+      "usageClass": "historical-build-artifact",
       "releasedWithVideo": false,
+      "incorporatedIntoReleasedAudio": false,
       "license": "MIT",
       "commercialVideoUse": true,
       "version": "0.6.1",
@@ -145,7 +239,7 @@
         }
       ],
       "provenance": "Installed locked Python package used during Task 8.",
-      "notes": "Build-time runtime only."
+      "notes": "Historical rejected-track build runtime only; not used for Task 8D final voice generation."
     },
     {
       "id": "python-soundfile-runtime",
@@ -153,6 +247,7 @@
       "external": true,
       "usageClass": "build-tool-only",
       "releasedWithVideo": false,
+      "incorporatedIntoReleasedAudio": false,
       "license": "BSD-3-Clause",
       "commercialVideoUse": true,
       "version": "0.14.0",
@@ -170,8 +265,9 @@
       "id": "espeak-ng-phonemizer",
       "role": "voice-phonemizer",
       "external": true,
-      "usageClass": "build-tool-only",
+      "usageClass": "historical-build-artifact",
       "releasedWithVideo": false,
+      "incorporatedIntoReleasedAudio": false,
       "license": "GPL-3.0-or-later",
       "commercialVideoUse": true,
       "version": "doctor-discovered local installation",
@@ -182,8 +278,8 @@
           "source": "eSpeak NG upstream COPYING: https://github.com/espeak-ng/espeak-ng/blob/master/COPYING"
         }
       ],
-      "provenance": "Doctor-discovered local phonemizer used during Task 8.",
-      "notes": "Text phonemization tool only; no eSpeak waveform is present in the resolved narration."
+      "provenance": "Doctor-discovered local phonemizer used only for the rejected Task 8 rhythm track.",
+      "notes": "Historical evidence only. It is not invoked by Task 8D and no eSpeak-derived waveform is present in the final release narration."
     }
   ]
 }

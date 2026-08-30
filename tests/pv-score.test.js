@@ -244,6 +244,8 @@ test("score plan is locked to the measured master timeline and declares an origi
 });
 
 test("deterministic builder emits a real 11-part master and one single-part score/MIDI per stem", () => {
+  const plan = readJson(path.join("audio", "score", "score-plan.json"));
+  const expectedNotationDivisions = Math.round(plan.render.notatedDurationSeconds * plan.render.divisionsPerQuarter);
   runBuilder();
   const generated = [path.join(SCORE_ROOT, "master.musicxml"), path.join(SCORE_ROOT, "master.mid")];
   for (const [stemId] of EXPECTED_PARTS) {
@@ -271,8 +273,10 @@ test("deterministic builder emits a real 11-part master and one single-part scor
   for (const { id, name } of scoreParts) {
     const body = bodies.get(id);
     assert.ok(body, `master is missing body for ${name}`);
-    assert.equal((body.match(/<measure number="/g) ?? []).length, 46, `${name} must span all 46 measures`);
-    assert.equal(scoreDurationDivisions(body), 183250, `${name} notation must cover the 183.250-second 1/32 grid before the 102 ms render pad`);
+    assert.equal((body.match(/<measure number="/g) ?? []).length, plan.render.measureCount,
+      `${name} must span the final measured timeline grid`);
+    assert.equal(scoreDurationDivisions(body), expectedNotationDivisions,
+      `${name} notation must cover the declared 1/32 grid before the measured render pad`);
     assertNotatedDurationsAreCalculable(body);
     assert.match(body, /<(?:pitch|unpitched)>/, `${name} must contain sounding notes, not only rests`);
   }
@@ -281,8 +285,8 @@ test("deterministic builder emits a real 11-part master and one single-part scor
     const stemXml = fs.readFileSync(path.join(STEM_ROOT, `${stemId}.musicxml`), "utf8");
     assert.deepEqual(parseScoreParts(stemXml).map(({ name }) => name), [stemName]);
     const stemBody = [...parsePartBodies(stemXml).values()][0];
-    assert.equal((stemBody.match(/<measure number="/g) ?? []).length, 46);
-    assert.equal(scoreDurationDivisions(stemBody), 183250);
+    assert.equal((stemBody.match(/<measure number="/g) ?? []).length, plan.render.measureCount);
+    assert.equal(scoreDurationDivisions(stemBody), expectedNotationDivisions);
     assertNotatedDurationsAreCalculable(stemBody);
     const stemMidi = new Midi(fs.readFileSync(path.join(STEM_ROOT, `${stemId}.mid`)));
     assert.deepEqual(stemMidi.tracks.map(({ name }) => name), [stemName]);
@@ -401,8 +405,8 @@ test("SFX remain sparse and every external audio dependency is classified agains
   const external = licenses.resources.filter(({ external }) => external);
   assert.ok(external.length >= 2);
   external.forEach((resource) => {
-    assert.ok(["release-audio-input", "build-tool-only"].includes(resource.usageClass),
-      `${resource.id} must distinguish release input from build-only tooling`);
+    assert.ok(["release-audio-input", "build-tool-only", "historical-build-artifact"].includes(resource.usageClass),
+      `${resource.id} must distinguish release input, build tooling and rejected historical artifacts`);
     assert.match(resource.license, /MIT|Apache-2\.0|BSD-3-Clause|GPL-3\.0|LGPL/i);
     assert.ok(Array.isArray(resource.licenseEvidence) && resource.licenseEvidence.length > 0,
       `${resource.id} must cite saved LICENSE/NOTICE evidence`);
@@ -417,10 +421,13 @@ test("SFX remain sparse and every external audio dependency is classified agains
       assert.ok(resource.assetEvidence?.every(({ sha256: assetHash }) => /^[a-f0-9]{64}$/.test(assetHash)));
     } else {
       assert.equal(resource.releasedWithVideo, false, `${resource.id} is tooling and must not be mislabeled as a shipped audio asset`);
+      if (resource.usageClass === "historical-build-artifact") {
+        assert.equal(resource.incorporatedIntoReleasedAudio, false, `${resource.id} cannot remain in release audio after final voice selection`);
+      }
     }
   });
   assert.deepEqual(external.filter(({ usageClass }) => usageClass === "release-audio-input").map(({ id }) => id).sort(),
-    ["kokoro-82m-zm-yunyang", "ms-basic-sf3"]);
+    ["ms-basic-sf3", "qwen3-tts-voice-design-cold-witness"]);
   const soundfont = licenses.resources.find(({ id }) => id === "ms-basic-sf3");
   assert.ok(soundfont);
   assert.equal(soundfont.license, "MIT");

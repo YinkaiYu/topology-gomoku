@@ -1,0 +1,86 @@
+{
+  "schemaVersion": 1,
+  "purpose": "selected-final-release-narration",
+  "selection": {
+    "auditionId": "F",
+    "voiceId": "cold-witness",
+    "auditionConfigPath": "video/footsteps-return/audio/voiceover/auditions.json",
+    "auditionConfigSha256": "2d94820de25d99ffe4f25a66e83833f27e90b0c0ff2c8928676fc511402c3f95",
+    "auditionManifestPath": "video/footsteps-return/audio/voiceover/audition-manifest.json",
+    "auditionWavPath": "video/footsteps-return/captures/voice-auditions/cold-witness.wav",
+    "auditionWavSha256": "b2c5fc6282a462c30e7d558870e7bff855a0102c8f42cb7810c0182b37a368b5"
+  },
+  "textSource": {
+    "scriptPath": "video/footsteps-return/audio/voiceover/script.json",
+    "cueCount": 21,
+    "approvedCueOrderTextSha256": "835b617b3058e74e95b3245fda8c82cfedb65f4f0b2e8f161a69210ba955075d"
+  },
+  "model": {
+    "id": "Qwen/Qwen3-TTS-12Hz-1.7B-VoiceDesign",
+    "revision": "0e711a1c0aa5aad30654426e0d11f67716c1211e",
+    "package": {
+      "name": "qwen-tts",
+      "version": "0.1.1"
+    },
+    "language": "Chinese",
+    "device": "cpu",
+    "generationMethod": "generate_voice_design",
+    "referenceAudio": null,
+    "referenceText": null
+  },
+  "voiceDesign": {
+    "timbreClause": "原创男性声线；低沉、干燥、冷峻、受控；略带距离感；轮廓坚硬而干净；神秘而不阴郁。",
+    "sharedDeliveryClause": "使用成熟、自然的标准普通话；以庄重、克制的电影感旁白朗读；辅音清楚，字词易懂；保持平静而向前的推进；不要悲伤、煽情、广告腔、新闻播音腔、喊叫或拖长句尾。",
+    "instruction": "原创男性声线；低沉、干燥、冷峻、受控；略带距离感；轮廓坚硬而干净；神秘而不阴郁。使用成熟、自然的标准普通话；以庄重、克制的电影感旁白朗读；辅音清楚，字词易懂；保持平静而向前的推进；不要悲伤、煽情、广告腔、新闻播音腔、喊叫或拖长句尾。"
+  },
+  "generation": {
+    "baseSeed": 83001,
+    "seedDerivation": "sha256-u32be-v1",
+    "seedInput": "<base-seed>\\0<zero-based-cue-index>\\0<cue-id>",
+    "maxNewTokens": 512,
+    "doSample": true,
+    "topK": 50,
+    "temperature": 1.0,
+    "repetitionPenalty": 1.05
+  },
+  "output": {
+    "directory": "video/footsteps-return/captures/voiceover",
+    "continuousReviewFile": "video/footsteps-return/captures/voiceover/footsteps-return-voiceover-review.wav",
+    "format": "wav",
+    "sampleRateHz": 48000,
+    "channels": 1,
+    "subtype": "PCM_16",
+    "targetRmsDbfs": -22,
+    "peakCeilingDbfs": -7
+  },
+  "timing": {
+    "baselinePath": "video/footsteps-return/audio/voiceover/timeline-baseline.json",
+    "policy": "preserve cue starts and picture boundaries where measured final speech fits; expand downstream only on overflow",
+    "timeCompression": {
+      "enabled": false,
+      "maximumFactor": 1.08,
+      "reason": "Natural Mandarin takes priority; regeneration and picture expansion precede any compression."
+    }
+  },
+  "asr": {
+    "requested": true,
+    "engine": "transformers WhisperForConditionalGeneration",
+    "model": {
+      "id": "openai/whisper-small",
+      "revision": "973afd24965f72e36ca33b3055d56a652f456b4d"
+    },
+    "language": "zh",
+    "task": "transcribe",
+    "device": "cpu",
+    "license": "Apache-2.0",
+    "licenseEvidence": {
+      "repositoryPath": "assets/licenses/audio/whisper-small-license-evidence.json",
+      "sha256": "55121e1af2d58511f54625ab4d8a03f792f66ac1ed06e7039af93347ac331a00"
+    },
+    "normalization": {
+      "unicode": "NFKC",
+      "removeUnicodePunctuationSeparatorsAndWhitespace": true,
+      "topologyNamePolicy": "No alias, synonym, homophone or spelling repair before CER."
+    }
+  }
+}

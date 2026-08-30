@@ -1,14 +1,17 @@
 {
   "schemaVersion": 1,
   "language": "zh-CN",
-  "purpose": "replaceable-rhythm-track",
+  "purpose": "final-release-narration",
   "voice": {
-    "engine": "Kokoro-82M",
-    "phonemizer": "eSpeak NG",
-    "requestedId": "zm_yunyang",
-    "gender": "male",
-    "speed": 0.88,
-    "fallback": null
+    "engine": "Qwen3-TTS VoiceDesign",
+    "configFile": "video/footsteps-return/audio/voiceover/final-voice.json",
+    "selectedAuditionId": "F",
+    "selectedVoiceId": "cold-witness",
+    "modelId": "Qwen/Qwen3-TTS-12Hz-1.7B-VoiceDesign",
+    "modelRevision": "0e711a1c0aa5aad30654426e0d11f67716c1211e",
+    "generationMethod": "generate_voice_design",
+    "referenceAudio": null,
+    "referenceText": null
   },
   "output": {
     "directory": "video/footsteps-return/captures/voiceover",

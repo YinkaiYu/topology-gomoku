@@ -1,0 +1,33 @@
+{
+  "schemaVersion": 1,
+  "purpose": "focused corroboration and native-listening triage for final VoiceDesign narration; never a release pass/fail gate",
+  "focusedCrossCheck": {
+    "selection": "primary raw CER >= threshold; no full-corpus rerun",
+    "threshold": 0.3,
+    "model": {
+      "id": "openai/whisper-large-v3-turbo",
+      "revision": "41f01f3fe87f28c78e2fbf8b568835947dd65ed9"
+    },
+    "license": "MIT",
+    "licenseEvidence": {
+      "repositoryPath": "assets/licenses/audio/whisper-large-v3-turbo-license-evidence.json",
+      "sha256": "0b1c7868e58f47ec0a5f0c8aa20f72f8b458a3746402d0a5f803fca8cea7f829"
+    }
+  },
+  "manualReviewFocus": [
+    { "cueId": "intro-roads", "category": "mixed-script-variant-and-ordinary-lexical-risk", "focus": "重点核听它们、近邻；primary ASR 写作他们、静灵。" },
+    { "cueId": "intro-invitation", "category": "ordinary-lexical-risk", "focus": "重点核听循着、依次；primary ASR 写作寻着、一次。" },
+    { "cueId": "plane-order", "category": "ordinary-lexical-risk", "focus": "重点核听方向笔直；primary ASR 写作方向彼止。" },
+    { "cueId": "cylinder-cycle", "category": "ordinary-lexical-risk", "focus": "重点核听有始有终；primary ASR 写作有时有终。" },
+    { "cueId": "cylinder-distance", "category": "ordinary-lexical-risk", "focus": "重点核听丈量远近；primary ASR 写作障粮远境。" },
+    { "cueId": "mobius-turn", "category": "topology-term-risk", "focus": "重点核听沿同一面环行；primary ASR 写作颜同一面环形。" },
+    { "cueId": "klein-memory", "category": "mixed-script-variant-and-ordinary-lexical-risk", "focus": "重点核听路径；primary 主要为繁体偏差，但 secondary 写作入境。" },
+    { "cueId": "projective-reflection", "category": "topology-term-risk", "focus": "重点核听倒映使棋路重新吻合；primary ASR 有多处同音词分歧。" },
+    { "cueId": "projective-twin", "category": "script-variant-dominant", "focus": "primary ASR 语词一致但输出繁体；仍需连续人审确认。" },
+    { "cueId": "sphere-closure", "category": "mixed-script-variant-and-topology-term-risk", "focus": "重点核听棋路、相邻；primary ASR 写作齐路、乡林。" },
+    { "cueId": "sphere-map", "category": "script-variant-dominant", "focus": "primary ASR 语词一致但输出繁体；仍需连续人审确认。" },
+    { "cueId": "sphere-boundary", "category": "mixed-script-variant-and-ordinary-lexical-risk", "focus": "重点核听世界时；primary ASR 写作世界是。" },
+    { "cueId": "outro-invocation", "category": "ordinary-lexical-risk", "focus": "重点核听落子之人；primary ASR 写作落子之恩。" },
+    { "cueId": "outro-connection", "category": "ordinary-lexical-risk", "focus": "重点核听七种世界；primary ASR 开头明显不一致。" }
+  ]
+}

@@ -3700,7 +3700,7 @@
       <notations><tied type="stop"/><tied type="start"/></notations>
     </note>
   </measure>
-  <measure number="46" implicit="yes">
+  <measure number="46">
     <note>
       <pitch><step>E</step><octave>4</octave></pitch>
       <tie type="stop"/>
@@ -3718,7 +3718,15 @@
       <dot/>
       <staff>1</staff>
     </note>
-    <backup><duration>3250</duration></backup>
+    <note>
+      <rest/>
+      <duration>750</duration>
+      <voice>1</voice>
+      <type>eighth</type>
+      <dot/>
+      <staff>1</staff>
+    </note>
+    <backup><duration>4000</duration></backup>
     <note>
       <pitch><step>D</step><octave>2</octave></pitch>
       <tie type="stop"/>
@@ -3774,6 +3782,150 @@
       <voice>2</voice>
       <type>half</type>
       <dot/>
+      <staff>2</staff>
+    </note>
+    <note>
+      <rest/>
+      <duration>750</duration>
+      <voice>2</voice>
+      <type>eighth</type>
+      <dot/>
+      <staff>2</staff>
+    </note>
+  </measure>
+  <measure number="47">
+    <note>
+      <rest/>
+      <duration>4000</duration>
+      <voice>1</voice>
+      <type>whole</type>
+      <staff>1</staff>
+    </note>
+    <backup><duration>4000</duration></backup>
+    <note>
+      <rest/>
+      <duration>4000</duration>
+      <voice>2</voice>
+      <type>whole</type>
+      <staff>2</staff>
+    </note>
+  </measure>
+  <measure number="48">
+    <note>
+      <rest/>
+      <duration>4000</duration>
+      <voice>1</voice>
+      <type>whole</type>
+      <staff>1</staff>
+    </note>
+    <backup><duration>4000</duration></backup>
+    <note>
+      <rest/>
+      <duration>4000</duration>
+      <voice>2</voice>
+      <type>whole</type>
+      <staff>2</staff>
+    </note>
+  </measure>
+  <measure number="49">
+    <note>
+      <rest/>
+      <duration>4000</duration>
+      <voice>1</voice>
+      <type>whole</type>
+      <staff>1</staff>
+    </note>
+    <backup><duration>4000</duration></backup>
+    <note>
+      <rest/>
+      <duration>4000</duration>
+      <voice>2</voice>
+      <type>whole</type>
+      <staff>2</staff>
+    </note>
+  </measure>
+  <measure number="50">
+    <note>
+      <rest/>
+      <duration>4000</duration>
+      <voice>1</voice>
+      <type>whole</type>
+      <staff>1</staff>
+    </note>
+    <backup><duration>4000</duration></backup>
+    <note>
+      <rest/>
+      <duration>4000</duration>
+      <voice>2</voice>
+      <type>whole</type>
+      <staff>2</staff>
+    </note>
+  </measure>
+  <measure number="51">
+    <note>
+      <rest/>
+      <duration>4000</duration>
+      <voice>1</voice>
+      <type>whole</type>
+      <staff>1</staff>
+    </note>
+    <backup><duration>4000</duration></backup>
+    <note>
+      <rest/>
+      <duration>4000</duration>
+      <voice>2</voice>
+      <type>whole</type>
+      <staff>2</staff>
+    </note>
+  </measure>
+  <measure number="52">
+    <note>
+      <rest/>
+      <duration>4000</duration>
+      <voice>1</voice>
+      <type>whole</type>
+      <staff>1</staff>
+    </note>
+    <backup><duration>4000</duration></backup>
+    <note>
+      <rest/>
+      <duration>4000</duration>
+      <voice>2</voice>
+      <type>whole</type>
+      <staff>2</staff>
+    </note>
+  </measure>
+  <measure number="53">
+    <note>
+      <rest/>
+      <duration>4000</duration>
+      <voice>1</voice>
+      <type>whole</type>
+      <staff>1</staff>
+    </note>
+    <backup><duration>4000</duration></backup>
+    <note>
+      <rest/>
+      <duration>4000</duration>
+      <voice>2</voice>
+      <type>whole</type>
+      <staff>2</staff>
+    </note>
+  </measure>
+  <measure number="54" implicit="yes">
+    <note>
+      <rest/>
+      <duration>2000</duration>
+      <voice>1</voice>
+      <type>half</type>
+      <staff>1</staff>
+    </note>
+    <backup><duration>2000</duration></backup>
+    <note>
+      <rest/>
+      <duration>2000</duration>
+      <voice>2</voice>
+      <type>half</type>
       <staff>2</staff>
     </note>
   </measure>

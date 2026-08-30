@@ -1,454 +1,1607 @@
 {
-  "schemaVersion": 1,
-  "trackPurpose": "replaceable-rhythm-track",
-  "resolvedVoice": {
-    "engine": "Kokoro-82M",
-    "phonemizer": "eSpeak NG",
-    "requestedId": "zm_yunyang",
-    "resolvedId": "zm_yunyang",
-    "gender": "male",
-    "speed": 0.88,
-    "fallback": null
+  "schemaVersion": 2,
+  "trackPurpose": "final-release-narration",
+  "finalConfigSha256": "6478e6fa26f2170a1fd7190946103ce78a98e11373825ad5de474725f6818c84",
+  "selectedVoice": {
+    "auditionId": "F",
+    "voiceId": "cold-witness",
+    "auditionConfigSha256": "2d94820de25d99ffe4f25a66e83833f27e90b0c0ff2c8928676fc511402c3f95",
+    "auditionWavSha256": "b2c5fc6282a462c30e7d558870e7bff855a0102c8f42cb7810c0182b37a368b5",
+    "modelId": "Qwen/Qwen3-TTS-12Hz-1.7B-VoiceDesign",
+    "modelRevision": "0e711a1c0aa5aad30654426e0d11f67716c1211e",
+    "timbreClause": "原创男性声线；低沉、干燥、冷峻、受控；略带距离感；轮廓坚硬而干净；神秘而不阴郁。",
+    "sharedDeliveryClause": "使用成熟、自然的标准普通话；以庄重、克制的电影感旁白朗读；辅音清楚，字词易懂；保持平静而向前的推进；不要悲伤、煽情、广告腔、新闻播音腔、喊叫或拖长句尾。",
+    "instruction": "原创男性声线；低沉、干燥、冷峻、受控；略带距离感；轮廓坚硬而干净；神秘而不阴郁。使用成熟、自然的标准普通话；以庄重、克制的电影感旁白朗读；辅音清楚，字词易懂；保持平静而向前的推进；不要悲伤、煽情、广告腔、新闻播音腔、喊叫或拖长句尾。"
   },
-  "replacementContract": "Replace captures/voiceover/<cue-id>.wav one-for-one without changing cue IDs.",
+  "replacementContract": "Replace captures/voiceover/<cue-id>.wav one-for-one without changing cue IDs or approved text.",
   "synthesisRuntime": {
-    "python": ".venv/Scripts/python.exe via HYPERFRAMES_PYTHON",
-    "packages": [
-      "kokoro-onnx==0.6.1 (MIT)",
-      "soundfile==0.14.0 (BSD-3-Clause)"
-    ],
-    "model": "Kokoro-82M / kokoro-v1.0.onnx + voices-v1.0.bin (Apache-2.0)",
-    "installCommand": "uv add kokoro-onnx soundfile"
+    "path": "official qwen-tts generate_voice_design only",
+    "package": "qwen-tts==0.1.1 (Apache-2.0)",
+    "device": "CPU FP32 eager attention",
+    "modelLoadSeconds": 3.8,
+    "cueInferenceAndNormalizationSeconds": 831.455
   },
-  "paceCalibration": {
-    "cueIds": [
-      "intro-boundary",
-      "intro-roads",
-      "intro-invitation"
-    ],
-    "candidates": [
+  "normalization": {
+    "directory": "video/footsteps-return/captures/voiceover",
+    "continuousReviewFile": "video/footsteps-return/captures/voiceover/footsteps-return-voiceover-review.wav",
+    "format": "wav",
+    "sampleRateHz": 48000,
+    "channels": 1,
+    "subtype": "PCM_16",
+    "targetRmsDbfs": -22,
+    "peakCeilingDbfs": -7
+  },
+  "auditionMethod": "peak/RMS, active-sample ratio, leading/trailing silence, duration, file hash, timeline non-overlap, local ASR when available, and 4K caption sync",
+  "asr": {
+    "enabled": true,
+    "status": "completed",
+    "engine": "transformers WhisperForConditionalGeneration",
+    "model": {
+      "id": "openai/whisper-small",
+      "revision": "973afd24965f72e36ca33b3055d56a652f456b4d",
+      "runtime": "transformers==4.57.3",
+      "device": "cpu",
+      "language": "zh",
+      "task": "transcribe"
+    },
+    "license": "Apache-2.0",
+    "licenseEvidence": {
+      "repositoryPath": "assets/licenses/audio/whisper-small-license-evidence.json",
+      "sha256": "55121e1af2d58511f54625ab4d8a03f792f66ac1ed06e7039af93347ac331a00"
+    },
+    "normalization": {
+      "unicode": "NFKC",
+      "removeUnicodePunctuationSeparatorsAndWhitespace": true,
+      "topologyNamePolicy": "No alias, synonym, homophone or spelling repair before CER."
+    },
+    "reviewPolicy": {
+      "file": "video/footsteps-return/audio/voiceover/asr-review.json",
+      "sha256": "4e34060e039e62613c4db871ed215bc3892f26c12297500d5b064f9ae826965f"
+    },
+    "corpusReferenceCharacters": 515,
+    "corpusEditDistance": 130,
+    "corpusCer": 0.252427,
+    "diagnosticCorpusCerAfterScriptVariantFold": 0.069903,
+    "diagnosticScriptVariantFoldPolicy": "This diagnostic separates Whisper Simplified/Traditional output bias; it never overwrites raw CER and never repairs topology terms, synonyms or homophones.",
+    "focusedCrossCheck": {
+      "status": "completed",
+      "selection": "primary raw CER >= threshold; no full-corpus rerun",
+      "threshold": 0.3,
+      "cueIds": [
+        "intro-roads",
+        "intro-invitation",
+        "cylinder-distance",
+        "mobius-turn",
+        "klein-memory",
+        "projective-twin",
+        "sphere-closure",
+        "sphere-map",
+        "sphere-boundary",
+        "outro-connection",
+        "outro-world"
+      ],
+      "cueCount": 11,
+      "model": {
+        "id": "openai/whisper-large-v3-turbo",
+        "revision": "41f01f3fe87f28c78e2fbf8b568835947dd65ed9"
+      },
+      "license": "MIT",
+      "licenseEvidence": {
+        "repositoryPath": "assets/licenses/audio/whisper-large-v3-turbo-license-evidence.json",
+        "sha256": "0b1c7868e58f47ec0a5f0c8aa20f72f8b458a3746402d0a5f803fca8cea7f829"
+      },
+      "cuesCompleted": 11
+    },
+    "manualReview": {
+      "status": "required",
+      "focusCues": [
+        {
+          "cueId": "intro-roads",
+          "category": "mixed-script-variant-and-ordinary-lexical-risk",
+          "focus": "重点核听它们、近邻；primary ASR 写作他们、静灵。",
+          "primaryTranscript": "可那些消失在邊界上的道路並未中斷,他們在另一處接縫後延續,將遙遠的落點重新變為靜靈。",
+          "primaryRawCer": 0.435897,
+          "primaryDiagnosticScriptVariantFoldCer": 0.076923,
+          "focusedCrossCheck": {
+            "status": "completed",
+            "model": {
+              "id": "openai/whisper-large-v3-turbo",
+              "revision": "41f01f3fe87f28c78e2fbf8b568835947dd65ed9"
+            },
+            "transcript": "可那些消失在边界上的道路并未中断,他们在另一处接缝后延续,将遥远的落点重新变为静灵。",
+            "normalizedTranscript": "可那些消失在边界上的道路并未中断他们在另一处接缝后延续将遥远的落点重新变为静灵",
+            "editDistance": 3,
+            "cer": 0.076923,
+            "diagnosticScriptVariantFold": {
+              "policy": "Diagnosis only; cross-check raw transcript and raw CER remain unchanged.",
+              "foldedTranscript": "可那些消失在边界上的道路并未中断他们在另一处接缝后延续将遥远的落点重新变为静灵",
+              "foldedCharacters": 0,
+              "editDistance": 3,
+              "cer": 0.076923
+            }
+          },
+          "requiredAction": "Native Mandarin reviewer must hear this cue in the continuous timeline; ASR agreement or disagreement is not an intelligibility pass."
+        },
+        {
+          "cueId": "intro-invitation",
+          "category": "ordinary-lexical-risk",
+          "focus": "重点核听循着、依次；primary ASR 写作寻着、一次。",
+          "primaryTranscript": "現在落子之人啊 尋著隱藏的連接前行吧七種世界將在你面前一次展開",
+          "primaryRawCer": 0.3,
+          "primaryDiagnosticScriptVariantFoldCer": 0.1,
+          "focusedCrossCheck": {
+            "status": "completed",
+            "model": {
+              "id": "openai/whisper-large-v3-turbo",
+              "revision": "41f01f3fe87f28c78e2fbf8b568835947dd65ed9"
+            },
+            "transcript": "现在落子之人啊寻着隐藏的连接前行吧七种世界将在你面前依次展开",
+            "normalizedTranscript": "现在落子之人啊寻着隐藏的连接前行吧七种世界将在你面前依次展开",
+            "editDistance": 1,
+            "cer": 0.033333,
+            "diagnosticScriptVariantFold": {
+              "policy": "Diagnosis only; cross-check raw transcript and raw CER remain unchanged.",
+              "foldedTranscript": "现在落子之人啊寻着隐藏的连接前行吧七种世界将在你面前依次展开",
+              "foldedCharacters": 0,
+              "editDistance": 1,
+              "cer": 0.033333
+            }
+          },
+          "requiredAction": "Native Mandarin reviewer must hear this cue in the continuous timeline; ASR agreement or disagreement is not an intelligibility pass."
+        },
+        {
+          "cueId": "plane-order",
+          "category": "ordinary-lexical-risk",
+          "focus": "重点核听方向笔直；primary ASR 写作方向彼止。",
+          "primaryTranscript": "边界分明 方向彼止 胜负都在眼前方庭以有限的秩序收容第一条五连也由此埋下对所有边界的疑问",
+          "primaryRawCer": 0.047619,
+          "primaryDiagnosticScriptVariantFoldCer": 0.047619,
+          "focusedCrossCheck": {
+            "status": "not-selected",
+            "reason": "primary raw CER 0.047619 is below focused threshold 0.300000"
+          },
+          "requiredAction": "Native Mandarin reviewer must hear this cue in the continuous timeline; ASR agreement or disagreement is not an intelligibility pass."
+        },
+        {
+          "cueId": "cylinder-cycle",
+          "category": "ordinary-lexical-risk",
+          "focus": "重点核听有始有终；primary ASR 写作有时有终。",
+          "primaryTranscript": "左右相接 上下仍被截断橫向的路繞過世界回到身後縱向的路卻有時有終",
+          "primaryRawCer": 0.258065,
+          "primaryDiagnosticScriptVariantFoldCer": 0.032258,
+          "focusedCrossCheck": {
+            "status": "not-selected",
+            "reason": "primary raw CER 0.258065 is below focused threshold 0.300000"
+          },
+          "requiredAction": "Native Mandarin reviewer must hear this cue in the continuous timeline; ASR agreement or disagreement is not an intelligibility pass."
+        },
+        {
+          "cueId": "cylinder-distance",
+          "category": "ordinary-lexical-risk",
+          "focus": "重点核听丈量远近；primary ASR 写作障粮远境。",
+          "primaryTranscript": "只擁有一重循環的世界該如何障糧遠境",
+          "primaryRawCer": 0.411765,
+          "primaryDiagnosticScriptVariantFoldCer": 0.176471,
+          "focusedCrossCheck": {
+            "status": "completed",
+            "model": {
+              "id": "openai/whisper-large-v3-turbo",
+              "revision": "41f01f3fe87f28c78e2fbf8b568835947dd65ed9"
+            },
+            "transcript": "只拥有一重循环的世界该如何丈量远近",
+            "normalizedTranscript": "只拥有一重循环的世界该如何丈量远近",
+            "editDistance": 0,
+            "cer": 0.0,
+            "diagnosticScriptVariantFold": {
+              "policy": "Diagnosis only; cross-check raw transcript and raw CER remain unchanged.",
+              "foldedTranscript": "只拥有一重循环的世界该如何丈量远近",
+              "foldedCharacters": 0,
+              "editDistance": 0,
+              "cer": 0.0
+            }
+          },
+          "requiredAction": "Native Mandarin reviewer must hear this cue in the continuous timeline; ASR agreement or disagreement is not an intelligibility pass."
+        },
+        {
+          "cueId": "mobius-turn",
+          "category": "topology-term-risk",
+          "focus": "重点核听沿同一面环行；primary ASR 写作颜同一面环形。",
+          "primaryTranscript": "左右邊界相接卻帶著一次翻轉,顏同一面環形一周,歸來時上下已經交換。",
+          "primaryRawCer": 0.433333,
+          "primaryDiagnosticScriptVariantFoldCer": 0.133333,
+          "focusedCrossCheck": {
+            "status": "completed",
+            "model": {
+              "id": "openai/whisper-large-v3-turbo",
+              "revision": "41f01f3fe87f28c78e2fbf8b568835947dd65ed9"
+            },
+            "transcript": "左右边界相接却带着一次翻转严同一面环形一周归来是上下已经交换",
+            "normalizedTranscript": "左右边界相接却带着一次翻转严同一面环形一周归来是上下已经交换",
+            "editDistance": 3,
+            "cer": 0.1,
+            "diagnosticScriptVariantFold": {
+              "policy": "Diagnosis only; cross-check raw transcript and raw CER remain unchanged.",
+              "foldedTranscript": "左右边界相接却带着一次翻转严同一面环形一周归来是上下已经交换",
+              "foldedCharacters": 0,
+              "editDistance": 3,
+              "cer": 0.1
+            }
+          },
+          "requiredAction": "Native Mandarin reviewer must hear this cue in the continuous timeline; ASR agreement or disagreement is not an intelligibility pass."
+        },
+        {
+          "cueId": "klein-memory",
+          "category": "mixed-script-variant-and-ordinary-lexical-risk",
+          "focus": "重点核听路径；primary 主要为繁体偏差，但 secondary 写作入境。",
+          "primaryTranscript": "路徑會記住你選擇的環繞",
+          "primaryRawCer": 0.636364,
+          "primaryDiagnosticScriptVariantFoldCer": 0.0,
+          "focusedCrossCheck": {
+            "status": "completed",
+            "model": {
+              "id": "openai/whisper-large-v3-turbo",
+              "revision": "41f01f3fe87f28c78e2fbf8b568835947dd65ed9"
+            },
+            "transcript": "入境会记住你选择的环绕",
+            "normalizedTranscript": "入境会记住你选择的环绕",
+            "editDistance": 2,
+            "cer": 0.181818,
+            "diagnosticScriptVariantFold": {
+              "policy": "Diagnosis only; cross-check raw transcript and raw CER remain unchanged.",
+              "foldedTranscript": "入境会记住你选择的环绕",
+              "foldedCharacters": 0,
+              "editDistance": 2,
+              "cer": 0.181818
+            }
+          },
+          "requiredAction": "Native Mandarin reviewer must hear this cue in the continuous timeline; ASR agreement or disagreement is not an intelligibility pass."
+        },
+        {
+          "cueId": "projective-reflection",
+          "category": "topology-term-risk",
+          "focus": "重点核听倒映使棋路重新吻合；primary ASR 有多处同音词分歧。",
+          "primaryTranscript": "上下左右全都通向各自的倒影一次越界改变方向两次倒影时起路重新问和",
+          "primaryRawCer": 0.15625,
+          "primaryDiagnosticScriptVariantFoldCer": 0.15625,
+          "focusedCrossCheck": {
+            "status": "not-selected",
+            "reason": "primary raw CER 0.156250 is below focused threshold 0.300000"
+          },
+          "requiredAction": "Native Mandarin reviewer must hear this cue in the continuous timeline; ASR agreement or disagreement is not an intelligibility pass."
+        },
+        {
+          "cueId": "projective-twin",
+          "category": "script-variant-dominant",
+          "focus": "primary ASR 语词一致但输出繁体；仍需连续人审确认。",
+          "primaryTranscript": "在雙生的世界裡每次遠行都會遇見另一個自己",
+          "primaryRawCer": 0.3,
+          "primaryDiagnosticScriptVariantFoldCer": 0.0,
+          "focusedCrossCheck": {
+            "status": "completed",
+            "model": {
+              "id": "openai/whisper-large-v3-turbo",
+              "revision": "41f01f3fe87f28c78e2fbf8b568835947dd65ed9"
+            },
+            "transcript": "在双生的世界里每次远行都会遇见另一个自己",
+            "normalizedTranscript": "在双生的世界里每次远行都会遇见另一个自己",
+            "editDistance": 0,
+            "cer": 0.0,
+            "diagnosticScriptVariantFold": {
+              "policy": "Diagnosis only; cross-check raw transcript and raw CER remain unchanged.",
+              "foldedTranscript": "在双生的世界里每次远行都会遇见另一个自己",
+              "foldedCharacters": 0,
+              "editDistance": 0,
+              "cer": 0.0
+            }
+          },
+          "requiredAction": "Native Mandarin reviewer must hear this cue in the continuous timeline; ASR agreement or disagreement is not an intelligibility pass."
+        },
+        {
+          "cueId": "sphere-closure",
+          "category": "mixed-script-variant-and-topology-term-risk",
+          "focus": "重点核听棋路、相邻；primary ASR 写作齐路、乡林。",
+          "primaryTranscript": "在最後的世界,齊路離開一條邊,便會沿鄉林的方向繼續。四條邊依次歸向彼此,方形的棋盤也隨之閉合成球。",
+          "primaryRawCer": 0.386364,
+          "primaryDiagnosticScriptVariantFoldCer": 0.090909,
+          "focusedCrossCheck": {
+            "status": "completed",
+            "model": {
+              "id": "openai/whisper-large-v3-turbo",
+              "revision": "41f01f3fe87f28c78e2fbf8b568835947dd65ed9"
+            },
+            "transcript": "在最后的世界,骑鹿离开一条边,便会沿相邻的方向继续,四条边依次归向彼此,方形的棋盘也随之闭合成球。",
+            "normalizedTranscript": "在最后的世界骑鹿离开一条边便会沿相邻的方向继续四条边依次归向彼此方形的棋盘也随之闭合成球",
+            "editDistance": 2,
+            "cer": 0.045455,
+            "diagnosticScriptVariantFold": {
+              "policy": "Diagnosis only; cross-check raw transcript and raw CER remain unchanged.",
+              "foldedTranscript": "在最后的世界骑鹿离开一条边便会沿相邻的方向继续四条边依次归向彼此方形的棋盘也随之闭合成球",
+              "foldedCharacters": 0,
+              "editDistance": 2,
+              "cer": 0.045455
+            }
+          },
+          "requiredAction": "Native Mandarin reviewer must hear this cue in the continuous timeline; ASR agreement or disagreement is not an intelligibility pass."
+        },
+        {
+          "cueId": "sphere-map",
+          "category": "script-variant-dominant",
+          "focus": "primary ASR 语词一致但输出繁体；仍需连续人审确认。",
+          "primaryTranscript": "人們為了看清完整的世界,將它展開成一張有邊的圖。",
+          "primaryRawCer": 0.318182,
+          "primaryDiagnosticScriptVariantFoldCer": 0.0,
+          "focusedCrossCheck": {
+            "status": "completed",
+            "model": {
+              "id": "openai/whisper-large-v3-turbo",
+              "revision": "41f01f3fe87f28c78e2fbf8b568835947dd65ed9"
+            },
+            "transcript": "人们为了看清完整的世界,将它展开成一张有边的图。",
+            "normalizedTranscript": "人们为了看清完整的世界将它展开成一张有边的图",
+            "editDistance": 0,
+            "cer": 0.0,
+            "diagnosticScriptVariantFold": {
+              "policy": "Diagnosis only; cross-check raw transcript and raw CER remain unchanged.",
+              "foldedTranscript": "人们为了看清完整的世界将它展开成一张有边的图",
+              "foldedCharacters": 0,
+              "editDistance": 0,
+              "cer": 0.0
+            }
+          },
+          "requiredAction": "Native Mandarin reviewer must hear this cue in the continuous timeline; ASR agreement or disagreement is not an intelligibility pass."
+        },
+        {
+          "cueId": "sphere-boundary",
+          "category": "mixed-script-variant-and-ordinary-lexical-risk",
+          "focus": "重点核听世界时；primary ASR 写作世界是。",
+          "primaryTranscript": "所謂邊界或許只是觀察世界是留下的痕跡",
+          "primaryRawCer": 0.333333,
+          "primaryDiagnosticScriptVariantFoldCer": 0.166667,
+          "focusedCrossCheck": {
+            "status": "completed",
+            "model": {
+              "id": "openai/whisper-large-v3-turbo",
+              "revision": "41f01f3fe87f28c78e2fbf8b568835947dd65ed9"
+            },
+            "transcript": "所谓边界或许只是观察世界史留下的痕迹",
+            "normalizedTranscript": "所谓边界或许只是观察世界史留下的痕迹",
+            "editDistance": 1,
+            "cer": 0.055556,
+            "diagnosticScriptVariantFold": {
+              "policy": "Diagnosis only; cross-check raw transcript and raw CER remain unchanged.",
+              "foldedTranscript": "所谓边界或许只是观察世界史留下的痕迹",
+              "foldedCharacters": 0,
+              "editDistance": 1,
+              "cer": 0.055556
+            }
+          },
+          "requiredAction": "Native Mandarin reviewer must hear this cue in the continuous timeline; ASR agreement or disagreement is not an intelligibility pass."
+        },
+        {
+          "cueId": "outro-invocation",
+          "category": "ordinary-lexical-risk",
+          "focus": "重点核听落子之人；primary ASR 写作落子之恩。",
+          "primaryTranscript": "现在 落子之恩",
+          "primaryRawCer": 0.166667,
+          "primaryDiagnosticScriptVariantFoldCer": 0.166667,
+          "focusedCrossCheck": {
+            "status": "not-selected",
+            "reason": "primary raw CER 0.166667 is below focused threshold 0.300000"
+          },
+          "requiredAction": "Native Mandarin reviewer must hear this cue in the continuous timeline; ASR agreement or disagreement is not an intelligibility pass."
+        },
+        {
+          "cueId": "outro-connection",
+          "category": "ordinary-lexical-risk",
+          "focus": "重点核听七种世界；primary ASR 开头明显不一致。",
+          "primaryTranscript": "哇 成整世界已經顯現 但最後的連結仍等待你親手完成",
+          "primaryRawCer": 0.454545,
+          "primaryDiagnosticScriptVariantFoldCer": 0.227273,
+          "focusedCrossCheck": {
+            "status": "completed",
+            "model": {
+              "id": "openai/whisper-large-v3-turbo",
+              "revision": "41f01f3fe87f28c78e2fbf8b568835947dd65ed9"
+            },
+            "transcript": "哇,重整世界已经显现,但最后的连接仍等待你亲手完成。",
+            "normalizedTranscript": "哇重整世界已经显现但最后的连接仍等待你亲手完成",
+            "editDistance": 3,
+            "cer": 0.136364,
+            "diagnosticScriptVariantFold": {
+              "policy": "Diagnosis only; cross-check raw transcript and raw CER remain unchanged.",
+              "foldedTranscript": "哇重整世界已经显现但最后的连接仍等待你亲手完成",
+              "foldedCharacters": 0,
+              "editDistance": 3,
+              "cer": 0.136364
+            }
+          },
+          "requiredAction": "Native Mandarin reviewer must hear this cue in the continuous timeline; ASR agreement or disagreement is not an intelligibility pass."
+        }
+      ],
+      "continuousReviewFile": "video/footsteps-return/captures/voiceover/footsteps-return-voiceover-review.wav",
+      "conclusion": "Corpus CER is not an intelligibility pass. Ordinary-word and topology-term disagreements remain explicit native-listening targets."
+    },
+    "attempts": [
       {
-        "speed": 0.84,
-        "aggregateDurationSeconds": 20.35
+        "engine": "transformers WhisperForConditionalGeneration",
+        "modelId": "openai/whisper-small",
+        "modelRevision": "973afd24965f72e36ca33b3055d56a652f456b4d",
+        "device": "cpu",
+        "status": "completed",
+        "seconds": 42.317
       },
       {
-        "speed": 0.88,
-        "aggregateDurationSeconds": 19.56,
-        "selected": true
-      },
-      {
-        "speed": 0.92,
-        "aggregateDurationSeconds": 18.77
+        "engine": "transformers WhisperForConditionalGeneration",
+        "modelId": "openai/whisper-large-v3-turbo",
+        "modelRevision": "41f01f3fe87f28c78e2fbf8b568835947dd65ed9",
+        "device": "cpu",
+        "scope": "focused-high-raw-CER-cues-only",
+        "cueIds": [
+          "intro-roads",
+          "intro-invitation",
+          "cylinder-distance",
+          "mobius-turn",
+          "klein-memory",
+          "projective-twin",
+          "sphere-closure",
+          "sphere-map",
+          "sphere-boundary",
+          "outro-connection",
+          "outro-world"
+        ],
+        "status": "completed",
+        "seconds": 67.87
       }
     ],
-    "rationale": "0.88 retains the requested mature, restrained rhythm without stretching the composition or chasing the 165-second reference."
+    "totalSeconds": 110.574,
+    "limitation": "ASR is an objective aid only and does not replace native Mandarin listening; no cue is accepted solely from CER."
   },
-  "auditionMethod": "sample-count, file hash, peak/RMS, active-sample ratio, leading/trailing silence, duration, and 4K caption-sync inspection",
+  "continuousReview": {
+    "file": "video/footsteps-return/captures/voiceover/footsteps-return-voiceover-review.wav",
+    "format": "WAV PCM-16",
+    "sampleRateHz": 48000,
+    "channels": 1,
+    "bitsPerSample": 16,
+    "durationSeconds": 214.04,
+    "bytes": 20547884,
+    "sha256": "6d577627c27dfac62243438f6362a942d76c70b44094e446199af69b57ef8794",
+    "alignment": "Each dry cue begins at timing.json timelineStartSeconds; all other samples are digital silence."
+  },
   "nativeListening": {
-    "status": "required-before-final-mix",
-    "reason": "This agent host cannot present returned audio to the model for a truthful subjective Mandarin audition.",
-    "asrAssist": "HyperFrames transcribe was attempted with Whisper small/zh and returned whisper_unavailable."
+    "status": "user-review-required",
+    "reviewFile": "video/footsteps-return/captures/voiceover/footsteps-return-voiceover-review.wav",
+    "reason": "Automated signal and ASR evidence cannot establish native Mandarin diction, timbre continuity or dramatic restraint."
   },
-  "trackDisposition": "rhythm-track-ready; native Mandarin pronunciation review required before final mix",
+  "trackDisposition": "final-voiceover-generated; user review required before final mix",
   "unacceptableCues": [],
   "cues": [
     {
       "id": "intro-boundary",
       "replacementId": "intro-boundary",
-      "status": "automated-signal-review-passed",
-      "pronunciation": "native-listener-review-required",
-      "cadence": "tempo-calibrated-at-0.88",
-      "notes": [
-        "Wording remains locked to the approved Task 2 script.",
-        "No pronunciation edits are authorized from automated inspection alone."
-      ],
+      "textSha256": "d1a80a0a66e315e0fc6724c0964fe2f7d00b80490f3817e1367bfe3f154c53da",
+      "seed": 1803012708,
+      "status": "automated-structure-and-signal-review-passed",
+      "pronunciation": "user-review-required",
+      "timeCompressionFactor": 1,
+      "timelineStartSeconds": 0.42,
+      "timelineEndSeconds": 4.5,
       "signal": {
-        "durationSeconds": 3.498667,
-        "peakDbfs": -4.692,
-        "rmsDbfs": -26.495,
-        "activeRatio": 0.512421,
-        "leadingSilenceSeconds": 0.164854,
-        "trailingSilenceSeconds": 0.100062
+        "durationSeconds": 4.08,
+        "sampleRateHz": 48000,
+        "channels": 1,
+        "bitsPerSample": 16,
+        "subtype": "PCM_16",
+        "peakDbfs": -7,
+        "rmsDbfs": -22,
+        "activeRatio": 0.701905,
+        "leadingSilenceSeconds": 0.244375,
+        "trailingSilenceSeconds": 0.225896,
+        "bytes": 391724,
+        "sha256": "825be46e0acccd950d1f1bb4e0c1c1e1474d411524bf00c8f394b444051523cd"
+      },
+      "asr": {
+        "status": "completed",
+        "transcript": "人们总把棋盘的边缘视作尽头",
+        "normalizedReference": "人们总把棋盘的边缘视作尽头",
+        "normalizedTranscript": "人们总把棋盘的边缘视作尽头",
+        "referenceCharacters": 13,
+        "editDistance": 0,
+        "cer": 0.0,
+        "diagnosticScriptVariantFold": {
+          "policy": "Documented Simplified/Traditional character fold for diagnosis only; raw transcript and raw CER above remain unchanged.",
+          "foldedTranscript": "人们总把棋盘的边缘视作尽头",
+          "foldedCharacters": 0,
+          "editDistance": 0,
+          "cer": 0.0
+        }
       }
     },
     {
       "id": "intro-roads",
       "replacementId": "intro-roads",
-      "status": "automated-signal-review-passed",
-      "pronunciation": "native-listener-review-required",
-      "cadence": "tempo-calibrated-at-0.88",
-      "notes": [
-        "Wording remains locked to the approved Task 2 script.",
-        "No pronunciation edits are authorized from automated inspection alone."
-      ],
+      "textSha256": "7c0dcf11bdf9a086ff950bee4717031379b5059f66340859b804160b423a8832",
+      "seed": 1279274001,
+      "status": "automated-structure-and-signal-review-passed",
+      "pronunciation": "user-review-required",
+      "timeCompressionFactor": 1,
+      "timelineStartSeconds": 4.86,
+      "timelineEndSeconds": 14.86,
       "signal": {
-        "durationSeconds": 8.832,
-        "peakDbfs": -2.768,
-        "rmsDbfs": -26.608,
-        "activeRatio": 0.522147,
-        "leadingSilenceSeconds": 0.121146,
-        "trailingSilenceSeconds": 0.124896
+        "durationSeconds": 10,
+        "sampleRateHz": 48000,
+        "channels": 1,
+        "bitsPerSample": 16,
+        "subtype": "PCM_16",
+        "peakDbfs": -7.0006,
+        "rmsDbfs": -22,
+        "activeRatio": 0.618375,
+        "leadingSilenceSeconds": 0.032583,
+        "trailingSilenceSeconds": 0.139854,
+        "bytes": 960044,
+        "sha256": "246ce63602ef6ff58083798c1fcf1d501b3305f3219914fc98a9d3f04b701e60"
+      },
+      "asr": {
+        "status": "completed",
+        "transcript": "可那些消失在邊界上的道路並未中斷,他們在另一處接縫後延續,將遙遠的落點重新變為靜靈。",
+        "normalizedReference": "可那些消失在边界上的道路并未中断它们在另一处接缝后延续将遥远的落点重新变为近邻",
+        "normalizedTranscript": "可那些消失在邊界上的道路並未中斷他們在另一處接縫後延續將遙遠的落點重新變為靜靈",
+        "referenceCharacters": 39,
+        "editDistance": 17,
+        "cer": 0.435897,
+        "diagnosticScriptVariantFold": {
+          "policy": "Documented Simplified/Traditional character fold for diagnosis only; raw transcript and raw CER above remain unchanged.",
+          "foldedTranscript": "可那些消失在边界上的道路并未中断他们在另一处接缝后延续将遥远的落点重新变为靜灵",
+          "foldedCharacters": 15,
+          "editDistance": 3,
+          "cer": 0.076923
+        },
+        "manualReviewFocus": {
+          "cueId": "intro-roads",
+          "category": "mixed-script-variant-and-ordinary-lexical-risk",
+          "focus": "重点核听它们、近邻；primary ASR 写作他们、静灵。"
+        },
+        "focusedCrossCheck": {
+          "status": "completed",
+          "model": {
+            "id": "openai/whisper-large-v3-turbo",
+            "revision": "41f01f3fe87f28c78e2fbf8b568835947dd65ed9"
+          },
+          "transcript": "可那些消失在边界上的道路并未中断,他们在另一处接缝后延续,将遥远的落点重新变为静灵。",
+          "normalizedTranscript": "可那些消失在边界上的道路并未中断他们在另一处接缝后延续将遥远的落点重新变为静灵",
+          "editDistance": 3,
+          "cer": 0.076923,
+          "diagnosticScriptVariantFold": {
+            "policy": "Diagnosis only; cross-check raw transcript and raw CER remain unchanged.",
+            "foldedTranscript": "可那些消失在边界上的道路并未中断他们在另一处接缝后延续将遥远的落点重新变为静灵",
+            "foldedCharacters": 0,
+            "editDistance": 3,
+            "cer": 0.076923
+          }
+        }
       }
     },
     {
       "id": "intro-invitation",
       "replacementId": "intro-invitation",
-      "status": "automated-signal-review-passed",
-      "pronunciation": "native-listener-review-required",
-      "cadence": "tempo-calibrated-at-0.88",
-      "notes": [
-        "Wording remains locked to the approved Task 2 script.",
-        "No pronunciation edits are authorized from automated inspection alone."
-      ],
+      "textSha256": "cd26fecd17629f3b7c00a49fa53e82af99973cb5782fb2fc1eb54209fa9567da",
+      "seed": 1799362060,
+      "status": "automated-structure-and-signal-review-passed",
+      "pronunciation": "user-review-required",
+      "timeCompressionFactor": 1,
+      "timelineStartSeconds": 15.22,
+      "timelineEndSeconds": 25.62,
       "signal": {
-        "durationSeconds": 7.232,
-        "peakDbfs": -4.068,
-        "rmsDbfs": -26.748,
-        "activeRatio": 0.521971,
-        "leadingSilenceSeconds": 0.133521,
-        "trailingSilenceSeconds": 0.109021
+        "durationSeconds": 10.4,
+        "sampleRateHz": 48000,
+        "channels": 1,
+        "bitsPerSample": 16,
+        "subtype": "PCM_16",
+        "peakDbfs": -7,
+        "rmsDbfs": -22,
+        "activeRatio": 0.591939,
+        "leadingSilenceSeconds": 0.031375,
+        "trailingSilenceSeconds": 0.148167,
+        "bytes": 998444,
+        "sha256": "642100d571b12388389cbedb3ba2d8ca8ad2baf1750f71cd703a7a6883cf2cda"
+      },
+      "asr": {
+        "status": "completed",
+        "transcript": "現在落子之人啊 尋著隱藏的連接前行吧七種世界將在你面前一次展開",
+        "normalizedReference": "现在落子之人啊循着隐藏的连接前行吧七种世界将在你面前依次展开",
+        "normalizedTranscript": "現在落子之人啊尋著隱藏的連接前行吧七種世界將在你面前一次展開",
+        "referenceCharacters": 30,
+        "editDistance": 9,
+        "cer": 0.3,
+        "diagnosticScriptVariantFold": {
+          "policy": "Documented Simplified/Traditional character fold for diagnosis only; raw transcript and raw CER above remain unchanged.",
+          "foldedTranscript": "现在落子之人啊寻著隐藏的连接前行吧七种世界将在你面前一次展开",
+          "foldedCharacters": 7,
+          "editDistance": 3,
+          "cer": 0.1
+        },
+        "manualReviewFocus": {
+          "cueId": "intro-invitation",
+          "category": "ordinary-lexical-risk",
+          "focus": "重点核听循着、依次；primary ASR 写作寻着、一次。"
+        },
+        "focusedCrossCheck": {
+          "status": "completed",
+          "model": {
+            "id": "openai/whisper-large-v3-turbo",
+            "revision": "41f01f3fe87f28c78e2fbf8b568835947dd65ed9"
+          },
+          "transcript": "现在落子之人啊寻着隐藏的连接前行吧七种世界将在你面前依次展开",
+          "normalizedTranscript": "现在落子之人啊寻着隐藏的连接前行吧七种世界将在你面前依次展开",
+          "editDistance": 1,
+          "cer": 0.033333,
+          "diagnosticScriptVariantFold": {
+            "policy": "Diagnosis only; cross-check raw transcript and raw CER remain unchanged.",
+            "foldedTranscript": "现在落子之人啊寻着隐藏的连接前行吧七种世界将在你面前依次展开",
+            "foldedCharacters": 0,
+            "editDistance": 1,
+            "cer": 0.033333
+          }
+        }
       }
     },
     {
       "id": "plane-order",
       "replacementId": "plane-order",
-      "status": "automated-signal-review-passed",
-      "pronunciation": "native-listener-review-required",
-      "cadence": "tempo-calibrated-at-0.88",
-      "notes": [
-        "Wording remains locked to the approved Task 2 script.",
-        "No pronunciation edits are authorized from automated inspection alone."
-      ],
+      "textSha256": "2adf3a281e0fa8423c99ca54f8ef1bb54cab91a13034c8466315b0985a312f10",
+      "seed": 1569261575,
+      "status": "automated-structure-and-signal-review-passed",
+      "pronunciation": "user-review-required",
+      "timeCompressionFactor": 1,
+      "timelineStartSeconds": 29.84,
+      "timelineEndSeconds": 40.72,
       "signal": {
-        "durationSeconds": 9.92,
-        "peakDbfs": -3.633,
-        "rmsDbfs": -27.03,
-        "activeRatio": 0.522585,
-        "leadingSilenceSeconds": 0.132167,
-        "trailingSilenceSeconds": 0.117646
+        "durationSeconds": 10.88,
+        "sampleRateHz": 48000,
+        "channels": 1,
+        "bitsPerSample": 16,
+        "subtype": "PCM_16",
+        "peakDbfs": -7.0006,
+        "rmsDbfs": -22,
+        "activeRatio": 0.708709,
+        "leadingSilenceSeconds": 0.035708,
+        "trailingSilenceSeconds": 0.142875,
+        "bytes": 1044524,
+        "sha256": "13d8b894b7a840588dcdbeaa4dea0f301c046f6f5d316c5a126e5d2368f35513"
+      },
+      "asr": {
+        "status": "completed",
+        "transcript": "边界分明 方向彼止 胜负都在眼前方庭以有限的秩序收容第一条五连也由此埋下对所有边界的疑问",
+        "normalizedReference": "边界分明方向笔直胜负都在眼前方庭以有限的秩序收容第一条五连也由此埋下对所有边界的疑问",
+        "normalizedTranscript": "边界分明方向彼止胜负都在眼前方庭以有限的秩序收容第一条五连也由此埋下对所有边界的疑问",
+        "referenceCharacters": 42,
+        "editDistance": 2,
+        "cer": 0.047619,
+        "diagnosticScriptVariantFold": {
+          "policy": "Documented Simplified/Traditional character fold for diagnosis only; raw transcript and raw CER above remain unchanged.",
+          "foldedTranscript": "边界分明方向彼止胜负都在眼前方庭以有限的秩序收容第一条五连也由此埋下对所有边界的疑问",
+          "foldedCharacters": 0,
+          "editDistance": 2,
+          "cer": 0.047619
+        },
+        "manualReviewFocus": {
+          "cueId": "plane-order",
+          "category": "ordinary-lexical-risk",
+          "focus": "重点核听方向笔直；primary ASR 写作方向彼止。"
+        }
       }
     },
     {
       "id": "cylinder-cycle",
       "replacementId": "cylinder-cycle",
-      "status": "automated-signal-review-passed",
-      "pronunciation": "native-listener-review-required",
-      "cadence": "tempo-calibrated-at-0.88",
-      "notes": [
-        "Wording remains locked to the approved Task 2 script.",
-        "No pronunciation edits are authorized from automated inspection alone."
-      ],
+      "textSha256": "a64afd8861afdec68b1b8891041db26c00b3a0e6475d2dbf7a8831a3fbbe8281",
+      "seed": 1792442127,
+      "status": "automated-structure-and-signal-review-passed",
+      "pronunciation": "user-review-required",
+      "timeCompressionFactor": 1,
+      "timelineStartSeconds": 47.06,
+      "timelineEndSeconds": 56.5,
       "signal": {
-        "durationSeconds": 7.978667,
-        "peakDbfs": -5.885,
-        "rmsDbfs": -27.364,
-        "activeRatio": 0.523448,
-        "leadingSilenceSeconds": 0.119625,
-        "trailingSilenceSeconds": 0.153646
+        "durationSeconds": 9.44,
+        "sampleRateHz": 48000,
+        "channels": 1,
+        "bitsPerSample": 16,
+        "subtype": "PCM_16",
+        "peakDbfs": -7,
+        "rmsDbfs": -22,
+        "activeRatio": 0.552147,
+        "leadingSilenceSeconds": 0.055271,
+        "trailingSilenceSeconds": 0.172021,
+        "bytes": 906284,
+        "sha256": "6e150c87a9b42564ef3361379a78d766e0e564e15a5c77e4c2f1c0dbcbc08ee4"
+      },
+      "asr": {
+        "status": "completed",
+        "transcript": "左右相接 上下仍被截断橫向的路繞過世界回到身後縱向的路卻有時有終",
+        "normalizedReference": "左右相接上下仍被截断横向的路绕过世界回到身后纵向的路却有始有终",
+        "normalizedTranscript": "左右相接上下仍被截断橫向的路繞過世界回到身後縱向的路卻有時有終",
+        "referenceCharacters": 31,
+        "editDistance": 8,
+        "cer": 0.258065,
+        "diagnosticScriptVariantFold": {
+          "policy": "Documented Simplified/Traditional character fold for diagnosis only; raw transcript and raw CER above remain unchanged.",
+          "foldedTranscript": "左右相接上下仍被截断横向的路绕过世界回到身后纵向的路却有时有终",
+          "foldedCharacters": 8,
+          "editDistance": 1,
+          "cer": 0.032258
+        },
+        "manualReviewFocus": {
+          "cueId": "cylinder-cycle",
+          "category": "ordinary-lexical-risk",
+          "focus": "重点核听有始有终；primary ASR 写作有时有终。"
+        }
       }
     },
     {
       "id": "cylinder-distance",
       "replacementId": "cylinder-distance",
-      "status": "automated-signal-review-passed",
-      "pronunciation": "native-listener-review-required",
-      "cadence": "tempo-calibrated-at-0.88",
-      "notes": [
-        "Wording remains locked to the approved Task 2 script.",
-        "No pronunciation edits are authorized from automated inspection alone."
-      ],
+      "textSha256": "41c6cb258deb64ee91b60e7903ef04482b0f32c387168dc0062409f714e7cd96",
+      "seed": 273778121,
+      "status": "automated-structure-and-signal-review-passed",
+      "pronunciation": "user-review-required",
+      "timeCompressionFactor": 1,
+      "timelineStartSeconds": 56.86,
+      "timelineEndSeconds": 61.74,
       "signal": {
-        "durationSeconds": 4.16,
-        "peakDbfs": -3.823,
-        "rmsDbfs": -27.007,
-        "activeRatio": 0.534721,
-        "leadingSilenceSeconds": 0.10975,
-        "trailingSilenceSeconds": 0.098604
+        "durationSeconds": 4.88,
+        "sampleRateHz": 48000,
+        "channels": 1,
+        "bitsPerSample": 16,
+        "subtype": "PCM_16",
+        "peakDbfs": -9.5597,
+        "rmsDbfs": -22,
+        "activeRatio": 0.642298,
+        "leadingSilenceSeconds": 0.020229,
+        "trailingSilenceSeconds": 0.353229,
+        "bytes": 468524,
+        "sha256": "e1dd285bdfd49d68c5e761e5a437fff27b9615857540d81649911456a606404a"
+      },
+      "asr": {
+        "status": "completed",
+        "transcript": "只擁有一重循環的世界該如何障糧遠境",
+        "normalizedReference": "只拥有一重循环的世界该如何丈量远近",
+        "normalizedTranscript": "只擁有一重循環的世界該如何障糧遠境",
+        "referenceCharacters": 17,
+        "editDistance": 7,
+        "cer": 0.411765,
+        "diagnosticScriptVariantFold": {
+          "policy": "Documented Simplified/Traditional character fold for diagnosis only; raw transcript and raw CER above remain unchanged.",
+          "foldedTranscript": "只拥有一重循环的世界该如何障糧远境",
+          "foldedCharacters": 4,
+          "editDistance": 3,
+          "cer": 0.176471
+        },
+        "manualReviewFocus": {
+          "cueId": "cylinder-distance",
+          "category": "ordinary-lexical-risk",
+          "focus": "重点核听丈量远近；primary ASR 写作障粮远境。"
+        },
+        "focusedCrossCheck": {
+          "status": "completed",
+          "model": {
+            "id": "openai/whisper-large-v3-turbo",
+            "revision": "41f01f3fe87f28c78e2fbf8b568835947dd65ed9"
+          },
+          "transcript": "只拥有一重循环的世界该如何丈量远近",
+          "normalizedTranscript": "只拥有一重循环的世界该如何丈量远近",
+          "editDistance": 0,
+          "cer": 0.0,
+          "diagnosticScriptVariantFold": {
+            "policy": "Diagnosis only; cross-check raw transcript and raw CER remain unchanged.",
+            "foldedTranscript": "只拥有一重循环的世界该如何丈量远近",
+            "foldedCharacters": 0,
+            "editDistance": 0,
+            "cer": 0.0
+          }
+        }
       }
     },
     {
       "id": "torus-cycles",
       "replacementId": "torus-cycles",
-      "status": "automated-signal-review-passed",
-      "pronunciation": "native-listener-review-required",
-      "cadence": "tempo-calibrated-at-0.88",
-      "notes": [
-        "Wording remains locked to the approved Task 2 script.",
-        "No pronunciation edits are authorized from automated inspection alone."
-      ],
+      "textSha256": "1f9d5d3511273819b47540088aee1ca3b446a73655047f31fcaec7e4d07a40aa",
+      "seed": 1622475403,
+      "status": "automated-structure-and-signal-review-passed",
+      "pronunciation": "user-review-required",
+      "timeCompressionFactor": 1,
+      "timelineStartSeconds": 68.08,
+      "timelineEndSeconds": 77.44,
       "signal": {
-        "durationSeconds": 7.424,
-        "peakDbfs": -3.701,
-        "rmsDbfs": -27.184,
-        "activeRatio": 0.513349,
-        "leadingSilenceSeconds": 0.116833,
-        "trailingSilenceSeconds": 0.125583
+        "durationSeconds": 9.36,
+        "sampleRateHz": 48000,
+        "channels": 1,
+        "bitsPerSample": 16,
+        "subtype": "PCM_16",
+        "peakDbfs": -7,
+        "rmsDbfs": -22,
+        "activeRatio": 0.613945,
+        "leadingSilenceSeconds": 0.035396,
+        "trailingSilenceSeconds": 0.217667,
+        "bytes": 898604,
+        "sha256": "e6e74ddbe1e982acac0938fbbeb4cf10a1eddcc8e1e4dad0cdb9f24cb282aa4a"
+      },
+      "asr": {
+        "status": "completed",
+        "transcript": "四边相接两个方向各自成环,一条斜线可以先越过上边,再从左侧归来。",
+        "normalizedReference": "四边相接两个方向各自成环一条斜线可以先越过上边再从左侧归来",
+        "normalizedTranscript": "四边相接两个方向各自成环一条斜线可以先越过上边再从左侧归来",
+        "referenceCharacters": 29,
+        "editDistance": 0,
+        "cer": 0.0,
+        "diagnosticScriptVariantFold": {
+          "policy": "Documented Simplified/Traditional character fold for diagnosis only; raw transcript and raw CER above remain unchanged.",
+          "foldedTranscript": "四边相接两个方向各自成环一条斜线可以先越过上边再从左侧归来",
+          "foldedCharacters": 0,
+          "editDistance": 0,
+          "cer": 0.0
+        }
       }
     },
     {
       "id": "torus-shortest-path",
       "replacementId": "torus-shortest-path",
-      "status": "automated-signal-review-passed",
-      "pronunciation": "native-listener-review-required",
-      "cadence": "tempo-calibrated-at-0.88",
-      "notes": [
-        "Wording remains locked to the approved Task 2 script.",
-        "No pronunciation edits are authorized from automated inspection alone."
-      ],
+      "textSha256": "637f761ac6593e8c51349f4e091d051d7288b195dde30f317143c75891d8f6f5",
+      "seed": 497495445,
+      "status": "automated-structure-and-signal-review-passed",
+      "pronunciation": "user-review-required",
+      "timeCompressionFactor": 1,
+      "timelineStartSeconds": 77.8,
+      "timelineEndSeconds": 83.24,
       "signal": {
-        "durationSeconds": 5.056,
-        "peakDbfs": -5.283,
-        "rmsDbfs": -26.958,
-        "activeRatio": 0.518353,
-        "leadingSilenceSeconds": 0.14275,
-        "trailingSilenceSeconds": 0.089354
+        "durationSeconds": 5.44,
+        "sampleRateHz": 48000,
+        "channels": 1,
+        "bitsPerSample": 16,
+        "subtype": "PCM_16",
+        "peakDbfs": -7,
+        "rmsDbfs": -22,
+        "activeRatio": 0.631499,
+        "leadingSilenceSeconds": 0.048396,
+        "trailingSilenceSeconds": 0.153188,
+        "bytes": 522284,
+        "sha256": "4d5f7d54a3ceb29207004b42fda2c4e6893ce7d91cc8aa9a26e90627b27fcfcf"
+      },
+      "asr": {
+        "status": "completed",
+        "transcript": "兩重循環交織之處最短的道路往往藏在視野之外",
+        "normalizedReference": "两重循环交织之处最短的道路往往藏在视野之外",
+        "normalizedTranscript": "兩重循環交織之處最短的道路往往藏在視野之外",
+        "referenceCharacters": 21,
+        "editDistance": 5,
+        "cer": 0.238095,
+        "diagnosticScriptVariantFold": {
+          "policy": "Documented Simplified/Traditional character fold for diagnosis only; raw transcript and raw CER above remain unchanged.",
+          "foldedTranscript": "两重循环交织之处最短的道路往往藏在视野之外",
+          "foldedCharacters": 5,
+          "editDistance": 0,
+          "cer": 0.0
+        }
       }
     },
     {
       "id": "mobius-turn",
       "replacementId": "mobius-turn",
-      "status": "automated-signal-review-passed",
-      "pronunciation": "native-listener-review-required",
-      "cadence": "tempo-calibrated-at-0.88",
-      "notes": [
-        "Wording remains locked to the approved Task 2 script.",
-        "No pronunciation edits are authorized from automated inspection alone."
-      ],
+      "textSha256": "df3114ce10d1bb2c842a2fde5dbad19d5fe2971f8e1db742ca9b94137792e05c",
+      "seed": 1804224669,
+      "status": "automated-structure-and-signal-review-passed",
+      "pronunciation": "user-review-required",
+      "timeCompressionFactor": 1,
+      "timelineStartSeconds": 89.58,
+      "timelineEndSeconds": 98.38,
       "signal": {
-        "durationSeconds": 7.829333,
-        "peakDbfs": -2.805,
-        "rmsDbfs": -27.203,
-        "activeRatio": 0.51935,
-        "leadingSilenceSeconds": 0.123146,
-        "trailingSilenceSeconds": 0.088688
+        "durationSeconds": 8.8,
+        "sampleRateHz": 48000,
+        "channels": 1,
+        "bitsPerSample": 16,
+        "subtype": "PCM_16",
+        "peakDbfs": -7,
+        "rmsDbfs": -22,
+        "activeRatio": 0.574574,
+        "leadingSilenceSeconds": 0.038,
+        "trailingSilenceSeconds": 0.199021,
+        "bytes": 844844,
+        "sha256": "2be1e9f3bf5ea5229aa02a95be55f838082778321e314e1903cc6731beabf975"
+      },
+      "asr": {
+        "status": "completed",
+        "transcript": "左右邊界相接卻帶著一次翻轉,顏同一面環形一周,歸來時上下已經交換。",
+        "normalizedReference": "左右边界相接却带着一次翻转沿同一面环行一周归来时上下已经交换",
+        "normalizedTranscript": "左右邊界相接卻帶著一次翻轉顏同一面環形一周歸來時上下已經交換",
+        "referenceCharacters": 30,
+        "editDistance": 13,
+        "cer": 0.433333,
+        "diagnosticScriptVariantFold": {
+          "policy": "Documented Simplified/Traditional character fold for diagnosis only; raw transcript and raw CER above remain unchanged.",
+          "foldedTranscript": "左右边界相接却带著一次翻转颜同一面环形一周归來时上下已经交换",
+          "foldedCharacters": 10,
+          "editDistance": 4,
+          "cer": 0.133333
+        },
+        "manualReviewFocus": {
+          "cueId": "mobius-turn",
+          "category": "topology-term-risk",
+          "focus": "重点核听沿同一面环行；primary ASR 写作颜同一面环形。"
+        },
+        "focusedCrossCheck": {
+          "status": "completed",
+          "model": {
+            "id": "openai/whisper-large-v3-turbo",
+            "revision": "41f01f3fe87f28c78e2fbf8b568835947dd65ed9"
+          },
+          "transcript": "左右边界相接却带着一次翻转严同一面环形一周归来是上下已经交换",
+          "normalizedTranscript": "左右边界相接却带着一次翻转严同一面环形一周归来是上下已经交换",
+          "editDistance": 3,
+          "cer": 0.1,
+          "diagnosticScriptVariantFold": {
+            "policy": "Diagnosis only; cross-check raw transcript and raw CER remain unchanged.",
+            "foldedTranscript": "左右边界相接却带着一次翻转严同一面环形一周归来是上下已经交换",
+            "foldedCharacters": 0,
+            "editDistance": 3,
+            "cer": 0.1
+          }
+        }
       }
     },
     {
       "id": "mobius-one-side",
       "replacementId": "mobius-one-side",
-      "status": "automated-signal-review-passed",
-      "pronunciation": "native-listener-review-required",
-      "cadence": "tempo-calibrated-at-0.88",
-      "notes": [
-        "Wording remains locked to the approved Task 2 script.",
-        "No pronunciation edits are authorized from automated inspection alone."
-      ],
+      "textSha256": "4065cf0f9463a253b3d636d2e3064d2ef7c0b7640aba0fb4834fee119070c4ae",
+      "seed": 965176795,
+      "status": "automated-structure-and-signal-review-passed",
+      "pronunciation": "user-review-required",
+      "timeCompressionFactor": 1,
+      "timelineStartSeconds": 98.74,
+      "timelineEndSeconds": 102.9,
       "signal": {
-        "durationSeconds": 3.584,
-        "peakDbfs": -4.34,
-        "rmsDbfs": -26.769,
-        "activeRatio": 0.520932,
-        "leadingSilenceSeconds": 0.132,
-        "trailingSilenceSeconds": 0.097021
+        "durationSeconds": 4.16,
+        "sampleRateHz": 48000,
+        "channels": 1,
+        "bitsPerSample": 16,
+        "subtype": "PCM_16",
+        "peakDbfs": -7.0006,
+        "rmsDbfs": -22,
+        "activeRatio": 0.574885,
+        "leadingSilenceSeconds": 0.053438,
+        "trailingSilenceSeconds": 0.448104,
+        "bytes": 399404,
+        "sha256": "ecaa969d8042564f52342168d8bbf325e486770db136668bd4dedd8e4ce3eb5c"
+      },
+      "asr": {
+        "status": "completed",
+        "transcript": "只有一面的世界,正反又該如何分辨?",
+        "normalizedReference": "只有一面的世界正反又该如何分辨",
+        "normalizedTranscript": "只有一面的世界正反又該如何分辨",
+        "referenceCharacters": 15,
+        "editDistance": 1,
+        "cer": 0.066667,
+        "diagnosticScriptVariantFold": {
+          "policy": "Documented Simplified/Traditional character fold for diagnosis only; raw transcript and raw CER above remain unchanged.",
+          "foldedTranscript": "只有一面的世界正反又该如何分辨",
+          "foldedCharacters": 1,
+          "editDistance": 0,
+          "cer": 0.0
+        }
       }
     },
     {
       "id": "klein-two-returns",
       "replacementId": "klein-two-returns",
-      "status": "automated-signal-review-passed",
-      "pronunciation": "native-listener-review-required",
-      "cadence": "tempo-calibrated-at-0.88",
-      "notes": [
-        "Wording remains locked to the approved Task 2 script.",
-        "No pronunciation edits are authorized from automated inspection alone."
-      ],
+      "textSha256": "3a8708454598ee0cbfa6de01cceff1a5915fca927154718b871416fa066e7bb3",
+      "seed": 1855326299,
+      "status": "automated-structure-and-signal-review-passed",
+      "pronunciation": "user-review-required",
+      "timeCompressionFactor": 1,
+      "timelineStartSeconds": 109.24,
+      "timelineEndSeconds": 120.6,
       "signal": {
-        "durationSeconds": 9.557333,
-        "peakDbfs": -2.915,
-        "rmsDbfs": -27.298,
-        "activeRatio": 0.522572,
-        "leadingSilenceSeconds": 0.154479,
-        "trailingSilenceSeconds": 0.123167
+        "durationSeconds": 11.36,
+        "sampleRateHz": 48000,
+        "channels": 1,
+        "bitsPerSample": 16,
+        "subtype": "PCM_16",
+        "peakDbfs": -7,
+        "rmsDbfs": -22,
+        "activeRatio": 0.561669,
+        "leadingSilenceSeconds": 0.055688,
+        "trailingSilenceSeconds": 0.156438,
+        "bytes": 1090604,
+        "sha256": "01de36256bd25a0390bdf42de8db0c0c606a0a4cdcbd1dfea1ffe2618a89332b"
+      },
+      "asr": {
+        "status": "completed",
+        "transcript": "一组边界如圆环般相接另一组边界让方向翻转两种亏来共处一界一条路保持原样一条路带回倒影",
+        "normalizedReference": "一组边界如圆环般相接另一组边界让方向翻转两种归来共处一界一条路保持原样一条路带回倒影",
+        "normalizedTranscript": "一组边界如圆环般相接另一组边界让方向翻转两种亏来共处一界一条路保持原样一条路带回倒影",
+        "referenceCharacters": 42,
+        "editDistance": 1,
+        "cer": 0.02381,
+        "diagnosticScriptVariantFold": {
+          "policy": "Documented Simplified/Traditional character fold for diagnosis only; raw transcript and raw CER above remain unchanged.",
+          "foldedTranscript": "一组边界如圆环般相接另一组边界让方向翻转两种亏来共处一界一条路保持原样一条路带回倒影",
+          "foldedCharacters": 0,
+          "editDistance": 1,
+          "cer": 0.02381
+        }
       }
     },
     {
       "id": "klein-memory",
       "replacementId": "klein-memory",
-      "status": "automated-signal-review-passed",
-      "pronunciation": "native-listener-review-required",
-      "cadence": "tempo-calibrated-at-0.88",
-      "notes": [
-        "Wording remains locked to the approved Task 2 script.",
-        "No pronunciation edits are authorized from automated inspection alone."
-      ],
+      "textSha256": "2061710b45a7ad0602a1b48a1f9f1b761fc0e3a795a9426f49483e27691a812d",
+      "seed": 545355154,
+      "status": "automated-structure-and-signal-review-passed",
+      "pronunciation": "user-review-required",
+      "timeCompressionFactor": 1,
+      "timelineStartSeconds": 120.96,
+      "timelineEndSeconds": 123.68,
       "signal": {
-        "durationSeconds": 2.474667,
-        "peakDbfs": -7.115,
-        "rmsDbfs": -27.442,
-        "activeRatio": 0.522503,
-        "leadingSilenceSeconds": 0.149958,
-        "trailingSilenceSeconds": 0.102208
+        "durationSeconds": 2.72,
+        "sampleRateHz": 48000,
+        "channels": 1,
+        "bitsPerSample": 16,
+        "subtype": "PCM_16",
+        "peakDbfs": -7.0006,
+        "rmsDbfs": -22,
+        "activeRatio": 0.628937,
+        "leadingSilenceSeconds": 0.036708,
+        "trailingSilenceSeconds": 0.197125,
+        "bytes": 261164,
+        "sha256": "40c763005d783f0458b7cea094b1acff23943b17591753c0101b7b613e18c711"
+      },
+      "asr": {
+        "status": "completed",
+        "transcript": "路徑會記住你選擇的環繞",
+        "normalizedReference": "路径会记住你选择的环绕",
+        "normalizedTranscript": "路徑會記住你選擇的環繞",
+        "referenceCharacters": 11,
+        "editDistance": 7,
+        "cer": 0.636364,
+        "diagnosticScriptVariantFold": {
+          "policy": "Documented Simplified/Traditional character fold for diagnosis only; raw transcript and raw CER above remain unchanged.",
+          "foldedTranscript": "路径会记住你选择的环绕",
+          "foldedCharacters": 7,
+          "editDistance": 0,
+          "cer": 0.0
+        },
+        "manualReviewFocus": {
+          "cueId": "klein-memory",
+          "category": "mixed-script-variant-and-ordinary-lexical-risk",
+          "focus": "重点核听路径；primary 主要为繁体偏差，但 secondary 写作入境。"
+        },
+        "focusedCrossCheck": {
+          "status": "completed",
+          "model": {
+            "id": "openai/whisper-large-v3-turbo",
+            "revision": "41f01f3fe87f28c78e2fbf8b568835947dd65ed9"
+          },
+          "transcript": "入境会记住你选择的环绕",
+          "normalizedTranscript": "入境会记住你选择的环绕",
+          "editDistance": 2,
+          "cer": 0.181818,
+          "diagnosticScriptVariantFold": {
+            "policy": "Diagnosis only; cross-check raw transcript and raw CER remain unchanged.",
+            "foldedTranscript": "入境会记住你选择的环绕",
+            "foldedCharacters": 0,
+            "editDistance": 2,
+            "cer": 0.181818
+          }
+        }
       }
     },
     {
       "id": "projective-reflection",
       "replacementId": "projective-reflection",
-      "status": "automated-signal-review-passed",
-      "pronunciation": "native-listener-review-required",
-      "cadence": "tempo-calibrated-at-0.88",
-      "notes": [
-        "Wording remains locked to the approved Task 2 script.",
-        "No pronunciation edits are authorized from automated inspection alone."
-      ],
+      "textSha256": "40a78dd8f5fdf8c1afa24269b04eb3455d1de13944601177ebc557104e6d4cd6",
+      "seed": 982094031,
+      "status": "automated-structure-and-signal-review-passed",
+      "pronunciation": "user-review-required",
+      "timeCompressionFactor": 1,
+      "timelineStartSeconds": 130.02,
+      "timelineEndSeconds": 138.98,
       "signal": {
-        "durationSeconds": 7.808,
-        "peakDbfs": -3.337,
-        "rmsDbfs": -26.859,
-        "activeRatio": 0.517821,
-        "leadingSilenceSeconds": 0.108313,
-        "trailingSilenceSeconds": 0.094479
+        "durationSeconds": 8.96,
+        "sampleRateHz": 48000,
+        "channels": 1,
+        "bitsPerSample": 16,
+        "subtype": "PCM_16",
+        "peakDbfs": -7,
+        "rmsDbfs": -22,
+        "activeRatio": 0.571377,
+        "leadingSilenceSeconds": 0.038354,
+        "trailingSilenceSeconds": 0.195208,
+        "bytes": 860204,
+        "sha256": "1da574c1d6824a52b1d7a48b7b8f5527349ce3871a150383ba150302c5e031ba"
+      },
+      "asr": {
+        "status": "completed",
+        "transcript": "上下左右全都通向各自的倒影一次越界改变方向两次倒影时起路重新问和",
+        "normalizedReference": "上下左右全都通向各自的倒影一次越界改变方向两次倒映使棋路重新吻合",
+        "normalizedTranscript": "上下左右全都通向各自的倒影一次越界改变方向两次倒影时起路重新问和",
+        "referenceCharacters": 32,
+        "editDistance": 5,
+        "cer": 0.15625,
+        "diagnosticScriptVariantFold": {
+          "policy": "Documented Simplified/Traditional character fold for diagnosis only; raw transcript and raw CER above remain unchanged.",
+          "foldedTranscript": "上下左右全都通向各自的倒影一次越界改变方向两次倒影时起路重新问和",
+          "foldedCharacters": 0,
+          "editDistance": 5,
+          "cer": 0.15625
+        },
+        "manualReviewFocus": {
+          "cueId": "projective-reflection",
+          "category": "topology-term-risk",
+          "focus": "重点核听倒映使棋路重新吻合；primary ASR 有多处同音词分歧。"
+        }
       }
     },
     {
       "id": "projective-twin",
       "replacementId": "projective-twin",
-      "status": "automated-signal-review-passed",
-      "pronunciation": "native-listener-review-required",
-      "cadence": "tempo-calibrated-at-0.88",
-      "notes": [
-        "Wording remains locked to the approved Task 2 script.",
-        "No pronunciation edits are authorized from automated inspection alone."
-      ],
+      "textSha256": "3d53daf90f3429ef180a16a0ef3064bc35d65ab19c8e624118e229ba0444b0cf",
+      "seed": 2061565332,
+      "status": "automated-structure-and-signal-review-passed",
+      "pronunciation": "user-review-required",
+      "timeCompressionFactor": 1,
+      "timelineStartSeconds": 139.34,
+      "timelineEndSeconds": 145.5,
       "signal": {
-        "durationSeconds": 4.245333,
-        "peakDbfs": -2.783,
-        "rmsDbfs": -25.916,
-        "activeRatio": 0.533429,
-        "leadingSilenceSeconds": 0.154917,
-        "trailingSilenceSeconds": 0.087333
+        "durationSeconds": 6.16,
+        "sampleRateHz": 48000,
+        "channels": 1,
+        "bitsPerSample": 16,
+        "subtype": "PCM_16",
+        "peakDbfs": -7,
+        "rmsDbfs": -22,
+        "activeRatio": 0.536807,
+        "leadingSilenceSeconds": 0.046729,
+        "trailingSilenceSeconds": 0.20525,
+        "bytes": 591404,
+        "sha256": "a3769726960a2844faceb89fe0de4ae5590492dfed041277965d404c78fa7437"
+      },
+      "asr": {
+        "status": "completed",
+        "transcript": "在雙生的世界裡每次遠行都會遇見另一個自己",
+        "normalizedReference": "在双生的世界里每次远行都会遇见另一个自己",
+        "normalizedTranscript": "在雙生的世界裡每次遠行都會遇見另一個自己",
+        "referenceCharacters": 20,
+        "editDistance": 6,
+        "cer": 0.3,
+        "diagnosticScriptVariantFold": {
+          "policy": "Documented Simplified/Traditional character fold for diagnosis only; raw transcript and raw CER above remain unchanged.",
+          "foldedTranscript": "在双生的世界里每次远行都会遇见另一个自己",
+          "foldedCharacters": 6,
+          "editDistance": 0,
+          "cer": 0.0
+        },
+        "manualReviewFocus": {
+          "cueId": "projective-twin",
+          "category": "script-variant-dominant",
+          "focus": "primary ASR 语词一致但输出繁体；仍需连续人审确认。"
+        },
+        "focusedCrossCheck": {
+          "status": "completed",
+          "model": {
+            "id": "openai/whisper-large-v3-turbo",
+            "revision": "41f01f3fe87f28c78e2fbf8b568835947dd65ed9"
+          },
+          "transcript": "在双生的世界里每次远行都会遇见另一个自己",
+          "normalizedTranscript": "在双生的世界里每次远行都会遇见另一个自己",
+          "editDistance": 0,
+          "cer": 0.0,
+          "diagnosticScriptVariantFold": {
+            "policy": "Diagnosis only; cross-check raw transcript and raw CER remain unchanged.",
+            "foldedTranscript": "在双生的世界里每次远行都会遇见另一个自己",
+            "foldedCharacters": 0,
+            "editDistance": 0,
+            "cer": 0.0
+          }
+        }
       }
     },
     {
       "id": "sphere-closure",
       "replacementId": "sphere-closure",
-      "status": "automated-signal-review-passed",
-      "pronunciation": "native-listener-review-required",
-      "cadence": "tempo-calibrated-at-0.88",
-      "notes": [
-        "Wording remains locked to the approved Task 2 script.",
-        "No pronunciation edits are authorized from automated inspection alone."
-      ],
+      "textSha256": "212e2e6935319c365d416de7117ffd8c574fdc8f5a9db49073cf4c41247a0582",
+      "seed": 10234720,
+      "status": "automated-structure-and-signal-review-passed",
+      "pronunciation": "user-review-required",
+      "timeCompressionFactor": 1,
+      "timelineStartSeconds": 151.84,
+      "timelineEndSeconds": 163.84,
       "signal": {
-        "durationSeconds": 10.176,
-        "peakDbfs": -2.767,
-        "rmsDbfs": -26.844,
-        "activeRatio": 0.518841,
-        "leadingSilenceSeconds": 0.047729,
-        "trailingSilenceSeconds": 0.088604
+        "durationSeconds": 12,
+        "sampleRateHz": 48000,
+        "channels": 1,
+        "bitsPerSample": 16,
+        "subtype": "PCM_16",
+        "peakDbfs": -7,
+        "rmsDbfs": -22,
+        "activeRatio": 0.570625,
+        "leadingSilenceSeconds": 0.271729,
+        "trailingSilenceSeconds": 0.065667,
+        "bytes": 1152044,
+        "sha256": "c83fa1d04822dc10d2b7b7f0fe145af9d7c178410b4c92f46c1cd9b70f675ed2"
+      },
+      "asr": {
+        "status": "completed",
+        "transcript": "在最後的世界,齊路離開一條邊,便會沿鄉林的方向繼續。四條邊依次歸向彼此,方形的棋盤也隨之閉合成球。",
+        "normalizedReference": "在最后的世界棋路离开一条边便会沿相邻的方向继续四条边依次归向彼此方形的棋盘也随之闭合成球",
+        "normalizedTranscript": "在最後的世界齊路離開一條邊便會沿鄉林的方向繼續四條邊依次歸向彼此方形的棋盤也隨之閉合成球",
+        "referenceCharacters": 44,
+        "editDistance": 17,
+        "cer": 0.386364,
+        "diagnosticScriptVariantFold": {
+          "policy": "Documented Simplified/Traditional character fold for diagnosis only; raw transcript and raw CER above remain unchanged.",
+          "foldedTranscript": "在最后的世界齐路离开一条边便会沿乡林的方向繼续四条边依次归向彼此方形的棋盘也随之闭合成球",
+          "foldedCharacters": 15,
+          "editDistance": 4,
+          "cer": 0.090909
+        },
+        "manualReviewFocus": {
+          "cueId": "sphere-closure",
+          "category": "mixed-script-variant-and-topology-term-risk",
+          "focus": "重点核听棋路、相邻；primary ASR 写作齐路、乡林。"
+        },
+        "focusedCrossCheck": {
+          "status": "completed",
+          "model": {
+            "id": "openai/whisper-large-v3-turbo",
+            "revision": "41f01f3fe87f28c78e2fbf8b568835947dd65ed9"
+          },
+          "transcript": "在最后的世界,骑鹿离开一条边,便会沿相邻的方向继续,四条边依次归向彼此,方形的棋盘也随之闭合成球。",
+          "normalizedTranscript": "在最后的世界骑鹿离开一条边便会沿相邻的方向继续四条边依次归向彼此方形的棋盘也随之闭合成球",
+          "editDistance": 2,
+          "cer": 0.045455,
+          "diagnosticScriptVariantFold": {
+            "policy": "Diagnosis only; cross-check raw transcript and raw CER remain unchanged.",
+            "foldedTranscript": "在最后的世界骑鹿离开一条边便会沿相邻的方向继续四条边依次归向彼此方形的棋盘也随之闭合成球",
+            "foldedCharacters": 0,
+            "editDistance": 2,
+            "cer": 0.045455
+          }
+        }
       }
     },
     {
       "id": "sphere-map",
       "replacementId": "sphere-map",
-      "status": "automated-signal-review-passed",
-      "pronunciation": "native-listener-review-required",
-      "cadence": "tempo-calibrated-at-0.88",
-      "notes": [
-        "Wording remains locked to the approved Task 2 script.",
-        "No pronunciation edits are authorized from automated inspection alone."
-      ],
+      "textSha256": "3ccfeca7ccb5c281b52322f53fd045677e58f9700051687975e4bb785b272d71",
+      "seed": 591676504,
+      "status": "automated-structure-and-signal-review-passed",
+      "pronunciation": "user-review-required",
+      "timeCompressionFactor": 1,
+      "timelineStartSeconds": 164.2,
+      "timelineEndSeconds": 169.24,
       "signal": {
-        "durationSeconds": 5.184,
-        "peakDbfs": -4.603,
-        "rmsDbfs": -26.829,
-        "activeRatio": 0.508813,
-        "leadingSilenceSeconds": 0.165042,
-        "trailingSilenceSeconds": 0.084917
+        "durationSeconds": 5.04,
+        "sampleRateHz": 48000,
+        "channels": 1,
+        "bitsPerSample": 16,
+        "subtype": "PCM_16",
+        "peakDbfs": -7,
+        "rmsDbfs": -22,
+        "activeRatio": 0.660012,
+        "leadingSilenceSeconds": 0.041667,
+        "trailingSilenceSeconds": 0.154729,
+        "bytes": 483884,
+        "sha256": "8620a5e1fa385efe84d0b680cbf49e9f4a9daa34f3d21fb87acc3389781684a5"
+      },
+      "asr": {
+        "status": "completed",
+        "transcript": "人們為了看清完整的世界,將它展開成一張有邊的圖。",
+        "normalizedReference": "人们为了看清完整的世界将它展开成一张有边的图",
+        "normalizedTranscript": "人們為了看清完整的世界將它展開成一張有邊的圖",
+        "referenceCharacters": 22,
+        "editDistance": 7,
+        "cer": 0.318182,
+        "diagnosticScriptVariantFold": {
+          "policy": "Documented Simplified/Traditional character fold for diagnosis only; raw transcript and raw CER above remain unchanged.",
+          "foldedTranscript": "人们为了看清完整的世界将它展开成一张有边的图",
+          "foldedCharacters": 7,
+          "editDistance": 0,
+          "cer": 0.0
+        },
+        "manualReviewFocus": {
+          "cueId": "sphere-map",
+          "category": "script-variant-dominant",
+          "focus": "primary ASR 语词一致但输出繁体；仍需连续人审确认。"
+        },
+        "focusedCrossCheck": {
+          "status": "completed",
+          "model": {
+            "id": "openai/whisper-large-v3-turbo",
+            "revision": "41f01f3fe87f28c78e2fbf8b568835947dd65ed9"
+          },
+          "transcript": "人们为了看清完整的世界,将它展开成一张有边的图。",
+          "normalizedTranscript": "人们为了看清完整的世界将它展开成一张有边的图",
+          "editDistance": 0,
+          "cer": 0.0,
+          "diagnosticScriptVariantFold": {
+            "policy": "Diagnosis only; cross-check raw transcript and raw CER remain unchanged.",
+            "foldedTranscript": "人们为了看清完整的世界将它展开成一张有边的图",
+            "foldedCharacters": 0,
+            "editDistance": 0,
+            "cer": 0.0
+          }
+        }
       }
     },
     {
       "id": "sphere-boundary",
       "replacementId": "sphere-boundary",
-      "status": "automated-signal-review-passed",
-      "pronunciation": "native-listener-review-required",
-      "cadence": "tempo-calibrated-at-0.88",
-      "notes": [
-        "Wording remains locked to the approved Task 2 script.",
-        "No pronunciation edits are authorized from automated inspection alone."
-      ],
+      "textSha256": "88bdbf2f0f373a5c5eae8ae9f9246fbd00fab38ea26b2112e11fca7e2f080221",
+      "seed": 1463021511,
+      "status": "automated-structure-and-signal-review-passed",
+      "pronunciation": "user-review-required",
+      "timeCompressionFactor": 1,
+      "timelineStartSeconds": 169.6,
+      "timelineEndSeconds": 174.32,
       "signal": {
-        "durationSeconds": 4.501333,
-        "peakDbfs": -4.453,
-        "rmsDbfs": -26.385,
-        "activeRatio": 0.512492,
-        "leadingSilenceSeconds": 0.120521,
-        "trailingSilenceSeconds": 0.093146
+        "durationSeconds": 4.72,
+        "sampleRateHz": 48000,
+        "channels": 1,
+        "bitsPerSample": 16,
+        "subtype": "PCM_16",
+        "peakDbfs": -7.0006,
+        "rmsDbfs": -22,
+        "activeRatio": 0.59379,
+        "leadingSilenceSeconds": 0.377396,
+        "trailingSilenceSeconds": 0.211438,
+        "bytes": 453164,
+        "sha256": "ab33353e1b4963db28d31153dfc41757cfdce842e9613ae10f85d125ff5f6ea8"
+      },
+      "asr": {
+        "status": "completed",
+        "transcript": "所謂邊界或許只是觀察世界是留下的痕跡",
+        "normalizedReference": "所谓边界或许只是观察世界时留下的痕迹",
+        "normalizedTranscript": "所謂邊界或許只是觀察世界是留下的痕跡",
+        "referenceCharacters": 18,
+        "editDistance": 6,
+        "cer": 0.333333,
+        "diagnosticScriptVariantFold": {
+          "policy": "Documented Simplified/Traditional character fold for diagnosis only; raw transcript and raw CER above remain unchanged.",
+          "foldedTranscript": "所谓边界或許只是观察世界是留下的痕跡",
+          "foldedCharacters": 3,
+          "editDistance": 3,
+          "cer": 0.166667
+        },
+        "manualReviewFocus": {
+          "cueId": "sphere-boundary",
+          "category": "mixed-script-variant-and-ordinary-lexical-risk",
+          "focus": "重点核听世界时；primary ASR 写作世界是。"
+        },
+        "focusedCrossCheck": {
+          "status": "completed",
+          "model": {
+            "id": "openai/whisper-large-v3-turbo",
+            "revision": "41f01f3fe87f28c78e2fbf8b568835947dd65ed9"
+          },
+          "transcript": "所谓边界或许只是观察世界史留下的痕迹",
+          "normalizedTranscript": "所谓边界或许只是观察世界史留下的痕迹",
+          "editDistance": 1,
+          "cer": 0.055556,
+          "diagnosticScriptVariantFold": {
+            "policy": "Diagnosis only; cross-check raw transcript and raw CER remain unchanged.",
+            "foldedTranscript": "所谓边界或许只是观察世界史留下的痕迹",
+            "foldedCharacters": 0,
+            "editDistance": 1,
+            "cer": 0.055556
+          }
+        }
       }
     },
     {
       "id": "outro-invocation",
       "replacementId": "outro-invocation",
-      "status": "automated-signal-review-passed",
-      "pronunciation": "native-listener-review-required",
-      "cadence": "tempo-calibrated-at-0.88",
-      "notes": [
-        "Wording remains locked to the approved Task 2 script.",
-        "No pronunciation edits are authorized from automated inspection alone."
-      ],
+      "textSha256": "1d7dfa203a873ea591f8450852e07bd4306310ecadf44f152990e689ffdb5354",
+      "seed": 1165219178,
+      "status": "automated-structure-and-signal-review-passed",
+      "pronunciation": "user-review-required",
+      "timeCompressionFactor": 1,
+      "timelineStartSeconds": 182.36,
+      "timelineEndSeconds": 187.24,
       "signal": {
-        "durationSeconds": 1.685333,
-        "peakDbfs": -3.584,
-        "rmsDbfs": -26.025,
-        "activeRatio": 0.499543,
-        "leadingSilenceSeconds": 0.140375,
-        "trailingSilenceSeconds": 0.098229
+        "durationSeconds": 4.88,
+        "sampleRateHz": 48000,
+        "channels": 1,
+        "bitsPerSample": 16,
+        "subtype": "PCM_16",
+        "peakDbfs": -7,
+        "rmsDbfs": -22.0001,
+        "activeRatio": 0.414596,
+        "leadingSilenceSeconds": 0.069333,
+        "trailingSilenceSeconds": 1.087958,
+        "bytes": 468524,
+        "sha256": "c06b070c7dc429a7ea8498e1b34acc78bbb22c2c2e527e9f578f5e93ff2efac1"
+      },
+      "asr": {
+        "status": "completed",
+        "transcript": "现在 落子之恩",
+        "normalizedReference": "现在落子之人",
+        "normalizedTranscript": "现在落子之恩",
+        "referenceCharacters": 6,
+        "editDistance": 1,
+        "cer": 0.166667,
+        "diagnosticScriptVariantFold": {
+          "policy": "Documented Simplified/Traditional character fold for diagnosis only; raw transcript and raw CER above remain unchanged.",
+          "foldedTranscript": "现在落子之恩",
+          "foldedCharacters": 0,
+          "editDistance": 1,
+          "cer": 0.166667
+        },
+        "manualReviewFocus": {
+          "cueId": "outro-invocation",
+          "category": "ordinary-lexical-risk",
+          "focus": "重点核听落子之人；primary ASR 写作落子之恩。"
+        }
       }
     },
     {
       "id": "outro-connection",
       "replacementId": "outro-connection",
-      "status": "automated-signal-review-passed",
-      "pronunciation": "native-listener-review-required",
-      "cadence": "tempo-calibrated-at-0.88",
-      "notes": [
-        "Wording remains locked to the approved Task 2 script.",
-        "No pronunciation edits are authorized from automated inspection alone."
-      ],
+      "textSha256": "065ed6db88baace46ef947bd5090ed0b01d3d6324557e49b478284a3e664084e",
+      "seed": 315395075,
+      "status": "automated-structure-and-signal-review-passed",
+      "pronunciation": "user-review-required",
+      "timeCompressionFactor": 1,
+      "timelineStartSeconds": 187.6,
+      "timelineEndSeconds": 196.64,
       "signal": {
-        "durationSeconds": 5.312,
-        "peakDbfs": -2.88,
-        "rmsDbfs": -26.933,
-        "activeRatio": 0.522739,
-        "leadingSilenceSeconds": 0.159792,
-        "trailingSilenceSeconds": 0.074813
+        "durationSeconds": 9.04,
+        "sampleRateHz": 48000,
+        "channels": 1,
+        "bitsPerSample": 16,
+        "subtype": "PCM_16",
+        "peakDbfs": -7,
+        "rmsDbfs": -22,
+        "activeRatio": 0.588376,
+        "leadingSilenceSeconds": 0.070792,
+        "trailingSilenceSeconds": 0.166104,
+        "bytes": 867884,
+        "sha256": "82627095212c083c45950da7f0a77010553d5f02a371704aedc58e2ba81f87a5"
+      },
+      "asr": {
+        "status": "completed",
+        "transcript": "哇 成整世界已經顯現 但最後的連結仍等待你親手完成",
+        "normalizedReference": "七种世界已经显现但最后的连接仍等待你亲手完成",
+        "normalizedTranscript": "哇成整世界已經顯現但最後的連結仍等待你親手完成",
+        "referenceCharacters": 22,
+        "editDistance": 10,
+        "cer": 0.454545,
+        "diagnosticScriptVariantFold": {
+          "policy": "Documented Simplified/Traditional character fold for diagnosis only; raw transcript and raw CER above remain unchanged.",
+          "foldedTranscript": "哇成整世界已经显现但最后的连結仍等待你親手完成",
+          "foldedCharacters": 5,
+          "editDistance": 5,
+          "cer": 0.227273
+        },
+        "manualReviewFocus": {
+          "cueId": "outro-connection",
+          "category": "ordinary-lexical-risk",
+          "focus": "重点核听七种世界；primary ASR 开头明显不一致。"
+        },
+        "focusedCrossCheck": {
+          "status": "completed",
+          "model": {
+            "id": "openai/whisper-large-v3-turbo",
+            "revision": "41f01f3fe87f28c78e2fbf8b568835947dd65ed9"
+          },
+          "transcript": "哇,重整世界已经显现,但最后的连接仍等待你亲手完成。",
+          "normalizedTranscript": "哇重整世界已经显现但最后的连接仍等待你亲手完成",
+          "editDistance": 3,
+          "cer": 0.136364,
+          "diagnosticScriptVariantFold": {
+            "policy": "Diagnosis only; cross-check raw transcript and raw CER remain unchanged.",
+            "foldedTranscript": "哇重整世界已经显现但最后的连接仍等待你亲手完成",
+            "foldedCharacters": 0,
+            "editDistance": 3,
+            "cer": 0.136364
+          }
+        }
       }
     },
     {
       "id": "outro-stone",
       "replacementId": "outro-stone",
-      "status": "automated-signal-review-passed",
-      "pronunciation": "native-listener-review-required",
-      "cadence": "tempo-calibrated-at-0.88",
-      "notes": [
-        "Wording remains locked to the approved Task 2 script.",
-        "No pronunciation edits are authorized from automated inspection alone."
-      ],
+      "textSha256": "729338a1d0fa61972918aad95303b480ef9f0d6c750df4172bc2dac71ed089d5",
+      "seed": 769022107,
+      "status": "automated-structure-and-signal-review-passed",
+      "pronunciation": "user-review-required",
+      "timeCompressionFactor": 1,
+      "timelineStartSeconds": 197,
+      "timelineEndSeconds": 204.52,
       "signal": {
-        "durationSeconds": 3.882667,
-        "peakDbfs": -7.22,
-        "rmsDbfs": -27.16,
-        "activeRatio": 0.540211,
-        "leadingSilenceSeconds": 0.170396,
-        "trailingSilenceSeconds": 0.098937
+        "durationSeconds": 7.52,
+        "sampleRateHz": 48000,
+        "channels": 1,
+        "bitsPerSample": 16,
+        "subtype": "PCM_16",
+        "peakDbfs": -7,
+        "rmsDbfs": -22,
+        "activeRatio": 0.58279,
+        "leadingSilenceSeconds": 0.157688,
+        "trailingSilenceSeconds": 1.353292,
+        "bytes": 721964,
+        "sha256": "4b5deb574b349f8e46528f4937a3599a971ac29efed46e3c0b65372be6fa30b6"
+      },
+      "asr": {
+        "status": "completed",
+        "transcript": "若你已經理解邊界的意義,就落下那顆棋子。",
+        "normalizedReference": "若你已经理解边界的意义就落下那颗棋子",
+        "normalizedTranscript": "若你已經理解邊界的意義就落下那顆棋子",
+        "referenceCharacters": 18,
+        "editDistance": 4,
+        "cer": 0.222222,
+        "diagnosticScriptVariantFold": {
+          "policy": "Documented Simplified/Traditional character fold for diagnosis only; raw transcript and raw CER above remain unchanged.",
+          "foldedTranscript": "若你已经理解边界的意义就落下那颗棋子",
+          "foldedCharacters": 4,
+          "editDistance": 0,
+          "cer": 0.0
+        }
       }
     },
     {
       "id": "outro-world",
       "replacementId": "outro-world",
-      "status": "automated-signal-review-passed",
-      "pronunciation": "native-listener-review-required",
-      "cadence": "tempo-calibrated-at-0.88",
-      "notes": [
-        "Wording remains locked to the approved Task 2 script.",
-        "No pronunciation edits are authorized from automated inspection alone."
-      ],
+      "textSha256": "af37db426062db3d7d232cddf711ec5f1a4c5211db6cf660bc829013cb70b86e",
+      "seed": 1699742640,
+      "status": "automated-structure-and-signal-review-passed",
+      "pronunciation": "user-review-required",
+      "timeCompressionFactor": 1,
+      "timelineStartSeconds": 204.88,
+      "timelineEndSeconds": 209.12,
       "signal": {
-        "durationSeconds": 3.050667,
-        "peakDbfs": -3,
-        "rmsDbfs": -26.378,
-        "activeRatio": 0.523601,
-        "leadingSilenceSeconds": 0.161833,
-        "trailingSilenceSeconds": 0.113646
+        "durationSeconds": 4.24,
+        "sampleRateHz": 48000,
+        "channels": 1,
+        "bitsPerSample": 16,
+        "subtype": "PCM_16",
+        "peakDbfs": -7.0006,
+        "rmsDbfs": -22,
+        "activeRatio": 0.514706,
+        "leadingSilenceSeconds": 0.041708,
+        "trailingSilenceSeconds": 0.462167,
+        "bytes": 407084,
+        "sha256": "53b7cc81ce03098f37e5786ab8277ee05cf38dd0b412d5f2539827f770a8c113"
+      },
+      "asr": {
+        "status": "completed",
+        "transcript": "然後去看見世界本來的樣子吧",
+        "normalizedReference": "然后去看见世界本来的样子吧",
+        "normalizedTranscript": "然後去看見世界本來的樣子吧",
+        "referenceCharacters": 13,
+        "editDistance": 4,
+        "cer": 0.307692,
+        "diagnosticScriptVariantFold": {
+          "policy": "Documented Simplified/Traditional character fold for diagnosis only; raw transcript and raw CER above remain unchanged.",
+          "foldedTranscript": "然后去看见世界本來的样子吧",
+          "foldedCharacters": 3,
+          "editDistance": 1,
+          "cer": 0.076923
+        },
+        "focusedCrossCheck": {
+          "status": "completed",
+          "model": {
+            "id": "openai/whisper-large-v3-turbo",
+            "revision": "41f01f3fe87f28c78e2fbf8b568835947dd65ed9"
+          },
+          "transcript": "然后,去看见世界本来的样子吧。",
+          "normalizedTranscript": "然后去看见世界本来的样子吧",
+          "editDistance": 0,
+          "cer": 0.0,
+          "diagnosticScriptVariantFold": {
+            "policy": "Diagnosis only; cross-check raw transcript and raw CER remain unchanged.",
+            "foldedTranscript": "然后去看见世界本来的样子吧",
+            "foldedCharacters": 0,
+            "editDistance": 0,
+            "cer": 0.0
+          }
+        }
       }
     }
   ]

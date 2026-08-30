@@ -34,11 +34,12 @@
 - 通用底部安全边界为 144px；字幕另用独立的 `--caption-baseline-bottom: 180px`，由零高 DOM 基线标记在字体就绪后校正到距画布底边 180px（误差不超过 1px），可见字形包围盒不得越过安全边界。字幕始终单行、居中；每个语义分句独立成 cue，上一 cue 结束即 hard clear，任何时刻只允许一个 caption group 可见。
 - 字幕只使用白字与 4px 黑描边，整行 7 帧淡入、7 帧淡出。禁止底板、胶囊、投影、发光、逐字 / 逐词运动、卡拉 OK 高亮、整屏遮罩与两行回退；句号不显示，有语义的问号保留。
 
-## 旁白节奏轨
+## 正式旁白与实测时间线
 
 - 旁白逐字采用 Task 2 定稿，章节牌的 `ACT.`、关卡名与流形名只在画面显影；正文中的“方庭”正常保留。章节牌期间旁白与字幕都为零。
-- 节奏轨由 Kokoro-82M 的中文男声 `zm_yunyang` 以 0.88 speed 生成，eSpeak NG 只承担音素化。21 个旁白 cue 各自保持稳定 replacement ID，WAV 在本地 `captures/voiceover/` 逐条生成，允许后续真人录音一对一替换。
-- 母版时长由归一化 WAV 的实际采样数、受保护停顿与章节牌阅读时间生成；当前节奏轨得到 183.352 秒，不以加速旁白追赶 165 秒参考。gallery 从片尾旁白前持续退镜，并在第一条片尾旁白期间保持可见重叠。
+- 正式旁白固定为 Task 8C 已选 F `cold-witness`：`Qwen/Qwen3-TTS-12Hz-1.7B-VoiceDesign@0e711a1c0aa5aad30654426e0d11f67716c1211e` 在 CPU 上通过官方 `generate_voice_design` 生成，复用获批 timbre/shared-delivery 原文。21 个 cue 使用确定性独立 seed，在完整候选批次验证后才原子替换本地 `captures/voiceover/`；无 speaker、参考音频、克隆、CustomVoice/Base 或 fallback。旧 Kokoro/eSpeak 轨仅保留历史来源记录，不进入正式音频。
+- 21 条干声均为 48 kHz / mono / PCM-16，目标 RMS -22 dBFS、峰值上限 -7 dBFS，未截词且未时间压缩。实测旁白把合成时间线从旧节奏锚点 183.352 秒自然扩展到 214.040 秒；字幕、scene/gallery/outro 边界、转场证据与 score 补齐时长均由同一时间线重建。
+- 本地 `openai/whisper-small@973afd…` 的原始 corpus CER 为 0.252427，仅作风险筛查；raw CER ≥ 0.30 的 11 条由 `openai/whisper-large-v3-turbo@41f01f…` 聚焦交叉验证。原始 transcript/CER、简繁体诊断值和普通词/拓扑词重点核听项同时保留，不据此宣告可懂度通过；214.040 秒连续干声审听母版仍标记 `user-review-required`。
 
 ## 原创配乐与音效
 

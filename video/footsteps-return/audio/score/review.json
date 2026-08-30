@@ -1,11 +1,11 @@
 {
   "schemaVersion": 1,
-  "masterSha256": "747dd5559e6e53991d842cd8fd1f76acb4ab2146d58c34cf13e6cf6d3ae3fe4e",
+  "masterSha256": "b8fe626c3cce4eef176bcf9c35ca96ee3aabc4998385986cd28fb56f37d8aed1",
   "reviewAsset": {
     "path": "audio/score/review/score-review.opus",
     "codec": "Opus 48 kbps VBR",
-    "bytes": 1326651,
-    "sha256": "84c0bd9071f3d683dd991eb26cac1b386b3838f4312708f158573dcc3ea529ce",
+    "bytes": 1335132,
+    "sha256": "759e059c4b1c59104477f61eaa5bb70f39bedd5fc9ad0fb07bfe6f1c837a57da",
     "versionControl": "ignored local audition file"
   },
   "subjectiveListening": {
@@ -24,408 +24,408 @@
     "silenceOrMissingAudio": false,
     "clippingDetected": false,
     "masterPeakDbfs": -18.616,
-    "masterRmsDbfs": -40.755,
+    "masterRmsDbfs": -41.428,
     "voiceScoreComparison": {
       "cueCount": 21,
       "presenceBandHz": [
         180,
         4500
       ],
-      "minimumVoiceToScoreRmsMarginDb": 7.07,
-      "minimumVoiceToScorePresenceBandMarginDb": 6.81,
-      "method": "Actual dry voice cue PCM is hash-verified against timing.json, then compared with the exact score-master timeline window using broadband RMS and a cascaded first-order 180 Hz high-pass / 4500 Hz low-pass presence-band RMS.",
+      "minimumVoiceToScoreRmsMarginDb": 12.3,
+      "minimumVoiceToScorePresenceBandMarginDb": 10.35,
+      "method": "Actual dry voice cue PCM is hash-verified against timing.json, then compared with the exact score-master timeline window using broadband RMS and a cascaded first-order 180 Hz high-pass / 4500 Hz low-pass presence-band RMS. Digital-silence windows use a deterministic -240 dBFS analysis floor so every reported margin remains finite.",
       "cues": [
         {
           "id": "intro-boundary",
           "timelineStartSeconds": 0.42,
-          "timelineEndSeconds": 3.918667,
-          "voiceSha256": "33b4c86c91fd1ee1d5bb8741679b9939b6b0d052e100bb38c513e5f8f2a9fbd5",
-          "voiceRmsDbfs": -26.49,
-          "scoreRmsDbfs": -55.47,
-          "voiceToScoreRmsMarginDb": 28.98,
-          "voicePresenceBandRmsDbfs": -27.98,
-          "scorePresenceBandRmsDbfs": -56.47,
-          "voiceToScorePresenceBandMarginDb": 28.49
+          "timelineEndSeconds": 4.5,
+          "voiceSha256": "825be46e0acccd950d1f1bb4e0c1c1e1474d411524bf00c8f394b444051523cd",
+          "voiceRmsDbfs": -22,
+          "scoreRmsDbfs": -53.88,
+          "voiceToScoreRmsMarginDb": 31.88,
+          "voicePresenceBandRmsDbfs": -26.53,
+          "scorePresenceBandRmsDbfs": -54.85,
+          "voiceToScorePresenceBandMarginDb": 28.31
         },
         {
           "id": "intro-roads",
-          "timelineStartSeconds": 4.278667,
-          "timelineEndSeconds": 13.110667,
-          "voiceSha256": "bfb6efe9f13bcf204d6866e6e300b9e01a0b3e991ae7940b1d3a460a4db1cec0",
-          "voiceRmsDbfs": -26.61,
-          "scoreRmsDbfs": -53.41,
-          "voiceToScoreRmsMarginDb": 26.8,
-          "voicePresenceBandRmsDbfs": -27.96,
-          "scorePresenceBandRmsDbfs": -54.39,
-          "voiceToScorePresenceBandMarginDb": 26.43
+          "timelineStartSeconds": 4.86,
+          "timelineEndSeconds": 14.86,
+          "voiceSha256": "246ce63602ef6ff58083798c1fcf1d501b3305f3219914fc98a9d3f04b701e60",
+          "voiceRmsDbfs": -22,
+          "scoreRmsDbfs": -54,
+          "voiceToScoreRmsMarginDb": 32,
+          "voicePresenceBandRmsDbfs": -25.7,
+          "scorePresenceBandRmsDbfs": -55.03,
+          "voiceToScorePresenceBandMarginDb": 29.33
         },
         {
           "id": "intro-invitation",
-          "timelineStartSeconds": 13.470667,
-          "timelineEndSeconds": 20.702667,
-          "voiceSha256": "947600ab303b6d337fc85d6bbedf952c1cafdb7f876308f2990bc24b5fe965c5",
-          "voiceRmsDbfs": -26.75,
-          "scoreRmsDbfs": -57.25,
-          "voiceToScoreRmsMarginDb": 30.5,
-          "voicePresenceBandRmsDbfs": -28.16,
-          "scorePresenceBandRmsDbfs": -58.22,
-          "voiceToScorePresenceBandMarginDb": 30.06
+          "timelineStartSeconds": 15.22,
+          "timelineEndSeconds": 25.62,
+          "voiceSha256": "642100d571b12388389cbedb3ba2d8ca8ad2baf1750f71cd703a7a6883cf2cda",
+          "voiceRmsDbfs": -22,
+          "scoreRmsDbfs": -49.53,
+          "voiceToScoreRmsMarginDb": 27.53,
+          "voicePresenceBandRmsDbfs": -25.32,
+          "scorePresenceBandRmsDbfs": -50.54,
+          "voiceToScorePresenceBandMarginDb": 25.23
         },
         {
           "id": "plane-order",
-          "timelineStartSeconds": 24.922667,
-          "timelineEndSeconds": 34.842667,
-          "voiceSha256": "02e3c1108eb7d583dcab1e56e761f34bb680fa1ff74ddfe1a4626fc50026ae28",
-          "voiceRmsDbfs": -27.03,
-          "scoreRmsDbfs": -46.82,
-          "voiceToScoreRmsMarginDb": 19.79,
-          "voicePresenceBandRmsDbfs": -28.47,
-          "scorePresenceBandRmsDbfs": -47.8,
-          "voiceToScorePresenceBandMarginDb": 19.34
+          "timelineStartSeconds": 29.84,
+          "timelineEndSeconds": 40.72,
+          "voiceSha256": "13d8b894b7a840588dcdbeaa4dea0f301c046f6f5d316c5a126e5d2368f35513",
+          "voiceRmsDbfs": -22,
+          "scoreRmsDbfs": -45.19,
+          "voiceToScoreRmsMarginDb": 23.19,
+          "voicePresenceBandRmsDbfs": -23.72,
+          "scorePresenceBandRmsDbfs": -46.51,
+          "voiceToScorePresenceBandMarginDb": 22.79
         },
         {
           "id": "cylinder-cycle",
-          "timelineStartSeconds": 41.182667,
-          "timelineEndSeconds": 49.161334,
-          "voiceSha256": "ddaaff44a1819d505107af1585ca500b7975e7fc77f9e6beff141f9eae291671",
-          "voiceRmsDbfs": -27.36,
-          "scoreRmsDbfs": -44.93,
-          "voiceToScoreRmsMarginDb": 17.57,
-          "voicePresenceBandRmsDbfs": -28.89,
-          "scorePresenceBandRmsDbfs": -46.6,
-          "voiceToScorePresenceBandMarginDb": 17.71
+          "timelineStartSeconds": 47.06,
+          "timelineEndSeconds": 56.5,
+          "voiceSha256": "6e150c87a9b42564ef3361379a78d766e0e564e15a5c77e4c2f1c0dbcbc08ee4",
+          "voiceRmsDbfs": -22,
+          "scoreRmsDbfs": -45.84,
+          "voiceToScoreRmsMarginDb": 23.84,
+          "voicePresenceBandRmsDbfs": -24.77,
+          "scorePresenceBandRmsDbfs": -47.46,
+          "voiceToScorePresenceBandMarginDb": 22.7
         },
         {
           "id": "cylinder-distance",
-          "timelineStartSeconds": 49.521334,
-          "timelineEndSeconds": 53.681334,
-          "voiceSha256": "236e3763ef1df1beb098b1c95801ac7af4585d38238656bd9d4c8e92681013b5",
-          "voiceRmsDbfs": -27.01,
-          "scoreRmsDbfs": -44.81,
-          "voiceToScoreRmsMarginDb": 17.8,
-          "voicePresenceBandRmsDbfs": -28.58,
-          "scorePresenceBandRmsDbfs": -46.33,
-          "voiceToScorePresenceBandMarginDb": 17.75
+          "timelineStartSeconds": 56.86,
+          "timelineEndSeconds": 61.74,
+          "voiceSha256": "e1dd285bdfd49d68c5e761e5a437fff27b9615857540d81649911456a606404a",
+          "voiceRmsDbfs": -22,
+          "scoreRmsDbfs": -47.4,
+          "voiceToScoreRmsMarginDb": 25.4,
+          "voicePresenceBandRmsDbfs": -25.85,
+          "scorePresenceBandRmsDbfs": -48.4,
+          "voiceToScorePresenceBandMarginDb": 22.55
         },
         {
           "id": "torus-cycles",
-          "timelineStartSeconds": 60.021334,
-          "timelineEndSeconds": 67.445334,
-          "voiceSha256": "6689bb6559d67057a06a284ed6615fce61fca4892f65ce45ed860117694bc8e9",
-          "voiceRmsDbfs": -27.18,
-          "scoreRmsDbfs": -47.49,
-          "voiceToScoreRmsMarginDb": 20.31,
-          "voicePresenceBandRmsDbfs": -28.78,
-          "scorePresenceBandRmsDbfs": -48.49,
-          "voiceToScorePresenceBandMarginDb": 19.71
+          "timelineStartSeconds": 68.08,
+          "timelineEndSeconds": 77.44,
+          "voiceSha256": "e6e74ddbe1e982acac0938fbbeb4cf10a1eddcc8e1e4dad0cdb9f24cb282aa4a",
+          "voiceRmsDbfs": -22,
+          "scoreRmsDbfs": -44.61,
+          "voiceToScoreRmsMarginDb": 22.61,
+          "voicePresenceBandRmsDbfs": -23.94,
+          "scorePresenceBandRmsDbfs": -45.59,
+          "voiceToScorePresenceBandMarginDb": 21.65
         },
         {
           "id": "torus-shortest-path",
-          "timelineStartSeconds": 67.805334,
-          "timelineEndSeconds": 72.861334,
-          "voiceSha256": "056cbe2bb011126a40b31191cdcc5d5bb46b958f2234c32efe3c48e414622561",
-          "voiceRmsDbfs": -26.96,
-          "scoreRmsDbfs": -46.03,
-          "voiceToScoreRmsMarginDb": 19.07,
-          "voicePresenceBandRmsDbfs": -28.46,
-          "scorePresenceBandRmsDbfs": -47.01,
-          "voiceToScorePresenceBandMarginDb": 18.55
+          "timelineStartSeconds": 77.8,
+          "timelineEndSeconds": 83.24,
+          "voiceSha256": "4d5f7d54a3ceb29207004b42fda2c4e6893ce7d91cc8aa9a26e90627b27fcfcf",
+          "voiceRmsDbfs": -22,
+          "scoreRmsDbfs": -43.03,
+          "voiceToScoreRmsMarginDb": 21.03,
+          "voicePresenceBandRmsDbfs": -24.77,
+          "scorePresenceBandRmsDbfs": -44.35,
+          "voiceToScorePresenceBandMarginDb": 19.58
         },
         {
           "id": "mobius-turn",
-          "timelineStartSeconds": 79.201334,
-          "timelineEndSeconds": 87.030667,
-          "voiceSha256": "f9f991c6594c01b42ff7019272f0ad96ab23afd8146447728754bbb28027eaf6",
-          "voiceRmsDbfs": -27.2,
-          "scoreRmsDbfs": -43.8,
-          "voiceToScoreRmsMarginDb": 16.59,
-          "voicePresenceBandRmsDbfs": -28.72,
-          "scorePresenceBandRmsDbfs": -45.24,
-          "voiceToScorePresenceBandMarginDb": 16.52
+          "timelineStartSeconds": 89.58,
+          "timelineEndSeconds": 98.38,
+          "voiceSha256": "2be1e9f3bf5ea5229aa02a95be55f838082778321e314e1903cc6731beabf975",
+          "voiceRmsDbfs": -22,
+          "scoreRmsDbfs": -41.23,
+          "voiceToScoreRmsMarginDb": 19.23,
+          "voicePresenceBandRmsDbfs": -24.99,
+          "scorePresenceBandRmsDbfs": -43.44,
+          "voiceToScorePresenceBandMarginDb": 18.45
         },
         {
           "id": "mobius-one-side",
-          "timelineStartSeconds": 87.390667,
-          "timelineEndSeconds": 90.974667,
-          "voiceSha256": "7e5aeab26deb08f4a03775a68409949d4653994bb82452731069ebc428ec6868",
-          "voiceRmsDbfs": -26.77,
-          "scoreRmsDbfs": -42.89,
-          "voiceToScoreRmsMarginDb": 16.12,
-          "voicePresenceBandRmsDbfs": -28.32,
-          "scorePresenceBandRmsDbfs": -44.21,
-          "voiceToScorePresenceBandMarginDb": 15.88
+          "timelineStartSeconds": 98.74,
+          "timelineEndSeconds": 102.9,
+          "voiceSha256": "ecaa969d8042564f52342168d8bbf325e486770db136668bd4dedd8e4ce3eb5c",
+          "voiceRmsDbfs": -22,
+          "scoreRmsDbfs": -38.39,
+          "voiceToScoreRmsMarginDb": 16.39,
+          "voicePresenceBandRmsDbfs": -25.7,
+          "scorePresenceBandRmsDbfs": -40.18,
+          "voiceToScorePresenceBandMarginDb": 14.48
         },
         {
           "id": "klein-two-returns",
-          "timelineStartSeconds": 97.314667,
-          "timelineEndSeconds": 106.872,
-          "voiceSha256": "45e7b983e704969ade1bab6273cab28492ab9ba50251af1b625424d867ba2854",
-          "voiceRmsDbfs": -27.3,
-          "scoreRmsDbfs": -38.09,
-          "voiceToScoreRmsMarginDb": 10.79,
-          "voicePresenceBandRmsDbfs": -28.83,
-          "scorePresenceBandRmsDbfs": -40.08,
-          "voiceToScorePresenceBandMarginDb": 11.25
+          "timelineStartSeconds": 109.24,
+          "timelineEndSeconds": 120.6,
+          "voiceSha256": "01de36256bd25a0390bdf42de8db0c0c606a0a4cdcbd1dfea1ffe2618a89332b",
+          "voiceRmsDbfs": -22,
+          "scoreRmsDbfs": -41.59,
+          "voiceToScoreRmsMarginDb": 19.59,
+          "voicePresenceBandRmsDbfs": -24.62,
+          "scorePresenceBandRmsDbfs": -42.94,
+          "voiceToScorePresenceBandMarginDb": 18.32
         },
         {
           "id": "klein-memory",
-          "timelineStartSeconds": 107.232,
-          "timelineEndSeconds": 109.706667,
-          "voiceSha256": "9505bd7a4721515ea16f000a0b2eafd51b9630b09073ff514be12a518f6449b3",
-          "voiceRmsDbfs": -27.44,
-          "scoreRmsDbfs": -38.14,
-          "voiceToScoreRmsMarginDb": 10.7,
-          "voicePresenceBandRmsDbfs": -29.18,
-          "scorePresenceBandRmsDbfs": -40.15,
-          "voiceToScorePresenceBandMarginDb": 10.96
+          "timelineStartSeconds": 120.96,
+          "timelineEndSeconds": 123.68,
+          "voiceSha256": "40c763005d783f0458b7cea094b1acff23943b17591753c0101b7b613e18c711",
+          "voiceRmsDbfs": -22,
+          "scoreRmsDbfs": -48.37,
+          "voiceToScoreRmsMarginDb": 26.37,
+          "voicePresenceBandRmsDbfs": -24.4,
+          "scorePresenceBandRmsDbfs": -49.06,
+          "voiceToScorePresenceBandMarginDb": 24.66
         },
         {
           "id": "projective-reflection",
-          "timelineStartSeconds": 116.046667,
-          "timelineEndSeconds": 123.854667,
-          "voiceSha256": "914e51a96ca2b67e480ca0f618580c66d61aee6a5ebf77df2a8cefd9739c2d75",
-          "voiceRmsDbfs": -26.86,
-          "scoreRmsDbfs": -48.39,
-          "voiceToScoreRmsMarginDb": 21.53,
-          "voicePresenceBandRmsDbfs": -28.27,
-          "scorePresenceBandRmsDbfs": -49.24,
-          "voiceToScorePresenceBandMarginDb": 20.97
+          "timelineStartSeconds": 130.02,
+          "timelineEndSeconds": 138.98,
+          "voiceSha256": "1da574c1d6824a52b1d7a48b7b8f5527349ce3871a150383ba150302c5e031ba",
+          "voiceRmsDbfs": -22,
+          "scoreRmsDbfs": -36.21,
+          "voiceToScoreRmsMarginDb": 14.21,
+          "voicePresenceBandRmsDbfs": -25.4,
+          "scorePresenceBandRmsDbfs": -37.48,
+          "voiceToScorePresenceBandMarginDb": 12.08
         },
         {
           "id": "projective-twin",
-          "timelineStartSeconds": 124.214667,
-          "timelineEndSeconds": 128.46,
-          "voiceSha256": "5a04e885ef0b5a6c942ec390980e242e99e20f35f202e034bedf47c9d12355ce",
-          "voiceRmsDbfs": -25.92,
-          "scoreRmsDbfs": -46.41,
-          "voiceToScoreRmsMarginDb": 20.49,
-          "voicePresenceBandRmsDbfs": -27.16,
-          "scorePresenceBandRmsDbfs": -47.13,
-          "voiceToScorePresenceBandMarginDb": 19.97
+          "timelineStartSeconds": 139.34,
+          "timelineEndSeconds": 145.5,
+          "voiceSha256": "a3769726960a2844faceb89fe0de4ae5590492dfed041277965d404c78fa7437",
+          "voiceRmsDbfs": -22,
+          "scoreRmsDbfs": -34.3,
+          "voiceToScoreRmsMarginDb": 12.3,
+          "voicePresenceBandRmsDbfs": -25.3,
+          "scorePresenceBandRmsDbfs": -35.65,
+          "voiceToScorePresenceBandMarginDb": 10.35
         },
         {
           "id": "sphere-closure",
-          "timelineStartSeconds": 134.8,
-          "timelineEndSeconds": 144.976,
-          "voiceSha256": "a7fc41186c0f289dcefc416160b6b4c9e4850f1c6294ed65e8ed10817c72d0e7",
-          "voiceRmsDbfs": -26.84,
-          "scoreRmsDbfs": -34.53,
-          "voiceToScoreRmsMarginDb": 7.69,
-          "voicePresenceBandRmsDbfs": -28.26,
-          "scorePresenceBandRmsDbfs": -35.86,
-          "voiceToScorePresenceBandMarginDb": 7.6
+          "timelineStartSeconds": 151.84,
+          "timelineEndSeconds": 163.84,
+          "voiceSha256": "c83fa1d04822dc10d2b7b7f0fe145af9d7c178410b4c92f46c1cd9b70f675ed2",
+          "voiceRmsDbfs": -22,
+          "scoreRmsDbfs": -39.5,
+          "voiceToScoreRmsMarginDb": 17.5,
+          "voicePresenceBandRmsDbfs": -25.05,
+          "scorePresenceBandRmsDbfs": -40.75,
+          "voiceToScorePresenceBandMarginDb": 15.7
         },
         {
           "id": "sphere-map",
-          "timelineStartSeconds": 145.336,
-          "timelineEndSeconds": 150.52,
-          "voiceSha256": "2896c3a73f847872f518b13f2f501cd0c2bc86bb6ab4759959f22c8c3df04362",
-          "voiceRmsDbfs": -26.83,
-          "scoreRmsDbfs": -33.9,
-          "voiceToScoreRmsMarginDb": 7.07,
-          "voicePresenceBandRmsDbfs": -28.36,
-          "scorePresenceBandRmsDbfs": -35.17,
-          "voiceToScorePresenceBandMarginDb": 6.81
+          "timelineStartSeconds": 164.2,
+          "timelineEndSeconds": 169.24,
+          "voiceSha256": "8620a5e1fa385efe84d0b680cbf49e9f4a9daa34f3d21fb87acc3389781684a5",
+          "voiceRmsDbfs": -22,
+          "scoreRmsDbfs": -42.05,
+          "voiceToScoreRmsMarginDb": 20.05,
+          "voicePresenceBandRmsDbfs": -25.45,
+          "scorePresenceBandRmsDbfs": -43.09,
+          "voiceToScorePresenceBandMarginDb": 17.64
         },
         {
           "id": "sphere-boundary",
-          "timelineStartSeconds": 150.88,
-          "timelineEndSeconds": 155.381333,
-          "voiceSha256": "0ba42399758675524caef07287a1b366141a300ffebe431f27e02f62f63999e1",
-          "voiceRmsDbfs": -26.39,
-          "scoreRmsDbfs": -35.23,
-          "voiceToScoreRmsMarginDb": 8.84,
-          "voicePresenceBandRmsDbfs": -27.77,
-          "scorePresenceBandRmsDbfs": -36.62,
-          "voiceToScorePresenceBandMarginDb": 8.85
+          "timelineStartSeconds": 169.6,
+          "timelineEndSeconds": 174.32,
+          "voiceSha256": "ab33353e1b4963db28d31153dfc41757cfdce842e9613ae10f85d125ff5f6ea8",
+          "voiceRmsDbfs": -22,
+          "scoreRmsDbfs": -41.58,
+          "voiceToScoreRmsMarginDb": 19.58,
+          "voicePresenceBandRmsDbfs": -24.5,
+          "scorePresenceBandRmsDbfs": -42.53,
+          "voiceToScorePresenceBandMarginDb": 18.03
         },
         {
           "id": "outro-invocation",
-          "timelineStartSeconds": 163.421333,
-          "timelineEndSeconds": 165.106666,
-          "voiceSha256": "4d9b34ffc9731f0019b860e2e140a95548290f7ffba41a66dca1c9f7a0b470ed",
-          "voiceRmsDbfs": -26.03,
-          "scoreRmsDbfs": -43.13,
-          "voiceToScoreRmsMarginDb": 17.11,
-          "voicePresenceBandRmsDbfs": -27.52,
-          "scorePresenceBandRmsDbfs": -44.39,
-          "voiceToScorePresenceBandMarginDb": 16.87
+          "timelineStartSeconds": 182.36,
+          "timelineEndSeconds": 187.24,
+          "voiceSha256": "c06b070c7dc429a7ea8498e1b34acc78bbb22c2c2e527e9f578f5e93ff2efac1",
+          "voiceRmsDbfs": -22,
+          "scoreRmsDbfs": -121.71,
+          "voiceToScoreRmsMarginDb": 99.71,
+          "voicePresenceBandRmsDbfs": -24.71,
+          "scorePresenceBandRmsDbfs": -123.05,
+          "voiceToScorePresenceBandMarginDb": 98.35
         },
         {
           "id": "outro-connection",
-          "timelineStartSeconds": 165.466666,
-          "timelineEndSeconds": 170.778666,
-          "voiceSha256": "8735e29e359184dffb282da03cfb00ffb5962843dd18d2d4293d6b5708387101",
-          "voiceRmsDbfs": -26.93,
-          "scoreRmsDbfs": -42.17,
-          "voiceToScoreRmsMarginDb": 15.24,
-          "voicePresenceBandRmsDbfs": -28.41,
-          "scorePresenceBandRmsDbfs": -43.08,
-          "voiceToScorePresenceBandMarginDb": 14.68
+          "timelineStartSeconds": 187.6,
+          "timelineEndSeconds": 196.64,
+          "voiceSha256": "82627095212c083c45950da7f0a77010553d5f02a371704aedc58e2ba81f87a5",
+          "voiceRmsDbfs": -22,
+          "scoreRmsDbfs": -240,
+          "voiceToScoreRmsMarginDb": 218,
+          "voicePresenceBandRmsDbfs": -24.03,
+          "scorePresenceBandRmsDbfs": -240,
+          "voiceToScorePresenceBandMarginDb": 215.97
         },
         {
           "id": "outro-stone",
-          "timelineStartSeconds": 171.138666,
-          "timelineEndSeconds": 175.021333,
-          "voiceSha256": "802f3badef7fbd329f9f7d120543171c6b0bd2b6e83604d4791b323dfebad2ed",
-          "voiceRmsDbfs": -27.16,
-          "scoreRmsDbfs": -42.05,
-          "voiceToScoreRmsMarginDb": 14.89,
-          "voicePresenceBandRmsDbfs": -28.73,
-          "scorePresenceBandRmsDbfs": -43.09,
-          "voiceToScorePresenceBandMarginDb": 14.36
+          "timelineStartSeconds": 197,
+          "timelineEndSeconds": 204.52,
+          "voiceSha256": "4b5deb574b349f8e46528f4937a3599a971ac29efed46e3c0b65372be6fa30b6",
+          "voiceRmsDbfs": -22,
+          "scoreRmsDbfs": -240,
+          "voiceToScoreRmsMarginDb": 218,
+          "voicePresenceBandRmsDbfs": -25.16,
+          "scorePresenceBandRmsDbfs": -240,
+          "voiceToScorePresenceBandMarginDb": 214.84
         },
         {
           "id": "outro-world",
-          "timelineStartSeconds": 175.381333,
-          "timelineEndSeconds": 178.432,
-          "voiceSha256": "d0b8c1b1a4c394d87ea9b3c221a5a69aa5671d9b9454befb6ed0d214d74012f5",
-          "voiceRmsDbfs": -26.38,
-          "scoreRmsDbfs": -38.81,
-          "voiceToScoreRmsMarginDb": 12.43,
-          "voicePresenceBandRmsDbfs": -27.78,
-          "scorePresenceBandRmsDbfs": -39.9,
-          "voiceToScorePresenceBandMarginDb": 12.12
+          "timelineStartSeconds": 204.88,
+          "timelineEndSeconds": 209.12,
+          "voiceSha256": "53b7cc81ce03098f37e5786ab8277ee05cf38dd0b412d5f2539827f770a8c113",
+          "voiceRmsDbfs": -22,
+          "scoreRmsDbfs": -240,
+          "voiceToScoreRmsMarginDb": 218,
+          "voicePresenceBandRmsDbfs": -25.36,
+          "scorePresenceBandRmsDbfs": -240,
+          "voiceToScorePresenceBandMarginDb": 214.64
         }
       ]
     },
     "narrationWindowDensity": {
       "cueCount": 21,
       "source": "generated master.mid note-on events and sounding-note intervals",
-      "maximumNoteOnsetsPerSecond": 7.14,
-      "maximumSimultaneousPitches": 16,
+      "maximumNoteOnsetsPerSecond": 6.17,
+      "maximumSimultaneousPitches": 12,
       "cues": [
         {
           "id": "intro-boundary",
-          "noteOnsets": 2,
-          "noteOnsetsPerSecond": 0.57,
-          "maximumSimultaneousPitches": 1
+          "noteOnsets": 4,
+          "noteOnsetsPerSecond": 0.98,
+          "maximumSimultaneousPitches": 2
         },
         {
           "id": "intro-roads",
-          "noteOnsets": 15,
-          "noteOnsetsPerSecond": 1.7,
-          "maximumSimultaneousPitches": 4
-        },
-        {
-          "id": "intro-invitation",
-          "noteOnsets": 8,
-          "noteOnsetsPerSecond": 1.11,
+          "noteOnsets": 16,
+          "noteOnsetsPerSecond": 1.6,
           "maximumSimultaneousPitches": 5
         },
         {
+          "id": "intro-invitation",
+          "noteOnsets": 22,
+          "noteOnsetsPerSecond": 2.12,
+          "maximumSimultaneousPitches": 6
+        },
+        {
           "id": "plane-order",
-          "noteOnsets": 38,
-          "noteOnsetsPerSecond": 3.83,
+          "noteOnsets": 37,
+          "noteOnsetsPerSecond": 3.4,
           "maximumSimultaneousPitches": 7
         },
         {
           "id": "cylinder-cycle",
-          "noteOnsets": 31,
-          "noteOnsetsPerSecond": 3.89,
+          "noteOnsets": 33,
+          "noteOnsetsPerSecond": 3.5,
           "maximumSimultaneousPitches": 6
         },
         {
           "id": "cylinder-distance",
-          "noteOnsets": 17,
-          "noteOnsetsPerSecond": 4.09,
-          "maximumSimultaneousPitches": 5
+          "noteOnsets": 20,
+          "noteOnsetsPerSecond": 4.1,
+          "maximumSimultaneousPitches": 4
         },
         {
           "id": "torus-cycles",
-          "noteOnsets": 31,
-          "noteOnsetsPerSecond": 4.18,
+          "noteOnsets": 38,
+          "noteOnsetsPerSecond": 4.06,
           "maximumSimultaneousPitches": 5
         },
         {
           "id": "torus-shortest-path",
-          "noteOnsets": 23,
-          "noteOnsetsPerSecond": 4.55,
-          "maximumSimultaneousPitches": 5
+          "noteOnsets": 15,
+          "noteOnsetsPerSecond": 2.76,
+          "maximumSimultaneousPitches": 4
         },
         {
           "id": "mobius-turn",
-          "noteOnsets": 24,
-          "noteOnsetsPerSecond": 3.07,
-          "maximumSimultaneousPitches": 5
+          "noteOnsets": 30,
+          "noteOnsetsPerSecond": 3.41,
+          "maximumSimultaneousPitches": 6
         },
         {
           "id": "mobius-one-side",
-          "noteOnsets": 11,
-          "noteOnsetsPerSecond": 3.07,
-          "maximumSimultaneousPitches": 5
-        },
-        {
-          "id": "klein-two-returns",
-          "noteOnsets": 46,
+          "noteOnsets": 20,
           "noteOnsetsPerSecond": 4.81,
           "maximumSimultaneousPitches": 5
         },
         {
+          "id": "klein-two-returns",
+          "noteOnsets": 45,
+          "noteOnsetsPerSecond": 3.96,
+          "maximumSimultaneousPitches": 8
+        },
+        {
           "id": "klein-memory",
-          "noteOnsets": 14,
-          "noteOnsetsPerSecond": 5.66,
-          "maximumSimultaneousPitches": 6
+          "noteOnsets": 10,
+          "noteOnsetsPerSecond": 3.68,
+          "maximumSimultaneousPitches": 7
         },
         {
           "id": "projective-reflection",
-          "noteOnsets": 29,
-          "noteOnsetsPerSecond": 3.71,
-          "maximumSimultaneousPitches": 8
+          "noteOnsets": 38,
+          "noteOnsetsPerSecond": 4.24,
+          "maximumSimultaneousPitches": 9
         },
         {
           "id": "projective-twin",
-          "noteOnsets": 17,
-          "noteOnsetsPerSecond": 4,
-          "maximumSimultaneousPitches": 10
-        },
-        {
-          "id": "sphere-closure",
-          "noteOnsets": 58,
-          "noteOnsetsPerSecond": 5.7,
+          "noteOnsets": 38,
+          "noteOnsetsPerSecond": 6.17,
           "maximumSimultaneousPitches": 12
         },
         {
-          "id": "sphere-map",
-          "noteOnsets": 37,
-          "noteOnsetsPerSecond": 7.14,
-          "maximumSimultaneousPitches": 14
-        },
-        {
-          "id": "sphere-boundary",
-          "noteOnsets": 23,
-          "noteOnsetsPerSecond": 5.11,
+          "id": "sphere-closure",
+          "noteOnsets": 44,
+          "noteOnsetsPerSecond": 3.67,
           "maximumSimultaneousPitches": 11
         },
         {
-          "id": "outro-invocation",
-          "noteOnsets": 8,
-          "noteOnsetsPerSecond": 4.75,
+          "id": "sphere-map",
+          "noteOnsets": 18,
+          "noteOnsetsPerSecond": 3.57,
           "maximumSimultaneousPitches": 7
+        },
+        {
+          "id": "sphere-boundary",
+          "noteOnsets": 14,
+          "noteOnsetsPerSecond": 2.97,
+          "maximumSimultaneousPitches": 7
+        },
+        {
+          "id": "outro-invocation",
+          "noteOnsets": 0,
+          "noteOnsetsPerSecond": 0,
+          "maximumSimultaneousPitches": 0
         },
         {
           "id": "outro-connection",
-          "noteOnsets": 18,
-          "noteOnsetsPerSecond": 3.39,
-          "maximumSimultaneousPitches": 7
+          "noteOnsets": 0,
+          "noteOnsetsPerSecond": 0,
+          "maximumSimultaneousPitches": 0
         },
         {
           "id": "outro-stone",
-          "noteOnsets": 15,
-          "noteOnsetsPerSecond": 3.86,
-          "maximumSimultaneousPitches": 8
+          "noteOnsets": 0,
+          "noteOnsetsPerSecond": 0,
+          "maximumSimultaneousPitches": 0
         },
         {
           "id": "outro-world",
-          "noteOnsets": 16,
-          "noteOnsetsPerSecond": 5.24,
-          "maximumSimultaneousPitches": 16
+          "noteOnsets": 0,
+          "noteOnsetsPerSecond": 0,
+          "maximumSimultaneousPitches": 0
         }
       ]
     },
     "cylinderStereoMotion": {
       "stemId": "cello",
-      "sourceStemSha256": "12d17b203b1de73b972a67925af282ab635a936797baf31ce01c95023c8ce84d",
+      "sourceStemSha256": "7eaae7d167ffa2eb72c71d638cd8e25a8c1120cf5bf2b769e53aa107873b5f69",
       "automationConsumer": "scripts/score-audio.mjs equal-power PCM spatializer applied to the real MuseScore Basic cello stem",
       "earlyWindow": {
         "startSeconds": 38,
@@ -455,7 +455,7 @@
           },
           {
             "id": "celesta",
-            "rmsDbfs": null
+            "rmsDbfs": -240
           },
           {
             "id": "violin-i",
@@ -479,7 +479,7 @@
           },
           {
             "id": "french-horn",
-            "rmsDbfs": null
+            "rmsDbfs": -240
           },
           {
             "id": "bass-clarinet",
@@ -487,11 +487,11 @@
           },
           {
             "id": "choir-aahs",
-            "rmsDbfs": null
+            "rmsDbfs": -240
           },
           {
             "id": "restrained-percussion",
-            "rmsDbfs": null
+            "rmsDbfs": -240
           }
         ],
         "dominantPart": "piano",
@@ -502,7 +502,11 @@
           "cello",
           "violin-ii",
           "violin-i",
-          "double-bass"
+          "double-bass",
+          "celesta",
+          "french-horn",
+          "choir-aahs",
+          "restrained-percussion"
         ],
         "activeParts": [
           "piano",
@@ -529,11 +533,11 @@
           },
           {
             "id": "violin-i",
-            "rmsDbfs": null
+            "rmsDbfs": -240
           },
           {
             "id": "violin-ii",
-            "rmsDbfs": null
+            "rmsDbfs": -240
           },
           {
             "id": "viola",
@@ -557,7 +561,7 @@
           },
           {
             "id": "choir-aahs",
-            "rmsDbfs": null
+            "rmsDbfs": -240
           },
           {
             "id": "restrained-percussion",
@@ -573,7 +577,10 @@
           "french-horn",
           "viola",
           "celesta",
-          "piano"
+          "piano",
+          "violin-i",
+          "violin-ii",
+          "choir-aahs"
         ],
         "activeParts": [
           "bass-clarinet",
@@ -601,7 +608,7 @@
           },
           {
             "id": "violin-i",
-            "rmsDbfs": null
+            "rmsDbfs": -240
           },
           {
             "id": "violin-ii",
@@ -621,7 +628,7 @@
           },
           {
             "id": "french-horn",
-            "rmsDbfs": null
+            "rmsDbfs": -240
           },
           {
             "id": "bass-clarinet",
@@ -629,7 +636,7 @@
           },
           {
             "id": "choir-aahs",
-            "rmsDbfs": null
+            "rmsDbfs": -240
           },
           {
             "id": "restrained-percussion",
@@ -645,7 +652,10 @@
           "viola",
           "restrained-percussion",
           "bass-clarinet",
-          "double-bass"
+          "double-bass",
+          "violin-i",
+          "french-horn",
+          "choir-aahs"
         ],
         "activeParts": [
           "celesta",
@@ -689,11 +699,11 @@
           },
           {
             "id": "double-bass",
-            "rmsDbfs": null
+            "rmsDbfs": -240
           },
           {
             "id": "french-horn",
-            "rmsDbfs": null
+            "rmsDbfs": -240
           },
           {
             "id": "bass-clarinet",
@@ -701,7 +711,7 @@
           },
           {
             "id": "choir-aahs",
-            "rmsDbfs": null
+            "rmsDbfs": -240
           },
           {
             "id": "restrained-percussion",
@@ -717,7 +727,10 @@
           "restrained-percussion",
           "violin-i",
           "celesta",
-          "piano"
+          "piano",
+          "double-bass",
+          "french-horn",
+          "choir-aahs"
         ],
         "activeParts": [
           "viola",
@@ -772,7 +785,7 @@
           },
           {
             "id": "choir-aahs",
-            "rmsDbfs": null
+            "rmsDbfs": -240
           },
           {
             "id": "restrained-percussion",
@@ -790,7 +803,8 @@
           "restrained-percussion",
           "violin-ii",
           "celesta",
-          "viola"
+          "viola",
+          "choir-aahs"
         ],
         "activeParts": [
           "violin-i",
@@ -812,7 +826,7 @@
         "stemRmsDbfs": [
           {
             "id": "piano",
-            "rmsDbfs": null
+            "rmsDbfs": -240
           },
           {
             "id": "celesta",
@@ -836,7 +850,7 @@
           },
           {
             "id": "double-bass",
-            "rmsDbfs": null
+            "rmsDbfs": -240
           },
           {
             "id": "french-horn",
@@ -865,7 +879,9 @@
           "restrained-percussion",
           "choir-aahs",
           "cello",
-          "bass-clarinet"
+          "bass-clarinet",
+          "piano",
+          "double-bass"
         ],
         "activeParts": [
           "celesta",
@@ -1047,39 +1063,39 @@
     "spectrumFingerprint": [
       {
         "frequencyHz": 63,
-        "db": -77.6
+        "db": -78.06
       },
       {
         "frequencyHz": 125,
-        "db": -71.88
+        "db": -80.07
       },
       {
         "frequencyHz": 250,
-        "db": -74.07
+        "db": -77.47
       },
       {
         "frequencyHz": 500,
-        "db": -69.79
+        "db": -75.69
       },
       {
         "frequencyHz": 1000,
-        "db": -80.99
+        "db": -83.04
       },
       {
         "frequencyHz": 2000,
-        "db": -85.43
+        "db": -83.02
       },
       {
         "frequencyHz": 4000,
-        "db": -96.8
+        "db": -91.15
       },
       {
         "frequencyHz": 8000,
-        "db": -108.15
+        "db": -108.09
       },
       {
         "frequencyHz": 16000,
-        "db": -142.33
+        "db": -143.58
       }
     ],
     "stemsWithSignal": 11,

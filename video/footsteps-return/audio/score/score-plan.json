@@ -521,133 +521,133 @@
     }
   ],
   "timeline": {
-    "source": "src/data/captions.js compositionTiming (Task 8 measured voice timeline)",
-    "durationSeconds": 183.352,
+    "source": "src/data/captions.js compositionTiming (Task 8D measured final VoiceDesign timeline)",
+    "durationSeconds": 214.04,
     "scenes": [
       {
         "id": "intro",
         "kind": "intro",
         "chapterId": null,
         "start": 0,
-        "duration": 21.502667
+        "duration": 26.42
       },
       {
         "id": "chapter-card-plane",
         "kind": "chapter-card",
         "chapterId": "plane",
-        "start": 21.502667,
+        "start": 26.42,
         "duration": 3
       },
       {
         "id": "chapter-plane",
         "kind": "chapter",
         "chapterId": "plane",
-        "start": 24.502667,
-        "duration": 11.26
+        "start": 29.42,
+        "duration": 12.22
       },
       {
         "id": "chapter-card-cylinder",
         "kind": "chapter-card",
         "chapterId": "cylinder",
-        "start": 37.762667,
+        "start": 43.64,
         "duration": 3
       },
       {
         "id": "chapter-cylinder",
         "kind": "chapter",
         "chapterId": "cylinder",
-        "start": 40.762667,
-        "duration": 13.838667
+        "start": 46.64,
+        "duration": 16.02
       },
       {
         "id": "chapter-card-torus",
         "kind": "chapter-card",
         "chapterId": "torus",
-        "start": 56.601334,
+        "start": 64.66,
         "duration": 3
       },
       {
         "id": "chapter-torus",
         "kind": "chapter",
         "chapterId": "torus",
-        "start": 59.601334,
-        "duration": 14.18
+        "start": 67.66,
+        "duration": 16.5
       },
       {
         "id": "chapter-card-mobius",
         "kind": "chapter-card",
         "chapterId": "mobius",
-        "start": 75.781334,
+        "start": 86.16,
         "duration": 3
       },
       {
         "id": "chapter-mobius",
         "kind": "chapter",
         "chapterId": "mobius",
-        "start": 78.781334,
-        "duration": 13.113333
+        "start": 89.16,
+        "duration": 14.66
       },
       {
         "id": "chapter-card-klein",
         "kind": "chapter-card",
         "chapterId": "klein",
-        "start": 93.894667,
+        "start": 105.82,
         "duration": 3
       },
       {
         "id": "chapter-klein",
         "kind": "chapter",
         "chapterId": "klein",
-        "start": 96.894667,
-        "duration": 13.732
+        "start": 108.82,
+        "duration": 15.78
       },
       {
         "id": "chapter-card-projective",
         "kind": "chapter-card",
         "chapterId": "projective",
-        "start": 112.626667,
+        "start": 126.6,
         "duration": 3
       },
       {
         "id": "chapter-projective",
         "kind": "chapter",
         "chapterId": "projective",
-        "start": 115.626667,
-        "duration": 13.753333
+        "start": 129.6,
+        "duration": 16.82
       },
       {
         "id": "chapter-card-sphere",
         "kind": "chapter-card",
         "chapterId": "sphere",
-        "start": 131.38,
+        "start": 148.42,
         "duration": 3
       },
       {
         "id": "chapter-sphere",
         "kind": "chapter",
         "chapterId": "sphere",
-        "start": 134.38,
-        "duration": 21.921333
+        "start": 151.42,
+        "duration": 23.82
       },
       {
         "id": "seven-world-gallery",
         "kind": "seven-world-gallery",
         "chapterId": null,
-        "start": 156.301333,
+        "start": 175.24,
         "duration": 9.2
       },
       {
         "id": "outro",
         "kind": "outro",
         "chapterId": null,
-        "start": 163.301333,
-        "duration": 16.050667
+        "start": 182.24,
+        "duration": 27.8
       },
       {
         "id": "end-card",
         "kind": "end-card",
         "chapterId": null,
-        "start": 179.352,
+        "start": 210.04,
         "duration": 4
       }
     ]
@@ -949,11 +949,11 @@
       4
     ],
     "divisionsPerQuarter": 1000,
-    "measureCount": 46,
-    "lastMeasureDivisions": 3352,
+    "measureCount": 54,
+    "lastMeasureDivisions": 2040,
     "notationGridMilliseconds": 125,
-    "notatedLastMeasureDivisions": 3250,
-    "notatedDurationSeconds": 183.25,
+    "notatedLastMeasureDivisions": 2000,
+    "notatedDurationSeconds": 214,
     "sampleRate": 48000,
     "channels": 2,
     "bitDepth": 24,
@@ -1030,7 +1030,7 @@
       }
     ],
     "spatialization": "MuseScore renders every stem; score-audio.mjs applies declared equal-power stereo positions and Cylinder automation to those real PCM stems before the final stem sum.",
-    "tailPolicy": "Score events end at 180.300. MusicXML uses an import-safe 1/32-note grid through 183.250; rendered files add 102 ms of silence and are trimmed to the measured 183.352-second master without fading an unresolved phrase.",
+    "tailPolicy": "Score events end at 180.300. MusicXML uses an import-safe 1/32-note grid through 214.000; rendered files add 40 ms of digital silence and are trimmed to the measured 214.040-second final VoiceDesign timeline.",
     "normalization": "FFmpeg converts MuseScore output to 48 kHz stereo PCM, sums spatialized stems, and applies a transparent -1 dBFS safety limiter only if needed."
   },
   "gestures": [

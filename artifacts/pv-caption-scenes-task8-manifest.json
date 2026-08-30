@@ -1,5 +1,7 @@
 {
-  "task": "task8-captions",
+  "task": "task8d-final-voiceover-captions",
+  "sourceTimingSha256": "96aac8cda585915208f62c9f1f0ed4f96aa3994c00f340295e29d36aadd775ee",
+  "masterDurationSeconds": 214.04,
   "viewport": {
     "width": 3840,
     "height": 2160,
@@ -860,7 +862,7 @@
     },
     {
       "id": "plane-order-02",
-      "seek": 28.524524333333332,
+      "seek": 33.77703433333333,
       "text": "方庭以有限的秩序收容第一条五连",
       "filename": "task8-plane-order-02.png",
       "path": "artifacts/pv-caption-scenes-task8/task8-plane-order-02.png",
@@ -881,7 +883,7 @@
     },
     {
       "id": "cylinder-distance-01",
-      "seek": 49.654667333333336,
+      "seek": 56.99333333333333,
       "text": "只拥有一重循环的世界，该如何丈量远近？",
       "filename": "task8-cylinder-distance-01.png",
       "path": "artifacts/pv-caption-scenes-task8/task8-cylinder-distance-01.png",
@@ -902,7 +904,7 @@
     },
     {
       "id": "klein-two-returns-03",
-      "seek": 101.98570033333334,
+      "seek": 114.76509733333334,
       "text": "两种归来共处一界：一条路保持原样",
       "filename": "task8-klein-two-returns-03.png",
       "path": "artifacts/pv-caption-scenes-task8/task8-klein-two-returns-03.png",
@@ -923,7 +925,7 @@
     },
     {
       "id": "sphere-boundary-01",
-      "seek": 151.01333333333332,
+      "seek": 169.73333333333332,
       "text": "所谓边界，或许只是观察世界时留下的痕迹",
       "filename": "task8-sphere-boundary-01.png",
       "path": "artifacts/pv-caption-scenes-task8/task8-sphere-boundary-01.png",
@@ -944,7 +946,7 @@
     },
     {
       "id": "outro-world-01",
-      "seek": 175.51466633333334,
+      "seek": 205.01333333333332,
       "text": "然后，去看见世界本来的样子吧",
       "filename": "task8-outro-world-01.png",
       "path": "artifacts/pv-caption-scenes-task8/task8-outro-world-01.png",

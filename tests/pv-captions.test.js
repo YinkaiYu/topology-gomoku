@@ -20,29 +20,28 @@ async function load(relativePath) {
   return import(new URL(`../${relativePath}`, `file://${__filename}`).href);
 }
 
-test("voiceover script keeps the approved narration verbatim with cue-level replacement IDs", async () => {
-  const [{ narrationCues }, { masterTimeline }, voiceBuilder] = await Promise.all([
+test("voiceover script keeps the approved narration verbatim with cue-level final VoiceDesign replacement IDs", async () => {
+  const [{ narrationCues }, { masterTimeline }] = await Promise.all([
     load("video/footsteps-return/src/data/narration.js"),
-    load("video/footsteps-return/src/data/timeline.js"),
-    load("video/footsteps-return/scripts/build-voiceover.mjs")
+    load("video/footsteps-return/src/data/timeline.js")
   ]);
   const script = readJson("script.json");
   const timing = readJson("timing.json");
   const review = readJson("review.json");
 
-  assert.equal(script.voice.requestedId, "zm_yunyang");
-  assert.equal(script.voice.gender, "male");
-  assert.equal(script.voice.speed, 0.88);
-  assert.equal(script.voice.phonemizer, "eSpeak NG");
-  assert.equal(voiceBuilder.ESPEAK_FALLBACK_SPEED, 300);
-  assert.equal(timing.voice.resolvedId, "zm_yunyang");
-  assert.equal(timing.voice.fallback, null);
-  assert.ok(timing.masterDurationSeconds >= 150 && timing.masterDurationSeconds <= 210);
-  assert.equal(review.nativeListening.status, "required-before-final-mix");
-  assert.match(review.nativeListening.asrAssist, /whisper_unavailable/);
-  assert.equal(review.trackDisposition, "rhythm-track-ready; native Mandarin pronunciation review required before final mix");
-  assert.doesNotMatch(review.auditionMethod, /waveform envelope/i, "review must not claim an unrecorded waveform envelope");
-  assert.match(review.auditionMethod, /peak\/RMS, active-sample ratio, leading\/trailing silence/);
+  assert.equal(script.purpose, "final-release-narration");
+  assert.equal(script.voice.engine, "Qwen3-TTS VoiceDesign");
+  assert.equal(script.voice.selectedAuditionId, "F");
+  assert.equal(script.voice.selectedVoiceId, "cold-witness");
+  assert.equal(Object.hasOwn(script.voice, "fallback"), false);
+  assert.equal(timing.voice.modelId, "Qwen/Qwen3-TTS-12Hz-1.7B-VoiceDesign");
+  assert.equal(timing.voice.generationMethod, "generate_voice_design");
+  assert.equal(Object.hasOwn(timing.voice, "fallback"), false);
+  assert.ok(timing.masterDurationSeconds >= 183.352 && timing.masterDurationSeconds <= 240,
+    "natural final narration may expand the rejected-rhythm picture lock but must remain a bounded PV timeline");
+  assert.equal(review.nativeListening.status, "user-review-required");
+  assert.equal(review.trackDisposition, "final-voiceover-generated; user review required before final mix");
+  assert.match(review.auditionMethod, /peak\/RMS, active-sample ratio, leading\/trailing silence, duration, file hash/i);
   assert.deepEqual(script.cues.map(({ id, text }) => ({ id, text })), narrationCues.map(({ id, spokenText }) => ({ id, text: spokenText })));
   assert.deepEqual(timing.cues.map(({ id }) => id), narrationCues.map(({ id }) => id));
   timing.cues.forEach((cue) => {
@@ -52,7 +51,8 @@ test("voiceover script keeps the approved narration verbatim with cue-level repl
     assert.equal(cue.sampleRateHz, 48000);
     assert.equal(cue.channels, 1);
     assert.equal(cue.replacementId, cue.id);
-    assert.ok(cue.peakDbfs <= -1 && cue.peakDbfs >= -12, `${cue.id} rhythm WAV must retain headroom without becoming inaudible`);
+    assert.ok(cue.peakDbfs <= -6.9 && cue.peakDbfs >= -10, `${cue.id} final WAV must retain conservative headroom`);
+    assert.ok(Math.abs(cue.rmsDbfs - (-22)) <= 0.15, `${cue.id} final WAV must use the matched dry-voice level`);
     assert.ok(cue.rmsDbfs < cue.peakDbfs && cue.activeRatio > 0.25, `${cue.id} needs a non-flat speech waveform`);
   });
 

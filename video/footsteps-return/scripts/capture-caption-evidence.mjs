@@ -12,6 +12,7 @@ const scriptPath = fileURLToPath(import.meta.url);
 const scriptDirectory = path.dirname(scriptPath);
 const repositoryRoot = path.resolve(scriptDirectory, "../../..");
 const projectRoot = path.join(repositoryRoot, "video", "footsteps-return");
+const sourceTimingPath = path.join(projectRoot, "audio", "voiceover", "timing.json");
 const artifactDirectory = "artifacts/pv-caption-scenes-task8";
 const viewport = Object.freeze({ width: 3840, height: 2160, deviceScaleFactor: 1 });
 const evidenceCueIds = Object.freeze([
@@ -162,6 +163,9 @@ async function buildCaptionOnlyRender(page, outputDirectory) {
 }
 
 export async function captureCaptionEvidence() {
+  const sourceTimingBytes = await readFile(sourceTimingPath);
+  const sourceTiming = JSON.parse(sourceTimingBytes.toString("utf8"));
+  const sourceTimingSha256 = createHash("sha256").update(sourceTimingBytes).digest("hex");
   const captureDirectory = path.join(repositoryRoot, artifactDirectory);
   await mkdir(captureDirectory, { recursive: true });
   const server = await startStaticServer({ root: projectRoot });
@@ -200,7 +204,16 @@ export async function captureCaptionEvidence() {
     const reviewRender = await buildCaptionOnlyRender(page, path.join(projectRoot, "renders"));
     await writeFile(
       path.join(repositoryRoot, `${artifactDirectory}-manifest.json`),
-      `${JSON.stringify({ task: "task8-captions", viewport, native4k: true, cueMeasurements, frames, reviewRender }, null, 2)}\n`,
+      `${JSON.stringify({
+        task: "task8d-final-voiceover-captions",
+        sourceTimingSha256,
+        masterDurationSeconds: sourceTiming.masterDurationSeconds,
+        viewport,
+        native4k: true,
+        cueMeasurements,
+        frames,
+        reviewRender
+      }, null, 2)}\n`,
       "utf8"
     );
     return Object.freeze({ cueMeasurements, frames, reviewRender });

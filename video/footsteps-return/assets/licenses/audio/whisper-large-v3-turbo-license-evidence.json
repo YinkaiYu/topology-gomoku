@@ -1,0 +1,21 @@
+{
+  "schemaVersion": 1,
+  "purpose": "license and immutable-revision evidence for focused high-CER cross-check ASR",
+  "model": {
+    "id": "openai/whisper-large-v3-turbo",
+    "revision": "41f01f3fe87f28c78e2fbf8b568835947dd65ed9",
+    "revisionResolution": "git ls-remote refs/heads/main on 2026-08-31",
+    "modelCardUrl": "https://huggingface.co/openai/whisper-large-v3-turbo/blob/41f01f3fe87f28c78e2fbf8b568835947dd65ed9/README.md",
+    "modelCardSha256": "aaef74a740faca90fa1899c4233ebe17f2093b9846d0acf16d9131bf650e9585",
+    "modelCardBytes": 21196,
+    "declaredLicense": "mit"
+  },
+  "runtime": {
+    "package": "transformers",
+    "version": "4.57.3",
+    "device": "cpu",
+    "language": "zh",
+    "task": "transcribe"
+  },
+  "scope": "Only cues whose primary raw CER is at least 0.30 are cross-checked. This model never generates or modifies release narration."
+}

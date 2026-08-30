@@ -10,7 +10,8 @@ $stemSourceRoot = Join-Path $scoreRoot "stems"
 $renderedRoot = Join-Path $scoreRoot "rendered"
 $renderedStemRoot = Join-Path $renderedRoot "stems"
 $reviewRoot = Join-Path $scoreRoot "review"
-$timelineDuration = "183.352"
+$voiceTiming = Get-Content -Raw -Encoding UTF8 (Join-Path $pvRoot "audio\voiceover\timing.json") | ConvertFrom-Json
+$timelineDuration = ([double]$voiceTiming.masterDurationSeconds).ToString("0.######", [System.Globalization.CultureInfo]::InvariantCulture)
 
 if (-not $SkipBuild) {
     & node (Join-Path $scriptDirectory "build-score.mjs")

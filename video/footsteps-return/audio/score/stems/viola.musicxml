@@ -2295,20 +2295,84 @@
       <staff>1</staff>
     </note>
   </measure>
-  <measure number="46" implicit="yes">
+  <measure number="46">
     <note>
       <rest/>
-      <duration>3000</duration>
+      <duration>4000</duration>
       <voice>1</voice>
-      <type>half</type>
-      <dot/>
+      <type>whole</type>
       <staff>1</staff>
     </note>
+  </measure>
+  <measure number="47">
     <note>
       <rest/>
-      <duration>250</duration>
+      <duration>4000</duration>
       <voice>1</voice>
-      <type>16th</type>
+      <type>whole</type>
+      <staff>1</staff>
+    </note>
+  </measure>
+  <measure number="48">
+    <note>
+      <rest/>
+      <duration>4000</duration>
+      <voice>1</voice>
+      <type>whole</type>
+      <staff>1</staff>
+    </note>
+  </measure>
+  <measure number="49">
+    <note>
+      <rest/>
+      <duration>4000</duration>
+      <voice>1</voice>
+      <type>whole</type>
+      <staff>1</staff>
+    </note>
+  </measure>
+  <measure number="50">
+    <note>
+      <rest/>
+      <duration>4000</duration>
+      <voice>1</voice>
+      <type>whole</type>
+      <staff>1</staff>
+    </note>
+  </measure>
+  <measure number="51">
+    <note>
+      <rest/>
+      <duration>4000</duration>
+      <voice>1</voice>
+      <type>whole</type>
+      <staff>1</staff>
+    </note>
+  </measure>
+  <measure number="52">
+    <note>
+      <rest/>
+      <duration>4000</duration>
+      <voice>1</voice>
+      <type>whole</type>
+      <staff>1</staff>
+    </note>
+  </measure>
+  <measure number="53">
+    <note>
+      <rest/>
+      <duration>4000</duration>
+      <voice>1</voice>
+      <type>whole</type>
+      <staff>1</staff>
+    </note>
+  </measure>
+  <measure number="54" implicit="yes">
+    <note>
+      <rest/>
+      <duration>2000</duration>
+      <voice>1</voice>
+      <type>half</type>
       <staff>1</staff>
     </note>
   </measure>

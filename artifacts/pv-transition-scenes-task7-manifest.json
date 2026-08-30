@@ -9,7 +9,7 @@
   "frames": [
     {
       "id": "cylinder-to-torus-pre",
-      "seek": 56.151334000000006,
+      "seek": 64.21,
       "phase": "pre",
       "contractId": "chapter-cylinder--chapter-card-torus",
       "expectedGeometry": {
@@ -26,10 +26,10 @@
         "deviceScaleFactor": 1
       },
       "native4k": true,
-      "timelineTime": 56.151334,
+      "timelineTime": 64.21,
       "observation": {
         "id": "cylinder-to-torus-pre",
-        "seek": 56.151334000000006,
+        "seek": 64.21,
         "contractId": "chapter-cylinder--chapter-card-torus",
         "renderReady": true,
         "layer": {
@@ -126,7 +126,7 @@
     },
     {
       "id": "cylinder-to-torus-mid",
-      "seek": 56.291334000000006,
+      "seek": 64.35,
       "phase": "mid",
       "contractId": "chapter-cylinder--chapter-card-torus",
       "expectedGeometry": {
@@ -143,10 +143,10 @@
         "deviceScaleFactor": 1
       },
       "native4k": true,
-      "timelineTime": 56.291334,
+      "timelineTime": 64.35,
       "observation": {
         "id": "cylinder-to-torus-mid",
-        "seek": 56.291334000000006,
+        "seek": 64.35,
         "contractId": "chapter-cylinder--chapter-card-torus",
         "renderReady": true,
         "layer": {
@@ -243,7 +243,7 @@
     },
     {
       "id": "cylinder-to-torus-post",
-      "seek": 56.621334000000004,
+      "seek": 64.67999999999999,
       "phase": "post",
       "contractId": "chapter-cylinder--chapter-card-torus",
       "expectedGeometry": {
@@ -260,10 +260,10 @@
         "deviceScaleFactor": 1
       },
       "native4k": true,
-      "timelineTime": 56.621334,
+      "timelineTime": 64.68,
       "observation": {
         "id": "cylinder-to-torus-post",
-        "seek": 56.621334000000004,
+        "seek": 64.67999999999999,
         "contractId": "chapter-cylinder--chapter-card-torus",
         "renderReady": true,
         "layer": {
@@ -360,7 +360,7 @@
     },
     {
       "id": "torus-to-mobius-mid",
-      "seek": 75.471334,
+      "seek": 85.85,
       "phase": "mid",
       "contractId": "chapter-torus--chapter-card-mobius",
       "expectedGeometry": {
@@ -377,10 +377,10 @@
         "deviceScaleFactor": 1
       },
       "native4k": true,
-      "timelineTime": 75.471334,
+      "timelineTime": 85.85,
       "observation": {
         "id": "torus-to-mobius-mid",
-        "seek": 75.471334,
+        "seek": 85.85,
         "contractId": "chapter-torus--chapter-card-mobius",
         "renderReady": true,
         "layer": {
@@ -477,7 +477,7 @@
     },
     {
       "id": "mobius-to-klein-mid",
-      "seek": 93.584667,
+      "seek": 105.50999999999999,
       "phase": "mid",
       "contractId": "chapter-mobius--chapter-card-klein",
       "expectedGeometry": {
@@ -494,10 +494,10 @@
         "deviceScaleFactor": 1
       },
       "native4k": true,
-      "timelineTime": 93.584667,
+      "timelineTime": 105.51,
       "observation": {
         "id": "mobius-to-klein-mid",
-        "seek": 93.584667,
+        "seek": 105.50999999999999,
         "contractId": "chapter-mobius--chapter-card-klein",
         "renderReady": true,
         "layer": {
@@ -594,7 +594,7 @@
     },
     {
       "id": "gallery-withdrawal-before-outro",
-      "seek": 162.901333,
+      "seek": 181.84,
       "phase": "overlap-before",
       "contractId": "seven-world-gallery--outro",
       "expectedGeometry": {
@@ -611,10 +611,10 @@
         "deviceScaleFactor": 1
       },
       "native4k": true,
-      "timelineTime": 162.901333,
+      "timelineTime": 181.84,
       "observation": {
         "id": "gallery-withdrawal-before-outro",
-        "seek": 162.901333,
+        "seek": 181.84,
         "contractId": "seven-world-gallery--outro",
         "renderReady": true,
         "layer": {
@@ -711,7 +711,7 @@
     },
     {
       "id": "gallery-withdrawal-during-outro",
-      "seek": 164.821333,
+      "seek": 183.76000000000002,
       "phase": "overlap-during",
       "contractId": "seven-world-gallery--outro",
       "expectedGeometry": {
@@ -728,10 +728,10 @@
         "deviceScaleFactor": 1
       },
       "native4k": true,
-      "timelineTime": 164.821333,
+      "timelineTime": 183.76,
       "observation": {
         "id": "gallery-withdrawal-during-outro",
-        "seek": 164.821333,
+        "seek": 183.76000000000002,
         "contractId": "seven-world-gallery--outro",
         "renderReady": true,
         "layer": {
@@ -809,9 +809,9 @@
         }
       },
       "pixels": {
-        "mean": 8.184547325101663,
-        "variance": 73.59867548095247,
-        "nonPureColorRatio": 0.07876543209876544,
+        "mean": 8.147389403290711,
+        "variance": 65.15247646667764,
+        "nonPureColorRatio": 0.07860339506172839,
         "background": {
           "red": 4,
           "green": 7,
@@ -821,8 +821,8 @@
           "x": 87,
           "y": 50,
           "width": 316,
-          "height": 198,
-          "pixelRatio": 0.07752314814814815
+          "height": 200,
+          "pixelRatio": 0.07736111111111112
         }
       }
     }

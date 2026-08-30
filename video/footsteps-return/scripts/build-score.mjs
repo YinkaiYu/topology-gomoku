@@ -767,7 +767,7 @@ function windowRms(wave, startSeconds, endSeconds) {
 }
 
 function toDb(value) {
-  return value > 0 ? 20 * Math.log10(value) : -Infinity;
+  return 20 * Math.log10(Math.max(value, 1e-12));
 }
 
 function channelWindowRms(wave, channelIndex, startSeconds, endSeconds) {
@@ -841,7 +841,7 @@ function voiceScoreEvidence(masterWave) {
     presenceBandHz: [180, 4500],
     minimumVoiceToScoreRmsMarginDb: Math.min(...cues.map(({ voiceToScoreRmsMarginDb }) => voiceToScoreRmsMarginDb)),
     minimumVoiceToScorePresenceBandMarginDb: Math.min(...cues.map(({ voiceToScorePresenceBandMarginDb }) => voiceToScorePresenceBandMarginDb)),
-    method: "Actual dry voice cue PCM is hash-verified against timing.json, then compared with the exact score-master timeline window using broadband RMS and a cascaded first-order 180 Hz high-pass / 4500 Hz low-pass presence-band RMS.",
+    method: "Actual dry voice cue PCM is hash-verified against timing.json, then compared with the exact score-master timeline window using broadband RMS and a cascaded first-order 180 Hz high-pass / 4500 Hz low-pass presence-band RMS. Digital-silence windows use a deterministic -240 dBFS analysis floor so every reported margin remains finite.",
     cues
   };
 }
@@ -1048,14 +1048,14 @@ function evidenceSvg(plan, masterWave, masterStats, fingerprint, objectiveChecks
   return `<?xml version="1.0" encoding="UTF-8"?>
 <svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}" role="img" aria-labelledby="title desc">
   <title id="title">Footsteps Return score waveform, form and spectrum evidence</title>
-  <desc id="desc">A deterministic contact sheet aligning the 183.352-second score waveform with all form sections and a nine-band spectral fingerprint.</desc>
+  <desc id="desc">A deterministic contact sheet aligning the ${plan.timeline.durationSeconds.toFixed(3)}-second score waveform with all form sections and a nine-band spectral fingerprint.</desc>
   <style>
     text { font-family: "Segoe UI", sans-serif; fill: #dfe6ea; } .title { font-size: 38px; font-weight: 600; } .meta { font-size: 20px; fill: #aebcc4; }
     .form { font-size: 15px; fill: #10161a; font-weight: 600; } .axis { font-size: 16px; fill: #aebcc4; } .label { font-size: 23px; font-weight: 600; }
   </style>
   <rect width="1800" height="1040" fill="#11181c"/>
   <text x="120" y="72" class="title">Footsteps Return · original score evidence</text>
-  <text x="120" y="112" class="meta">183.352 s · 48 kHz stereo · MS Basic · SHA-256 ${masterStats.sha256.slice(0, 16)}…</text>
+  <text x="120" y="112" class="meta">${plan.timeline.durationSeconds.toFixed(3)} s · 48 kHz stereo · MS Basic · SHA-256 ${masterStats.sha256.slice(0, 16)}…</text>
   <text x="120" y="146" class="meta">Peak ${masterStats.peakDbfs.toFixed(3)} dBFS · RMS ${masterStats.rmsDbfs.toFixed(3)} dBFS · voice/score ≥ ${objectiveChecks.voiceScoreComparison.minimumVoiceToScoreRmsMarginDb.toFixed(2)} dB · Cylinder swing ${objectiveChecks.cylinderStereoMotion.leftToRightSwingDb.toFixed(2)} dB</text>
   ${form}
   <text x="120" y="246" class="label">Waveform envelope aligned to final timeline</text>
