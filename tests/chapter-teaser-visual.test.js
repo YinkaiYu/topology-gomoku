@@ -251,6 +251,27 @@ test("the opening trajectory and stone remain fully visible on their shared para
   assert.match(fillBody, /patchIsFront !== front/);
 });
 
+test("portrait opening preserves square cells and closes into a constant-radius cylinder", () => {
+  const point = Compositor.internals.introBoardPoint;
+  const width = 1080;
+  const height = 1920;
+  const flatOrigin = point(0, 0, 0, width, height, 0.5);
+  const flatRight = point(1 / 6, 0, 0, width, height, 0.5);
+  const flatDown = point(0, 1 / 6, 0, width, height, 0.5);
+  assert.ok(Math.abs((flatRight.x - flatOrigin.x) - (flatDown.y - flatOrigin.y)) < 1e-8);
+
+  const seamStart = point(0, 0.5, 1, width, height, 1);
+  const seamEnd = point(1, 0.5, 1, width, height, 1);
+  assert.ok(Math.abs(seamStart.x - seamEnd.x) < 1e-8);
+  assert.ok(Math.abs(seamStart.y - seamEnd.y) < 1e-8);
+
+  const topLeft = point(0.25, 0, 1, width, height, 1);
+  const topRight = point(0.75, 0, 1, width, height, 1);
+  const bottomLeft = point(0.25, 1, 1, width, height, 1);
+  const bottomRight = point(0.75, 1, 1, width, height, 1);
+  assert.ok(Math.abs(Math.abs(topRight.x - topLeft.x) - Math.abs(bottomRight.x - bottomLeft.x)) < 1e-8);
+});
+
 test("shared stones safely skip the subpixel entrance state used by full-frame playback", () => {
   const canvas = createCanvas(64, 64);
   const context = canvas.getContext("2d", { alpha: false });
@@ -431,6 +452,7 @@ test("portrait social exports render native portrait scenes from the shared game
   assert.match(source, /app\/assets\/topology\.js/);
   assert.match(source, /subtitles=filename=/);
   assert.match(source, /layout: "native portrait scene composition"/);
+  assert.match(source, /subtitleFontSize: 68/);
   assert.doesNotMatch(source, /cleanVideo|sourceVideo|force_original_aspect_ratio|gblur|overlay=/);
 
   const compositorSource = fs.readFileSync(path.join(PV_ROOT, "src", "compositor.js"), "utf8");
@@ -438,6 +460,24 @@ test("portrait social exports render native portrait scenes from the shared game
   assert.match(compositorSource, /function drawPortraitChapterScene/);
   assert.match(compositorSource, /function drawPortraitIntroAwakening/);
   assert.match(compositorSource, /function drawPortraitEndCard/);
+});
+
+test("cover exports keep exact publishing copy and three requested safe aspect ratios", () => {
+  const copy = JSON.parse(fs.readFileSync(path.join(PV_ROOT, "publishing-copy.json"), "utf8"));
+  assert.equal(copy.title, "《拓扑五子棋》章节预告PV-「足迹回环」");
+  assert.deepEqual(copy.descriptionLines, [
+    "人们总把棋盘的边缘视作尽头。",
+    "可那些消失在边界上的道路并未中断。",
+    "僭越棋盘之人，循着隐藏的连接前行吧。",
+    "世界的七重轮廓，在你面前依次苏醒……",
+    "【Prologue.方庭】-【I.回廊】-【II.环游】",
+    "【III.扭带】-【IV.瓶界】-【V.双生】-【VI.归圆】"
+  ]);
+  const source = fs.readFileSync(path.join(PV_ROOT, "scripts", "render-covers.mjs"), "utf8");
+  assert.match(source, /id: "4x3"[\s\S]*width: 1600, height: 1200/);
+  assert.match(source, /id: "16x9"[\s\S]*width: 1920, height: 1080/);
+  assert.match(source, /id: "3x4"[\s\S]*width: 1080, height: 1440/);
+  assert.match(source, /large title only; no small cover copy/);
 });
 
 test("native portrait compositions render directly at both platform aspect ratios", () => {

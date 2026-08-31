@@ -20,10 +20,10 @@ const profiles = Object.freeze({
     width: 1080,
     height: 1920,
     label: "Douyin 9:16",
-    subtitleFontSize: 52,
-    subtitleOutline: 4.4,
-    subtitleMarginHorizontal: 72,
-    subtitleMarginVertical: 315,
+    subtitleFontSize: 68,
+    subtitleOutline: 5.8,
+    subtitleMarginHorizontal: 56,
+    subtitleMarginVertical: 300,
     videoBitRate: "16M",
     maximumVideoBitRate: "24M"
   }),
@@ -31,10 +31,10 @@ const profiles = Object.freeze({
     width: 1080,
     height: 1440,
     label: "Xiaohongshu 3:4",
-    subtitleFontSize: 52,
-    subtitleOutline: 4.4,
-    subtitleMarginHorizontal: 72,
-    subtitleMarginVertical: 150,
+    subtitleFontSize: 68,
+    subtitleOutline: 5.8,
+    subtitleMarginHorizontal: 56,
+    subtitleMarginVertical: 140,
     videoBitRate: "16M",
     maximumVideoBitRate: "24M"
   })
@@ -123,15 +123,20 @@ function socialAss(source, profile) {
 
 function selectedKeyframes(composition) {
   const desired = [
-    ["intro-edge", 0.62], ["institution-logo", 0.52], ["intro-awakening", 0.72],
-    ["chapter-card-prologue", 0.69], ["chapter-i", 0.87], ["chapter-ii", 0.87],
-    ["chapter-iii", 0.87], ["chapter-iv", 0.87], ["chapter-v", 0.87],
-    ["chapter-vi", 0.87], ["tableau", 0.62], ["finale", 0.72], ["end-card", 0.56]
+    ["intro-edge-square-grid", "intro-edge", 0.34],
+    ["intro-edge-cylinder", "intro-edge", 0.985],
+    ["institution-logo", "institution-logo", 0.52],
+    ["intro-awakening", "intro-awakening", 0.72],
+    ["chapter-card-prologue", "chapter-card-prologue", 0.69],
+    ["chapter-i", "chapter-i", 0.87], ["chapter-ii", "chapter-ii", 0.87],
+    ["chapter-iii", "chapter-iii", 0.87], ["chapter-iv", "chapter-iv", 0.87],
+    ["chapter-v", "chapter-v", 0.87], ["chapter-vi", "chapter-vi", 0.87],
+    ["tableau", "tableau", 0.62], ["finale", "finale", 0.72], ["end-card", "end-card", 0.56]
   ];
-  return desired.map(([id, progress]) => {
+  return desired.map(([label, id, progress]) => {
     const segment = composition.manifest.segments.find((item) => item.id === id);
     if (!segment) throw new Error(`Missing keyframe segment: ${id}`);
-    return { id, frame: Math.min(segment.endFrame - 1, segment.startFrame + Math.floor((segment.endFrame - segment.startFrame) * progress)) };
+    return { id: label, frame: Math.min(segment.endFrame - 1, segment.startFrame + Math.floor((segment.endFrame - segment.startFrame) * progress)) };
   });
 }
 

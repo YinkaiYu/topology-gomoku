@@ -953,6 +953,28 @@
   }
 
   function introBoardPoint(u, v, fold, width, height, cameraPush) {
+    if (height > width) {
+      // Portrait uses a physically legible construction: an exact square grid in
+      // the parameter plane and a constant-radius cylinder after identification.
+      // Orthographic projection keeps the cylinder walls parallel instead of
+      // accidentally turning the surface into a frustum.
+      var portraitSpan = width * mix(0.78, 0.84, cameraPush);
+      var portraitCenterX = width * 0.5;
+      var portraitCenterY = height * (height / width > 1.55 ? 0.405 : 0.42);
+      var flatX = (u - 0.5) * portraitSpan;
+      var flatY = (v - 0.5) * portraitSpan;
+      var portraitTheta = (u - 0.5) * TAU;
+      var cylinderRadius = portraitSpan * 0.245;
+      var cylinderX = Math.sin(portraitTheta) * cylinderRadius;
+      var cylinderY = flatY + Math.cos(portraitTheta) * cylinderRadius * 0.14;
+      return {
+        x: portraitCenterX + mix(flatX, cylinderX, fold),
+        y: portraitCenterY + mix(flatY, cylinderY, fold),
+        depth: Math.cos(portraitTheta) * fold,
+        u: u,
+        v: v
+      };
+    }
     var horizonWidth = width * 0.48;
     var foregroundWidth = width * 1.34;
     var rowWidth = mix(horizonWidth, foregroundWidth, v);
@@ -1578,8 +1600,8 @@
     var height = composition.height;
     var tall = height / width > 1.55;
     var positions = tall
-      ? [[0.27, 0.20], [0.73, 0.20], [0.27, 0.39], [0.50, 0.51], [0.73, 0.39], [0.27, 0.69], [0.73, 0.69]]
-      : [[0.25, 0.19], [0.75, 0.19], [0.25, 0.43], [0.50, 0.53], [0.75, 0.43], [0.25, 0.76], [0.75, 0.76]];
+      ? [[0.50, 0.14], [0.24, 0.275], [0.76, 0.275], [0.50, 0.415], [0.24, 0.555], [0.76, 0.555], [0.50, 0.695]]
+      : [[0.50, 0.12], [0.24, 0.285], [0.76, 0.285], [0.50, 0.46], [0.24, 0.635], [0.76, 0.635], [0.50, 0.81]];
     var progress = frameInfo.progress;
     var lineReveal = smootherstep(0.03, 0.76, progress);
     ctx.save();
@@ -1605,7 +1627,8 @@
       var alpha = arrival * fade;
       var centerX = width * positions[index][0];
       var centerY = height * positions[index][1];
-      var size = width * (index === 3 ? 0.44 : 0.38) * mix(0.72, 1, arrival) * (1 + ignition * 0.055);
+      var size = width * (index === 3 ? (tall ? 0.31 : 0.29) : (tall ? 0.275 : 0.255))
+        * mix(0.72, 1, arrival) * (1 + ignition * 0.055);
       var illustration = composition.topologyIllustrations[model.chapter.id];
       ctx.save();
       var aura = ctx.createRadialGradient(centerX, centerY, 0, centerX, centerY, size * 0.64);
@@ -1628,9 +1651,9 @@
     var height = composition.height;
     var tall = height / width > 1.55;
     var positions = tall
-      ? [[0.27, 0.22], [0.73, 0.22], [0.27, 0.43], [0.73, 0.43], [0.27, 0.65], [0.73, 0.65], [0.50, 0.53]]
-      : [[0.25, 0.19], [0.75, 0.19], [0.25, 0.46], [0.75, 0.46], [0.25, 0.74], [0.75, 0.74], [0.50, 0.58]];
-    var baseSize = width * (tall ? 0.49 : 0.44);
+      ? [[0.29, 0.19], [0.71, 0.19], [0.20, 0.445], [0.50, 0.445], [0.80, 0.445], [0.29, 0.70], [0.71, 0.70]]
+      : [[0.29, 0.17], [0.71, 0.17], [0.20, 0.47], [0.50, 0.47], [0.80, 0.47], [0.29, 0.77], [0.71, 0.77]];
+    var baseSize = width * (tall ? 0.41 : 0.39);
     composition.chapters.forEach(function drawWorld(model, index) {
       var arrival = smootherstep(index * 0.075, index * 0.075 + 0.22, frameInfo.progress);
       var fade = 1 - smoothstep(0.88, 1, frameInfo.progress);
@@ -1650,17 +1673,30 @@
       height: width * (tall ? 1.10 : 1.00),
       portrait: true
     };
-    var orientation = makeOrientation(sphere, frameInfo.frameIndex, frameInfo.progress, mix(1.16, 0.86, frameInfo.progress));
+    var orientation = makeOrientation(sphere, frameInfo.frameIndex, frameInfo.progress, mix(0.94, 0.62, frameInfo.progress));
     orientation.y += frameInfo.progress * 0.42;
     var opacity = smoothstep(0.02, 0.17, frameInfo.progress) * (1 - smoothstep(0.91, 1, frameInfo.progress));
     drawSurface(ctx, sphere, viewport, 1, orientation, opacity, composition.quality, false);
     drawPath(ctx, sphere, viewport, 1, orientation, smoothstep(0.16, 0.70, frameInfo.progress), composition.palette, opacity);
     if (frameInfo.progress > 0.48) {
       var orbitOpacity = smoothstep(0.48, 0.78, frameInfo.progress) * (1 - smoothstep(0.92, 1, frameInfo.progress));
-      var orbitY = height * (tall ? 0.48 : 0.47);
+      var satellitePositions = tall
+        ? [[0.27, 0.22], [0.73, 0.22], [0.11, 0.49], [0.89, 0.49], [0.27, 0.76], [0.73, 0.76]]
+        : [[0.27, 0.20], [0.73, 0.20], [0.10, 0.49], [0.90, 0.49], [0.27, 0.78], [0.73, 0.78]];
       composition.chapters.slice(0, 6).forEach(function drawOrbiting(model, index) {
-        var angle = index / 6 * TAU + frameInfo.progress * 0.22;
-        drawMiniature(ctx, composition, model, width * 0.5 + Math.cos(angle) * width * 0.38, orbitY + Math.sin(angle) * width * 0.44, width * 0.25, frameInfo, index, orbitOpacity * 0.25);
+        var position = satellitePositions[index];
+        var satelliteSize = width * (index === 2 || index === 3 ? 0.28 : (tall ? 0.34 : 0.32));
+        drawMiniature(
+          ctx,
+          composition,
+          model,
+          width * position[0],
+          height * position[1],
+          satelliteSize,
+          frameInfo,
+          index,
+          orbitOpacity * 0.40
+        );
       });
     }
   }
@@ -1670,11 +1706,11 @@
     var height = composition.height;
     var tall = height / width > 1.55;
     var alpha = smootherstep(0.04, 0.28, frameInfo.progress);
-    var logoCenterY = height * (tall ? 0.31 : 0.28);
-    var institutionDiameter = width * (tall ? 0.31 : 0.29);
-    var gameLogoBox = width * (tall ? 0.38 : 0.35);
-    drawCircularLogo(ctx, composition.logos.institution, width * 0.31, logoCenterY, institutionDiameter, alpha);
-    drawContainedImage(ctx, composition.logos.game, width * 0.69, logoCenterY, gameLogoBox, gameLogoBox, alpha);
+    var logoCenterY = height * (tall ? 0.285 : 0.265);
+    var institutionDiameter = width * (tall ? 0.25 : 0.235);
+    var gameLogoBox = width * (tall ? 0.29 : 0.275);
+    drawCircularLogo(ctx, composition.logos.institution, width * 0.28, logoCenterY, institutionDiameter, alpha);
+    drawContainedImage(ctx, composition.logos.game, width * 0.72, logoCenterY, gameLogoBox, gameLogoBox, alpha);
     ctx.save();
     var markX = width * 0.50;
     var markRadius = width * 0.025;
@@ -1689,14 +1725,14 @@
     ctx.stroke();
     ctx.textAlign = "center";
     ctx.textBaseline = "middle";
-    ctx.font = "700 " + Math.round(width * 0.112) + "px " + FONT_FAMILY;
+    ctx.font = "700 " + Math.round(width * 0.102) + "px " + FONT_FAMILY;
     ctx.fillStyle = rgba(GAME_PALETTE.ink, alpha);
-    drawTrackedText(ctx, composition.story.endCard.gameTitle, width * 0.5, height * (tall ? 0.565 : 0.57), width * 0.023);
+    drawTrackedText(ctx, composition.story.endCard.gameTitle, width * 0.5, height * (tall ? 0.535 : 0.54), width * 0.021);
     ctx.fillStyle = rgba(GAME_PALETTE.connection, alpha * 0.62);
-    ctx.fillRect(width * 0.5 - width * 0.055, height * (tall ? 0.635 : 0.65), width * 0.11, Math.max(2, width * 0.0022));
+    ctx.fillRect(width * 0.5 - width * 0.055, height * (tall ? 0.605 : 0.62), width * 0.11, Math.max(2, width * 0.0022));
     ctx.font = "600 " + Math.round(width * 0.054) + "px " + FONT_FAMILY;
     ctx.fillStyle = rgba(GAME_PALETTE.ink, alpha * 0.88);
-    drawTrackedText(ctx, composition.story.endCard.producer, width * 0.5, height * (tall ? 0.715 : 0.75), width * 0.011);
+    drawTrackedText(ctx, composition.story.endCard.producer, width * 0.5, height * (tall ? 0.685 : 0.71), width * 0.011);
     ctx.restore();
   }
 

@@ -91,7 +91,17 @@ npm run pv:social:douyin -- --overwrite
 npm run pv:social:xiaohongshu -- --overwrite
 ```
 
-两个交付目录都包含成片、平台专用 ASS、内嵌字幕字体、SHA-256 校验和 `delivery-manifest.json`。平台字幕继续使用无衬线 `Topo Sans PV` 与纯黑描边，时间点完全继承已确认的 60 fps 整数帧时轴。
+两个交付目录都包含成片、平台专用 ASS、内嵌字幕字体、SHA-256 校验和 `delivery-manifest.json`。平台字幕使用 68 px 无衬线 `Topo Sans PV` 与 5.8 px 纯黑描边，允许长句自然换为两行，时间点完全继承已确认的 60 fps 整数帧时轴。片头竖屏参数面在闭合前保持等距正方形网格，闭合后使用恒定半径圆柱与正交投影；七图鉴采用单—双—单—双—单纵向节奏，七流形群像采用 2—3—2 编队，终章中心球与六个环绕流形分别留出独立空间，双 Logo 使用更宽松的联名锁定关系。
+
+## 投稿封面与文案
+
+投稿标题和简介的唯一来源为 [`publishing-copy.json`](publishing-copy.json)，导出时不会改写标点、章节名或顺序。三版封面复用暖纸背景、手绘球面与金色五连，只保留“拓扑五子棋”和“足迹回环”两级大标题，不加入小字或章节清单：
+
+```powershell
+npm run pv:covers
+```
+
+输出位于 `.tmp/chapter-teaser/covers/`：4:3 为 1600 × 1200，16:9 为 1920 × 1080，3:4 为 1080 × 1440。全部标题与球面主视觉均保留在内侧 8% 安全区；同目录保存 `publishing-copy.txt`、尺寸、哈希、来源资产和安全区说明。
 
 渲染、预览和验证都不会自动提交、更不会合并或更新任何长期分支。用户确认前，本任务始终留在独立 worktree 的 `codex/chapter-teaser-pv` 分支。
 
