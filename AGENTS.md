@@ -2,6 +2,18 @@
 
 本文件适用于整个仓库，供参与开发的 Agent 和人类协作者共同遵守。
 
+## `legacy/seven-realms-pv` 归档规则
+
+本节是该归档分支的优先规则；与后文面向活跃开发线的通用流程冲突时，以本节为准。
+
+- `legacy/seven-realms-pv` 保存《拓扑五子棋》章节预告 PV—「足迹回环」的早期 HyperFrames 探索。功能冻结点是 `bc38886`，没有通过最终媒体门的完整成片，不是发布来源，也不得合并进 `dev`、`main` 或平台发行分支。
+- 默认按只读档案处理。允许的直接修订仅限勘误、链接修复、来源/许可证补证、安全说明和归档元数据；任何画面、音频、时间线、工具链或产品行为的继续开发都应从最新 `dev` 新建 `codex/<task>` 分支与独立 worktree。
+- 不要为了“确认还能运行”而默认恢复 `node_modules`、`.venv`、Qwen/Kokoro 模型、4K 帧缓存、生成 WAV 或渲染中间件。只有用户明确要求历史复现时，才按照 [`video/footsteps-return/README.md`](video/footsteps-return/README.md) 的锁定版本按需重建。
+- 不要重新引入已移除的中断续渲染脚本。该实验在后段画面上未达到生产级帧一致性，不能作为可用恢复方案。
+- 如需复用真实游戏逐帧 adapter、七流形动画、章节牌、字幕校验、原创配乐源或音频认证思路，应在新任务中注明来源并选择性移植；不要通过合并、rebase 或整体 cherry-pick 重新激活本归档分支。
+- 正式交付方案及其成片记录位于远端归档分支 [`legacy/chapter-teaser-pv`](https://github.com/YinkaiYu/topology-gomoku/tree/legacy/chapter-teaser-pv)。当前产品与发布状态始终以 `dev`、`main` 和相应平台发行分支为准。
+- 归档说明、成果索引、缺失的大体积文件和本地半成品校验值统一记录在 [`video/footsteps-return/README.md`](video/footsteps-return/README.md)；不要把本机缓存路径或不可复现截图当成仓库长期证据。
+
 ## 先确认工作位置
 
 - 开始前运行 `git status --short --branch` 和 `git worktree list`，确认当前分支与 worktree。

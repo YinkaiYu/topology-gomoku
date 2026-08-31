@@ -1,3 +1,6 @@
+> [!IMPORTANT]
+> 本分支是已冻结的 PV 探索档案 `legacy/seven-realms-pv`，不是当前游戏开发线，也没有产出正式发布成片。功能冻结点为 `bc38886`；后来仅允许补充归档说明与来源证据。最终交付方案保存在 [`legacy/chapter-teaser-pv`](https://github.com/YinkaiYu/topology-gomoku/tree/legacy/chapter-teaser-pv)，当前游戏开发请从 `dev` 开始。归档入口见 [`video/footsteps-return/README.md`](video/footsteps-return/README.md)，维护边界见 [`AGENTS.md`](AGENTS.md#legacyseven-realms-pv-归档规则)。
+
 <div align="center">
   <img src="release/topology-gomoku-icon.png" width="112" alt="拓扑五子棋图标" />
   <h1>拓扑五子棋</h1>
