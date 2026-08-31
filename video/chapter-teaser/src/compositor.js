@@ -1346,13 +1346,6 @@
     var fade = 1 - smoothstep(0.82, 1, frameInfo.progress);
     var alpha = reveal * fade;
     var diameter = height * 0.36;
-    ctx.save();
-    ctx.strokeStyle = rgba(GAME_PALETTE.connection, alpha * 0.13);
-    ctx.lineWidth = Math.max(1, height * 0.0015);
-    ctx.beginPath();
-    ctx.arc(width * 0.5, height * 0.49, diameter * 0.61, 0, TAU);
-    ctx.stroke();
-    ctx.restore();
     drawCircularLogo(ctx, composition.logos.institution, width * 0.5, height * 0.49, diameter, alpha);
   }
 

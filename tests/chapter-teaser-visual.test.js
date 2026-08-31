@@ -96,6 +96,11 @@ test("the narration silence is a dedicated institution-logo scene", () => {
   assert.deepEqual([logo.startFrame, logo.endFrame], [1225, 1466]);
   assert.equal(getComposition().describeFrame(1330).kind, "institution-logo");
   assert.deepEqual(logo.narrationCueIds, []);
+
+  const source = fs.readFileSync(path.join(PV_ROOT, "src", "compositor.js"), "utf8");
+  const logoSceneBody = source.slice(source.indexOf("function drawInstitutionLogo"), source.indexOf("function drawMiniature"));
+  assert.match(logoSceneBody, /drawCircularLogo\(ctx, composition\.logos\.institution/);
+  assert.doesNotMatch(logoSceneBody, /ctx\.arc|ctx\.stroke/);
 });
 
 test("all seven visual paths are the exact tracePath results and retain per-step seam data", () => {
