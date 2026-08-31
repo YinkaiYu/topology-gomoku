@@ -1,5 +1,18 @@
 # AGENTS.md
 
+## `legacy/chapter-teaser-pv` 归档分支附加规则
+
+本分支是《拓扑五子棋》章节预告 PV「足迹回环」的最终制作归档，已完成画面、配乐、分轨、三平台成片与封面交付。以下规则只约束本归档分支，并优先于本文件后续面向普通开发分支的工作流说明：
+
+- 不将本分支合入 `dev`、`main`、`xiaohongshu`、`bilibili` 或 `wechat`；它不是待集成功能分支。
+- 不在本分支直接恢复活跃制作。若用户明确要求重启或修改 PV，从 `legacy/chapter-teaser-pv` 新建独立的 `codex/<task>` 分支与 worktree，完成确认后再决定是否更新归档分支。
+- 本分支继续禁止使用 HyperFrames 和 Superpowers；不要因为工具可用而迁移或重写现有 Canvas / FFmpeg 制作链。
+- 不无意改变已经确认的 A4 片尾、字幕规格、横竖屏构图、封面或三平台交付哈希。任何内容修改都必须由用户明确提出，并重新完成对应视听验证。
+- 不把大型视频、音频、缓存、关键帧、候选探索或依赖目录提交 Git。约 14 GB 的 ProRes 4K 母版已按用户决定删除，不应在普通维护中重建。
+- 最终实际使用的 11 个配乐源文件与分轨由项目负责人在仓库外归档；恢复音频构建前，按 `video/chapter-teaser/music-plan.json` 的文件名和 SHA-256 放回 `.tmp/chapter-teaser/source/music/curated/`。
+- 文档入口为 `video/chapter-teaser/ARCHIVE.md`；实现与构建见 `video/chapter-teaser/README.md`，设计定案见 `video/chapter-teaser/DESIGN.md`，验证历史见 `docs/design/qa.md`。
+- 归档分支缺少外置配乐缓存时，依赖这些缓存的音频测试无法独立重跑，这是预期状态；仅文档维护至少执行 `npm run docs:check`、`git diff --check` 和工作区状态检查。逻辑或媒体生成器发生变化时，必须先恢复准确素材缓存，再执行完整测试与媒体验证。
+
 本文件适用于整个仓库，供参与开发的 Agent 和人类协作者共同遵守。
 
 ## 先确认工作位置

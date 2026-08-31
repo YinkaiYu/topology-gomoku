@@ -1,3 +1,6 @@
+> [!IMPORTANT]
+> 当前分支 `legacy/chapter-teaser-pv` 是《拓扑五子棋》章节预告 PV「足迹回环」的已完成制作归档，不是游戏产品开发分支，也不计划合入 `dev`、`main` 或平台发行分支。最终交付、校验值、素材恢复方式和维护边界见 [`video/chapter-teaser/ARCHIVE.md`](video/chapter-teaser/ARCHIVE.md)。
+
 <div align="center">
   <img src="release/topology-gomoku-icon.png" width="112" alt="拓扑五子棋图标" />
   <h1>拓扑五子棋</h1>
