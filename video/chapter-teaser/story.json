@@ -122,7 +122,7 @@
       "manifold": "实射影平面",
       "width": 8,
       "height": 8,
-      "start": [1, 0],
+      "start": [5, 2],
       "direction": 5,
       "accent": "#8374a8",
       "cues": [
@@ -139,8 +139,8 @@
       "manifold": "球面",
       "width": 7,
       "height": 7,
-      "start": [1, 0],
-      "direction": 5,
+      "start": [4, 4],
+      "direction": 7,
       "accent": "#d7d0ad",
       "cues": [
         { "text": "在最后的世界，四方的棱角褪去。" },

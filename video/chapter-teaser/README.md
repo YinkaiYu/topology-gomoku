@@ -9,7 +9,7 @@
 - Node.js 18 或更高版本，并已运行 `npm install`。
 - FFmpeg 与 FFprobe 可从命令行直接调用。音频构建可用 `FFMPEG_PATH` 指定 FFmpeg 可执行文件，视频验证也可通过 `--ffprobe` 指定 FFprobe。
 - 用户提供的完整旁白 MP3。构建时通过 `--voice` 指定；脚本会校验 SHA-256，禁止误用旧旁白或逐句重排。
-- 可访问 Wikimedia Commons 的网络环境，首次构建会按 `music-plan.json` 下载已选音乐；也可把资源预先放入 `.tmp/chapter-teaser/source/music/curated/` 后用 `--no-download` 离线构建。
+- 十一份已审计的配乐音源缓存。按 `music-plan.json` 中的文件名与 SHA-256 放入 `.tmp/chapter-teaser/source/music/curated/`，再用 `--no-download` 离线构建；来源页与音质限制见 `assets/licenses/audio/curated-music-sources.md`。
 - 完整 Noto Serif SC 与 Noto Sans SC 可变字体。默认读取 `C:\Windows\Fonts\NotoSerifSC-VF.ttf` 和 `C:\Windows\Fonts\NotoSansSC-VF.ttf`；其他位置可用 `TOPO_SERIF_SOURCE`、`TOPO_SANS_SOURCE` 指定。
 
 所有视频都是 16:9、60 fps、BT.709，声音为 48 kHz 双声道：
@@ -30,7 +30,7 @@ npm run pv:audio -- --voice "C:\path\to\余荫铠旁白配音.mp3"
 ```
 
 - `pv:fonts` 重建标题用衬线 400/600/700 和字幕用无衬线 600 子集。
-- `pv:audio` 保留原始旁白 MP3，并一次性解码为与 12897 帧严格对齐的 48 kHz 双声道；随后按章节剪辑十段音乐、生成实机语义音效、侧链压低配乐，并同步生成 `manifest.json`、`captions.srt` 和 `captions.ass`。
+- `pv:audio` 保留原始旁白 MP3，并一次性解码为与 12897 帧严格对齐的 48 kHz 双声道；随后按 `music-plan.json` 剪辑十一段配乐、生成实机语义音效、侧链压低配乐，并同步生成 `manifest.json`、`captions.srt` 和 `captions.ass`。配乐以古典作品为主骨架，回廊与归圆分别使用一段完整的 HOYO-MiX 章节声音；相邻片段以 84 帧 `qsin` 曲线交接，Saint-Saëns 管风琴只在最后一句挑战及片尾的 16.9 秒内展开。《足迹》伴奏只用于结构与动态参考，不进入最终全频音乐轨。
 - 音频分轨位于 `.tmp/chapter-teaser/audio/`：`music.wav`、`sfx.wav`、`music-and-sfx.wav`、`voice.wav`、`voice-original.mp3` 和 `master.wav`。
 
 浏览器逐帧预览不会生成视频；加 `--open` 会用本机 Edge 打开预览页：

@@ -9,6 +9,7 @@ const { pathToFileURL } = require("node:url");
 
 const repositoryRoot = path.resolve(__dirname, "..");
 const pvRoot = path.join(repositoryRoot, "video", "chapter-teaser");
+const Engine = require(path.join(repositoryRoot, "app", "assets", "topology.js"));
 const story = JSON.parse(fs.readFileSync(path.join(pvRoot, "story.json"), "utf8"));
 const timing = JSON.parse(fs.readFileSync(path.join(pvRoot, "narration-timing.json"), "utf8"));
 const musicPlan = JSON.parse(fs.readFileSync(path.join(pvRoot, "music-plan.json"), "utf8"));
@@ -93,7 +94,7 @@ test("SRT and ASS are cue-exact, stop-free, one-line, sans-serif subtitles", () 
   });
 
   const ass = fs.readFileSync(path.join(pvRoot, "captions.ass"), "utf8");
-  assert.match(ass, /Style: Caption,Topo Sans PV,44,/);
+  assert.match(ass, /Style: Caption,Topo Sans PV,56,&H00FFFFFF,&H00FFFFFF,&H00000000,/);
   assert.equal(ass.split(/\r?\n/).filter((line) => line.startsWith("Dialogue:")).length, 39);
   assert.match(srt, /--> 00:00:20,416/u, "Logo boundary must be floored to the prior subtitle unit");
   assert.match(ass, /,0:00:20\.41,Caption,/u, "ASS must not round into the first Logo frame");
@@ -128,12 +129,14 @@ test("libass resolves the bundled subtitle font without a system-font fallback",
   assert.doesNotMatch(log, /fontselect: \(Topo Sans PV[^\n]*-> (?:Arial|MicrosoftYaHei)/u);
 });
 
-test("curated score keeps source tempo and chapter-specific musical identities", () => {
+test("elegant classical-HOYO score preserves source tempo, measured title actions and exact placement", () => {
   assert.equal(musicPlan.fps, 60);
   assert.equal(musicPlan.sampleRate, 48000);
-  assert.equal(musicPlan.sources.length, 10);
-  assert.equal(musicPlan.clips.length, 10);
-  assert.equal(musicPlan.editing.normalizationTargetLufs, -25.5);
+  assert.equal(musicPlan.sources.length, 11);
+  assert.equal(musicPlan.clips.length, 11);
+  assert.equal(new Set(musicPlan.clips.map((clip) => clip.sourceId)).size, 11);
+  assert.equal(musicPlan.editing.normalizationTargetLufs, -20);
+  assert.equal(musicPlan.editing.postMixGain, 0.62);
   for (const clip of musicPlan.clips) {
     assert.ok(Number.isInteger(clip.targetStartFrame));
     assert.ok(Number.isInteger(clip.targetEndFrame));
@@ -141,41 +144,152 @@ test("curated score keeps source tempo and chapter-specific musical identities",
     assert.ok(clip.targetEndFrame > clip.targetStartFrame);
     assert.equal("playbackRate" in clip, false);
   }
-  const recta = musicPlan.clips.find((clip) => clip.id === "projective-recta");
-  const inversa = musicPlan.clips.find((clip) => clip.id === "projective-inversa");
-  assert.ok(recta.targetEndFrame > inversa.targetStartFrame, "mirror fugues must briefly coexist");
-  assert.equal(musicPlan.clips.at(-1).sourceInSeconds, 118.593333);
+  for (let index = 1; index < musicPlan.clips.length; index += 1) {
+    const overlap = musicPlan.clips[index - 1].targetEndFrame - musicPlan.clips[index].targetStartFrame;
+    assert.equal(overlap, musicPlan.editing.defaultCrossfadeFrames);
+  }
+  const revealClips = musicPlan.clips.filter((clip) => clip.reveal);
+  assert.equal(revealClips.length, 7);
+  for (const clip of revealClips) {
+    const alignedSourceSeconds = clip.sourceInSeconds + (clip.reveal.impactFrame - clip.targetStartFrame) / musicPlan.fps;
+    assert.ok(Math.abs(alignedSourceSeconds - clip.reveal.nativeImpactSourceSeconds) < 0.00001, clip.id);
+  }
+  const finale = musicPlan.clips.at(-1);
+  assert.ok(Math.abs(finale.sourceOutSeconds - finale.sourceInSeconds - 16.9) < 1e-9);
+  assert.equal((finale.targetEndFrame - finale.targetStartFrame) / musicPlan.fps, 16.9);
   assert.equal(manifest.music.reference.sha256, "2856c83944d69c2779ab259e98f05a46c264221486777cd2cc158bd795d7c92f");
+  assert.match(manifest.music.reference.role, /structural.*reference only/i);
+  assert.equal(manifest.music.sources.length, 11);
+  const coverage = manifest.audio.metrics.musicAlignment.coverage;
+  assert.equal(coverage.length, musicPlan.clips.length);
+  coverage.forEach((window, index) => {
+    assert.equal(window.id, musicPlan.clips[index].id);
+    assert.ok(window.rmsDb > -60, `${window.id} must remain audible at its chapter midpoint`);
+  });
+  assert.match(manifest.audio.metrics.musicAlignment.sourceNormalization, /once per unique source.*before clip trims/i);
+  assert.match(manifest.audio.metrics.musicAlignment.chapterRevealAutomation, /before each measured title impact/);
+  assert.ok(manifest.audio.metrics.musicAlignment.energy.rmsDbfs > -35);
+  assert.ok(manifest.audio.metrics.musicAlignment.energy.rmsDbfs < -15);
+  assert.ok(manifest.audio.metrics.musicAlignment.energy.peakDbfs < -2.5);
 });
 
-test("topology sound design is deterministic and follows card, stone, morph and logo events", async (t) => {
+test("layered topology sound design is deterministic and locked to the compositor's real visual anchors", async (t) => {
   const { buildSfxEvents } = await loadModule("scripts/build-audio.mjs");
   const { readWav } = await loadModule("src/audio-wav.mjs");
   const { renderScoreStem } = await loadModule("src/audio-synth.mjs");
-  const firstPlan = buildSfxEvents(manifest);
-  const secondPlan = buildSfxEvents(manifest);
+  const firstPlan = buildSfxEvents(manifest, story);
+  const secondPlan = buildSfxEvents(manifest, story);
   assert.deepEqual(firstPlan, secondPlan);
-  assert.equal(firstPlan.filter((event) => event.role === "chapter-card").length, 7);
-  assert.equal(firstPlan.filter((event) => event.role === "five-in-a-row").length, 35);
-  assert.equal(firstPlan.filter((event) => event.role === "2d-to-3d").length, 6);
+  assert.equal(firstPlan.filter((event) => event.role === "paper-environment").length, 1);
+  assert.equal(firstPlan.filter((event) => event.role === "chapter-transition").length, 28);
+  assert.equal(firstPlan.filter((event) => event.role === "five-in-a-row").length, 105);
+  assert.equal(firstPlan.filter((event) => event.role === "2d-to-3d").length, 12);
   assert.equal(firstPlan.filter((event) => event.role === "institution-logo").length, 1);
-  assert.equal(firstPlan.filter((event) => event.role === "decisive-move").length, 1);
+  assert.equal(firstPlan.filter((event) => event.role === "decisive-move").length, 3);
+  assert.equal(firstPlan.filter((event) => event.kind === "glyph-pulse").length, 7);
+
+  const transitionStages = ["reverse-breath", "low-hit", "fine-shimmer", "space-tail"];
+  for (const chapter of story.chapters) {
+    const card = manifest.segments.find((segment) => segment.kind === "chapter-card" && segment.chapterId === chapter.id);
+    const stageEvents = firstPlan.filter((event) => event.role === "chapter-transition" && event.chapterId === chapter.id);
+    assert.deepEqual(stageEvents.map((event) => event.stage).sort(), [...transitionStages].sort(), `${chapter.id}: four-stage chapter reveal`);
+    assert.equal(stageEvents.find((event) => event.stage === "reverse-breath").startFrame, card.startFrame - 46);
+    assert.equal(stageEvents.find((event) => event.stage === "low-hit").startFrame, card.startFrame + 12);
+    assert.equal(stageEvents.find((event) => event.stage === "fine-shimmer").startFrame, card.transformFrame);
+  }
+
+  const inverseSmootherstep = (target) => {
+    let low = 0;
+    let high = 1;
+    for (let iteration = 0; iteration < 48; iteration += 1) {
+      const midpoint = (low + high) / 2;
+      const value = midpoint ** 3 * (midpoint * (midpoint * 6 - 15) + 10);
+      if (value < target) low = midpoint;
+      else high = midpoint;
+    }
+    return (low + high) / 2;
+  };
+  let expectedSeamEvents = 0;
+  const topologySignatures = new Set();
+  for (const chapter of story.chapters) {
+    const segment = manifest.segments.find((candidate) => candidate.kind === "chapter" && candidate.chapterId === chapter.id);
+    const rules = Engine.createRules({ type: chapter.id, width: chapter.width, height: chapter.height, target: 5 });
+    const trace = Engine.tracePath(rules, Engine.toCell(rules, chapter.start[0], chapter.start[1]), chapter.direction, 5);
+    const clicks = firstPlan
+      .filter((event) => event.role === "five-in-a-row" && event.chapterId === chapter.id && event.layer === "transient")
+      .sort((left, right) => left.stoneIndex - right.stoneIndex);
+    assert.equal(clicks.length, 5, `${chapter.id}: five visible stone contacts`);
+    clicks.forEach((click, stoneIndex) => {
+      const targetReveal = Math.min(1, (stoneIndex + 0.9) / 5.25);
+      const progress = 0.08 + 0.30 * inverseSmootherstep(targetReveal);
+      assert.equal(click.startFrame, segment.startFrame + Math.round(segment.durationFrames * progress));
+      assert.equal(click.visualAnchor, "drawChapterScene:reveal-smootherstep(0.08,0.38)");
+      const board = firstPlan.find((event) => event.id === `${chapter.id}-stone-${stoneIndex + 1}-board`);
+      const tail = firstPlan.find((event) => event.id === `${chapter.id}-stone-${stoneIndex + 1}-tail`);
+      assert.equal(board.startFrame, click.startFrame + 1);
+      assert.equal(tail.startFrame, click.startFrame + 4);
+      assert.deepEqual(click.cell, (() => {
+        const point = Engine.toPoint(rules, trace.cells[stoneIndex]);
+        return [point.x, point.y];
+      })());
+    });
+    topologySignatures.add(`${clicks[0].clickHz}/${clicks[0].boardHz}/${clicks[0].toneHz}`);
+
+    trace.seams.forEach((seamMask, edgeIndex) => {
+      if (!seamMask) return;
+      expectedSeamEvents += 1;
+      const seamEvent = firstPlan.find((event) => event.id === `${chapter.id}-seam-${edgeIndex + 1}`);
+      const targetReveal = Math.min(1, (edgeIndex + 0.48) / 4.35);
+      const progress = 0.08 + 0.30 * inverseSmootherstep(targetReveal);
+      assert.equal(seamEvent.startFrame, segment.startFrame + Math.round(segment.durationFrames * progress));
+      assert.equal(seamEvent.seamMask, seamMask);
+      assert.equal(seamEvent.visualAnchor, "drawPath:edgeReveal>0.48");
+    });
+
+    const morphEvents = firstPlan.filter((event) => event.role === "2d-to-3d" && event.chapterId === chapter.id);
+    if (chapter.id === "plane") {
+      assert.equal(morphEvents.length, 0);
+    } else {
+      const motion = morphEvents.find((event) => event.layer === "motion");
+      const arrival = morphEvents.find((event) => event.layer === "arrival");
+      const expectedStart = segment.startFrame + Math.round(segment.durationFrames * 0.46);
+      const expectedEnd = segment.startFrame + Math.round(segment.durationFrames * 0.84);
+      assert.equal(motion.startFrame, expectedStart);
+      assert.equal(motion.durationFrames, expectedEnd - expectedStart);
+      assert.equal(arrival.startFrame, expectedEnd);
+      assert.equal(motion.warpStyle, arrival.warpStyle);
+    }
+  }
+  assert.equal(firstPlan.filter((event) => event.role === "topology-seam").length, expectedSeamEvents);
+  assert.equal(topologySignatures.size, 7, "all seven worlds need distinct stone/board/room spectra");
+  assert.ok(firstPlan.every((event) => event.velocity <= 0.56), "SFX gestures remain below the restrained velocity ceiling");
+  assert.ok(firstPlan.every((event) => event.startFrame >= 0 && event.startFrame + event.durationFrames <= manifest.totalFrames));
 
   const temporaryRoot = fs.mkdtempSync(path.join(os.tmpdir(), "chapter-teaser-audio-"));
   t.after(() => fs.rmSync(temporaryRoot, { recursive: true, force: true }));
   const firstPath = path.join(temporaryRoot, "first.wav");
   const secondPath = path.join(temporaryRoot, "second.wav");
-  const sampleEvents = firstPlan.slice(0, 5).map((event) => ({ ...event, startFrame: event.startFrame % 120 }));
+  const sampleEvents = [...new Map(firstPlan.map((event) => [event.kind, event])).values()]
+    .map((event, index) => ({
+      ...event,
+      startFrame: index * 26,
+      durationFrames: Math.min(event.durationFrames, 150)
+    }));
+  let renderMetrics;
   for (const outputPath of [firstPath, secondPath]) {
-    renderScoreStem({ stem: "fx", events: sampleEvents, totalFrames: 300, sampleRate: 48000, outputPath });
+    renderMetrics = renderScoreStem({ stem: "fx", events: sampleEvents, totalFrames: 720, sampleRate: 48000, outputPath });
   }
   const digest = (filePath) => crypto.createHash("sha256").update(fs.readFileSync(filePath)).digest("hex");
   assert.equal(digest(firstPath), digest(secondPath));
+  assert.equal(renderMetrics.eventCount, sampleEvents.length);
+  assert.equal(Object.keys(renderMetrics.eventCountsByKind).length, sampleEvents.length);
+  assert.ok(renderMetrics.peak <= 0.25 && renderMetrics.peak >= 0.249);
+  assert.ok(renderMetrics.targetPeakDbfs < -12 && renderMetrics.targetPeakDbfs > -12.1);
   const wav = readWav(firstPath);
   assert.equal(wav.sampleRate, 48000);
   assert.equal(wav.channels, 2);
   assert.equal(wav.bitsPerSample, 16);
-  assert.equal(wav.frameCount, 300 * 800);
+  assert.equal(wav.frameCount, 720 * 800);
 });
 
 test("delivery contract exposes clean picture, subtitles, music, narration and optional stems", () => {

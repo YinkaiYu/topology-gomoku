@@ -106,14 +106,23 @@ function registerFonts() {
 
 async function loadProject(options) {
   const manifestPath = path.resolve(REPOSITORY_ROOT, options.manifest || DEFAULT_MANIFEST);
-  const [story, manifest, institutionLogo, gameLogo] = await Promise.all([
+  const topologyIds = ["plane", "cylinder", "torus", "mobius", "klein", "projective", "sphere"];
+  const [story, manifest, institutionLogo, gameLogo, ...topologyImages] = await Promise.all([
     readJson(path.join(PV_ROOT, "story.json"), "story.json"),
     readJson(manifestPath, "manifest.json"),
     loadImage(path.join(PV_ROOT, "assets", "iop-logo.png")),
-    loadImage(path.join(REPOSITORY_ROOT, "app", "assets", "brand-icon.png"))
+    loadImage(path.join(REPOSITORY_ROOT, "app", "assets", "brand-icon.png")),
+    ...topologyIds.map((id) => loadImage(path.join(REPOSITORY_ROOT, "app", "assets", "topologies", `${id}.svg`)))
   ]);
+  const topologyIllustrations = Object.fromEntries(topologyIds.map((id, index) => [id, topologyImages[index]]));
   Compositor.validateManifest(manifest, story);
-  return { story, manifest, logos: { institution: institutionLogo, game: gameLogo }, manifestPath };
+  return {
+    story,
+    manifest,
+    logos: { institution: institutionLogo, game: gameLogo },
+    topologyIllustrations,
+    manifestPath
+  };
 }
 
 function makeComposition(project, profileName, quality, subtitlesEnabled = true) {
@@ -125,6 +134,7 @@ function makeComposition(project, profileName, quality, subtitlesEnabled = true)
     height: profile.height,
     quality: quality == null ? undefined : Number(quality),
     logos: project.logos,
+    topologyIllustrations: project.topologyIllustrations,
     subtitlesEnabled
   });
 }

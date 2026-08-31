@@ -78,6 +78,25 @@ function xorshift32(state) {
   return next >>> 0;
 }
 
+function eventNoise(state, sampleIndex, salt = 0) {
+  const mixed = (state ^ Math.imul((sampleIndex + 1) >>> 0, 374761393) ^ Math.imul((salt + 1) >>> 0, 668265263)) >>> 0;
+  return xorshift32(mixed || 0x9e3779b9) / 0xffffffff * 2 - 1;
+}
+
+function interpolatedNoise(state, sampleIndex, stride, salt = 0) {
+  const leftIndex = Math.floor(sampleIndex / stride);
+  const amount = sampleIndex / stride - leftIndex;
+  const smooth = amount * amount * (3 - 2 * amount);
+  const left = eventNoise(state, leftIndex, salt);
+  const right = eventNoise(state, leftIndex + 1, salt);
+  return left + (right - left) * smooth;
+}
+
+function chirpPhase(startHz, endHz, time, duration) {
+  const safeDuration = Math.max(duration, 1e-6);
+  return Math.PI * 2 * (startHz * time + (endHz - startHz) * time * time / (2 * safeDuration));
+}
+
 function event(id, startFrame, durationFrames, midi, velocity, pan = 0, kind, metadata = {}) {
   return {
     id,
@@ -307,8 +326,135 @@ function oscillatorSample(stem, sourceEvent, sampleIndex, sampleRate, state) {
   }
 
   const progress = clamp(time / Math.max(duration, 1e-6), 0, 1);
-  const noiseState = xorshift32((state + sampleIndex * 374761393) >>> 0);
-  const noise = (noiseState / 0xffffffff) * 2 - 1;
+  const noise = eventNoise(state, sampleIndex);
+  const attack = Math.min(1, time / 0.008);
+  const tail = Math.max(0, 1 - progress);
+  const toneHz = sourceEvent.toneHz ?? frequency;
+  const boardHz = sourceEvent.boardHz ?? toneHz * 0.66;
+  const clickHz = sourceEvent.clickHz ?? toneHz * 4.2;
+
+  if (sourceEvent.kind === "paper-air") {
+    const edgeFade = Math.min(1, time / 2.4, Math.max(0, duration - time) / 2.4);
+    const air = interpolatedNoise(state, sampleIndex, Math.max(1, Math.round(sampleRate / 38)), 2);
+    const fiber = interpolatedNoise(state, sampleIndex, Math.max(1, Math.round(sampleRate / 950)), 7);
+    const breathing = 0.76 + 0.24 * Math.sin(Math.PI * 2 * 0.071 * time + (state & 31));
+    return (air * 0.12 + fiber * 0.025 + Math.sin(Math.PI * 2 * 37 * time) * 0.018) * edgeFade * breathing;
+  }
+  if (sourceEvent.kind === "reverse-breath") {
+    const endTaper = Math.min(1, Math.max(0, 1 - progress) / 0.055);
+    const rise = progress ** 1.85 * endTaper;
+    const air = interpolatedNoise(state, sampleIndex, Math.max(1, Math.round(sampleRate / 620)), 11);
+    const sweep = Math.sin(chirpPhase(toneHz * 0.72, toneHz * 3.4, time, duration));
+    return (air * 0.48 + sweep * 0.18 + noise * 0.035) * rise;
+  }
+  if (sourceEvent.kind === "chapter-impact" || sourceEvent.kind === "end-card-hit") {
+    const impactHz = sourceEvent.impactHz ?? 44;
+    const sub = Math.sin(chirpPhase(impactHz * 1.45, impactHz * 0.72, time, Math.min(duration, 0.9)));
+    const body = Math.sin(chirpPhase(impactHz * 2.1, impactHz * 1.18, time, Math.min(duration, 0.72)));
+    const transient = noise * Math.exp(-time * 42);
+    const decay = Math.exp(-time * (sourceEvent.kind === "end-card-hit" ? 3.9 : 3.25));
+    return (sub * 0.78 + body * 0.21 + transient * 0.24) * attack * decay;
+  }
+  if (sourceEvent.kind === "title-shimmer" || sourceEvent.kind === "glyph-pulse" || sourceEvent.kind === "logo-bloom") {
+    const speed = sourceEvent.kind === "glyph-pulse" ? 5.2 : sourceEvent.kind === "logo-bloom" ? 1.85 : 2.7;
+    const bellAttack = Math.min(1, time / (sourceEvent.kind === "logo-bloom" ? 0.08 : 0.014));
+    const decay = Math.exp(-time * speed) * tail ** 0.18;
+    const phase = Math.PI * 2 * toneHz * time;
+    const shimmer = Math.sin(phase) + 0.37 * Math.sin(phase * 2.003) + 0.16 * Math.sin(phase * 3.987);
+    const dust = interpolatedNoise(state, sampleIndex, Math.max(1, Math.round(sampleRate / 2200)), 13) * 0.035;
+    return (shimmer * 0.34 + dust) * bellAttack * decay;
+  }
+  if (sourceEvent.kind === "space-tail" || sourceEvent.kind === "room-tail") {
+    const decayRate = sourceEvent.kind === "room-tail" ? 2.75 : 1.72;
+    const diffuse = interpolatedNoise(state, sampleIndex, Math.max(1, Math.round(sampleRate / 310)), 17);
+    const phase = Math.PI * 2 * toneHz * time;
+    const body = Math.sin(phase) * 0.22 + Math.sin(phase * 1.503) * 0.12 + diffuse * 0.12;
+    return body * Math.min(1, time / 0.025) * Math.exp(-time * decayRate) * tail ** 0.2;
+  }
+  if (sourceEvent.kind === "stone-click" || sourceEvent.kind === "final-stone") {
+    const clickFrequency = sourceEvent.kind === "final-stone" ? clickHz * 0.74 : clickHz;
+    const phase = Math.PI * 2 * clickFrequency * time;
+    const ceramic = 0.56 * Math.sin(phase) + 0.26 * Math.sin(phase * 1.731) + 0.11 * Math.sin(phase * 2.817);
+    const snap = noise * Math.exp(-time * 105);
+    const body = Math.exp(-time * (sourceEvent.kind === "final-stone" ? 31 : 49));
+    return (ceramic * body + snap * 0.22) * attack;
+  }
+  if (sourceEvent.kind === "board-resonance" || sourceEvent.kind === "final-board") {
+    const resonance = sourceEvent.kind === "final-board" ? boardHz * 0.72 : boardHz;
+    const phase = Math.PI * 2 * resonance * time;
+    const modes = Math.sin(phase) + 0.43 * Math.sin(phase * 1.487) + 0.17 * Math.sin(phase * 2.121);
+    const knock = interpolatedNoise(state, sampleIndex, Math.max(1, Math.round(sampleRate / 720)), 19) * Math.exp(-time * 17);
+    return (modes * 0.42 + knock * 0.15) * attack * Math.exp(-time * (sourceEvent.kind === "final-board" ? 2.9 : 4.7));
+  }
+  if (sourceEvent.kind === "final-tail") {
+    const bloom = 1 - Math.exp(-time * 7);
+    const phase = Math.PI * 2 * toneHz * time;
+    const halo = Math.sin(phase) * 0.28 + Math.sin(phase * 1.5) * 0.19 + Math.sin(phase * 2) * 0.08;
+    const diffuse = interpolatedNoise(state, sampleIndex, Math.max(1, Math.round(sampleRate / 180)), 23) * 0.1;
+    return (halo + diffuse) * bloom * Math.exp(-time * 0.92) * tail ** 0.35;
+  }
+  if (sourceEvent.kind === "seam-crossing") {
+    const envelope = Math.sin(Math.PI * progress) ** 1.55;
+    const twist = Boolean((sourceEvent.seamMask ?? 0) & 4);
+    const air = interpolatedNoise(state, sampleIndex, Math.max(1, Math.round(sampleRate / (twist ? 840 : 520))), 29);
+    if (twist) {
+      const crossing = Math.sin(chirpPhase(toneHz * 2.4, toneHz * 0.72, time, duration))
+        - Math.sin(chirpPhase(toneHz * 0.72, toneHz * 2.4, time, duration));
+      return (crossing * 0.18 + air * 0.32 + noise * 0.035) * envelope;
+    }
+    return (Math.sin(chirpPhase(toneHz * 0.65, toneHz * 2.25, time, duration)) * 0.26 + air * 0.36) * envelope;
+  }
+  if (sourceEvent.kind === "topology-warp") {
+    const envelope = Math.sin(Math.PI * progress) ** 1.35;
+    const air = interpolatedNoise(state, sampleIndex, Math.max(1, Math.round(sampleRate / 420)), 31);
+    switch (sourceEvent.warpStyle) {
+      case "axial-hollow":
+        return (Math.sin(chirpPhase(toneHz * 0.58, toneHz * 1.82, time, duration)) * 0.31 + air * 0.25) * envelope;
+      case "dual-orbit": {
+        const beat = 0.58 + 0.42 * Math.sin(Math.PI * 2 * 1.65 * time);
+        return (Math.sin(Math.PI * 2 * toneHz * time) + Math.sin(Math.PI * 2 * toneHz * 1.035 * time)) * 0.18 * beat * envelope + air * 0.12 * envelope;
+      }
+      case "half-twist": {
+        const flip = Math.cos(Math.PI * progress);
+        const sweep = Math.sin(chirpPhase(toneHz * 0.72, toneHz * 1.9, time, duration));
+        return (sweep * flip * 0.29 + air * (0.22 + Math.abs(flip) * 0.08)) * envelope;
+      }
+      case "bottle-fold":
+        return (Math.sin(chirpPhase(toneHz * 2.05, toneHz * 0.61, time, duration)) * 0.24
+          + Math.sin(chirpPhase(toneHz * 0.81, toneHz * 1.28, time, duration)) * 0.16
+          + air * 0.2) * envelope;
+      case "mirror-cross": {
+        const ascending = Math.sin(chirpPhase(toneHz * 0.52, toneHz * 2.3, time, duration));
+        const descending = Math.sin(chirpPhase(toneHz * 2.3, toneHz * 0.52, time, duration));
+        return (ascending - descending) * 0.19 * envelope + air * 0.17 * envelope;
+      }
+      case "harmonic-bloom": {
+        const bloom = progress ** 0.72;
+        const phase = Math.PI * 2 * toneHz * time;
+        return (Math.sin(phase) * 0.23 + Math.sin(phase * 1.5) * 0.18 + Math.sin(phase * 2) * 0.09 + air * 0.1) * envelope * bloom;
+      }
+      default:
+        return (Math.sin(chirpPhase(toneHz * 0.72, toneHz * 2.05, time, duration)) * 0.25 + air * 0.24) * envelope;
+    }
+  }
+  if (sourceEvent.kind === "topology-lock") {
+    const phase = Math.PI * 2 * toneHz * time;
+    const styleOffset = (sourceEvent.profileIndex ?? 0) * 0.013;
+    const bell = Math.sin(phase) + 0.3 * Math.sin(phase * (1.5 + styleOffset)) + 0.13 * Math.sin(phase * (2.01 - styleOffset));
+    return bell * 0.32 * attack * Math.exp(-time * (2.8 - Math.min(0.7, (sourceEvent.profileIndex ?? 0) * 0.08)));
+  }
+  if (sourceEvent.kind === "convergence") {
+    const envelope = Math.sin(Math.PI * progress) ** 0.82;
+    const chord = [110, 146.83, 196, 246.94].reduce((sum, hz, index) => sum + Math.sin(Math.PI * 2 * hz * time + index * 0.37), 0) / 4;
+    const air = interpolatedNoise(state, sampleIndex, Math.max(1, Math.round(sampleRate / 170)), 37);
+    return (chord * 0.34 + air * 0.13) * envelope;
+  }
+  if (sourceEvent.kind === "final-breath") {
+    const endTaper = Math.min(1, tail / 0.08);
+    const rise = progress ** 2.2 * endTaper;
+    const air = interpolatedNoise(state, sampleIndex, Math.max(1, Math.round(sampleRate / 560)), 41);
+    return (air * 0.47 + Math.sin(chirpPhase(72, 238, time, duration)) * 0.18) * rise;
+  }
   if (sourceEvent.kind === "impact") {
     const phase = Math.PI * 2 * (44 - 13 * progress) * time;
     return (0.82 * Math.sin(phase) + 0.18 * noise) * Math.exp(-time * 2.8);
@@ -375,7 +521,19 @@ export function renderScoreStem({ stem, events, totalFrames, sampleRate, outputP
   if (stem !== "bass") addCrossDelay(samples, sampleRate, stem === "fx" ? 0.08 : 0.06, stem === "choir" ? 0.233 : 0.173);
   const metrics = normalize(samples, STEM_TARGET_PEAK[stem]);
   writePcm16Stereo(outputPath, samples, sampleRate);
-  return { ...metrics, eventCount: events.length, renderer: "deterministic-procedural-layer" };
+  const countBy = (field) => Object.fromEntries([...events.reduce((counts, sourceEvent) => {
+    const key = String(sourceEvent[field] ?? "unspecified");
+    counts.set(key, (counts.get(key) ?? 0) + 1);
+    return counts;
+  }, new Map())].sort(([left], [right]) => left.localeCompare(right)));
+  return {
+    ...metrics,
+    targetPeakDbfs: 20 * Math.log10(STEM_TARGET_PEAK[stem]),
+    eventCount: events.length,
+    eventCountsByKind: countBy("kind"),
+    eventCountsByRole: countBy("role"),
+    renderer: "deterministic-procedural-layer"
+  };
 }
 
 function sourceSample(wav, frame, channel) {

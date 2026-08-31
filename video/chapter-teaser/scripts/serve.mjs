@@ -8,11 +8,14 @@ import { parseArgs } from "node:util";
 const SCRIPT_DIR = path.dirname(fileURLToPath(import.meta.url));
 const REPOSITORY_ROOT = path.resolve(SCRIPT_DIR, "..", "..", "..");
 const PV_ROOT = path.resolve(SCRIPT_DIR, "..");
-const TOPOLOGY_SCRIPTS = new Set([
+const SHARED_ASSETS = new Set([
   path.join(REPOSITORY_ROOT, "app", "assets", "topology.js"),
   path.join(REPOSITORY_ROOT, "app", "assets", "topology-morph.js"),
   path.join(REPOSITORY_ROOT, "app", "assets", "topology-art.js"),
-  path.join(REPOSITORY_ROOT, "app", "assets", "brand-icon.png")
+  path.join(REPOSITORY_ROOT, "app", "assets", "brand-icon.png"),
+  ...["plane", "cylinder", "torus", "mobius", "klein", "projective", "sphere"].map((id) => (
+    path.join(REPOSITORY_ROOT, "app", "assets", "topologies", `${id}.svg`)
+  ))
 ]);
 const PREVIEW_PATH = "/video/chapter-teaser/preview.html";
 const MIME_TYPES = new Map([
@@ -25,7 +28,8 @@ const MIME_TYPES = new Map([
   [".jpg", "image/jpeg"],
   [".jpeg", "image/jpeg"],
   [".woff2", "font/woff2"],
-  [".ttf", "font/ttf"]
+  [".ttf", "font/ttf"],
+  [".svg", "image/svg+xml; charset=utf-8"]
 ]);
 
 const parsed = parseArgs({
@@ -79,7 +83,7 @@ function resolveRequestPath(requestUrl) {
     return null;
   }
   const pvWithSeparator = `${PV_ROOT}${path.sep}`;
-  if (!resolved.startsWith(pvWithSeparator) && !TOPOLOGY_SCRIPTS.has(resolved)) return null;
+  if (!resolved.startsWith(pvWithSeparator) && !SHARED_ASSETS.has(resolved)) return null;
   return resolved;
 }
 

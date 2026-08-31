@@ -4,7 +4,8 @@ import path from "node:path";
 import { spawnSync } from "node:child_process";
 import { fileURLToPath } from "node:url";
 
-import { createPcm16StereoHeader } from "../src/audio-wav.mjs";
+import Engine from "../../../app/assets/topology.js";
+import { createPcm16StereoHeader, readWav, writePcm16Stereo } from "../src/audio-wav.mjs";
 import { buildTimeline, serializeAss, serializeSrt } from "../src/audio-timeline.mjs";
 import { SCORE_SEED, mixPcm16Stereo, renderScoreStem } from "../src/audio-synth.mjs";
 
@@ -184,7 +185,12 @@ async function ensureMusicSources(plan, sourceRoot, allowDownload) {
   for (const source of plan.sources) {
     const sourcePath = path.join(sourceRoot, source.filename);
     if (!fs.existsSync(sourcePath)) {
-      if (!allowDownload) throw new Error(`Missing music source ${sourcePath}`);
+      if (!allowDownload || !source.downloadUrl) {
+        const provision = source.cacheRequired
+          ? `; copy the exact user-provided ${source.filename} into the curated music source directory or pass --music-source PATH`
+          : "";
+        throw new Error(`Missing music source ${sourcePath}${provision}`);
+      }
       process.stdout.write(`Downloading ${source.work}…\n`);
       await downloadSource(source, sourcePath);
     }
@@ -228,88 +234,480 @@ function renderVoiceStem({ ffmpeg, sourcePath, outputPath, totalSampleFrames, sa
 function renderMusicStem({ ffmpeg, plan, sourcePaths, outputPath, totalFrames }) {
   const fps = plan.fps;
   const totalSeconds = totalFrames / fps;
-  const rawPath = `${outputPath}.raw`;
-  const args = ["-hide_banner", "-loglevel", "error", "-y"];
-  for (const clip of plan.clips) args.push("-i", sourcePaths.get(clip.sourceId));
-  const filters = [];
-  plan.clips.forEach((clip, index) => {
-    const duration = (clip.targetEndFrame - clip.targetStartFrame) / fps;
-    const fadeIn = Math.min(duration / 2, (clip.fadeInFrames ?? 0) / fps);
-    const fadeOut = Math.min(duration / 2, (clip.fadeOutFrames ?? 0) / fps);
-    const fadeOutStart = Math.max(0, duration - fadeOut);
-    const delayMs = Math.round(clip.targetStartFrame * 1000 / fps);
-    const chain = [
-      `atrim=start=${Number(clip.sourceInSeconds || 0).toFixed(6)}:duration=${duration.toFixed(6)}`,
-      "asetpts=PTS-STARTPTS",
-      `aresample=${plan.sampleRate}`,
-      "aformat=sample_fmts=fltp:channel_layouts=stereo",
-      `loudnorm=I=${plan.editing.normalizationTargetLufs}:TP=${plan.editing.truePeakDb}:LRA=11`
-    ];
-    if (fadeIn > 0) chain.push(`afade=t=in:st=0:d=${fadeIn.toFixed(6)}`);
-    if (fadeOut > 0) chain.push(`afade=t=out:st=${fadeOutStart.toFixed(6)}:d=${fadeOut.toFixed(6)}`);
-    chain.push(`adelay=${delayMs}|${delayMs}`, `apad=whole_dur=${totalSeconds.toFixed(6)}`, `atrim=duration=${totalSeconds.toFixed(6)}`);
-    filters.push(`[${index}:a]${chain.join(",")}[clip${index}]`);
+  const samplesPerVideoFrame = plan.sampleRate / fps;
+  const totalSampleFrames = totalFrames * samplesPerVideoFrame;
+  const mix = new Float32Array(totalSampleFrames * 2);
+  const temporaryRoot = fs.mkdtempSync(path.join(path.dirname(outputPath), "music-clips-"));
+  const placedClips = [];
+  const normalizedSources = new Map();
+
+  try {
+    // Normalize each recording once before editorial trimming. This preserves the
+    // original relative dynamics when several chapter clips come from one mastered
+    // work (notably the supplied Travail reference), instead of flattening every
+    // chapter independently.
+    [...new Set(plan.clips.map((clip) => clip.sourceId))].forEach((sourceId, sourceIndex) => {
+      const sourcePath = sourcePaths.get(sourceId);
+      const sourceClips = plan.clips.filter((clip) => clip.sourceId === sourceId);
+      const spanStart = Math.max(0, Math.min(...sourceClips.map((clip) => Number(clip.sourceInSeconds || 0))) - 1);
+      const spanEnd = Math.max(...sourceClips.map((clip) => (
+        Number(clip.sourceInSeconds || 0) + (clip.targetEndFrame - clip.targetStartFrame) / fps
+      ))) + 1;
+      const normalizedPath = path.join(temporaryRoot, `source-${String(sourceIndex).padStart(2, "0")}-${sourceId}.wav`);
+      runChecked(ffmpeg, [
+        "-hide_banner", "-loglevel", "error", "-y",
+        "-i", sourcePath, "-map", "0:a:0", "-vn",
+        "-af", [
+          `atrim=start=${spanStart.toFixed(6)}:end=${spanEnd.toFixed(6)}`,
+          "asetpts=PTS-STARTPTS",
+          `loudnorm=I=${plan.editing.normalizationTargetLufs}:TP=${plan.editing.truePeakDb}:LRA=11`,
+          `aresample=${plan.sampleRate}`,
+          "aformat=sample_fmts=fltp:channel_layouts=stereo",
+          "asetpts=N/SR/TB"
+        ].join(","),
+        "-ar", String(plan.sampleRate), "-ac", "2",
+        "-c:a", "pcm_f32le", normalizedPath
+      ], `Curated music source ${sourceId}`, 600000);
+      normalizedSources.set(sourceId, { path: normalizedPath, offsetSeconds: spanStart });
+    });
+
+    plan.clips.forEach((clip, index) => {
+      const durationFrames = clip.targetEndFrame - clip.targetStartFrame;
+      const duration = durationFrames / fps;
+      const expectedSampleFrames = durationFrames * samplesPerVideoFrame;
+      const fadeIn = Math.min(duration / 2, (clip.fadeInFrames ?? 0) / fps);
+      const fadeOut = Math.min(duration / 2, (clip.fadeOutFrames ?? 0) / fps);
+      const fadeOutStart = Math.max(0, duration - fadeOut);
+      const normalizedSource = normalizedSources.get(clip.sourceId);
+      const sourcePath = normalizedSource.path;
+      const clipPath = path.join(temporaryRoot, `${String(index).padStart(2, "0")}-${clip.id}.wav`);
+      const chain = [
+        `atrim=start=${(Number(clip.sourceInSeconds || 0) - normalizedSource.offsetSeconds).toFixed(6)}:duration=${duration.toFixed(6)}`,
+        "asetpts=PTS-STARTPTS",
+        `aresample=${plan.sampleRate}`,
+        "aformat=sample_fmts=fltp:channel_layouts=stereo",
+        `atrim=start=0:duration=${duration.toFixed(6)}`,
+        "asetpts=N/SR/TB"
+      ];
+      if (fadeIn > 0) chain.push(`afade=t=in:st=0:d=${fadeIn.toFixed(6)}:curve=qsin`);
+      if (fadeOut > 0) chain.push(`afade=t=out:st=${fadeOutStart.toFixed(6)}:d=${fadeOut.toFixed(6)}:curve=qsin`);
+      chain.push(`apad=whole_len=${expectedSampleFrames}`, `atrim=end_sample=${expectedSampleFrames}`);
+      runChecked(ffmpeg, [
+        "-hide_banner", "-loglevel", "error", "-y",
+        "-i", sourcePath, "-map", "0:a:0", "-vn",
+        "-af", chain.join(","),
+        "-ar", String(plan.sampleRate), "-ac", "2",
+        "-c:a", "pcm_f32le", clipPath
+      ], `Curated music clip ${clip.id}`, 300000);
+
+      const wav = readWav(clipPath);
+      if (wav.sampleRate !== plan.sampleRate || wav.channels !== 2) {
+        throw new Error(`Normalized music clip ${clip.id} is not 48 kHz stereo`);
+      }
+      if (wav.frameCount !== expectedSampleFrames) {
+        throw new Error(`Normalized music clip ${clip.id} has ${wav.frameCount} samples; expected ${expectedSampleFrames}`);
+      }
+      const destinationStart = clip.targetStartFrame * samplesPerVideoFrame;
+      const framesToMix = Math.min(expectedSampleFrames, wav.frameCount, totalSampleFrames - destinationStart);
+      for (let frame = 0; frame < framesToMix; frame += 1) {
+        const sourceOffset = frame * 2;
+        const destinationOffset = (destinationStart + frame) * 2;
+        mix[destinationOffset] += wav.samples[sourceOffset];
+        mix[destinationOffset + 1] += wav.samples[sourceOffset + 1];
+      }
+      placedClips.push({
+        id: clip.id,
+        startSampleFrame: destinationStart,
+        endSampleFrame: destinationStart + framesToMix,
+        renderedSampleFrames: wav.frameCount
+      });
+    });
+  } finally {
+    fs.rmSync(temporaryRoot, { recursive: true, force: true });
+  }
+
+  const logoStartSample = plan.editing.logoWindow.startFrame * samplesPerVideoFrame;
+  const logoEndSample = plan.editing.logoWindow.endFrame * samplesPerVideoFrame;
+  const revealFloor = plan.editing.chapterRevealGrammar?.musicGainDuringVacuum ?? 1;
+  const chapterRevealGainAtFrame = (videoFrame) => {
+    let gain = 1;
+    for (const clip of plan.clips) {
+      const reveal = clip.reveal;
+      if (!reveal || videoFrame < reveal.vacuumStartFrame || videoFrame >= reveal.impactFrame) continue;
+      const restoreFrames = Math.min(5, Math.max(1, reveal.impactFrame - reveal.vacuumStartFrame));
+      const restoreStart = reveal.impactFrame - restoreFrames;
+      if (videoFrame < restoreStart) {
+        const span = Math.max(1, restoreStart - reveal.vacuumStartFrame);
+        const linear = Math.max(0, Math.min(1, (videoFrame - reveal.vacuumStartFrame) / span));
+        const eased = linear * linear * (3 - 2 * linear);
+        gain = Math.min(gain, 1 + (revealFloor - 1) * eased);
+      } else {
+        const linear = Math.max(0, Math.min(1, (videoFrame - restoreStart) / restoreFrames));
+        gain = Math.min(gain, revealFloor + (1 - revealFloor) * linear * linear);
+      }
+    }
+    return gain;
+  };
+  let musicPeak = 0;
+  let musicSquareSum = 0;
+  for (let frame = 0; frame < totalSampleFrames; frame += 1) {
+    const logoGain = frame >= logoStartSample && frame < logoEndSample ? plan.editing.logoWindow.gain : 1;
+    const gain = plan.editing.postMixGain * logoGain * chapterRevealGainAtFrame(frame / samplesPerVideoFrame);
+    const offset = frame * 2;
+    mix[offset] = Math.max(-0.9, Math.min(0.9, mix[offset] * gain));
+    mix[offset + 1] = Math.max(-0.9, Math.min(0.9, mix[offset + 1] * gain));
+    musicPeak = Math.max(musicPeak, Math.abs(mix[offset]), Math.abs(mix[offset + 1]));
+    musicSquareSum += mix[offset] ** 2 + mix[offset + 1] ** 2;
+  }
+
+  const coverage = plan.clips.map((clip) => {
+    const centerFrame = Math.floor((clip.targetStartFrame + clip.targetEndFrame) / 2);
+    const centerSample = centerFrame * samplesPerVideoFrame;
+    const radius = Math.round(plan.sampleRate * 0.5);
+    const start = Math.max(0, centerSample - radius);
+    const end = Math.min(totalSampleFrames, centerSample + radius);
+    let sumSquares = 0;
+    let count = 0;
+    for (let frame = start; frame < end; frame += 1) {
+      const offset = frame * 2;
+      sumSquares += mix[offset] * mix[offset] + mix[offset + 1] * mix[offset + 1];
+      count += 2;
+    }
+    const rms = Math.sqrt(sumSquares / Math.max(1, count));
+    const rmsDb = rms > 0 ? 20 * Math.log10(rms) : -Infinity;
+    if (!Number.isFinite(rmsDb) || rmsDb < -60) {
+      throw new Error(`Music coverage failed inside ${clip.id}: ${rmsDb} dBFS`);
+    }
+    return { id: clip.id, centerFrame, rmsDb: Number(rmsDb.toFixed(3)) };
   });
-  const inputs = plan.clips.map((_, index) => `[clip${index}]`).join("");
-  const logoStart = plan.editing.logoWindow.startFrame / fps;
-  const logoEnd = plan.editing.logoWindow.endFrame / fps;
-  filters.push(
-    `${inputs}amix=inputs=${plan.clips.length}:duration=longest:dropout_transition=0:normalize=0,`
-    + `volume=${plan.editing.postMixGain},`
-    + `volume='if(between(t,${logoStart.toFixed(6)},${logoEnd.toFixed(6)}),${plan.editing.logoWindow.gain},1)':eval=frame,`
-    + `alimiter=limit=0.90:level=false,atrim=duration=${totalSeconds.toFixed(6)},asetpts=N/SR/TB[music]`
-  );
-  args.push(
-    "-filter_complex", filters.join(";"), "-map", "[music]",
-    "-ar", String(plan.sampleRate), "-ac", "2",
-    "-c:a", "pcm_s16le", "-f", "s16le", rawPath
-  );
-  runChecked(ffmpeg, args, "Curated music edit", 600000);
-  const alignment = wrapRawPcm16Stereo(rawPath, outputPath, totalFrames * plan.sampleRate / fps, plan.sampleRate);
-  fs.unlinkSync(rawPath);
-  return alignment;
+
+  writePcm16Stereo(outputPath, mix, plan.sampleRate);
+  return {
+    sourceSampleFrames: placedClips.reduce((sum, clip) => sum + clip.renderedSampleFrames, 0),
+    outputSampleFrames: totalSampleFrames,
+    paddedSampleFrames: 0,
+    trimmedSampleFrames: 0,
+    durationSeconds: totalSeconds,
+    placement: "two-pass normalized PCM clips placed at exact integer sample offsets",
+    sourceNormalization: "once per unique source's complete editorial span before clip trims",
+    chapterRevealAutomation: `music dips to ${revealFloor} before each measured title impact and returns to unity on the impact frame`,
+    energy: {
+      peakDbfs: Number((20 * Math.log10(Math.max(musicPeak, Number.EPSILON))).toFixed(3)),
+      rmsDbfs: Number((20 * Math.log10(Math.max(
+        Math.sqrt(musicSquareSum / Math.max(1, mix.length)),
+        Number.EPSILON
+      ))).toFixed(3))
+    },
+    placedClips,
+    coverage
+  };
 }
 
-export function buildSfxEvents(timeline) {
+export function buildSfxEvents(timeline, storyDocument = readJson(storyPath)) {
+  const profiles = Object.freeze({
+    plane: Object.freeze({ index: 0, midi: 50, boardHz: 174.61, clickHz: 1240, tailHz: 261.63, impactHz: 43, warpStyle: "dry-grid" }),
+    cylinder: Object.freeze({ index: 1, midi: 52, boardHz: 196.00, clickHz: 1390, tailHz: 293.66, impactHz: 45, warpStyle: "axial-hollow" }),
+    torus: Object.freeze({ index: 2, midi: 55, boardHz: 220.00, clickHz: 1530, tailHz: 329.63, impactHz: 47, warpStyle: "dual-orbit" }),
+    mobius: Object.freeze({ index: 3, midi: 53, boardHz: 185.00, clickHz: 1160, tailHz: 277.18, impactHz: 42, warpStyle: "half-twist" }),
+    klein: Object.freeze({ index: 4, midi: 48, boardHz: 164.81, clickHz: 1340, tailHz: 246.94, impactHz: 39, warpStyle: "bottle-fold" }),
+    projective: Object.freeze({ index: 5, midi: 56, boardHz: 207.65, clickHz: 1080, tailHz: 311.13, impactHz: 41, warpStyle: "mirror-cross" }),
+    sphere: Object.freeze({ index: 6, midi: 57, boardHz: 246.94, clickHz: 1660, tailHz: 369.99, impactHz: 49, warpStyle: "harmonic-bloom" })
+  });
   const events = [];
   const add = (id, startFrame, durationFrames, velocity, pan, kind, metadata = {}) => {
-    events.push({ id, startFrame, durationFrames, velocity, pan, kind, midi: 50, ...metadata });
+    const boundedStart = Math.max(0, Math.min(timeline.totalFrames - 1, Math.round(startFrame)));
+    const boundedDuration = Math.max(1, Math.min(
+      Math.round(durationFrames),
+      timeline.totalFrames - boundedStart
+    ));
+    events.push({
+      id,
+      startFrame: boundedStart,
+      durationFrames: boundedDuration,
+      velocity,
+      pan,
+      kind,
+      midi: metadata.midi ?? 50,
+      ...metadata
+    });
   };
-  add("intro-hidden-seam", 770, 210, 0.34, -0.16, "seam", { role: "boundary-connection" });
-  add("institution-logo-resonance", 1225, 180, 0.22, 0, "seam", { role: "institution-logo" });
-  add("seven-worlds-awaken", 1466, 220, 0.32, 0.12, "seam", { role: "awakening" });
-  timeline.segments.filter((segment) => segment.kind === "chapter-card").forEach((segment, chapterIndex) => {
-    add(`${segment.chapterId}-card-impact`, segment.startFrame, 72, 0.48, 0, "impact", { role: "chapter-card" });
-    add(`${segment.chapterId}-title-transform`, segment.transformFrame - 18, 128, 0.26, chapterIndex % 2 ? 0.16 : -0.16, "seam", { role: "title-transform" });
+  const inverseSmootherstep = (target) => {
+    let low = 0;
+    let high = 1;
+    for (let iteration = 0; iteration < 32; iteration += 1) {
+      const midpoint = (low + high) / 2;
+      const value = midpoint ** 3 * (midpoint * (midpoint * 6 - 15) + 10);
+      if (value < target) low = midpoint;
+      else high = midpoint;
+    }
+    return (low + high) / 2;
+  };
+  const revealProgress = (targetReveal) => 0.08 + 0.30 * inverseSmootherstep(Math.max(0, Math.min(1, targetReveal)));
+  const storyChapterById = new Map(storyDocument.chapters.map((chapter) => [chapter.id, chapter]));
+  const chapterTrace = (chapterId) => {
+    const chapter = storyChapterById.get(chapterId);
+    if (!chapter) throw new Error(`Missing story chapter for sound design: ${chapterId}`);
+    const rules = Engine.createRules({ type: chapter.id, width: chapter.width, height: chapter.height, target: 5 });
+    const trace = Engine.tracePath(
+      rules,
+      Engine.toCell(rules, chapter.start[0], chapter.start[1]),
+      chapter.direction,
+      5
+    );
+    if (!trace || trace.cells.length !== 5) throw new Error(`Invalid representative path for sound design: ${chapterId}`);
+    return { chapter, rules, trace };
+  };
+
+  // A very quiet paper-and-room floor binds otherwise contrasting chapter cues
+  // without turning the SFX bus into a second music track.
+  add("paper-world-room-tone", 0, timeline.totalFrames, 0.052, 0, "paper-air", {
+    role: "paper-environment",
+    layer: "room-tone",
+    visualAnchor: "full-film"
   });
-  timeline.segments.filter((segment) => segment.kind === "chapter").forEach((segment, chapterIndex) => {
-    const duration = segment.durationFrames;
-    [0.10, 0.16, 0.22, 0.28, 0.34].forEach((progress, stoneIndex) => {
+  add("intro-edge-approach", 286, 520, 0.105, -0.18, "reverse-breath", {
+    role: "boundary-connection",
+    layer: "approach",
+    toneHz: 88,
+    visualAnchor: "intro-board-edge"
+  });
+  add("intro-hidden-seam", 821, 194, 0.22, 0.18, "seam-crossing", {
+    role: "boundary-connection",
+    layer: "crossing",
+    seamMask: Engine.SEAM_X,
+    toneHz: 126,
+    visualAnchor: "caption-03:start"
+  });
+  add("intro-boundaries-glue", 1015, 205, 0.17, 0, "topology-warp", {
+    role: "boundary-connection",
+    layer: "reconnection",
+    topologyId: "intro",
+    warpStyle: "mirror-cross",
+    toneHz: 148,
+    visualAnchor: "caption-04:start"
+  });
+  add("institution-logo-bloom", 1225, 210, 0.16, 0, "logo-bloom", {
+    role: "institution-logo",
+    layer: "identity",
+    toneHz: 392,
+    visualAnchor: "institution-logo:start"
+  });
+  add("seven-worlds-rise", 1466, 360, 0.17, 0.08, "reverse-breath", {
+    role: "awakening",
+    layer: "rise",
+    toneHz: 110,
+    visualAnchor: "intro-awakening:start"
+  });
+  const awakeningStart = timeline.cues.find((cue) => cue.id === "caption-07")?.startFrame ?? 1866;
+  Object.entries(profiles).forEach(([topologyId, profile], index) => {
+    add(`awaken-${topologyId}`, awakeningStart + 14 + index * 39, 82, 0.105 + index * 0.006, (index - 3) * 0.105, "glyph-pulse", {
+      role: "awakening",
+      layer: "topology-glyph",
+      topologyId,
+      profileIndex: profile.index,
+      toneHz: profile.tailHz,
+      visualAnchor: "caption-07:seven-glyph-sequence"
+    });
+  });
+
+  timeline.segments.filter((segment) => segment.kind === "chapter-card").forEach((segment) => {
+    const profile = profiles[segment.chapterId];
+    const common = {
+      role: "chapter-transition",
+      chapterId: segment.chapterId,
+      topologyId: segment.chapterId,
+      profileIndex: profile.index,
+      warpStyle: profile.warpStyle,
+      boardHz: profile.boardHz,
+      toneHz: profile.tailHz,
+      impactHz: profile.impactHz,
+      midi: profile.midi
+    };
+    // The music renderer supplies a twenty-frame vacuum before the transform;
+    // these restrained gestures frame it without turning every title into a
+    // trailer hit.
+    add(`${segment.chapterId}-card-rise`, segment.startFrame - 46, 34, 0.16, profile.index % 2 ? 0.13 : -0.13, "reverse-breath", {
+      ...common,
+      stage: "reverse-breath",
+      visualAnchor: "chapter-card:pre-roll"
+    });
+    add(`${segment.chapterId}-card-hit`, segment.startFrame + 12, 84, 0.34 + profile.index * 0.009, 0, "chapter-impact", {
+      ...common,
+      stage: "low-hit",
+      visualAnchor: "drawChapterCard:reveal-start"
+    });
+    add(`${segment.chapterId}-card-shimmer`, segment.transformFrame, 112, 0.12 + profile.index * 0.005, profile.index % 2 ? -0.15 : 0.15, "title-shimmer", {
+      ...common,
+      stage: "fine-shimmer",
+      visualAnchor: "drawChapterCard:transformFrame"
+    });
+    add(`${segment.chapterId}-card-tail`, segment.transformFrame + 5, Math.min(150, segment.endFrame - segment.transformFrame - 5), 0.075, 0, "space-tail", {
+      ...common,
+      stage: "space-tail",
+      visualAnchor: "drawChapterCard:transform-afterglow"
+    });
+  });
+
+  timeline.segments.filter((segment) => segment.kind === "chapter").forEach((segment) => {
+    const profile = profiles[segment.chapterId];
+    const { chapter, rules, trace } = chapterTrace(segment.chapterId);
+    trace.cells.forEach((cell, stoneIndex) => {
+      // drawPath reaches a stone's settled size when reveal*5.25+0.1 == i+1.
+      // Inverting the compositor's quintic reveal keeps every click on that frame.
+      const targetReveal = Math.min(1, (stoneIndex + 0.9) / 5.25);
+      const progress = revealProgress(targetReveal);
+      const frame = segment.startFrame + Math.round(segment.durationFrames * progress);
+      const point = Engine.toPoint(rules, cell);
+      const pan = chapter.width > 1 ? (point.x / (chapter.width - 1) - 0.5) * 0.58 : 0;
+      const common = {
+        role: "five-in-a-row",
+        chapterId: segment.chapterId,
+        topologyId: segment.chapterId,
+        profileIndex: profile.index,
+        stoneIndex,
+        cell: [point.x, point.y],
+        revealTarget: Number(targetReveal.toFixed(6)),
+        visualProgress: Number(progress.toFixed(6)),
+        visualAnchor: "drawChapterScene:reveal-smootherstep(0.08,0.38)",
+        boardHz: profile.boardHz,
+        clickHz: profile.clickHz,
+        toneHz: profile.tailHz,
+        midi: profile.midi
+      };
+      const emphasis = stoneIndex === 4 ? 1.15 : 1;
+      add(`${segment.chapterId}-stone-${stoneIndex + 1}-click`, frame, 18, (0.22 + stoneIndex * 0.008) * emphasis, pan, "stone-click", {
+        ...common,
+        layer: "transient"
+      });
+      add(`${segment.chapterId}-stone-${stoneIndex + 1}-board`, frame + 1, 52 + profile.index * 2, (0.135 + stoneIndex * 0.006) * emphasis, pan * 0.72, "board-resonance", {
+        ...common,
+        layer: "board-resonance"
+      });
+      add(`${segment.chapterId}-stone-${stoneIndex + 1}-tail`, frame + 4, 88 + profile.index * 4, (0.072 + stoneIndex * 0.004) * emphasis, -pan * 0.35, "room-tail", {
+        ...common,
+        layer: "space-tail"
+      });
+    });
+
+    trace.seams.forEach((seamMask, edgeIndex) => {
+      if (!seamMask) return;
+      const targetReveal = Math.min(1, (edgeIndex + 0.48) / 4.35);
+      const progress = revealProgress(targetReveal);
       add(
-        `${segment.chapterId}-stone-${stoneIndex + 1}`,
-        segment.startFrame + Math.round(duration * progress), 30,
-        0.30 + stoneIndex * 0.028, (stoneIndex - 2) * 0.075, "stone",
-        { role: "five-in-a-row", chapterId: segment.chapterId }
+        `${segment.chapterId}-seam-${edgeIndex + 1}`,
+        segment.startFrame + Math.round(segment.durationFrames * progress),
+        82,
+        seamMask & Engine.SEAM_TWIST ? 0.21 : 0.17,
+        edgeIndex % 2 ? 0.24 : -0.24,
+        "seam-crossing",
+        {
+          role: "topology-seam",
+          layer: seamMask & Engine.SEAM_TWIST ? "twisted-boundary" : "wrapped-boundary",
+          chapterId: segment.chapterId,
+          topologyId: segment.chapterId,
+          profileIndex: profile.index,
+          edgeIndex,
+          seamMask,
+          warpStyle: profile.warpStyle,
+          toneHz: profile.tailHz,
+          revealTarget: Number(targetReveal.toFixed(6)),
+          visualProgress: Number(progress.toFixed(6)),
+          visualAnchor: "drawPath:edgeReveal>0.48"
+        }
       );
     });
+
     if (segment.chapterId !== "plane") {
-      add(
-        `${segment.chapterId}-morph`, segment.startFrame + Math.round(duration * 0.46),
-        Math.max(72, Math.round(duration * 0.38)), 0.24,
-        chapterIndex % 2 ? 0.2 : -0.2, "seam",
-        { role: "2d-to-3d", chapterId: segment.chapterId }
-      );
+      const morphStart = segment.startFrame + Math.round(segment.durationFrames * 0.46);
+      const morphEnd = segment.startFrame + Math.round(segment.durationFrames * 0.84);
+      add(`${segment.chapterId}-morph-motion`, morphStart, morphEnd - morphStart, 0.165 + profile.index * 0.006, profile.index % 2 ? 0.16 : -0.16, "topology-warp", {
+        role: "2d-to-3d",
+        layer: "motion",
+        chapterId: segment.chapterId,
+        topologyId: segment.chapterId,
+        profileIndex: profile.index,
+        warpStyle: profile.warpStyle,
+        toneHz: profile.boardHz,
+        visualAnchor: "drawChapterScene:morph-smootherstep(0.46,0.84)",
+        visualStartProgress: 0.46,
+        visualEndProgress: 0.84
+      });
+      add(`${segment.chapterId}-morph-lock`, morphEnd, 78 + profile.index * 3, 0.115, 0, "topology-lock", {
+        role: "2d-to-3d",
+        layer: "arrival",
+        chapterId: segment.chapterId,
+        topologyId: segment.chapterId,
+        profileIndex: profile.index,
+        warpStyle: profile.warpStyle,
+        toneHz: profile.tailHz,
+        visualAnchor: "drawChapterScene:morph-complete",
+        visualProgress: 0.84
+      });
     }
   });
+
   const tableau = timeline.segments.find((segment) => segment.kind === "tableau");
   const finale = timeline.segments.find((segment) => segment.kind === "finale");
   const endCard = timeline.segments.find((segment) => segment.kind === "end-card");
-  if (tableau) add("tableau-convergence", tableau.startFrame, tableau.durationFrames, 0.32, 0, "seam", { role: "seven-worlds" });
+  if (tableau) add("tableau-convergence", tableau.startFrame, tableau.durationFrames, 0.21, 0, "convergence", {
+    role: "seven-worlds",
+    layer: "convergence",
+    visualAnchor: "tableau:start"
+  });
   if (finale) {
-    add("finale-breath", finale.startFrame + 510, 180, 0.27, 0, "seam", { role: "final-challenge" });
-    add("finale-decisive-stone", 11802, 44, 0.64, 0, "stone", { role: "decisive-move" });
+    const challengeCue = timeline.cues.find((cue) => cue.id === "caption-36");
+    const stoneCue = timeline.cues.find((cue) => cue.id === "caption-37");
+    const witnessCue = timeline.cues.find((cue) => cue.id === "caption-39");
+    const breathStart = challengeCue?.startFrame ?? finale.startFrame + Math.round(finale.durationFrames * 0.42);
+    const decisiveFrame = stoneCue
+      ? stoneCue.startFrame + Math.round(stoneCue.durationFrames * 0.45)
+      : finale.startFrame + Math.round(finale.durationFrames * 0.58);
+    add("finale-challenge-breath", breathStart, Math.max(72, (stoneCue?.startFrame ?? breathStart + 180) - breathStart - 22), 0.17, 0, "final-breath", {
+      role: "final-challenge",
+      layer: "approach",
+      visualAnchor: "caption-36:start-to-caption-37:pre-roll"
+    });
+    add("finale-decisive-stone-click", decisiveFrame, 22, 0.56, 0, "final-stone", {
+      role: "decisive-move",
+      layer: "transient",
+      toneHz: profiles.sphere.clickHz,
+      boardHz: profiles.sphere.boardHz,
+      visualAnchor: "caption-37:45-percent"
+    });
+    add("finale-decisive-stone-board", decisiveFrame + 1, 104, 0.31, 0, "final-board", {
+      role: "decisive-move",
+      layer: "board-resonance",
+      toneHz: profiles.sphere.tailHz,
+      boardHz: profiles.sphere.boardHz,
+      visualAnchor: "caption-37:45-percent"
+    });
+    add("finale-decisive-stone-tail", decisiveFrame + 5, 260, 0.16, 0, "final-tail", {
+      role: "decisive-move",
+      layer: "space-tail",
+      toneHz: profiles.sphere.tailHz,
+      visualAnchor: "caption-37:45-percent"
+    });
+    if (witnessCue) add("finale-world-reveal", witnessCue.startFrame, witnessCue.durationFrames, 0.14, 0, "logo-bloom", {
+      role: "final-challenge",
+      layer: "reveal",
+      toneHz: profiles.sphere.tailHz,
+      visualAnchor: "caption-39:start"
+    });
   }
-  if (endCard) add("end-card-arrival", endCard.startFrame, 120, 0.29, 0, "impact", { role: "end-card" });
+  if (endCard) {
+    add("end-card-arrival", endCard.startFrame, 108, 0.34, 0, "end-card-hit", {
+      role: "end-card",
+      layer: "arrival",
+      impactHz: 46,
+      visualAnchor: "end-card:start"
+    });
+    add("end-card-logo-bloom", endCard.startFrame + 18, 230, 0.12, 0, "logo-bloom", {
+      role: "end-card",
+      layer: "identity",
+      toneHz: 392,
+      visualAnchor: "drawEndCard:logo-reveal"
+    });
+  }
   return events.sort((left, right) => left.startFrame - right.startFrame || left.id.localeCompare(right.id));
 }
 
@@ -375,7 +773,7 @@ function buildManifest({ story, timing, timeline, musicPlan, audio, sourcePaths,
       masterMix: audio.masterMix,
       mix: {
         voiceGain: 1.06,
-        musicGain: "1.0 in pauses; 0.52 under speech with 12-frame attack / 24-frame release",
+        musicGain: `${musicPlan.editing.postMixGain} base after once-per-source normalization; multiplied by 0.52 under speech with 12-frame attack / 24-frame release`,
         sfxGain: 0.82,
         limiter: "deterministic tanh soft limiter, 0.96 ceiling"
       },

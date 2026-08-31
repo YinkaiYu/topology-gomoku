@@ -8,7 +8,7 @@ YCbCr Matrix: TV.709
 
 [V4+ Styles]
 Format: Name, Fontname, Fontsize, PrimaryColour, SecondaryColour, OutlineColour, BackColour, Bold, Italic, Underline, StrikeOut, ScaleX, ScaleY, Spacing, Angle, BorderStyle, Outline, Shadow, Alignment, MarginL, MarginR, MarginV, Encoding
-Style: Caption,Topo Sans PV,44,&H00F2EFE7,&H00F2EFE7,&HCC070908,&H00000000,0,0,0,0,100,100,1.2,0,1,2.2,0,2,144,144,90,1
+Style: Caption,Topo Sans PV,56,&H00FFFFFF,&H00FFFFFF,&H00000000,&H00000000,0,0,0,0,100,100,0.8,0,1,3.2,0,2,120,120,86,1
 
 [Events]
 Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text

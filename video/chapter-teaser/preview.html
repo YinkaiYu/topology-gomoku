@@ -134,17 +134,28 @@
         canvas.width = profile.width;
         canvas.height = profile.height;
 
+        var topologyIds = ["plane", "cylinder", "torus", "mobius", "klein", "projective", "sphere"];
         var institutionLogo = new Image();
         institutionLogo.src = "./assets/iop-logo.png";
         var gameLogo = new Image();
         gameLogo.src = "../../app/assets/brand-icon.png";
-        await Promise.all([document.fonts.ready, institutionLogo.decode(), gameLogo.decode()]);
+        var topologyImages = topologyIds.map(function loadTopology(id) {
+          var image = new Image();
+          image.src = "../../app/assets/topologies/" + id + ".svg";
+          return image;
+        });
+        await Promise.all([document.fonts.ready, institutionLogo.decode(), gameLogo.decode()].concat(
+          topologyImages.map(function decodeTopology(image) { return image.decode(); })
+        ));
+        var topologyIllustrations = Object.create(null);
+        topologyIds.forEach(function assignTopology(id, index) { topologyIllustrations[id] = topologyImages[index]; });
         var composition = ChapterTeaserCompositor.createComposition({
           story: story,
           manifest: manifest,
           width: profile.width,
           height: profile.height,
-          logos: { institution: institutionLogo, game: gameLogo }
+          logos: { institution: institutionLogo, game: gameLogo },
+          topologyIllustrations: topologyIllustrations
         });
         var ctx = canvas.getContext("2d", { alpha: false });
 

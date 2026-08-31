@@ -961,77 +961,213 @@
     drawPath(ctx, model, viewport, morphAmount, orientation, reveal, composition.palette, settle);
   }
 
+  function introBoardPoint(u, v, fold, width, height, cameraPush) {
+    var horizonWidth = width * 0.48;
+    var foregroundWidth = width * 1.34;
+    var rowWidth = mix(horizonWidth, foregroundWidth, v);
+    var baseX = width * 0.5 + (u - 0.5) * rowWidth;
+    var baseY = height * (0.185 + v * 0.68);
+    var theta = (u - 0.5) * TAU * 0.87;
+    var curvedX = width * 0.5 + Math.sin(theta) * rowWidth * 0.42;
+    var curvedY = baseY + (Math.cos(theta) - 1) * height * (0.030 + v * 0.035);
+    var push = mix(0.94, 1.08, cameraPush);
+    return {
+      x: width * 0.5 + (mix(baseX, curvedX, fold) - width * 0.5) * push,
+      y: height * 0.49 + (mix(baseY, curvedY, fold) - height * 0.49) * push
+    };
+  }
+
+  function introCurve(ctx, width, height, fold, cameraPush, u0, u1, v) {
+    var steps = Math.max(4, Math.ceil(Math.abs(u1 - u0) * 42));
+    for (var index = 0; index <= steps; index += 1) {
+      var point = introBoardPoint(mix(u0, u1, index / steps), v, fold, width, height, cameraPush);
+      if (index === 0) ctx.moveTo(point.x, point.y);
+      else ctx.lineTo(point.x, point.y);
+    }
+  }
+
   function drawIntroEdge(ctx, composition, frameInfo) {
     var width = composition.width;
     var height = composition.height;
-    var progress = frameInfo.progress;
-    var reveal = smootherstep(0.03, 0.20, progress);
-    var dissolve = 1 - smoothstep(0.90, 1, progress);
-    var alpha = reveal * dissolve;
-    var left = width * 0.18;
-    var right = width * 0.82;
-    var top = height * 0.24;
-    var bottom = height * 0.72;
-    var columns = 11;
-    var rows = 7;
-    var pulse = 0.55 + 0.45 * Math.sin(frameInfo.frameIndex * 0.018);
+    var local = frameInfo.localFrame;
+    var reveal = smootherstep(18, 280, local);
+    var cameraPush = smootherstep(0, 1224, local);
+    var boundaryFocus = smootherstep(260, 520, local);
+    var outbound = smootherstep(550, 805, local);
+    var returnTrip = smootherstep(806, 990, local);
+    var fold = smootherstep(995, 1215, local);
+    var fade = 1 - smoothstep(1192, 1225, local);
+    var alpha = reveal * fade;
+    var pulse = 0.5 + 0.5 * Math.sin(frameInfo.frameIndex * 0.025);
+    // Seven by seven intersections reuse the live Prologue board dimensions,
+    // never a 19 x 19 Go board or an alternating chess/checkers surface.
+    var columns = 6;
+    var rows = 6;
 
     ctx.save();
-    ctx.lineCap = "round";
-    ctx.lineJoin = "round";
-    ctx.lineWidth = Math.max(1, height / 1080);
-    for (var column = 0; column <= columns; column += 1) {
-      var x = mix(left, right, column / columns);
-      var edgeDistanceX = Math.min(column, columns - column) / Math.max(1, columns * 0.34);
-      ctx.strokeStyle = rgba(GAME_PALETTE.ink, alpha * mix(0.035, 0.14, clamp01(edgeDistanceX)));
-      ctx.beginPath();
-      ctx.moveTo(x, top);
-      ctx.lineTo(x, bottom);
-      ctx.stroke();
-    }
-    for (var row = 0; row <= rows; row += 1) {
-      var y = mix(top, bottom, row / rows);
-      var edgeDistanceY = Math.min(row, rows - row) / Math.max(1, rows * 0.34);
-      ctx.strokeStyle = rgba(GAME_PALETTE.ink, alpha * mix(0.035, 0.14, clamp01(edgeDistanceY)));
-      ctx.beginPath();
-      ctx.moveTo(left, y);
-      ctx.lineTo(right, y);
-      ctx.stroke();
-    }
+    var night = ctx.createRadialGradient(width * 0.5, height * 0.43, height * 0.04, width * 0.5, height * 0.44, width * 0.72);
+    night.addColorStop(0, rgba(GAME_PALETTE.paper, 0));
+    night.addColorStop(0.62, rgba(GAME_PALETTE.ink, 0.055 * alpha));
+    night.addColorStop(1, rgba(GAME_PALETTE.ink, 0.20 * alpha));
+    ctx.fillStyle = night;
+    ctx.fillRect(0, 0, width, height);
 
-    ctx.lineWidth = Math.max(2, height * 0.0032);
-    ctx.strokeStyle = rgba(GAME_PALETTE.connection, alpha * (0.38 + pulse * 0.12));
-    ctx.setLineDash([height * 0.022, height * 0.014]);
-    ctx.lineDashOffset = -frameInfo.frameIndex * height * 0.00045;
-    ctx.beginPath();
-    ctx.moveTo(width * 0.50, height * 0.58);
-    ctx.bezierCurveTo(width * 0.63, height * 0.56, width * 0.73, height * 0.39, right, height * 0.42);
-    ctx.stroke();
-    ctx.beginPath();
-    ctx.moveTo(left, height * 0.42);
-    ctx.bezierCurveTo(width * 0.29, height * 0.45, width * 0.36, height * 0.60, width * 0.50, height * 0.58);
-    ctx.stroke();
+    var horizonX = width * 0.5;
+    var horizonY = height * 0.185;
+    var horizonGlow = ctx.createRadialGradient(horizonX, horizonY, 0, horizonX, horizonY, height * 0.34);
+    horizonGlow.addColorStop(0, rgba(GAME_PALETTE.twist, alpha * 0.16));
+    horizonGlow.addColorStop(0.34, rgba(GAME_PALETTE.connection, alpha * 0.055));
+    horizonGlow.addColorStop(1, rgba(GAME_PALETTE.paper, 0));
+    ctx.fillStyle = horizonGlow;
+    ctx.fillRect(0, 0, width, height * 0.62);
+    ctx.strokeStyle = rgba(GAME_PALETTE.ink, alpha * 0.075);
+    ctx.lineWidth = Math.max(1, height * 0.0011);
+    [0.145, 0.205, 0.278].forEach(function drawCelestialOrbit(radius, index) {
+      ctx.setLineDash([height * (0.008 + index * 0.003), height * (0.016 + index * 0.002)]);
+      ctx.lineDashOffset = (index % 2 ? 1 : -1) * frameInfo.frameIndex * height * 0.00005;
+      ctx.beginPath();
+      ctx.ellipse(horizonX, horizonY, height * radius * 1.65, height * radius, -0.08, Math.PI * 1.03, Math.PI * 1.97);
+      ctx.stroke();
+    });
     ctx.setLineDash([]);
 
-    var fold = smootherstep(0.47, 0.82, progress);
-    var farGap = mix(width * 0.64, width * 0.10, fold);
-    var pointY = height * 0.42;
-    [width * 0.5 - farGap / 2, width * 0.5 + farGap / 2].forEach(function drawEndpoint(pointX, index) {
-      var radius = height * (0.010 + pulse * 0.0025);
-      ctx.fillStyle = rgba(index ? GAME_PALETTE.connection : GAME_PALETTE.twist, alpha * 0.92);
+    var foregroundShade = ctx.createLinearGradient(0, height * 0.48, 0, height);
+    foregroundShade.addColorStop(0, rgba(GAME_PALETTE.ink, 0));
+    foregroundShade.addColorStop(1, rgba(GAME_PALETTE.ink, alpha * 0.13));
+    ctx.fillStyle = foregroundShade;
+    ctx.fillRect(0, height * 0.48, width, height * 0.52);
+
+    // Sparse, drifting ink motes make the board read as a single monumental object in a paper universe.
+    for (var mote = 0; mote < 42; mote += 1) {
+      var moteX = hash01(composition.seed ^ 0x1f25a, mote * 3) * width;
+      var moteY = hash01(composition.seed ^ 0x1f25a, mote * 3 + 1) * height * 0.62;
+      var moteAlpha = mix(0.025, 0.10, hash01(composition.seed, mote * 3 + 2)) * alpha;
+      ctx.fillStyle = rgba(mote % 7 === 0 ? GAME_PALETTE.connection : GAME_PALETTE.ink, moteAlpha);
       ctx.beginPath();
-      ctx.arc(pointX, pointY, radius, 0, TAU);
+      ctx.arc(moteX, moteY, height * mix(0.0007, 0.0021, hash01(composition.seed + 9, mote)), 0, TAU);
       ctx.fill();
-      ctx.strokeStyle = rgba(GAME_PALETTE.card, alpha * 0.72);
-      ctx.lineWidth = Math.max(1, height * 0.0014);
+    }
+
+    // Paint the perspective sheet cell by cell so its eventual folding remains physically continuous.
+    for (var row = 0; row < rows; row += 1) {
+      for (var column = 0; column < columns; column += 1) {
+        var u0 = column / columns;
+        var u1 = (column + 1) / columns;
+        var v0 = row / rows;
+        var v1 = (row + 1) / rows;
+        var a = introBoardPoint(u0, v0, fold, width, height, cameraPush);
+        var b = introBoardPoint(u1, v0, fold, width, height, cameraPush);
+        var c = introBoardPoint(u1, v1, fold, width, height, cameraPush);
+        var d = introBoardPoint(u0, v1, fold, width, height, cameraPush);
+        ctx.fillStyle = rgba(GAME_PALETTE.card, alpha * 0.63);
+        ctx.beginPath();
+        ctx.moveTo(a.x, a.y);
+        ctx.lineTo(b.x, b.y);
+        ctx.lineTo(c.x, c.y);
+        ctx.lineTo(d.x, d.y);
+        ctx.closePath();
+        ctx.fill();
+      }
+    }
+
+    ctx.lineCap = "round";
+    ctx.lineJoin = "round";
+    ctx.lineWidth = Math.max(1, height * 0.00135);
+    for (column = 0; column <= columns; column += 1) {
+      ctx.strokeStyle = rgba(GAME_PALETTE.ink, alpha * (column === 0 || column === columns ? 0.50 : 0.105));
+      ctx.beginPath();
+      introCurve(ctx, width, height, fold, cameraPush, column / columns, column / columns, 0);
+      var pointTop = introBoardPoint(column / columns, 0, fold, width, height, cameraPush);
+      var pointBottom = introBoardPoint(column / columns, 1, fold, width, height, cameraPush);
+      ctx.moveTo(pointTop.x, pointTop.y);
+      ctx.lineTo(pointBottom.x, pointBottom.y);
+      ctx.stroke();
+    }
+    for (row = 0; row <= rows; row += 1) {
+      ctx.strokeStyle = rgba(GAME_PALETTE.ink, alpha * (row === 0 || row === rows ? 0.42 : 0.10));
+      ctx.beginPath();
+      introCurve(ctx, width, height, fold, cameraPush, 0, 1, row / rows);
+      ctx.stroke();
+    }
+
+    // Reuse the live canvas convention: every legal Gomoku placement is an equal,
+    // quiet point on a compact lattice. There are no star points or wood-board cues.
+    ctx.fillStyle = rgba(GAME_PALETTE.ink, alpha * 0.28);
+    for (row = 0; row <= rows; row += 1) {
+      for (column = 0; column <= columns; column += 1) {
+        var node = introBoardPoint(column / columns, row / rows, fold, width, height, cameraPush);
+        ctx.beginPath();
+        ctx.arc(node.x, node.y, height * mix(0.0007, 0.0017, row / rows), 0, TAU);
+        ctx.fill();
+      }
+    }
+
+    // The two opposite shores are the only strong colors in the shot.
+    [0, 1].forEach(function drawShore(u, index) {
+      var top = introBoardPoint(u, 0, fold, width, height, cameraPush);
+      var bottom = introBoardPoint(u, 1, fold, width, height, cameraPush);
+      ctx.strokeStyle = rgba(index ? GAME_PALETTE.connection : GAME_PALETTE.twist, alpha * mix(0.42, 0.94, boundaryFocus));
+      ctx.lineWidth = height * mix(0.0025, 0.0052, boundaryFocus);
+      ctx.beginPath();
+      ctx.moveTo(top.x, top.y);
+      ctx.lineTo(bottom.x, bottom.y);
       ctx.stroke();
     });
 
-    ctx.strokeStyle = rgba(GAME_PALETTE.twist, alpha * fold * 0.24);
-    ctx.lineWidth = Math.max(1, height * 0.0018);
+    var pathV = 3 / rows;
+    var pathStart = 2 / columns;
+    var outboundU = mix(pathStart, 1.025, outbound);
+    ctx.strokeStyle = rgba(GAME_PALETTE.connection, alpha * 0.82);
+    ctx.lineWidth = height * 0.0041;
+    ctx.setLineDash([height * 0.021, height * 0.013]);
+    ctx.lineDashOffset = -frameInfo.frameIndex * height * 0.00056;
     ctx.beginPath();
-    ctx.ellipse(width * 0.5, pointY, farGap * 0.58, height * 0.095 * (1 - fold * 0.35), 0, Math.PI, TAU);
+    introCurve(ctx, width, height, fold, cameraPush, pathStart, Math.min(outboundU, 1), pathV);
+    if (returnTrip > 0) {
+      ctx.moveTo(introBoardPoint(0, pathV, fold, width, height, cameraPush).x, introBoardPoint(0, pathV, fold, width, height, cameraPush).y);
+      introCurve(ctx, width, height, fold, cameraPush, 0, mix(0, 2 / columns, returnTrip), pathV);
+    }
     ctx.stroke();
+    ctx.setLineDash([]);
+
+    var showOutboundStone = local < 810;
+    var stoneU = showOutboundStone ? outboundU : mix(-0.025, 2 / columns, returnTrip);
+    if (local < 550) stoneU = pathStart;
+    if (local > 805 && local < 821) showOutboundStone = false;
+    if (showOutboundStone || local >= 821) {
+      var stonePoint = introBoardPoint(stoneU, pathV, fold, width, height, cameraPush);
+      var stoneRadius = height * mix(0.018, 0.024, cameraPush);
+      var glow = ctx.createRadialGradient(stonePoint.x, stonePoint.y, stoneRadius * 0.25, stonePoint.x, stonePoint.y, stoneRadius * 2.8);
+      glow.addColorStop(0, rgba(GAME_PALETTE.connection, alpha * 0.25));
+      glow.addColorStop(1, rgba(GAME_PALETTE.connection, 0));
+      ctx.fillStyle = glow;
+      ctx.beginPath();
+      ctx.arc(stonePoint.x, stonePoint.y, stoneRadius * 2.8, 0, TAU);
+      ctx.fill();
+      ctx.fillStyle = rgba(GAME_PALETTE.ink, alpha * 0.97);
+      ctx.beginPath();
+      ctx.arc(stonePoint.x, stonePoint.y, stoneRadius, 0, TAU);
+      ctx.fill();
+      ctx.strokeStyle = rgba(GAME_PALETTE.paper, alpha * 0.72);
+      ctx.lineWidth = height * 0.0015;
+      ctx.stroke();
+    }
+
+    if (fold > 0) {
+      var leftSeam = introBoardPoint(0, pathV, fold, width, height, cameraPush);
+      var rightSeam = introBoardPoint(1, pathV, fold, width, height, cameraPush);
+      ctx.strokeStyle = rgba(GAME_PALETTE.connection, alpha * fold * (0.58 + pulse * 0.18));
+      ctx.lineWidth = height * 0.0033;
+      ctx.beginPath();
+      ctx.moveTo(leftSeam.x, leftSeam.y);
+      ctx.bezierCurveTo(width * 0.5, height * 0.12, width * 0.5, height * 0.12, rightSeam.x, rightSeam.y);
+      ctx.stroke();
+      ctx.fillStyle = rgba(GAME_PALETTE.paper, alpha * fold * 0.88);
+      ctx.beginPath();
+      ctx.arc(leftSeam.x, leftSeam.y, height * 0.008, 0, TAU);
+      ctx.arc(rightSeam.x, rightSeam.y, height * 0.008, 0, TAU);
+      ctx.fill();
+    }
     ctx.restore();
   }
 
@@ -1043,7 +1179,7 @@
     var progress = frameInfo.progress;
     var width = composition.width;
     var height = composition.height;
-    var lineReveal = smootherstep(0.06, 0.72, progress);
+    var lineReveal = smootherstep(0.03, 0.76, progress);
     ctx.save();
     ctx.strokeStyle = rgba(GAME_PALETTE.connection, lineReveal * 0.16);
     ctx.lineWidth = Math.max(1, height * 0.0016);
@@ -1060,19 +1196,46 @@
     ctx.restore();
 
     composition.chapters.forEach(function awaken(model, index) {
-      var arrival = smootherstep(index * 0.085, index * 0.085 + 0.25, progress);
-      var fade = 1 - smoothstep(0.91, 1, progress);
-      drawMiniature(
-        ctx,
-        composition,
-        model,
-        width * positions[index][0],
-        height * positions[index][1],
-        height * 0.31,
-        frameInfo,
-        index,
-        arrival * fade * 0.34
-      );
+      var arrivalStart = index * 0.105;
+      var arrival = smootherstep(arrivalStart, arrivalStart + 0.17, progress);
+      var ignition = 1 - smoothstep(arrivalStart + 0.16, arrivalStart + 0.32, progress);
+      var fade = 1 - smoothstep(0.94, 1, progress);
+      var alpha = arrival * fade;
+      var centerX = width * positions[index][0];
+      var centerY = height * positions[index][1];
+      var baseSize = height * (index === 3 ? 0.30 : 0.275);
+      var size = baseSize * mix(0.72, 1, arrival) * (1 + ignition * 0.055);
+      var illustration = composition.topologyIllustrations[model.chapter.id];
+
+      ctx.save();
+      var aura = ctx.createRadialGradient(centerX, centerY, 0, centerX, centerY, size * 0.64);
+      aura.addColorStop(0, rgba(model.connections.x === "twist" || model.connections.y === "twist" ? GAME_PALETTE.twist : GAME_PALETTE.connection, alpha * (0.10 + ignition * 0.17)));
+      aura.addColorStop(1, rgba(GAME_PALETTE.paper, 0));
+      ctx.fillStyle = aura;
+      ctx.beginPath();
+      ctx.arc(centerX, centerY, size * 0.68, 0, TAU);
+      ctx.fill();
+
+      ctx.strokeStyle = rgba(GAME_PALETTE.ink, alpha * 0.13);
+      ctx.lineWidth = Math.max(1, height * 0.0012);
+      ctx.setLineDash([height * 0.007, height * 0.012]);
+      ctx.lineDashOffset = -frameInfo.frameIndex * height * 0.00018 - index * 7;
+      ctx.beginPath();
+      ctx.arc(centerX, centerY, size * 0.50, -Math.PI * 0.62, Math.PI * (0.92 + arrival * 0.70));
+      ctx.stroke();
+      ctx.setLineDash([]);
+
+      if (illustration && illustration.width && illustration.height) {
+        ctx.globalAlpha = alpha * 0.97;
+        ctx.drawImage(illustration, centerX - size / 2, centerY - size / 2, size, size);
+      } else {
+        ctx.strokeStyle = rgba(GAME_PALETTE.ink, alpha * 0.62);
+        ctx.lineWidth = height * 0.0022;
+        ctx.beginPath();
+        ctx.ellipse(centerX, centerY, size * 0.31, size * 0.18, index * 0.27, 0, TAU);
+        ctx.stroke();
+      }
+      ctx.restore();
     });
   }
 
@@ -1192,19 +1355,35 @@
     var height = composition.height;
     var reveal = smootherstep(0.04, 0.28, frameInfo.progress);
     var alpha = reveal;
-    var logoDiameter = height * 0.235;
-    drawCircularLogo(ctx, composition.logos.institution, width * 0.425, height * 0.36, logoDiameter, alpha);
+    var institutionDiameter = height * 0.25;
+    var gameLogoBox = height * 0.315;
+    var logoCenterY = height * 0.35;
+    drawCircularLogo(ctx, composition.logos.institution, width * 0.39, logoCenterY, institutionDiameter, alpha);
     drawContainedImage(
       ctx,
       composition.logos.game,
-      width * 0.575,
-      height * 0.36,
-      logoDiameter * 1.16,
-      logoDiameter * 1.16,
+      width * 0.61,
+      logoCenterY,
+      gameLogoBox,
+      gameLogoBox,
       alpha
     );
 
     ctx.save();
+    // A vector collaboration mark avoids font fallback and keeps the two source logos untouched.
+    var markX = width * 0.5;
+    var markY = logoCenterY;
+    var markRadius = height * 0.020;
+    ctx.strokeStyle = "rgba(0,0,0," + (alpha * 0.70) + ")";
+    ctx.lineWidth = Math.max(2, height * 0.0032);
+    ctx.lineCap = "round";
+    ctx.beginPath();
+    ctx.moveTo(markX - markRadius, markY - markRadius);
+    ctx.lineTo(markX + markRadius, markY + markRadius);
+    ctx.moveTo(markX + markRadius, markY - markRadius);
+    ctx.lineTo(markX - markRadius, markY + markRadius);
+    ctx.stroke();
+
     ctx.textAlign = "center";
     ctx.textBaseline = "middle";
     ctx.font = "700 " + Math.round(height * 0.076) + "px " + FONT_FAMILY;
@@ -1225,21 +1404,21 @@
     var localIn = frameIndex - subtitle.startFrame;
     var localOut = subtitle.endFrame - frameIndex;
     var alpha = smoothstep(0, 8, localIn) * smoothstep(0, 8, localOut);
-    var fontSize = Math.round(height * 0.036);
-    var maxWidth = width * 0.85;
+    var fontSize = Math.round(height * 0.052);
+    var maxWidth = width * 0.90;
     ctx.save();
     ctx.textAlign = "center";
     ctx.textBaseline = "alphabetic";
     ctx.lineJoin = "round";
     ctx.font = "600 " + fontSize + "px " + SUBTITLE_FONT_FAMILY;
-    while (fontSize > height * 0.026 && ctx.measureText(subtitle.text).width > maxWidth) {
+    while (fontSize > height * 0.036 && ctx.measureText(subtitle.text).width > maxWidth) {
       fontSize -= 1;
       ctx.font = "600 " + fontSize + "px " + SUBTITLE_FONT_FAMILY;
     }
-    ctx.strokeStyle = rgba(GAME_PALETTE.ink, 0.88 * alpha);
-    ctx.lineWidth = Math.max(2, height * 0.0034);
+    ctx.strokeStyle = "rgba(0,0,0," + alpha + ")";
+    ctx.lineWidth = Math.max(3, height * 0.0059);
     ctx.strokeText(subtitle.text, width * 0.5, height * 0.917, maxWidth);
-    ctx.fillStyle = rgba(GAME_PALETTE.card, alpha * 0.98);
+    ctx.fillStyle = "rgba(255,255,255," + alpha + ")";
     ctx.fillText(subtitle.text, width * 0.5, height * 0.917, maxWidth);
     ctx.restore();
   }
@@ -1293,6 +1472,7 @@
       gamePalette: GAME_PALETTE,
       seed: normalizeSeed(manifest.seed),
       logos: options.logos || { institution: options.logo || null, game: null },
+      topologyIllustrations: options.topologyIllustrations || Object.create(null),
       subtitlesEnabled: options.subtitlesEnabled !== false,
       quality: Number(options.quality) || (width >= 3000 ? 2.8 : 2.25),
       chapters: chapters,
@@ -1390,6 +1570,8 @@
         totalFrames: composition.totalFrames,
         seed: composition.seed,
         artSource: "TopologyArt",
+        introIllustrationSource: "app/assets/topologies/*.svg",
+        introIllustrations: chapters.map(function illustrationName(model) { return model.chapter.id; }),
         palette: Object.assign({}, GAME_PALETTE),
         subtitlesEnabled: composition.subtitlesEnabled,
         endCard: {

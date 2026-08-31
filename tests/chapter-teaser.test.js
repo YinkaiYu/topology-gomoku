@@ -83,6 +83,32 @@ test("七章代表棋路全部由真实规则生成且包含五个不同落点",
       assert.equal(traced.seams.some(Boolean), true, `${chapter.id}: path must cross a seam`);
     }
   });
+  const expectedShowcasePaths = {
+    projective: {
+      cells: [[5, 2], [4, 1], [3, 0], [5, 7], [6, 6]],
+      seams: [0, 0, 6, 0]
+    },
+    sphere: {
+      cells: [[4, 4], [5, 3], [6, 2], [1, 6], [0, 5]],
+      seams: [0, 0, 2, 0]
+    }
+  };
+  for (const [id, expected] of Object.entries(expectedShowcasePaths)) {
+    const chapter = story.chapters.find((item) => item.id === id);
+    const rules = Engine.createRules({ type: id, width: chapter.width, height: chapter.height, target: 5 });
+    const trace = Engine.tracePath(
+      rules,
+      Engine.toCell(rules, chapter.start[0], chapter.start[1]),
+      chapter.direction,
+      5
+    );
+    assert.deepEqual(trace.cells.map((cell) => {
+      const point = Engine.toPoint(rules, cell);
+      return [point.x, point.y];
+    }), expected.cells);
+    assert.deepEqual(trace.seams, expected.seams);
+    assert.equal(trace.seams.filter(Boolean).length, 1, `${id}: showcase path crosses exactly once`);
+  }
 });
 
 test("工程依赖保持为自有 Canvas 渲染器与浏览器检查工具", () => {
@@ -107,16 +133,26 @@ test("片中机构标识、游戏标识与片尾制作人字段齐备", () => {
   assert.equal(timing.visualSegments.some((segment) => segment.kind === "institution-logo"), true);
 });
 
-test("配乐计划为七章建立不同作品与配器身份", () => {
-  assert.equal(musicPlan.sources.length, 10);
-  assert.equal(musicPlan.clips.length, 10);
-  const chapterSources = new Set(musicPlan.clips.filter((clip) => !["intro", "finale"].includes(clip.id)).map((clip) => clip.sourceId));
-  assert.ok(chapterSources.size >= 8);
-  assert.equal(musicPlan.clips.some((clip) => clip.sourceId === "bach-inversus-recta"), true);
-  assert.equal(musicPlan.clips.some((clip) => clip.sourceId === "bach-inversus-inversa"), true);
-  for (const source of musicPlan.sources) {
-    assert.match(source.sourcePage, /^https:\/\/commons\.wikimedia\.org\//);
-    assert.match(source.downloadUrl, /^https:\/(?:\/upload\.wikimedia\.org|\/commons\.wikimedia\.org)\//);
-    assert.match(source.sha256, /^[0-9a-f]{64}$/);
-  }
+test("配乐计划以十一段古典与 HOYO-MiX 选曲构成且足迹只作为结构参考", () => {
+  assert.equal(musicPlan.selectionAudit.selected, "elegant-classical-hoyo");
+  assert.equal(musicPlan.sources.length, 11);
+  assert.equal(musicPlan.clips.length, 11);
+  assert.ok(musicPlan.selectionAudit.alternativesAudited.length >= 5);
+  const chapterClips = musicPlan.clips.filter((clip) => clip.reveal);
+  assert.equal(chapterClips.length, 7);
+  assert.equal(new Set(chapterClips.map((clip) => clip.sourceId)).size, 7);
+  assert.equal(new Set(chapterClips.map((clip) => clip.chapterRole)).size, 7);
+  assert.equal(new Set(chapterClips.map((clip) => clip.reveal.stingerVariant)).size, 7);
+  const hoyoSources = new Set(musicPlan.sources.filter((source) => source.composer === "HOYO-MiX").map((source) => source.id));
+  assert.deepEqual(musicPlan.clips.filter((clip) => hoyoSources.has(clip.sourceId)).map((clip) => clip.id), ["cylinder", "sphere"]);
+  assert.deepEqual(
+    musicPlan.clips.filter((clip) => clip.id.startsWith("projective-")).map((clip) => clip.id),
+    ["projective-recta", "projective-inversa"]
+  );
+  const finale = musicPlan.clips.at(-1);
+  assert.ok(Math.abs(finale.sourceOutSeconds - finale.sourceInSeconds - 16.9) < 1e-9);
+  assert.equal(musicPlan.sources.some((source) => source.sha256 === musicPlan.reference.sha256), false);
+  assert.match(musicPlan.reference.role, /structural.*reference only/i);
+  assert.ok(musicPlan.sources.every((source) => source.downloadUrl === null && source.cacheRequired === true));
+  assert.ok(musicPlan.sources.every((source) => !("localSourcePath" in source)));
 });

@@ -148,6 +148,37 @@ test("the PV and live game share the same restrained canvas art source", () => {
   assert.doesNotMatch(compositorSource, /function drawVoid|drawVoid\(/);
 });
 
+test("the awakening procession names all seven live hand-drawn topology illustrations", () => {
+  const inspected = getComposition().inspect();
+  assert.equal(inspected.introIllustrationSource, "app/assets/topologies/*.svg");
+  assert.deepEqual(inspected.introIllustrations, [
+    "plane", "cylinder", "torus", "mobius", "klein", "projective", "sphere"
+  ]);
+  for (const id of inspected.introIllustrations) {
+    const svg = fs.readFileSync(path.join(ROOT, "app", "assets", "topologies", `${id}.svg`), "utf8");
+    assert.match(svg, /data-style="hand-drawn-cel-silhouette"/);
+  }
+});
+
+test("the opening is one continuous boundary crossing rather than the chapter miniature tableau", () => {
+  const compositorSource = fs.readFileSync(path.join(PV_ROOT, "src", "compositor.js"), "utf8");
+  assert.match(compositorSource, /function introBoardPoint/);
+  assert.match(compositorSource, /var columns = 6/);
+  assert.match(compositorSource, /var rows = 6/);
+  assert.doesNotMatch(compositorSource, /\(row \+ column\) % 2/);
+  assert.match(compositorSource, /var pathV = 3 \/ rows/);
+  assert.match(compositorSource, /var pathStart = 2 \/ columns/);
+  assert.match(compositorSource, /var outbound = smootherstep\(550, 805, local\)/);
+  assert.match(compositorSource, /var returnTrip = smootherstep\(806, 990, local\)/);
+  assert.match(compositorSource, /var fold = smootherstep\(995, 1215, local\)/);
+  const awakeningBody = compositorSource.slice(
+    compositorSource.indexOf("function drawIntroAwakening"),
+    compositorSource.indexOf("function drawIntro(ctx")
+  );
+  assert.match(awakeningBody, /composition\.topologyIllustrations/);
+  assert.doesNotMatch(awakeningBody, /drawMiniature/);
+});
+
 test("shared stones safely skip the subpixel entrance state used by full-frame playback", () => {
   const canvas = createCanvas(64, 64);
   const context = canvas.getContext("2d", { alpha: false });
@@ -269,6 +300,17 @@ test("end card exposes both logos, the game title and a prominent producer credi
   assert.equal(endCard.institutionLogoClip, "circle");
   assert.deepEqual(endCard.logos, ["institution", "game"]);
   assert.deepEqual(endCard.textLines, [story.endCard.gameTitle, "制作：余荫铠"]);
+  const source = fs.readFileSync(path.join(PV_ROOT, "src", "compositor.js"), "utf8");
+  assert.match(source, /var gameLogoBox = height \* 0\.315/);
+  assert.match(source, /var institutionDiameter = height \* 0\.25/);
+  assert.match(source, /A vector collaboration mark/);
+});
+
+test("canvas review subtitles are large white sans-serif text with a pure-black outline", () => {
+  const source = fs.readFileSync(path.join(PV_ROOT, "src", "compositor.js"), "utf8");
+  assert.match(source, /var fontSize = Math\.round\(height \* 0\.052\)/);
+  assert.match(source, /ctx\.strokeStyle = "rgba\(0,0,0," \+ alpha \+ "\)"/);
+  assert.match(source, /ctx\.fillStyle = "rgba\(255,255,255," \+ alpha \+ "\)"/);
 });
 
 test("offline render streams raw frames into FFmpeg without a complete PNG sequence cache", () => {
