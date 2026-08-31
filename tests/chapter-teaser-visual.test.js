@@ -414,6 +414,54 @@ test("offline render streams raw frames into FFmpeg without a complete PNG seque
   assert.match(source, /brand-icon\.png/);
 });
 
+test("4K master burns the same ASS captions used by the approved 1080p delivery", () => {
+  const source = fs.readFileSync(path.join(PV_ROOT, "scripts", "render.mjs"), "utf8");
+  assert.match(source, /const useAssSubtitles = options\.profile === "master" && !options\["no-subtitles"\]/);
+  assert.match(source, /!options\["no-subtitles"\] && !useAssSubtitles/);
+  assert.match(source, /subtitles=filename='\$\{filterPath\(subtitlePath\)\}':fontsdir='\$\{filterPath\(subtitleFontDirectory\)\}'/);
+  assert.match(source, /DEFAULT_CAPTIONS_ASS = path\.join\(PV_ROOT, "captions\.ass"\)/);
+});
+
+test("portrait social exports render native portrait scenes from the shared game assets", () => {
+  const source = fs.readFileSync(path.join(PV_ROOT, "scripts", "render-social.mjs"), "utf8");
+  assert.match(source, /douyin:[\s\S]*width: 1080,[\s\S]*height: 1920/);
+  assert.match(source, /xiaohongshu:[\s\S]*width: 1080,[\s\S]*height: 1440/);
+  assert.match(source, /layout: "portrait"/);
+  assert.match(source, /composition\.renderFrame\(context, frameIndex\)/);
+  assert.match(source, /app\/assets\/topology\.js/);
+  assert.match(source, /subtitles=filename=/);
+  assert.match(source, /layout: "native portrait scene composition"/);
+  assert.doesNotMatch(source, /cleanVideo|sourceVideo|force_original_aspect_ratio|gblur|overlay=/);
+
+  const compositorSource = fs.readFileSync(path.join(PV_ROOT, "src", "compositor.js"), "utf8");
+  assert.match(compositorSource, /function drawPortraitChapterCard/);
+  assert.match(compositorSource, /function drawPortraitChapterScene/);
+  assert.match(compositorSource, /function drawPortraitIntroAwakening/);
+  assert.match(compositorSource, /function drawPortraitEndCard/);
+});
+
+test("native portrait compositions render directly at both platform aspect ratios", () => {
+  for (const [width, height] of [[1080, 1920], [1080, 1440]]) {
+    const teaser = Compositor.createComposition({
+      story,
+      manifest,
+      width,
+      height,
+      layout: "portrait",
+      subtitlesEnabled: false
+    });
+    assert.equal(teaser.inspect().layout, "portrait");
+    const canvas = createCanvas(width, height);
+    const context = canvas.getContext("2d", { alpha: false });
+    for (const id of ["intro-awakening", "chapter-iii", "tableau", "end-card"]) {
+      const segment = manifest.segments.find((item) => item.id === id);
+      const frame = segment.startFrame + Math.floor((segment.endFrame - segment.startFrame) * 0.62);
+      assert.equal(teaser.renderFrame(context, frame).segment.id, id);
+      assert.ok(canvas.data().some((value, index) => index % 4 !== 3 && value !== 0));
+    }
+  }
+});
+
 test("missing manifest failure is explicit and manifest-only verification passes", () => {
   const missing = spawnSync(
     process.execPath,

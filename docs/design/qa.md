@@ -65,6 +65,8 @@
 | 章节预告 PV「七界足迹」片头共面、无辅助圆环、缝线退场与大字幕定版 | [`artifacts/qa-chapter-teaser-pv-final-polish-1080p-contact-sheet.png`](../../artifacts/qa-chapter-teaser-pv-final-polish-1080p-contact-sheet.png) |
 | 章节预告 PV「七界足迹」片头机构 Logo 去除外加装饰环（左为修改前、右为修改后） | [`artifacts/qa-chapter-teaser-pv-institution-logo-ring-comparison-1080p.png`](../../artifacts/qa-chapter-teaser-pv-institution-logo-ring-comparison-1080p.png) |
 | 章节预告 PV「七界足迹」最终 4K ProRes 母版抽帧 | [`artifacts/qa-chapter-teaser-pv-master-4k-final-contact-sheet.png`](../../artifacts/qa-chapter-teaser-pv-master-4k-final-contact-sheet.png) |
+| 章节预告 PV「七界足迹」抖音原生 9:16 构图 | [`artifacts/qa-chapter-teaser-pv-douyin-9x16-contact-sheet.png`](../../artifacts/qa-chapter-teaser-pv-douyin-9x16-contact-sheet.png) |
+| 章节预告 PV「七界足迹」小红书原生 3:4 构图 | [`artifacts/qa-chapter-teaser-pv-xiaohongshu-3x4-contact-sheet.png`](../../artifacts/qa-chapter-teaser-pv-xiaohongshu-3x4-contact-sheet.png) |
 
 较早截图只用于回归和问题溯源，不自动成为新设计的视觉真相。出现冲突时，以最新已确认实现、视觉设计语言和同状态实机/预览证据为准。
 
@@ -88,7 +90,11 @@
 
 同日片头机构 Logo 在相同第 1330 帧、1920 × 1080 视口完成前后对比：保留中国科学院物理研究所 Logo 原图、尺寸、位置和淡入淡出，只移除其外侧由合成器额外绘制的低透明度青绿色圆环；片尾双 Logo 构图不受影响。
 
-用户明确确认 1080p 审阅版后，同日生成最终 4K60 母版 `.tmp/chapter-teaser/master/seven-realms-master.mov`。成片为 15,036,824,170 字节，SHA-256 为 `41539cc3c67123e13d65f903f7de5abfc4d11989ac7ad73910bea94de84aac30`；完整解码验证得到 12897 帧、3840 × 2160、60 fps、ProRes 422 HQ、`yuv422p10le`、BT.709，以及 48 kHz 双声道 24-bit PCM，时长 214.95 秒。六格证据直接从编码后的 ProRes 母版抽取，覆盖片头边界粘合、无外加圆环的机构 Logo、双生与归圆曲面五连、终章和双 Logo 片尾；`[12474,12897)` 片尾音频另以 24-bit PCM 原始字节复核，共 2,030,400 字节全部为零。母版目录同时保留 `delivery-manifest.json` 与 `.sha256` 校验文件。4K 生成不代表自动合并，任务分支仍等待用户另行给出合回 `dev` 的明确指令。
+用户明确确认 1080p 审阅版后，同日生成最终 4K60 母版 `.tmp/chapter-teaser/master/seven-realms-master.mov`。修正字幕缩放后的成片为 14,314,899,202 字节，SHA-256 为 `5c47e3d4f905bb41796fe9cafe9f5da98dcaa9b94996b10ce055a8243ba13b91`；完整解码验证得到 12897 帧、3840 × 2160、60 fps、ProRes 422 HQ、`yuv422p10le`、BT.709，以及 48 kHz 双声道 24-bit PCM，时长 214.95 秒。六格证据直接从编码后的 ProRes 母版抽取，覆盖片头边界粘合、无外加圆环的机构 Logo、双生与归圆曲面五连、终章和双 Logo 片尾；1080p 与 4K 在同一字幕帧归一化后包围盒均为 914 × 56，确认字号按画幅等比例一致；`[12474,12897)` 片尾音频另以 24-bit PCM 原始字节复核，共 2,030,400 字节全部为零。母版目录同时保留 `delivery-manifest.json` 与 `.sha256` 校验文件。由该母版生成的 B 站 4K60 H.264 投稿版为 1,270,086,309 字节，SHA-256 为 `f0428b9f7fe73b2a11b76d6a0579b4a5a7ada7fa4651d27789aaf65d142c15e6`，同样完整解码为 12897 帧。4K 生成不代表自动合并，任务分支仍等待用户另行给出合回 `dev` 的明确指令。
+
+同日为 1080 × 1920 抖音版与 1080 × 1440 小红书版建立原生竖屏合成路径。两版不把横屏成片作为视觉输入，不使用横屏裁切、模糊补边、上下留白或画中画；共享合成器直接在目标竖屏画布上重绘片头透视棋盘、七种手绘拓扑苏醒、章节牌、实机棋盘到参数曲面的形变、七界群像、终章和双 Logo 片尾。9:16 采用更舒展的纵向星图与中上部主舞台，3:4 收紧段落间距并扩大有效画面占比；两版均保留金色五连、隐藏完成态边界缝线，并为无衬线字幕分别设置平台安全区。原始竖屏关键帧目录各保留 13 个相同时间点的布局状态；仓库联系表则直接从最终编码文件抽取 6 个代表状态，覆盖字幕、Logo 留白、流形苏醒、章节曲面、终章和片尾。
+
+抖音成片为 418,426,089 字节，SHA-256 为 `831a76e7bbb10f33b8799756ef6923420e2611315d9ccf06df72be920ba820f9`；小红书成片为 418,154,406 字节，SHA-256 为 `d6f5f3032de83f9c8c43f560f3c8f5474d5d501e61f1ae404723c6cb7a640e02`。两版均经完整视频流解码无错误，媒体探测为 12897 帧、214.95 秒、H.264 High、`yuv420p`、BT.709、60 fps，以及 48 kHz 双声道 AAC；对 `[207.9,214.95]` 秒执行 -75 dB 静音检测，均得到完整 7.05 秒连续静音。每个交付目录含平台 ASS、字体、SHA-256 文件与来源清单。
 
 ## 新证据记录模板
 

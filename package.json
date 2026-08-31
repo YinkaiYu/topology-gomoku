@@ -19,6 +19,8 @@
     "pv:review-clean": "node ./video/chapter-teaser/scripts/render.mjs review --profile review --silent --no-subtitles --output ./.tmp/chapter-teaser/review/chapter-teaser-clean.mp4 --overwrite",
     "pv:package": "node ./video/chapter-teaser/scripts/package-deliverables.mjs",
     "pv:master": "node ./video/chapter-teaser/scripts/render.mjs master --profile master",
+    "pv:social:douyin": "node ./video/chapter-teaser/scripts/render-social.mjs douyin",
+    "pv:social:xiaohongshu": "node ./video/chapter-teaser/scripts/render-social.mjs xiaohongshu",
     "pv:verify": "node ./video/chapter-teaser/scripts/verify-video.mjs --profile review",
     "build": "npm run build:xiaohongshu",
     "build:xiaohongshu": "powershell -NoProfile -ExecutionPolicy Bypass -File ./scripts/build.ps1"

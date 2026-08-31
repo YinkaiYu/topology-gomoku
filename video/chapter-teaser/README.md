@@ -12,13 +12,16 @@
 - 十一份已审计的配乐音源缓存。按 `music-plan.json` 中的文件名与 SHA-256 放入 `.tmp/chapter-teaser/source/music/curated/`，再用 `--no-download` 离线构建；来源页与音质限制见 `assets/licenses/audio/curated-music-sources.md`。
 - 完整 Noto Serif SC 与 Noto Sans SC 可变字体。默认读取 `C:\Windows\Fonts\NotoSerifSC-VF.ttf` 和 `C:\Windows\Fonts\NotoSansSC-VF.ttf`；其他位置可用 `TOPO_SERIF_SOURCE`、`TOPO_SANS_SOURCE` 指定。
 
-所有视频都是 16:9、60 fps、BT.709，声音为 48 kHz 双声道：
+所有视频均为 60 fps、BT.709，声音为 48 kHz 双声道；横屏母版与平台版保持 16:9，竖屏平台版使用专门的原生竖屏构图：
 
 | 用途 | 规格 | 默认输出 |
 | --- | --- | --- |
 | 审阅净画面 | 1920 × 1080，H.264，无字幕无声音 | `.tmp/chapter-teaser/review/chapter-teaser-clean.mp4` |
 | 审阅成片 | 1920 × 1080，H.264 / AAC | `.tmp/chapter-teaser/delivery/topology-gomoku-chapter-teaser-final-1080p.mp4` |
 | 4K 母版 | 3840 × 2160，ProRes 422 HQ / 24-bit PCM | `.tmp/chapter-teaser/master/seven-realms-master.mov` |
+| B 站投稿版 | 3840 × 2160，H.264 / AAC | `.tmp/chapter-teaser/bilibili/seven-realms-bilibili-4k60.mp4` |
+| 抖音投稿版 | 1080 × 1920，H.264 / AAC，原生 9:16 构图 | `.tmp/chapter-teaser/social/douyin/topology-gomoku-douyin-1080x1920-60fps.mp4` |
+| 小红书投稿版 | 1080 × 1440，H.264 / AAC，原生 3:4 构图 | `.tmp/chapter-teaser/social/xiaohongshu/topology-gomoku-xiaohongshu-1080x1440-60fps.mp4` |
 
 ## 审阅流程
 
@@ -73,7 +76,22 @@ npm run pv:master
 npm run pv:verify -- --profile master
 ```
 
-生成结果位于 `.tmp/chapter-teaser/master/`：`seven-realms-master.mov` 为 3840 × 2160、60 fps、ProRes 422 HQ、10-bit 4:2:2、BT.709 与 48 kHz / 24-bit PCM 母版；`delivery-manifest.json` 记录帧数、媒体探测、片尾数字静音与来源清单哈希，`seven-realms-master.mov.sha256` 用于文件完整性校验。
+生成结果位于 `.tmp/chapter-teaser/master/`：`seven-realms-master.mov` 为 3840 × 2160、60 fps、ProRes 422 HQ、10-bit 4:2:2、BT.709 与 48 kHz / 24-bit PCM 母版。4K 渲染关闭 Canvas 字幕，并在编码阶段用与 1080p 定版相同的 `captions.ass` 和内嵌 `Topo Sans PV` 字体烧录，保证字号、位置和纯黑描边按画幅等比例一致；`delivery-manifest.json` 记录帧数、媒体探测、片尾数字静音与来源清单哈希，`seven-realms-master.mov.sha256` 用于文件完整性校验。
+
+## 竖屏平台版
+
+抖音与小红书版本不读取横屏成片，也不使用裁切、模糊补边或上下留白来伪造竖屏。两版均由共享 Canvas 合成器直接在目标画布上逐帧重绘：片头棋盘透视、七种手绘拓扑苏醒、章节牌、实机棋盘到参数曲面的形变、七界群像、终章与双 Logo 片尾都具有独立的纵向布局；棋路、棋子、曲面和图鉴仍复用 `app/assets/` 的真实游戏资产。9:16 与 3:4 分别调整内容密度、主舞台高度、字幕安全区和片尾层级。
+
+先生成原生竖屏关键帧并检查构图，再覆盖输出完整平台成片：
+
+```powershell
+npm run pv:social:douyin -- --keyframes
+npm run pv:social:xiaohongshu -- --keyframes
+npm run pv:social:douyin -- --overwrite
+npm run pv:social:xiaohongshu -- --overwrite
+```
+
+两个交付目录都包含成片、平台专用 ASS、内嵌字幕字体、SHA-256 校验和 `delivery-manifest.json`。平台字幕继续使用无衬线 `Topo Sans PV` 与纯黑描边，时间点完全继承已确认的 60 fps 整数帧时轴。
 
 渲染、预览和验证都不会自动提交、更不会合并或更新任何长期分支。用户确认前，本任务始终留在独立 worktree 的 `codex/chapter-teaser-pv` 分支。
 

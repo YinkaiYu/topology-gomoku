@@ -300,10 +300,11 @@
     // its aspect from the actual stone UV span so both canvas axes retain the
     // live game's single square-cell metric for every topology.
     var aspect = Math.max(0.74, (spanV * columns) / (spanU * rows));
-    var height = viewport.height * 0.60;
+    var height = viewport.height * (viewport.portrait ? 0.67 : 0.60);
     var width = height * aspect;
-    if (width > viewport.width * 0.47) {
-      width = viewport.width * 0.47;
+    var widthLimit = viewport.width * (viewport.portrait ? 0.82 : 0.47);
+    if (width > widthLimit) {
+      width = widthLimit;
       height = width / aspect;
     }
     return { width: width, height: height };
@@ -1482,6 +1483,245 @@
     ctx.restore();
   }
 
+  function portraitSceneViewport(composition) {
+    var width = composition.width;
+    var height = composition.height;
+    var tall = height / width > 1.55;
+    return {
+      x: width * 0.015,
+      y: height * (tall ? 0.205 : 0.135),
+      width: width * 0.97,
+      height: width * (tall ? 1.10 : 0.98),
+      portrait: true
+    };
+  }
+
+  function drawPortraitInstitutionLogo(ctx, composition, frameInfo) {
+    var width = composition.width;
+    var height = composition.height;
+    var tall = height / width > 1.55;
+    var reveal = smootherstep(0.05, 0.28, frameInfo.progress);
+    var fade = 1 - smoothstep(0.82, 1, frameInfo.progress);
+    var diameter = width * (tall ? 0.48 : 0.43);
+    drawCircularLogo(ctx, composition.logos.institution, width * 0.5, height * (tall ? 0.43 : 0.45), diameter, reveal * fade);
+  }
+
+  function drawPortraitChapterCard(ctx, composition, model, frameInfo) {
+    var width = composition.width;
+    var height = composition.height;
+    var tall = height / width > 1.55;
+    var local = frameInfo.localFrame;
+    var duration = frameInfo.durationFrames;
+    var transformFrame = frameInfo.titleTransformLocalFrame;
+    var reveal = smootherstep(12, 72, local);
+    var fadeOut = 1 - smoothstep(duration - 38, duration - 5, local);
+    var cardAlpha = reveal * fadeOut;
+    var transform = smoothstep(transformFrame - 22, transformFrame + 22, local);
+    var silhouetteViewport = {
+      x: 0,
+      y: height * (tall ? 0.17 : 0.09),
+      width: width,
+      height: width * 1.12,
+      portrait: true
+    };
+    var orientation = makeOrientation(model, frameInfo.frameIndex, 0.76, 1.26);
+    drawSurfaceGrid(ctx, model, silhouetteViewport, model.chapter.id === "plane" ? 0 : 1, orientation, cardAlpha * 0.075);
+
+    var topY = height * (tall ? 0.46 : 0.455);
+    var bottomY = height * (tall ? 0.535 : 0.55);
+    var topSize = Math.round(width * (tall ? 0.074 : 0.068));
+    var bottomSize = Math.round(width * (tall ? 0.112 : 0.104));
+    ctx.save();
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+    ctx.font = "600 " + topSize + "px " + FONT_FAMILY;
+    var actAlpha = cardAlpha * (1 - transform);
+    var manifoldAlpha = cardAlpha * transform;
+    if (actAlpha > 0.001) {
+      ctx.fillStyle = rgba(GAME_PALETTE.muted, actAlpha * 0.92);
+      drawTrackedText(ctx, model.chapter.act, width * 0.5, topY, topSize * 0.16);
+    }
+    if (manifoldAlpha > 0.001) {
+      var titleAccent = model.connections.x === "twist" || model.connections.y === "twist"
+        ? GAME_PALETTE.twist
+        : GAME_PALETTE.connection;
+      ctx.fillStyle = rgba(titleAccent, manifoldAlpha * 0.14);
+      drawTrackedText(ctx, model.chapter.manifold, width * 0.5 - width * 0.004, topY, topSize * 0.105);
+      drawTrackedText(ctx, model.chapter.manifold, width * 0.5 + width * 0.004, topY, topSize * 0.105);
+      ctx.fillStyle = rgba(GAME_PALETTE.ink, manifoldAlpha * 0.94);
+      drawTrackedText(ctx, model.chapter.manifold, width * 0.5, topY, topSize * 0.105);
+    }
+    ctx.font = "700 " + bottomSize + "px " + FONT_FAMILY;
+    ctx.fillStyle = rgba(GAME_PALETTE.ink, cardAlpha);
+    drawTrackedText(ctx, model.chapter.chapter, width * 0.5, bottomY, bottomSize * 0.18);
+    ctx.fillStyle = rgba(model.connections.x === "twist" || model.connections.y === "twist" ? GAME_PALETTE.twist : GAME_PALETTE.connection, cardAlpha * 0.58);
+    ctx.fillRect(width * 0.5 - width * 0.055, height * (tall ? 0.595 : 0.625), width * 0.11, Math.max(2, width * 0.0022));
+    ctx.restore();
+  }
+
+  function drawPortraitChapterScene(ctx, composition, model, frameInfo) {
+    var progress = frameInfo.progress;
+    var settle = smoothstep(0.02, 0.11, progress);
+    var morphProgress = model.chapter.id === "plane" ? 0 : smootherstep(0.46, 0.84, progress);
+    var morphAmount = model.chapter.id === "plane" ? 0 : Morph.spring(morphProgress);
+    var reveal = smootherstep(0.08, 0.38, progress);
+    var viewport = portraitSceneViewport(composition);
+    var orientation = makeOrientation(model, frameInfo.frameIndex, progress, mix(1.08, 1.00, clamp01(morphAmount)));
+    drawFlatBoardStage(ctx, model, viewport, settle * (1 - smoothstep(0.24, 0.72, morphAmount)));
+    drawSurface(ctx, model, viewport, morphAmount, orientation, settle, composition.quality);
+    drawBoundaryTeaching(ctx, model, viewport, morphAmount, orientation, reveal, settle, frameInfo.frameIndex);
+    drawPath(ctx, model, viewport, morphAmount, orientation, reveal, composition.palette, settle);
+  }
+
+  function drawPortraitIntroAwakening(ctx, composition, frameInfo) {
+    var width = composition.width;
+    var height = composition.height;
+    var tall = height / width > 1.55;
+    var positions = tall
+      ? [[0.27, 0.20], [0.73, 0.20], [0.27, 0.39], [0.50, 0.51], [0.73, 0.39], [0.27, 0.69], [0.73, 0.69]]
+      : [[0.25, 0.19], [0.75, 0.19], [0.25, 0.43], [0.50, 0.53], [0.75, 0.43], [0.25, 0.76], [0.75, 0.76]];
+    var progress = frameInfo.progress;
+    var lineReveal = smootherstep(0.03, 0.76, progress);
+    ctx.save();
+    ctx.strokeStyle = rgba(GAME_PALETTE.connection, lineReveal * 0.17);
+    ctx.lineWidth = Math.max(1, width * 0.0022);
+    ctx.setLineDash([width * 0.014, width * 0.020]);
+    ctx.lineDashOffset = -frameInfo.frameIndex * width * 0.00025;
+    ctx.beginPath();
+    positions.forEach(function connect(position, index) {
+      var x = width * position[0];
+      var y = height * position[1];
+      if (index === 0) ctx.moveTo(x, y);
+      else ctx.lineTo(x, y);
+    });
+    ctx.stroke();
+    ctx.restore();
+
+    composition.chapters.forEach(function awaken(model, index) {
+      var arrivalStart = index * 0.105;
+      var arrival = smootherstep(arrivalStart, arrivalStart + 0.17, progress);
+      var ignition = 1 - smoothstep(arrivalStart + 0.16, arrivalStart + 0.32, progress);
+      var fade = 1 - smoothstep(0.94, 1, progress);
+      var alpha = arrival * fade;
+      var centerX = width * positions[index][0];
+      var centerY = height * positions[index][1];
+      var size = width * (index === 3 ? 0.44 : 0.38) * mix(0.72, 1, arrival) * (1 + ignition * 0.055);
+      var illustration = composition.topologyIllustrations[model.chapter.id];
+      ctx.save();
+      var aura = ctx.createRadialGradient(centerX, centerY, 0, centerX, centerY, size * 0.64);
+      aura.addColorStop(0, rgba(model.connections.x === "twist" || model.connections.y === "twist" ? GAME_PALETTE.twist : GAME_PALETTE.connection, alpha * (0.10 + ignition * 0.17)));
+      aura.addColorStop(1, rgba(GAME_PALETTE.paper, 0));
+      ctx.fillStyle = aura;
+      ctx.beginPath();
+      ctx.arc(centerX, centerY, size * 0.68, 0, TAU);
+      ctx.fill();
+      if (illustration && illustration.width && illustration.height) {
+        ctx.globalAlpha = alpha * 0.97;
+        ctx.drawImage(illustration, centerX - size / 2, centerY - size / 2, size, size);
+      }
+      ctx.restore();
+    });
+  }
+
+  function drawPortraitTableau(ctx, composition, frameInfo) {
+    var width = composition.width;
+    var height = composition.height;
+    var tall = height / width > 1.55;
+    var positions = tall
+      ? [[0.27, 0.22], [0.73, 0.22], [0.27, 0.43], [0.73, 0.43], [0.27, 0.65], [0.73, 0.65], [0.50, 0.53]]
+      : [[0.25, 0.19], [0.75, 0.19], [0.25, 0.46], [0.75, 0.46], [0.25, 0.74], [0.75, 0.74], [0.50, 0.58]];
+    var baseSize = width * (tall ? 0.49 : 0.44);
+    composition.chapters.forEach(function drawWorld(model, index) {
+      var arrival = smootherstep(index * 0.075, index * 0.075 + 0.22, frameInfo.progress);
+      var fade = 1 - smoothstep(0.88, 1, frameInfo.progress);
+      drawMiniature(ctx, composition, model, width * positions[index][0], height * positions[index][1], baseSize, frameInfo, index, arrival * fade * 0.58);
+    });
+  }
+
+  function drawPortraitFinale(ctx, composition, frameInfo) {
+    var width = composition.width;
+    var height = composition.height;
+    var tall = height / width > 1.55;
+    var sphere = composition.chapterById.sphere;
+    var viewport = {
+      x: 0,
+      y: height * (tall ? 0.20 : 0.13),
+      width: width,
+      height: width * (tall ? 1.10 : 1.00),
+      portrait: true
+    };
+    var orientation = makeOrientation(sphere, frameInfo.frameIndex, frameInfo.progress, mix(1.16, 0.86, frameInfo.progress));
+    orientation.y += frameInfo.progress * 0.42;
+    var opacity = smoothstep(0.02, 0.17, frameInfo.progress) * (1 - smoothstep(0.91, 1, frameInfo.progress));
+    drawSurface(ctx, sphere, viewport, 1, orientation, opacity, composition.quality, false);
+    drawPath(ctx, sphere, viewport, 1, orientation, smoothstep(0.16, 0.70, frameInfo.progress), composition.palette, opacity);
+    if (frameInfo.progress > 0.48) {
+      var orbitOpacity = smoothstep(0.48, 0.78, frameInfo.progress) * (1 - smoothstep(0.92, 1, frameInfo.progress));
+      var orbitY = height * (tall ? 0.48 : 0.47);
+      composition.chapters.slice(0, 6).forEach(function drawOrbiting(model, index) {
+        var angle = index / 6 * TAU + frameInfo.progress * 0.22;
+        drawMiniature(ctx, composition, model, width * 0.5 + Math.cos(angle) * width * 0.38, orbitY + Math.sin(angle) * width * 0.44, width * 0.25, frameInfo, index, orbitOpacity * 0.25);
+      });
+    }
+  }
+
+  function drawPortraitEndCard(ctx, composition, frameInfo) {
+    var width = composition.width;
+    var height = composition.height;
+    var tall = height / width > 1.55;
+    var alpha = smootherstep(0.04, 0.28, frameInfo.progress);
+    var logoCenterY = height * (tall ? 0.31 : 0.28);
+    var institutionDiameter = width * (tall ? 0.31 : 0.29);
+    var gameLogoBox = width * (tall ? 0.38 : 0.35);
+    drawCircularLogo(ctx, composition.logos.institution, width * 0.31, logoCenterY, institutionDiameter, alpha);
+    drawContainedImage(ctx, composition.logos.game, width * 0.69, logoCenterY, gameLogoBox, gameLogoBox, alpha);
+    ctx.save();
+    var markX = width * 0.50;
+    var markRadius = width * 0.025;
+    ctx.strokeStyle = "rgba(0,0,0," + (alpha * 0.70) + ")";
+    ctx.lineWidth = Math.max(3, width * 0.0044);
+    ctx.lineCap = "round";
+    ctx.beginPath();
+    ctx.moveTo(markX - markRadius, logoCenterY - markRadius);
+    ctx.lineTo(markX + markRadius, logoCenterY + markRadius);
+    ctx.moveTo(markX + markRadius, logoCenterY - markRadius);
+    ctx.lineTo(markX - markRadius, logoCenterY + markRadius);
+    ctx.stroke();
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+    ctx.font = "700 " + Math.round(width * 0.112) + "px " + FONT_FAMILY;
+    ctx.fillStyle = rgba(GAME_PALETTE.ink, alpha);
+    drawTrackedText(ctx, composition.story.endCard.gameTitle, width * 0.5, height * (tall ? 0.565 : 0.57), width * 0.023);
+    ctx.fillStyle = rgba(GAME_PALETTE.connection, alpha * 0.62);
+    ctx.fillRect(width * 0.5 - width * 0.055, height * (tall ? 0.635 : 0.65), width * 0.11, Math.max(2, width * 0.0022));
+    ctx.font = "600 " + Math.round(width * 0.054) + "px " + FONT_FAMILY;
+    ctx.fillStyle = rgba(GAME_PALETTE.ink, alpha * 0.88);
+    drawTrackedText(ctx, composition.story.endCard.producer, width * 0.5, height * (tall ? 0.715 : 0.75), width * 0.011);
+    ctx.restore();
+  }
+
+  function drawPortraitSpatialOcclusion(ctx, composition, frameInfo, chapterIndex) {
+    var progress = frameInfo.progress;
+    var opening = 1 - smoothstep(0, 0.055, progress);
+    var closing = smoothstep(0.88, 1, progress);
+    var amount = Math.max(opening, closing);
+    if (amount <= 0.001) return;
+    var width = composition.width;
+    var height = composition.height;
+    var direction = chapterIndex % 2 === 0 ? 1 : -1;
+    var centerX = closing > opening
+      ? mix(width * (direction > 0 ? -0.22 : 1.22), width * 0.5, closing)
+      : mix(width * 0.5, width * (direction > 0 ? 1.22 : -0.22), 1 - opening);
+    var centerY = height * 0.47;
+    var gradient = ctx.createRadialGradient(centerX, centerY, width * 0.06, centerX, centerY, width * 0.92);
+    gradient.addColorStop(0, rgba(GAME_PALETTE.paperDeep, amount * 0.98));
+    gradient.addColorStop(0.50, rgba(GAME_PALETTE.paper, amount * 0.80));
+    gradient.addColorStop(0.78, rgba(GAME_PALETTE.connection, amount * 0.05));
+    gradient.addColorStop(1, rgba(GAME_PALETTE.paper, 0));
+    ctx.fillStyle = gradient;
+    ctx.fillRect(0, 0, width, height);
+  }
+
   function drawSubtitle(ctx, composition, subtitle, frameIndex) {
     if (!subtitle) return;
     var width = composition.width;
@@ -1535,8 +1775,13 @@
     var manifest = validateManifest(options.manifest, story);
     var width = Number(options.width) || story.render.review.width;
     var height = Number(options.height) || story.render.review.height;
+    var portrait = options.layout === "portrait";
     invariant(Number.isInteger(width) && Number.isInteger(height), "render dimensions must be integers");
-    invariant(Math.abs(width / height - 16 / 9) < 1e-9, "render dimensions must be exactly 16:9");
+    if (portrait) {
+      invariant(height > width, "portrait render dimensions must be taller than wide");
+    } else {
+      invariant(Math.abs(width / height - 16 / 9) < 1e-9, "render dimensions must be exactly 16:9");
+    }
 
     Morph.prepareSphere();
     var chapterById = Object.create(null);
@@ -1558,6 +1803,7 @@
       seed: normalizeSeed(manifest.seed),
       logos: options.logos || { institution: options.logo || null, game: null },
       topologyIllustrations: options.topologyIllustrations || Object.create(null),
+      layout: portrait ? "portrait" : "landscape",
       subtitlesEnabled: options.subtitlesEnabled !== false,
       quality: Number(options.quality) || (width >= 3000 ? 2.8 : 2.25),
       chapters: chapters,
@@ -1620,7 +1866,26 @@
         frameInfo.chapter ? frameInfo.chapter.accent : null
       );
 
-      if (frameInfo.kind === "intro") {
+      if (portrait) {
+        if (frameInfo.kind === "intro") {
+          if (frameInfo.segment.id === "intro-awakening") drawPortraitIntroAwakening(ctx, composition, frameInfo);
+          else drawIntroEdge(ctx, composition, frameInfo);
+        } else if (frameInfo.kind === "institution-logo") {
+          drawPortraitInstitutionLogo(ctx, composition, frameInfo);
+        } else if (frameInfo.kind === "chapter-card") {
+          drawPortraitChapterCard(ctx, composition, frameInfo.chapter, frameInfo);
+        } else if (frameInfo.kind === "tableau" || frameInfo.kind === "seven-worlds") {
+          drawPortraitTableau(ctx, composition, frameInfo);
+        } else if (frameInfo.kind === "finale") {
+          drawPortraitFinale(ctx, composition, frameInfo);
+        } else if (frameInfo.kind === "end-card" || frameInfo.kind === "endcard") {
+          drawPortraitEndCard(ctx, composition, frameInfo);
+        } else if (frameInfo.chapter) {
+          drawPortraitChapterScene(ctx, composition, frameInfo.chapter, frameInfo);
+        } else {
+          drawPortraitTableau(ctx, composition, frameInfo);
+        }
+      } else if (frameInfo.kind === "intro") {
         drawIntro(ctx, composition, frameInfo);
       } else if (frameInfo.kind === "institution-logo") {
         drawInstitutionLogo(ctx, composition, frameInfo);
@@ -1639,7 +1904,8 @@
       }
 
       if (frameInfo.chapter && frameInfo.kind !== "chapter-card") {
-        drawSpatialOcclusion(ctx, composition, frameInfo, frameInfo.chapter.chapter.index || 0);
+        if (portrait) drawPortraitSpatialOcclusion(ctx, composition, frameInfo, frameInfo.chapter.chapter.index || 0);
+        else drawSpatialOcclusion(ctx, composition, frameInfo, frameInfo.chapter.chapter.index || 0);
       }
       drawVignette(ctx, width, height, 0.075);
       drawSubtitle(ctx, composition, frameInfo.subtitle, frameIndex);
@@ -1651,6 +1917,7 @@
       return {
         width: width,
         height: height,
+        layout: composition.layout,
         fps: composition.fps,
         totalFrames: composition.totalFrames,
         seed: composition.seed,

@@ -16,6 +16,9 @@ const PV_ROOT = path.resolve(SCRIPT_DIR, "..");
 const REPOSITORY_ROOT = path.resolve(PV_ROOT, "..", "..");
 const DEFAULT_MANIFEST = path.join(PV_ROOT, "manifest.json");
 const DEFAULT_OUTPUT_ROOT = path.join(REPOSITORY_ROOT, ".tmp", "chapter-teaser");
+const DEFAULT_CAPTIONS_ASS = path.join(PV_ROOT, "captions.ass");
+const DEFAULT_SUBTITLE_FONT_SOURCE = path.join(PV_ROOT, "assets", "fonts", "topo-sans-pv-600.ttf");
+const DEFAULT_SUBTITLE_FONT_DIRECTORY = path.join(DEFAULT_OUTPUT_ROOT, "render-fonts");
 
 function parseCli(argv) {
   const parsed = parseArgs({
@@ -89,6 +92,10 @@ function integerOption(value, label, fallback) {
   const parsed = Number(value);
   if (!Number.isInteger(parsed)) throw new Error(`${label} must be an integer`);
   return parsed;
+}
+
+function filterPath(filePath) {
+  return path.resolve(filePath).replaceAll("\\", "/").replaceAll(":", "\\:").replaceAll("'", "\\'");
 }
 
 function registerFonts() {
@@ -292,7 +299,17 @@ async function validateAudioMaster(manifest, audioPath) {
   }
 }
 
-function ffmpegArguments({ composition, profile, outputPath, audioPath, startFrame, endFrame, overwrite }) {
+function ffmpegArguments({
+  composition,
+  profile,
+  outputPath,
+  audioPath,
+  subtitlePath,
+  subtitleFontDirectory,
+  startFrame,
+  endFrame,
+  overwrite
+}) {
   const count = endFrame - startFrame;
   const duration = count / composition.fps;
   const args = [
@@ -312,8 +329,21 @@ function ffmpegArguments({ composition, profile, outputPath, audioPath, startFra
     args.push("-map", "0:v:0", "-an");
   }
   const outputFormat = profile === "master" ? "yuv422p10le" : "yuv420p";
+  const videoFilters = [];
+  if (subtitlePath) {
+    if (startFrame > 0) videoFilters.push(`setpts=PTS+${(startFrame / composition.fps).toFixed(6)}/TB`);
+    videoFilters.push(
+      `subtitles=filename='${filterPath(subtitlePath)}':fontsdir='${filterPath(subtitleFontDirectory)}'`
+    );
+    if (startFrame > 0) videoFilters.push("setpts=PTS-STARTPTS");
+  }
+  videoFilters.push(
+    `scale=in_range=full:out_range=limited:out_color_matrix=bt709`,
+    `format=${outputFormat}`,
+    "setparams=range=limited:color_primaries=bt709:color_trc=bt709:colorspace=bt709"
+  );
   args.push(
-    "-vf", `scale=in_range=full:out_range=limited:out_color_matrix=bt709,format=${outputFormat},setparams=range=limited:color_primaries=bt709:color_trc=bt709:colorspace=bt709`,
+    "-vf", videoFilters.join(","),
     "-r", String(composition.fps),
     "-fps_mode", "cfr",
     "-frames:v", String(count),
@@ -372,7 +402,13 @@ async function writeFrame(stream, buffer) {
 }
 
 async function renderVideo(project, options) {
-  const composition = makeComposition(project, options.profile, options.quality, !options["no-subtitles"]);
+  const useAssSubtitles = options.profile === "master" && !options["no-subtitles"];
+  const composition = makeComposition(
+    project,
+    options.profile,
+    options.quality,
+    !options["no-subtitles"] && !useAssSubtitles
+  );
   const startFrame = integerOption(options["start-frame"], "--start-frame", 0);
   const endFrame = integerOption(options["end-frame"], "--end-frame", composition.totalFrames);
   if (startFrame < 0 || startFrame >= composition.totalFrames) throw new Error("--start-frame is outside the timeline");
@@ -391,11 +427,30 @@ async function renderVideo(project, options) {
     await validateAudioMaster(project.manifest, audioPath);
   }
 
+  let subtitlePath = null;
+  let subtitleFontDirectory = null;
+  if (useAssSubtitles) {
+    subtitlePath = DEFAULT_CAPTIONS_ASS;
+    subtitleFontDirectory = DEFAULT_SUBTITLE_FONT_DIRECTORY;
+    try {
+      await Promise.all([fs.access(subtitlePath), fs.access(DEFAULT_SUBTITLE_FONT_SOURCE)]);
+      await fs.mkdir(subtitleFontDirectory, { recursive: true });
+      await fs.copyFile(
+        DEFAULT_SUBTITLE_FONT_SOURCE,
+        path.join(subtitleFontDirectory, "topo-sans-pv-600.ttf")
+      );
+    } catch {
+      throw new Error(`ASS subtitles or their bundled font are missing; run the PV audio and font builds first`);
+    }
+  }
+
   const args = ffmpegArguments({
     composition,
     profile: options.profile,
     outputPath,
     audioPath,
+    subtitlePath,
+    subtitleFontDirectory,
     startFrame,
     endFrame,
     overwrite: options.overwrite
