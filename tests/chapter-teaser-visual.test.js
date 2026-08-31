@@ -480,6 +480,27 @@ test("cover exports keep exact publishing copy and three requested safe aspect r
   assert.match(source, /large title only; no small cover copy/);
 });
 
+test("cover exploration provides six nontrivial topology and bespoke wordmark families", () => {
+  const source = fs.readFileSync(path.join(PV_ROOT, "scripts", "render-cover-directions.mjs"), "utf8");
+  for (const id of [
+    "mobius-continuum",
+    "klein-passage",
+    "projective-crossing",
+    "torus-orbit",
+    "seam-gate",
+    "wordmark-manifold"
+  ]) assert.match(source, new RegExp(`id: "${id}"`));
+  assert.match(source, /Engine\.tracePath/);
+  assert.match(source, /Morph\.project/);
+  assert.match(source, /Morph\.seamBridgeUV/);
+  assert.match(source, /exact live-game trace projected through topology-morph\.js/);
+  assert.match(source, /five-stone path integrated into the exact wordmark/);
+  assert.match(source, /inner 9% frame/);
+  assert.match(source, /id: "4x3"[\s\S]*width: 1600, height: 1200/);
+  assert.match(source, /id: "16x9"[\s\S]*width: 1920, height: 1080/);
+  assert.match(source, /id: "3x4"[\s\S]*width: 1080, height: 1440/);
+});
+
 test("native portrait compositions render directly at both platform aspect ratios", () => {
   for (const [width, height] of [[1080, 1920], [1080, 1440]]) {
     const teaser = Compositor.createComposition({
