@@ -45,7 +45,7 @@
       "HOYO-MiX: Fragile Fantasy for Klein — rejected because Debussy's submerged-cathedral structure described hidden interior and exterior more specifically",
       "Chopin: Etude Op. 25 No. 1 for Sphere — retained as the strongest all-classical alternate, but Fontaine created the clearer release after two Bach transformations",
       "Bach: Air for Sphere — rejected because its ensemble colour repeated the projective chapter",
-      "Saint-Saëns Organ Symphony across the complete finale — rejected as too continuously cinematic and loud; only the natural final 9.85 seconds remain, ending before the logo card",
+      "Saint-Saëns Organ Symphony across the complete finale — rejected as too continuously cinematic and loud; only the 9.85-second orchestral approach and tutti cadence remain, while the following quiet solo is excluded",
       "The supplied Footprints accompaniment — retained only as a structural reference"
     ]
   },
@@ -350,15 +350,15 @@
     {
       "id": "finale",
       "sourceId": "saint-saens-organ-finale",
-      "sourceInSeconds": 153.812125,
-      "sourceOutSeconds": 163.662125,
+      "sourceInSeconds": 146.762125,
+      "sourceOutSeconds": 156.612125,
       "targetStartFrame": 11883,
       "targetEndFrame": 12474,
       "fadeInFrames": 84,
-      "fadeOutFrames": 0,
-      "chapterRole": "the organ symphony opens only for the final challenge, reaches its natural audible end before the co-brand end card, then yields to silence",
-      "selectionReason": "The 84-frame handoff is fully open at frame 11967, just after ‘向我证明’ begins; only the natural final 9.85 seconds are used, so the release-scale cadence ends exactly as the logo card arrives and leaves its full duration silent.",
-      "waveformAudit": { "audibleSourceEndSeconds": 163.662125, "containerDurationSeconds": 168.341, "trailingContainerSilenceSeconds": 4.678875, "usesNaturalAudibleEnd": true }
+      "fadeOutFrames": 4,
+      "chapterRole": "the organ symphony opens only for the final challenge, builds into the full-orchestra cadence at the end of the last line, then yields to silence as the co-brand card appears",
+      "selectionReason": "This preserves the alignment of the earlier 16.9-second edit but removes exactly the 7.05 seconds that had occupied the co-brand card: the orchestral approach begins at source 146.762125, the tutti cadence starts at source 153.812125 / frame 12306, and its decay ends at source 156.612125 / frame 12474 before the quiet solo can begin.",
+      "waveformAudit": { "tuttiCadenceStartSeconds": 153.812125, "quietSoloStartSeconds": 156.612125, "excludedQuietSoloEndSeconds": 163.662125, "containerDurationSeconds": 168.341, "usesNaturalAudibleEnd": false, "excludesQuietSolo": true }
     }
   ]
 }

@@ -35,7 +35,7 @@
   },
   "music": {
     "plan": "video/chapter-teaser/music-plan.json",
-    "planSha256": "54ec44ac6f600b7d6043009c1519d5c18a27e37effd56e63655f1f493bf7d85a",
+    "planSha256": "d82ee0bce6e6ff5f6926147f77439dc5d0f8d7ade912035334ef3f92f42a8bdd",
     "reference": {
       "title": "《原神·提瓦特篇》主线章节预告PV-「足迹」伴奏背景音乐",
       "role": "structural, chapter-contrast and title-launch reference only; not used as a full-range source in the final mix",
@@ -553,19 +553,21 @@
       {
         "id": "finale",
         "sourceId": "saint-saens-organ-finale",
-        "sourceInSeconds": 153.812125,
-        "sourceOutSeconds": 163.662125,
+        "sourceInSeconds": 146.762125,
+        "sourceOutSeconds": 156.612125,
         "targetStartFrame": 11883,
         "targetEndFrame": 12474,
         "fadeInFrames": 84,
-        "fadeOutFrames": 0,
-        "chapterRole": "the organ symphony opens only for the final challenge, reaches its natural audible end before the co-brand end card, then yields to silence",
-        "selectionReason": "The 84-frame handoff is fully open at frame 11967, just after ‘向我证明’ begins; only the natural final 9.85 seconds are used, so the release-scale cadence ends exactly as the logo card arrives and leaves its full duration silent.",
+        "fadeOutFrames": 4,
+        "chapterRole": "the organ symphony opens only for the final challenge, builds into the full-orchestra cadence at the end of the last line, then yields to silence as the co-brand card appears",
+        "selectionReason": "This preserves the alignment of the earlier 16.9-second edit but removes exactly the 7.05 seconds that had occupied the co-brand card: the orchestral approach begins at source 146.762125, the tutti cadence starts at source 153.812125 / frame 12306, and its decay ends at source 156.612125 / frame 12474 before the quiet solo can begin.",
         "waveformAudit": {
-          "audibleSourceEndSeconds": 163.662125,
+          "tuttiCadenceStartSeconds": 153.812125,
+          "quietSoloStartSeconds": 156.612125,
+          "excludedQuietSoloEndSeconds": 163.662125,
           "containerDurationSeconds": 168.341,
-          "trailingContainerSilenceSeconds": 4.678875,
-          "usesNaturalAudibleEnd": true
+          "usesNaturalAudibleEnd": false,
+          "excludesQuietSolo": true
         }
       }
     ]
@@ -608,7 +610,7 @@
         "chapterRevealAutomation": "music dips to 0.22 before each measured title impact and returns to unity on the impact frame",
         "energy": {
           "peakDbfs": -7.152,
-          "rmsDbfs": -26.387
+          "rmsDbfs": -26.249
         },
         "placedClips": [
           {
@@ -732,7 +734,7 @@
           {
             "id": "finale",
             "centerFrame": 12178,
-            "rmsDb": -38.975
+            "rmsDb": -27.823
           }
         ]
       },
@@ -4591,11 +4593,11 @@
       },
       "scoreMix": {
         "peak": 0.5683792952720329,
-        "rms": 0.06670621211322648
+        "rms": 0.0677187167613229
       },
       "masterMix": {
         "peak": 0.7599994112116674,
-        "rms": 0.08122872632750411
+        "rms": 0.08149589448215272
       },
       "endCardDigitalSilence": {
         "musicStem": {
@@ -4789,7 +4791,7 @@
       "musicStem": {
         "path": ".tmp/chapter-teaser/audio/music.wav",
         "bytes": 41270444,
-        "sha256": "722d66be602379432bf49cde85882ee7cdb866979c503b69b9a4fee1f4a18296"
+        "sha256": "9afee6312ea96c40cde21a4eddaa9ee43bc0964b91f68b2d606b6bb2a7e2c98b"
       },
       "sfxStem": {
         "path": ".tmp/chapter-teaser/audio/sfx.wav",
@@ -4799,12 +4801,12 @@
       "scoreMix": {
         "path": ".tmp/chapter-teaser/audio/music-and-sfx.wav",
         "bytes": 41270444,
-        "sha256": "5e4f5b64f369bc92feb183282cd68d29115382b670f7b5c6c9ae66337b76b311"
+        "sha256": "e0ba316eca607f257643c2b688b7da1585ff84a33cb7398dba978d1c967e7a7b"
       },
       "masterMix": {
         "path": ".tmp/chapter-teaser/audio/master.wav",
         "bytes": 41270444,
-        "sha256": "cc196e321e10e1b310865caf6696209542ab7dfa7576386abed2a8bc68acc087"
+        "sha256": "567df4b0fd1e011ead1145d46e5d932489c57aaf48ac6073ba6f77e3c6b1491b"
       }
     }
   },

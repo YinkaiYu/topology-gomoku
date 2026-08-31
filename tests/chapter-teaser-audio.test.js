@@ -212,6 +212,10 @@ test("elegant classical-HOYO score preserves source tempo, measured title action
   assert.ok(Math.abs(finale.sourceOutSeconds - finale.sourceInSeconds - 9.85) < 1e-9);
   assert.equal((finale.targetEndFrame - finale.targetStartFrame) / musicPlan.fps, 9.85);
   assert.equal(finale.targetEndFrame, 12474);
+  assert.equal(finale.sourceInSeconds, 146.762125);
+  assert.equal(finale.sourceOutSeconds, 156.612125);
+  assert.equal(finale.waveformAudit.quietSoloStartSeconds, finale.sourceOutSeconds);
+  assert.equal(finale.waveformAudit.excludesQuietSolo, true);
   assert.equal(manifest.music.reference.sha256, "2856c83944d69c2779ab259e98f05a46c264221486777cd2cc158bd795d7c92f");
   assert.match(manifest.music.reference.role, /structural.*reference only/i);
   assert.equal(manifest.music.sources.length, 11);

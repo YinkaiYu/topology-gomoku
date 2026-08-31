@@ -132,8 +132,18 @@ test("all source excerpts stay in bounds and the measured phrase actions align t
   const finale = plan.clips.at(-1);
   assert.ok(Math.abs(finale.sourceOutSeconds - finale.sourceInSeconds - 9.85) < 1e-9);
   assert.equal(durationSeconds(finale), 9.85);
-  assert.equal(finale.sourceOutSeconds, finale.waveformAudit.audibleSourceEndSeconds);
-  assert.equal(finale.waveformAudit.usesNaturalAudibleEnd, true);
+  assert.equal(finale.sourceInSeconds, 146.762125);
+  assert.equal(finale.sourceOutSeconds, 156.612125);
+  assert.equal(finale.fadeOutFrames, 4);
+  assert.equal(finale.waveformAudit.tuttiCadenceStartSeconds, 153.812125);
+  assert.equal(finale.waveformAudit.quietSoloStartSeconds, finale.sourceOutSeconds);
+  assert.equal(finale.waveformAudit.excludedQuietSoloEndSeconds, 163.662125);
+  assert.equal(finale.waveformAudit.usesNaturalAudibleEnd, false);
+  assert.equal(finale.waveformAudit.excludesQuietSolo, true);
+  assert.equal(
+    finale.targetStartFrame + Math.round((finale.waveformAudit.tuttiCadenceStartSeconds - finale.sourceInSeconds) * plan.fps),
+    12306
+  );
 });
 
 test("all eleven cached source hashes are exact and every edited source midpoint is audible", {
