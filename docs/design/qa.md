@@ -80,6 +80,11 @@
 | 章节预告 PV「足迹回环」十方向 135 × 180 缩略图证明 | [`artifacts/qa-chapter-teaser-cover-imagegen-thumbnail-3x4.png`](../../artifacts/qa-chapter-teaser-cover-imagegen-thumbnail-3x4.png) |
 | 章节预告 PV「足迹回环」图片生成字标候选 | [`artifacts/qa-chapter-teaser-wordmark-imagegen-candidates.png`](../../artifacts/qa-chapter-teaser-wordmark-imagegen-candidates.png) |
 | 章节预告 PV「足迹回环」图片生成流形候选 | [`artifacts/qa-chapter-teaser-manifold-imagegen-candidates.png`](../../artifacts/qa-chapter-teaser-manifold-imagegen-candidates.png) |
+| 章节预告 PV「足迹回环」反馈收敛候选 4:3 | [`artifacts/qa-chapter-teaser-cover-selection-v4-4x3.png`](../../artifacts/qa-chapter-teaser-cover-selection-v4-4x3.png) |
+| 章节预告 PV「足迹回环」反馈收敛候选 16:9 | [`artifacts/qa-chapter-teaser-cover-selection-v4-16x9.png`](../../artifacts/qa-chapter-teaser-cover-selection-v4-16x9.png) |
+| 章节预告 PV「足迹回环」反馈收敛候选 3:4 | [`artifacts/qa-chapter-teaser-cover-selection-v4-3x4.png`](../../artifacts/qa-chapter-teaser-cover-selection-v4-3x4.png) |
+| 章节预告 PV「足迹回环」反馈收敛候选真实缩略图 | [`16:9`](../../artifacts/qa-chapter-teaser-cover-selection-v4-thumbnail-16x9.png)、[`4:3`](../../artifacts/qa-chapter-teaser-cover-selection-v4-thumbnail-4x3.png)、[`3:4`](../../artifacts/qa-chapter-teaser-cover-selection-v4-thumbnail-3x4.png) |
+| 章节预告 PV「足迹回环」逐字修正字标候选 | [`artifacts/qa-chapter-teaser-wordmark-selection-v4.png`](../../artifacts/qa-chapter-teaser-wordmark-selection-v4.png) |
 
 较早截图只用于回归和问题溯源，不自动成为新设计的视觉真相。出现冲突时，以最新已确认实现、视觉设计语言和同状态实机/预览证据为准。
 
@@ -114,6 +119,8 @@
 收到球面代表性不足与专属文字 Logo 的反馈后，同日在不覆盖首版封面的前提下新增 A–F 六套方向：莫比乌斯连续体、克莱因内外通道、射影交汇、环面双周期轨道、边界粘合之门和字成流形。每套均输出 4:3、16:9、3:4 三个比例，共 18 张候选；联系表按相同顺序呈现六套方向。前五套直接调用游戏 `topology.js` 的确定性五连、`topology-morph.js` 的参数曲面投影与真实接缝桥接，确保金色棋路和五颗棋子贴合非平庸流形；F 套把五个节点、末着红点和两侧粘合边界收进“拓扑五子棋”五字专属展示字标，并把克莱因瓶降为淡墨背景。所有方案仍只保留两级大字、暖纸与克制青金配色，关键内容限制在约 9% 内安全区。该组为待用户选择的方向探索，不自动替换已交付封面；获选方向再收敛为独立 display / mini 矢量字标。
 
 随后按“字标必须原生设计、主流形必须在缩略图中读清”的反馈，用图片生成模型分别探索游戏图鉴手绘、水墨、二次元章节字、发布会几何字与《足迹》式深浅双体等语言，并保留 `app/assets/brand-icon.png` 真实游戏 Logo 作为品牌基准。最终候选板收录 5 套逐字核验为“拓扑五子棋”的透明字标、真实 Logo 与 8 套非平庸流形主视觉；A–J 十套封面在 4:3、16:9、3:4 共输出 30 张候选。C 为最接近游戏图鉴语言的手绘方案，D 为更典雅的水墨方案，A 为真实品牌保底，B 借鉴《足迹》封面“中心双体＋高对比＋底部品牌”的构图机制但不复刻具体画面；G、I、J 则组成同一深绿、象牙、金线和朱红末子的完整几何矢量组三件套。160 × 90 与 135 × 180 的实际像素证明确认主字标、强剪影和副题层级仍可辨，横版副题上移后保留约 8–9% 底部安全区。该组仍是待用户选择的候选，不自动替换正式封面。
+
+2026-09-01 按逐项反馈再次收敛候选：新一轮明确排除 06 水墨与 07 二次元笔触，只保留 08《足迹》发布式双生和 09B 几何折面两条字标谱系。为避免完整五字生成中的错笔，先分别生成并校验完整“五”、带三颗负空间白子的“棋”和几何“棋”，再确定性重组为 08D / 09F；其中“五”分别放大约 150% / 125%，三颗白子不再代替“棋”的任何横画。封面总览保留原球面基线作对照，同时比较真实游戏 Logo、07B / 08 几何流形、游戏 SVG 莫比乌斯、4 × 4 正方形格的环游周期棋盘、中央标题加七流形环绕，以及三张无文字图片生成底图：实体莫比乌斯、严格五子环游棋盘和《足迹》式手绘莫比乌斯图鉴纹章。三个比例均重新排版；4 × 4 棋盘实测为 5 × 5 交点、严格五颗黑子和两组同向周期边界，竖版整图候选采用主视觉重排而非直接横图裁切。160 × 90、160 × 120、135 × 180 真实像素板用于淘汰缩略图下无法辨认的透明流形和错字；该轮仍是等待用户选择的候选，不覆盖正式封面。
 
 ## 新证据记录模板
 

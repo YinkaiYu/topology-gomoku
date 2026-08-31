@@ -551,6 +551,56 @@ test("imagegen cover exploration keeps real branding and distinct art families a
   assert.match(source, /id: "3x4"[\s\S]*width: 1080, height: 1440/);
 });
 
+test("cover selection exploration keeps only approved wordmark families and adapts eleven focused directions", () => {
+  const source = fs.readFileSync(path.join(PV_ROOT, "scripts", "render-cover-selection-exploration.mjs"), "utf8");
+  const compositor = fs.readFileSync(path.join(PV_ROOT, "scripts", "compose-cover-wordmarks-v4.mjs"), "utf8");
+  for (const id of [
+    "selected-sphere-baseline",
+    "mobius-footsteps",
+    "torus-board-4x4",
+    "real-game-logo",
+    "geometric-atlas",
+    "geometric-klein",
+    "seven-manifold-orbit",
+    "imagegen-seven-orbit",
+    "imagegen-mobius-stage",
+    "imagegen-torus-board",
+    "imagegen-footsteps-atlas"
+  ]) assert.match(source, new RegExp(`id: "${id}"`));
+  assert.doesNotMatch(source, /06-ink-wash|07-anime-chapter/);
+  assert.match(source, /app", "assets", "brand-icon\.png/);
+  assert.match(source, /manifolds", "07b-geometric-refined\.png/);
+  assert.match(source, /manifolds", "08-geometric-klein\.png/);
+  assert.match(source, /function drawTorusBoard/);
+  assert.match(source, /xConnection: "same", yConnection: "same"/);
+  assert.match(source, /for \(let index = 0; index < 5; index \+= 1\)/);
+  assert.match(source, /function orbitPlacements/);
+  assert.match(source, /thumbnail-proof-\$\{profile\.id\}\.png/);
+  assert.match(source, /exactCoverText: \["拓扑五子棋", "足迹回环"\]/);
+  assert.match(source, /id: "4x3"[\s\S]*width: 1600, height: 1200/);
+  assert.match(source, /id: "16x9"[\s\S]*width: 1920, height: 1080/);
+  assert.match(source, /id: "3x4"[\s\S]*width: 1080, height: 1440/);
+
+  assert.match(compositor, /five-twin\.png/);
+  assert.match(compositor, /qi-three-stones\.png/);
+  assert.match(compositor, /qi-geometric\.png/);
+  assert.match(compositor, /08d-footsteps-corrected\.png/);
+  assert.match(compositor, /09f-geometric-corrected\.png/);
+  assert.match(compositor, /heightScale: 1\.5/);
+  assert.match(compositor, /heightScale: 1\.25/);
+  for (const asset of [
+    "08d-footsteps-corrected.png",
+    "09f-geometric-corrected.png",
+    "09c-folded-inscription.png",
+    "09d-single-ribbon.png",
+    "09e-modular-join.png"
+  ]) {
+    const assetPath = path.join(PV_ROOT, "assets", "cover-exploration-v4", "wordmarks", asset);
+    assert.ok(fs.existsSync(assetPath), `missing approved wordmark asset: ${asset}`);
+    assert.ok(fs.statSync(assetPath).size > 40_000, `wordmark asset is unexpectedly small: ${asset}`);
+  }
+});
+
 test("native portrait compositions render directly at both platform aspect ratios", () => {
   for (const [width, height] of [[1080, 1920], [1080, 1440]]) {
     const teaser = Compositor.createComposition({
