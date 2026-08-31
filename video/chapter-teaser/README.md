@@ -73,6 +73,8 @@ npm run pv:master
 npm run pv:verify -- --profile master
 ```
 
+生成结果位于 `.tmp/chapter-teaser/master/`：`seven-realms-master.mov` 为 3840 × 2160、60 fps、ProRes 422 HQ、10-bit 4:2:2、BT.709 与 48 kHz / 24-bit PCM 母版；`delivery-manifest.json` 记录帧数、媒体探测、片尾数字静音与来源清单哈希，`seven-realms-master.mov.sha256` 用于文件完整性校验。
+
 渲染、预览和验证都不会自动提交、更不会合并或更新任何长期分支。用户确认前，本任务始终留在独立 worktree 的 `codex/chapter-teaser-pv` 分支。
 
 ## 完成前检查

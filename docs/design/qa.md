@@ -64,6 +64,7 @@
 | 章节预告 PV「七界足迹」古典 / HOYO-MiX 配乐定版时轴 | [`artifacts/qa-chapter-teaser-pv-classical-hoyo-1080p-contact-sheet.png`](../../artifacts/qa-chapter-teaser-pv-classical-hoyo-1080p-contact-sheet.png) |
 | 章节预告 PV「七界足迹」片头共面、无辅助圆环、缝线退场与大字幕定版 | [`artifacts/qa-chapter-teaser-pv-final-polish-1080p-contact-sheet.png`](../../artifacts/qa-chapter-teaser-pv-final-polish-1080p-contact-sheet.png) |
 | 章节预告 PV「七界足迹」片头机构 Logo 去除外加装饰环（左为修改前、右为修改后） | [`artifacts/qa-chapter-teaser-pv-institution-logo-ring-comparison-1080p.png`](../../artifacts/qa-chapter-teaser-pv-institution-logo-ring-comparison-1080p.png) |
+| 章节预告 PV「七界足迹」最终 4K ProRes 母版抽帧 | [`artifacts/qa-chapter-teaser-pv-master-4k-final-contact-sheet.png`](../../artifacts/qa-chapter-teaser-pv-master-4k-final-contact-sheet.png) |
 
 较早截图只用于回归和问题溯源，不自动成为新设计的视觉真相。出现冲突时，以最新已确认实现、视觉设计语言和同状态实机/预览证据为准。
 
@@ -86,6 +87,8 @@
 同日最终精修在相同 1920 × 1080、60 fps 时间线上增加 12 状态联系表：前四格覆盖片头折叠前、折叠中、接触前和完全闭合，确认棋盘纸面、经纬线、虚线路径与棋子共用 48 × 36 参数曲面，不再悬空；为保持教学辨识度，虚线路径与运动棋子不做前后面遮挡而全程显现。中四格覆盖圆柱和射影平面的 2D / 3D 五连过程，确认边界粘合位置不再绘制细线空心辅助圆；后三格验证完成三维与七流形回望隐藏青绿 / 橙色边界缝线并保留金色五连，末格验证双 Logo、联名乘号、游戏名和制作人层级。1080p 字幕为 72 px 无衬线体与 4.2 px 纯黑描边，最长 19 字字幕仍在单行安全区内。当前预览确认状态仍为“待用户审阅”，确认前不合回 `dev`，也不生成发行 4K 母版。
 
 同日片头机构 Logo 在相同第 1330 帧、1920 × 1080 视口完成前后对比：保留中国科学院物理研究所 Logo 原图、尺寸、位置和淡入淡出，只移除其外侧由合成器额外绘制的低透明度青绿色圆环；片尾双 Logo 构图不受影响。
+
+用户明确确认 1080p 审阅版后，同日生成最终 4K60 母版 `.tmp/chapter-teaser/master/seven-realms-master.mov`。成片为 15,036,824,170 字节，SHA-256 为 `41539cc3c67123e13d65f903f7de5abfc4d11989ac7ad73910bea94de84aac30`；完整解码验证得到 12897 帧、3840 × 2160、60 fps、ProRes 422 HQ、`yuv422p10le`、BT.709，以及 48 kHz 双声道 24-bit PCM，时长 214.95 秒。六格证据直接从编码后的 ProRes 母版抽取，覆盖片头边界粘合、无外加圆环的机构 Logo、双生与归圆曲面五连、终章和双 Logo 片尾；`[12474,12897)` 片尾音频另以 24-bit PCM 原始字节复核，共 2,030,400 字节全部为零。母版目录同时保留 `delivery-manifest.json` 与 `.sha256` 校验文件。4K 生成不代表自动合并，任务分支仍等待用户另行给出合回 `dev` 的明确指令。
 
 ## 新证据记录模板
 
