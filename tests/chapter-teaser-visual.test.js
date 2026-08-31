@@ -484,9 +484,14 @@ test("cover exports keep exact publishing copy and three requested safe aspect r
   assert.match(source, /drawBoardFoundation/);
   assert.match(source, /opaqueSurface\.addColorStop\(0, "rgba\(255,255,255,0\.86\)"\)/);
   assert.match(source, /shadowColor = "rgba\(19,38,33,0\.28\)"/);
-  assert.match(source, /wordmarkDepth: "warm halo plus restrained dark cast shadow"/);
+  assert.match(source, /wordmarkDepth: "bright continuous full-frame neutral glow, luminous edge halo, and restrained downward dark cast shadow"/);
+  assert.match(source, /ctx\.fillRect\(0, 0, ctx\.canvas\.width, ctx\.canvas\.height\)/);
+  assert.match(source, /ctx\.shadowColor = "rgba\(255,252,242,0\.76\)"/);
+  assert.doesNotMatch(source, /ctx\.shadowOffsetY = -minimum/);
   assert.match(source, /subtitle: "larger Topo Serif PV title, soft ivory outline, no underline"/);
   assert.match(source, /underline: false/);
+  assert.match(source, /subtitle: Object\.freeze\(\{ x: 0\.31, y: 0\.635, size: 0\.105 \}\)/);
+  assert.match(source, /wordmark: Object\.freeze\(\{ x: 0\.06, y: 0\.66[\s\S]*subtitle: Object\.freeze\(\{ x: 0\.50, y: 0\.905, size: 0\.103 \}\)/);
   assert.match(source, /3x4: the approved wordmark must not cover the board or its lower-left stone/);
   assert.doesNotMatch(source, /sphere\.svg/);
 

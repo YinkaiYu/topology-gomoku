@@ -40,7 +40,7 @@
   "effects": {
     "boardOpacity": "raised opaque paper-glass foundation beneath the shared live-game board",
     "boardDepth": "large soft cast shadow plus contact shadow",
-    "wordmarkDepth": "warm halo plus restrained dark cast shadow",
+    "wordmarkDepth": "bright continuous full-frame neutral glow, luminous edge halo, and restrained downward dark cast shadow",
     "subtitle": "larger Topo Serif PV title, soft ivory outline, no underline"
   },
   "exports": [
@@ -50,8 +50,8 @@
       "file": "topology-gomoku-footsteps-loop-cover-4x3.png",
       "width": 1600,
       "height": 1200,
-      "bytes": 581599,
-      "sha256": "c0b99f37217c1052107ac6d2c10fbd6bf857390e77876fce3ee7e6373359f8f1",
+      "bytes": 582759,
+      "sha256": "f2da068163e56ec3135e9410afda918372963afb027a181c79d695f7bfe7b917",
       "boardRect": {
         "x": 728,
         "y": 204,
@@ -67,8 +67,8 @@
       "subtitle": {
         "text": "足迹回环",
         "x": 496,
-        "y": 840,
-        "fontSize": 108,
+        "y": 762,
+        "fontSize": 126,
         "underline": false
       },
       "portraitWordmarkBoardOverlap": null,
@@ -80,8 +80,8 @@
       "file": "topology-gomoku-footsteps-loop-cover-16x9.png",
       "width": 1920,
       "height": 1080,
-      "bytes": 631752,
-      "sha256": "4e226b8d1d7c3dae7156158e028911ca0e1803edd46dc2434672e4d3bae21370",
+      "bytes": 636484,
+      "sha256": "c9fbeb3f7d3f013a9c775f06646234c10ae226a9beccfdfc78cf8c92fd46619e",
       "boardRect": {
         "x": 1008,
         "y": 140.4,
@@ -98,7 +98,7 @@
         "text": "足迹回环",
         "x": 604.8,
         "y": 788.4,
-        "fontSize": 97.2,
+        "fontSize": 113.4,
         "underline": false
       },
       "portraitWordmarkBoardOverlap": null,
@@ -110,8 +110,8 @@
       "file": "topology-gomoku-footsteps-loop-cover-3x4.png",
       "width": 1080,
       "height": 1440,
-      "bytes": 529420,
-      "sha256": "6be49791bc9f8c18b3f26bc43e99ffa7848df4a279277920ac6c2fab5909b2f4",
+      "bytes": 538030,
+      "sha256": "70d99d031c1b7f5f8c81621b3446fde585e13c97784d27354ed58eac947533ba",
       "boardRect": {
         "x": 172.8,
         "y": 108,
@@ -120,15 +120,15 @@
       },
       "wordmarkRect": {
         "x": 64.8,
-        "y": 979.02,
+        "y": 957.42,
         "width": 950.4,
         "height": 245.16
       },
       "subtitle": {
         "text": "足迹回环",
         "x": 540,
-        "y": 1274.4,
-        "fontSize": 97.2,
+        "y": 1303.2,
+        "fontSize": 111.24,
         "underline": false
       },
       "portraitWordmarkBoardOverlap": 0,

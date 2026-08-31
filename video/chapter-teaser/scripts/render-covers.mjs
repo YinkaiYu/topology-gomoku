@@ -34,17 +34,17 @@ const finalLayouts = Object.freeze({
   "4x3": Object.freeze({
     board: Object.freeze({ left: 0.455, top: 0.17, sizeBy: "height", size: 0.64 }),
     wordmark: Object.freeze({ x: 0.05, y: 0.255, width: 0.60, height: 0.32 }),
-    subtitle: Object.freeze({ x: 0.31, y: 0.70, size: 0.090 })
+    subtitle: Object.freeze({ x: 0.31, y: 0.635, size: 0.105 })
   }),
   "16x9": Object.freeze({
     board: Object.freeze({ left: 0.525, top: 0.13, sizeBy: "height", size: 0.72 }),
     wordmark: Object.freeze({ x: 0.05, y: 0.245, width: 0.61, height: 0.39 }),
-    subtitle: Object.freeze({ x: 0.315, y: 0.73, size: 0.090 })
+    subtitle: Object.freeze({ x: 0.315, y: 0.73, size: 0.105 })
   }),
   "3x4": Object.freeze({
     board: Object.freeze({ left: 0.16, top: 0.075, sizeBy: "width", size: 0.68 }),
-    wordmark: Object.freeze({ x: 0.06, y: 0.675, width: 0.88, height: 0.18 }),
-    subtitle: Object.freeze({ x: 0.50, y: 0.885, size: 0.090 })
+    wordmark: Object.freeze({ x: 0.06, y: 0.66, width: 0.88, height: 0.18 }),
+    subtitle: Object.freeze({ x: 0.50, y: 0.905, size: 0.103 })
   })
 });
 
@@ -188,20 +188,16 @@ function fitWordmark(bounds, target) {
 function drawWordmarkGlow(ctx, drawRect, minimum) {
   const centerX = drawRect.x + drawRect.width * 0.49;
   const centerY = drawRect.y + drawRect.height * 0.53;
-  const radius = Math.max(drawRect.width * 0.64, drawRect.height * 1.95);
+  const radius = Math.max(drawRect.width * 0.72, drawRect.height * 2.30);
   const glow = ctx.createRadialGradient(centerX, centerY, 0, centerX, centerY, radius);
-  glow.addColorStop(0, "rgba(250,248,242,0.78)");
-  glow.addColorStop(0.45, "rgba(250,248,242,0.34)");
-  glow.addColorStop(0.74, "rgba(199,146,68,0.055)");
+  glow.addColorStop(0, "rgba(255,252,244,0.70)");
+  glow.addColorStop(0.28, "rgba(255,252,244,0.46)");
+  glow.addColorStop(0.55, "rgba(250,248,242,0.22)");
+  glow.addColorStop(0.78, "rgba(250,248,242,0.075)");
   glow.addColorStop(1, "rgba(250,248,242,0)");
   ctx.save();
   ctx.fillStyle = glow;
-  ctx.fillRect(
-    drawRect.x - minimum * 0.075,
-    drawRect.y - minimum * 0.11,
-    drawRect.width + minimum * 0.15,
-    drawRect.height + minimum * 0.22
-  );
+  ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
   ctx.restore();
 }
 
@@ -212,9 +208,10 @@ function drawApprovedWordmark(ctx, image, bounds, target, minimum) {
   ctx.save();
   ctx.imageSmoothingEnabled = true;
   ctx.imageSmoothingQuality = "high";
-  ctx.shadowColor = "rgba(255,251,240,0.94)";
-  ctx.shadowBlur = minimum * 0.030;
-  ctx.shadowOffsetY = -minimum * 0.002;
+  ctx.shadowColor = "rgba(255,252,242,0.76)";
+  ctx.shadowBlur = minimum * 0.026;
+  ctx.shadowOffsetX = 0;
+  ctx.shadowOffsetY = 0;
   ctx.drawImage(
     image,
     bounds.x,
@@ -226,8 +223,9 @@ function drawApprovedWordmark(ctx, image, bounds, target, minimum) {
     drawRect.width,
     drawRect.height
   );
-  ctx.shadowColor = "rgba(19,38,33,0.34)";
+  ctx.shadowColor = "rgba(19,38,33,0.30)";
   ctx.shadowBlur = minimum * 0.022;
+  ctx.shadowOffsetX = minimum * 0.004;
   ctx.shadowOffsetY = minimum * 0.013;
   ctx.drawImage(
     image,
@@ -279,7 +277,7 @@ function drawSubtitle(ctx, profile, preset) {
   let size = minimum * preset.size;
   const trackingRatio = 0.12;
   const text = "足迹回环";
-  const maximumWidth = profile.width * (profile.id === "3x4" ? 0.74 : 0.33);
+  const maximumWidth = profile.width * (profile.id === "3x4" ? 0.80 : 0.38);
   ctx.save();
   ctx.textAlign = "center";
   ctx.textBaseline = "middle";
@@ -506,7 +504,7 @@ async function main() {
     effects: {
       boardOpacity: "raised opaque paper-glass foundation beneath the shared live-game board",
       boardDepth: "large soft cast shadow plus contact shadow",
-      wordmarkDepth: "warm halo plus restrained dark cast shadow",
+      wordmarkDepth: "bright continuous full-frame neutral glow, luminous edge halo, and restrained downward dark cast shadow",
       subtitle: "larger Topo Serif PV title, soft ivory outline, no underline"
     },
     exports
