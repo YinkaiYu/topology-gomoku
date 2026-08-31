@@ -365,9 +365,12 @@ function renderMusicStem({ ffmpeg, plan, sourcePaths, outputPath, totalFrames })
       const sourcePath = sourcePaths.get(sourceId);
       const sourceClips = plan.clips.filter((clip) => clip.sourceId === sourceId);
       const spanStart = Math.max(0, Math.min(...sourceClips.map((clip) => Number(clip.sourceInSeconds || 0))) - 1);
+      const normalizationTailSeconds = Math.max(...sourceClips.map((clip) => (
+        Number(clip.normalizationTailSeconds ?? 1)
+      )));
       const spanEnd = Math.max(...sourceClips.map((clip) => (
         Number(clip.sourceInSeconds || 0) + (clip.targetEndFrame - clip.targetStartFrame) / fps
-      ))) + 1;
+      ))) + normalizationTailSeconds;
       const normalizedPath = path.join(temporaryRoot, `source-${String(sourceIndex).padStart(2, "0")}-${sourceId}.wav`);
       runChecked(ffmpeg, [
         "-hide_banner", "-loglevel", "error", "-y",
@@ -406,6 +409,14 @@ function renderMusicStem({ ffmpeg, plan, sourcePaths, outputPath, totalFrames })
       ];
       if (fadeIn > 0) chain.push(`afade=t=in:st=0:d=${fadeIn.toFixed(6)}:curve=qsin`);
       if (fadeOut > 0) chain.push(`afade=t=out:st=${fadeOutStart.toFixed(6)}:d=${fadeOut.toFixed(6)}:curve=qsin`);
+      for (const dampingFade of clip.tailDampingFades ?? []) {
+        const dampingStart = (dampingFade.startFrame - clip.targetStartFrame) / fps;
+        const dampingDuration = dampingFade.durationFrames / fps;
+        if (!Number.isFinite(dampingStart) || dampingStart < 0 || !Number.isFinite(dampingDuration) || dampingDuration <= 0) {
+          throw new Error(`Invalid tail damping fade for ${clip.id}`);
+        }
+        chain.push(`afade=t=out:st=${dampingStart.toFixed(6)}:d=${dampingDuration.toFixed(6)}:curve=${dampingFade.curve ?? "qsin"}`);
+      }
       chain.push(`apad=whole_len=${expectedSampleFrames}`, `atrim=end_sample=${expectedSampleFrames}`);
       runChecked(ffmpeg, [
         "-hide_banner", "-loglevel", "error", "-y",

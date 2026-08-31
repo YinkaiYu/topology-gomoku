@@ -99,16 +99,17 @@ test("end-card tail enforcement produces strict PCM zero after resampling and SF
   assert.ok(forcedWav.samples.slice(40 * 2).every((sample) => sample === 0));
 });
 
-test("the end card carries only sixty frames of faded cadence before digital silence", () => {
+test("the end card carries the approved A4 cadence envelope before digital silence", () => {
   const endCard = manifest.segments.find((segment) => segment.kind === "end-card");
   const finale = manifest.music.clips.at(-1);
   const silence = manifest.audio.metrics.tailDigitalSilence;
   assert.equal(endCard.startFrame, 12474);
-  assert.equal(finale.targetEndFrame, endCard.startFrame + 60);
-  assert.equal(finale.fadeOutFrames, 42);
-  assert.equal(silence.musicStem.startFrame, 12534);
-  assert.equal(silence.scoreMix.startFrame, 12534);
-  assert.equal(silence.masterMix.startFrame, 12534);
+  assert.equal(finale.targetEndFrame, endCard.startFrame + 36);
+  assert.equal(finale.fadeOutFrames, 93);
+  assert.deepEqual(finale.tailDampingFades, [{ startFrame: 12492, durationFrames: 42, curve: "qsin" }]);
+  assert.equal(silence.musicStem.startFrame, 12510);
+  assert.equal(silence.scoreMix.startFrame, 12510);
+  assert.equal(silence.masterMix.startFrame, 12510);
   assert.equal(silence.sfxStem.startFrame, 12474);
   assert.equal(silence.voiceStem.startFrame, 12474);
   for (const audit of Object.values(silence)) {
@@ -116,6 +117,14 @@ test("the end card carries only sixty frames of faded cadence before digital sil
     assert.equal(audit.nonZeroSamples, 0);
     assert.equal(audit.maxAbsPcm16, 0);
   }
+});
+
+test("the audio builder applies the approved compound A4 tail envelope", () => {
+  const source = fs.readFileSync(path.join(pvRoot, "scripts", "build-audio.mjs"), "utf8");
+  assert.match(source, /clip\.tailDampingFades \?\? \[\]/);
+  assert.match(source, /dampingFade\.startFrame - clip\.targetStartFrame/);
+  assert.match(source, /curve=\$\{dampingFade\.curve \?\? "qsin"\}/);
+  assert.match(source, /clip\.normalizationTailSeconds \?\? 1/);
 });
 
 test("platform packaging preserves approved video bitstreams and replaces only the final audio", () => {
@@ -240,13 +249,15 @@ test("elegant classical-HOYO score preserves source tempo, measured title action
     assert.ok(Math.abs(alignedSourceSeconds - clip.reveal.nativeImpactSourceSeconds) < 0.00001, clip.id);
   }
   const finale = musicPlan.clips.at(-1);
-  assert.ok(Math.abs(finale.sourceOutSeconds - finale.sourceInSeconds - 10.85) < 1e-9);
-  assert.equal((finale.targetEndFrame - finale.targetStartFrame) / musicPlan.fps, 10.85);
-  assert.equal(finale.targetEndFrame, 12534);
+  assert.ok(Math.abs(finale.sourceOutSeconds - finale.sourceInSeconds - 10.45) < 1e-9);
+  assert.equal((finale.targetEndFrame - finale.targetStartFrame) / musicPlan.fps, 10.45);
+  assert.equal(finale.targetEndFrame, 12510);
   assert.equal(finale.sourceInSeconds, 146.762125);
-  assert.equal(finale.sourceOutSeconds, 157.612125);
-  assert.equal(finale.fadeOutFrames, 42);
-  assert.equal(finale.waveformAudit.tailExtensionSeconds, 1);
+  assert.equal(finale.sourceOutSeconds, 157.212125);
+  assert.equal(finale.fadeOutFrames, 93);
+  assert.equal(finale.normalizationTailSeconds, 1.4);
+  assert.deepEqual(finale.tailDampingFades, [{ startFrame: 12492, durationFrames: 42, curve: "qsin" }]);
+  assert.equal(finale.waveformAudit.tailExtensionSeconds, 0.6);
   assert.equal(finale.waveformAudit.quietSoloSuppressedByFade, true);
   assert.equal(finale.waveformAudit.excludesSustainedQuietSolo, true);
   assert.equal(manifest.music.reference.sha256, "2856c83944d69c2779ab259e98f05a46c264221486777cd2cc158bd795d7c92f");

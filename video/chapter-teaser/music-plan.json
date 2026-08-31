@@ -29,7 +29,7 @@
   },
   "selectionAudit": {
     "selected": "elegant-classical-hoyo",
-    "decision": "Build the PV on an elegant classical spine, give two geometrically distinct chapters substantial HOYO-MiX identities, reserve the full organ-symphony scale for the final 10.85-second challenge cadence and one-second decay, then leave the remaining end card silent.",
+    "decision": "Build the PV on an elegant classical spine, give two geometrically distinct chapters substantial HOYO-MiX identities, reserve the full organ-symphony scale for the final 10.45-second challenge cadence and approved A4 decay, then leave the remaining end card silent.",
     "criteria": [
       "the musical mechanism must describe the topology rather than merely share a broad mood",
       "the score must remain beautiful and restrained beneath narration",
@@ -45,7 +45,7 @@
       "HOYO-MiX: Fragile Fantasy for Klein — rejected because Debussy's submerged-cathedral structure described hidden interior and exterior more specifically",
       "Chopin: Etude Op. 25 No. 1 for Sphere — retained as the strongest all-classical alternate, but Fontaine created the clearer release after two Bach transformations",
       "Bach: Air for Sphere — rejected because its ensemble colour repeated the projective chapter",
-      "Saint-Saëns Organ Symphony across the complete finale — rejected as too continuously cinematic and loud; only the orchestral approach, tutti cadence and one-second faded decay remain, while the sustained quiet solo is excluded",
+      "Saint-Saëns Organ Symphony across the complete finale — rejected as too continuously cinematic and loud; only the orchestral approach, tutti cadence and 0.60-second A4 decay remain, while the sustained quiet solo is excluded",
       "The supplied Footprints accompaniment — retained only as a structural reference"
     ]
   },
@@ -351,14 +351,16 @@
       "id": "finale",
       "sourceId": "saint-saens-organ-finale",
       "sourceInSeconds": 146.762125,
-      "sourceOutSeconds": 157.612125,
+      "sourceOutSeconds": 157.212125,
       "targetStartFrame": 11883,
-      "targetEndFrame": 12534,
+      "targetEndFrame": 12510,
       "fadeInFrames": 84,
-      "fadeOutFrames": 42,
-      "chapterRole": "the organ symphony opens only for the final challenge, builds into the full-orchestra cadence at the end of the last line, lets its last resonance cross the co-brand reveal for one second, then yields to silence",
-      "selectionReason": "The orchestral approach still begins at source 146.762125 and the tutti cadence still lands at source 153.812125 / frame 12306. The previous frame-12474 cut is extended by exactly 60 frames so the cadence can decay naturally into the co-brand reveal, with a 42-frame qsin fade suppressing the following quiet solo before frame 12534; the remaining 6.05 seconds are silent.",
-      "waveformAudit": { "tuttiCadenceStartSeconds": 153.812125, "previousCutSeconds": 156.612125, "tailExtensionSeconds": 1, "fadeOutStartSeconds": 156.912125, "quietSoloReferenceStartSeconds": 156.612125, "excludedQuietSoloEndSeconds": 163.662125, "containerDurationSeconds": 168.341, "usesNaturalAudibleEnd": false, "quietSoloSuppressedByFade": true, "excludesSustainedQuietSolo": true }
+      "fadeOutFrames": 93,
+      "normalizationTailSeconds": 1.4,
+      "tailDampingFades": [{ "startFrame": 12492, "durationFrames": 42, "curve": "qsin" }],
+      "chapterRole": "the organ symphony opens only for the final challenge, builds into the full-orchestra cadence at the end of the last line, lets its last resonance cross the co-brand reveal for 0.60 seconds, then yields to silence",
+      "selectionReason": "The orchestral approach still begins at source 146.762125 and the tutti cadence still lands at source 153.812125 / frame 12306. The approved A4 envelope starts its 93-frame qsin release at frame 12417, crosses 36 frames into the co-brand reveal, and multiplies the final 18 frames by the earlier 42-frame suppression fade beginning at frame 12492. This preserves the cadence resonance while preventing the following quiet solo from forming a new phrase before digital silence at frame 12510.",
+      "waveformAudit": { "tuttiCadenceStartSeconds": 153.812125, "previousCutSeconds": 156.612125, "tailExtensionSeconds": 0.6, "fadeOutStartSeconds": 155.662125, "tailDampingFadeStartSeconds": 156.912125, "quietSoloReferenceStartSeconds": 156.612125, "excludedQuietSoloEndSeconds": 163.662125, "containerDurationSeconds": 168.341, "usesNaturalAudibleEnd": false, "quietSoloSuppressedByFade": true, "excludesSustainedQuietSolo": true }
     }
   ]
 }

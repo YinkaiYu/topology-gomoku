@@ -77,7 +77,7 @@ test("every selected recording is traceable, cached-only and selected for a dist
   );
 });
 
-test("phrase-aware adjacent edits cover the scored film and leave only a one-second cadence decay on the end card", () => {
+test("phrase-aware adjacent edits cover the scored film and leave the approved A4 cadence decay on the end card", () => {
   assert.equal(plan.editing.crossfadeCurve, "qsin");
   assert.equal(plan.editing.defaultCrossfadeFrames, 84);
   assert.equal(plan.editing.maxConcurrentFullRangeClips, 2);
@@ -85,7 +85,7 @@ test("phrase-aware adjacent edits cover the scored film and leave only a one-sec
   const endCard = timing.visualSegments.find((segment) => segment.kind === "end-card");
   assert.ok(endCard);
   assert.equal(endCard.startFrame, 12474);
-  assert.equal(plan.clips.at(-1).targetEndFrame, endCard.startFrame + 60);
+  assert.equal(plan.clips.at(-1).targetEndFrame, endCard.startFrame + 36);
 
   for (let index = 1; index < plan.clips.length; index += 1) {
     const previous = plan.clips[index - 1];
@@ -100,7 +100,7 @@ test("phrase-aware adjacent edits cover the scored film and leave only a one-sec
     const active = plan.clips.filter((clip) => frame >= clip.targetStartFrame && frame < clip.targetEndFrame);
     assert.ok(active.length >= 1 && active.length <= 2, `frame ${frame} has ${active.length} full-range beds`);
   }
-  for (let frame = endCard.startFrame + 60; frame < timing.totalFrames; frame += 1) {
+  for (let frame = endCard.startFrame + 36; frame < timing.totalFrames; frame += 1) {
     const active = plan.clips.filter((clip) => frame >= clip.targetStartFrame && frame < clip.targetEndFrame);
     assert.equal(active.length, 0, `end-card frame ${frame} must be silent after the cadence decay`);
   }
@@ -130,15 +130,18 @@ test("all source excerpts stay in bounds and the measured phrase actions align t
   assert.equal(plane.targetStartFrame, 2114);
   assert.equal(plane.reveal.nativeImpactSourceSeconds, 12.2);
   const finale = plan.clips.at(-1);
-  assert.ok(Math.abs(finale.sourceOutSeconds - finale.sourceInSeconds - 10.85) < 1e-9);
-  assert.equal(durationSeconds(finale), 10.85);
+  assert.ok(Math.abs(finale.sourceOutSeconds - finale.sourceInSeconds - 10.45) < 1e-9);
+  assert.equal(durationSeconds(finale), 10.45);
   assert.equal(finale.sourceInSeconds, 146.762125);
-  assert.equal(finale.sourceOutSeconds, 157.612125);
-  assert.equal(finale.fadeOutFrames, 42);
+  assert.equal(finale.sourceOutSeconds, 157.212125);
+  assert.equal(finale.fadeOutFrames, 93);
+  assert.equal(finale.normalizationTailSeconds, 1.4);
+  assert.deepEqual(finale.tailDampingFades, [{ startFrame: 12492, durationFrames: 42, curve: "qsin" }]);
   assert.equal(finale.waveformAudit.tuttiCadenceStartSeconds, 153.812125);
   assert.equal(finale.waveformAudit.previousCutSeconds, 156.612125);
-  assert.equal(finale.waveformAudit.tailExtensionSeconds, 1);
-  assert.equal(finale.waveformAudit.fadeOutStartSeconds, 156.912125);
+  assert.equal(finale.waveformAudit.tailExtensionSeconds, 0.6);
+  assert.equal(finale.waveformAudit.fadeOutStartSeconds, 155.662125);
+  assert.equal(finale.waveformAudit.tailDampingFadeStartSeconds, 156.912125);
   assert.equal(finale.waveformAudit.excludedQuietSoloEndSeconds, 163.662125);
   assert.equal(finale.waveformAudit.usesNaturalAudibleEnd, false);
   assert.equal(finale.waveformAudit.quietSoloSuppressedByFade, true);

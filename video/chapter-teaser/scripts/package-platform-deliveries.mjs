@@ -174,7 +174,7 @@ function renderDelivery({ ffmpeg, ffprobe, profile, sourcePath, outputRoot, audi
         targetBitRate: 320000,
         sampleRate: timeline.sampleRate,
         channels: 2,
-        cadenceTailFrames: 60,
+        cadenceTailFrames: timeline.music.clips.at(-1).targetEndFrame - timeline.segments.find((segment) => segment.kind === "end-card").startFrame,
         digitalSilenceFromFrame: timeline.music.clips.at(-1).targetEndFrame
       },
       probe: outputProbe,
