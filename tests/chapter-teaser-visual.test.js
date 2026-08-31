@@ -474,13 +474,13 @@ test("cover exports keep exact publishing copy and three requested safe aspect r
     "【III.扭带】-【IV.瓶界】-【V.双生】-【VI.归圆】"
   ]);
   const source = fs.readFileSync(path.join(PV_ROOT, "scripts", "render-covers.mjs"), "utf8");
-  const boardSource = fs.readFileSync(path.join(PV_ROOT, "scripts", "render-cover-board-v5.mjs"), "utf8");
+  const boardSource = fs.readFileSync(path.join(PV_ROOT, "scripts", "render-cover-board.mjs"), "utf8");
   assert.match(boardSource, /id: "4x3"[\s\S]*width: 1600, height: 1200/);
   assert.match(boardSource, /id: "16x9"[\s\S]*width: 1920, height: 1080/);
   assert.match(boardSource, /id: "3x4"[\s\S]*width: 1080, height: 1440/);
   assert.match(source, /large title only; no small cover copy/);
   assert.match(source, /assets", "cover-final", "wordmark\.png"/);
-  assert.match(source, /render-cover-board-v5\.mjs/);
+  assert.match(source, /render-cover-board\.mjs/);
   assert.match(source, /drawBoardFoundation/);
   assert.match(source, /opaqueSurface\.addColorStop\(0, "rgba\(255,255,255,0\.86\)"\)/);
   assert.match(source, /shadowColor = "rgba\(19,38,33,0\.28\)"/);
@@ -494,139 +494,6 @@ test("cover exports keep exact publishing copy and three requested safe aspect r
   assert.match(source, /wordmark: Object\.freeze\(\{ x: 0\.06, y: 0\.66[\s\S]*subtitle: Object\.freeze\(\{ x: 0\.50, y: 0\.905, size: 0\.103 \}\)/);
   assert.match(source, /3x4: the approved wordmark must not cover the board or its lower-left stone/);
   assert.doesNotMatch(source, /sphere\.svg/);
-
-  const approvedWordmark = fs.readFileSync(path.join(PV_ROOT, "assets", "cover-final", "wordmark.png"));
-  assert.equal(
-    crypto.createHash("sha256").update(approvedWordmark).digest("hex"),
-    "b425ad0dcf848f4179805183e096744541906c5f68fad79c452616e17eef7d57"
-  );
-});
-
-test("cover exploration provides six nontrivial topology and bespoke wordmark families", () => {
-  const source = fs.readFileSync(path.join(PV_ROOT, "scripts", "render-cover-directions.mjs"), "utf8");
-  for (const id of [
-    "mobius-continuum",
-    "klein-passage",
-    "projective-crossing",
-    "torus-orbit",
-    "seam-gate",
-    "wordmark-manifold"
-  ]) assert.match(source, new RegExp(`id: "${id}"`));
-  assert.match(source, /Engine\.tracePath/);
-  assert.match(source, /Morph\.project/);
-  assert.match(source, /Morph\.seamBridgeUV/);
-  assert.match(source, /exact live-game trace projected through topology-morph\.js/);
-  assert.match(source, /five-stone path integrated into the exact wordmark/);
-  assert.match(source, /inner 9% frame/);
-  assert.match(source, /id: "4x3"[\s\S]*width: 1600, height: 1200/);
-  assert.match(source, /id: "16x9"[\s\S]*width: 1920, height: 1080/);
-  assert.match(source, /id: "3x4"[\s\S]*width: 1080, height: 1440/);
-});
-
-test("cover redesign uses original vector lettering and opaque thumbnail-safe topology anchors", () => {
-  const source = fs.readFileSync(path.join(PV_ROOT, "scripts", "render-cover-redesign.mjs"), "utf8");
-  for (const id of ["klein-monolith", "mobius-lacquer", "projective-seal", "atlas-ink"]) {
-    assert.match(source, new RegExp(`id: "${id}"`));
-  }
-  assert.match(source, /WORDMARK_STROKES/);
-  assert.match(source, /WORDMARK_KNOCKOUTS/);
-  assert.match(source, /WORDMARK_OVERPASSES/);
-  assert.match(source, /central over-under twist/);
-  assert.match(source, /棋 terminal return loop/);
-  assert.match(source, /topology-gomoku-wordmark-colour\.svg/);
-  assert.match(source, /topology-gomoku-wordmark-black\.svg/);
-  assert.match(source, /topology-gomoku-wordmark-reverse\.svg/);
-  assert.match(source, /topology-gomoku-wordmark-240px\.png/);
-  assert.match(source, /thumbnail-proof-\$\{profile\.id\}\.png/);
-  assert.doesNotMatch(source, /fillText\(["']拓扑五子棋["']/);
-  assert.doesNotMatch(source, /fillText\(["']拓["']/);
-  assert.match(source, /id: "4x3"[\s\S]*width: 1600, height: 1200/);
-  assert.match(source, /id: "16x9"[\s\S]*width: 1920, height: 1080/);
-  assert.match(source, /id: "3x4"[\s\S]*width: 1080, height: 1440/);
-});
-
-test("imagegen cover exploration keeps real branding and distinct art families across all cover ratios", () => {
-  const source = fs.readFileSync(path.join(PV_ROOT, "scripts", "render-cover-imagegen-exploration.mjs"), "utf8");
-  for (const id of [
-    "real-logo-hero",
-    "footsteps-twin",
-    "game-atlas",
-    "ink-loop",
-    "anime-crosscap",
-    "porcelain-monolith",
-    "geometric-fold",
-    "atlas-fantasia",
-    "geometric-klein",
-    "geometric-duality"
-  ]) assert.match(source, new RegExp(`id: "${id}"`));
-  assert.match(source, /app", "assets", "brand-icon\.png/);
-  assert.match(source, /assets", "cover-exploration/);
-  assert.match(source, /wordmarks", "09b-geometric-refined\.png/);
-  assert.match(source, /manifolds", "08-geometric-klein\.png/);
-  assert.match(source, /drawTwinHero/);
-  assert.match(source, /thumbnail-proof-\$\{profile\.id\}\.png/);
-  assert.match(source, /wordmark-candidates\.png/);
-  assert.match(source, /manifold-candidates\.png/);
-  assert.match(source, /Only \$\{activeDirections\.length\} cover directions have complete assets/);
-  assert.match(source, /id: "4x3"[\s\S]*width: 1600, height: 1200/);
-  assert.match(source, /id: "16x9"[\s\S]*width: 1920, height: 1080/);
-  assert.match(source, /id: "3x4"[\s\S]*width: 1080, height: 1440/);
-});
-
-test("cover selection exploration keeps only approved wordmark families and adapts eleven focused directions", () => {
-  const source = fs.readFileSync(path.join(PV_ROOT, "scripts", "render-cover-selection-exploration.mjs"), "utf8");
-  const compositor = fs.readFileSync(path.join(PV_ROOT, "scripts", "compose-cover-wordmarks-v4.mjs"), "utf8");
-  for (const id of [
-    "selected-sphere-baseline",
-    "mobius-footsteps",
-    "torus-board-4x4",
-    "real-game-logo",
-    "geometric-atlas",
-    "geometric-klein",
-    "seven-manifold-orbit",
-    "imagegen-seven-orbit",
-    "imagegen-mobius-stage",
-    "imagegen-torus-board",
-    "imagegen-footsteps-atlas"
-  ]) assert.match(source, new RegExp(`id: "${id}"`));
-  assert.doesNotMatch(source, /06-ink-wash|07-anime-chapter/);
-  assert.match(source, /app", "assets", "brand-icon\.png/);
-  assert.match(source, /manifolds", "07b-geometric-refined\.png/);
-  assert.match(source, /manifolds", "08-geometric-klein\.png/);
-  assert.match(source, /function drawTorusBoard/);
-  assert.match(source, /xConnection: "same", yConnection: "same"/);
-  assert.match(source, /for \(let index = 0; index < 5; index \+= 1\)/);
-  assert.match(source, /function orbitPlacements/);
-  assert.match(source, /thumbnail-proof-\$\{profile\.id\}\.png/);
-  assert.match(source, /exactCoverText: \["拓扑五子棋", "足迹回环"\]/);
-  assert.match(source, /id: "4x3"[\s\S]*width: 1600, height: 1200/);
-  assert.match(source, /id: "16x9"[\s\S]*width: 1920, height: 1080/);
-  assert.match(source, /id: "3x4"[\s\S]*width: 1080, height: 1440/);
-
-  assert.match(compositor, /five-twin\.png/);
-  assert.match(compositor, /qi-three-stones\.png/);
-  assert.match(compositor, /qi-geometric\.png/);
-  assert.match(compositor, /08d-footsteps-corrected\.png/);
-  assert.match(compositor, /09f-geometric-corrected\.png/);
-  assert.match(compositor, /heightScale: 1\.5/);
-  assert.match(compositor, /heightScale: 1\.25/);
-  for (const asset of [
-    "08d-footsteps-corrected.png",
-    "09f-geometric-corrected.png",
-    "09c-folded-inscription.png",
-    "09d-single-ribbon.png",
-    "09e-modular-join.png"
-  ]) {
-    const assetPath = path.join(PV_ROOT, "assets", "cover-exploration-v4", "wordmarks", asset);
-    assert.ok(fs.existsSync(assetPath), `missing approved wordmark asset: ${asset}`);
-    assert.ok(fs.statSync(assetPath).size > 40_000, `wordmark asset is unexpectedly small: ${asset}`);
-  }
-});
-
-test("cover wordmark v5 uses the real torus rules, square game board, and repaired 08/09 families", () => {
-  const boardSource = fs.readFileSync(path.join(PV_ROOT, "scripts", "render-cover-board-v5.mjs"), "utf8");
-  const coverSource = fs.readFileSync(path.join(PV_ROOT, "scripts", "render-cover-wordmark-exploration-v5.mjs"), "utf8");
-
   assert.match(boardSource, /require\("\.\.\/\.\.\/\.\.\/app\/assets\/topology-art\.js"\)/);
   assert.match(boardSource, /require\("\.\.\/\.\.\/\.\.\/app\/assets\/topology\.js"\)/);
   assert.match(boardSource, /Engine\.tracePath/);
@@ -635,39 +502,12 @@ test("cover wordmark v5 uses the real torus rules, square game board, and repair
   assert.match(boardSource, /auxiliaryCircleCount: 0/);
   assert.match(boardSource, /x: "same", y: "same"/);
   assert.match(boardSource, /projection: "orthographic"/);
-  assert.match(boardSource, /titleOverlapFraction < 0\.10/);
-  assert.match(boardSource, /titleOverlapFraction > 0\.25/);
 
-  for (const id of [
-    "serif-baseline",
-    "08g-footsteps-release-tight",
-    "08h-footsteps-twin-surface",
-    "08i-footsteps-ribbon-release",
-    "09g-geometric-repaired",
-    "09h-geometric-folded",
-    "09i-geometric-release"
-  ]) assert.match(coverSource, new RegExp(`id: "${id}"`));
-  assert.match(coverSource, /exactCoverText: \["拓扑五子棋", "足迹回环"\]/);
-  assert.match(coverSource, /boardSource: "repository game art: topology-art\.js"/);
-  assert.match(coverSource, /x: 0\.075[\s\S]*width: 0\.50, height: 0\.34/);
-  assert.match(coverSource, /x: 0\.07[\s\S]*width: 0\.555, height: 0\.42/);
-  assert.match(coverSource, /x: 0\.07[\s\S]*width: 0\.86, height: 0\.28/);
-  assert.doesNotMatch(coverSource, /heightScale|fiveScale|oversizedFive/);
-  assert.match(coverSource, /qa-chapter-teaser-cover-wordmarks-v5-/);
-  assert.match(coverSource, /thumbnail-proof-/);
-
-  for (const asset of [
-    "08g-footsteps-release-tight.png",
-    "08h-footsteps-twin-surface.png",
-    "08i-footsteps-ribbon-release.png",
-    "09g-geometric-repaired.png",
-    "09h-geometric-folded.png",
-    "09i-geometric-release.png"
-  ]) {
-    const assetPath = path.join(PV_ROOT, "assets", "cover-exploration-v5", "wordmarks", asset);
-    assert.ok(fs.existsSync(assetPath), `missing v5 wordmark asset: ${asset}`);
-    assert.ok(fs.statSync(assetPath).size > 100_000, `v5 wordmark asset is unexpectedly small: ${asset}`);
-  }
+  const approvedWordmark = fs.readFileSync(path.join(PV_ROOT, "assets", "cover-final", "wordmark.png"));
+  assert.equal(
+    crypto.createHash("sha256").update(approvedWordmark).digest("hex"),
+    "b425ad0dcf848f4179805183e096744541906c5f68fad79c452616e17eef7d57"
+  );
 });
 
 test("native portrait compositions render directly at both platform aspect ratios", () => {

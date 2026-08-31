@@ -1,18 +1,8 @@
-import { createHash } from "node:crypto";
-import { promises as fs } from "node:fs";
 import { createRequire } from "node:module";
-import path from "node:path";
-import { fileURLToPath } from "node:url";
 
 const require = createRequire(import.meta.url);
-const { createCanvas } = require("@napi-rs/canvas");
 const Art = require("../../../app/assets/topology-art.js");
 const Engine = require("../../../app/assets/topology.js");
-
-const scriptDirectory = path.dirname(fileURLToPath(import.meta.url));
-const pvRoot = path.resolve(scriptDirectory, "..");
-const repositoryRoot = path.resolve(pvRoot, "../..");
-const defaultOutputDirectory = path.join(repositoryRoot, ".tmp", "chapter-teaser", "cover-board-v5");
 
 export const COVER_BOARD_PROFILES = Object.freeze([
   Object.freeze({ id: "4x3", label: "4:3", width: 1600, height: 1200 }),
@@ -22,10 +12,10 @@ export const COVER_BOARD_PROFILES = Object.freeze([
 
 const torusRules = Engine.createRules({ type: "torus", width: 5, height: 5, target: 5 });
 const torusPath = Engine.tracePath(torusRules, Engine.toCell(torusRules, 2, 1), 5, 5);
-if (!torusPath) throw new Error("Unable to derive the v5 torus cover path from the live game rules");
+if (!torusPath) throw new Error("Unable to derive the final torus cover path from the live game rules");
 const torusPathSeamMask = torusPath.seams.reduce((mask, seam) => mask | seam, 0);
 if ((torusPathSeamMask & (Engine.SEAM_X | Engine.SEAM_Y)) !== (Engine.SEAM_X | Engine.SEAM_Y)) {
-  throw new Error("The v5 torus cover path must cross both periodic boundary pairs");
+  throw new Error("The final torus cover path must cross both periodic boundary pairs");
 }
 const torusPathPoints = torusPath.cells.map((cell) => {
   const point = Engine.toPoint(torusRules, cell);
@@ -62,30 +52,29 @@ const palette = Object.freeze({
   paperBright: Art.PALETTE.card
 });
 
-const layoutPresets = Object.freeze({
+const defaultBoardPlacements = Object.freeze({
   "4x3": Object.freeze({
-    board: Object.freeze({ left: 0.455, top: 0.18, sizeBy: "height", size: 0.64 }),
-    title: Object.freeze({ x: 0.05, y: 0.33, width: 0.525, height: 0.24 }),
-    overlapAxis: "x"
+    left: 0.455,
+    top: 0.17,
+    sizeBy: "height",
+    size: 0.64
   }),
   "16x9": Object.freeze({
-    board: Object.freeze({ left: 0.525, top: 0.14, sizeBy: "height", size: 0.72 }),
-    title: Object.freeze({ x: 0.05, y: 0.32, width: 0.55, height: 0.26 }),
-    overlapAxis: "x"
+    left: 0.525,
+    top: 0.13,
+    sizeBy: "height",
+    size: 0.72
   }),
   "3x4": Object.freeze({
-    board: Object.freeze({ left: 0.16, top: 0.12, sizeBy: "width", size: 0.68 }),
-    title: Object.freeze({ x: 0.06, yFromBoard: 0.78, width: 0.88, height: 0.18 }),
-    overlapAxis: "y"
+    left: 0.16,
+    top: 0.075,
+    sizeBy: "width",
+    size: 0.68
   })
 });
 
 function clamp(value, low, high) {
   return Math.max(low, Math.min(high, value));
-}
-
-function roundGeometry(value) {
-  return Math.round(value * 1000) / 1000;
 }
 
 function normalizeProfile(profile) {
@@ -97,41 +86,14 @@ function normalizeProfile(profile) {
   return { id, label: profile.label || id, width: profile.width, height: profile.height };
 }
 
-function rectangleFromFractions(profile, source) {
-  return {
-    x: profile.width * source.x,
-    y: profile.height * source.y,
-    width: profile.width * source.width,
-    height: profile.height * source.height
-  };
-}
-
-function overlapFraction(boardRect, titleRect, axis) {
-  if (axis === "y") {
-    const amount = Math.max(0, Math.min(boardRect.y + boardRect.height, titleRect.y + titleRect.height) - Math.max(boardRect.y, titleRect.y));
-    return amount / boardRect.height;
-  }
-  const amount = Math.max(0, Math.min(boardRect.x + boardRect.width, titleRect.x + titleRect.width) - Math.max(boardRect.x, titleRect.x));
-  return amount / boardRect.width;
-}
-
 export function getCoverBoardLayout(profileInput, overrides = {}) {
   const profile = normalizeProfile(profileInput);
-  const preset = layoutPresets[profile.id];
-  const baseSize = preset.board.sizeBy === "width" ? profile.width : profile.height;
-  const size = Number.isFinite(overrides.size) ? overrides.size : baseSize * preset.board.size;
-  const left = Number.isFinite(overrides.left) ? overrides.left : profile.width * preset.board.left;
-  const top = Number.isFinite(overrides.top) ? overrides.top : profile.height * preset.board.top;
+  const preset = defaultBoardPlacements[profile.id];
+  const baseSize = preset.sizeBy === "width" ? profile.width : profile.height;
+  const size = Number.isFinite(overrides.size) ? overrides.size : baseSize * preset.size;
+  const left = Number.isFinite(overrides.left) ? overrides.left : profile.width * preset.left;
+  const top = Number.isFinite(overrides.top) ? overrides.top : profile.height * preset.top;
   const boardRect = { x: left, y: top, width: size, height: size };
-  const titleSource = preset.title;
-  const titleRect = overrides.titleRect || (titleSource.yFromBoard == null
-    ? rectangleFromFractions(profile, titleSource)
-    : {
-        x: profile.width * titleSource.x,
-        y: top + size * titleSource.yFromBoard,
-        width: profile.width * titleSource.width,
-        height: profile.height * titleSource.height
-      });
   const stageMargin = size * 0.085;
   const stageRect = {
     x: left - stageMargin,
@@ -143,9 +105,6 @@ export function getCoverBoardLayout(profileInput, overrides = {}) {
     profile,
     boardRect,
     stageRect,
-    titleRect,
-    titleOverlapAxis: preset.overlapAxis,
-    titleOverlapFraction: overlapFraction(boardRect, titleRect, preset.overlapAxis),
     cell: size / COVER_BOARD_SPEC.cells.columns,
     artScale: size / 560
   };
@@ -154,12 +113,9 @@ export function getCoverBoardLayout(profileInput, overrides = {}) {
 }
 
 export function validateCoverBoardLayout(layout) {
-  const { profile, boardRect, titleOverlapFraction, cell } = layout;
+  const { profile, boardRect, cell } = layout;
   if (Math.abs(boardRect.width - boardRect.height) > 1e-6 || Math.abs(cell * 4 - boardRect.width) > 1e-6) {
     throw new Error(`${profile.id}: board cells are not mathematically square`);
-  }
-  if (titleOverlapFraction < 0.10 - 1e-6 || titleOverlapFraction > 0.25 + 1e-6) {
-    throw new Error(`${profile.id}: title overlap ${titleOverlapFraction.toFixed(3)} is outside 10–25%`);
   }
   const pathOverflow = boardRect.width * 0.13;
   if (
@@ -407,121 +363,4 @@ export function drawCoverBoard(ctx, profileInput, placement = {}) {
   drawFiveStonePath(ctx, layout);
   drawFiveStones(ctx, layout);
   return layout;
-}
-
-export function renderCoverBoard(profileInput, placement = {}) {
-  const profile = normalizeProfile(profileInput);
-  const canvas = createCanvas(profile.width, profile.height);
-  const ctx = canvas.getContext("2d", { alpha: false });
-  drawCoverBoardBackdrop(ctx, profile, placement);
-  const layout = drawCoverBoard(ctx, profile, placement);
-  return { canvas, layout };
-}
-
-function sha256(buffer) {
-  return createHash("sha256").update(buffer).digest("hex");
-}
-
-function thumbnailSize(profile) {
-  if (profile.id === "16x9") return { width: 160, height: 90 };
-  if (profile.id === "4x3") return { width: 160, height: 120 };
-  return { width: 135, height: 180 };
-}
-
-function serializeRectangle(rect) {
-  return Object.fromEntries(Object.entries(rect).map(([key, value]) => [key, roundGeometry(value)]));
-}
-
-function renderThumbnailProof(entries) {
-  const padding = 22;
-  const labelHeight = 32;
-  const cardWidth = 188;
-  const height = 236;
-  const canvas = createCanvas(padding * 2 + cardWidth * entries.length, height);
-  const ctx = canvas.getContext("2d", { alpha: false });
-  ctx.fillStyle = "#d8d2c7";
-  ctx.fillRect(0, 0, canvas.width, canvas.height);
-  ctx.fillStyle = palette.inkDeep;
-  ctx.font = "600 16px sans-serif";
-  ctx.textAlign = "center";
-  ctx.textBaseline = "middle";
-  entries.forEach((entry, index) => {
-    const thumb = thumbnailSize(entry.profile);
-    const x = padding + index * cardWidth + (cardWidth - thumb.width) / 2;
-    const y = padding + (180 - thumb.height) / 2;
-    ctx.drawImage(entry.canvas, x, y, thumb.width, thumb.height);
-    ctx.fillText(entry.profile.label, padding + index * cardWidth + cardWidth / 2, height - labelHeight / 2 - 3);
-  });
-  return canvas;
-}
-
-function parseOutputDirectory(argv) {
-  const outputIndex = argv.indexOf("--output");
-  if (outputIndex < 0) return defaultOutputDirectory;
-  const value = argv[outputIndex + 1];
-  if (!value) throw new Error("--output requires a directory path");
-  return path.resolve(process.cwd(), value);
-}
-
-export async function renderCoverBoardPreviews(options = {}) {
-  const outputDirectory = options.outputDirectory || defaultOutputDirectory;
-  await fs.mkdir(outputDirectory, { recursive: true });
-  const entries = [];
-  const exports = [];
-  for (const profile of COVER_BOARD_PROFILES) {
-    const { canvas, layout } = renderCoverBoard(profile);
-    const buffer = canvas.toBuffer("image/png");
-    const filename = `board-only-${profile.id}.png`;
-    await fs.writeFile(path.join(outputDirectory, filename), buffer);
-    const thumbnail = thumbnailSize(profile);
-    const thumbnailCanvas = createCanvas(thumbnail.width, thumbnail.height);
-    thumbnailCanvas.getContext("2d", { alpha: false }).drawImage(canvas, 0, 0, thumbnail.width, thumbnail.height);
-    const thumbnailFilename = `thumbnail-${profile.id}.png`;
-    await fs.writeFile(path.join(outputDirectory, thumbnailFilename), thumbnailCanvas.toBuffer("image/png"));
-    entries.push({ profile, canvas, layout });
-    exports.push({
-      id: profile.id,
-      file: filename,
-      thumbnail: thumbnailFilename,
-      width: profile.width,
-      height: profile.height,
-      bytes: buffer.length,
-      sha256: sha256(buffer),
-      boardRect: serializeRectangle(layout.boardRect),
-      stageRect: serializeRectangle(layout.stageRect),
-      titleRect: serializeRectangle(layout.titleRect),
-      titleOverlapAxis: layout.titleOverlapAxis,
-      titleOverlapFraction: roundGeometry(layout.titleOverlapFraction),
-      cellSize: roundGeometry(layout.cell)
-    });
-  }
-  const proof = renderThumbnailProof(entries).toBuffer("image/png");
-  await fs.writeFile(path.join(outputDirectory, "thumbnail-proof.png"), proof);
-  const manifest = {
-    schemaVersion: 1,
-    renderer: path.relative(repositoryRoot, fileURLToPath(import.meta.url)).replaceAll("\\", "/"),
-    deterministic: true,
-    boardSpec: COVER_BOARD_SPEC,
-    palette,
-    outputs: exports
-  };
-  await fs.writeFile(path.join(outputDirectory, "layout-manifest.json"), `${JSON.stringify(manifest, null, 2)}\n`, "utf8");
-  return { outputDirectory, manifest };
-}
-
-async function main() {
-  const outputDirectory = parseOutputDirectory(process.argv.slice(2));
-  const result = await renderCoverBoardPreviews({ outputDirectory });
-  process.stdout.write(`Cover board v5 previews written to ${result.outputDirectory}\n`);
-  result.manifest.outputs.forEach((entry) => {
-    process.stdout.write(`${entry.id}: ${entry.width}x${entry.height}, title overlap ${(entry.titleOverlapFraction * 100).toFixed(1)}%, ${entry.sha256}\n`);
-  });
-}
-
-const isMain = process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url);
-if (isMain) {
-  main().catch((error) => {
-    process.stderr.write(`${error && error.stack ? error.stack : error}\n`);
-    process.exitCode = 1;
-  });
 }

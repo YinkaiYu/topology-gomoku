@@ -9,7 +9,7 @@ import {
   drawCoverBoard,
   drawCoverBoardBackdrop,
   getCoverBoardLayout
-} from "./render-cover-board-v5.mjs";
+} from "./render-cover-board.mjs";
 
 const require = createRequire(import.meta.url);
 const { createCanvas, GlobalFonts, loadImage } = require("@napi-rs/canvas");
@@ -461,10 +461,8 @@ async function main() {
   const reviewSheet = renderReviewSheet(entries).toBuffer("image/png");
   const thumbnailProof = renderThumbnailProof(entries).toBuffer("image/png");
   await Promise.all([
-    fs.writeFile(path.join(outputDirectory, "final-cover-review-sheet.png"), reviewSheet),
-    fs.writeFile(path.join(outputDirectory, "final-cover-thumbnail-proof.png"), thumbnailProof),
-    fs.writeFile(path.join(artifactDirectory, "qa-chapter-teaser-covers-final-v6.png"), reviewSheet),
-    fs.writeFile(path.join(artifactDirectory, "qa-chapter-teaser-covers-final-v6-thumbnail.png"), thumbnailProof),
+    fs.writeFile(path.join(artifactDirectory, "qa-chapter-teaser-covers-final.png"), reviewSheet),
+    fs.writeFile(path.join(artifactDirectory, "qa-chapter-teaser-covers-final-thumbnail.png"), thumbnailProof),
     fs.writeFile(
       path.join(outputDirectory, "publishing-copy.txt"),
       `${publishingCopy.title}\n\n${publishingCopy.descriptionLines.join("\n")}\n`,
@@ -476,7 +474,7 @@ async function main() {
         "Approved wordmark: video/chapter-teaser/assets/cover-final/wordmark.png",
         `Approved wordmark SHA-256: ${sha256(wordmarkBuffer)}`,
         "Board art: app/assets/topology-art.js",
-        "Board rules: app/assets/topology.js through render-cover-board-v5.mjs",
+        "Board rules: app/assets/topology.js through render-cover-board.mjs",
         "Composition: deterministic @napi-rs/canvas renderer; no generative changes to the approved wordmark"
       ].join("\n") + "\n",
       "utf8"

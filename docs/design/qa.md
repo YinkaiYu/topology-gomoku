@@ -67,31 +67,8 @@
 | 章节预告 PV「七界足迹」最终 4K ProRes 母版抽帧 | [`artifacts/qa-chapter-teaser-pv-master-4k-final-contact-sheet.png`](../../artifacts/qa-chapter-teaser-pv-master-4k-final-contact-sheet.png) |
 | 章节预告 PV「七界足迹」抖音原生 9:16 构图 | [`artifacts/qa-chapter-teaser-pv-douyin-9x16-contact-sheet.png`](../../artifacts/qa-chapter-teaser-pv-douyin-9x16-contact-sheet.png) |
 | 章节预告 PV「七界足迹」小红书原生 3:4 构图 | [`artifacts/qa-chapter-teaser-pv-xiaohongshu-3x4-contact-sheet.png`](../../artifacts/qa-chapter-teaser-pv-xiaohongshu-3x4-contact-sheet.png) |
-| 章节预告 PV「足迹回环」4:3 封面 | [`artifacts/qa-chapter-teaser-pv-cover-4x3.png`](../../artifacts/qa-chapter-teaser-pv-cover-4x3.png) |
-| 章节预告 PV「足迹回环」16:9 封面 | [`artifacts/qa-chapter-teaser-pv-cover-16x9.png`](../../artifacts/qa-chapter-teaser-pv-cover-16x9.png) |
-| 章节预告 PV「足迹回环」3:4 封面 | [`artifacts/qa-chapter-teaser-pv-cover-3x4.png`](../../artifacts/qa-chapter-teaser-pv-cover-3x4.png) |
-| 章节预告 PV「足迹回环」六方向封面探索 4:3 | [`artifacts/qa-chapter-teaser-cover-directions-4x3.png`](../../artifacts/qa-chapter-teaser-cover-directions-4x3.png) |
-| 章节预告 PV「足迹回环」六方向封面探索 16:9 | [`artifacts/qa-chapter-teaser-cover-directions-16x9.png`](../../artifacts/qa-chapter-teaser-cover-directions-16x9.png) |
-| 章节预告 PV「足迹回环」六方向封面探索 3:4 | [`artifacts/qa-chapter-teaser-cover-directions-3x4.png`](../../artifacts/qa-chapter-teaser-cover-directions-3x4.png) |
-| 章节预告 PV「足迹回环」图片生成十方向封面探索 4:3 | [`artifacts/qa-chapter-teaser-cover-imagegen-4x3.png`](../../artifacts/qa-chapter-teaser-cover-imagegen-4x3.png) |
-| 章节预告 PV「足迹回环」图片生成十方向封面探索 16:9 | [`artifacts/qa-chapter-teaser-cover-imagegen-16x9.png`](../../artifacts/qa-chapter-teaser-cover-imagegen-16x9.png) |
-| 章节预告 PV「足迹回环」图片生成十方向封面探索 3:4 | [`artifacts/qa-chapter-teaser-cover-imagegen-3x4.png`](../../artifacts/qa-chapter-teaser-cover-imagegen-3x4.png) |
-| 章节预告 PV「足迹回环」十方向 160 × 90 缩略图证明 | [`artifacts/qa-chapter-teaser-cover-imagegen-thumbnail-16x9.png`](../../artifacts/qa-chapter-teaser-cover-imagegen-thumbnail-16x9.png) |
-| 章节预告 PV「足迹回环」十方向 135 × 180 缩略图证明 | [`artifacts/qa-chapter-teaser-cover-imagegen-thumbnail-3x4.png`](../../artifacts/qa-chapter-teaser-cover-imagegen-thumbnail-3x4.png) |
-| 章节预告 PV「足迹回环」图片生成字标候选 | [`artifacts/qa-chapter-teaser-wordmark-imagegen-candidates.png`](../../artifacts/qa-chapter-teaser-wordmark-imagegen-candidates.png) |
-| 章节预告 PV「足迹回环」图片生成流形候选 | [`artifacts/qa-chapter-teaser-manifold-imagegen-candidates.png`](../../artifacts/qa-chapter-teaser-manifold-imagegen-candidates.png) |
-| 章节预告 PV「足迹回环」反馈收敛候选 4:3 | [`artifacts/qa-chapter-teaser-cover-selection-v4-4x3.png`](../../artifacts/qa-chapter-teaser-cover-selection-v4-4x3.png) |
-| 章节预告 PV「足迹回环」反馈收敛候选 16:9 | [`artifacts/qa-chapter-teaser-cover-selection-v4-16x9.png`](../../artifacts/qa-chapter-teaser-cover-selection-v4-16x9.png) |
-| 章节预告 PV「足迹回环」反馈收敛候选 3:4 | [`artifacts/qa-chapter-teaser-cover-selection-v4-3x4.png`](../../artifacts/qa-chapter-teaser-cover-selection-v4-3x4.png) |
-| 章节预告 PV「足迹回环」反馈收敛候选真实缩略图 | [`16:9`](../../artifacts/qa-chapter-teaser-cover-selection-v4-thumbnail-16x9.png)、[`4:3`](../../artifacts/qa-chapter-teaser-cover-selection-v4-thumbnail-4x3.png)、[`3:4`](../../artifacts/qa-chapter-teaser-cover-selection-v4-thumbnail-3x4.png) |
-| 章节预告 PV「足迹回环」逐字修正字标候选 | [`artifacts/qa-chapter-teaser-wordmark-selection-v4.png`](../../artifacts/qa-chapter-teaser-wordmark-selection-v4.png) |
-| 章节预告 PV「足迹回环」实机环游棋盘字标修复候选 4:3 | [`artifacts/qa-chapter-teaser-cover-wordmarks-v5-4x3.png`](../../artifacts/qa-chapter-teaser-cover-wordmarks-v5-4x3.png) |
-| 章节预告 PV「足迹回环」实机环游棋盘字标修复候选 16:9 | [`artifacts/qa-chapter-teaser-cover-wordmarks-v5-16x9.png`](../../artifacts/qa-chapter-teaser-cover-wordmarks-v5-16x9.png) |
-| 章节预告 PV「足迹回环」实机环游棋盘字标修复候选 3:4 | [`artifacts/qa-chapter-teaser-cover-wordmarks-v5-3x4.png`](../../artifacts/qa-chapter-teaser-cover-wordmarks-v5-3x4.png) |
-| 章节预告 PV「足迹回环」v5 真实缩略图证明 | [`16:9`](../../artifacts/qa-chapter-teaser-cover-wordmarks-v5-thumbnail-16x9.png)、[`4:3`](../../artifacts/qa-chapter-teaser-cover-wordmarks-v5-thumbnail-4x3.png)、[`3:4`](../../artifacts/qa-chapter-teaser-cover-wordmarks-v5-thumbnail-3x4.png) |
-| 章节预告 PV「足迹回环」v5 字标独立对照 | [`artifacts/qa-chapter-teaser-wordmarks-v5.png`](../../artifacts/qa-chapter-teaser-wordmarks-v5.png) |
-| 章节预告 PV「足迹回环」确认字标最终三比例封面 | [`artifacts/qa-chapter-teaser-covers-final-v6.png`](../../artifacts/qa-chapter-teaser-covers-final-v6.png) |
-| 章节预告 PV「足迹回环」最终封面真实缩略图 | [`artifacts/qa-chapter-teaser-covers-final-v6-thumbnail.png`](../../artifacts/qa-chapter-teaser-covers-final-v6-thumbnail.png) |
+| 章节预告 PV「足迹回环」最终三比例封面 | [`artifacts/qa-chapter-teaser-covers-final.png`](../../artifacts/qa-chapter-teaser-covers-final.png) |
+| 章节预告 PV「足迹回环」最终封面真实缩略图 | [`artifacts/qa-chapter-teaser-covers-final-thumbnail.png`](../../artifacts/qa-chapter-teaser-covers-final-thumbnail.png) |
 
 较早截图只用于回归和问题溯源，不自动成为新设计的视觉真相。出现冲突时，以最新已确认实现、视觉设计语言和同状态实机/预览证据为准。
 
