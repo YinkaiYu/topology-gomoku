@@ -1,0 +1,138 @@
+{
+  "schemaVersion": 2,
+  "deterministic": true,
+  "title": "《拓扑五子棋》章节预告PV-「足迹回环」",
+  "descriptionLines": [
+    "人们总把棋盘的边缘视作尽头。",
+    "可那些消失在边界上的道路并未中断。",
+    "僭越棋盘之人，循着隐藏的连接前行吧。",
+    "世界的七重轮廓，在你面前依次苏醒……",
+    "【Prologue.方庭】-【I.回廊】-【II.环游】",
+    "【III.扭带】-【IV.瓶界】-【V.双生】-【VI.归圆】"
+  ],
+  "exactCoverText": [
+    "拓扑五子棋",
+    "足迹回环"
+  ],
+  "contentPolicy": "large title only; no small cover copy",
+  "visualSystem": "warm paper background, elevated opaque glass torus board, restrained teal and gold, layered approved wordmark",
+  "sourceAssets": [
+    {
+      "file": "video/chapter-teaser/assets/cover-final/wordmark.png",
+      "role": "user-approved exact wordmark",
+      "sha256": "b425ad0dcf848f4179805183e096744541906c5f68fad79c452616e17eef7d57",
+      "alphaBounds": {
+        "x": 74,
+        "y": 185,
+        "width": 1760,
+        "height": 454
+      }
+    },
+    {
+      "file": "app/assets/topology-art.js",
+      "role": "live-game board art"
+    },
+    {
+      "file": "app/assets/topology.js",
+      "role": "live-game torus path rules"
+    }
+  ],
+  "effects": {
+    "boardOpacity": "raised opaque paper-glass foundation beneath the shared live-game board",
+    "boardDepth": "large soft cast shadow plus contact shadow",
+    "wordmarkDepth": "warm halo plus restrained dark cast shadow",
+    "subtitle": "larger Topo Serif PV title, soft ivory outline, no underline"
+  },
+  "exports": [
+    {
+      "id": "4x3",
+      "label": "4:3",
+      "file": "topology-gomoku-footsteps-loop-cover-4x3.png",
+      "width": 1600,
+      "height": 1200,
+      "bytes": 581599,
+      "sha256": "c0b99f37217c1052107ac6d2c10fbd6bf857390e77876fce3ee7e6373359f8f1",
+      "boardRect": {
+        "x": 728,
+        "y": 204,
+        "width": 768,
+        "height": 768
+      },
+      "wordmarkRect": {
+        "x": 80,
+        "y": 374.182,
+        "width": 960,
+        "height": 247.636
+      },
+      "subtitle": {
+        "text": "足迹回环",
+        "x": 496,
+        "y": 840,
+        "fontSize": 108,
+        "underline": false
+      },
+      "portraitWordmarkBoardOverlap": null,
+      "safeZone": "approved wordmark remains inside the inner 4.5% frame"
+    },
+    {
+      "id": "16x9",
+      "label": "16:9",
+      "file": "topology-gomoku-footsteps-loop-cover-16x9.png",
+      "width": 1920,
+      "height": 1080,
+      "bytes": 631752,
+      "sha256": "4e226b8d1d7c3dae7156158e028911ca0e1803edd46dc2434672e4d3bae21370",
+      "boardRect": {
+        "x": 1008,
+        "y": 140.4,
+        "width": 777.6,
+        "height": 777.6
+      },
+      "wordmarkRect": {
+        "x": 96,
+        "y": 324.142,
+        "width": 1171.2,
+        "height": 302.116
+      },
+      "subtitle": {
+        "text": "足迹回环",
+        "x": 604.8,
+        "y": 788.4,
+        "fontSize": 97.2,
+        "underline": false
+      },
+      "portraitWordmarkBoardOverlap": null,
+      "safeZone": "approved wordmark remains inside the inner 4.5% frame"
+    },
+    {
+      "id": "3x4",
+      "label": "3:4",
+      "file": "topology-gomoku-footsteps-loop-cover-3x4.png",
+      "width": 1080,
+      "height": 1440,
+      "bytes": 529420,
+      "sha256": "6be49791bc9f8c18b3f26bc43e99ffa7848df4a279277920ac6c2fab5909b2f4",
+      "boardRect": {
+        "x": 172.8,
+        "y": 108,
+        "width": 734.4,
+        "height": 734.4
+      },
+      "wordmarkRect": {
+        "x": 64.8,
+        "y": 979.02,
+        "width": 950.4,
+        "height": 245.16
+      },
+      "subtitle": {
+        "text": "足迹回环",
+        "x": 540,
+        "y": 1274.4,
+        "fontSize": 97.2,
+        "underline": false
+      },
+      "portraitWordmarkBoardOverlap": 0,
+      "safeZone": "approved wordmark remains inside the inner 4.5% frame"
+    }
+  ]
+}

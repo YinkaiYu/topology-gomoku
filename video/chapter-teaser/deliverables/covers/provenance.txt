@@ -1,0 +1,5 @@
+Approved wordmark: video/chapter-teaser/assets/cover-final/wordmark.png
+Approved wordmark SHA-256: b425ad0dcf848f4179805183e096744541906c5f68fad79c452616e17eef7d57
+Board art: app/assets/topology-art.js
+Board rules: app/assets/topology.js through render-cover-board-v5.mjs
+Composition: deterministic @napi-rs/canvas renderer; no generative changes to the approved wordmark

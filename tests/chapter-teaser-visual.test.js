@@ -474,10 +474,27 @@ test("cover exports keep exact publishing copy and three requested safe aspect r
     "【III.扭带】-【IV.瓶界】-【V.双生】-【VI.归圆】"
   ]);
   const source = fs.readFileSync(path.join(PV_ROOT, "scripts", "render-covers.mjs"), "utf8");
-  assert.match(source, /id: "4x3"[\s\S]*width: 1600, height: 1200/);
-  assert.match(source, /id: "16x9"[\s\S]*width: 1920, height: 1080/);
-  assert.match(source, /id: "3x4"[\s\S]*width: 1080, height: 1440/);
+  const boardSource = fs.readFileSync(path.join(PV_ROOT, "scripts", "render-cover-board-v5.mjs"), "utf8");
+  assert.match(boardSource, /id: "4x3"[\s\S]*width: 1600, height: 1200/);
+  assert.match(boardSource, /id: "16x9"[\s\S]*width: 1920, height: 1080/);
+  assert.match(boardSource, /id: "3x4"[\s\S]*width: 1080, height: 1440/);
   assert.match(source, /large title only; no small cover copy/);
+  assert.match(source, /assets", "cover-final", "wordmark\.png"/);
+  assert.match(source, /render-cover-board-v5\.mjs/);
+  assert.match(source, /drawBoardFoundation/);
+  assert.match(source, /opaqueSurface\.addColorStop\(0, "rgba\(255,255,255,0\.86\)"\)/);
+  assert.match(source, /shadowColor = "rgba\(19,38,33,0\.28\)"/);
+  assert.match(source, /wordmarkDepth: "warm halo plus restrained dark cast shadow"/);
+  assert.match(source, /subtitle: "larger Topo Serif PV title, soft ivory outline, no underline"/);
+  assert.match(source, /underline: false/);
+  assert.match(source, /3x4: the approved wordmark must not cover the board or its lower-left stone/);
+  assert.doesNotMatch(source, /sphere\.svg/);
+
+  const approvedWordmark = fs.readFileSync(path.join(PV_ROOT, "assets", "cover-final", "wordmark.png"));
+  assert.equal(
+    crypto.createHash("sha256").update(approvedWordmark).digest("hex"),
+    "b425ad0dcf848f4179805183e096744541906c5f68fad79c452616e17eef7d57"
+  );
 });
 
 test("cover exploration provides six nontrivial topology and bespoke wordmark families", () => {
