@@ -23,6 +23,8 @@
     "pv:social:xiaohongshu": "node ./video/chapter-teaser/scripts/render-social.mjs xiaohongshu",
     "pv:covers": "node ./video/chapter-teaser/scripts/render-covers.mjs",
     "pv:covers:directions": "node ./video/chapter-teaser/scripts/render-cover-directions.mjs",
+    "pv:covers:redesign": "node ./video/chapter-teaser/scripts/render-cover-redesign.mjs",
+    "pv:covers:imagegen": "node ./video/chapter-teaser/scripts/render-cover-imagegen-exploration.mjs",
     "pv:verify": "node ./video/chapter-teaser/scripts/verify-video.mjs --profile review",
     "build": "npm run build:xiaohongshu",
     "build:xiaohongshu": "powershell -NoProfile -ExecutionPolicy Bypass -File ./scripts/build.ps1"

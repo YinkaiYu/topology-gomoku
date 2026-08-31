@@ -501,6 +501,56 @@ test("cover exploration provides six nontrivial topology and bespoke wordmark fa
   assert.match(source, /id: "3x4"[\s\S]*width: 1080, height: 1440/);
 });
 
+test("cover redesign uses original vector lettering and opaque thumbnail-safe topology anchors", () => {
+  const source = fs.readFileSync(path.join(PV_ROOT, "scripts", "render-cover-redesign.mjs"), "utf8");
+  for (const id of ["klein-monolith", "mobius-lacquer", "projective-seal", "atlas-ink"]) {
+    assert.match(source, new RegExp(`id: "${id}"`));
+  }
+  assert.match(source, /WORDMARK_STROKES/);
+  assert.match(source, /WORDMARK_KNOCKOUTS/);
+  assert.match(source, /WORDMARK_OVERPASSES/);
+  assert.match(source, /central over-under twist/);
+  assert.match(source, /棋 terminal return loop/);
+  assert.match(source, /topology-gomoku-wordmark-colour\.svg/);
+  assert.match(source, /topology-gomoku-wordmark-black\.svg/);
+  assert.match(source, /topology-gomoku-wordmark-reverse\.svg/);
+  assert.match(source, /topology-gomoku-wordmark-240px\.png/);
+  assert.match(source, /thumbnail-proof-\$\{profile\.id\}\.png/);
+  assert.doesNotMatch(source, /fillText\(["']拓扑五子棋["']/);
+  assert.doesNotMatch(source, /fillText\(["']拓["']/);
+  assert.match(source, /id: "4x3"[\s\S]*width: 1600, height: 1200/);
+  assert.match(source, /id: "16x9"[\s\S]*width: 1920, height: 1080/);
+  assert.match(source, /id: "3x4"[\s\S]*width: 1080, height: 1440/);
+});
+
+test("imagegen cover exploration keeps real branding and distinct art families across all cover ratios", () => {
+  const source = fs.readFileSync(path.join(PV_ROOT, "scripts", "render-cover-imagegen-exploration.mjs"), "utf8");
+  for (const id of [
+    "real-logo-hero",
+    "footsteps-twin",
+    "game-atlas",
+    "ink-loop",
+    "anime-crosscap",
+    "porcelain-monolith",
+    "geometric-fold",
+    "atlas-fantasia",
+    "geometric-klein",
+    "geometric-duality"
+  ]) assert.match(source, new RegExp(`id: "${id}"`));
+  assert.match(source, /app", "assets", "brand-icon\.png/);
+  assert.match(source, /assets", "cover-exploration/);
+  assert.match(source, /wordmarks", "09b-geometric-refined\.png/);
+  assert.match(source, /manifolds", "08-geometric-klein\.png/);
+  assert.match(source, /drawTwinHero/);
+  assert.match(source, /thumbnail-proof-\$\{profile\.id\}\.png/);
+  assert.match(source, /wordmark-candidates\.png/);
+  assert.match(source, /manifold-candidates\.png/);
+  assert.match(source, /Only \$\{activeDirections\.length\} cover directions have complete assets/);
+  assert.match(source, /id: "4x3"[\s\S]*width: 1600, height: 1200/);
+  assert.match(source, /id: "16x9"[\s\S]*width: 1920, height: 1080/);
+  assert.match(source, /id: "3x4"[\s\S]*width: 1080, height: 1440/);
+});
+
 test("native portrait compositions render directly at both platform aspect ratios", () => {
   for (const [width, height] of [[1080, 1920], [1080, 1440]]) {
     const teaser = Compositor.createComposition({
