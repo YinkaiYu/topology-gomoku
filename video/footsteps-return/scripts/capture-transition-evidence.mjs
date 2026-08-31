@@ -194,8 +194,8 @@ export async function captureTransitionEvidence({ projectRoot = path.resolve(pat
   try {
     const page = await browser.newPage({ viewport: { width: viewport.width, height: viewport.height }, deviceScaleFactor: viewport.deviceScaleFactor });
     await page.goto(`${server.url}/index.html`, { waitUntil: "networkidle" });
-    await page.waitForFunction(() => Boolean(window.__renderReady));
-    await page.evaluate(() => window.__renderReady);
+    await page.waitForFunction(() => window.__renderReady === true);
+    await page.evaluate(() => window.__pvRenderReadyPromise);
 
     for (const planned of transitionCapturePlan) {
       const settled = await settle(page, planned.seek);

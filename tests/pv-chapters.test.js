@@ -146,7 +146,7 @@ test("seven chapters bind the approved real renderer and differentiated topology
 });
 
 test("the master mounts seven centered, uncropped, frameless persistent game canvases without microcopy", async () => {
-  await page.evaluate(() => window.__renderReady);
+  await page.evaluate(() => window.__pvRenderReadyPromise);
   const snapshots = await page.evaluate(() => Object.values(window.__pvChapterControllers ?? {}).map((controller) => {
     const scene = controller.scene;
     const root = document.querySelector('[data-composition-id="footsteps-return"]');
@@ -201,7 +201,7 @@ test("the master mounts seven centered, uncropped, frameless persistent game can
 });
 
 test("real Chromium renders all eight helper paths through 1..5, every crossing breath, final five, morph, hold, and rotation", async () => {
-  await page.evaluate(() => window.__renderReady);
+  await page.evaluate(() => window.__pvRenderReadyPromise);
   const results = await page.evaluate(async () => {
     const output = {};
     for (const [chapterId, controller] of Object.entries(window.__pvChapterControllers)) {
@@ -266,7 +266,7 @@ test("real Chromium renders all eight helper paths through 1..5, every crossing 
 });
 
 test("real Canvas stays continuous from fifth stone through morph zero and changes smoothly afterward", async () => {
-  await page.evaluate(() => window.__renderReady);
+  await page.evaluate(() => window.__pvRenderReadyPromise);
   const observations = await page.evaluate(async () => {
     const { chapterFrameAt } = await import("./src/runtime/topology-surfaces.js");
     const ids = ["cylinder", "torus", "mobius", "klein", "projective", "sphere"];
@@ -363,7 +363,7 @@ test("real Canvas stays continuous from fifth stone through morph zero and chang
 });
 
 test("Klein preserved five fades through paired memory before reflected establish without a pixel jump", async () => {
-  await page.evaluate(() => window.__renderReady);
+  await page.evaluate(() => window.__pvRenderReadyPromise);
   const observation = await page.evaluate(async () => {
     const { chapterFrameAt } = await import("./src/runtime/topology-surfaces.js");
     const controller = window.__pvChapterControllers.klein;
@@ -420,7 +420,7 @@ test("Klein preserved five fades through paired memory before reflected establis
 });
 
 test("chapter seeking is reversible on the same iframe and every exit exposes a geometry-occlusion handoff", async () => {
-  await page.evaluate(() => window.__renderReady);
+  await page.evaluate(() => window.__pvRenderReadyPromise);
   const observations = await page.evaluate(async () => {
     const result = [];
     for (const controller of Object.values(window.__pvChapterControllers)) {

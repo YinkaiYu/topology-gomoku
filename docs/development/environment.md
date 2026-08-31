@@ -31,6 +31,11 @@ npm run pv:voice:auditions
 npm run pv:score
 powershell -NoProfile -ExecutionPolicy Bypass -File ./video/footsteps-return/scripts/mix-audio.ps1
 node ./video/footsteps-return/scripts/capture-caption-evidence.mjs
+node ./video/footsteps-return/scripts/render-contact-sheet.mjs
+npm run pv:render:4k
+$env:REQUIRE_PV_FINAL_OUTPUT = "1"
+node --test ./tests/pv-output.test.js
+Remove-Item Env:REQUIRE_PV_FINAL_OUTPUT
 ```
 
 - `npm run check` 同时执行逻辑测试、H5 包校验和文档检查。
@@ -43,6 +48,7 @@ node ./video/footsteps-return/scripts/capture-caption-evidence.mjs
 - `node ./video/footsteps-return/scripts/capture-caption-evidence.mjs` 在真实 Chromium 中重放字幕，输出 6 张原生 4K 长期证据和本地忽略的 1920×1080 / 30fps / 69 秒字幕专审视频；manifest 绑定当前 `timing.json` SHA-256 与 214.040 秒母版时长，旧时间线证据不能冒充最新结果。
 - `npm run pv:score` 从可审查的 `audio/score/score-plan.json` 确定性生成 11 声部 MusicXML / MIDI、逐声部 stem 与 5 类原创合成 SFX；doctor 必须把 MuseScore 4 / FFmpeg 解析为真实存在的绝对路径。MuseScore Basic 先真实渲染每条 stem，`score-audio.mjs` 再在这些 PCM 上消费静态声场和 Cylinder 横向自动化，FFmpeg 由同一批 stem 求和生成 48kHz 立体声母带并按最终旁白时间线补齐/截取。WAV 与低码率 Opus 审听件本地忽略；提交的 `render-metadata.json`、`review.json` 与 SVG 联系表记录时长、SHA-256、峰值、RMS、21 条实际干声哈希及其真实 score/presence 余量、MIDI 密度、章节 stem 主导配器、跨章连续性、声像迁移、波形 / 频谱及未完成的人类主观审听边界。完整视频渲染只使用 `pv:render:draft` 与 `pv:render:4k`，输出固定为 4K/60fps。
 - `mix-audio.ps1` 先逐一校验 21 条正式旁白、214.040 秒配乐和 5 个 SFX 源文件的 48 kHz 格式、实测时长与 SHA-256，再按 `audio/mix.json` 的整数采样点位置生成 214.040 秒 / 10,273,920 samples / stereo PCM-24 草稿母带。旁白保持等功率居中，配乐以 M/S 控制宽度并随旁白压低，21 个 SFX 只在画面事件处出现；最终经过 FFmpeg 两遍 loudnorm、带延迟补偿的 true-peak limiter 与独立复测。`mix.json` 记录当前输出的响度、真峰值、文件哈希及 render-contract 哈希；改变输入、自动化、处理或片尾契约后，旧 WAV 会被 readiness gate 拒绝。WAV 继续本地忽略，且自动测量不能替代中文可懂度、配乐平衡与 SFX 遮蔽的人类听审。
+- `render-contact-sheet.mjs` 在当前 214.040 秒确定性时间线上生成 24 个原生 3840 × 2160 整帧采样，覆盖片头、七张章节牌、十四个规则 / morph 状态、gallery 与 end card；联系表、动画图和机器可读 evidence 进入 `artifacts/`，单独 PNG 留在被忽略的 `captures/`。`npm run pv:render:4k` 是唯一成片命令：它先认证 Task 10 PCM 母带的完整字节数与 SHA-256，再以两个 worker 强制使用 Chrome `captureScreenshot`，配合硬件浏览器、GPU H.264、`--experimental-fast-capture=false`、`--no-best-effort` 和 strict lint 输出 12,843 个原生 4K CFR 帧；随后从同一 PCM 单次编码 48kHz stereo AAC，以测得的 `-0.35 dB` 交付余量控制编码真峰值。画面为 214.050 秒，完整 214.040 秒片尾音频只追加 0.010 秒而不裁切。最终 MP4 留在被忽略的 `video/footsteps-return/renders/`，必须用 `REQUIRE_PV_FINAL_OUTPUT=1` 运行 `tests/pv-output.test.js` 后才可报告技术通过；自动检查不代替连续运动与普通话听审。
 - 首次同步需要下载 `uv.lock` 中的依赖；之后会复用锁定环境与本地缓存。
 
 ## Python 环境
@@ -82,7 +88,7 @@ node ./video/footsteps-return/scripts/capture-caption-evidence.mjs
 
 ## PV 制作工具链
 
-《足音回归》PV 位于 `video/footsteps-return/`，母版为 3840×2160、60fps。先运行 `npm install` 安装锁定的本地依赖，再运行 `npm run pv:doctor`。
+《拓扑五子棋》章节预告 PV—「足迹回环」位于 `video/footsteps-return/`，母版为 3840×2160、60fps。先运行 `npm install` 安装锁定的本地依赖，再运行 `npm run pv:doctor`。
 
 Windows 上缺少系统制作工具时，使用以下命令安装：
 

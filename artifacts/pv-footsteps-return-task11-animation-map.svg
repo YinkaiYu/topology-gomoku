@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="3840" height="2160" viewBox="0 0 3840 2160" role="img" aria-labelledby="title description">
+  <title id="title">《拓扑五子棋》章节预告 PV—「足迹回环」</title>
+  <desc id="description">Native 4K 60 fps scene, caption, sound effect, and representative-frame map for the 214.040 second composition.</desc>
+  <rect width="100%" height="100%" fill="#060908"/>
+  <style>
+    text{font-family:"Topo Serif","Noto Serif SC",serif;fill:#f2efe7}.title{font-size:58px;font-weight:700}.subtitle{font-size:25px;fill:#b9b4a9}.scene-label{font-size:24px}.bar-label{font-size:20px;fill:#060908;font-weight:700}.tick{font-size:20px;fill:#817f77}.lane{font-size:24px;font-weight:700}
+  </style>
+  <text id="title-text" x="36" y="72" class="title">《拓扑五子棋》章节预告 PV—「足迹回环」—动画图</text>
+  <text x="36" y="112" class="subtitle">214.040s logical timeline · 12,843 CFR frames · 214.050s picture envelope · 24 representative native-4K frames</text>
+  <line x1="430.00" y1="142" x2="430.00" y2="1738" stroke="#817f77" stroke-width="1" opacity="0.22"/><text x="430.00" y="132" class="tick" text-anchor="middle">0s</text><line x1="731.81" y1="142" x2="731.81" y2="1738" stroke="#817f77" stroke-width="1" opacity="0.22"/><text x="731.81" y="132" class="tick" text-anchor="middle">20s</text><line x1="1033.63" y1="142" x2="1033.63" y2="1738" stroke="#817f77" stroke-width="1" opacity="0.22"/><text x="1033.63" y="132" class="tick" text-anchor="middle">40s</text><line x1="1335.44" y1="142" x2="1335.44" y2="1738" stroke="#817f77" stroke-width="1" opacity="0.22"/><text x="1335.44" y="132" class="tick" text-anchor="middle">60s</text><line x1="1637.25" y1="142" x2="1637.25" y2="1738" stroke="#817f77" stroke-width="1" opacity="0.22"/><text x="1637.25" y="132" class="tick" text-anchor="middle">80s</text><line x1="1939.06" y1="142" x2="1939.06" y2="1738" stroke="#817f77" stroke-width="1" opacity="0.22"/><text x="1939.06" y="132" class="tick" text-anchor="middle">100s</text><line x1="2240.88" y1="142" x2="2240.88" y2="1738" stroke="#817f77" stroke-width="1" opacity="0.22"/><text x="2240.88" y="132" class="tick" text-anchor="middle">120s</text><line x1="2542.69" y1="142" x2="2542.69" y2="1738" stroke="#817f77" stroke-width="1" opacity="0.22"/><text x="2542.69" y="132" class="tick" text-anchor="middle">140s</text><line x1="2844.50" y1="142" x2="2844.50" y2="1738" stroke="#817f77" stroke-width="1" opacity="0.22"/><text x="2844.50" y="132" class="tick" text-anchor="middle">160s</text><line x1="3146.31" y1="142" x2="3146.31" y2="1738" stroke="#817f77" stroke-width="1" opacity="0.22"/><text x="3146.31" y="132" class="tick" text-anchor="middle">180s</text><line x1="3448.13" y1="142" x2="3448.13" y2="1738" stroke="#817f77" stroke-width="1" opacity="0.22"/><text x="3448.13" y="132" class="tick" text-anchor="middle">200s</text><line x1="3660.00" y1="142" x2="3660.00" y2="1738" stroke="#817f77" stroke-width="1" opacity="0.22"/><text x="3660.00" y="132" class="tick" text-anchor="middle">214.04s</text>
+  <g>
+      <text x="36" y="225" class="scene-label">intro</text>
+      <rect x="430.00" y="200" width="398.69" height="42" rx="10" fill="#817f77" opacity="0.82"/>
+      <text x="442.00" y="228" class="bar-label">0.00–26.42</text>
+      <path d="M 644.29 197 l -8 -12 h 16 z" fill="#d95b4f"><title>intro at 14.200s</title></path>
+    </g><g>
+      <text x="36" y="303" class="scene-label">chapter-card-plane</text>
+      <rect x="828.69" y="278" width="45.27" height="42" rx="10" fill="#c79244" opacity="0.82"/>
+      <text x="840.69" y="306" class="bar-label">26.42–29.42</text>
+      <path d="M 858.07 275 l -8 -12 h 16 z" fill="#d95b4f"><title>chapter-card at 28.367s</title></path>
+    </g><g>
+      <text x="36" y="381" class="scene-label">chapter-plane</text>
+      <rect x="873.97" y="356" width="184.41" height="42" rx="10" fill="#3f8c87" opacity="0.82"/>
+      <text x="885.97" y="384" class="bar-label">29.42–41.64</text>
+      <path d="M 964.96 353 l -8 -12 h 16 z" fill="#d95b4f"><title>chapter-evidence at 35.450s</title></path><path d="M 1023.82 353 l -8 -12 h 16 z" fill="#d95b4f"><title>chapter-morph at 39.350s</title></path>
+    </g><g>
+      <text x="36" y="459" class="scene-label">chapter-card-cylinder</text>
+      <rect x="1088.56" y="434" width="45.27" height="42" rx="10" fill="#c79244" opacity="0.82"/>
+      <text x="1100.56" y="462" class="bar-label">43.64–46.64</text>
+      <path d="M 1117.88 431 l -8 -12 h 16 z" fill="#d95b4f"><title>chapter-card at 45.583s</title></path>
+    </g><g>
+      <text x="36" y="537" class="scene-label">chapter-cylinder</text>
+      <rect x="1133.83" y="512" width="241.75" height="42" rx="10" fill="#3f8c87" opacity="0.82"/>
+      <text x="1145.83" y="540" class="bar-label">46.64–62.66</text>
+      <path d="M 1197.36 509 l -8 -12 h 16 z" fill="#d95b4f"><title>chapter-evidence at 50.850s</title></path><path d="M 1334.18 509 l -8 -12 h 16 z" fill="#d95b4f"><title>chapter-morph at 59.917s</title></path>
+    </g><g>
+      <text x="36" y="615" class="scene-label">chapter-card-torus</text>
+      <rect x="1405.76" y="590" width="45.27" height="42" rx="10" fill="#c79244" opacity="0.82"/>
+      <text x="1417.76" y="618" class="bar-label">64.66–67.66</text>
+      <path d="M 1435.29 587 l -8 -12 h 16 z" fill="#d95b4f"><title>chapter-card at 66.617s</title></path>
+    </g><g>
+      <text x="36" y="693" class="scene-label">chapter-torus</text>
+      <rect x="1451.03" y="668" width="249.00" height="42" rx="10" fill="#3f8c87" opacity="0.82"/>
+      <text x="1463.03" y="696" class="bar-label">67.66–84.16</text>
+      <path d="M 1535.64 665 l -8 -12 h 16 z" fill="#d95b4f"><title>chapter-evidence at 73.267s</title></path><path d="M 1657.87 665 l -8 -12 h 16 z" fill="#d95b4f"><title>chapter-morph at 81.367s</title></path>
+    </g><g>
+      <text x="36" y="771" class="scene-label">chapter-card-mobius</text>
+      <rect x="1730.21" y="746" width="45.27" height="42" rx="10" fill="#c79244" opacity="0.82"/>
+      <text x="1742.21" y="774" class="bar-label">86.16–89.16</text>
+      <path d="M 1759.74 743 l -8 -12 h 16 z" fill="#d95b4f"><title>chapter-card at 88.117s</title></path>
+    </g><g>
+      <text x="36" y="849" class="scene-label">chapter-mobius</text>
+      <rect x="1775.48" y="824" width="221.23" height="42" rx="10" fill="#3f8c87" opacity="0.82"/>
+      <text x="1787.48" y="852" class="bar-label">89.16–103.82</text>
+      <path d="M 1833.68 821 l -8 -12 h 16 z" fill="#d95b4f"><title>chapter-evidence at 93.017s</title></path><path d="M 1957.93 821 l -8 -12 h 16 z" fill="#d95b4f"><title>chapter-morph at 101.250s</title></path>
+    </g><g>
+      <text x="36" y="927" class="scene-label">chapter-card-klein</text>
+      <rect x="2026.89" y="902" width="45.27" height="42" rx="10" fill="#c79244" opacity="0.82"/>
+      <text x="2038.89" y="930" class="bar-label">105.82–108.82</text>
+      <path d="M 2056.27 899 l -8 -12 h 16 z" fill="#d95b4f"><title>chapter-card at 107.767s</title></path>
+    </g><g>
+      <text x="36" y="1005" class="scene-label">chapter-klein</text>
+      <rect x="2072.16" y="980" width="238.13" height="42" rx="10" fill="#3f8c87" opacity="0.82"/>
+      <text x="2084.16" y="1008" class="bar-label">108.82–124.60</text>
+      <path d="M 2224.28 977 l -8 -12 h 16 z" fill="#d95b4f"><title>chapter-evidence at 118.900s</title></path><path d="M 2282.63 977 l -8 -12 h 16 z" fill="#d95b4f"><title>chapter-morph at 122.767s</title></path>
+    </g><g>
+      <text x="36" y="1083" class="scene-label">chapter-card-projective</text>
+      <rect x="2340.47" y="1058" width="45.27" height="42" rx="10" fill="#c79244" opacity="0.82"/>
+      <text x="2352.47" y="1086" class="bar-label">126.60–129.60</text>
+      <path d="M 2369.90 1055 l -8 -12 h 16 z" fill="#d95b4f"><title>chapter-card at 128.550s</title></path>
+    </g><g>
+      <text x="36" y="1161" class="scene-label">chapter-projective</text>
+      <rect x="2385.75" y="1136" width="253.82" height="42" rx="10" fill="#3f8c87" opacity="0.82"/>
+      <text x="2397.75" y="1164" class="bar-label">129.60–146.42</text>
+      <path d="M 2472.01 1133 l -8 -12 h 16 z" fill="#d95b4f"><title>chapter-evidence at 135.317s</title></path><path d="M 2596.76 1133 l -8 -12 h 16 z" fill="#d95b4f"><title>chapter-morph at 143.583s</title></path>
+    </g><g>
+      <text x="36" y="1239" class="scene-label">chapter-card-sphere</text>
+      <rect x="2669.75" y="1214" width="45.27" height="42" rx="10" fill="#c79244" opacity="0.82"/>
+      <text x="2681.75" y="1242" class="bar-label">148.42–151.42</text>
+      <path d="M 2699.13 1211 l -8 -12 h 16 z" fill="#d95b4f"><title>chapter-card at 150.367s</title></path>
+    </g><g>
+      <text x="36" y="1317" class="scene-label">chapter-sphere</text>
+      <rect x="2715.02" y="1292" width="359.46" height="42" rx="10" fill="#3f8c87" opacity="0.82"/>
+      <text x="2727.02" y="1320" class="bar-label">151.42–175.24</text>
+      <path d="M 2810.30 1289 l -8 -12 h 16 z" fill="#d95b4f"><title>chapter-evidence at 157.733s</title></path><path d="M 3019.05 1289 l -8 -12 h 16 z" fill="#d95b4f"><title>chapter-morph at 171.567s</title></path>
+    </g><g>
+      <text x="36" y="1395" class="scene-label">seven-world-gallery</text>
+      <rect x="3074.48" y="1370" width="138.83" height="42" rx="10" fill="#385f78" opacity="0.82"/>
+      <text x="3086.48" y="1398" class="bar-label">175.24–184.44</text>
+      <path d="M 3140.78 1367 l -8 -12 h 16 z" fill="#d95b4f"><title>gallery at 179.633s</title></path>
+    </g><g>
+      <text x="36" y="1473" class="scene-label">outro</text>
+      <rect x="3180.12" y="1448" width="419.52" height="42" rx="10" fill="#7f6ca8" opacity="0.82"/>
+      <text x="3192.12" y="1476" class="bar-label">182.24–210.04</text>
+
+    </g><g>
+      <text x="36" y="1551" class="scene-label">end-card</text>
+      <rect x="3599.64" y="1526" width="60.36" height="42" rx="10" fill="#f2efe7" opacity="0.82"/>
+      <text x="3611.64" y="1554" class="bar-label">210.04–214.04</text>
+      <path d="M 3639.53 1523 l -8 -12 h 16 z" fill="#d95b4f"><title>end-card at 212.683s</title></path>
+    </g>
+  <text x="36" y="1653" class="lane">46 captions</text><rect x="436.34" y="1632" width="61.57" height="24" rx="4" fill="#f2efe7" opacity="0.82"><title>intro-boundary-01 0.420–4.500</title></rect><rect x="503.34" y="1632" width="61.54" height="24" rx="4" fill="#f2efe7" opacity="0.82"><title>intro-roads-01 4.860–8.938</title></rect><rect x="565.13" y="1632" width="41.99" height="24" rx="4" fill="#f2efe7" opacity="0.82"><title>intro-roads-02 8.955–11.737</title></rect><rect x="607.38" y="1632" width="46.87" height="24" rx="4" fill="#f2efe7" opacity="0.82"><title>intro-roads-03 11.754–14.860</title></rect><rect x="659.68" y="1632" width="37.55" height="24" rx="4" fill="#f2efe7" opacity="0.82"><title>intro-invitation-01 15.220–17.709</title></rect><rect x="697.48" y="1632" width="51.24" height="24" rx="4" fill="#f2efe7" opacity="0.82"><title>intro-invitation-02 17.725–21.121</title></rect><rect x="748.98" y="1632" width="67.64" height="24" rx="4" fill="#f2efe7" opacity="0.82"><title>intro-invitation-03 21.138–25.620</title></rect><rect x="880.30" y="1632" width="57.15" height="24" rx="4" fill="#f2efe7" opacity="0.82"><title>plane-order-01 29.840–33.627</title></rect><rect x="937.70" y="1632" width="56.31" height="24" rx="4" fill="#f2efe7" opacity="0.82"><title>plane-order-02 33.644–37.375</title></rect><rect x="994.27" y="1632" width="50.22" height="24" rx="4" fill="#f2efe7" opacity="0.82"><title>plane-order-03 37.392–40.720</title></rect><rect x="1140.17" y="1632" width="47.64" height="24" rx="4" fill="#f2efe7" opacity="0.82"><title>cylinder-cycle-01 47.060–50.217</title></rect><rect x="1188.06" y="1632" width="52.82" height="24" rx="4" fill="#f2efe7" opacity="0.82"><title>cylinder-cycle-02 50.234–53.734</title></rect><rect x="1241.13" y="1632" width="41.49" height="24" rx="4" fill="#f2efe7" opacity="0.82"><title>cylinder-cycle-03 53.751–56.500</title></rect><rect x="1288.05" y="1632" width="73.64" height="24" rx="4" fill="#f2efe7" opacity="0.82"><title>cylinder-distance-01 56.860–61.740</title></rect><rect x="1457.37" y="1632" width="59.19" height="24" rx="4" fill="#f2efe7" opacity="0.82"><title>torus-cycles-01 68.080–72.002</title></rect><rect x="1516.81" y="1632" width="51.22" height="24" rx="4" fill="#f2efe7" opacity="0.82"><title>torus-cycles-02 72.019–75.413</title></rect><rect x="1568.29" y="1632" width="30.33" height="24" rx="4" fill="#f2efe7" opacity="0.82"><title>torus-cycles-03 75.430–77.440</title></rect><rect x="1604.05" y="1632" width="31.11" height="24" rx="4" fill="#f2efe7" opacity="0.82"><title>torus-shortest-path-01 77.800–79.862</title></rect><rect x="1635.41" y="1632" width="50.73" height="24" rx="4" fill="#f2efe7" opacity="0.82"><title>torus-shortest-path-02 79.878–83.240</title></rect><rect x="1781.82" y="1632" width="58.00" height="24" rx="4" fill="#f2efe7" opacity="0.82"><title>mobius-turn-01 89.580–93.423</title></rect><rect x="1840.07" y="1632" width="34.44" height="24" rx="4" fill="#f2efe7" opacity="0.82"><title>mobius-turn-02 93.440–95.722</title></rect><rect x="1874.76" y="1632" width="39.86" height="24" rx="4" fill="#f2efe7" opacity="0.82"><title>mobius-turn-03 95.739–98.380</title></rect><rect x="1920.05" y="1632" width="62.78" height="24" rx="4" fill="#f2efe7" opacity="0.82"><title>mobius-one-side-01 98.740–102.900</title></rect><rect x="2078.50" y="1632" width="39.80" height="24" rx="4" fill="#f2efe7" opacity="0.82"><title>klein-two-returns-01 109.240–111.878</title></rect><rect x="2118.56" y="1632" width="41.06" height="24" rx="4" fill="#f2efe7" opacity="0.82"><title>klein-two-returns-02 111.894–114.615</title></rect><rect x="2159.87" y="1632" width="60.18" height="24" rx="4" fill="#f2efe7" opacity="0.82"><title>klein-two-returns-03 114.632–118.620</title></rect><rect x="2220.30" y="1632" width="29.63" height="24" rx="4" fill="#f2efe7" opacity="0.82"><title>klein-two-returns-04 118.636–120.600</title></rect><rect x="2255.36" y="1632" width="41.05" height="24" rx="4" fill="#f2efe7" opacity="0.82"><title>klein-memory-01 120.960–123.680</title></rect><rect x="2392.08" y="1632" width="55.63" height="24" rx="4" fill="#f2efe7" opacity="0.82"><title>projective-reflection-01 130.020–133.706</title></rect><rect x="2447.96" y="1632" width="33.03" height="24" rx="4" fill="#f2efe7" opacity="0.82"><title>projective-reflection-02 133.723–135.912</title></rect><rect x="2481.25" y="1632" width="46.05" height="24" rx="4" fill="#f2efe7" opacity="0.82"><title>projective-reflection-03 135.928–138.980</title></rect><rect x="2532.73" y="1632" width="50.89" height="24" rx="4" fill="#f2efe7" opacity="0.82"><title>projective-twin-01 139.340–142.712</title></rect><rect x="2583.87" y="1632" width="41.82" height="24" rx="4" fill="#f2efe7" opacity="0.82"><title>projective-twin-02 142.729–145.500</title></rect><rect x="2721.36" y="1632" width="53.43" height="24" rx="4" fill="#f2efe7" opacity="0.82"><title>sphere-closure-01 151.840–155.381</title></rect><rect x="2775.05" y="1632" width="41.44" height="24" rx="4" fill="#f2efe7" opacity="0.82"><title>sphere-closure-02 155.398–158.144</title></rect><rect x="2816.74" y="1632" width="36.33" height="24" rx="4" fill="#f2efe7" opacity="0.82"><title>sphere-closure-03 158.160–160.568</title></rect><rect x="2853.32" y="1632" width="49.13" height="24" rx="4" fill="#f2efe7" opacity="0.82"><title>sphere-closure-04 160.584–163.840</title></rect><rect x="2907.88" y="1632" width="37.36" height="24" rx="4" fill="#f2efe7" opacity="0.82"><title>sphere-map-01 164.200–166.676</title></rect><rect x="2945.50" y="1632" width="38.44" height="24" rx="4" fill="#f2efe7" opacity="0.82"><title>sphere-map-02 166.693–169.240</title></rect><rect x="2989.37" y="1632" width="71.23" height="24" rx="4" fill="#f2efe7" opacity="0.82"><title>sphere-boundary-01 169.600–174.320</title></rect><rect x="3181.93" y="1632" width="73.64" height="24" rx="4" fill="#f2efe7" opacity="0.82"><title>outro-invocation-01 182.360–187.240</title></rect><rect x="3261.00" y="1632" width="48.59" height="24" rx="4" fill="#f2efe7" opacity="0.82"><title>outro-connection-01 187.600–190.820</title></rect><rect x="3309.85" y="1632" width="87.58" height="24" rx="4" fill="#f2efe7" opacity="0.82"><title>outro-connection-02 190.837–196.640</title></rect><rect x="3402.86" y="1632" width="67.42" height="24" rx="4" fill="#f2efe7" opacity="0.82"><title>outro-stone-01 197.000–201.468</title></rect><rect x="3470.53" y="1632" width="45.81" height="24" rx="4" fill="#f2efe7" opacity="0.82"><title>outro-stone-02 201.484–204.520</title></rect><rect x="3521.77" y="1632" width="63.98" height="24" rx="4" fill="#f2efe7" opacity="0.82"><title>outro-world-01 204.880–209.120</title></rect>
+  <text x="36" y="1715" class="lane">21 sparse SFX</text><rect x="828.69" y="1694" width="16.90" height="24" rx="4" fill="#d95b4f" opacity="0.88"><title>card-plane-low 26.420–27.540</title></rect><rect x="1088.56" y="1694" width="16.90" height="24" rx="4" fill="#d95b4f" opacity="0.88"><title>card-cylinder-low 43.640–44.760</title></rect><rect x="1405.76" y="1694" width="16.90" height="24" rx="4" fill="#d95b4f" opacity="0.88"><title>card-torus-low 64.660–65.780</title></rect><rect x="1730.21" y="1694" width="16.90" height="24" rx="4" fill="#d95b4f" opacity="0.88"><title>card-mobius-low 86.160–87.280</title></rect><rect x="2026.89" y="1694" width="16.90" height="24" rx="4" fill="#d95b4f" opacity="0.88"><title>card-klein-low 105.820–106.940</title></rect><rect x="2340.47" y="1694" width="16.90" height="24" rx="4" fill="#d95b4f" opacity="0.88"><title>card-projective-low 126.600–127.720</title></rect><rect x="2669.75" y="1694" width="16.90" height="24" rx="4" fill="#d95b4f" opacity="0.88"><title>card-sphere-low 148.420–149.540</title></rect><rect x="901.52" y="1694" width="6.34" height="24" rx="4" fill="#d95b4f" opacity="0.88"><title>stone-plane 31.246–31.666</title></rect><rect x="1222.46" y="1694" width="6.34" height="24" rx="4" fill="#d95b4f" opacity="0.88"><title>stone-cylinder 52.513–52.933</title></rect><rect x="1519.48" y="1694" width="6.34" height="24" rx="4" fill="#d95b4f" opacity="0.88"><title>stone-torus 72.195–72.615</title></rect><rect x="1856.30" y="1694" width="6.34" height="24" rx="4" fill="#d95b4f" opacity="0.88"><title>stone-mobius 94.515–94.935</title></rect><rect x="2848.50" y="1694" width="6.34" height="24" rx="4" fill="#d95b4f" opacity="0.88"><title>stone-sphere 160.265–160.685</title></rect><rect x="3470.53" y="1694" width="6.34" height="24" rx="4" fill="#d95b4f" opacity="0.88"><title>stone-outro 201.484–201.904</title></rect><rect x="1197.43" y="1694" width="11.47" height="24" rx="4" fill="#d95b4f" opacity="0.88"><title>seam-cylinder 50.855–51.615</title></rect><rect x="1496.55" y="1694" width="11.47" height="24" rx="4" fill="#d95b4f" opacity="0.88"><title>seam-torus 70.676–71.436</title></rect><rect x="2472.04" y="1694" width="11.47" height="24" rx="4" fill="#d95b4f" opacity="0.88"><title>seam-projective 135.318–136.078</title></rect><rect x="1600.88" y="1694" width="19.32" height="24" rx="4" fill="#d95b4f" opacity="0.88"><title>bend-torus 77.590–78.870</title></rect><rect x="1898.27" y="1694" width="19.32" height="24" rx="4" fill="#d95b4f" opacity="0.88"><title>bend-mobius 97.297–98.577</title></rect><rect x="2919.00" y="1694" width="19.32" height="24" rx="4" fill="#d95b4f" opacity="0.88"><title>bend-sphere 164.937–166.217</title></rect><rect x="1047.51" y="1694" width="13.88" height="24" rx="4" fill="#d95b4f" opacity="0.88"><title>occlusion-plane 40.920–41.840</title></rect><rect x="2299.43" y="1694" width="13.88" height="24" rx="4" fill="#d95b4f" opacity="0.88"><title>occlusion-klein 123.880–124.800</title></rect>
+  <g transform="translate(36 2050)"><path d="M 8 12 l -8 -12 h 16 z" fill="#d95b4f"/><text x="30" y="13" class="subtitle">contact-sheet frame</text><rect x="315" y="-4" width="34" height="22" rx="5" fill="#f2efe7"/><text x="363" y="13" class="subtitle">caption cue</text><rect x="565" y="-4" width="34" height="22" rx="5" fill="#d95b4f"/><text x="613" y="13" class="subtitle">SFX cue</text></g>
+</svg>

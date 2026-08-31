@@ -54,7 +54,7 @@ export async function captureChapterEvidence({ projectRoot = path.resolve(path.d
   try {
     const page = await browser.newPage({ viewport: { width: 1920, height: 1080 }, deviceScaleFactor: 1 });
     await page.goto(`${server.url}/index.html`, { waitUntil: "networkidle" });
-    await page.evaluate(() => window.__renderReady);
+    await page.evaluate(() => window.__pvRenderReadyPromise);
     await page.addStyleTag({ content: "html,body{width:1920px!important;height:1080px!important;overflow:hidden!important}[data-composition-id=footsteps-return]{transform:scale(.5);transform-origin:0 0}.caption-group{display:none!important}" });
 
     for (const planned of chapterCapturePlan) {

@@ -239,6 +239,8 @@
 
 **Files:**
 - Create: `video/footsteps-return/scripts/render-contact-sheet.mjs`
+- Create: `video/footsteps-return/scripts/render-final.ps1`
+- Modify: `package.json`
 - Modify: `docs/design/qa.md`
 - Modify: `docs/development/environment.md`
 - Modify: `docs/README.md`
@@ -266,5 +268,5 @@
 - [ ] All captions are one line, large, white with black outline, and omit full stops.
 - [ ] The opening is immersive and unbranded; the ending gives the IOP logo meaningful visual weight without duplicating the game logo.
 - [ ] The score is original, source-backed, stemmed, licensed, and structurally synchronized with the chapters.
-- [ ] Both video masters pass technical validation and complete human review.
+- [ ] The single 4K/60fps video master passes technical validation and complete human review.
 - [ ] The branch remains isolated and unmerged until explicit user approval.

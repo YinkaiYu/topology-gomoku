@@ -241,6 +241,8 @@ export function bootstrapComposition({
   if (!root || !stage) {
     throw new Error("Footsteps Return master stage is missing");
   }
+  hostWindow.__renderReady = false;
+  documentRef.documentElement.dataset.renderReady = "false";
   detachUnauthenticatedMasterSource(documentRef);
 
   const { timeline, registry } = buildMasterTimeline({ document: documentRef, gsap, stage });
@@ -260,18 +262,21 @@ export function bootstrapComposition({
   });
   const mixReady = loadFinalMix(documentRef, hostWindow);
   const masterAudioReady = mixReady.then((manifest) => authenticateMasterAudio(documentRef, hostWindow, manifest));
-  hostWindow.__renderReady = Promise.all([fontsReady, introReady, chaptersReady, galleryReady, mixReady, masterAudioReady]).then(([, introStatus, chapterControllers, galleryControllers, mixManifest, masterAudio]) => {
+  const renderReadyPromise = Promise.all([fontsReady, introReady, chaptersReady, galleryReady, mixReady, masterAudioReady]).then(([, introStatus, chapterControllers, galleryControllers, mixManifest, masterAudio]) => {
     fitCompositionText(root);
     alignCaptionBaselines({ document: documentRef, root });
     const readiness = buildReadinessGates({ documentRef, registry, introStatus, chapterControllers, galleryControllers, mixManifest, masterAudio });
     hostWindow.__pvRenderReadiness = readiness;
     documentRef.documentElement.dataset.renderReady = "true";
+    hostWindow.__renderReady = true;
     return Object.freeze({ composition, sceneIds: Object.keys(registry), readiness });
   }).catch((error) => {
+    hostWindow.__renderReady = false;
     documentRef.documentElement.dataset.renderReady = "false";
     documentRef.documentElement.dataset.renderReadyError = error.message;
     throw error;
   });
+  hostWindow.__pvRenderReadyPromise = renderReadyPromise;
 
-  return Object.freeze({ timeline, registry, renderReady: hostWindow.__renderReady });
+  return Object.freeze({ timeline, registry, renderReady: renderReadyPromise });
 }

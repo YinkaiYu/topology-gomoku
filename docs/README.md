@@ -40,6 +40,14 @@
 | --- | --- |
 | [`superpowers/plans/2026-08-30-footsteps-return-pv.md`](superpowers/plans/2026-08-30-footsteps-return-pv.md) | 《拓扑五子棋》章节预告 PV—「足迹回环」的实机采集、画面、旁白、字幕、原创配乐、渲染与验收计划 |
 
+## PV 工程文档
+
+| 文档 | 内容 |
+| --- | --- |
+| [`video/footsteps-return/README.md`](../video/footsteps-return/README.md) | 《拓扑五子棋》章节预告 PV—「足迹回环」的可复现预览、原生 4K 渲染与生成输出位置 |
+| [`video/footsteps-return/DESIGN.md`](../video/footsteps-return/DESIGN.md) | 《拓扑五子棋》章节预告 PV—「足迹回环」的画面、排版、转场、字幕与声画设计契约 |
+| [`video/footsteps-return/QA.md`](../video/footsteps-return/QA.md) | 4K/60fps 技术门、长期证据与连续播放 / 普通话听审边界 |
+
 ## 平台规范
 
 - 小红书 H5 与离线 ZIP：执行入口为 [`.codex/SKILL.md`](../.codex/SKILL.md)，具体约束位于 `.codex/references/`。

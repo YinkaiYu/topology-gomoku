@@ -173,7 +173,7 @@ export async function captureCaptionEvidence() {
   try {
     const page = await browser.newPage({ viewport: { width: viewport.width, height: viewport.height }, deviceScaleFactor: viewport.deviceScaleFactor });
     await page.goto(`${server.url}/index.html`, { waitUntil: "networkidle" });
-    await page.evaluate(() => window.__renderReady);
+    await page.evaluate(() => window.__pvRenderReadyPromise);
     const cueMeasurements = [];
     for (const cue of captionCues) {
       const planned = { id: cue.id, seek: cue.start + (cue.fadeInFrames + 1) / 60, text: cue.text };

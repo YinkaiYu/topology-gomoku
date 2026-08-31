@@ -178,7 +178,7 @@ test.before(async () => {
   browser = await chromium.launch({ headless: true });
   page = await browser.newPage({ viewport: { width: 3840, height: 2160 }, deviceScaleFactor: 1 });
   await page.goto(`${server.url}/index.html`, { waitUntil: "networkidle" });
-  await page.evaluate(() => window.__renderReady);
+  await page.evaluate(() => window.__pvRenderReadyPromise);
 });
 
 test.after(async () => {

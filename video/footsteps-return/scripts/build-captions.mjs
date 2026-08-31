@@ -455,7 +455,7 @@ export async function measureCaptionLayout(captions) {
   try {
     const page = await browser.newPage({ viewport: { width: 3840, height: 2160 }, deviceScaleFactor: 1 });
     await page.goto(`${server.url}/index.html`, { waitUntil: "networkidle" });
-    await page.evaluate(() => window.__renderReady);
+    await page.evaluate(() => window.__pvRenderReadyPromise);
     const measurements = await page.evaluate((cues) => {
       const timeline = window.__timelines["footsteps-return"];
       const group = document.querySelector("[data-caption-group]");

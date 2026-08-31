@@ -512,6 +512,43 @@ test("the rendered draft is independently measured as an exact 48 kHz stereo PCM
   assert.ok(tailRms[0] - tailRms.at(-1) > 25, "the end-card should resolve by at least 25 dB without hard-muting its rendered decay");
 });
 
+test("the HyperFrames boolean gate stays false until final-audio authentication and every readiness dependency finish", { skip: !(REQUIRE_REAL_AUDIO || REAL_AUDIO.output) }, async () => {
+  const { chromium } = require("playwright");
+  const { startStaticServer } = await import("../video/footsteps-return/scripts/serve-app.mjs");
+  const server = await startStaticServer({ root: PV_ROOT });
+  const browser = await chromium.launch({ headless: true });
+  let releaseAudioRequest;
+  const audioRequestMayContinue = new Promise((resolve) => { releaseAudioRequest = resolve; });
+  try {
+    const page = await browser.newPage({ viewport: { width: 3840, height: 2160 } });
+    await page.route("**/audio/mix/footsteps-return-draft.wav", async (route) => {
+      await audioRequestMayContinue;
+      await route.continue();
+    });
+    await page.goto(`${server.url}/index.html`, { waitUntil: "domcontentloaded" });
+    await page.waitForFunction(() => "__renderReady" in window);
+    const pending = await page.evaluate(() => ({
+      hyperframesGate: window.__renderReady,
+      hasAwaitableReadiness: window.__pvRenderReadyPromise instanceof Promise,
+      documentReady: document.documentElement.dataset.renderReady
+    }));
+    assert.deepEqual(pending, {
+      hyperframesGate: false,
+      hasAwaitableReadiness: true,
+      documentReady: "false"
+    });
+
+    releaseAudioRequest();
+    await page.evaluate(() => window.__pvRenderReadyPromise);
+    assert.equal(await page.evaluate(() => window.__renderReady), true);
+    assert.equal(await page.evaluate(() => document.documentElement.dataset.renderReady), "true");
+  } finally {
+    releaseAudioRequest?.();
+    await browser.close();
+    await server.close();
+  }
+});
+
 test("the browser binds one final master audio track and proves all named render-readiness gates", { skip: !(REQUIRE_REAL_AUDIO || REAL_AUDIO.output) }, async () => {
   const { chromium } = require("playwright");
   const { startStaticServer } = await import("../video/footsteps-return/scripts/serve-app.mjs");
@@ -520,7 +557,7 @@ test("the browser binds one final master audio track and proves all named render
   try {
     const page = await browser.newPage({ viewport: { width: 3840, height: 2160 } });
     await page.goto(`${server.url}/index.html`, { waitUntil: "networkidle" });
-    const ready = await page.evaluate(() => window.__renderReady);
+    const ready = await page.evaluate(() => window.__pvRenderReadyPromise);
     const contract = await page.evaluate(() => {
       const audio = document.querySelector("[data-master-audio]");
       return {
@@ -612,7 +649,7 @@ test("browser render readiness rejects a same-duration master whose bytes do not
     await page.goto(`${server.url}/index.html`, { waitUntil: "networkidle" });
     const outcome = await page.evaluate(async () => {
       try {
-        await window.__renderReady;
+        await window.__pvRenderReadyPromise;
         return { resolved: true, message: "" };
       } catch (error) {
         return { resolved: false, message: error.message };

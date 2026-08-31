@@ -1,0 +1,905 @@
+{
+  "task": "task11-output",
+  "title": "《拓扑五子棋》章节预告 PV—「足迹回环」",
+  "viewport": {
+    "width": 3840,
+    "height": 2160,
+    "deviceScaleFactor": 1
+  },
+  "visualContract": {
+    "sha256": "17a6b44dfba65c9ef871488a6684fccd01f13141d2fb235c5124c3493ac7fc21",
+    "fileCount": 75
+  },
+  "evidenceToolContract": {
+    "sha256": "b35e897688fbc66489fc6e1ae966071646b987408144f6008683a3e3eb4f8757",
+    "fileCount": 2
+  },
+  "frameStrategy": {
+    "logicalDurationSeconds": 214.04,
+    "fps": 60,
+    "totalFrames": 12843,
+    "pictureDurationSeconds": 214.05,
+    "preservedAudioSeconds": 214.04,
+    "appendedSilenceSeconds": 0.010000000000019327
+  },
+  "sourceAudio": {
+    "path": "video/footsteps-return/audio/mix/footsteps-return-draft.wav",
+    "sha256": "e43bf4a56b6e6f16058f866dd87b8478227fbfb5017af862a9722642f33d5ade",
+    "bytes": 61643622,
+    "renderContractSha256": "1d258decce5ddd161df4e290f23b48d34be43230a841e22fd824b4c6d06636be"
+  },
+  "captions": {
+    "count": 46,
+    "singleLine": true,
+    "unicodePunctuationCount": 0
+  },
+  "frames": [
+    {
+      "id": "intro-hidden-adjacency",
+      "group": "intro",
+      "sceneId": "intro",
+      "label": "Intro hidden adjacency",
+      "frameIndex": 852,
+      "seekSeconds": 14.2,
+      "expectedPhase": "hidden-adjacency",
+      "localFramePath": "video/footsteps-return/captures/task11-contact-sheet/01-intro-hidden-adjacency.png",
+      "pngSha256": "431498dfac060aa6abcb946d7281fd15721a539074210e41dee9772c8b6310cf",
+      "observation": {
+        "renderReady": true,
+        "timelineTime": 14.2,
+        "width": 3840,
+        "height": 2160,
+        "visibleSceneIds": [
+          "intro"
+        ],
+        "captions": [],
+        "intro": {
+          "gameTitleCount": 0,
+          "iopCount": 0
+        },
+        "chapter": null,
+        "card": null,
+        "gallery": null,
+        "endCard": null
+      }
+    },
+    {
+      "id": "chapter-card-plane",
+      "group": "chapter-card",
+      "sceneId": "chapter-card-plane",
+      "chapterId": "plane",
+      "label": "plane chapter card",
+      "frameIndex": 1702,
+      "seekSeconds": 28.366666666666667,
+      "expectedPhase": "phase-b",
+      "localFramePath": "video/footsteps-return/captures/task11-contact-sheet/02-chapter-card-plane.png",
+      "pngSha256": "0c16f50e658b9afb0e12e05c214db274285b4f43c53f3905094b1c7a5ed81c95",
+      "observation": {
+        "renderReady": true,
+        "timelineTime": 28.3666667,
+        "width": 3840,
+        "height": 2160,
+        "visibleSceneIds": [
+          "chapter-card-plane"
+        ],
+        "captions": [],
+        "intro": null,
+        "chapter": {
+          "phase": "establish",
+          "demo": "ordinary-five",
+          "canvasCount": 1,
+          "webglContextReady": true
+        },
+        "card": {
+          "act": "ACT. PROLOGUE",
+          "chapter": "方庭",
+          "topology": "平面",
+          "actOpacity": 0,
+          "chapterOpacity": 1,
+          "topologyOpacity": 1
+        },
+        "gallery": null,
+        "endCard": null
+      }
+    },
+    {
+      "id": "chapter-evidence-plane",
+      "group": "chapter-evidence",
+      "sceneId": "chapter-plane",
+      "chapterId": "plane",
+      "label": "plane rule evidence",
+      "frameIndex": 2127,
+      "seekSeconds": 35.45,
+      "expectedPhase": "win-hold",
+      "demo": "ordinary-five",
+      "step": 5,
+      "renderProgress": 0.526268115942029,
+      "localFramePath": "video/footsteps-return/captures/task11-contact-sheet/03-chapter-evidence-plane.png",
+      "pngSha256": "10b87e8b881164b9215abd12b33b080a0bf8f1d219edd4a001ae551515575804",
+      "observation": {
+        "renderReady": true,
+        "timelineTime": 35.45,
+        "width": 3840,
+        "height": 2160,
+        "visibleSceneIds": [
+          "chapter-plane"
+        ],
+        "captions": [],
+        "intro": null,
+        "chapter": {
+          "phase": "win-hold",
+          "demo": "ordinary-five",
+          "canvasCount": 1,
+          "webglContextReady": true
+        },
+        "card": null,
+        "gallery": null,
+        "endCard": null
+      }
+    },
+    {
+      "id": "chapter-morph-plane",
+      "group": "chapter-morph",
+      "sceneId": "chapter-plane",
+      "chapterId": "plane",
+      "label": "plane morph hero",
+      "frameIndex": 2361,
+      "seekSeconds": 39.35,
+      "expectedPhase": "settled",
+      "demo": "ordinary-five",
+      "step": 5,
+      "renderProgress": 0.8795289855072462,
+      "localFramePath": "video/footsteps-return/captures/task11-contact-sheet/04-chapter-morph-plane.png",
+      "pngSha256": "9eca9943f9859bdfbb82fab569f2217ddf0272f995bf834474bbe9bfc78bc4d8",
+      "observation": {
+        "renderReady": true,
+        "timelineTime": 39.35,
+        "width": 3840,
+        "height": 2160,
+        "visibleSceneIds": [
+          "chapter-plane"
+        ],
+        "captions": [],
+        "intro": null,
+        "chapter": {
+          "phase": "settled",
+          "demo": "ordinary-five",
+          "canvasCount": 1,
+          "webglContextReady": true
+        },
+        "card": null,
+        "gallery": null,
+        "endCard": null
+      }
+    },
+    {
+      "id": "chapter-card-cylinder",
+      "group": "chapter-card",
+      "sceneId": "chapter-card-cylinder",
+      "chapterId": "cylinder",
+      "label": "cylinder chapter card",
+      "frameIndex": 2735,
+      "seekSeconds": 45.583333333333336,
+      "expectedPhase": "phase-b",
+      "localFramePath": "video/footsteps-return/captures/task11-contact-sheet/05-chapter-card-cylinder.png",
+      "pngSha256": "0ea6f38184c237b493971dfd7f2a2222ba945206764b3886661177949bed150a",
+      "observation": {
+        "renderReady": true,
+        "timelineTime": 45.5833333,
+        "width": 3840,
+        "height": 2160,
+        "visibleSceneIds": [
+          "chapter-card-cylinder"
+        ],
+        "captions": [],
+        "intro": null,
+        "chapter": {
+          "phase": "establish",
+          "demo": "horizontal-wrap",
+          "canvasCount": 1,
+          "webglContextReady": true
+        },
+        "card": {
+          "act": "ACT. I",
+          "chapter": "回廊",
+          "topology": "圆柱面",
+          "actOpacity": 0,
+          "chapterOpacity": 1,
+          "topologyOpacity": 1
+        },
+        "gallery": null,
+        "endCard": null
+      }
+    },
+    {
+      "id": "chapter-evidence-cylinder",
+      "group": "chapter-evidence",
+      "sceneId": "chapter-cylinder",
+      "chapterId": "cylinder",
+      "label": "cylinder rule evidence",
+      "frameIndex": 3051,
+      "seekSeconds": 50.85,
+      "expectedPhase": "breathe",
+      "demo": "horizontal-wrap",
+      "step": 3,
+      "renderProgress": 0.26886792452830194,
+      "localFramePath": "video/footsteps-return/captures/task11-contact-sheet/06-chapter-evidence-cylinder.png",
+      "pngSha256": "fdf6c56a33eae88f73b5ae0ad13f025dca6d365d6f4e1e820788f65bb8d20c6a",
+      "observation": {
+        "renderReady": true,
+        "timelineTime": 50.85,
+        "width": 3840,
+        "height": 2160,
+        "visibleSceneIds": [
+          "chapter-cylinder"
+        ],
+        "captions": [],
+        "intro": null,
+        "chapter": {
+          "phase": "breathe",
+          "demo": "horizontal-wrap",
+          "canvasCount": 1,
+          "webglContextReady": true
+        },
+        "card": null,
+        "gallery": null,
+        "endCard": null
+      }
+    },
+    {
+      "id": "chapter-morph-cylinder",
+      "group": "chapter-morph",
+      "sceneId": "chapter-cylinder",
+      "chapterId": "cylinder",
+      "label": "cylinder morph hero",
+      "frameIndex": 3595,
+      "seekSeconds": 59.916666666666664,
+      "expectedPhase": "settled",
+      "demo": "horizontal-wrap",
+      "step": 5,
+      "renderProgress": 0.8798292902066485,
+      "localFramePath": "video/footsteps-return/captures/task11-contact-sheet/07-chapter-morph-cylinder.png",
+      "pngSha256": "7bfb7d2c39430f38caed0ccd8adc5a44ef9aaa8c43f342f702871305f6b464aa",
+      "observation": {
+        "renderReady": true,
+        "timelineTime": 59.9166667,
+        "width": 3840,
+        "height": 2160,
+        "visibleSceneIds": [
+          "chapter-cylinder"
+        ],
+        "captions": [],
+        "intro": null,
+        "chapter": {
+          "phase": "settled",
+          "demo": "horizontal-wrap",
+          "canvasCount": 1,
+          "webglContextReady": true
+        },
+        "card": null,
+        "gallery": null,
+        "endCard": null
+      }
+    },
+    {
+      "id": "chapter-card-torus",
+      "group": "chapter-card",
+      "sceneId": "chapter-card-torus",
+      "chapterId": "torus",
+      "label": "torus chapter card",
+      "frameIndex": 3997,
+      "seekSeconds": 66.61666666666666,
+      "expectedPhase": "phase-b",
+      "localFramePath": "video/footsteps-return/captures/task11-contact-sheet/08-chapter-card-torus.png",
+      "pngSha256": "23a3b0932567d3bcec22fae8cef4e4c265105dc159c09f10c2e31a448bdf28ae",
+      "observation": {
+        "renderReady": true,
+        "timelineTime": 66.6166667,
+        "width": 3840,
+        "height": 2160,
+        "visibleSceneIds": [
+          "chapter-card-torus"
+        ],
+        "captions": [],
+        "intro": null,
+        "chapter": {
+          "phase": "establish",
+          "demo": "two-seam-diagonal",
+          "canvasCount": 1,
+          "webglContextReady": true
+        },
+        "card": {
+          "act": "ACT. II",
+          "chapter": "环游",
+          "topology": "环面",
+          "actOpacity": 0,
+          "chapterOpacity": 1,
+          "topologyOpacity": 1
+        },
+        "gallery": null,
+        "endCard": null
+      }
+    },
+    {
+      "id": "chapter-evidence-torus",
+      "group": "chapter-evidence",
+      "sceneId": "chapter-torus",
+      "chapterId": "torus",
+      "label": "torus rule evidence",
+      "frameIndex": 4396,
+      "seekSeconds": 73.26666666666667,
+      "expectedPhase": "breathe",
+      "demo": "two-seam-diagonal",
+      "step": 3,
+      "renderProgress": 0.3516100957354223,
+      "localFramePath": "video/footsteps-return/captures/task11-contact-sheet/09-chapter-evidence-torus.png",
+      "pngSha256": "ee3c486994fe2fa684517a1f025bdaef6e93085cde8f09ffe83567f64ff23b7b",
+      "observation": {
+        "renderReady": true,
+        "timelineTime": 73.2666667,
+        "width": 3840,
+        "height": 2160,
+        "visibleSceneIds": [
+          "chapter-torus"
+        ],
+        "captions": [],
+        "intro": null,
+        "chapter": {
+          "phase": "breathe",
+          "demo": "two-seam-diagonal",
+          "canvasCount": 1,
+          "webglContextReady": true
+        },
+        "card": null,
+        "gallery": null,
+        "endCard": null
+      }
+    },
+    {
+      "id": "chapter-morph-torus",
+      "group": "chapter-morph",
+      "sceneId": "chapter-torus",
+      "chapterId": "torus",
+      "label": "torus morph hero",
+      "frameIndex": 4882,
+      "seekSeconds": 81.36666666666666,
+      "expectedPhase": "settled",
+      "demo": "two-seam-diagonal",
+      "step": 5,
+      "renderProgress": 0.8803307223672756,
+      "localFramePath": "video/footsteps-return/captures/task11-contact-sheet/10-chapter-morph-torus.png",
+      "pngSha256": "9e412dc6de5675911484ca3c7ca7b356ce603a8af34c19a005eb4dc844e0bb48",
+      "observation": {
+        "renderReady": true,
+        "timelineTime": 81.3666667,
+        "width": 3840,
+        "height": 2160,
+        "visibleSceneIds": [
+          "chapter-torus"
+        ],
+        "captions": [],
+        "intro": null,
+        "chapter": {
+          "phase": "settled",
+          "demo": "two-seam-diagonal",
+          "canvasCount": 1,
+          "webglContextReady": true
+        },
+        "card": null,
+        "gallery": null,
+        "endCard": null
+      }
+    },
+    {
+      "id": "chapter-card-mobius",
+      "group": "chapter-card",
+      "sceneId": "chapter-card-mobius",
+      "chapterId": "mobius",
+      "label": "mobius chapter card",
+      "frameIndex": 5287,
+      "seekSeconds": 88.11666666666666,
+      "expectedPhase": "phase-b",
+      "localFramePath": "video/footsteps-return/captures/task11-contact-sheet/11-chapter-card-mobius.png",
+      "pngSha256": "caee9a4fa57677db105eeb9db963bad444b97880524f6be072f032b2e5eab5e2",
+      "observation": {
+        "renderReady": true,
+        "timelineTime": 88.1166667,
+        "width": 3840,
+        "height": 2160,
+        "visibleSceneIds": [
+          "chapter-card-mobius"
+        ],
+        "captions": [],
+        "intro": null,
+        "chapter": {
+          "phase": "establish",
+          "demo": "reflected-crossing",
+          "canvasCount": 1,
+          "webglContextReady": true
+        },
+        "card": {
+          "act": "ACT. III",
+          "chapter": "扭带",
+          "topology": "莫比乌斯环",
+          "actOpacity": 0,
+          "chapterOpacity": 1,
+          "topologyOpacity": 1
+        },
+        "gallery": null,
+        "endCard": null
+      }
+    },
+    {
+      "id": "chapter-evidence-mobius",
+      "group": "chapter-evidence",
+      "sceneId": "chapter-mobius",
+      "chapterId": "mobius",
+      "label": "mobius rule evidence",
+      "frameIndex": 5581,
+      "seekSeconds": 93.01666666666667,
+      "expectedPhase": "breathe",
+      "demo": "reflected-crossing",
+      "step": 3,
+      "renderProgress": 0.2697823936696342,
+      "localFramePath": "video/footsteps-return/captures/task11-contact-sheet/12-chapter-evidence-mobius.png",
+      "pngSha256": "a914cfbdb05f53af2970bdb8acdf2bdd697b053051007fbbd2d94deaabf35910",
+      "observation": {
+        "renderReady": true,
+        "timelineTime": 93.0166667,
+        "width": 3840,
+        "height": 2160,
+        "visibleSceneIds": [
+          "chapter-mobius"
+        ],
+        "captions": [],
+        "intro": null,
+        "chapter": {
+          "phase": "breathe",
+          "demo": "reflected-crossing",
+          "canvasCount": 1,
+          "webglContextReady": true
+        },
+        "card": null,
+        "gallery": null,
+        "endCard": null
+      }
+    },
+    {
+      "id": "chapter-morph-mobius",
+      "group": "chapter-morph",
+      "sceneId": "chapter-mobius",
+      "chapterId": "mobius",
+      "label": "mobius morph hero",
+      "frameIndex": 6075,
+      "seekSeconds": 101.25,
+      "expectedPhase": "settled",
+      "demo": "reflected-crossing",
+      "step": 5,
+      "renderProgress": 0.8805637982195847,
+      "localFramePath": "video/footsteps-return/captures/task11-contact-sheet/13-chapter-morph-mobius.png",
+      "pngSha256": "1f1d38b2e45b25533717c59715cf3313f9c6d532bc118026a30c51c60c2426cd",
+      "observation": {
+        "renderReady": true,
+        "timelineTime": 101.25,
+        "width": 3840,
+        "height": 2160,
+        "visibleSceneIds": [
+          "chapter-mobius"
+        ],
+        "captions": [],
+        "intro": null,
+        "chapter": {
+          "phase": "settled",
+          "demo": "reflected-crossing",
+          "canvasCount": 1,
+          "webglContextReady": true
+        },
+        "card": null,
+        "gallery": null,
+        "endCard": null
+      }
+    },
+    {
+      "id": "chapter-card-klein",
+      "group": "chapter-card",
+      "sceneId": "chapter-card-klein",
+      "chapterId": "klein",
+      "label": "klein chapter card",
+      "frameIndex": 6466,
+      "seekSeconds": 107.76666666666667,
+      "expectedPhase": "phase-b",
+      "localFramePath": "video/footsteps-return/captures/task11-contact-sheet/14-chapter-card-klein.png",
+      "pngSha256": "fe2fcc40669a23b263f241deb9e6d4bb617f3905ddac1af6dabf97858d157656",
+      "observation": {
+        "renderReady": true,
+        "timelineTime": 107.7666667,
+        "width": 3840,
+        "height": 2160,
+        "visibleSceneIds": [
+          "chapter-card-klein"
+        ],
+        "captions": [],
+        "intro": null,
+        "chapter": {
+          "phase": "establish",
+          "demo": "preserved-crossing",
+          "canvasCount": 1,
+          "webglContextReady": true
+        },
+        "card": {
+          "act": "ACT. IV",
+          "chapter": "瓶界",
+          "topology": "克莱因瓶",
+          "actOpacity": 0,
+          "chapterOpacity": 1,
+          "topologyOpacity": 1
+        },
+        "gallery": null,
+        "endCard": null
+      }
+    },
+    {
+      "id": "chapter-evidence-klein",
+      "group": "chapter-evidence",
+      "sceneId": "chapter-klein",
+      "chapterId": "klein",
+      "label": "klein rule evidence",
+      "frameIndex": 7134,
+      "seekSeconds": 118.9,
+      "expectedPhase": "breathe",
+      "demo": "reflected-crossing",
+      "step": 3,
+      "renderProgress": 0.6753424657534255,
+      "localFramePath": "video/footsteps-return/captures/task11-contact-sheet/15-chapter-evidence-klein.png",
+      "pngSha256": "1f7a98826633218e02e44d7186d08fdc314f9a8d2b80227608f38caec7d52b66",
+      "observation": {
+        "renderReady": true,
+        "timelineTime": 118.9,
+        "width": 3840,
+        "height": 2160,
+        "visibleSceneIds": [
+          "chapter-klein"
+        ],
+        "captions": [],
+        "intro": null,
+        "chapter": {
+          "phase": "breathe",
+          "demo": "reflected-crossing",
+          "canvasCount": 1,
+          "webglContextReady": true
+        },
+        "card": null,
+        "gallery": null,
+        "endCard": null
+      }
+    },
+    {
+      "id": "chapter-morph-klein",
+      "group": "chapter-morph",
+      "sceneId": "chapter-klein",
+      "chapterId": "klein",
+      "label": "klein morph hero",
+      "frameIndex": 7366,
+      "seekSeconds": 122.76666666666667,
+      "expectedPhase": "settled",
+      "demo": "reflected-crossing",
+      "step": 5,
+      "renderProgress": 0.9401826484018269,
+      "localFramePath": "video/footsteps-return/captures/task11-contact-sheet/16-chapter-morph-klein.png",
+      "pngSha256": "555a8bf0f3fa67a089cc639fcf898301fd54217e22ad6f8000efd0feb1ce6e70",
+      "observation": {
+        "renderReady": true,
+        "timelineTime": 122.7666667,
+        "width": 3840,
+        "height": 2160,
+        "visibleSceneIds": [
+          "chapter-klein"
+        ],
+        "captions": [],
+        "intro": null,
+        "chapter": {
+          "phase": "settled",
+          "demo": "reflected-crossing",
+          "canvasCount": 1,
+          "webglContextReady": true
+        },
+        "card": null,
+        "gallery": null,
+        "endCard": null
+      }
+    },
+    {
+      "id": "chapter-card-projective",
+      "group": "chapter-card",
+      "sceneId": "chapter-card-projective",
+      "chapterId": "projective",
+      "label": "projective chapter card",
+      "frameIndex": 7713,
+      "seekSeconds": 128.55,
+      "expectedPhase": "phase-b",
+      "localFramePath": "video/footsteps-return/captures/task11-contact-sheet/17-chapter-card-projective.png",
+      "pngSha256": "b687e0aa009e5ef663a7fb142d0108fcf7b6e78f2bc99ded55469c1b9d57a9a4",
+      "observation": {
+        "renderReady": true,
+        "timelineTime": 128.55,
+        "width": 3840,
+        "height": 2160,
+        "visibleSceneIds": [
+          "chapter-card-projective"
+        ],
+        "captions": [],
+        "intro": null,
+        "chapter": {
+          "phase": "establish",
+          "demo": "mirrored-crossings",
+          "canvasCount": 1,
+          "webglContextReady": true
+        },
+        "card": {
+          "act": "ACT. V",
+          "chapter": "双生",
+          "topology": "实射影平面",
+          "actOpacity": 0,
+          "chapterOpacity": 1,
+          "topologyOpacity": 1
+        },
+        "gallery": null,
+        "endCard": null
+      }
+    },
+    {
+      "id": "chapter-evidence-projective",
+      "group": "chapter-evidence",
+      "sceneId": "chapter-projective",
+      "chapterId": "projective",
+      "label": "projective rule evidence",
+      "frameIndex": 8119,
+      "seekSeconds": 135.31666666666666,
+      "expectedPhase": "breathe",
+      "demo": "mirrored-crossings",
+      "step": 3,
+      "renderProgress": 0.35144927536231896,
+      "localFramePath": "video/footsteps-return/captures/task11-contact-sheet/18-chapter-evidence-projective.png",
+      "pngSha256": "407ff5788dfdb7a17611ec1a993e37c7c430d2271cdb1851c7e305f8cc7ec4d8",
+      "observation": {
+        "renderReady": true,
+        "timelineTime": 135.3166667,
+        "width": 3840,
+        "height": 2160,
+        "visibleSceneIds": [
+          "chapter-projective"
+        ],
+        "captions": [],
+        "intro": null,
+        "chapter": {
+          "phase": "breathe",
+          "demo": "mirrored-crossings",
+          "canvasCount": 1,
+          "webglContextReady": true
+        },
+        "card": null,
+        "gallery": null,
+        "endCard": null
+      }
+    },
+    {
+      "id": "chapter-morph-projective",
+      "group": "chapter-morph",
+      "sceneId": "chapter-projective",
+      "chapterId": "projective",
+      "label": "projective morph hero",
+      "frameIndex": 8615,
+      "seekSeconds": 143.58333333333334,
+      "expectedPhase": "settled",
+      "demo": "mirrored-crossings",
+      "step": 5,
+      "renderProgress": 0.880008525149191,
+      "localFramePath": "video/footsteps-return/captures/task11-contact-sheet/19-chapter-morph-projective.png",
+      "pngSha256": "b0b2a034c52e89c030b1adc576e32908075eaf9d3d9f377e4c4836893fde13dc",
+      "observation": {
+        "renderReady": true,
+        "timelineTime": 143.5833333,
+        "width": 3840,
+        "height": 2160,
+        "visibleSceneIds": [
+          "chapter-projective"
+        ],
+        "captions": [],
+        "intro": null,
+        "chapter": {
+          "phase": "settled",
+          "demo": "mirrored-crossings",
+          "canvasCount": 1,
+          "webglContextReady": true
+        },
+        "card": null,
+        "gallery": null,
+        "endCard": null
+      }
+    },
+    {
+      "id": "chapter-card-sphere",
+      "group": "chapter-card",
+      "sceneId": "chapter-card-sphere",
+      "chapterId": "sphere",
+      "label": "sphere chapter card",
+      "frameIndex": 9022,
+      "seekSeconds": 150.36666666666667,
+      "expectedPhase": "phase-b",
+      "localFramePath": "video/footsteps-return/captures/task11-contact-sheet/20-chapter-card-sphere.png",
+      "pngSha256": "754dd71ba1829bbb49431b791f4123d8539bdbbd98ade8dfb66a19297d8ea1cf",
+      "observation": {
+        "renderReady": true,
+        "timelineTime": 150.3666667,
+        "width": 3840,
+        "height": 2160,
+        "visibleSceneIds": [
+          "chapter-card-sphere"
+        ],
+        "captions": [],
+        "intro": null,
+        "chapter": {
+          "phase": "establish",
+          "demo": "adjacent-edge-turn",
+          "canvasCount": 1,
+          "webglContextReady": true
+        },
+        "card": {
+          "act": "ACT. VI",
+          "chapter": "归圆",
+          "topology": "球面",
+          "actOpacity": 0,
+          "chapterOpacity": 1,
+          "topologyOpacity": 1
+        },
+        "gallery": null,
+        "endCard": null
+      }
+    },
+    {
+      "id": "chapter-evidence-sphere",
+      "group": "chapter-evidence",
+      "sceneId": "chapter-sphere",
+      "chapterId": "sphere",
+      "label": "sphere rule evidence",
+      "frameIndex": 9464,
+      "seekSeconds": 157.73333333333332,
+      "expectedPhase": "breathe",
+      "demo": "adjacent-edge-turn",
+      "step": 3,
+      "renderProgress": 0.2691401648998822,
+      "localFramePath": "video/footsteps-return/captures/task11-contact-sheet/21-chapter-evidence-sphere.png",
+      "pngSha256": "e10993a067061fb0f813b29bcfad5b0a2e6460e90347bcd8bf26e0754dd5d9e3",
+      "observation": {
+        "renderReady": true,
+        "timelineTime": 157.7333333,
+        "width": 3840,
+        "height": 2160,
+        "visibleSceneIds": [
+          "chapter-sphere"
+        ],
+        "captions": [],
+        "intro": null,
+        "chapter": {
+          "phase": "breathe",
+          "demo": "adjacent-edge-turn",
+          "canvasCount": 1,
+          "webglContextReady": true
+        },
+        "card": null,
+        "gallery": null,
+        "endCard": null
+      }
+    },
+    {
+      "id": "chapter-morph-sphere",
+      "group": "chapter-morph",
+      "sceneId": "chapter-sphere",
+      "chapterId": "sphere",
+      "label": "sphere morph hero",
+      "frameIndex": 10294,
+      "seekSeconds": 171.56666666666666,
+      "expectedPhase": "settled",
+      "demo": "adjacent-edge-turn",
+      "step": 5,
+      "renderProgress": 0.8801531213191994,
+      "localFramePath": "video/footsteps-return/captures/task11-contact-sheet/22-chapter-morph-sphere.png",
+      "pngSha256": "9912e53d3c02b535515a3f300d23032e186af80a2db9278c601f9bae05036ed8",
+      "observation": {
+        "renderReady": true,
+        "timelineTime": 171.5666667,
+        "width": 3840,
+        "height": 2160,
+        "visibleSceneIds": [
+          "chapter-sphere"
+        ],
+        "captions": [],
+        "intro": null,
+        "chapter": {
+          "phase": "settled",
+          "demo": "adjacent-edge-turn",
+          "canvasCount": 1,
+          "webglContextReady": true
+        },
+        "card": null,
+        "gallery": null,
+        "endCard": null
+      }
+    },
+    {
+      "id": "seven-world-gallery",
+      "group": "gallery",
+      "sceneId": "seven-world-gallery",
+      "label": "Seven-world gallery",
+      "frameIndex": 10778,
+      "seekSeconds": 179.63333333333333,
+      "expectedPhase": "withdrawal",
+      "localFramePath": "video/footsteps-return/captures/task11-contact-sheet/23-seven-world-gallery.png",
+      "pngSha256": "ae56ae2d5edebc180a3f9e6da4780f471764a421aafd43ea52e21f5cdf1c008e",
+      "observation": {
+        "renderReady": true,
+        "timelineTime": 179.6333333,
+        "width": 3840,
+        "height": 2160,
+        "visibleSceneIds": [
+          "seven-world-gallery"
+        ],
+        "captions": [],
+        "intro": null,
+        "chapter": null,
+        "card": null,
+        "gallery": {
+          "shapeCount": 7,
+          "readyCanvasCount": 7,
+          "cameraPosition": "withdrawn-center"
+        },
+        "endCard": null
+      }
+    },
+    {
+      "id": "end-card-identity",
+      "group": "end-card",
+      "sceneId": "end-card",
+      "label": "End-card identity",
+      "frameIndex": 12761,
+      "seekSeconds": 212.68333333333334,
+      "expectedPhase": "identity-hero",
+      "localFramePath": "video/footsteps-return/captures/task11-contact-sheet/24-end-card-identity.png",
+      "pngSha256": "c24bc9e9a21f5e9f55919dd548b8f5055cf196279673d23b550466847336ccdf",
+      "observation": {
+        "renderReady": true,
+        "timelineTime": 212.6833333,
+        "width": 3840,
+        "height": 2160,
+        "visibleSceneIds": [
+          "end-card"
+        ],
+        "captions": [],
+        "intro": null,
+        "chapter": null,
+        "card": null,
+        "gallery": null,
+        "endCard": {
+          "titleCount": 1,
+          "iopCount": 1,
+          "titleOpacity": 1,
+          "iopOpacity": 1
+        }
+      }
+    }
+  ],
+  "artifacts": {
+    "contactSheet": {
+      "path": "artifacts/pv-footsteps-return-task11-contact-sheet.png",
+      "sha256": "a8d248c61dff408d637ed021971b8eb97e7a76d84ee5ba5e4bee6a1cdc9c6853",
+      "width": 3840,
+      "height": 2160
+    },
+    "animationMap": {
+      "path": "artifacts/pv-footsteps-return-task11-animation-map.svg",
+      "sha256": "a615c6017c206312665a7cefe6aca88eafcb6ca208d02f32bbea35b8b5e85a41",
+      "width": 3840,
+      "height": 2160
+    }
+  }
+}

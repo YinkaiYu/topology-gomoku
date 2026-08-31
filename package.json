@@ -23,7 +23,7 @@
     "pv:voice:auditions": "uv run python ./video/footsteps-return/scripts/generate_voice_auditions.py",
     "pv:score": "powershell -NoProfile -ExecutionPolicy Bypass -File ./video/footsteps-return/scripts/render-score.ps1",
     "pv:render:draft": "hyperframes render ./video/footsteps-return --fps 60 --quality draft --output ./video/footsteps-return/renders/footsteps-return-draft.mp4",
-    "pv:render:4k": "hyperframes render ./video/footsteps-return --fps 60 --quality high --resolution landscape-4k --output ./video/footsteps-return/renders/footsteps-return-4k.mp4"
+    "pv:render:4k": "powershell -NoProfile -ExecutionPolicy Bypass -File ./video/footsteps-return/scripts/render-final.ps1"
   },
   "engines": {
     "node": ">=22"

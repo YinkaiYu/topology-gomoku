@@ -92,9 +92,12 @@ test("4K master stage synchronously registers every scene on one paused timeline
   });
   assert.ok(contract.tweenCount > expectedSceneIds.length, "master timeline should choreograph scenes, not only register them");
 
-  const readyExists = await page.evaluate(() => window.__renderReady instanceof Promise);
-  assert.equal(readyExists, true);
-  await page.evaluate(() => window.__renderReady);
+  const readyContract = await page.evaluate(() => ({
+    hyperframesGate: window.__renderReady,
+    hasAwaitableReadiness: window.__pvRenderReadyPromise instanceof Promise
+  }));
+  assert.deepEqual(readyContract, { hyperframesGate: true, hasAwaitableReadiness: true });
+  await page.evaluate(() => window.__pvRenderReadyPromise);
   const tweenCountAfterFonts = await page.evaluate(() => window.__timelines["footsteps-return"].getChildren(true, true, true).length);
   assert.equal(tweenCountAfterFonts, contract.tweenCount, "font readiness must not mutate the timeline asynchronously");
 });
@@ -127,7 +130,7 @@ test("safe-area tokens and caption layer keep one visible caption group", async 
 
 test("render readiness waits for all three local Topo Serif weights", async () => {
   const result = await page.evaluate(async () => {
-    await window.__renderReady;
+    await window.__pvRenderReadyPromise;
     const faces = [...document.fonts]
       .filter((face) => face.family.replaceAll('"', "") === "Topo Serif")
       .map((face) => ({ weight: face.weight, status: face.status }))
