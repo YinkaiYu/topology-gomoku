@@ -99,6 +99,37 @@ test("end-card tail enforcement produces strict PCM zero after resampling and SF
   assert.ok(forcedWav.samples.slice(40 * 2).every((sample) => sample === 0));
 });
 
+test("the end card carries only sixty frames of faded cadence before digital silence", () => {
+  const endCard = manifest.segments.find((segment) => segment.kind === "end-card");
+  const finale = manifest.music.clips.at(-1);
+  const silence = manifest.audio.metrics.tailDigitalSilence;
+  assert.equal(endCard.startFrame, 12474);
+  assert.equal(finale.targetEndFrame, endCard.startFrame + 60);
+  assert.equal(finale.fadeOutFrames, 42);
+  assert.equal(silence.musicStem.startFrame, 12534);
+  assert.equal(silence.scoreMix.startFrame, 12534);
+  assert.equal(silence.masterMix.startFrame, 12534);
+  assert.equal(silence.sfxStem.startFrame, 12474);
+  assert.equal(silence.voiceStem.startFrame, 12474);
+  for (const audit of Object.values(silence)) {
+    assert.equal(audit.digitalSilence, true);
+    assert.equal(audit.nonZeroSamples, 0);
+    assert.equal(audit.maxAbsPcm16, 0);
+  }
+});
+
+test("platform packaging preserves approved video bitstreams and replaces only the final audio", () => {
+  const source = fs.readFileSync(path.join(pvRoot, "scripts", "package-platform-deliveries.mjs"), "utf8");
+  assert.match(source, /id: "bilibili"[\s\S]*width: 3840,[\s\S]*height: 2160/);
+  assert.match(source, /id: "douyin"[\s\S]*width: 1080,[\s\S]*height: 1920/);
+  assert.match(source, /id: "xiaohongshu"[\s\S]*width: 1080,[\s\S]*height: 1440/);
+  assert.match(source, /"-c:v", "copy"/);
+  assert.match(source, /videoBitstreamPreserved: true/);
+  assert.match(source, /fullDecodePassed: true/);
+  assert.match(source, /large4kMasterGenerated: false/);
+  assert.doesNotMatch(source, /"-c:v", "prores|seven-realms-master\.mov/iu);
+});
+
 test("the exact four-second institution-logo silence contains neither voice nor captions", () => {
   const logo = manifest.segments.find((segment) => segment.kind === "institution-logo");
   assert.deepEqual([logo.startFrame, logo.endFrame, logo.durationFrames], [1225, 1466, 241]);
@@ -209,13 +240,15 @@ test("elegant classical-HOYO score preserves source tempo, measured title action
     assert.ok(Math.abs(alignedSourceSeconds - clip.reveal.nativeImpactSourceSeconds) < 0.00001, clip.id);
   }
   const finale = musicPlan.clips.at(-1);
-  assert.ok(Math.abs(finale.sourceOutSeconds - finale.sourceInSeconds - 9.85) < 1e-9);
-  assert.equal((finale.targetEndFrame - finale.targetStartFrame) / musicPlan.fps, 9.85);
-  assert.equal(finale.targetEndFrame, 12474);
+  assert.ok(Math.abs(finale.sourceOutSeconds - finale.sourceInSeconds - 10.85) < 1e-9);
+  assert.equal((finale.targetEndFrame - finale.targetStartFrame) / musicPlan.fps, 10.85);
+  assert.equal(finale.targetEndFrame, 12534);
   assert.equal(finale.sourceInSeconds, 146.762125);
-  assert.equal(finale.sourceOutSeconds, 156.612125);
-  assert.equal(finale.waveformAudit.quietSoloStartSeconds, finale.sourceOutSeconds);
-  assert.equal(finale.waveformAudit.excludesQuietSolo, true);
+  assert.equal(finale.sourceOutSeconds, 157.612125);
+  assert.equal(finale.fadeOutFrames, 42);
+  assert.equal(finale.waveformAudit.tailExtensionSeconds, 1);
+  assert.equal(finale.waveformAudit.quietSoloSuppressedByFade, true);
+  assert.equal(finale.waveformAudit.excludesSustainedQuietSolo, true);
   assert.equal(manifest.music.reference.sha256, "2856c83944d69c2779ab259e98f05a46c264221486777cd2cc158bd795d7c92f");
   assert.match(manifest.music.reference.role, /structural.*reference only/i);
   assert.equal(manifest.music.sources.length, 11);

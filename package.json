@@ -21,6 +21,7 @@
     "pv:master": "node ./video/chapter-teaser/scripts/render.mjs master --profile master",
     "pv:social:douyin": "node ./video/chapter-teaser/scripts/render-social.mjs douyin",
     "pv:social:xiaohongshu": "node ./video/chapter-teaser/scripts/render-social.mjs xiaohongshu",
+    "pv:platforms": "node ./video/chapter-teaser/scripts/package-platform-deliveries.mjs",
     "pv:covers": "node ./video/chapter-teaser/scripts/render-covers.mjs",
     "pv:verify": "node ./video/chapter-teaser/scripts/verify-video.mjs --profile review",
     "build": "npm run build:xiaohongshu",

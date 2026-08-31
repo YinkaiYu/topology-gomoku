@@ -150,11 +150,12 @@ test("配乐计划以十一段古典与 HOYO-MiX 选曲构成且足迹只作为�
     ["projective-recta", "projective-inversa"]
   );
   const finale = musicPlan.clips.at(-1);
-  assert.ok(Math.abs(finale.sourceOutSeconds - finale.sourceInSeconds - 9.85) < 1e-9);
-  assert.equal(finale.targetEndFrame, 12474);
+  assert.ok(Math.abs(finale.sourceOutSeconds - finale.sourceInSeconds - 10.85) < 1e-9);
+  assert.equal(finale.targetEndFrame, 12534);
   assert.equal(finale.sourceInSeconds, 146.762125);
-  assert.equal(finale.sourceOutSeconds, 156.612125);
-  assert.equal(finale.waveformAudit.excludesQuietSolo, true);
+  assert.equal(finale.sourceOutSeconds, 157.612125);
+  assert.equal(finale.fadeOutFrames, 42);
+  assert.equal(finale.waveformAudit.excludesSustainedQuietSolo, true);
   assert.equal(musicPlan.sources.some((source) => source.sha256 === musicPlan.reference.sha256), false);
   assert.match(musicPlan.reference.role, /structural.*reference only/i);
   assert.ok(musicPlan.sources.every((source) => source.downloadUrl === null && source.cacheRequired === true));

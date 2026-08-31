@@ -18,10 +18,10 @@
 | --- | --- | --- |
 | 审阅净画面 | 1920 × 1080，H.264，无字幕无声音 | `.tmp/chapter-teaser/review/chapter-teaser-clean.mp4` |
 | 审阅成片 | 1920 × 1080，H.264 / AAC | `.tmp/chapter-teaser/delivery/topology-gomoku-chapter-teaser-final-1080p.mp4` |
-| 4K 母版 | 3840 × 2160，ProRes 422 HQ / 24-bit PCM | `.tmp/chapter-teaser/master/seven-realms-master.mov` |
-| B 站投稿版 | 3840 × 2160，H.264 / AAC | `.tmp/chapter-teaser/bilibili/seven-realms-bilibili-4k60.mp4` |
-| 抖音投稿版 | 1080 × 1920，H.264 / AAC，原生 9:16 构图 | `.tmp/chapter-teaser/social/douyin/topology-gomoku-douyin-1080x1920-60fps.mp4` |
-| 小红书投稿版 | 1080 × 1440，H.264 / AAC，原生 3:4 构图 | `.tmp/chapter-teaser/social/xiaohongshu/topology-gomoku-xiaohongshu-1080x1440-60fps.mp4` |
+| 可选 4K 母版 | 3840 × 2160，ProRes 422 HQ / 24-bit PCM；本轮不生成 | `.tmp/chapter-teaser/master/seven-realms-master.mov` |
+| B 站投稿版 | 3840 × 2160，H.264 / AAC | `.tmp/chapter-teaser/final-deliveries/bilibili/topology-gomoku-footsteps-loop-bilibili-4k60.mp4` |
+| 抖音投稿版 | 1080 × 1920，H.264 / AAC，原生 9:16 构图 | `.tmp/chapter-teaser/final-deliveries/douyin/topology-gomoku-footsteps-loop-douyin-1080x1920-60fps.mp4` |
+| 小红书投稿版 | 1080 × 1440，H.264 / AAC，原生 3:4 构图 | `.tmp/chapter-teaser/final-deliveries/xiaohongshu/topology-gomoku-footsteps-loop-xiaohongshu-1080x1440-60fps.mp4` |
 
 ## 审阅流程
 
@@ -33,9 +33,9 @@ npm run pv:audio -- --voice "C:\path\to\余荫铠旁白配音.mp3"
 ```
 
 - `pv:fonts` 重建标题用衬线 400/600/700 和字幕用无衬线 600 子集。
-- `pv:audio` 保留原始旁白 MP3，并一次性解码为与 12897 帧严格对齐的 48 kHz 双声道；随后按 `music-plan.json` 剪辑十一段配乐、生成实机语义音效、侧链压低配乐，并同步生成 `manifest.json`、`captions.srt` 和 `captions.ass`。配乐以古典作品为主骨架，回廊与归圆分别使用一段完整的 HOYO-MiX 章节声音；相邻片段以 84 帧 `qsin` 曲线交接，Saint-Saëns 管风琴在最后一句挑战的 9.85 秒内由管弦推进抵达全乐团终止式，并于第 12474 帧结束，源录音随后 7.05 秒的静谧独奏不进入成片。《足迹》伴奏只用于结构与动态参考，不进入最终全频音乐轨。
+- `pv:audio` 保留原始旁白 MP3，并一次性解码为与 12897 帧严格对齐的 48 kHz 双声道；随后按 `music-plan.json` 剪辑十一段配乐、生成实机语义音效、侧链压低配乐，并同步生成 `manifest.json`、`captions.srt` 和 `captions.ass`。配乐以古典作品为主骨架，回廊与归圆分别使用一段完整的 HOYO-MiX 章节声音；相邻片段以 84 帧 `qsin` 曲线交接。Saint-Saëns 管风琴从最后一句挑战推进至全乐团终止式，并让终止式余音在双 Logo 出现后继续 60 帧；最后 42 帧使用 `qsin` 淡出，避免后续静谧独奏发展成新的段落。《足迹》伴奏只用于结构与动态参考，不进入最终全频音乐轨。
 - 音频分轨位于 `.tmp/chapter-teaser/audio/`：`music.wav`、`sfx.wav`、`music-and-sfx.wav`、`voice.wav`、`voice-original.mp3` 和 `master.wav`。
-- Logo 片尾 `[12474,12897)` 共 7.05 秒；`music.wav`、`sfx.wav` 与 `voice.wav` 在该区间均为数字静音，不另加 Logo 到达声或氛围底噪。
+- Logo 片尾 `[12474,12897)` 共 7.05 秒：`music.wav` 仅在 `[12474,12534)` 保留 1 秒终止式余音，从第 12534 帧起的 6.05 秒为逐样本数字静音；`sfx.wav` 与 `voice.wav` 仍从第 12474 帧起全程静音，不另加 Logo 到达声或氛围底噪。
 - 1080p 字幕使用 72 px `Topo Sans PV` 无衬线字体和 4.2 px 纯黑描边；画面序幕让两侧边界实体直接贴合，不绘制上方绿色连接弧，并让棋盘面、经纬线、虚线路径和棋子始终共用同一曲面映射，虚线路径与运动棋子全程显现；2D 与 3D 五连辅助动画不绘制边界粘合位置的细线空心圆，完成拼合的三维章节画面与终章七流形则隐藏边界缝合线并保留金色五子连珠。
 
 浏览器逐帧预览不会生成视频；加 `--open` 会用本机 Edge 打开预览页：
@@ -67,16 +67,16 @@ npm run pv:review-clean -- --output .tmp/chapter-teaser/review/custom-clean.mp4
 npm run pv:package -- --clean-video .tmp/chapter-teaser/review/custom-clean.mp4
 ```
 
-## 4K 母版
+## 可选 4K 母版
 
-只有在 1080p60 审阅版获得用户明确确认后，才生成和验证 4K60 母版：
+源工程仍可在未来确有存档或后期需求时生成 4K60 ProRes 母版，但本轮投稿交付不生成这个约 14 GB 的中间文件：
 
 ```powershell
 npm run pv:master
 npm run pv:verify -- --profile master
 ```
 
-生成结果位于 `.tmp/chapter-teaser/master/`：`seven-realms-master.mov` 为 3840 × 2160、60 fps、ProRes 422 HQ、10-bit 4:2:2、BT.709 与 48 kHz / 24-bit PCM 母版。4K 渲染关闭 Canvas 字幕，并在编码阶段用与 1080p 定版相同的 `captions.ass` 和内嵌 `Topo Sans PV` 字体烧录，保证字号、位置和纯黑描边按画幅等比例一致；`delivery-manifest.json` 记录帧数、媒体探测、片尾数字静音与来源清单哈希，`seven-realms-master.mov.sha256` 用于文件完整性校验。
+如未来执行，结果位于 `.tmp/chapter-teaser/master/`：`seven-realms-master.mov` 为 3840 × 2160、60 fps、ProRes 422 HQ、10-bit 4:2:2、BT.709 与 48 kHz / 24-bit PCM 母版。当前 B 站 4K 投稿版直接保留已确认 H.264 画面码流并替换最终混音，不依赖重新导出 ProRes。
 
 ## 竖屏平台版
 
@@ -92,6 +92,14 @@ npm run pv:social:xiaohongshu -- --overwrite
 ```
 
 两个交付目录都包含成片、平台专用 ASS、内嵌字幕字体、SHA-256 校验和 `delivery-manifest.json`。平台字幕使用 68 px 无衬线 `Topo Sans PV` 与 5.8 px 纯黑描边，允许长句自然换为两行，时间点完全继承已确认的 60 fps 整数帧时轴。片头竖屏参数面在闭合前保持等距正方形网格，闭合后使用恒定半径圆柱与正交投影；七图鉴采用单—双—单—双—单纵向节奏，七流形群像采用 2—3—2 编队，终章中心球与六个环绕流形分别留出独立空间，双 Logo 使用更宽松的联名锁定关系。
+
+画面已经定版而仅调整混音时，不重新渲染 12897 帧，也不生成大型 4K 母版；运行下列命令会逐平台校验尺寸、帧率与帧数，原样复制已确认的视频码流，只替换新的 48 kHz 最终混音，并对三版成片执行完整解码：
+
+```powershell
+npm run pv:platforms -- --overwrite
+```
+
+最终三平台成片统一写入 `.tmp/chapter-teaser/final-deliveries/`，每个平台子目录同时保存 SHA-256 与来源清单；总清单明确记录 `generatedLarge4kMaster: false`。
 
 ## 投稿封面与文案
 

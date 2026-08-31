@@ -985,11 +985,24 @@ export async function buildAudio(options = parseArguments([])) {
       totalFrames: totalSampleFrames,
       sampleRate: story.render.sampleRate
     });
-    const endCardStartSampleFrame = endCardStartFrame * story.render.sampleRate / timeline.fps;
-    metrics.endCardDigitalSilence = Object.fromEntries(
-      ["musicStem", "sfxStem", "voiceStem", "scoreMix", "masterMix"].map((key) => [
+    const samplesPerVideoFrame = story.render.sampleRate / timeline.fps;
+    const endCardStartSampleFrame = endCardStartFrame * samplesPerVideoFrame;
+    const musicSilenceStartFrame = musicPlan.clips.at(-1)?.targetEndFrame ?? endCardStartFrame;
+    if (musicSilenceStartFrame < endCardStartFrame || musicSilenceStartFrame > timeline.totalFrames) {
+      throw new Error(`Invalid music silence boundary: ${musicSilenceStartFrame}`);
+    }
+    const musicSilenceStartSampleFrame = musicSilenceStartFrame * samplesPerVideoFrame;
+    const silenceStartByStem = {
+      musicStem: musicSilenceStartSampleFrame,
+      sfxStem: endCardStartSampleFrame,
+      voiceStem: endCardStartSampleFrame,
+      scoreMix: musicSilenceStartSampleFrame,
+      masterMix: musicSilenceStartSampleFrame
+    };
+    metrics.tailDigitalSilence = Object.fromEntries(
+      Object.entries(silenceStartByStem).map(([key, startSampleFrame]) => [
         key,
-        enforceDigitalSilenceTail(absoluteAudio[key], endCardStartSampleFrame)
+        { startFrame: startSampleFrame / samplesPerVideoFrame, ...enforceDigitalSilenceTail(absoluteAudio[key], startSampleFrame) }
       ])
     );
     for (const key of ["originalVoice", "voiceStem", "musicStem", "sfxStem", "scoreMix", "masterMix"]) probes[key] = probeAudio(ffprobe, absoluteAudio[key]);

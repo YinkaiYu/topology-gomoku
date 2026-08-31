@@ -35,7 +35,7 @@
   },
   "music": {
     "plan": "video/chapter-teaser/music-plan.json",
-    "planSha256": "d82ee0bce6e6ff5f6926147f77439dc5d0f8d7ade912035334ef3f92f42a8bdd",
+    "planSha256": "00fbf9ca812d4f2df9ef5d2ca84f16a76b1df05a3ba52b7422ed1f933c804990",
     "reference": {
       "title": "《原神·提瓦特篇》主线章节预告PV-「足迹」伴奏背景音乐",
       "role": "structural, chapter-contrast and title-launch reference only; not used as a full-range source in the final mix",
@@ -554,20 +554,24 @@
         "id": "finale",
         "sourceId": "saint-saens-organ-finale",
         "sourceInSeconds": 146.762125,
-        "sourceOutSeconds": 156.612125,
+        "sourceOutSeconds": 157.612125,
         "targetStartFrame": 11883,
-        "targetEndFrame": 12474,
+        "targetEndFrame": 12534,
         "fadeInFrames": 84,
-        "fadeOutFrames": 4,
-        "chapterRole": "the organ symphony opens only for the final challenge, builds into the full-orchestra cadence at the end of the last line, then yields to silence as the co-brand card appears",
-        "selectionReason": "This preserves the alignment of the earlier 16.9-second edit but removes exactly the 7.05 seconds that had occupied the co-brand card: the orchestral approach begins at source 146.762125, the tutti cadence starts at source 153.812125 / frame 12306, and its decay ends at source 156.612125 / frame 12474 before the quiet solo can begin.",
+        "fadeOutFrames": 42,
+        "chapterRole": "the organ symphony opens only for the final challenge, builds into the full-orchestra cadence at the end of the last line, lets its last resonance cross the co-brand reveal for one second, then yields to silence",
+        "selectionReason": "The orchestral approach still begins at source 146.762125 and the tutti cadence still lands at source 153.812125 / frame 12306. The previous frame-12474 cut is extended by exactly 60 frames so the cadence can decay naturally into the co-brand reveal, with a 42-frame qsin fade suppressing the following quiet solo before frame 12534; the remaining 6.05 seconds are silent.",
         "waveformAudit": {
           "tuttiCadenceStartSeconds": 153.812125,
-          "quietSoloStartSeconds": 156.612125,
+          "previousCutSeconds": 156.612125,
+          "tailExtensionSeconds": 1,
+          "fadeOutStartSeconds": 156.912125,
+          "quietSoloReferenceStartSeconds": 156.612125,
           "excludedQuietSoloEndSeconds": 163.662125,
           "containerDurationSeconds": 168.341,
           "usesNaturalAudibleEnd": false,
-          "excludesQuietSolo": true
+          "quietSoloSuppressedByFade": true,
+          "excludesSustainedQuietSolo": true
         }
       }
     ]
@@ -600,7 +604,7 @@
         "trimmedSampleFrames": 0
       },
       "musicAlignment": {
-        "sourceSampleFrames": 10651200,
+        "sourceSampleFrames": 10699200,
         "outputSampleFrames": 10317600,
         "paddedSampleFrames": 0,
         "trimmedSampleFrames": 0,
@@ -610,7 +614,7 @@
         "chapterRevealAutomation": "music dips to 0.22 before each measured title impact and returns to unity on the impact frame",
         "energy": {
           "peakDbfs": -7.152,
-          "rmsDbfs": -26.249
+          "rmsDbfs": -26.252
         },
         "placedClips": [
           {
@@ -676,8 +680,8 @@
           {
             "id": "finale",
             "startSampleFrame": 9506400,
-            "endSampleFrame": 9979200,
-            "renderedSampleFrames": 472800
+            "endSampleFrame": 10027200,
+            "renderedSampleFrames": 520800
           }
         ],
         "coverage": [
@@ -733,8 +737,8 @@
           },
           {
             "id": "finale",
-            "centerFrame": 12178,
-            "rmsDb": -27.823
+            "centerFrame": 12208,
+            "rmsDb": -28.057
           }
         ]
       },
@@ -4593,22 +4597,24 @@
       },
       "scoreMix": {
         "peak": 0.5683792952720329,
-        "rms": 0.0677187167613229
+        "rms": 0.06770057053145444
       },
       "masterMix": {
         "peak": 0.7599994112116674,
-        "rms": 0.08149589448215272
+        "rms": 0.0814929881787914
       },
-      "endCardDigitalSilence": {
+      "tailDigitalSilence": {
         "musicStem": {
-          "startSampleFrame": 9979200,
+          "startFrame": 12534,
+          "startSampleFrame": 10027200,
           "endSampleFrame": 10317600,
-          "checkedSampleFrames": 338400,
+          "checkedSampleFrames": 290400,
           "nonZeroSamples": 0,
           "maxAbsPcm16": 0,
           "digitalSilence": true
         },
         "sfxStem": {
+          "startFrame": 12474,
           "startSampleFrame": 9979200,
           "endSampleFrame": 10317600,
           "checkedSampleFrames": 338400,
@@ -4617,6 +4623,7 @@
           "digitalSilence": true
         },
         "voiceStem": {
+          "startFrame": 12474,
           "startSampleFrame": 9979200,
           "endSampleFrame": 10317600,
           "checkedSampleFrames": 338400,
@@ -4625,17 +4632,19 @@
           "digitalSilence": true
         },
         "scoreMix": {
-          "startSampleFrame": 9979200,
+          "startFrame": 12534,
+          "startSampleFrame": 10027200,
           "endSampleFrame": 10317600,
-          "checkedSampleFrames": 338400,
+          "checkedSampleFrames": 290400,
           "nonZeroSamples": 0,
           "maxAbsPcm16": 0,
           "digitalSilence": true
         },
         "masterMix": {
-          "startSampleFrame": 9979200,
+          "startFrame": 12534,
+          "startSampleFrame": 10027200,
           "endSampleFrame": 10317600,
-          "checkedSampleFrames": 338400,
+          "checkedSampleFrames": 290400,
           "nonZeroSamples": 0,
           "maxAbsPcm16": 0,
           "digitalSilence": true
@@ -4791,7 +4800,7 @@
       "musicStem": {
         "path": ".tmp/chapter-teaser/audio/music.wav",
         "bytes": 41270444,
-        "sha256": "9afee6312ea96c40cde21a4eddaa9ee43bc0964b91f68b2d606b6bb2a7e2c98b"
+        "sha256": "0c968a51376bf72dc50852764db2162d12ffcb43d3a820dd96eaf336cf015582"
       },
       "sfxStem": {
         "path": ".tmp/chapter-teaser/audio/sfx.wav",
@@ -4801,12 +4810,12 @@
       "scoreMix": {
         "path": ".tmp/chapter-teaser/audio/music-and-sfx.wav",
         "bytes": 41270444,
-        "sha256": "e0ba316eca607f257643c2b688b7da1585ff84a33cb7398dba978d1c967e7a7b"
+        "sha256": "bb21c68ed81e6d4416497b8e2d92b3cad91802660fc0a61bb96ebfe2f0b8b539"
       },
       "masterMix": {
         "path": ".tmp/chapter-teaser/audio/master.wav",
         "bytes": 41270444,
-        "sha256": "567df4b0fd1e011ead1145d46e5d932489c57aaf48ac6073ba6f77e3c6b1491b"
+        "sha256": "4bda6bb315c154285e7bb6d738a85ae928bf6bef72a8613707e8a3ad46b67b86"
       }
     }
   },
