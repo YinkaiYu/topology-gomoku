@@ -25,7 +25,9 @@
     "pv:covers:directions": "node ./video/chapter-teaser/scripts/render-cover-directions.mjs",
     "pv:covers:redesign": "node ./video/chapter-teaser/scripts/render-cover-redesign.mjs",
     "pv:covers:imagegen": "node ./video/chapter-teaser/scripts/render-cover-imagegen-exploration.mjs",
-    "pv:covers:selection": "node ./video/chapter-teaser/scripts/compose-cover-wordmarks-v4.mjs && node ./video/chapter-teaser/scripts/render-cover-selection-exploration.mjs",
+    "pv:covers:board": "node ./video/chapter-teaser/scripts/render-cover-board-v5.mjs",
+    "pv:covers:selection:v4": "node ./video/chapter-teaser/scripts/compose-cover-wordmarks-v4.mjs && node ./video/chapter-teaser/scripts/render-cover-selection-exploration.mjs",
+    "pv:covers:selection": "node ./video/chapter-teaser/scripts/render-cover-wordmark-exploration-v5.mjs",
     "pv:verify": "node ./video/chapter-teaser/scripts/verify-video.mjs --profile review",
     "build": "npm run build:xiaohongshu",
     "build:xiaohongshu": "powershell -NoProfile -ExecutionPolicy Bypass -File ./scripts/build.ps1"

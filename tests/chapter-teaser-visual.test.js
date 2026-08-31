@@ -601,6 +601,53 @@ test("cover selection exploration keeps only approved wordmark families and adap
   }
 });
 
+test("cover wordmark v5 uses the real torus rules, square game board, and repaired 08/09 families", () => {
+  const boardSource = fs.readFileSync(path.join(PV_ROOT, "scripts", "render-cover-board-v5.mjs"), "utf8");
+  const coverSource = fs.readFileSync(path.join(PV_ROOT, "scripts", "render-cover-wordmark-exploration-v5.mjs"), "utf8");
+
+  assert.match(boardSource, /require\("\.\.\/\.\.\/\.\.\/app\/assets\/topology-art\.js"\)/);
+  assert.match(boardSource, /require\("\.\.\/\.\.\/\.\.\/app\/assets\/topology\.js"\)/);
+  assert.match(boardSource, /Engine\.tracePath/);
+  assert.match(boardSource, /columns: 4, rows: 4/);
+  assert.match(boardSource, /vertical: 5, horizontal: 5/);
+  assert.match(boardSource, /auxiliaryCircleCount: 0/);
+  assert.match(boardSource, /x: "same", y: "same"/);
+  assert.match(boardSource, /projection: "orthographic"/);
+  assert.match(boardSource, /titleOverlapFraction < 0\.10/);
+  assert.match(boardSource, /titleOverlapFraction > 0\.25/);
+
+  for (const id of [
+    "serif-baseline",
+    "08g-footsteps-release-tight",
+    "08h-footsteps-twin-surface",
+    "08i-footsteps-ribbon-release",
+    "09g-geometric-repaired",
+    "09h-geometric-folded",
+    "09i-geometric-release"
+  ]) assert.match(coverSource, new RegExp(`id: "${id}"`));
+  assert.match(coverSource, /exactCoverText: \["拓扑五子棋", "足迹回环"\]/);
+  assert.match(coverSource, /boardSource: "repository game art: topology-art\.js"/);
+  assert.match(coverSource, /x: 0\.075[\s\S]*width: 0\.50, height: 0\.34/);
+  assert.match(coverSource, /x: 0\.07[\s\S]*width: 0\.555, height: 0\.42/);
+  assert.match(coverSource, /x: 0\.07[\s\S]*width: 0\.86, height: 0\.28/);
+  assert.doesNotMatch(coverSource, /heightScale|fiveScale|oversizedFive/);
+  assert.match(coverSource, /qa-chapter-teaser-cover-wordmarks-v5-/);
+  assert.match(coverSource, /thumbnail-proof-/);
+
+  for (const asset of [
+    "08g-footsteps-release-tight.png",
+    "08h-footsteps-twin-surface.png",
+    "08i-footsteps-ribbon-release.png",
+    "09g-geometric-repaired.png",
+    "09h-geometric-folded.png",
+    "09i-geometric-release.png"
+  ]) {
+    const assetPath = path.join(PV_ROOT, "assets", "cover-exploration-v5", "wordmarks", asset);
+    assert.ok(fs.existsSync(assetPath), `missing v5 wordmark asset: ${asset}`);
+    assert.ok(fs.statSync(assetPath).size > 100_000, `v5 wordmark asset is unexpectedly small: ${asset}`);
+  }
+});
+
 test("native portrait compositions render directly at both platform aspect ratios", () => {
   for (const [width, height] of [[1080, 1920], [1080, 1440]]) {
     const teaser = Compositor.createComposition({

@@ -47,7 +47,8 @@ npm run pv:verify
 - `pv:audio` 调用本地 MuseScore 4 的 MuseScore Basic profile 渲染 11 份已提交的原创 MusicXML 分谱，经 FFmpeg 归一后汇成钢琴、弦乐、低音/铜管、合唱、音效/打击五条总线，再与审阅旁白混合到帧对齐的 48 kHz 立体声母带。分谱源哈希变化时，`.tmp/` 中的渲染缓存会自动失效。
 - `pv:serve` 是逐帧浏览器预览；`pv:preview` 才会把完整时间线流式编码为 1080p60 审阅视频。
 - `pv:keyframes` 生成 4K 关键帧与联系表，默认写入 `.tmp/chapter-teaser/keyframes-4k/`；所有大体积中间产物都留在 `.tmp/`。
-- `pv:covers:selection` 先重建经逐字校验的 08D / 09F 透明字标，再把实机 Logo、游戏拓扑 SVG、环游 4 × 4 格棋盘和已落盘的图片生成底图组合为 4:3、16:9、3:4 候选及真实像素缩略图；结果与哈希清单写入 `.tmp/chapter-teaser/cover-selection-exploration-v4/`。
+- `pv:covers:board` 用 `topology-art.js` 和 `topology.js` 的实机规则重建 4 × 4 格环游棋盘，并输出三比例材质与布局预览到 `.tmp/chapter-teaser/cover-board-v5/`。
+- `pv:covers:selection` 把同一实机棋盘与普通字体基准、08「足迹」修复组三版、09B 几何修复组三版组合为 4:3、16:9、3:4 原生封面；大标题覆盖棋盘约 18–25%，结果、真实缩略图和哈希清单写入 `.tmp/chapter-teaser/cover-wordmark-exploration-v5/`。旧 v4 可用 `pv:covers:selection:v4` 复现。
 - 本地审阅旁白依赖 Windows 系统的 Microsoft Kangkang 男声，只用于节奏、字幕与混音审阅，公开成片必须换成已授权的正式配音。
 - 渲染器默认不覆盖现有文件；需要替换时显式传入 `--overwrite`。只有审阅版获得用户明确确认后，才运行 `npm run pv:master` 生成 4K60 母版；确认前不合并任务分支。
 
