@@ -123,6 +123,118 @@ function wrapRawPcm16Stereo(rawPath, outputPath, totalSampleFrames, sampleRate) 
   };
 }
 
+function pcm16StereoLayout(filePath) {
+  const descriptor = fs.openSync(filePath, "r");
+  try {
+    const fileBytes = fs.fstatSync(descriptor).size;
+    const riff = Buffer.alloc(12);
+    if (fs.readSync(descriptor, riff, 0, riff.length, 0) !== riff.length
+        || riff.toString("ascii", 0, 4) !== "RIFF"
+        || riff.toString("ascii", 8, 12) !== "WAVE") {
+      throw new Error(`Not a RIFF/WAVE file: ${filePath}`);
+    }
+    let format = null;
+    let dataOffset = -1;
+    let dataBytes = 0;
+    let cursor = 12;
+    while (cursor + 8 <= fileBytes) {
+      const chunk = Buffer.alloc(8);
+      if (fs.readSync(descriptor, chunk, 0, chunk.length, cursor) !== chunk.length) break;
+      const id = chunk.toString("ascii", 0, 4);
+      const chunkBytes = chunk.readUInt32LE(4);
+      const payloadOffset = cursor + 8;
+      if (payloadOffset + chunkBytes > fileBytes) throw new Error(`Truncated ${id} chunk in ${filePath}`);
+      if (id === "fmt ") {
+        if (chunkBytes < 16) throw new Error(`Invalid fmt chunk in ${filePath}`);
+        const payload = Buffer.alloc(16);
+        if (fs.readSync(descriptor, payload, 0, payload.length, payloadOffset) !== payload.length) {
+          throw new Error(`Truncated fmt payload in ${filePath}`);
+        }
+        format = {
+          audioFormat: payload.readUInt16LE(0),
+          channels: payload.readUInt16LE(2),
+          sampleRate: payload.readUInt32LE(4),
+          blockAlign: payload.readUInt16LE(12),
+          bitsPerSample: payload.readUInt16LE(14)
+        };
+      } else if (id === "data") {
+        dataOffset = payloadOffset;
+        dataBytes = chunkBytes;
+      }
+      cursor = payloadOffset + chunkBytes + (chunkBytes & 1);
+    }
+    if (!format || dataOffset < 0) throw new Error(`Missing PCM layout chunks in ${filePath}`);
+    if (format.audioFormat !== 1 || format.channels !== 2 || format.bitsPerSample !== 16 || format.blockAlign !== 4) {
+      throw new Error(`Expected PCM16 stereo WAV for tail silence audit: ${filePath}`);
+    }
+    if (dataBytes % format.blockAlign !== 0) throw new Error(`Unaligned PCM data in ${filePath}`);
+    return { ...format, dataOffset, dataBytes, frameCount: dataBytes / format.blockAlign };
+  } finally {
+    fs.closeSync(descriptor);
+  }
+}
+
+export function inspectDigitalSilenceTail(filePath, startSampleFrame) {
+  const layout = pcm16StereoLayout(filePath);
+  if (!Number.isInteger(startSampleFrame) || startSampleFrame < 0 || startSampleFrame > layout.frameCount) {
+    throw new Error(`Invalid silence start ${startSampleFrame} for ${filePath}`);
+  }
+  const descriptor = fs.openSync(filePath, "r");
+  let nonZeroSamples = 0;
+  let maxAbsPcm16 = 0;
+  try {
+    const buffer = Buffer.alloc(1024 * 1024);
+    let position = layout.dataOffset + startSampleFrame * layout.blockAlign;
+    const end = layout.dataOffset + layout.dataBytes;
+    while (position < end) {
+      const count = Math.min(buffer.length, end - position);
+      const bytesRead = fs.readSync(descriptor, buffer, 0, count, position);
+      if (bytesRead <= 0) throw new Error(`Unexpected EOF while auditing ${filePath}`);
+      for (let offset = 0; offset < bytesRead; offset += 2) {
+        const value = buffer.readInt16LE(offset);
+        if (value !== 0) nonZeroSamples += 1;
+        maxAbsPcm16 = Math.max(maxAbsPcm16, Math.abs(value));
+      }
+      position += bytesRead;
+    }
+  } finally {
+    fs.closeSync(descriptor);
+  }
+  return {
+    startSampleFrame,
+    endSampleFrame: layout.frameCount,
+    checkedSampleFrames: layout.frameCount - startSampleFrame,
+    nonZeroSamples,
+    maxAbsPcm16,
+    digitalSilence: nonZeroSamples === 0
+  };
+}
+
+export function enforceDigitalSilenceTail(filePath, startSampleFrame) {
+  const layout = pcm16StereoLayout(filePath);
+  if (!Number.isInteger(startSampleFrame) || startSampleFrame < 0 || startSampleFrame > layout.frameCount) {
+    throw new Error(`Invalid silence start ${startSampleFrame} for ${filePath}`);
+  }
+  const descriptor = fs.openSync(filePath, "r+");
+  try {
+    const silence = Buffer.alloc(1024 * 1024);
+    let position = layout.dataOffset + startSampleFrame * layout.blockAlign;
+    const end = layout.dataOffset + layout.dataBytes;
+    while (position < end) {
+      const count = Math.min(silence.length, end - position);
+      fs.writeSync(descriptor, silence, 0, count, position);
+      position += count;
+    }
+  } finally {
+    fs.closeSync(descriptor);
+  }
+  const audit = inspectDigitalSilenceTail(filePath, startSampleFrame);
+  if (!audit.digitalSilence) {
+    throw new Error(`Tail-silence assertion failed for ${filePath}: ${audit.nonZeroSamples} non-zero PCM samples`);
+  }
+  return audit;
+}
+
 function probeAudio(ffprobe, filePath) {
   const output = runChecked(ffprobe, [
     "-v", "error", "-select_streams", "a:0",
@@ -217,12 +329,15 @@ function validateMusicPlan(plan, timeline) {
   }
 }
 
-function renderVoiceStem({ ffmpeg, sourcePath, outputPath, totalSampleFrames, sampleRate }) {
+export function renderVoiceStem({ ffmpeg, sourcePath, outputPath, totalSampleFrames, sampleRate, silentFromSampleFrame = totalSampleFrames }) {
   const rawPath = `${outputPath}.raw`;
   if (fs.existsSync(rawPath)) fs.unlinkSync(rawPath);
   runChecked(ffmpeg, [
     "-hide_banner", "-loglevel", "error", "-y",
     "-i", sourcePath, "-map", "0:a:0", "-vn",
+    // Resample before the sample-count trim. Otherwise end_sample is interpreted
+    // in the MP3 source rate and lands late when the source is not 48 kHz.
+    "-af", `aresample=${sampleRate},atrim=end_sample=${silentFromSampleFrame},apad=whole_len=${totalSampleFrames}`,
     "-ar", String(sampleRate), "-ac", "2",
     "-c:a", "pcm_s16le", "-f", "s16le", rawPath
   ], "Narration normalization");
@@ -413,12 +528,16 @@ export function buildSfxEvents(timeline, storyDocument = readJson(storyPath)) {
     projective: Object.freeze({ index: 5, midi: 56, boardHz: 207.65, clickHz: 1080, tailHz: 311.13, impactHz: 41, warpStyle: "mirror-cross" }),
     sphere: Object.freeze({ index: 6, midi: 57, boardHz: 246.94, clickHz: 1660, tailHz: 369.99, impactHz: 49, warpStyle: "harmonic-bloom" })
   });
+  const endCard = timeline.segments.find((segment) => segment.kind === "end-card");
+  const soundEndFrame = endCard?.startFrame ?? timeline.totalFrames;
   const events = [];
   const add = (id, startFrame, durationFrames, velocity, pan, kind, metadata = {}) => {
-    const boundedStart = Math.max(0, Math.min(timeline.totalFrames - 1, Math.round(startFrame)));
+    const roundedStart = Math.round(startFrame);
+    if (roundedStart >= soundEndFrame) return;
+    const boundedStart = Math.max(0, Math.min(soundEndFrame - 1, roundedStart));
     const boundedDuration = Math.max(1, Math.min(
       Math.round(durationFrames),
-      timeline.totalFrames - boundedStart
+      soundEndFrame - boundedStart
     ));
     events.push({
       id,
@@ -460,10 +579,10 @@ export function buildSfxEvents(timeline, storyDocument = readJson(storyPath)) {
 
   // A very quiet paper-and-room floor binds otherwise contrasting chapter cues
   // without turning the SFX bus into a second music track.
-  add("paper-world-room-tone", 0, timeline.totalFrames, 0.052, 0, "paper-air", {
+  add("paper-world-room-tone", 0, soundEndFrame, 0.052, 0, "paper-air", {
     role: "paper-environment",
     layer: "room-tone",
-    visualAnchor: "full-film"
+    visualAnchor: "picture-start-to-end-card"
   });
   add("intro-edge-approach", 286, 520, 0.105, -0.18, "reverse-breath", {
     role: "boundary-connection",
@@ -648,7 +767,6 @@ export function buildSfxEvents(timeline, storyDocument = readJson(storyPath)) {
 
   const tableau = timeline.segments.find((segment) => segment.kind === "tableau");
   const finale = timeline.segments.find((segment) => segment.kind === "finale");
-  const endCard = timeline.segments.find((segment) => segment.kind === "end-card");
   if (tableau) add("tableau-convergence", tableau.startFrame, tableau.durationFrames, 0.21, 0, "convergence", {
     role: "seven-worlds",
     layer: "convergence",
@@ -692,20 +810,6 @@ export function buildSfxEvents(timeline, storyDocument = readJson(storyPath)) {
       layer: "reveal",
       toneHz: profiles.sphere.tailHz,
       visualAnchor: "caption-39:start"
-    });
-  }
-  if (endCard) {
-    add("end-card-arrival", endCard.startFrame, 108, 0.34, 0, "end-card-hit", {
-      role: "end-card",
-      layer: "arrival",
-      impactHz: 46,
-      visualAnchor: "end-card:start"
-    });
-    add("end-card-logo-bloom", endCard.startFrame + 18, 230, 0.12, 0, "logo-bloom", {
-      role: "end-card",
-      layer: "identity",
-      toneHz: 392,
-      visualAnchor: "drawEndCard:logo-reveal"
     });
   }
   return events.sort((left, right) => left.startFrame - right.startFrame || left.id.localeCompare(right.id));
@@ -832,13 +936,28 @@ export async function buildAudio(options = parseArguments([])) {
 
     const totalSampleFrames = timeline.totalFrames * story.render.sampleRate / timeline.fps;
     process.stdout.write("Preparing exact supplied narration…\n");
-    metrics.voiceAlignment = renderVoiceStem({ ffmpeg, sourcePath: sourceVoiceCache, outputPath: absoluteAudio.voiceStem, totalSampleFrames, sampleRate: story.render.sampleRate });
+    const endCardStartFrame = timeline.segments.find((segment) => segment.kind === "end-card")?.startFrame ?? timeline.totalFrames;
+    metrics.voiceAlignment = renderVoiceStem({
+      ffmpeg,
+      sourcePath: sourceVoiceCache,
+      outputPath: absoluteAudio.voiceStem,
+      totalSampleFrames,
+      sampleRate: story.render.sampleRate,
+      silentFromSampleFrame: endCardStartFrame * story.render.sampleRate / timeline.fps
+    });
     process.stdout.write(`Editing ${musicPlan.clips.length} curated music clips…\n`);
     metrics.musicAlignment = renderMusicStem({ ffmpeg, plan: musicPlan, sourcePaths, outputPath: absoluteAudio.musicStem, totalFrames: timeline.totalFrames });
 
     const sfxEvents = buildSfxEvents(timeline);
     process.stdout.write(`Rendering ${sfxEvents.length} topology sound events…\n`);
-    metrics.sfx = renderScoreStem({ stem: "fx", events: sfxEvents, totalFrames: timeline.totalFrames, sampleRate: story.render.sampleRate, outputPath: absoluteAudio.sfxStem });
+    metrics.sfx = renderScoreStem({
+      stem: "fx",
+      events: sfxEvents,
+      totalFrames: timeline.totalFrames,
+      sampleRate: story.render.sampleRate,
+      outputPath: absoluteAudio.sfxStem,
+      silentFromFrame: endCardStartFrame
+    });
     metrics.sfx.events = sfxEvents;
     process.stdout.write("Mixing music + sound design stem…\n");
     metrics.scoreMix = mixPcm16Stereo({
@@ -866,6 +985,13 @@ export async function buildAudio(options = parseArguments([])) {
       totalFrames: totalSampleFrames,
       sampleRate: story.render.sampleRate
     });
+    const endCardStartSampleFrame = endCardStartFrame * story.render.sampleRate / timeline.fps;
+    metrics.endCardDigitalSilence = Object.fromEntries(
+      ["musicStem", "sfxStem", "voiceStem", "scoreMix", "masterMix"].map((key) => [
+        key,
+        enforceDigitalSilenceTail(absoluteAudio[key], endCardStartSampleFrame)
+      ])
+    );
     for (const key of ["originalVoice", "voiceStem", "musicStem", "sfxStem", "scoreMix", "masterMix"]) probes[key] = probeAudio(ffprobe, absoluteAudio[key]);
     metrics.probes = probes;
     audio.artifacts = Object.fromEntries(

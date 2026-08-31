@@ -29,7 +29,7 @@
   },
   "selectionAudit": {
     "selected": "elegant-classical-hoyo",
-    "decision": "Build the PV on an elegant classical spine, give two geometrically distinct chapters substantial HOYO-MiX identities, and reserve the full organ-symphony scale for the final 16.9-second challenge cadence.",
+    "decision": "Build the PV on an elegant classical spine, give two geometrically distinct chapters substantial HOYO-MiX identities, reserve the full organ-symphony scale for the final 9.85-second challenge cadence, and leave the complete end card silent.",
     "criteria": [
       "the musical mechanism must describe the topology rather than merely share a broad mood",
       "the score must remain beautiful and restrained beneath narration",
@@ -45,7 +45,7 @@
       "HOYO-MiX: Fragile Fantasy for Klein — rejected because Debussy's submerged-cathedral structure described hidden interior and exterior more specifically",
       "Chopin: Etude Op. 25 No. 1 for Sphere — retained as the strongest all-classical alternate, but Fontaine created the clearer release after two Bach transformations",
       "Bach: Air for Sphere — rejected because its ensemble colour repeated the projective chapter",
-      "Saint-Saëns Organ Symphony across the complete finale — rejected as too continuously cinematic and loud; only the natural final 16.9 seconds remain",
+      "Saint-Saëns Organ Symphony across the complete finale — rejected as too continuously cinematic and loud; only the natural final 9.85 seconds remain, ending before the logo card",
       "The supplied Footprints accompaniment — retained only as a structural reference"
     ]
   },
@@ -350,14 +350,14 @@
     {
       "id": "finale",
       "sourceId": "saint-saens-organ-finale",
-      "sourceInSeconds": 146.762125,
+      "sourceInSeconds": 153.812125,
       "sourceOutSeconds": 163.662125,
       "targetStartFrame": 11883,
-      "targetEndFrame": 12897,
+      "targetEndFrame": 12474,
       "fadeInFrames": 84,
       "fadeOutFrames": 0,
-      "chapterRole": "the organ symphony opens only for the final challenge and resolves naturally across the co-brand end card",
-      "selectionReason": "The 84-frame handoff is fully open at frame 11967, just after ‘向我证明’ begins; only the final 16.9 seconds are used, replacing the rejected full-finale wall of sound with one release-scale cadence.",
+      "chapterRole": "the organ symphony opens only for the final challenge, reaches its natural audible end before the co-brand end card, then yields to silence",
+      "selectionReason": "The 84-frame handoff is fully open at frame 11967, just after ‘向我证明’ begins; only the natural final 9.85 seconds are used, so the release-scale cadence ends exactly as the logo card arrives and leaves its full duration silent.",
       "waveformAudit": { "audibleSourceEndSeconds": 163.662125, "containerDurationSeconds": 168.341, "trailingContainerSilenceSeconds": 4.678875, "usesNaturalAudibleEnd": true }
     }
   ]

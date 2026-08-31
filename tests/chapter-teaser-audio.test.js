@@ -45,6 +45,60 @@ test("formal narration is the one frame clock for the 214.95 second timeline", a
   assert.equal(cursor, 12897);
 });
 
+test("end-card tail enforcement produces strict PCM zero after resampling and SFX delay", async (t) => {
+  const { enforceDigitalSilenceTail, inspectDigitalSilenceTail, renderVoiceStem } = await loadModule("scripts/build-audio.mjs");
+  const { renderScoreStem } = await loadModule("src/audio-synth.mjs");
+  const { readWav, writePcm16Stereo } = await loadModule("src/audio-wav.mjs");
+  const temporaryRoot = fs.mkdtempSync(path.join(os.tmpdir(), "chapter-teaser-tail-silence-"));
+  t.after(() => fs.rmSync(temporaryRoot, { recursive: true, force: true }));
+
+  const sourcePath = path.join(temporaryRoot, "source-44100.wav");
+  const sourceResult = spawnSync("ffmpeg", [
+    "-hide_banner", "-loglevel", "error", "-y",
+    "-f", "lavfi", "-i", "sine=frequency=440:sample_rate=44100:duration=2",
+    "-ac", "2", "-c:a", "pcm_s16le", sourcePath
+  ], { encoding: "utf8", windowsHide: true });
+  assert.equal(sourceResult.status, 0, sourceResult.stderr);
+  const voicePath = path.join(temporaryRoot, "voice.wav");
+  renderVoiceStem({
+    ffmpeg: "ffmpeg",
+    sourcePath,
+    outputPath: voicePath,
+    totalSampleFrames: 96000,
+    sampleRate: 48000,
+    silentFromSampleFrame: 48000
+  });
+  const voiceAudit = inspectDigitalSilenceTail(voicePath, 48000);
+  assert.deepEqual(
+    { nonZeroSamples: voiceAudit.nonZeroSamples, maxAbsPcm16: voiceAudit.maxAbsPcm16, digitalSilence: voiceAudit.digitalSilence },
+    { nonZeroSamples: 0, maxAbsPcm16: 0, digitalSilence: true }
+  );
+  assert.ok(readWav(voicePath).samples.some((sample, index) => index < 48000 * 2 && sample !== 0));
+
+  const sfxPath = path.join(temporaryRoot, "sfx.wav");
+  renderScoreStem({
+    stem: "fx",
+    events: [{ id: "room", startFrame: 0, durationFrames: 90, velocity: 0.1, pan: 0, kind: "paper-air", midi: 50 }],
+    totalFrames: 90,
+    sampleRate: 48000,
+    outputPath: sfxPath,
+    silentFromFrame: 60
+  });
+  assert.equal(inspectDigitalSilenceTail(sfxPath, 60 * 800).digitalSilence, true);
+
+  const forcedPath = path.join(temporaryRoot, "forced.wav");
+  const forcedSamples = new Float32Array(64 * 2).fill(0.25);
+  writePcm16Stereo(forcedPath, forcedSamples, 48000);
+  assert.ok(inspectDigitalSilenceTail(forcedPath, 40).nonZeroSamples > 0);
+  const forcedAudit = enforceDigitalSilenceTail(forcedPath, 40);
+  assert.equal(forcedAudit.nonZeroSamples, 0);
+  assert.equal(forcedAudit.maxAbsPcm16, 0);
+  assert.equal(forcedAudit.digitalSilence, true);
+  const forcedWav = readWav(forcedPath);
+  assert.ok(forcedWav.samples.slice(0, 40 * 2).every((sample) => sample !== 0));
+  assert.ok(forcedWav.samples.slice(40 * 2).every((sample) => sample === 0));
+});
+
 test("the exact four-second institution-logo silence contains neither voice nor captions", () => {
   const logo = manifest.segments.find((segment) => segment.kind === "institution-logo");
   assert.deepEqual([logo.startFrame, logo.endFrame, logo.durationFrames], [1225, 1466, 241]);
@@ -94,7 +148,7 @@ test("SRT and ASS are cue-exact, stop-free, one-line, sans-serif subtitles", () 
   });
 
   const ass = fs.readFileSync(path.join(pvRoot, "captions.ass"), "utf8");
-  assert.match(ass, /Style: Caption,Topo Sans PV,56,&H00FFFFFF,&H00FFFFFF,&H00000000,/);
+  assert.match(ass, /Style: Caption,Topo Sans PV,72,&H00FFFFFF,&H00FFFFFF,&H00000000,&H00000000,0,0,0,0,100,100,0\.8,0,1,4\.2,0,2,120,120,86,1/);
   assert.equal(ass.split(/\r?\n/).filter((line) => line.startsWith("Dialogue:")).length, 39);
   assert.match(srt, /--> 00:00:20,416/u, "Logo boundary must be floored to the prior subtitle unit");
   assert.match(ass, /,0:00:20\.41,Caption,/u, "ASS must not round into the first Logo frame");
@@ -155,8 +209,9 @@ test("elegant classical-HOYO score preserves source tempo, measured title action
     assert.ok(Math.abs(alignedSourceSeconds - clip.reveal.nativeImpactSourceSeconds) < 0.00001, clip.id);
   }
   const finale = musicPlan.clips.at(-1);
-  assert.ok(Math.abs(finale.sourceOutSeconds - finale.sourceInSeconds - 16.9) < 1e-9);
-  assert.equal((finale.targetEndFrame - finale.targetStartFrame) / musicPlan.fps, 16.9);
+  assert.ok(Math.abs(finale.sourceOutSeconds - finale.sourceInSeconds - 9.85) < 1e-9);
+  assert.equal((finale.targetEndFrame - finale.targetStartFrame) / musicPlan.fps, 9.85);
+  assert.equal(finale.targetEndFrame, 12474);
   assert.equal(manifest.music.reference.sha256, "2856c83944d69c2779ab259e98f05a46c264221486777cd2cc158bd795d7c92f");
   assert.match(manifest.music.reference.role, /structural.*reference only/i);
   assert.equal(manifest.music.sources.length, 11);
@@ -179,6 +234,12 @@ test("layered topology sound design is deterministic and locked to the composito
   const { renderScoreStem } = await loadModule("src/audio-synth.mjs");
   const firstPlan = buildSfxEvents(manifest, story);
   const secondPlan = buildSfxEvents(manifest, story);
+  const endCard = manifest.segments.find((segment) => segment.kind === "end-card");
+  assert.ok(endCard);
+  assert.equal(firstPlan.length, 172);
+  assert.equal(firstPlan.some((event) => event.id === "end-card-arrival"), false);
+  assert.equal(firstPlan.some((event) => event.id === "end-card-logo-bloom"), false);
+  assert.ok(firstPlan.every((event) => event.startFrame + event.durationFrames <= endCard.startFrame));
   assert.deepEqual(firstPlan, secondPlan);
   assert.equal(firstPlan.filter((event) => event.role === "paper-environment").length, 1);
   assert.equal(firstPlan.filter((event) => event.role === "chapter-transition").length, 28);

@@ -2,7 +2,7 @@
 
 The final PV uses eleven audited source files and eleven edited excerpts. Its backbone is classical: Satie and Ravel open the film; Bach, Ravel, Scriabin and Debussy distinguish the geometric chapters; and Saint-Saëns provides the only full symphonic-scale cadence. HOYO-MiX is not a token accent: *Symposion of Spectacle* and *Fontaine* each carry a complete chapter identity for Cylinder and Sphere respectively.
 
-The supplied *Footprints* accompaniment was studied for chapter contrast, title punctuation, large-scale dynamic contour and narration space. It is not present as a full-range source in the final mix. All adjacent excerpts meet in an exact 84-frame `qsin` crossfade, with no three-way overlap; the Saint-Saëns organ excerpt is restricted to the final 16.9-second challenge cadence.
+The supplied *Footprints* accompaniment was studied for chapter contrast, title punctuation, large-scale dynamic contour and narration space. It is not present as a full-range source in the final mix. All adjacent excerpts meet in an exact 84-frame `qsin` crossfade, with no three-way overlap; the Saint-Saëns organ excerpt is restricted to the final 9.85-second challenge cadence and ends at frame 12474. The following 7.05-second Logo end card contains digital silence on the music, sound-effects and narration tracks.
 
 Selected public-web files were fetched on 2026-08-31 from artist, label, ensemble or official-video pages at the highest publicly exposed audio quality. The three Kimiko Ishizaka sources are artist-provided 96 kHz stereo FLAC recordings; the remaining eight cached sources are 48 kHz stereo Opus. Public source pages expose no machine-readable reuse licence unless separately noted; project-owner clearance is handled separately, as explicitly directed for this production. Exact cache filenames, SHA-256 values, editorial in/out points, quality notes and selection reasons are authoritative in [`../../../music-plan.json`](../../../music-plan.json).
 
@@ -18,6 +18,6 @@ Selected public-web files were fetched on 2026-08-31 from artist, label, ensembl
 | ACT. V 双生 — direct form | J. S. Bach, *Contrapunctus Inversus a4, Forma Recta* — Kimiko Ishizaka | <https://music.kimiko-piano.com/> |
 | ACT. V 双生 — inverted form | J. S. Bach, *Contrapunctus Inversus a4, Forma Inversa* — Kimiko Ishizaka | <https://music.kimiko-piano.com/> |
 | ACT. VI 归圆 through early finale | HOYO-MiX, *Fontaine* | <https://www.youtube.com/watch?v=tiulg9ySfR8> |
-| Final challenge and end card | Camille Saint-Saëns, *Symphony No. 3 in C minor, Op. 78 “Organ”: Finale* — Berliner Philharmoniker / Zubin Mehta | <https://www.youtube.com/watch?v=EWZFkib99uo> |
+| Final challenge | Camille Saint-Saëns, *Symphony No. 3 in C minor, Op. 78 “Organ”: Finale* — Berliner Philharmoniker / Zubin Mehta | <https://www.youtube.com/watch?v=EWZFkib99uo> |
 
 Audited but not selected for the final plan: Bach's *Cello Suite No. 1 Prelude* for Cylinder; HOYO-MiX's *Le spectacle doit continuer* for Plane and *Fragile Fantasy* for Klein; Chopin's Étude Op. 25 No. 1 and Bach's *Air* for Sphere; a full-length Saint-Saëns finale across the entire closing section; and the supplied *Footprints* accompaniment as a direct chapter source.

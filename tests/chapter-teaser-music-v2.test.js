@@ -77,12 +77,15 @@ test("every selected recording is traceable, cached-only and selected for a dist
   );
 });
 
-test("phrase-aware adjacent edits cover the complete film without the old all-at-zero overlap", () => {
+test("phrase-aware adjacent edits cover the scored film and leave the end card silent", () => {
   assert.equal(plan.editing.crossfadeCurve, "qsin");
   assert.equal(plan.editing.defaultCrossfadeFrames, 84);
   assert.equal(plan.editing.maxConcurrentFullRangeClips, 2);
   assert.equal(plan.clips[0].targetStartFrame, 0);
-  assert.equal(plan.clips.at(-1).targetEndFrame, timing.totalFrames);
+  const endCard = timing.visualSegments.find((segment) => segment.kind === "end-card");
+  assert.ok(endCard);
+  assert.equal(endCard.startFrame, 12474);
+  assert.equal(plan.clips.at(-1).targetEndFrame, endCard.startFrame);
 
   for (let index = 1; index < plan.clips.length; index += 1) {
     const previous = plan.clips[index - 1];
@@ -93,9 +96,13 @@ test("phrase-aware adjacent edits cover the complete film without the old all-at
   assert.equal(plan.clips.find((clip) => clip.id === "sphere").targetEndFrame, 11967);
   assert.equal(plan.clips.find((clip) => clip.id === "finale").targetStartFrame, 11883);
 
-  for (let frame = 0; frame < timing.totalFrames; frame += 1) {
+  for (let frame = 0; frame < endCard.startFrame; frame += 1) {
     const active = plan.clips.filter((clip) => frame >= clip.targetStartFrame && frame < clip.targetEndFrame);
     assert.ok(active.length >= 1 && active.length <= 2, `frame ${frame} has ${active.length} full-range beds`);
+  }
+  for (let frame = endCard.startFrame; frame < timing.totalFrames; frame += 1) {
+    const active = plan.clips.filter((clip) => frame >= clip.targetStartFrame && frame < clip.targetEndFrame);
+    assert.equal(active.length, 0, `end-card frame ${frame} must have no full-range bed`);
   }
 });
 
@@ -123,8 +130,8 @@ test("all source excerpts stay in bounds and the measured phrase actions align t
   assert.equal(plane.targetStartFrame, 2114);
   assert.equal(plane.reveal.nativeImpactSourceSeconds, 12.2);
   const finale = plan.clips.at(-1);
-  assert.ok(Math.abs(finale.sourceOutSeconds - finale.sourceInSeconds - 16.9) < 1e-9);
-  assert.equal(durationSeconds(finale), 16.9);
+  assert.ok(Math.abs(finale.sourceOutSeconds - finale.sourceInSeconds - 9.85) < 1e-9);
+  assert.equal(durationSeconds(finale), 9.85);
   assert.equal(finale.sourceOutSeconds, finale.waveformAudit.audibleSourceEndSeconds);
   assert.equal(finale.waveformAudit.usesNaturalAudibleEnd, true);
 });

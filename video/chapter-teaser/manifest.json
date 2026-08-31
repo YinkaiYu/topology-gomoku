@@ -27,15 +27,15 @@
     "sourceSha256": "502e1b05792ed3d16eddc13d192f73c3c8622e0f10abe05559cdf9f16f8f54e2",
     "processing": "One continuous take; decoded once to 48 kHz stereo PCM; no edits, reordering or time stretch; frame-aligned tail silence only",
     "alignment": {
-      "sourceSampleFrames": 10316905,
+      "sourceSampleFrames": 10317600,
       "outputSampleFrames": 10317600,
-      "paddedSampleFrames": 695,
+      "paddedSampleFrames": 0,
       "trimmedSampleFrames": 0
     }
   },
   "music": {
     "plan": "video/chapter-teaser/music-plan.json",
-    "planSha256": "624bbd92efd2468493a3a46028f29f7457d206ffea38943d45158c15eafd90e3",
+    "planSha256": "54ec44ac6f600b7d6043009c1519d5c18a27e37effd56e63655f1f493bf7d85a",
     "reference": {
       "title": "《原神·提瓦特篇》主线章节预告PV-「足迹」伴奏背景音乐",
       "role": "structural, chapter-contrast and title-launch reference only; not used as a full-range source in the final mix",
@@ -553,14 +553,14 @@
       {
         "id": "finale",
         "sourceId": "saint-saens-organ-finale",
-        "sourceInSeconds": 146.762125,
+        "sourceInSeconds": 153.812125,
         "sourceOutSeconds": 163.662125,
         "targetStartFrame": 11883,
-        "targetEndFrame": 12897,
+        "targetEndFrame": 12474,
         "fadeInFrames": 84,
         "fadeOutFrames": 0,
-        "chapterRole": "the organ symphony opens only for the final challenge and resolves naturally across the co-brand end card",
-        "selectionReason": "The 84-frame handoff is fully open at frame 11967, just after ‘向我证明’ begins; only the final 16.9 seconds are used, replacing the rejected full-finale wall of sound with one release-scale cadence.",
+        "chapterRole": "the organ symphony opens only for the final challenge, reaches its natural audible end before the co-brand end card, then yields to silence",
+        "selectionReason": "The 84-frame handoff is fully open at frame 11967, just after ‘向我证明’ begins; only the natural final 9.85 seconds are used, so the release-scale cadence ends exactly as the logo card arrives and leaves its full duration silent.",
         "waveformAudit": {
           "audibleSourceEndSeconds": 163.662125,
           "containerDurationSeconds": 168.341,
@@ -592,13 +592,13 @@
     },
     "metrics": {
       "voiceAlignment": {
-        "sourceSampleFrames": 10316905,
+        "sourceSampleFrames": 10317600,
         "outputSampleFrames": 10317600,
-        "paddedSampleFrames": 695,
+        "paddedSampleFrames": 0,
         "trimmedSampleFrames": 0
       },
       "musicAlignment": {
-        "sourceSampleFrames": 10989600,
+        "sourceSampleFrames": 10651200,
         "outputSampleFrames": 10317600,
         "paddedSampleFrames": 0,
         "trimmedSampleFrames": 0,
@@ -608,7 +608,7 @@
         "chapterRevealAutomation": "music dips to 0.22 before each measured title impact and returns to unity on the impact frame",
         "energy": {
           "peakDbfs": -7.152,
-          "rmsDbfs": -26.247
+          "rmsDbfs": -26.387
         },
         "placedClips": [
           {
@@ -674,8 +674,8 @@
           {
             "id": "finale",
             "startSampleFrame": 9506400,
-            "endSampleFrame": 10317600,
-            "renderedSampleFrames": 811200
+            "endSampleFrame": 9979200,
+            "renderedSampleFrames": 472800
           }
         ],
         "coverage": [
@@ -731,28 +731,27 @@
           },
           {
             "id": "finale",
-            "centerFrame": 12390,
-            "rmsDb": -24.675
+            "centerFrame": 12178,
+            "rmsDb": -38.975
           }
         ]
       },
       "sfx": {
         "peak": 0.25,
-        "rms": 0.014121183771900135,
+        "rms": 0.013812682690892392,
         "normalizationGain": 0.8718031912875884,
         "targetPeakDbfs": -12.041199826559248,
-        "eventCount": 174,
+        "eventCount": 172,
         "eventCountsByKind": {
           "board-resonance": 35,
           "chapter-impact": 7,
           "convergence": 1,
-          "end-card-hit": 1,
           "final-board": 1,
           "final-breath": 1,
           "final-stone": 1,
           "final-tail": 1,
           "glyph-pulse": 7,
-          "logo-bloom": 3,
+          "logo-bloom": 2,
           "paper-air": 1,
           "reverse-breath": 9,
           "room-tail": 35,
@@ -769,7 +768,6 @@
           "boundary-connection": 3,
           "chapter-transition": 28,
           "decisive-move": 3,
-          "end-card": 2,
           "final-challenge": 2,
           "five-in-a-row": 105,
           "institution-logo": 1,
@@ -782,14 +780,14 @@
           {
             "id": "paper-world-room-tone",
             "startFrame": 0,
-            "durationFrames": 12897,
+            "durationFrames": 12474,
             "velocity": 0.052,
             "pan": 0,
             "kind": "paper-air",
             "midi": 50,
             "role": "paper-environment",
             "layer": "room-tone",
-            "visualAnchor": "full-film"
+            "visualAnchor": "picture-start-to-end-card"
           },
           {
             "id": "intro-edge-approach",
@@ -4588,42 +4586,58 @@
             "layer": "reveal",
             "toneHz": 369.99,
             "visualAnchor": "caption-39:start"
-          },
-          {
-            "id": "end-card-arrival",
-            "startFrame": 12474,
-            "durationFrames": 108,
-            "velocity": 0.34,
-            "pan": 0,
-            "kind": "end-card-hit",
-            "midi": 50,
-            "role": "end-card",
-            "layer": "arrival",
-            "impactHz": 46,
-            "visualAnchor": "end-card:start"
-          },
-          {
-            "id": "end-card-logo-bloom",
-            "startFrame": 12492,
-            "durationFrames": 230,
-            "velocity": 0.12,
-            "pan": 0,
-            "kind": "logo-bloom",
-            "midi": 50,
-            "role": "end-card",
-            "layer": "identity",
-            "toneHz": 392,
-            "visualAnchor": "drawEndCard:logo-reveal"
           }
         ]
       },
       "scoreMix": {
         "peak": 0.5683792952720329,
-        "rms": 0.0678181034064333
+        "rms": 0.06670621211322648
       },
       "masterMix": {
         "peak": 0.7599994112116674,
-        "rms": 0.08159019131102029
+        "rms": 0.08122872632750411
+      },
+      "endCardDigitalSilence": {
+        "musicStem": {
+          "startSampleFrame": 9979200,
+          "endSampleFrame": 10317600,
+          "checkedSampleFrames": 338400,
+          "nonZeroSamples": 0,
+          "maxAbsPcm16": 0,
+          "digitalSilence": true
+        },
+        "sfxStem": {
+          "startSampleFrame": 9979200,
+          "endSampleFrame": 10317600,
+          "checkedSampleFrames": 338400,
+          "nonZeroSamples": 0,
+          "maxAbsPcm16": 0,
+          "digitalSilence": true
+        },
+        "voiceStem": {
+          "startSampleFrame": 9979200,
+          "endSampleFrame": 10317600,
+          "checkedSampleFrames": 338400,
+          "nonZeroSamples": 0,
+          "maxAbsPcm16": 0,
+          "digitalSilence": true
+        },
+        "scoreMix": {
+          "startSampleFrame": 9979200,
+          "endSampleFrame": 10317600,
+          "checkedSampleFrames": 338400,
+          "nonZeroSamples": 0,
+          "maxAbsPcm16": 0,
+          "digitalSilence": true
+        },
+        "masterMix": {
+          "startSampleFrame": 9979200,
+          "endSampleFrame": 10317600,
+          "checkedSampleFrames": 338400,
+          "nonZeroSamples": 0,
+          "maxAbsPcm16": 0,
+          "digitalSilence": true
+        }
       },
       "probes": {
         "musicSources": {
@@ -4770,27 +4784,27 @@
       "voiceStem": {
         "path": ".tmp/chapter-teaser/audio/voice.wav",
         "bytes": 41270444,
-        "sha256": "c329c3cd59fb3c857cbcbbe7b385e5a2b5aade6d42b2f80b8fc63f123073a44e"
+        "sha256": "14c5b7605ac5f52fac284824c2e99b3b6644f4ac0e98590fa968b3fce9fc6af0"
       },
       "musicStem": {
         "path": ".tmp/chapter-teaser/audio/music.wav",
         "bytes": 41270444,
-        "sha256": "673767393fb2fb7d9fca4a814b06830ba99753949f5d87cc230d73fd2d601ea0"
+        "sha256": "722d66be602379432bf49cde85882ee7cdb866979c503b69b9a4fee1f4a18296"
       },
       "sfxStem": {
         "path": ".tmp/chapter-teaser/audio/sfx.wav",
         "bytes": 41270444,
-        "sha256": "67e71054d64cec728bd655877b021c5a1eaae6e9f8b7aed5efb32e1ab1b74354"
+        "sha256": "966ad9aef553e07a5baf4b4331fb6dc9dddff863d8ae66f79ab6271930f6b572"
       },
       "scoreMix": {
         "path": ".tmp/chapter-teaser/audio/music-and-sfx.wav",
         "bytes": 41270444,
-        "sha256": "60f4a43967be1b7830c4244ff3587103648be78e93c3830c5c1ff095bbbc43d5"
+        "sha256": "5e4f5b64f369bc92feb183282cd68d29115382b670f7b5c6c9ae66337b76b311"
       },
       "masterMix": {
         "path": ".tmp/chapter-teaser/audio/master.wav",
         "bytes": 41270444,
-        "sha256": "efef06e85b380c95923f02a4d77dc30bdd01d9b129e07062e07e680bda5b8b3f"
+        "sha256": "cc196e321e10e1b310865caf6696209542ab7dfa7576386abed2a8bc68acc087"
       }
     }
   },

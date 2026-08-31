@@ -612,7 +612,8 @@
 
   function drawSurfaceBoundaries(ctx, model, viewport, morphAmount, orientation, opacity) {
     if (model.chapter.id === "plane") return;
-    var reveal = smoothstep(0.08, 0.42, morphAmount) * opacity;
+    var seamFade = 1 - smoothstep(0.72, 0.94, morphAmount);
+    var reveal = smoothstep(0.08, 0.42, morphAmount) * seamFade * opacity;
     if (reveal <= 0.001) return;
     var samples = model.chapter.id === "sphere" ? 72 : 48;
     var scale = viewport.height / 1080;
@@ -641,12 +642,14 @@
     }
   }
 
-  function drawSurface(ctx, model, viewport, morphAmount, orientation, opacity, quality) {
+  function drawSurface(ctx, model, viewport, morphAmount, orientation, opacity, quality, showBoundaries) {
     var mesh = buildSurfaceMesh(model, viewport, morphAmount, orientation, quality);
     ctx.save();
     drawSurfaceFill(ctx, mesh, model, viewport, morphAmount, opacity);
     drawSurfaceGrid(ctx, model, viewport, morphAmount, orientation, opacity);
-    drawSurfaceBoundaries(ctx, model, viewport, morphAmount, orientation, opacity);
+    if (showBoundaries !== false) {
+      drawSurfaceBoundaries(ctx, model, viewport, morphAmount, orientation, opacity);
+    }
     ctx.restore();
     return mesh;
   }
@@ -834,19 +837,6 @@
         }
       });
 
-      if (model.trace.seams[edge] && edgeReveal > 0.48) {
-        var bridgePieces = pathPieces(model, edge);
-        var seamUv = bridgePieces[0].to;
-        var seamPoint = projectSurfacePoint(model, seamUv.u, seamUv.v, viewport, morphAmount, orientation);
-        ctx.save();
-        var seamColor = model.trace.seams[edge] & Engine.SEAM_TWIST ? GAME_PALETTE.twist : GAME_PALETTE.connection;
-        ctx.strokeStyle = rgba(seamColor, opacity * 0.58);
-        ctx.lineWidth = Math.max(1.2 * scale, layout.cell * 0.018);
-        ctx.beginPath();
-        ctx.arc(seamPoint.x, seamPoint.y, layout.cell * 0.30, 0, TAU);
-        ctx.stroke();
-        ctx.restore();
-      }
     }
 
     var visibleStones = clamp(reveal * 5.25 + 0.1, 0, 5);
@@ -967,23 +957,208 @@
     var rowWidth = mix(horizonWidth, foregroundWidth, v);
     var baseX = width * 0.5 + (u - 0.5) * rowWidth;
     var baseY = height * (0.185 + v * 0.68);
-    var theta = (u - 0.5) * TAU * 0.87;
+    // The full turn brings both opposite boundaries to the same projected points.
+    var theta = (u - 0.5) * TAU;
     var curvedX = width * 0.5 + Math.sin(theta) * rowWidth * 0.42;
     var curvedY = baseY + (Math.cos(theta) - 1) * height * (0.030 + v * 0.035);
     var push = mix(0.94, 1.08, cameraPush);
     return {
       x: width * 0.5 + (mix(baseX, curvedX, fold) - width * 0.5) * push,
-      y: height * 0.49 + (mix(baseY, curvedY, fold) - height * 0.49) * push
+      y: height * 0.49 + (mix(baseY, curvedY, fold) - height * 0.49) * push,
+      depth: Math.cos(theta) * fold,
+      u: u,
+      v: v
     };
   }
 
-  function introCurve(ctx, width, height, fold, cameraPush, u0, u1, v) {
-    var steps = Math.max(4, Math.ceil(Math.abs(u1 - u0) * 42));
+  function collectIntroParamLine(width, height, fold, cameraPush, fixedAxis, fixedValue, start, end, samples) {
+    var points = [];
+    var steps = Math.max(1, Math.round(samples));
     for (var index = 0; index <= steps; index += 1) {
-      var point = introBoardPoint(mix(u0, u1, index / steps), v, fold, width, height, cameraPush);
-      if (index === 0) ctx.moveTo(point.x, point.y);
-      else ctx.lineTo(point.x, point.y);
+      var amount = mix(start, end, index / steps);
+      var u = fixedAxis === "u" ? fixedValue : amount;
+      var v = fixedAxis === "v" ? fixedValue : amount;
+      points.push(introBoardPoint(u, v, fold, width, height, cameraPush));
     }
+    return points;
+  }
+
+  function buildIntroSurfaceMesh(width, height, fold, cameraPush) {
+    var columns = 48;
+    var rows = 36;
+    var points = [];
+    for (var row = 0; row <= rows; row += 1) {
+      var pointRow = [];
+      for (var column = 0; column <= columns; column += 1) {
+        pointRow.push(introBoardPoint(column / columns, row / rows, fold, width, height, cameraPush));
+      }
+      points.push(pointRow);
+    }
+    var patches = [];
+    for (row = 0; row < rows; row += 1) {
+      for (column = 0; column < columns; column += 1) {
+        var quad = [points[row][column], points[row][column + 1], points[row + 1][column + 1], points[row + 1][column]];
+        patches.push({
+          points: quad,
+          depth: (quad[0].depth + quad[1].depth + quad[2].depth + quad[3].depth) / 4
+        });
+      }
+    }
+    patches.sort(function sortIntroDepth(left, right) { return left.depth - right.depth; });
+    return { points: points, patches: patches, columns: columns, rows: rows };
+  }
+
+  function strokeIntroPolyline(ctx, points) {
+    if (points.length < 2) return;
+    ctx.beginPath();
+    ctx.moveTo(points[0].x, points[0].y);
+    for (var index = 1; index < points.length; index += 1) ctx.lineTo(points[index].x, points[index].y);
+    ctx.stroke();
+  }
+
+  function introDepthIntersection(from, to) {
+    var span = to.depth - from.depth;
+    var amount = Math.abs(span) < 1e-8 ? 0.5 : clamp01(-from.depth / span);
+    return {
+      x: mix(from.x, to.x, amount),
+      y: mix(from.y, to.y, amount),
+      depth: 0
+    };
+  }
+
+  function strokeIntroDepthLayer(ctx, points, front, fold) {
+    if (fold < 0.025) {
+      if (front) strokeIntroPolyline(ctx, points);
+      return;
+    }
+    var visible = [];
+    function flush() {
+      if (visible.length > 1) strokeIntroPolyline(ctx, visible);
+      visible = [];
+    }
+    function isVisible(point) {
+      return front ? point.depth >= 0 : point.depth <= 0;
+    }
+    for (var index = 1; index < points.length; index += 1) {
+      var from = points[index - 1];
+      var to = points[index];
+      var fromVisible = isVisible(from);
+      var toVisible = isVisible(to);
+      if (fromVisible && toVisible) {
+        if (!visible.length) visible.push(from);
+        visible.push(to);
+      } else if (fromVisible) {
+        if (!visible.length) visible.push(from);
+        visible.push(introDepthIntersection(from, to));
+        flush();
+      } else if (toVisible) {
+        visible.push(introDepthIntersection(from, to));
+        visible.push(to);
+      } else {
+        flush();
+      }
+    }
+    flush();
+  }
+
+  function drawIntroSurfaceFill(ctx, mesh, alpha, front, fold) {
+    ctx.save();
+    ctx.fillStyle = rgba(GAME_PALETTE.card, alpha * 0.63);
+    mesh.patches.forEach(function fillIntroPatch(patch) {
+      var patchIsFront = fold < 0.025 || patch.depth >= 0;
+      if (patchIsFront !== front) return;
+      ctx.beginPath();
+      ctx.moveTo(patch.points[0].x, patch.points[0].y);
+      for (var index = 1; index < patch.points.length; index += 1) ctx.lineTo(patch.points[index].x, patch.points[index].y);
+      ctx.closePath();
+      ctx.fill();
+    });
+    ctx.restore();
+  }
+
+  function drawIntroGridLayer(ctx, width, height, fold, cameraPush, columns, rows, alpha, front) {
+    var layerAlpha = front ? 1 : 0.52;
+    ctx.save();
+    ctx.lineCap = "round";
+    ctx.lineJoin = "round";
+    ctx.lineWidth = Math.max(1, height * 0.00135);
+    for (var column = 0; column <= columns; column += 1) {
+      ctx.strokeStyle = rgba(GAME_PALETTE.ink, alpha * layerAlpha * (column === 0 || column === columns ? 0.50 : 0.105));
+      strokeIntroDepthLayer(
+        ctx,
+        collectIntroParamLine(width, height, fold, cameraPush, "u", column / columns, 0, 1, 36),
+        front,
+        fold
+      );
+    }
+    for (var row = 0; row <= rows; row += 1) {
+      ctx.strokeStyle = rgba(GAME_PALETTE.ink, alpha * layerAlpha * (row === 0 || row === rows ? 0.42 : 0.10));
+      strokeIntroDepthLayer(
+        ctx,
+        collectIntroParamLine(width, height, fold, cameraPush, "v", row / rows, 0, 1, 48),
+        front,
+        fold
+      );
+    }
+    ctx.restore();
+  }
+
+  function drawIntroNodesLayer(ctx, width, height, fold, cameraPush, columns, rows, alpha, front) {
+    ctx.save();
+    ctx.fillStyle = rgba(GAME_PALETTE.ink, alpha * (front ? 0.28 : 0.12));
+    for (var row = 0; row <= rows; row += 1) {
+      for (var column = 0; column <= columns; column += 1) {
+        var point = introBoardPoint(column / columns, row / rows, fold, width, height, cameraPush);
+        var pointIsFront = fold < 0.025 || point.depth >= 0;
+        if (pointIsFront !== front) continue;
+        ctx.beginPath();
+        ctx.arc(point.x, point.y, height * mix(0.0007, 0.0017, row / rows), 0, TAU);
+        ctx.fill();
+      }
+    }
+    ctx.restore();
+  }
+
+  function drawIntroPathLayer(ctx, width, height, fold, cameraPush, pathV, pathStart, outboundU, returnTrip, frameIndex, alpha) {
+    ctx.save();
+    ctx.strokeStyle = rgba(GAME_PALETTE.connection, alpha * 0.82);
+    ctx.lineWidth = height * 0.0041;
+    ctx.lineCap = "round";
+    ctx.lineJoin = "round";
+    ctx.setLineDash([height * 0.021, height * 0.013]);
+    ctx.lineDashOffset = -frameIndex * height * 0.00056;
+    strokeIntroPolyline(ctx, collectIntroParamLine(
+      width, height, fold, cameraPush, "v", pathV, pathStart, Math.min(outboundU, 1), 48
+    ));
+    if (returnTrip > 0) {
+      strokeIntroPolyline(ctx, collectIntroParamLine(
+        width, height, fold, cameraPush, "v", pathV, 0, mix(0, pathStart, returnTrip), 24
+      ));
+    }
+    ctx.restore();
+  }
+
+  function drawIntroStoneLayer(ctx, width, height, fold, cameraPush, stoneU, pathV, cameraAmount, alpha) {
+    // Parameter-domain clipping makes the stone disappear into one boundary before reappearing at its mate.
+    if (stoneU < 0 || stoneU > 1) return;
+    var stonePoint = introBoardPoint(stoneU, pathV, fold, width, height, cameraPush);
+    var stoneRadius = height * mix(0.018, 0.024, cameraAmount);
+    ctx.save();
+    var glow = ctx.createRadialGradient(stonePoint.x, stonePoint.y, stoneRadius * 0.25, stonePoint.x, stonePoint.y, stoneRadius * 2.8);
+    glow.addColorStop(0, rgba(GAME_PALETTE.connection, alpha * 0.25));
+    glow.addColorStop(1, rgba(GAME_PALETTE.connection, 0));
+    ctx.fillStyle = glow;
+    ctx.beginPath();
+    ctx.arc(stonePoint.x, stonePoint.y, stoneRadius * 2.8, 0, TAU);
+    ctx.fill();
+    ctx.fillStyle = rgba(GAME_PALETTE.ink, alpha * 0.97);
+    ctx.beginPath();
+    ctx.arc(stonePoint.x, stonePoint.y, stoneRadius, 0, TAU);
+    ctx.fill();
+    ctx.strokeStyle = rgba(GAME_PALETTE.paper, alpha * 0.72);
+    ctx.lineWidth = height * 0.0015;
+    ctx.stroke();
+    ctx.restore();
   }
 
   function drawIntroEdge(ctx, composition, frameInfo) {
@@ -998,7 +1173,6 @@
     var fold = smootherstep(995, 1215, local);
     var fade = 1 - smoothstep(1192, 1225, local);
     var alpha = reveal * fade;
-    var pulse = 0.5 + 0.5 * Math.sin(frameInfo.frameIndex * 0.025);
     // Seven by seven intersections reuse the live Prologue board dimensions,
     // never a 19 x 19 Go board or an alternating chess/checkers surface.
     var columns = 6;
@@ -1048,126 +1222,44 @@
       ctx.fill();
     }
 
-    // Paint the perspective sheet cell by cell so its eventual folding remains physically continuous.
-    for (var row = 0; row < rows; row += 1) {
-      for (var column = 0; column < columns; column += 1) {
-        var u0 = column / columns;
-        var u1 = (column + 1) / columns;
-        var v0 = row / rows;
-        var v1 = (row + 1) / rows;
-        var a = introBoardPoint(u0, v0, fold, width, height, cameraPush);
-        var b = introBoardPoint(u1, v0, fold, width, height, cameraPush);
-        var c = introBoardPoint(u1, v1, fold, width, height, cameraPush);
-        var d = introBoardPoint(u0, v1, fold, width, height, cameraPush);
-        ctx.fillStyle = rgba(GAME_PALETTE.card, alpha * 0.63);
-        ctx.beginPath();
-        ctx.moveTo(a.x, a.y);
-        ctx.lineTo(b.x, b.y);
-        ctx.lineTo(c.x, c.y);
-        ctx.lineTo(d.x, d.y);
-        ctx.closePath();
-        ctx.fill();
-      }
-    }
-
-    ctx.lineCap = "round";
-    ctx.lineJoin = "round";
-    ctx.lineWidth = Math.max(1, height * 0.00135);
-    for (column = 0; column <= columns; column += 1) {
-      ctx.strokeStyle = rgba(GAME_PALETTE.ink, alpha * (column === 0 || column === columns ? 0.50 : 0.105));
-      ctx.beginPath();
-      introCurve(ctx, width, height, fold, cameraPush, column / columns, column / columns, 0);
-      var pointTop = introBoardPoint(column / columns, 0, fold, width, height, cameraPush);
-      var pointBottom = introBoardPoint(column / columns, 1, fold, width, height, cameraPush);
-      ctx.moveTo(pointTop.x, pointTop.y);
-      ctx.lineTo(pointBottom.x, pointBottom.y);
-      ctx.stroke();
-    }
-    for (row = 0; row <= rows; row += 1) {
-      ctx.strokeStyle = rgba(GAME_PALETTE.ink, alpha * (row === 0 || row === rows ? 0.42 : 0.10));
-      ctx.beginPath();
-      introCurve(ctx, width, height, fold, cameraPush, 0, 1, row / rows);
-      ctx.stroke();
-    }
-
-    // Reuse the live canvas convention: every legal Gomoku placement is an equal,
-    // quiet point on a compact lattice. There are no star points or wood-board cues.
-    ctx.fillStyle = rgba(GAME_PALETTE.ink, alpha * 0.28);
-    for (row = 0; row <= rows; row += 1) {
-      for (column = 0; column <= columns; column += 1) {
-        var node = introBoardPoint(column / columns, row / rows, fold, width, height, cameraPush);
-        ctx.beginPath();
-        ctx.arc(node.x, node.y, height * mix(0.0007, 0.0017, row / rows), 0, TAU);
-        ctx.fill();
-      }
-    }
-
-    // The two opposite shores are the only strong colors in the shot.
-    [0, 1].forEach(function drawShore(u, index) {
-      var top = introBoardPoint(u, 0, fold, width, height, cameraPush);
-      var bottom = introBoardPoint(u, 1, fold, width, height, cameraPush);
-      ctx.strokeStyle = rgba(index ? GAME_PALETTE.connection : GAME_PALETTE.twist, alpha * mix(0.42, 0.94, boundaryFocus));
-      ctx.lineWidth = height * mix(0.0025, 0.0052, boundaryFocus);
-      ctx.beginPath();
-      ctx.moveTo(top.x, top.y);
-      ctx.lineTo(bottom.x, bottom.y);
-      ctx.stroke();
-    });
-
     var pathV = 3 / rows;
     var pathStart = 2 / columns;
     var outboundU = mix(pathStart, 1.025, outbound);
-    ctx.strokeStyle = rgba(GAME_PALETTE.connection, alpha * 0.82);
-    ctx.lineWidth = height * 0.0041;
-    ctx.setLineDash([height * 0.021, height * 0.013]);
-    ctx.lineDashOffset = -frameInfo.frameIndex * height * 0.00056;
-    ctx.beginPath();
-    introCurve(ctx, width, height, fold, cameraPush, pathStart, Math.min(outboundU, 1), pathV);
-    if (returnTrip > 0) {
-      ctx.moveTo(introBoardPoint(0, pathV, fold, width, height, cameraPush).x, introBoardPoint(0, pathV, fold, width, height, cameraPush).y);
-      introCurve(ctx, width, height, fold, cameraPush, 0, mix(0, 2 / columns, returnTrip), pathV);
-    }
-    ctx.stroke();
-    ctx.setLineDash([]);
-
     var showOutboundStone = local < 810;
     var stoneU = showOutboundStone ? outboundU : mix(-0.025, 2 / columns, returnTrip);
     if (local < 550) stoneU = pathStart;
     if (local > 805 && local < 821) showOutboundStone = false;
-    if (showOutboundStone || local >= 821) {
-      var stonePoint = introBoardPoint(stoneU, pathV, fold, width, height, cameraPush);
-      var stoneRadius = height * mix(0.018, 0.024, cameraPush);
-      var glow = ctx.createRadialGradient(stonePoint.x, stonePoint.y, stoneRadius * 0.25, stonePoint.x, stonePoint.y, stoneRadius * 2.8);
-      glow.addColorStop(0, rgba(GAME_PALETTE.connection, alpha * 0.25));
-      glow.addColorStop(1, rgba(GAME_PALETTE.connection, 0));
-      ctx.fillStyle = glow;
-      ctx.beginPath();
-      ctx.arc(stonePoint.x, stonePoint.y, stoneRadius * 2.8, 0, TAU);
-      ctx.fill();
-      ctx.fillStyle = rgba(GAME_PALETTE.ink, alpha * 0.97);
-      ctx.beginPath();
-      ctx.arc(stonePoint.x, stonePoint.y, stoneRadius, 0, TAU);
-      ctx.fill();
-      ctx.strokeStyle = rgba(GAME_PALETTE.paper, alpha * 0.72);
-      ctx.lineWidth = height * 0.0015;
-      ctx.stroke();
+    var showStone = showOutboundStone || local >= 821;
+    var surfaceMesh = buildIntroSurfaceMesh(width, height, fold, cameraPush);
+
+    // The paper and grid retain front/back depth, while the didactic trajectory is
+    // intentionally shown in full after both surface layers. It still samples the
+    // exact same parameter curve, so full visibility never turns into a floating oval.
+    drawIntroSurfaceFill(ctx, surfaceMesh, alpha, false, fold);
+    drawIntroGridLayer(ctx, width, height, fold, cameraPush, columns, rows, alpha, false);
+    drawIntroNodesLayer(ctx, width, height, fold, cameraPush, columns, rows, alpha, false);
+
+    drawIntroSurfaceFill(ctx, surfaceMesh, alpha, true, fold);
+    drawIntroGridLayer(ctx, width, height, fold, cameraPush, columns, rows, alpha, true);
+    drawIntroNodesLayer(ctx, width, height, fold, cameraPush, columns, rows, alpha, true);
+
+    // The two opposite shores are the only strong colors in the shot. Their sampled
+    // surface curves meet point-for-point at a full turn; no floating bridge is used.
+    [0, 1].forEach(function drawShore(u, index) {
+      ctx.strokeStyle = rgba(index ? GAME_PALETTE.connection : GAME_PALETTE.twist, alpha * mix(0.42, 0.94, boundaryFocus));
+      ctx.lineWidth = height * mix(0.0025, 0.0052, boundaryFocus);
+      ctx.lineCap = "round";
+      strokeIntroPolyline(
+        ctx,
+        collectIntroParamLine(width, height, fold, cameraPush, "u", u, 0, 1, surfaceMesh.rows)
+      );
+    });
+
+    drawIntroPathLayer(ctx, width, height, fold, cameraPush, pathV, pathStart, outboundU, returnTrip, frameInfo.frameIndex, alpha);
+    if (showStone) {
+      drawIntroStoneLayer(ctx, width, height, fold, cameraPush, stoneU, pathV, cameraPush, alpha);
     }
 
-    if (fold > 0) {
-      var leftSeam = introBoardPoint(0, pathV, fold, width, height, cameraPush);
-      var rightSeam = introBoardPoint(1, pathV, fold, width, height, cameraPush);
-      ctx.strokeStyle = rgba(GAME_PALETTE.connection, alpha * fold * (0.58 + pulse * 0.18));
-      ctx.lineWidth = height * 0.0033;
-      ctx.beginPath();
-      ctx.moveTo(leftSeam.x, leftSeam.y);
-      ctx.bezierCurveTo(width * 0.5, height * 0.12, width * 0.5, height * 0.12, rightSeam.x, rightSeam.y);
-      ctx.stroke();
-      ctx.fillStyle = rgba(GAME_PALETTE.paper, alpha * fold * 0.88);
-      ctx.beginPath();
-      ctx.arc(leftSeam.x, leftSeam.y, height * 0.008, 0, TAU);
-      ctx.arc(rightSeam.x, rightSeam.y, height * 0.008, 0, TAU);
-      ctx.fill();
-    }
     ctx.restore();
   }
 
@@ -1269,7 +1361,7 @@
     var orientation = makeOrientation(model, frameInfo.frameIndex + index * 97, frameInfo.progress, 0.92);
     orientation.y += index * 0.13;
     var morphAmount = model.chapter.id === "plane" ? 0 : 1;
-    drawSurface(ctx, model, viewport, morphAmount, orientation, opacity, Math.max(1.1, composition.quality * 0.56));
+    drawSurface(ctx, model, viewport, morphAmount, orientation, opacity, Math.max(1.1, composition.quality * 0.56), false);
     drawPath(ctx, model, viewport, morphAmount, orientation, 1, composition.palette, opacity * 0.78);
   }
 
@@ -1302,7 +1394,7 @@
     var orientation = makeOrientation(sphere, frameInfo.frameIndex, frameInfo.progress, mix(1.18, 0.78, frameInfo.progress));
     orientation.y += frameInfo.progress * 0.42;
     var opacity = smoothstep(0.02, 0.17, frameInfo.progress) * (1 - smoothstep(0.91, 1, frameInfo.progress));
-    drawSurface(ctx, sphere, viewport, 1, orientation, opacity, composition.quality);
+    drawSurface(ctx, sphere, viewport, 1, orientation, opacity, composition.quality, false);
     drawPath(ctx, sphere, viewport, 1, orientation, smoothstep(0.16, 0.70, frameInfo.progress), composition.palette, opacity);
 
     if (frameInfo.progress > 0.48) {
@@ -1404,8 +1496,8 @@
     var localIn = frameIndex - subtitle.startFrame;
     var localOut = subtitle.endFrame - frameIndex;
     var alpha = smoothstep(0, 8, localIn) * smoothstep(0, 8, localOut);
-    var fontSize = Math.round(height * 0.052);
-    var maxWidth = width * 0.90;
+    var fontSize = Math.round(height * 0.067);
+    var maxWidth = width * 0.85;
     ctx.save();
     ctx.textAlign = "center";
     ctx.textBaseline = "alphabetic";
@@ -1416,7 +1508,7 @@
       ctx.font = "600 " + fontSize + "px " + SUBTITLE_FONT_FAMILY;
     }
     ctx.strokeStyle = "rgba(0,0,0," + alpha + ")";
-    ctx.lineWidth = Math.max(3, height * 0.0059);
+    ctx.lineWidth = Math.max(3, height * 0.0078);
     ctx.strokeText(subtitle.text, width * 0.5, height * 0.917, maxWidth);
     ctx.fillStyle = "rgba(255,255,255," + alpha + ")";
     ctx.fillText(subtitle.text, width * 0.5, height * 0.917, maxWidth);
@@ -1609,6 +1701,9 @@
       makeOrientation: makeOrientation,
       flatBoardLayout: flatBoardLayout,
       buildSurfaceMesh: buildSurfaceMesh,
+      introBoardPoint: introBoardPoint,
+      collectIntroParamLine: collectIntroParamLine,
+      buildIntroSurfaceMesh: buildIntroSurfaceMesh,
       pathPieces: pathPieces,
       segmentKind: segmentKind,
       drawCircularLogo: drawCircularLogo

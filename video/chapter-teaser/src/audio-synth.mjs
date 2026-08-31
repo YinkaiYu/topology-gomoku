@@ -513,12 +513,17 @@ function addCrossDelay(samples, sampleRate, amount, delaySeconds) {
   }
 }
 
-export function renderScoreStem({ stem, events, totalFrames, sampleRate, outputPath }) {
+export function renderScoreStem({ stem, events, totalFrames, sampleRate, outputPath, silentFromFrame = totalFrames }) {
   const samplesPerFrame = sampleRate / 60;
   invariant(Number.isInteger(samplesPerFrame), "Sample rate must map exactly to 60 fps");
+  invariant(Number.isInteger(silentFromFrame) && silentFromFrame >= 0 && silentFromFrame <= totalFrames,
+    "Score-stem silence boundary must be an in-range video frame");
   const samples = new Float32Array(totalFrames * samplesPerFrame * 2);
   addProceduralEvents(samples, stem, events, totalFrames, sampleRate);
   if (stem !== "bass") addCrossDelay(samples, sampleRate, stem === "fx" ? 0.08 : 0.06, stem === "choir" ? 0.233 : 0.173);
+  // Cross-delay is a global post effect, so it can otherwise leak a few samples
+  // beyond the visual end of an event. Cut it at the explicit editorial boundary.
+  samples.fill(0, silentFromFrame * samplesPerFrame * 2);
   const metrics = normalize(samples, STEM_TARGET_PEAK[stem]);
   writePcm16Stereo(outputPath, samples, sampleRate);
   const countBy = (field) => Object.fromEntries([...events.reduce((counts, sourceEvent) => {

@@ -171,12 +171,79 @@ test("the opening is one continuous boundary crossing rather than the chapter mi
   assert.match(compositorSource, /var outbound = smootherstep\(550, 805, local\)/);
   assert.match(compositorSource, /var returnTrip = smootherstep\(806, 990, local\)/);
   assert.match(compositorSource, /var fold = smootherstep\(995, 1215, local\)/);
+  const introPointBody = compositorSource.slice(
+    compositorSource.indexOf("function introBoardPoint"),
+    compositorSource.indexOf("function collectIntroParamLine")
+  );
+  assert.match(introPointBody, /var theta = \(u - 0\.5\) \* TAU;/);
+  const introEdgeBody = compositorSource.slice(
+    compositorSource.indexOf("function drawIntroEdge"),
+    compositorSource.indexOf("function drawIntroAwakening")
+  );
+  assert.doesNotMatch(introEdgeBody, /bezierCurveTo/);
   const awakeningBody = compositorSource.slice(
     compositorSource.indexOf("function drawIntroAwakening"),
     compositorSource.indexOf("function drawIntro(ctx")
   );
   assert.match(awakeningBody, /composition\.topologyIllustrations/);
   assert.doesNotMatch(awakeningBody, /drawMiniature/);
+});
+
+test("the opening board, grid, path and stone share one depth-aware surface mapping", () => {
+  const width = 1920;
+  const height = 1080;
+  const fold = 1;
+  const cameraPush = 0.92;
+  for (const v of [0, 0.25, 0.5, 0.75, 1]) {
+    const left = Compositor.internals.introBoardPoint(0, v, fold, width, height, cameraPush);
+    const right = Compositor.internals.introBoardPoint(1, v, fold, width, height, cameraPush);
+    assert.ok(Math.abs(left.x - right.x) < 1e-9);
+    assert.ok(Math.abs(left.y - right.y) < 1e-9);
+  }
+
+  const meridian = Compositor.internals.collectIntroParamLine(
+    width, height, 0.63, cameraPush, "u", 2 / 6, 0, 1, 36
+  );
+  assert.equal(meridian.length, 37);
+  meridian.forEach((point, index) => {
+    const expected = Compositor.internals.introBoardPoint(2 / 6, index / 36, 0.63, width, height, cameraPush);
+    assert.ok(Math.abs(point.x - expected.x) < 1e-9);
+    assert.ok(Math.abs(point.y - expected.y) < 1e-9);
+    assert.ok(Math.abs(point.depth - expected.depth) < 1e-9);
+  });
+
+  const mesh = Compositor.internals.buildIntroSurfaceMesh(width, height, 0.63, cameraPush);
+  assert.equal(mesh.columns, 48);
+  assert.equal(mesh.rows, 36);
+  assert.equal(mesh.patches.length, 48 * 36);
+  assert.equal(mesh.patches.every((patch, index) => index === 0 || mesh.patches[index - 1].depth <= patch.depth), true);
+
+  const source = fs.readFileSync(path.join(PV_ROOT, "src", "compositor.js"), "utf8");
+  assert.match(source, /function strokeIntroDepthLayer/);
+  assert.match(source, /didactic trajectory is\s+\/\/ intentionally shown in full/);
+  assert.match(source, /if \(stoneU < 0 \|\| stoneU > 1\) return/);
+  assert.doesNotMatch(source, /function introCurve/);
+});
+
+test("the opening trajectory and stone remain fully visible on their shared parameter curve", () => {
+  const source = fs.readFileSync(path.join(PV_ROOT, "src", "compositor.js"), "utf8");
+  const edgeBody = source.slice(source.indexOf("function drawIntroEdge"), source.indexOf("function drawIntroAwakening"));
+  const rearPaper = edgeBody.indexOf("drawIntroSurfaceFill(ctx, surfaceMesh, alpha, false, fold)");
+  const frontPaper = edgeBody.indexOf("drawIntroSurfaceFill(ctx, surfaceMesh, alpha, true, fold)");
+  const fullPath = edgeBody.indexOf("frameInfo.frameIndex, alpha)");
+  assert.ok(rearPaper >= 0 && rearPaper < frontPaper);
+  assert.ok(frontPaper < fullPath);
+  assert.equal((edgeBody.match(/drawIntroPathLayer\(/g) || []).length, 1);
+  assert.equal((edgeBody.match(/drawIntroStoneLayer\(/g) || []).length, 1);
+
+  const pathBody = source.slice(source.indexOf("function drawIntroPathLayer"), source.indexOf("function drawIntroStoneLayer"));
+  assert.equal((pathBody.match(/strokeIntroPolyline/g) || []).length, 2);
+  assert.doesNotMatch(pathBody, /strokeIntroDepthLayer|front \?/);
+  const stoneBody = source.slice(source.indexOf("function drawIntroStoneLayer"), source.indexOf("function drawIntroEdge"));
+  assert.doesNotMatch(stoneBody, /stoneIsFront|front \?/);
+
+  const fillBody = source.slice(source.indexOf("function drawIntroSurfaceFill"), source.indexOf("function drawIntroGridLayer"));
+  assert.match(fillBody, /patchIsFront !== front/);
 });
 
 test("shared stones safely skip the subpixel entrance state used by full-frame playback", () => {
@@ -244,6 +311,21 @@ test("seam-crossing path strokes use both charts of the real parametric surface"
   }
 });
 
+test("completed 3D worlds hide seam decoration while preserving the five-stone path", () => {
+  const source = fs.readFileSync(path.join(PV_ROOT, "src", "compositor.js"), "utf8");
+  assert.match(source, /var seamFade = 1 - smoothstep\(0\.72, 0\.94, morphAmount\)/);
+
+  const pathBody = source.slice(source.indexOf("function drawPath"), source.indexOf("function drawChapterCard"));
+  assert.match(pathBody, /drawUvPiece/);
+  assert.match(pathBody, /drawStoneFace/);
+  assert.doesNotMatch(pathBody, /seamPoint|seamCueAlpha|ctx\.arc/);
+
+  const miniatureBody = source.slice(source.indexOf("function drawMiniature"), source.indexOf("function drawTableau"));
+  const finaleBody = source.slice(source.indexOf("function drawFinale"), source.indexOf("function drawCircularLogo"));
+  assert.match(miniatureBody, /drawSurface\([^;]+, false\);/s);
+  assert.match(finaleBody, /drawSurface\([^;]+, false\);/s);
+});
+
 test("frame rendering is deterministic and depends on frame index only", () => {
   const teaser = getComposition();
   const canvas = createCanvas(teaser.width, teaser.height);
@@ -308,7 +390,9 @@ test("end card exposes both logos, the game title and a prominent producer credi
 
 test("canvas review subtitles are large white sans-serif text with a pure-black outline", () => {
   const source = fs.readFileSync(path.join(PV_ROOT, "src", "compositor.js"), "utf8");
-  assert.match(source, /var fontSize = Math\.round\(height \* 0\.052\)/);
+  assert.match(source, /var fontSize = Math\.round\(height \* 0\.067\)/);
+  assert.match(source, /var maxWidth = width \* 0\.85/);
+  assert.match(source, /ctx\.lineWidth = Math\.max\(3, height \* 0\.0078\)/);
   assert.match(source, /ctx\.strokeStyle = "rgba\(0,0,0," \+ alpha \+ "\)"/);
   assert.match(source, /ctx\.fillStyle = "rgba\(255,255,255," \+ alpha \+ "\)"/);
 });
