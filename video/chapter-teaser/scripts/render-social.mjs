@@ -25,7 +25,10 @@ const profiles = Object.freeze({
     subtitleMarginHorizontal: 56,
     subtitleMarginVertical: 300,
     videoBitRate: "16M",
-    maximumVideoBitRate: "24M"
+    maximumVideoBitRate: "24M",
+    mezzanineBitRate: "24M",
+    mezzanineMaximumBitRate: "30M",
+    mezzanineBufferSize: "60M"
   }),
   xiaohongshu: Object.freeze({
     width: 1080,
@@ -36,7 +39,10 @@ const profiles = Object.freeze({
     subtitleMarginHorizontal: 56,
     subtitleMarginVertical: 140,
     videoBitRate: "16M",
-    maximumVideoBitRate: "24M"
+    maximumVideoBitRate: "24M",
+    mezzanineBitRate: "20M",
+    mezzanineMaximumBitRate: "25M",
+    mezzanineBufferSize: "50M"
   })
 });
 
@@ -223,6 +229,9 @@ async function renderVideo(project, composition, profile, profileName, overwrite
     "format=yuv420p",
     "setparams=range=limited:color_primaries=bt709:color_trc=bt709:colorspace=bt709"
   ].filter(Boolean).join(",");
+  const targetVideoBitRate = clean ? profile.mezzanineBitRate : profile.videoBitRate;
+  const maximumVideoBitRate = clean ? profile.mezzanineMaximumBitRate : profile.maximumVideoBitRate;
+  const videoBufferSize = clean ? profile.mezzanineBufferSize : "48M";
   const args = [
     overwrite ? "-y" : "-n", "-hide_banner", "-loglevel", "warning",
     "-f", "rawvideo", "-pixel_format", "rgba", "-video_size", `${profile.width}x${profile.height}`,
@@ -232,8 +241,8 @@ async function renderVideo(project, composition, profile, profileName, overwrite
   else args.push("-map", "0:v:0", "-an");
   args.push(
     "-vf", videoFilter,
-    "-c:v", "libx264", "-preset", "slow", "-b:v", profile.videoBitRate,
-    "-maxrate", profile.maximumVideoBitRate, "-bufsize", "48M", "-profile:v", "high", "-level:v", "4.2",
+    "-c:v", "libx264", "-preset", "slow", "-b:v", targetVideoBitRate,
+    "-maxrate", maximumVideoBitRate, "-bufsize", videoBufferSize, "-profile:v", "high", "-level:v", "4.2",
     "-r", String(project.manifest.fps), "-fps_mode", "cfr", "-frames:v", String(project.manifest.totalFrames),
     "-t", project.manifest.durationSeconds.toFixed(6), "-g", "120", "-keyint_min", "60", "-sc_threshold", "0",
     "-color_primaries", "bt709", "-color_trc", "bt709", "-colorspace", "bt709", "-color_range", "tv"
@@ -272,7 +281,7 @@ async function renderVideo(project, composition, profile, profileName, overwrite
     sourceVisuals: ["app/assets/topology.js", "app/assets/topology-morph.js", "app/assets/topology-art.js", "app/assets/topologies/*.svg"],
     sourceAudio: audio ? path.relative(repositoryRoot, audio).replaceAll("\\", "/") : null,
     captions: captions ? path.basename(captions) : null,
-    encode: { encoder: "libx264", targetVideoBitRate: profile.videoBitRate, maximumVideoBitRate: profile.maximumVideoBitRate, audioTargetBitRate: audio ? 320000 : null, fastStart: true }
+    encode: { encoder: "libx264", targetVideoBitRate, maximumVideoBitRate, videoBufferSize, audioTargetBitRate: audio ? 320000 : null, fastStart: true }
   }, null, 2)}\n`, "utf8");
   process.stdout.write(`${profile.label} written to ${output}\n`);
 }

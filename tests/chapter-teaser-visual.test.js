@@ -433,7 +433,11 @@ test("offline render streams raw frames into FFmpeg without a complete PNG seque
   assert.match(source, /overwrite:\s*\{ type: "boolean", default: false \}/);
   assert.match(source, /"no-subtitles":\s*\{ type: "boolean", default: false \}/);
   assert.match(source, /h264:\s*\{ type: "boolean", default: false \}/);
+  assert.match(source, /"video-bitrate":\s*\{ type: "string" \}/);
+  assert.match(source, /"max-video-bitrate":\s*\{ type: "string" \}/);
+  assert.match(source, /"video-buffer-size":\s*\{ type: "string" \}/);
   assert.match(source, /const useH264 = h264 \|\| profile !== "master"/);
+  assert.match(source, /"-b:v", videoBitRate/);
   assert.match(source, /brand-icon\.png/);
 });
 
@@ -457,12 +461,15 @@ test("portrait social exports render native portrait scenes from the shared game
   assert.match(source, /clean \? null : `subtitles=filename=/);
   assert.match(source, /else args\.push\("-map", "0:v:0", "-an"\)/);
   assert.match(source, /footsteps-loop-\$\{profileName\}-clean-\$\{profile\.width\}x\$\{profile\.height\}-60fps/);
+  assert.match(source, /mezzanineBitRate: "24M"/);
+  assert.match(source, /mezzanineBitRate: "20M"/);
+  assert.match(source, /const targetVideoBitRate = clean \? profile\.mezzanineBitRate : profile\.videoBitRate/);
   assert.match(source, /layout: "native portrait scene composition"/);
   assert.match(source, /subtitleFontSize: 68/);
   assert.doesNotMatch(source, /cleanVideo|sourceVideo|force_original_aspect_ratio|gblur|overlay=/);
 
   const packageJson = JSON.parse(fs.readFileSync(path.join(ROOT, "package.json"), "utf8"));
-  assert.match(packageJson.scripts["pv:clean:horizontal"], /--profile master --h264 --silent --no-subtitles/);
+  assert.match(packageJson.scripts["pv:clean:horizontal"], /--profile master --h264 --video-bitrate 48M --max-video-bitrate 60M --video-buffer-size 120M --silent --no-subtitles/);
   assert.match(packageJson.scripts["pv:clean:douyin"], /douyin --clean/);
   assert.match(packageJson.scripts["pv:clean:xiaohongshu"], /xiaohongshu --clean/);
 

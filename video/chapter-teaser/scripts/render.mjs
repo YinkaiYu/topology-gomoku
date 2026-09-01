@@ -37,6 +37,9 @@ function parseCli(argv) {
       silent: { type: "boolean", default: false },
       "no-subtitles": { type: "boolean", default: false },
       h264: { type: "boolean", default: false },
+      "video-bitrate": { type: "string" },
+      "max-video-bitrate": { type: "string" },
+      "video-buffer-size": { type: "string" },
       overwrite: { type: "boolean", default: false },
       help: { type: "boolean", short: "h", default: false }
     }
@@ -66,7 +69,10 @@ function usage() {
     "  --end-frame N               Final video frame (exclusive)",
     "  --silent                    Render without the manifest audio master",
     "  --no-subtitles              Do not burn captions into rendered frames",
-    "  --h264                     Use high-quality H.264 even for the 4K master profile",
+    "  --h264                      Use high-quality H.264 even for the 4K master profile",
+    "  --video-bitrate RATE        Target H.264 video bitrate, for example 48M",
+    "  --max-video-bitrate RATE    Maximum H.264 video bitrate, for example 60M",
+    "  --video-buffer-size SIZE    H.264 rate-control buffer size, for example 120M",
     "  --overwrite                 Replace an existing output file",
     "  --quality N                 Surface subdivisions per board interval"
   ].join("\n");
@@ -311,6 +317,9 @@ function ffmpegArguments({
   startFrame,
   endFrame,
   h264,
+  videoBitRate,
+  maximumVideoBitRate,
+  videoBufferSize,
   overwrite
 }) {
   const count = endFrame - startFrame;
@@ -361,10 +370,17 @@ function ffmpegArguments({
     args.push("-c:v", "prores_ks", "-profile:v", "3", "-vendor", "apl0", "-bits_per_mb", "8000");
     if (audioPath) args.push("-c:a", "pcm_s24le", "-ar", "48000", "-ac", "2");
   } else {
+    args.push("-c:v", "libx264", "-preset", "slow");
+    if (videoBitRate) {
+      args.push(
+        "-b:v", videoBitRate,
+        "-maxrate", maximumVideoBitRate || videoBitRate,
+        "-bufsize", videoBufferSize || maximumVideoBitRate || videoBitRate
+      );
+    } else {
+      args.push("-crf", "16");
+    }
     args.push(
-      "-c:v", "libx264",
-      "-preset", "slow",
-      "-crf", "16",
       "-x264-params", "colorprim=bt709:transfer=bt709:colormatrix=bt709:fullrange=off",
       "-movflags", "+faststart+write_colr"
     );
@@ -461,6 +477,9 @@ async function renderVideo(project, options) {
     startFrame,
     endFrame,
     h264: options.h264,
+    videoBitRate: options["video-bitrate"],
+    maximumVideoBitRate: options["max-video-bitrate"],
+    videoBufferSize: options["video-buffer-size"],
     overwrite: options.overwrite
   });
   const encoder = spawn("ffmpeg", args, { stdio: ["pipe", "inherit", "inherit"], windowsHide: true });

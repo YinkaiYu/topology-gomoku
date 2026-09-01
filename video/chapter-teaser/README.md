@@ -18,9 +18,9 @@
 
 | 用途 | 规格 | 默认输出 |
 | --- | --- | --- |
-| 横版后期净画面 | 3840 × 2160，H.264，无字幕无声音 | `.tmp/chapter-teaser/clean-pictures/topology-gomoku-footsteps-loop-clean-3840x2160-60fps.mp4` |
-| 抖音后期净画面 | 1080 × 1920，H.264，无字幕无声音，原生 9:16 构图 | `.tmp/chapter-teaser/clean-pictures/topology-gomoku-footsteps-loop-douyin-clean-1080x1920-60fps.mp4` |
-| 小红书后期净画面 | 1080 × 1440，H.264，无字幕无声音，原生 3:4 构图 | `.tmp/chapter-teaser/clean-pictures/topology-gomoku-footsteps-loop-xiaohongshu-clean-1080x1440-60fps.mp4` |
+| 横版后期净画面 | 3840 × 2160，H.264，目标 / 峰值 48 / 60 Mbps，无字幕无声音 | `.tmp/chapter-teaser/clean-pictures/topology-gomoku-footsteps-loop-clean-3840x2160-60fps.mp4` |
+| 抖音后期净画面 | 1080 × 1920，H.264，目标 / 峰值 24 / 30 Mbps，无字幕无声音，原生 9:16 构图 | `.tmp/chapter-teaser/clean-pictures/topology-gomoku-footsteps-loop-douyin-clean-1080x1920-60fps.mp4` |
+| 小红书后期净画面 | 1080 × 1440，H.264，目标 / 峰值 20 / 25 Mbps，无字幕无声音，原生 3:4 构图 | `.tmp/chapter-teaser/clean-pictures/topology-gomoku-footsteps-loop-xiaohongshu-clean-1080x1440-60fps.mp4` |
 | 审阅成片 | 1920 × 1080，H.264 / AAC | `.tmp/chapter-teaser/delivery/topology-gomoku-chapter-teaser-final-1080p.mp4` |
 | 可选 4K 母版 | 3840 × 2160，ProRes 422 HQ / 24-bit PCM；本轮不生成 | `.tmp/chapter-teaser/master/seven-realms-master.mov` |
 | B 站投稿版 | 3840 × 2160，H.264 / AAC | `.tmp/chapter-teaser/final-deliveries/bilibili/topology-gomoku-footsteps-loop-bilibili-4k60.mp4` |
@@ -56,7 +56,7 @@ npm run pv:clean:douyin
 npm run pv:clean:xiaohongshu
 ```
 
-三条净画面均为 12897 帧、214.95 秒、60 fps、BT.709、H.264 High，且不含音频流或烧录字幕；与 SRT、ASS、纯配乐、配乐+音效、纯音效、原始 MP3 旁白、48 kHz 旁白和最终混音共同构成可重新剪辑的分轨交付。三种画幅的字幕文案、分句和时间轴一致；竖屏差异仅为烧录样式、安全区与自动换行，因此只交付一套通用 SRT / ASS，后期按目标画幅重新设定字幕样式即可。
+三条净画面均为 12897 帧、214.95 秒、60 fps、BT.709、H.264 High，且不含音频流或烧录字幕；与 SRT、ASS、纯配乐、配乐+音效、纯音效、原始 MP3 旁白、48 kHz 旁白和最终混音共同构成可重新剪辑的分轨交付。码率参数是受约束 VBR 的质量预算，不要求编码器为低复杂度纸面和留白写入无意义填充，因此实测平均码率可以低于目标值。三种画幅的字幕文案、分句和时间轴一致；竖屏差异仅为烧录样式、安全区与自动换行，因此只交付一套通用 SRT / ASS，后期按目标画幅重新设定字幕样式即可。
 
 渲染器默认拒绝覆盖已存在的文件。确实要替换其他审阅版时显式传入 `--overwrite`：
 
