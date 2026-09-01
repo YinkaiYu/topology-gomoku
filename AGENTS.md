@@ -22,14 +22,14 @@
 - `main`：由维护者定期从 `dev` 选择并提升的稳定跨平台版本。
 - `xiaohongshu`：从 `main` 同步稳定版本后，由维护者完成小红书容器、JSBridge、ZIP 与发布验证。
 - `bilibili`：从 `main` 同步稳定版本后，由维护者完成 Bilibili Toy adapter、生命周期与发布验证。
-- `wechat`：从 `main` 同步稳定版本后，由维护者完成微信小程序 adapter、生命周期与发布验证。
+- `wechat`：从 `main` 同步稳定版本后，由维护者完成微信小游戏原生 adapter、生命周期与发布验证。
 
 普通贡献只进入 `dev`。维护者选定稳定版本后将 `dev` 提升到 `main`，再以同一个 `main` 版本统一更新三个发行分支。平台分支里的通用修复必须先回流 `dev`，不要复制三份实现。
 
 ## 平台专属适配
 
 - Bilibili Toy API、生命周期、宿主资源和发布配置，可由维护者从 `bilibili` 新建独立任务分支/worktree，确认后合回 `bilibili`。
-- 微信小程序生命周期、组件、宿主 API 和发布配置，可由维护者从 `wechat` 新建独立任务分支/worktree，确认后合回 `wechat`。
+- 微信小游戏 Canvas、生命周期、宿主 API 和发布配置，可由维护者从 `wechat` 新建独立任务分支/worktree，确认后合回 `wechat`。
 - `dev` 与 `main` 当前就是小红书 H5 的主要基线，因此小红书相关页面与通用 H5 能力通常仍从 `dev` 开始。只有容器、JSBridge、ZIP 或发布配置等无法进入共享基线的内容，才从 `xiaohongshu` 建平台任务。
 - 平台任务同样遵守：**独立分支/worktree → 实现与平台验证 → 本地/模拟器预览 → 用户明确确认 → 合回原发行分支**。不要把开发过程直接堆在长期发行 worktree。
 - 只要规则、AI、UI、资源或 adapter 契约能够跨平台复用，就必须另建 `dev` 任务实现；平台分支只保留真正的宿主边界。
@@ -66,7 +66,7 @@
 - 逻辑改动运行 `npm test`。
 - 小红书 H5 或包结构改动运行 `npm run validate`；发布改动再运行 `npm run build:xiaohongshu`。
 - 文档新增、移动或链接修改运行 `npm run docs:check`。
-- 新增或修改任何用户可见文本（包括 HTML、JavaScript 动态文案、Canvas 文字和 CSS `content`）后，必须运行 `npm test`，确认所有内嵌字体字重的 `cmap` 完整覆盖。缺字时运行 `npm run fonts:subset` 重建 400/600/700 三个子集，并同步更新字体 URL、样式表 URL 与包版本的缓存键；禁止依赖苹方等系统字体回退。
+- 新增或修改任何用户可见文本（包括 HTML、JavaScript 动态文案、Canvas 文字和 CSS `content`）后，必须运行 `npm test`，确认所有内嵌字体字重的 `cmap` 完整覆盖。缺字时运行 `npm run fonts:subset` 重建 400/600/700 三个子集，并确认字体与样式表 URL 仍直接引用无查询参数或片段的包内真实文件名；缓存失效由统一游戏版本和各平台发布清单管理。禁止依赖苹方等系统字体回退。
 - 不直接调用系统 `python` 运行字体脚本：WindowsApps 启动器经常不可执行，Codex 捆绑 Python 也不保证包含 `fontTools`。统一使用 `npm run fonts:subset`；该命令通过 `uv run --locked` 使用仓库的 `.python-version`、`pyproject.toml` 与 `uv.lock` 自动同步隔离环境。Python 依赖只通过 `uv` 调整并提交锁文件，不手改 `.venv`。
 - 新的拓扑规则必须有确定性测试；视觉改动保留同视口 QA 证据。
 - 不提交 `release/*.zip`、依赖目录、密钥、签名、账号或本机私有配置。
