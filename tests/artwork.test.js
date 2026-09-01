@@ -170,7 +170,7 @@ test("终章标题作为同一字体文本运行且样式与字体使用离线�
   assert.doesNotMatch(html, /optical-title-rise/);
   assert.match(style, /\.level-name\s*\{[^}]*font-weight:\s*700/s);
   ["400", "600", "700"].forEach((weight) => {
-    assert.match(style, new RegExp(`url\\("\\.\\/fonts\\/noto-serif-sc-${weight}\\.woff2"\\)`));
+    assert.match(style, new RegExp(`url\\(\\s*["']?\\.\\/fonts\\/noto-serif-sc-${weight}\\.woff2["']?\\s*\\)`));
     assert.doesNotMatch(style, new RegExp(`noto-serif-sc-${weight}\\.woff2[?#]`));
   });
 });

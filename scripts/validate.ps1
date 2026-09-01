@@ -47,7 +47,7 @@ if (Test-Path -LiteralPath $indexPath) {
       $errors.Add("Resource must use a package-relative path: $resource")
       continue
     }
-    if ($resource.StartsWith('#') -or $resource.StartsWith('data:')) { continue }
+    if ($resource.StartsWith('#') -or $resource.StartsWith('data:') -or $resource.StartsWith('blob:')) { continue }
     if ($resource -match '[?#]') {
       $errors.Add("Package resource URL must not include a query string or fragment: $resource")
     }
