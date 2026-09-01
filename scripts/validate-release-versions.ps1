@@ -4,7 +4,7 @@ param(
 )
 
 $ErrorActionPreference = 'Stop'
-$releaseRefs = @('main', 'xiaohongshu', 'bilibili', 'wechat')
+$releaseRefs = @('main', 'xiaohongshu', 'bilibili', 'wechat', 'web')
 $errors = [System.Collections.Generic.List[string]]::new()
 
 if ($Version -notmatch '^\d+\.\d+\.\d+(?:[-+][0-9A-Za-z.-]+)?$') {

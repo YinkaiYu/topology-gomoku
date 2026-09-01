@@ -3,7 +3,7 @@
   "version": "1.38.0",
   "private": true,
   "license": "MIT",
-  "description": "拓扑五子棋：面向小红书、Bilibili Toy 与微信小程序的跨平台小游戏",
+  "description": "拓扑五子棋：面向小红书、Bilibili Toy、微信小游戏与独立网站的跨平台小游戏",
   "scripts": {
     "test": "node --test tests/*.test.js",
     "validate": "powershell -NoProfile -ExecutionPolicy Bypass -File ./scripts/validate.ps1",
@@ -12,7 +12,8 @@
     "check": "npm test && npm run validate && npm run docs:check",
     "fonts:subset": "powershell -NoProfile -ExecutionPolicy Bypass -File ./scripts/subset-fonts.ps1",
     "build": "npm run build:xiaohongshu",
-    "build:xiaohongshu": "powershell -NoProfile -ExecutionPolicy Bypass -File ./scripts/build.ps1"
+    "build:xiaohongshu": "powershell -NoProfile -ExecutionPolicy Bypass -File ./scripts/build.ps1",
+    "build:web": "powershell -NoProfile -ExecutionPolicy Bypass -File ./scripts/build-web.ps1"
   },
   "engines": {
     "node": ">=18"

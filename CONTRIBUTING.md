@@ -38,8 +38,9 @@
 | `xiaohongshu` | 小红书发行版 | 维护者从 `main` 同步；仅承载容器、JSBridge、ZIP 等宿主专属改动 |
 | `bilibili` | Bilibili Toy 发行版 | 维护者从 `main` 同步，并承载 Toy 专属 adapter 与平台任务 |
 | `wechat` | 微信小游戏发行版 | 维护者从 `main` 同步，并承载小游戏原生 adapter 与平台任务 |
+| `web` | 个人网站发行版 | 维护者从 `main` 同步，生成静态产物并维护固定子路径部署 |
 
-贡献者的职责边界是 `任务分支 → dev`。后续 `dev → main → 三个发行分支` 属于仓库维护流程，见 [docs/development/release.md](docs/development/release.md)。平台分支中发现的通用问题由维护者另建 `dev` 任务回流，再沿正常路径传播。
+贡献者的职责边界是 `任务分支 → dev`。后续 `dev → main → 四个发行分支` 属于仓库维护流程，见 [docs/development/release.md](docs/development/release.md)。平台分支中发现的通用问题由维护者另建 `dev` 任务回流，再沿正常路径传播。
 
 ## 视觉与交互
 
@@ -72,6 +73,7 @@
 | 同时涉及共享逻辑与 H5 | `npm run check` |
 | 文档新增、移动或链接修改 | `npm run docs:check` |
 | 小红书发布与构建 | `npm run build:xiaohongshu` |
+| 个人网站发布与构建 | `npm run build:web` + 桌面/移动子路径预览 |
 | 新拓扑规则 | 确定性测试 |
 | 视觉或交互 | 同视口前后证据 + 任务 worktree 本地预览 |
 | 平台原生适配 | 对应模拟器；具备条件时补至少一台真机记录 |
@@ -93,7 +95,7 @@
 
 ```text
 目标：
-范围：共享 / 小红书 / Bilibili Toy / 微信 / 文档
+范围：共享 / 小红书 / Bilibili Toy / 微信 / 个人网站 / 文档
 验证：
 预览确认：
 文档影响：

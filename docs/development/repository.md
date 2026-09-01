@@ -1,6 +1,6 @@
 # 仓库、分支与 worktree 指南
 
-这份文档描述拓扑五子棋的长期 Git 结构、贡献者边界和维护者职责。核心原则是：日常贡献统一进入 `dev`，稳定版本由维护者单向提升，三个发行分支共享同一产品版本。
+这份文档描述拓扑五子棋的长期 Git 结构、贡献者边界和维护者职责。核心原则是：日常贡献统一进入 `dev`，稳定版本由维护者单向提升，四个发行分支共享同一产品版本。
 
 ## 分支流
 
@@ -17,23 +17,25 @@ dev ──▶ codex/<task> worktree
               │
               ├──▶ xiaohongshu  vX.Y.Z
               ├──▶ bilibili     vX.Y.Z
-              └──▶ wechat       vX.Y.Z
+              ├──▶ wechat       vX.Y.Z
+              └──▶ web          vX.Y.Z
 ```
 
 - `dev` 是所有外部贡献与普通任务的唯一集成目标，但不是直接修改的工作目录。
 - `main` 是稳定跨平台基线，只由维护者从已验证的 `dev` 提升。
-- `xiaohongshu`、`bilibili`、`wechat` 是维护者管理的发行分支，只从 `main` 接收同一稳定版本，再保留各自 adapter 和宿主配置。
-- 外部贡献者的职责终点是 `dev`；稳定选择、版本提升和三个发行分支同步属于维护者职责。
-- 平台分支里发现的通用问题必须另建 `dev` 任务回流，不在三个发行版复制修复。
+- `xiaohongshu`、`bilibili`、`wechat`、`web` 是维护者管理的发行分支，只从 `main` 接收同一稳定版本，再保留各自 adapter、宿主配置或部署边界。
+- 外部贡献者的职责终点是 `dev`；稳定选择、版本提升和四个发行分支同步属于维护者职责。
+- 平台分支里发现的通用问题必须另建 `dev` 任务回流，不在多个发行版复制修复。
 
 维护者还有一条独立的平台适配支线：
 
 ```text
 bilibili ──▶ codex/bilibili-<task> worktree ──预览确认──▶ bilibili
 wechat   ──▶ codex/wechat-<task> worktree   ──预览确认──▶ wechat
+web      ──▶ codex/web-<task> worktree      ──预览确认──▶ web
 ```
 
-这条支线只处理无法进入共享基线的宿主 API、生命周期、组件、资源和发布配置。`dev/main` 当前天然对标小红书 H5，因此小红书工作通常仍从 `dev` 开始；只有容器、JSBridge、ZIP 和发布配置等纯宿主内容才从 `xiaohongshu` 建平台任务。
+这条支线只处理无法进入共享基线的宿主 API、生命周期、组件、资源和发布配置。`dev/main` 当前天然对标小红书 H5，因此小红书工作通常仍从 `dev` 开始；只有容器、JSBridge、ZIP 和发布配置等纯宿主内容才从 `xiaohongshu` 建平台任务。个人网站任务只维护静态构建、固定子路径和外部网站仓库同步，具体见 [`web.md`](web.md)。
 
 ## 长期与短期 worktree
 
@@ -45,7 +47,8 @@ xiaohongshu-tools/               main
    ├─ dev/                       dev
    ├─ xiaohongshu/               xiaohongshu
    ├─ bilibili/                  bilibili
-   └─ wechat/                    wechat
+   ├─ wechat/                    wechat
+   └─ web/                       web
 ```
 
 长期 worktree 用来查看、集成和同步，不承载具体任务的未提交修改。每项任务另建短期分支和 worktree：
@@ -81,7 +84,7 @@ git worktree list
 平台任务只由维护者或得到明确平台维护授权的 Agent 执行：
 
 1. 确认改动只能存在于特定宿主；可复用部分先拆成 `dev` 任务。
-2. 从 `bilibili`、`wechat` 或必要时 `xiaohongshu` 建立独立任务分支/worktree。
+2. 从 `bilibili`、`wechat`、`web` 或必要时 `xiaohongshu` 建立独立任务分支/worktree。
 3. 使用对应平台官方约束、模拟器和真机验证；Bilibili 任务使用仓库安装的 `toy` skill。
 4. 提供平台预览并获得明确确认后，合回原发行分支。
 5. 不修改游戏 SemVer。游戏版本只由核心 `dev → main` 稳定提升控制；平台宿主自己的构建号或审核批次不属于游戏版本。
@@ -94,6 +97,7 @@ git worktree list
 | 小红书容器能力、JSBridge、校验、ZIP 与发布配置 | 维护者发行同步时进入 `xiaohongshu` |
 | Bilibili Toy 生命周期、API、资源与发布配置 | 维护者发行同步时进入 `bilibili` |
 | 微信小游戏 Canvas、生命周期、宿主 API、资源与发布配置 | 维护者发行同步时进入 `wechat` |
+| 个人网站静态构建、子路径部署与网站仓库同步 | 维护者发行同步时进入 `web`；部署副本进入网站仓库 |
 | 可复用 adapter 接口与跨平台行为契约 | `dev` |
 | 面向公众的说明、架构与贡献约定 | `dev`，稳定后提升到 `main` |
 
@@ -101,7 +105,7 @@ git worktree list
 
 ## 提升与发布
 
-维护者定期从 `dev` 选择稳定版本，经复验后提升到 `main`，再以同一 `main` 提交和同一 SemVer 更新三个发行分支。已有平台适配提交保留在各自发行分支，由本轮 `main` 同步更新共享基线。详细门禁、统一版本规则和平台检查见 [`release.md`](release.md)。
+维护者定期从 `dev` 选择稳定版本，经复验后提升到 `main`，再以同一 `main` 提交和同一 SemVer 更新四个发行分支。已有平台适配提交保留在各自发行分支，由本轮 `main` 同步更新共享基线。详细门禁、统一版本规则和平台检查见 [`release.md`](release.md)。
 
 执行稳定提升或发行分支整合前，必须完整阅读 [`merging.md`](merging.md)。冲突只能在独立提升/整合 worktree 中按文件职责解决；长期分支在确认后通过 `--ff-only` 接收已验证结果，不在长期 worktree 现场拼接冲突。
 
@@ -112,6 +116,6 @@ git worktree list
 - Agent 任务分支：`codex/<topic>`。
 - 人工短期分支：`feat/<topic>`、`fix/<topic>`、`docs/<topic>` 等。
 - 维护者发行整合分支可使用 `codex/release-<platform>-<semver>`。
-- 三个平台 tag 使用相同 SemVer，例如 `xiaohongshu-v1.37.2`、`bilibili-v1.37.2`、`wechat-v1.37.2`；不得各自使用不同产品版本。
+- 四个渠道 tag 使用相同 SemVer，例如 `xiaohongshu-v1.37.2`、`bilibili-v1.37.2`、`wechat-v1.37.2`、`web-v1.37.2`；不得各自使用不同产品版本。
 
 分支名描述集成责任，目录名描述代码责任。即使未来平台迁移到不同工程形态，共享规则的测试向量、视觉原则和行为契约仍应保持一致。
