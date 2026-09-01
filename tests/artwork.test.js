@@ -161,16 +161,17 @@ test("目录锁定整屏并使用本地内嵌的典雅中文字体", () => {
   assert.doesNotMatch(style, /\.home-scroll\s*\{[^}]*overflow-y:\s*auto/s);
 });
 
-test("终章标题作为同一字体文本运行且字体资源带版本缓存键", () => {
+test("终章标题作为同一字体文本运行且样式与字体使用离线包真实路径", () => {
   const html = fs.readFileSync(path.join(ROOT, "app", "index.html"), "utf8");
   const style = fs.readFileSync(path.join(ROOT, "app", "assets", "style.css"), "utf8");
-  const packageVersion = JSON.parse(fs.readFileSync(path.join(ROOT, "package.json"), "utf8")).version;
-  assert.match(html, new RegExp(`href="\\.\\/assets\\/style\\.css\\?v=${packageVersion.replace(/\./g, "\\.")}"`));
+  assert.match(html, /href="\.\/assets\/style\.css"/);
+  assert.doesNotMatch(html, /style\.css[?#]/);
   assert.match(html, /<span class="level-name">归圆<\/span>/);
   assert.doesNotMatch(html, /optical-title-rise/);
   assert.match(style, /\.level-name\s*\{[^}]*font-weight:\s*700/s);
   ["400", "600", "700"].forEach((weight) => {
-    assert.match(style, new RegExp(`noto-serif-sc-${weight}\\.woff2\\?v=${packageVersion.replace(/\./g, "\\.")}`));
+    assert.match(style, new RegExp(`url\\(\\s*["']?\\.\\/fonts\\/noto-serif-sc-${weight}\\.woff2["']?\\s*\\)`));
+    assert.doesNotMatch(style, new RegExp(`noto-serif-sc-${weight}\\.woff2[?#]`));
   });
 });
 

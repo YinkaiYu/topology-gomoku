@@ -5,7 +5,7 @@
   <p>
     <img alt="离线游戏" src="https://img.shields.io/badge/完全离线-27241F?style=flat-square" />
     <img alt="七种拓扑" src="https://img.shields.io/badge/拓扑世界-7-B85C38?style=flat-square" />
-    <img alt="三个目标平台" src="https://img.shields.io/badge/目标平台-3-5A7D6A?style=flat-square" />
+    <img alt="三个已发布平台" src="https://img.shields.io/badge/已发布平台-3-5A7D6A?style=flat-square" />
     <img alt="MIT License" src="https://img.shields.io/badge/license-MIT-4A6484?style=flat-square" />
   </p>
   <p>一个把五子棋放进圆柱、莫比乌斯带、环面与克莱因瓶的小游戏。</p>
@@ -40,13 +40,13 @@
 
 游戏完全离线运行，没有账号、广告或联网请求。进度保存在设备上，内置三档本地对手，也可以在第一关自由落子，先找回最普通的五子棋手感。
 
-## 正在前往更多地方
+## 现已全平台发布
 
-- 小红书小工具：当前 H5 基线与离线包发布目标
-- Bilibili Toy：已有专属 adapter 与发行分支，仍在适配验证
-- 微信小程序：已预留发行分支，原生适配尚未开始
+- 小红书小工具：已发布，以共享 H5 基线生成完全离线的 ZIP 包
+- Bilibili Toy：已发布，使用专属 adapter，并完成手机、平板与 PC 的响应式适配
+- 微信小游戏：已发布，使用原生单 Canvas、宿主 adapter 与可复现的构建同步链路
 
-我们希望不同平台上的拓扑五子棋都像真正属于那里，而不是简单套上一层外壳。
+三个发行版共享同一套拓扑规则、关卡内容、视觉语言与游戏版本，并分别接入各自宿主的生命周期、输入、安全区和发布边界。每次稳定版本仍需在三个平台分别完成构建、预览与发布验证。
 
 ## 开发与文档
 

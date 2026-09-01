@@ -1,8 +1,8 @@
 # Bilibili Toy 原生适配与响应式审视
 
-全平台游戏版本：1.37.3
+全平台游戏版本：1.38.0
 
-审视日期：2026-08-28
+审视日期：2026-09-01
 平台范围：Bilibili Toy
 
 ## 设计原则
@@ -42,15 +42,17 @@
 
 ## 验证结果
 
-- `npm test`：88/88 通过，其中包含 Toy adapter、沉浸模式、动态视口、复盘和三字重内嵌字体覆盖。
+- `npm test`：89/89 通过，其中包含 Toy adapter、沉浸模式、动态视口、复盘和内嵌字体覆盖。
 - `npm run validate`：通过，25 个包内文件，约 1.89 MB 未压缩。
-- `npm run docs:check`：通过，19 份 Markdown 文档全部进入导航且相对链接有效。
-- `npm run build:bilibili`：通过，ZIP 根目录包含 `index.html`，资源路径和官方 SDK 白名单有效；压缩包约 1.27 MB。
+- `npm run docs:check`：通过，20 份 Markdown 文档全部进入导航且相对链接有效。
+- `npm run build:bilibili`：通过，ZIP 根目录包含 `index.html`，资源路径和官方 SDK 白名单有效；压缩包 1297.7 KB，SHA-256 `B5E95769B41B64BA9F55759C52E1CB6D1DF4004D0CDD4382EF2957B3ACB0CAD2`。
 - `git diff --check`：通过，仅有 Git 对 PowerShell 文件行尾转换的提示。
 - Toy SDK 外部资源白名单只允许官方 `//s1.hdslb.com/bfs/seed/toy/app/sdk/toy-sdk.js`。
 - 自动化测试覆盖三档断点、`100dvh`、四向安全区、短横屏、hover/pointer、键盘和容器变化重排。
 
 ## 仍需在发布预览中确认
+
+1.38.0 没有可用真机设备，以下项目未执行真机验收；发布后由玩家回归验证，结果回填到发布记录。
 
 本机 in-app browser 的本地 URL 安全策略阻止了本次 Bilibili 适配构建的最终截图采集，因此没有把错误工作目录中的基础版截图作为证据。提交审核前必须在 Toy CLI 生成的预览链接中检查：
 

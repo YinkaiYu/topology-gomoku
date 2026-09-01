@@ -1,6 +1,6 @@
 @font-face {
   font-family: "Topo Serif";
-  src: url("./fonts/noto-serif-sc-400.woff2?v=1.37.3") format("woff2");
+  src: url("./fonts/noto-serif-sc-400.woff2") format("woff2");
   font-style: normal;
   font-weight: 400;
   font-display: swap;
@@ -8,7 +8,7 @@
 
 @font-face {
   font-family: "Topo Serif";
-  src: url("./fonts/noto-serif-sc-600.woff2?v=1.37.3") format("woff2");
+  src: url("./fonts/noto-serif-sc-600.woff2") format("woff2");
   font-style: normal;
   font-weight: 600;
   font-display: swap;
@@ -16,7 +16,7 @@
 
 @font-face {
   font-family: "Topo Serif";
-  src: url("./fonts/noto-serif-sc-700.woff2?v=1.37.3") format("woff2");
+  src: url("./fonts/noto-serif-sc-700.woff2") format("woff2");
   font-style: normal;
   font-weight: 700;
   font-display: swap;
@@ -24,7 +24,7 @@
 
 @font-face {
   font-family: "Topo Serif Immersive";
-  src: url("./fonts/noto-serif-sc-immersive.woff2?v=1.37.3") format("woff2");
+  src: url("./fonts/noto-serif-sc-immersive.woff2") format("woff2");
   font-style: normal;
   font-weight: 200 900;
   font-display: block;
