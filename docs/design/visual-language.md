@@ -35,7 +35,7 @@
 - 标题、正文、标签、状态和数字层级应沿用已有字号、字重和行高节奏。
 - 文案保持短、准、自然，避免为了“有设计感”使用难懂术语。
 - HTML、JavaScript、Canvas、JSON 与 CSS `content` 中的用户可见文本都属于字体覆盖范围。
-- 修改文案后运行 `npm test`；H5 缺字时运行 `npm run fonts:subset`，微信小游戏缺字时运行 `npm run fonts:subset:wechat`。H5 在下一次统一版本提升时同步更新字体、样式表 URL 与 SemVer 缓存键；微信小游戏使用隔离的代码包 TTF 和构建清单哈希，不因平台补字单独升版。
+- 修改文案后运行 `npm test`；H5 缺字时运行 `npm run fonts:subset`，并保持字体与样式表 URL 直接引用无查询参数或片段的包内真实文件名；微信小游戏缺字时运行 `npm run fonts:subset:wechat`，使用隔离的代码包 TTF 和构建清单哈希。缓存失效由统一包版本和平台发布清单管理，不因平台补字单独升版。
 
 ## 动效与交互
 

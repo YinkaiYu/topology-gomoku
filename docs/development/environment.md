@@ -82,7 +82,7 @@ npm run fonts:subset:wechat
 1. 修改所有静态与动态文案及相关回归测试。
 2. 运行 `npm test`，读取缺失字形报告。
 3. 如有缺字，运行 `npm run fonts:subset`。
-4. H5 字体文件变化在下一次核心稳定提升中同步更新三个字体 URL、`style.css` URL 与统一 `package.json` SemVer 缓存键；微信小游戏从代码包本地路径加载字体，以构建清单 SHA-256 识别变化，不为平台适配单独升版。
+4. 确认 H5 的三个字体 URL 与 `style.css` URL 仍直接引用离线包真实文件名，不添加查询参数或片段；微信小游戏从代码包本地路径加载字体，以构建清单 SHA-256 识别变化。包版本由发布流程统一管理，不为平台适配单独升版。
 5. H5 运行 `npm run check`，微信小游戏运行 `npm run check:wechat`，并在各目标视口确认字形、字重与排版。
 
 字体许可见 [`licenses/OFL.txt`](../../licenses/OFL.txt)。

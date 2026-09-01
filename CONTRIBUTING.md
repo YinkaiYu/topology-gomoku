@@ -58,7 +58,7 @@
 1. 运行 `npm test`；字体覆盖测试会扫描应用文本，并检查 400/600/700 三个 WOFF2 字重的 `cmap`。
 2. 如报告缺字，运行 `npm run fonts:subset` 重建三个子集。该命令通过 `uv run --locked` 自动创建或同步仓库 `.venv`，不要直接依赖系统或 WindowsApps 的 `python` 启动器。
 3. Python 版本与依赖分别由 `.python-version`、`pyproject.toml` 和 `uv.lock` 管理。调整依赖时使用 `uv add` / `uv remove` 并提交锁文件，不手改 `.venv`。
-4. 字体二进制变化后，同步更新字体 URL、`style.css` URL 与 `package.json` 版本，确保离线容器不复用旧缓存。
+4. 字体二进制变化后，确认字体 URL 与 `style.css` URL 仍直接引用无查询参数或片段的包内真实文件名；缓存失效由统一 `package.json` 版本和平台发布清单管理。
 5. 再次运行 `npm test`，并在目标视口确认字形、字重和排版一致。
 
 完整源字体不提交到仓库；环境与依赖说明见 [docs/development/environment.md](docs/development/environment.md)，当前字体许可见 `licenses/OFL.txt`。
