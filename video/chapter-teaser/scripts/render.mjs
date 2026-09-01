@@ -36,6 +36,7 @@ function parseCli(argv) {
       quality: { type: "string" },
       silent: { type: "boolean", default: false },
       "no-subtitles": { type: "boolean", default: false },
+      h264: { type: "boolean", default: false },
       overwrite: { type: "boolean", default: false },
       help: { type: "boolean", short: "h", default: false }
     }
@@ -65,6 +66,7 @@ function usage() {
     "  --end-frame N               Final video frame (exclusive)",
     "  --silent                    Render without the manifest audio master",
     "  --no-subtitles              Do not burn captions into rendered frames",
+    "  --h264                     Use high-quality H.264 even for the 4K master profile",
     "  --overwrite                 Replace an existing output file",
     "  --quality N                 Surface subdivisions per board interval"
   ].join("\n");
@@ -308,6 +310,7 @@ function ffmpegArguments({
   subtitleFontDirectory,
   startFrame,
   endFrame,
+  h264,
   overwrite
 }) {
   const count = endFrame - startFrame;
@@ -328,7 +331,8 @@ function ffmpegArguments({
   } else {
     args.push("-map", "0:v:0", "-an");
   }
-  const outputFormat = profile === "master" ? "yuv422p10le" : "yuv420p";
+  const useH264 = h264 || profile !== "master";
+  const outputFormat = useH264 ? "yuv420p" : "yuv422p10le";
   const videoFilters = [];
   if (subtitlePath) {
     if (startFrame > 0) videoFilters.push(`setpts=PTS+${(startFrame / composition.fps).toFixed(6)}/TB`);
@@ -353,7 +357,7 @@ function ffmpegArguments({
     "-colorspace", "bt709",
     "-color_range", "tv"
   );
-  if (profile === "master") {
+  if (!useH264) {
     args.push("-c:v", "prores_ks", "-profile:v", "3", "-vendor", "apl0", "-bits_per_mb", "8000");
     if (audioPath) args.push("-c:a", "pcm_s24le", "-ar", "48000", "-ac", "2");
   } else {
@@ -364,6 +368,9 @@ function ffmpegArguments({
       "-x264-params", "colorprim=bt709:transfer=bt709:colormatrix=bt709:fullrange=off",
       "-movflags", "+faststart+write_colr"
     );
+    if (h264 && profile === "master") {
+      args.push("-profile:v", "high", "-level:v", "5.2", "-g", "120", "-keyint_min", "60", "-sc_threshold", "0");
+    }
     if (audioPath) args.push("-c:a", "aac", "-b:a", "320k", "-ar", "48000", "-ac", "2");
   }
   args.push(
@@ -453,6 +460,7 @@ async function renderVideo(project, options) {
     subtitleFontDirectory,
     startFrame,
     endFrame,
+    h264: options.h264,
     overwrite: options.overwrite
   });
   const encoder = spawn("ffmpeg", args, { stdio: ["pipe", "inherit", "inherit"], windowsHide: true });

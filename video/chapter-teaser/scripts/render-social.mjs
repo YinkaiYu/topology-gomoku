@@ -190,38 +190,56 @@ function sha256(filePath) {
   });
 }
 
-async function renderVideo(project, composition, profile, profileName, overwrite) {
-  const outputDirectory = path.join(buildRoot, "social", profileName);
-  const fontDirectory = path.join(outputDirectory, "fonts");
-  await fs.mkdir(fontDirectory, { recursive: true });
-  const fontSource = path.join(pvRoot, "assets", "fonts", "topo-sans-pv-600.ttf");
-  await fs.copyFile(fontSource, path.join(fontDirectory, "topo-sans-pv-600.ttf"));
-  const captionSource = await fs.readFile(path.join(pvRoot, "captions.ass"), "utf8");
-  const captions = path.join(outputDirectory, `captions-${profileName}.ass`);
-  await fs.writeFile(captions, socialAss(captionSource, profile), "utf8");
-  const output = path.join(outputDirectory, `topology-gomoku-${profileName}-${profile.width}x${profile.height}-60fps.mp4`);
+async function renderVideo(project, composition, profile, profileName, overwrite, clean) {
+  const outputDirectory = clean
+    ? path.join(buildRoot, "clean-pictures")
+    : path.join(buildRoot, "social", profileName);
+  await fs.mkdir(outputDirectory, { recursive: true });
+  let fontDirectory = null;
+  let captions = null;
+  if (!clean) {
+    fontDirectory = path.join(outputDirectory, "fonts");
+    await fs.mkdir(fontDirectory, { recursive: true });
+    const fontSource = path.join(pvRoot, "assets", "fonts", "topo-sans-pv-600.ttf");
+    await fs.copyFile(fontSource, path.join(fontDirectory, "topo-sans-pv-600.ttf"));
+    const captionSource = await fs.readFile(path.join(pvRoot, "captions.ass"), "utf8");
+    captions = path.join(outputDirectory, `captions-${profileName}.ass`);
+    await fs.writeFile(captions, socialAss(captionSource, profile), "utf8");
+  }
+  const output = path.join(outputDirectory, clean
+    ? `topology-gomoku-footsteps-loop-${profileName}-clean-${profile.width}x${profile.height}-60fps.mp4`
+    : `topology-gomoku-${profileName}-${profile.width}x${profile.height}-60fps.mp4`);
   try {
     await fs.access(output);
     if (!overwrite) fail(`Output already exists: ${output}; pass --overwrite to replace it`);
   } catch (error) {
     if (error && error.code !== "ENOENT") throw error;
   }
-  const audio = path.resolve(repositoryRoot, project.manifest.audio.masterMix);
-  await fs.access(audio);
+  const audio = clean ? null : path.resolve(repositoryRoot, project.manifest.audio.masterMix);
+  if (audio) await fs.access(audio);
+  const videoFilter = [
+    clean ? null : `subtitles=filename='${filterPath(captions)}':fontsdir='${filterPath(fontDirectory)}'`,
+    "scale=in_range=full:out_range=limited:out_color_matrix=bt709",
+    "format=yuv420p",
+    "setparams=range=limited:color_primaries=bt709:color_trc=bt709:colorspace=bt709"
+  ].filter(Boolean).join(",");
   const args = [
     overwrite ? "-y" : "-n", "-hide_banner", "-loglevel", "warning",
     "-f", "rawvideo", "-pixel_format", "rgba", "-video_size", `${profile.width}x${profile.height}`,
-    "-framerate", String(project.manifest.fps), "-i", "pipe:0", "-i", audio,
-    "-map", "0:v:0", "-map", "1:a:0",
-    "-vf", `subtitles=filename='${filterPath(captions)}':fontsdir='${filterPath(fontDirectory)}',scale=in_range=full:out_range=limited:out_color_matrix=bt709,format=yuv420p,setparams=range=limited:color_primaries=bt709:color_trc=bt709:colorspace=bt709`,
+    "-framerate", String(project.manifest.fps), "-i", "pipe:0"
+  ];
+  if (audio) args.push("-i", audio, "-map", "0:v:0", "-map", "1:a:0");
+  else args.push("-map", "0:v:0", "-an");
+  args.push(
+    "-vf", videoFilter,
     "-c:v", "libx264", "-preset", "slow", "-b:v", profile.videoBitRate,
     "-maxrate", profile.maximumVideoBitRate, "-bufsize", "48M", "-profile:v", "high", "-level:v", "4.2",
     "-r", String(project.manifest.fps), "-fps_mode", "cfr", "-frames:v", String(project.manifest.totalFrames),
     "-t", project.manifest.durationSeconds.toFixed(6), "-g", "120", "-keyint_min", "60", "-sc_threshold", "0",
-    "-color_primaries", "bt709", "-color_trc", "bt709", "-colorspace", "bt709", "-color_range", "tv",
-    "-c:a", "aac", "-b:a", "320k", "-ar", "48000", "-ac", "2", "-movflags", "+faststart+write_colr",
-    "-metadata", `title=Topology Gomoku — ${profile.label}`, output
-  ];
+    "-color_primaries", "bt709", "-color_trc", "bt709", "-colorspace", "bt709", "-color_range", "tv"
+  );
+  if (audio) args.push("-c:a", "aac", "-b:a", "320k", "-ar", "48000", "-ac", "2");
+  args.push("-movflags", "+faststart+write_colr", "-metadata", `title=Topology Gomoku — ${profile.label}${clean ? " Clean Picture" : ""}`, output);
   const encoder = spawn(process.env.FFMPEG_PATH || "ffmpeg", args, { stdio: ["pipe", "inherit", "inherit"], windowsHide: true });
   const encoderExit = new Promise((resolve, reject) => {
     encoder.once("error", reject);
@@ -247,13 +265,14 @@ async function renderVideo(project, composition, profile, profileName, overwrite
   const outputHash = await sha256(output);
   const stat = await fs.stat(output);
   await fs.writeFile(`${output}.sha256`, `${outputHash} *${path.basename(output)}\n`, "utf8");
-  await fs.writeFile(path.join(outputDirectory, "delivery-manifest.json"), `${JSON.stringify({
+  await fs.writeFile(path.join(outputDirectory, clean ? `clean-picture-${profileName}-manifest.json` : "delivery-manifest.json"), `${JSON.stringify({
     schemaVersion: 2, delivery: profileName, file: path.basename(output), bytes: stat.size, sha256: outputHash,
     durationSeconds: project.manifest.durationSeconds, totalFrames: project.manifest.totalFrames, fps: project.manifest.fps,
-    width: profile.width, height: profile.height, layout: "native portrait scene composition",
+    width: profile.width, height: profile.height, layout: "native portrait scene composition", cleanPicture: clean,
     sourceVisuals: ["app/assets/topology.js", "app/assets/topology-morph.js", "app/assets/topology-art.js", "app/assets/topologies/*.svg"],
-    sourceAudio: path.relative(repositoryRoot, audio).replaceAll("\\", "/"), captions: path.basename(captions),
-    encode: { encoder: "libx264", targetVideoBitRate: profile.videoBitRate, maximumVideoBitRate: profile.maximumVideoBitRate, audioTargetBitRate: 320000, fastStart: true }
+    sourceAudio: audio ? path.relative(repositoryRoot, audio).replaceAll("\\", "/") : null,
+    captions: captions ? path.basename(captions) : null,
+    encode: { encoder: "libx264", targetVideoBitRate: profile.videoBitRate, maximumVideoBitRate: profile.maximumVideoBitRate, audioTargetBitRate: audio ? 320000 : null, fastStart: true }
   }, null, 2)}\n`, "utf8");
   process.stdout.write(`${profile.label} written to ${output}\n`);
 }
@@ -261,8 +280,9 @@ async function renderVideo(project, composition, profile, profileName, overwrite
 async function main() {
   const profileName = process.argv[2];
   const profile = profiles[profileName];
-  if (!profile) fail("Usage: node render-social.mjs douyin|xiaohongshu [--keyframes] [--overwrite]");
+  if (!profile) fail("Usage: node render-social.mjs douyin|xiaohongshu [--keyframes] [--clean] [--overwrite]");
   const keyframesOnly = process.argv.includes("--keyframes");
+  const clean = process.argv.includes("--clean");
   const overwrite = process.argv.includes("--overwrite");
   registerFonts();
   const project = await loadProject();
@@ -271,7 +291,7 @@ async function main() {
     await renderKeyframes(composition, profileName, path.join(buildRoot, "social", profileName, "keyframes"));
     return;
   }
-  await renderVideo(project, composition, profile, profileName, overwrite);
+  await renderVideo(project, composition, profile, profileName, overwrite, clean);
 }
 
 main().catch((error) => {
