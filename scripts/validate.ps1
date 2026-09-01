@@ -48,6 +48,9 @@ if (Test-Path -LiteralPath $indexPath) {
       continue
     }
     if ($resource.StartsWith('#') -or $resource.StartsWith('data:')) { continue }
+    if ($resource -match '[?#]') {
+      $errors.Add("Package resource URL must not include a query string or fragment: $resource")
+    }
     $resourcePath = ($resource -split '[?#]', 2)[0]
     $relativeResource = $resourcePath.TrimStart('.', '/', '\')
     if (-not (Test-Path -LiteralPath (Join-Path $appRoot $relativeResource) -PathType Leaf)) {
@@ -77,6 +80,25 @@ $forbiddenPatterns = [ordered]@{
 $scanFiles = @($files | Where-Object { $_.Extension -in @('.html', '.css', '.js') })
 foreach ($file in $scanFiles) {
   $content = Get-Content -LiteralPath $file.FullName -Raw
+  if ($file.Extension -eq '.css') {
+    $cssResourceMatches = [regex]::Matches($content, 'url\(\s*([^)]+)\s*\)')
+    foreach ($match in $cssResourceMatches) {
+      $resource = $match.Groups[1].Value.Trim().Trim('"').Trim("'")
+      if ($resource.StartsWith('#') -or $resource.StartsWith('data:') -or $resource.StartsWith('blob:')) { continue }
+      if ($resource -match '^(?:https?:|//|/)') {
+        $errors.Add("Resource must use a package-relative path: $resource")
+        continue
+      }
+      if ($resource -match '[?#]') {
+        $errors.Add("Package resource URL must not include a query string or fragment: $resource")
+      }
+      $resourcePath = ($resource -split '[?#]', 2)[0]
+      if (-not (Test-Path -LiteralPath (Join-Path $file.DirectoryName $resourcePath) -PathType Leaf)) {
+        $relative = $file.FullName.Substring($projectRootPrefix.Length)
+        $errors.Add("Referenced resource does not exist in $relative`: $resource")
+      }
+    }
+  }
   foreach ($entry in $forbiddenPatterns.GetEnumerator()) {
     if ($content -match $entry.Value) {
       $relative = $file.FullName.Substring($projectRootPrefix.Length)

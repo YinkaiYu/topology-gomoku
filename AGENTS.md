@@ -66,7 +66,7 @@
 - 逻辑改动运行 `npm test`。
 - 小红书 H5 或包结构改动运行 `npm run validate`；发布改动再运行 `npm run build:xiaohongshu`。
 - 文档新增、移动或链接修改运行 `npm run docs:check`。
-- 新增或修改任何用户可见文本（包括 HTML、JavaScript 动态文案、Canvas 文字和 CSS `content`）后，必须运行 `npm test`，确认所有内嵌字体字重的 `cmap` 完整覆盖。缺字时运行 `npm run fonts:subset` 重建 400/600/700 三个子集，并同步更新字体 URL、样式表 URL 与包版本的缓存键；禁止依赖苹方等系统字体回退。
+- 新增或修改任何用户可见文本（包括 HTML、JavaScript 动态文案、Canvas 文字和 CSS `content`）后，必须运行 `npm test`，确认所有内嵌字体字重的 `cmap` 完整覆盖。缺字时运行 `npm run fonts:subset` 重建 400/600/700 三个子集，并确认字体与样式表 URL 仍直接引用无查询参数或片段的包内真实文件名；缓存失效由统一游戏版本和各平台发布清单管理。禁止依赖苹方等系统字体回退。
 - 不直接调用系统 `python` 运行字体脚本：WindowsApps 启动器经常不可执行，Codex 捆绑 Python 也不保证包含 `fontTools`。统一使用 `npm run fonts:subset`；该命令通过 `uv run --locked` 使用仓库的 `.python-version`、`pyproject.toml` 与 `uv.lock` 自动同步隔离环境。Python 依赖只通过 `uv` 调整并提交锁文件，不手改 `.venv`。
 - 新的拓扑规则必须有确定性测试；视觉改动保留同视口 QA 证据。
 - 不提交 `release/*.zip`、依赖目录、密钥、签名、账号或本机私有配置。

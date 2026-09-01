@@ -49,7 +49,7 @@ npm run release:check-versions -- X.Y.Z
 1. 修改所有静态与动态文案及相关回归测试。
 2. 运行 `npm test`，读取缺失字形报告。
 3. 如有缺字，运行 `npm run fonts:subset`。
-4. 同步更新三个字体 URL、`style.css` URL 与 `package.json` 版本缓存键。
+4. 确认三个字体 URL 与 `style.css` URL 仍直接引用离线包真实文件名，不添加查询参数或片段；包版本由发布流程统一管理。
 5. 再运行 `npm run check`，并在目标视口确认字形、字重与排版。
 
 字体许可见 [`licenses/OFL.txt`](../../licenses/OFL.txt)。

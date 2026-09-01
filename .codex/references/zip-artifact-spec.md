@@ -109,6 +109,7 @@ zip 内仅允许以下类型：
 | 规则 | 正确 | 错误 |
 | --- | --- | --- |
 | 资源引用 | `./assets/main.js` | `/assets/main.js`（绝对路径） |
+| 包内资源 URL | `./assets/style.css` | `./assets/style.css?v=1.37.3`、`./assets/style.css#main`（查询串或片段可能被真机离线资源映射当作文件名） |
 | 入口 | 根目录 `index.html` | `src/index.html` |
 | base | 不使用 | `<base href="...">` |
 | 外部资源 | 下载后打进 zip 再相对引用 | 任何 `https://...` 在线引用 |
@@ -173,6 +174,7 @@ zip 内仅允许以下类型：
 - [ ] `<!DOCTYPE html>` + `lang="zh-CN"` + `charset=UTF-8`
 - [ ] viewport 含 `width=device-width, initial-scale=1.0, viewport-fit=cover`
 - [ ] 全部资源为相对路径，无 `http(s)://` 外部引用（图片、第三方库、字体等已打进 zip）
+- [ ] 包内资源 URL 与 ZIP 条目真实文件名一致，不附加 `?query` 查询串或 `#fragment` 片段
 - [ ] 脚本全部外置：无内联 `<script>`、无 `onclick=` 等行内事件、无 `javascript:` / `eval` / `new Function`
 - [ ] 脚本为经典脚本：无 `type="module"`，JS 内无 `import` / `export`
 - [ ] 图片可用包内文件 / `data:` / `blob:`；音视频、字体仅用包内文件
