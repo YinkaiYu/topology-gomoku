@@ -206,11 +206,13 @@
     reviewToggleIconPath: document.getElementById("reviewToggleIconPath"),
     reviewPreviousButton: document.getElementById("reviewPreviousButton"),
     reviewNextButton: document.getElementById("reviewNextButton"),
-    dimensionToggleButton: document.getElementById("dimensionToggleButton"),
-    dimensionToggleButtonText: document.getElementById("dimensionToggleButtonText"),
-    dimensionToggleIconPath: document.getElementById("dimensionToggleIconPath"),
     turnStatus: document.getElementById("turnStatus"),
     boardStage: document.getElementById("boardStage"),
+    dimensionControl: document.getElementById("dimensionControl"),
+    viewToggleButton: document.getElementById("viewToggleButton"),
+    viewToggleButtonText: document.getElementById("viewToggleButtonText"),
+    viewToggleIconPath: document.getElementById("viewToggleIconPath"),
+    dimensionSlider: document.getElementById("dimensionSlider"),
     boardCanvas: document.getElementById("boardCanvas"),
     thinkingIndicator: document.getElementById("thinkingIndicator"),
     gameTools: document.getElementById("gameTools"),
@@ -848,9 +850,11 @@
       lesson: null,
       lessonReturn: options && options.lessonReturn ? options.lessonReturn : null,
       completion: null,
+      view: null,
       review: null
     };
     game.board = Engine.createBoard(game.rules);
+    game.view = createInteractiveViewState();
     if (resumeMatch && resumeMatch.board.length === game.board.length) {
       resumeMatch.board.forEach(function restoreBoardCell(value, cell) {
         game.board[cell] = value;
@@ -1176,6 +1180,40 @@
     return Boolean(game && game.levelIndex > 0 && Morph);
   }
 
+  function canUseInteractiveView() {
+    return Boolean(game && Morph && game.status === "playing" && !isInteractiveLesson() && !(game.demo && game.demo.active));
+  }
+
+  function canUseViewControl() {
+    return Boolean(
+      game
+      && game.view
+      && Morph
+      && (canUseInteractiveView() || (isEndedView() && game.levelIndex > 0 && !game.autoAdvancePending))
+    );
+  }
+
+  function createInteractiveViewState() {
+    return {
+      progress: 0,
+      target: 0,
+      startProgress: 0,
+      startedAt: 0,
+      duration: 920,
+      transitioning: false,
+      rotation: { x: 0, y: 0, z: 0 },
+      elastic: { x: 0, y: 0 },
+      dragging: false,
+      pointerId: null,
+      pressCell: -1,
+      startX: 0,
+      startY: 0,
+      lastX: 0,
+      lastY: 0,
+      lastPointerAt: 0
+    };
+  }
+
   function resultMoveText() {
     if (!game) {
       return "";
@@ -1197,7 +1235,9 @@
     var firstLevel = game.levelIndex === 0;
     var autoAdvancing = ended && Boolean(game.autoAdvancePending);
     var hasNextLevel = passed && game.levelIndex < LEVELS.length - 1;
-    var canToggleDimension = ended && canPresentCompletion();
+    var canUseView = canUseInteractiveView();
+    var keepViewControl = Boolean(game.levelIndex > 0 && Morph && ended && !autoAdvancing);
+    var showViewControl = canUseView || keepViewControl;
     var surfaceVisible = Boolean(game.completion && game.completion.phase === "presenting");
     var dimensionTransitioning = Boolean(game.completion && !game.completion.settled);
     var reviewToolsHidden = !ended || autoAdvancing || firstLevel;
@@ -1211,14 +1251,37 @@
     dom.endgameReviewTools.classList.toggle("is-reserved", reviewToolsHidden);
     dom.endgameReviewTools.setAttribute("aria-hidden", String(reviewToolsHidden));
     dom.endgameReviewTools.classList.toggle("is-reviewing", reviewing);
-    dom.endgameReviewTools.classList.toggle("has-no-dimension", !canToggleDimension);
     dom.humanChip.hidden = false;
     dom.aiChip.hidden = false;
     dom.reviewToggleButton.disabled = dimensionTransitioning;
     dom.reviewPreviousButton.disabled = dimensionTransitioning || !reviewing || game.review.step <= 0;
     dom.reviewNextButton.disabled = dimensionTransitioning || !reviewing || game.review.step >= game.review.total;
-    dom.dimensionToggleButton.hidden = !canToggleDimension;
-    dom.dimensionToggleButton.disabled = dimensionTransitioning;
+    dom.dimensionControl.hidden = !showViewControl;
+    if (showViewControl && game.view) {
+      var completionProgress = game.completion && game.completion.settled && Number.isFinite(game.completion.manualProgress)
+        ? clamp01(game.completion.manualProgress)
+        : null;
+      dom.dimensionSlider.value = String(completionProgress === null ? game.view.progress : completionProgress);
+      var viewControlLocked = !canUseViewControl() || Boolean(game.completion && !game.completion.settled);
+      dom.dimensionSlider.disabled = viewControlLocked || game.view.transitioning;
+      dom.viewToggleButton.disabled = viewControlLocked || game.view.transitioning;
+      var viewIsThreeDimensional = game.view.target > 0.5 || game.view.progress > 0.5;
+      dom.viewToggleButton.setAttribute("aria-label", viewIsThreeDimensional ? "查看二维棋盘" : "查看三维棋局");
+      dom.viewToggleButtonText.textContent = viewIsThreeDimensional ? "二维" : "三维";
+      dom.viewToggleIconPath.setAttribute(
+        "d",
+        viewIsThreeDimensional
+          ? "M4 4h16v16H4zM9.33 4v16M14.67 4v16M4 9.33h16M4 14.67h16"
+          : "M5 6c0-1.7 3.1-3 7-3s7 1.3 7 3-3.1 3-7 3-7-1.3-7-3Zm0 0v12c0 1.7 3.1 3 7 3s7-1.3 7-3V6"
+      );
+      dom.boardStage.classList.toggle("is-view-transitioning", game.view.transitioning);
+      dom.boardStage.classList.toggle("is-view-spatial", game.view.progress > 0.001);
+      dom.boardStage.classList.toggle("is-view-dragging", game.view.dragging);
+    } else {
+      dom.dimensionSlider.disabled = true;
+      dom.viewToggleButton.disabled = true;
+      dom.boardStage.classList.remove("is-view-transitioning", "is-view-spatial", "is-view-dragging");
+    }
     dom.boundaryDemoButton.hidden = ended || game.levelIndex === 0;
     dom.boundaryDemoButton.disabled = game.status === "forcing" || lessonComplete;
     dom.boundaryDemoButton.classList.toggle(
@@ -1250,14 +1313,6 @@
       dom.nextLevelButton.setAttribute("aria-label", hasNextLevel ? "进入下一关" : "下一关不可用");
       dom.nextLevelButtonText.textContent = "下一关";
       dom.nextLevelIconPath.setAttribute("d", "m9 6 6 6-6 6");
-      dom.dimensionToggleButton.setAttribute("aria-label", surfaceVisible ? "查看二维棋盘" : "查看三维棋局");
-      dom.dimensionToggleButtonText.textContent = surfaceVisible ? "二维" : "三维";
-      dom.dimensionToggleIconPath.setAttribute(
-        "d",
-        surfaceVisible
-          ? "M4 4h16v16H4zM9.33 4v16M14.67 4v16M4 9.33h16M4 14.67h16"
-          : "M5 6c0-1.7 3.1-3 7-3s7 1.3 7 3-3.1 3-7 3-7-1.3-7-3Zm0 0v12c0 1.7 3.1 3 7 3s7-1.3 7-3V6"
-      );
       dom.boardStage.classList.toggle("is-exploring", surfaceVisible);
       dom.boardStage.classList.toggle("is-settled", !surfaceVisible && !reviewing);
       dom.boardStage.classList.toggle("is-returning", Boolean(game.completion && game.completion.phase === "returning"));
@@ -1624,7 +1679,7 @@
     return best;
   }
 
-  function createCompletionState() {
+  function createCompletionState(skipMorph) {
     if (!canPresentCompletion()) {
       return null;
     }
@@ -1639,6 +1694,7 @@
       startedAt: startedAt,
       lineStartedAt: renderState.winAt || startedAt,
       duration: 3000,
+      skipMorph: Boolean(skipMorph),
       settled: false,
       view: chooseCompletionView(winningMask, presentation),
       presentation: presentation,
@@ -1691,15 +1747,118 @@
     requestRender();
   }
 
-  function toggleEndgameDimension() {
-    if (!game || !isEndedView() || !canPresentCompletion()) {
+  function setInteractiveViewProgress(progress, animate) {
+    if (!game || !game.view || !canUseViewControl()) {
+      return;
+    }
+    var view = game.view;
+    var target = clamp01(Number(progress) || 0);
+    if (isEndedView()) {
+      if (game.completion && !game.completion.settled) {
+        return;
+      }
+      if (!game.completion && target > 0.001) {
+        game.completion = createCompletionState(true);
+        game.completion.settled = true;
+      }
+      if (game.completion) {
+        game.completion.manualProgress = target;
+        view.progress = target;
+        view.target = target;
+        view.startProgress = target;
+        view.transitioning = false;
+        updateTurnUI();
+        requestRender();
+        return;
+      }
+    }
+    if (!animate) {
+      view.progress = target;
+      view.target = target;
+      view.startProgress = target;
+      view.transitioning = false;
+      view.dragging = false;
+      syncGameTools();
+      requestRender();
+      return;
+    }
+    view.startProgress = view.progress;
+    view.target = target;
+    view.startedAt = performance.now();
+    view.duration = prefersReducedMotion() ? 1 : 920;
+    view.transitioning = Math.abs(view.target - view.progress) > 0.001;
+    view.dragging = false;
+    if (!view.transitioning) {
+      view.progress = target;
+    }
+    syncGameTools();
+    requestRender();
+  }
+
+  function toggleInteractiveView() {
+    if (!game || !game.view) {
+      return;
+    }
+    if (isEndedView()) {
+      toggleEndgameViewWithAnimation();
+      return;
+    }
+    setInteractiveViewProgress(game.view.target > 0.5 || game.view.progress > 0.5 ? 0 : 1, true);
+    sound.play("ui");
+  }
+
+  function resetCompletionPresentationForAnimation() {
+    var completion = game.completion;
+    completion.phase = "presenting";
+    completion.startedAt = performance.now();
+    completion.lineStartedAt = renderState.winAt || completion.startedAt;
+    completion.duration = 3000;
+    completion.skipMorph = false;
+    completion.settled = false;
+    completion.manualProgress = null;
+    completion.dragging = false;
+    completion.pointerId = null;
+    completion.velocity.x = 0;
+    completion.velocity.y = 0;
+    completion.elastic.x = 0;
+    completion.elastic.y = 0;
+    completion.elastic.velocityX = 0;
+    completion.elastic.velocityY = 0;
+    dom.boardStage.classList.remove("is-dragging");
+  }
+
+  function toggleEndgameViewWithAnimation() {
+    if (!game || !isEndedView() || !canPresentCompletion() || !canUseViewControl()) {
+      return;
+    }
+    if (game.completion && !game.completion.settled) {
+      return;
+    }
+    var currentProgress = game.completion && Number.isFinite(game.completion.manualProgress)
+      ? clamp01(game.completion.manualProgress)
+      : clamp01(game.view.progress);
+    if (currentProgress > 0.5 && game.completion) {
+      game.completion.manualProgress = null;
+      returnCompletionToFlat();
       return;
     }
     if (game.completion) {
-      returnCompletionToFlat();
+      resetCompletionPresentationForAnimation();
     } else {
-      startCompletionPresentation(true);
+      game.completion = createCompletionState(false);
     }
+    game.view.progress = 0;
+    game.view.target = 0;
+    game.view.startProgress = 0;
+    game.view.transitioning = false;
+    sound.play("ui");
+    window.setTimeout(function playRequestedMorph() {
+      if (game && game.completion && game.completion.phase === "presenting" && !game.completion.settled) {
+        sound.play("morph");
+      }
+    }, 120);
+    updateTurnUI();
+    requestRender();
   }
 
   function setReplayStep(step, animateMove) {
@@ -1782,8 +1941,12 @@
     game.review = null;
     game.autoAdvancePending = firstLevelAutoAdvance;
     renderState.winAt = performance.now();
-    var shouldMorph = passed && game.levelIndex > 0 && Boolean(Morph);
-    game.completion = shouldMorph ? createCompletionState() : null;
+    var startedInSpatialView = Boolean(
+      game.view
+      && (game.view.target > 0.5 || (!game.view.transitioning && game.view.progress > 0.5))
+    );
+    var shouldMorph = game.levelIndex > 0 && Boolean(Morph) && (passed || startedInSpatialView);
+    game.completion = shouldMorph ? createCompletionState(startedInSpatialView) : null;
     if (winningMask && winningMask.seam) {
       renderState.seamPulseAt = performance.now();
       renderState.seamPulseBits = winningMask.seam;
@@ -2704,6 +2867,13 @@
     if (completion.phase === "returning") {
       if (elapsed >= completion.duration) {
         game.completion = null;
+        if (game.view) {
+          game.view.progress = 0;
+          game.view.target = 0;
+          game.view.startProgress = 0;
+          game.view.transitioning = false;
+          game.view.dragging = false;
+        }
         updateTurnUI();
         requestRender();
       }
@@ -2711,6 +2881,12 @@
     }
     if (!completion.settled && elapsed >= completion.duration) {
       completion.settled = true;
+      if (completion.phase === "presenting" && game.view) {
+        game.view.progress = 1;
+        game.view.target = 1;
+        game.view.startProgress = 1;
+        game.view.transitioning = false;
+      }
       updateTurnUI();
     }
     var frameScale = Math.max(0.25, Math.min(2, delta / 16.67));
@@ -2745,6 +2921,28 @@
     }
   }
 
+  function updateInteractiveViewMotion(time) {
+    if (!game || !game.view) {
+      return;
+    }
+    var view = game.view;
+    if (!view.dragging) {
+      view.elastic.x *= 0.78;
+      view.elastic.y *= 0.78;
+    }
+    if (!view.transitioning) {
+      return;
+    }
+    var progress = clamp01((time - view.startedAt) / view.duration);
+    if (progress >= 1) {
+      view.progress = view.target;
+      view.transitioning = false;
+    } else {
+      view.progress = view.startProgress + (view.target - view.startProgress) * Morph.smooth(progress);
+    }
+    syncGameTools();
+  }
+
   function renderFrame(time) {
     renderState.frame = 0;
     if (!game || !renderState.layout) {
@@ -2756,6 +2954,7 @@
     var delta = renderState.lastFrameAt ? Math.min(34, time - renderState.lastFrameAt) : 16.67;
     renderState.lastFrameAt = time;
     updateCompletionMotion(time, delta);
+    updateInteractiveViewMotion(time);
     updatePressedStoneMotion(delta);
     drawBoard(time);
     var animate = false;
@@ -2772,6 +2971,12 @@
       animate = true;
     }
     if (game.completion) {
+      animate = true;
+    }
+    if (game.view && game.view.transitioning) {
+      animate = true;
+    }
+    if (game.view && !game.view.dragging && (Math.abs(game.view.elastic.x) > 0.001 || Math.abs(game.view.elastic.y) > 0.001)) {
       animate = true;
     }
     if (game.demo && game.demo.active) {
@@ -2793,6 +2998,13 @@
     };
   }
 
+  function displayedCellCenter(cell) {
+    if (game && game.view && game.view.progress > 0.001 && Morph) {
+      return completionCellPoint(cell, game.view.progress, interactiveViewOrientation(performance.now()));
+    }
+    return cellCenter(cell);
+  }
+
   function clamp01(value) {
     return Math.max(0, Math.min(1, value));
   }
@@ -2812,6 +3024,10 @@
     drawPaperTexture(ctx);
     if (game.completion) {
       drawCompletionMorph(ctx, time);
+      return;
+    }
+    if (game.view && game.view.progress > 0.001) {
+      drawInteractiveMorph(ctx, time);
       return;
     }
     drawTopologyRails(ctx, time);
@@ -3554,8 +3770,16 @@
     var progress = returning
       ? clamp01(elapsed / game.completion.duration)
       : clamp01((elapsed - 80) / 2550);
-    var morph = returning ? 1 - Morph.smooth(progress) : Morph.spring(progress);
-    var viewBlend = returning ? morph : Morph.smooth((elapsed - 100) / 1850);
+    var manualProgress = !returning && game.completion.settled && Number.isFinite(game.completion.manualProgress)
+      ? clamp01(game.completion.manualProgress)
+      : null;
+    var skipMorph = Boolean(game.completion.skipMorph) && !returning;
+    var morph = manualProgress === null
+      ? (skipMorph ? 1 : (returning ? 1 - Morph.smooth(progress) : Morph.spring(progress)))
+      : manualProgress;
+    var viewBlend = manualProgress === null
+      ? (skipMorph ? 1 : (returning ? morph : Morph.smooth((elapsed - 100) / 1850)))
+      : manualProgress;
     var rotationBlend = returning ? viewBlend : 1;
     var restingBounce = !returning && game.completion.settled && !game.completion.dragging
       ? Math.sin(time * 0.00245) * 0.012
@@ -3591,6 +3815,45 @@
       }
     }
     drawCompletionWinningLine(ctx, time, morph, orientation);
+    drawCompletionStones(ctx, morph, orientation);
+  }
+
+  function interactiveViewOrientation(time) {
+    var view = game.view;
+    var movement = Math.sin(time * 0.0019) * 0.006;
+    return {
+      x: view.rotation.x,
+      y: view.rotation.y,
+      z: view.rotation.z,
+      scale: 1,
+      shapeX: 1,
+      shapeY: 1,
+      shapeZ: 1,
+      wobbleX: view.elastic.x,
+      wobbleY: view.elastic.y + movement
+    };
+  }
+
+  function drawInteractiveMorph(ctx, time) {
+    var morph = clamp01(game.view.progress);
+    var orientation = interactiveViewOrientation(time);
+    drawCompletionSurface(ctx, morph, orientation);
+    drawCompletionGrid(ctx, morph, orientation);
+    if (game.level.topology === "sphere") {
+      drawCompletionSphereBoundary(ctx, "a", morph, orientation, "#3f8c87");
+      drawCompletionSphereBoundary(ctx, "b", morph, orientation, "#c79244");
+    } else {
+      if (game.level.xConnection) {
+        drawCompletionBoundary(ctx, "x", morph, orientation, "#3f8c87");
+      }
+      if (game.level.yConnection) {
+        drawCompletionBoundary(ctx, "y", morph, orientation, "#c79244");
+      }
+    }
+    drawTacticalHints(ctx, function projectHintCell(cell) {
+      return completionCellPoint(cell, morph, orientation);
+    }, morph);
+    drawInteractiveMovePreview(ctx, time, morph, orientation);
     drawCompletionStones(ctx, morph, orientation);
   }
 
@@ -3992,7 +4255,7 @@
     return 1;
   }
 
-  function drawTacticalHints(ctx) {
+  function drawTacticalHints(ctx, resolveCell, morph) {
     if (!prefs.hints || !game || game.levelIndex === 0 || game.status !== "playing" || isInteractiveLesson() || (game.demo && game.demo.active)) {
       return;
     }
@@ -4017,7 +4280,8 @@
       if (game.board[hint.cell] !== Engine.EMPTY) {
         return;
       }
-      var center = cellCenter(hint.cell);
+      var center = resolveCell ? resolveCell(hint.cell) : cellCenter(hint.cell);
+      var radius = cellSize * (0.27 - (morph || 0) * 0.035);
       var urgent = hint.kind === "four";
       var defensive = hint.player === AI;
       ctx.save();
@@ -4031,7 +4295,7 @@
         ? [Math.max(2.2, cellSize * 0.06), Math.max(3.2, cellSize * 0.105)]
         : [Math.max(3, cellSize * 0.095), Math.max(3, cellSize * 0.09)]);
       ctx.beginPath();
-      ctx.arc(center.x, center.y, cellSize * 0.27, 0, Math.PI * 2);
+      ctx.arc(center.x, center.y, radius, 0, Math.PI * 2);
       ctx.fill();
       ctx.stroke();
       if (defensive) {
@@ -4044,6 +4308,36 @@
       }
       ctx.restore();
     });
+  }
+
+  function drawInteractiveMovePreview(ctx, time, morph, orientation) {
+    var cell = renderState.pressedCell >= 0 ? renderState.pressedCell : renderState.hoverCell;
+    if (!canPlaceCell(cell)) {
+      return;
+    }
+    var pressed = renderState.pressedCell >= 0;
+    var projected = completionCellPoint(cell, morph, orientation);
+    var center = pressed && renderState.pressedMotionReady
+      ? { x: renderState.pressedX, y: renderState.pressedY }
+      : projected;
+    var radius = renderState.layout.cell * (0.34 - morph * 0.05);
+    ctx.save();
+    if (!pressed) {
+      ctx.globalAlpha = 0.16;
+      ctx.fillStyle = "#f8f4e9";
+      ctx.beginPath();
+      ctx.arc(center.x, center.y, radius, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.restore();
+      return;
+    }
+    var pressProgress = clamp01((time - renderState.pressedAt) / 135);
+    var landing = 1 - Math.pow(1 - pressProgress, 2);
+    ctx.globalAlpha = 0.22 + landing * 0.48;
+    ctx.translate(center.x, center.y);
+    ctx.scale(1 + landing * 0.04, 1 - landing * 0.06);
+    drawStoneFace(ctx, DEV_MODE ? developer.placementPlayer : HUMAN, radius, false, landing);
+    ctx.restore();
   }
 
   function activeWinningMask() {
@@ -4158,7 +4452,7 @@
     if (cell < 0) {
       return;
     }
-    var center = cellCenter(cell);
+    var center = displayedCellCenter(cell);
     renderState.pressedTargetX = center.x;
     renderState.pressedTargetY = center.y;
     if (immediate || !renderState.pressedMotionReady) {
@@ -4200,6 +4494,20 @@
     var rect = dom.boardCanvas.getBoundingClientRect();
     var localX = event.clientX - rect.left;
     var localY = event.clientY - rect.top;
+    if (game.view && game.view.progress > 0.001 && Morph) {
+      var orientation = interactiveViewOrientation(performance.now());
+      var bestCell = -1;
+      var bestDistance = Infinity;
+      for (var spatialCell = 0; spatialCell < game.rules.cellCount; spatialCell += 1) {
+        var spatialPoint = completionCellPoint(spatialCell, game.view.progress, orientation);
+        var spatialDistance = Math.hypot(localX - spatialPoint.x, localY - spatialPoint.y);
+        if (spatialDistance < bestDistance) {
+          bestDistance = spatialDistance;
+          bestCell = spatialCell;
+        }
+      }
+      return bestDistance <= renderState.layout.cell * 0.52 ? bestCell : -1;
+    }
     var gridX = Math.round((localX - renderState.layout.left) / renderState.layout.cell);
     var gridY = Math.round((localY - renderState.layout.top) / renderState.layout.cell);
     if (gridX < 0 || gridX >= game.rules.width || gridY < 0 || gridY >= game.rules.height) {
@@ -4228,7 +4536,7 @@
   }
 
   function canPlaceOnBoard() {
-    if (!game || game.status !== "playing" || (game.demo && game.demo.active) || activeSheet) {
+    if (!game || game.status !== "playing" || (game.demo && game.demo.active) || activeSheet || (game.view && game.view.transitioning)) {
       return false;
     }
     return DEV_MODE || game.turn === HUMAN;
@@ -4239,6 +4547,74 @@
       return false;
     }
     return !isInteractiveLesson() || game.lesson.cells[game.lesson.step] === cell;
+  }
+
+  function isInteractiveViewPointerMode() {
+    return Boolean(
+      canUseInteractiveView()
+      && game.view
+      && (game.view.progress > 0.001 || game.view.target > 0.001 || game.view.transitioning)
+    );
+  }
+
+  function clearInteractiveViewPointer() {
+    if (!game || !game.view) {
+      return;
+    }
+    game.view.pointerId = null;
+    game.view.dragging = false;
+    game.view.pressCell = -1;
+    dom.boardStage.classList.remove("is-view-dragging");
+    renderState.pointerId = null;
+    renderState.pressedCell = -1;
+    renderState.pressedAt = 0;
+    clearPressedStoneMotion();
+  }
+
+  function beginInteractiveViewPointer(event) {
+    var view = game.view;
+    view.pointerId = event.pointerId;
+    view.dragging = false;
+    view.pressCell = eventToCell(event);
+    view.startX = event.clientX;
+    view.startY = event.clientY;
+    view.lastX = event.clientX;
+    view.lastY = event.clientY;
+    view.lastPointerAt = event.timeStamp || performance.now();
+    renderState.pointerId = event.pointerId;
+    renderState.pressedCell = canPlaceCell(view.pressCell) ? view.pressCell : -1;
+    renderState.pressedAt = renderState.pressedCell >= 0 ? (event.timeStamp || performance.now()) : 0;
+    if (renderState.pressedCell >= 0) {
+      targetPressedStone(renderState.pressedCell, true);
+    } else {
+      clearPressedStoneMotion();
+    }
+  }
+
+  function updateInteractiveViewPointer(event) {
+    var view = game.view;
+    var deltaX = event.clientX - view.lastX;
+    var deltaY = event.clientY - view.lastY;
+    var distance = Math.hypot(event.clientX - view.startX, event.clientY - view.startY);
+    if (!view.dragging && distance >= 7) {
+      view.dragging = true;
+      renderState.pointerId = null;
+      renderState.pressedCell = -1;
+      renderState.pressedAt = 0;
+      clearPressedStoneMotion();
+      dom.boardStage.classList.add("is-view-dragging");
+    }
+    if (view.dragging) {
+      event.preventDefault();
+      view.rotation.y += deltaX * 0.009;
+      view.rotation.x += deltaY * 0.009;
+      view.elastic.y = Math.max(-0.15, Math.min(0.15, deltaX * 0.012));
+      view.elastic.x = Math.max(-0.14, Math.min(0.14, deltaY * 0.012));
+      view.lastX = event.clientX;
+      view.lastY = event.clientY;
+      view.lastPointerAt = event.timeStamp || performance.now();
+      requestRender();
+    }
   }
 
   function canExploreCompletion() {
@@ -4274,6 +4650,15 @@
     if (game && game.demo && game.demo.active && !activeSheet) {
       event.preventDefault();
       finishBoundaryDemo();
+      return;
+    }
+    if (isInteractiveViewPointerMode()) {
+      event.preventDefault();
+      beginInteractiveViewPointer(event);
+      if (dom.boardCanvas.setPointerCapture) {
+        dom.boardCanvas.setPointerCapture(event.pointerId);
+      }
+      requestRender();
       return;
     }
     if (!canPlaceOnBoard()) {
@@ -4320,6 +4705,10 @@
       requestRender();
       return;
     }
+    if (game.view && game.view.pointerId === event.pointerId) {
+      updateInteractiveViewPointer(event);
+      return;
+    }
     var cell = eventToCell(event);
     if (renderState.pointerId === event.pointerId) {
       event.preventDefault();
@@ -4341,6 +4730,19 @@
       game.completion.autoResumeAt = (event.timeStamp || performance.now()) + 1500;
       dom.boardStage.classList.remove("is-dragging");
       requestRender();
+      return;
+    }
+    if (game && game.view && game.view.pointerId === event.pointerId) {
+      event.preventDefault();
+      var view = game.view;
+      var wasDragging = view.dragging;
+      var cell = eventToCell(event);
+      clearInteractiveViewPointer();
+      if (!wasDragging && canPlaceCell(cell)) {
+        performMove(cell, DEV_MODE ? developer.placementPlayer : HUMAN, { fromPress: true });
+      } else {
+        requestRender();
+      }
       return;
     }
     if (renderState.pointerId !== event.pointerId) {
@@ -4372,6 +4774,11 @@
       requestRender();
       return;
     }
+    if (game && game.view && game.view.pointerId === event.pointerId) {
+      clearInteractiveViewPointer();
+      requestRender();
+      return;
+    }
     if (renderState.pointerId === event.pointerId) {
       renderState.pointerId = null;
       renderState.pressedCell = -1;
@@ -4393,7 +4800,10 @@
     dom.reviewToggleButton.addEventListener("click", handleReviewToggle);
     dom.reviewPreviousButton.addEventListener("click", function showPreviousMove() { stepReplay(-1); });
     dom.reviewNextButton.addEventListener("click", function showNextMove() { stepReplay(1); });
-    dom.dimensionToggleButton.addEventListener("click", toggleEndgameDimension);
+    dom.viewToggleButton.addEventListener("click", toggleInteractiveView);
+    dom.dimensionSlider.addEventListener("input", function changeInteractiveView(event) {
+      setInteractiveViewProgress(event.target.value, false);
+    });
     dom.restartButton.addEventListener("click", handleRightTool);
     dom.journeyButton.addEventListener("click", handleJourney);
     dom.settledReplayButton.addEventListener("click", handleSettledAction);

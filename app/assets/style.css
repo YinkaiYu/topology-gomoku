@@ -823,6 +823,18 @@ button,
   cursor: grab;
 }
 
+.board-stage.is-view-spatial #boardCanvas {
+  cursor: grab;
+}
+
+.board-stage.is-view-transitioning #boardCanvas {
+  cursor: grab;
+}
+
+.board-stage.is-view-dragging #boardCanvas {
+  cursor: grabbing;
+}
+
 .board-stage.is-dragging #boardCanvas {
   cursor: grabbing;
 }
@@ -831,6 +843,66 @@ button,
   box-shadow:
     inset 0 0 0 1px rgba(63, 140, 135, 0.12),
     0 18px 48px rgba(47, 78, 70, 0.12);
+}
+
+.dimension-control {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  gap: 10px;
+  width: min(100%, 420px);
+  min-height: 46px;
+  margin: -2px auto 0;
+  padding: 3px 9px 3px 3px;
+  border: 1px solid rgba(255, 255, 255, 0.44);
+  border-radius: 17px;
+  background: rgba(246, 250, 247, 0.08);
+  -webkit-backdrop-filter: blur(5px) saturate(1.28);
+  backdrop-filter: blur(5px) saturate(1.28);
+  box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.58), 0 5px 14px rgba(35, 62, 52, 0.055);
+}
+
+.dimension-control[hidden] {
+  display: none;
+}
+
+.dimension-control-button {
+  display: flex;
+  width: 48px;
+  min-width: 48px;
+  height: 38px;
+  color: var(--spatial);
+}
+
+.dimension-slider-track {
+  display: grid;
+  grid-column: 2;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+
+.dimension-slider-label {
+  color: rgba(49, 95, 91, 0.7);
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.dimension-slider {
+  width: 100%;
+  height: 28px;
+  margin: 0;
+  accent-color: var(--spatial);
+  cursor: ew-resize;
+  touch-action: none;
+}
+
+.dimension-slider:disabled {
+  opacity: 0.42;
+  cursor: default;
 }
 
 .thinking {
@@ -879,7 +951,7 @@ button,
 .endgame-review-tools {
   display: grid;
   min-height: 0;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   align-items: center;
   gap: 4px;
   padding-top: 0;
@@ -900,10 +972,6 @@ button,
   animation: none;
 }
 
-.endgame-review-tools.has-no-dimension {
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-}
-
 .endgame-review-tools .tool-button {
   width: 100%;
   height: 100%;
@@ -912,10 +980,6 @@ button,
 
 .endgame-review-tools .review-toggle-button {
   color: var(--teal);
-}
-
-.endgame-review-tools .dimension-toggle-button {
-  color: var(--spatial);
 }
 
 @keyframes endgame-tools-arrive {

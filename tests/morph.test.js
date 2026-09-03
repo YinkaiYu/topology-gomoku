@@ -35,7 +35,7 @@ test("第一关每次进入都逐子教学、隐藏边界演示且仍无 AI 回�
   assert.match(game, /else if \(game\.level\.tutorial \|\| lesson\) \{\s*game\.turn = HUMAN;/);
   assert.match(game, /game\.level\.tutorial \|\| lessonActive \? 1 : \(game\.turn === AI/);
   assert.match(game, /var passed = outcome === "win" \|\| outcome === "draw";/);
-  assert.match(game, /var shouldMorph = passed && game\.levelIndex > 0 && Boolean\(Morph\)/);
+  assert.match(game, /var shouldMorph = game\.levelIndex > 0 && Boolean\(Morph\) && \(passed \|\| startedInSpatialView\)/);
   assert.match(game, /reviewToolsHidden = !ended \|\| autoAdvancing \|\| firstLevel/);
   assert.match(game, /dom\.settledReplayButton\.hidden = !ended \|\| firstLevel/);
   assert.match(style, /\.endgame-review-tools \[hidden\]\s*\{\s*display:\s*none/);
@@ -357,12 +357,13 @@ test("复盘与二维三维切换相互独立，曲面可以持续柔性拖动",
   assert.match(game, /game\.completion\.phase = "returning";/);
   assert.match(game, /function stepReplay\(direction\)/);
   assert.match(game, /Replay\.boardAt\(game\.moves, game\.rules\.cellCount, nextStep, Engine\.EMPTY\)/);
-  assert.match(game, /function toggleEndgameDimension\(\)/);
+  assert.match(game, /function toggleEndgameViewWithAnimation\(\)/);
+  assert.match(game, /if \(isEndedView\(\)\) \{\s*toggleEndgameViewWithAnimation\(\);\s*return;/);
+  assert.match(game, /function resetCompletionPresentationForAnimation\(\)/);
   assert.match(game, /function endReplayReview\(\)/);
   assert.match(game, /reviewToggleButton\.addEventListener\("click", handleReviewToggle\)/);
   assert.match(game, /reviewPreviousButton\.addEventListener/);
   assert.match(game, /reviewNextButton\.addEventListener/);
-  assert.match(game, /dimensionToggleButton\.addEventListener\("click", toggleEndgameDimension\)/);
   assert.match(game, /dom\.humanChip\.hidden = false;\s*dom\.aiChip\.hidden = false;/);
   assert.doesNotMatch(game, /humanChip\.hidden = reviewing|aiChip\.hidden = reviewing/);
   assert.match(game, /drawCompletionWinningLine[\s\S]*activeWinningMask\(\)/);
@@ -373,9 +374,8 @@ test("复盘与二维三维切换相互独立，曲面可以持续柔性拖动",
   assert.match(html, /M19 12H6m5-5-5 5 5 5/);
   assert.match(html, /M5 12h13m-5-5 5 5-5 5/);
   assert.match(html, /id="nextLevelButton"/);
-  assert.match(html, /id="dimensionToggleIconPath"[^>]+M5 6c0-1\.7 3\.1-3 7-3/);
   assert.match(game, /M4 4h16v16H4zM9\.33 4v16M14\.67 4v16M4 9\.33h16M4 14\.67h16/);
-  assert.match(style, /\.endgame-review-tools\s*\{[\s\S]*grid-template-columns:\s*repeat\(4, minmax\(0, 1fr\)\)/);
+  assert.match(style, /\.endgame-review-tools\s*\{[\s\S]*grid-template-columns:\s*repeat\(3, minmax\(0, 1fr\)\)/);
   assert.match(style, /\.game-tools\.is-ended \.journey-button\s*\{[\s\S]*grid-column:\s*1/);
   assert.match(style, /\.game-tools\.is-ended \.settled-replay-button\s*\{\s*grid-column:\s*2/);
   assert.match(style, /\.game-tools\.is-ended \.next-level-button\s*\{[\s\S]*grid-column:\s*3/);
@@ -391,6 +391,46 @@ test("复盘与二维三维切换相互独立，曲面可以持续柔性拖动",
   assert.match(game, /elastic:\s*\{ x: 0, y: 0, velocityX: 0, velocityY: 0 \}/);
   assert.match(game, /wobbleX: sphereCompletion \? game\.completion\.elastic\.x/);
   assert.match(game, /completion\.elastic\.velocityY \+= yawDelta/);
+});
+
+test("对局中可用进度滑块切换二维与三维且切换时锁定落子", () => {
+  const game = fs.readFileSync(path.join(ROOT, "app", "assets", "game.js"), "utf8");
+  const html = fs.readFileSync(path.join(ROOT, "app", "index.html"), "utf8");
+  const style = fs.readFileSync(path.join(ROOT, "app", "assets", "style.css"), "utf8");
+  assert.match(html, /id="dimensionControl"/);
+  assert.match(html, /id="viewToggleButton"/);
+  assert.match(html, /id="dimensionSlider"[^>]+type="range"[^>]+min="0"[^>]+max="1"/);
+  assert.match(html, /class="dimension-slider-label">二维<\/span>/);
+  assert.match(html, /class="dimension-slider-label">三维<\/span>/);
+  assert.match(game, /function createInteractiveViewState\(\)/);
+  assert.match(game, /function setInteractiveViewProgress\(progress, animate\)/);
+  assert.match(game, /function updateInteractiveViewMotion\(time\)/);
+  assert.match(game, /function drawInteractiveMorph\(ctx, time\)/);
+  assert.match(game, /function isInteractiveViewPointerMode\(\)/);
+  assert.match(game, /distance >= 7/);
+  assert.match(game, /view\.rotation\.y \+= deltaX \* 0\.009/);
+  assert.match(game, /view\.rotation\.x \+= deltaY \* 0\.009/);
+  assert.match(game, /game\.view\.pointerId === event\.pointerId/);
+  assert.match(game, /game\.view && game\.view\.progress > 0\.001/);
+  assert.match(game, /activeSheet \|\| \(game\.view && game\.view\.transitioning\)/);
+  assert.match(game, /var keepViewControl = Boolean\(game\.levelIndex > 0 && Morph && ended && !autoAdvancing\)/);
+  assert.match(game, /dom\.dimensionControl\.hidden = !showViewControl/);
+  assert.match(game, /function canUseViewControl\(\)/);
+  assert.match(game, /game\.completion\.manualProgress = target/);
+  assert.match(game, /var viewControlLocked = !canUseViewControl\(\) \|\| Boolean\(game\.completion && !game\.completion\.settled\)/);
+  assert.match(game, /game\.completion\.settled = true;/);
+  assert.doesNotMatch(game, /dom\.dimensionControl\.hidden = true;\s*dom\.dimensionSlider\.value = "0";/);
+  assert.match(game, /viewToggleButton\.addEventListener\("click", toggleInteractiveView\)/);
+  assert.match(game, /dimensionSlider\.addEventListener\("input"/);
+  assert.match(game, /createCompletionState\(startedInSpatialView\)/);
+  assert.match(game, /Boolean\(Morph\) && \(passed \|\| startedInSpatialView\)/);
+  assert.match(game, /skipMorph: Boolean\(skipMorph\)/);
+  assert.match(game, /var skipMorph = Boolean\(game\.completion\.skipMorph\) && !returning/);
+  assert.match(game, /game\.completion = null;[\s\S]*game\.view\.progress = 0;[\s\S]*game\.view\.target = 0;/);
+  assert.match(style, /\.dimension-control\s*\{[\s\S]*grid-template-columns:\s*auto minmax\(0, 1fr\)/);
+  assert.match(style, /\.dimension-control-button\s*\{[\s\S]*display: flex/);
+  assert.match(style, /\.dimension-slider\s*\{[\s\S]*touch-action:\s*none/);
+  assert.match(style, /\.board-stage\.is-view-dragging #boardCanvas\s*\{[\s\S]*cursor: grabbing/);
 });
 
 test("标题、状态、棋盘与两层操作区使用统一垂直节奏", () => {
@@ -412,7 +452,6 @@ test("终局操作以中性色为底并只保留两组克制强调色", () => {
   assert.match(style, /\.game-tools\.is-ended \.tool-button\s*\{[\s\S]*color:\s*var\(--muted\)/);
   assert.match(style, /\.endgame-review-tools \.review-toggle-button\s*\{\s*color:\s*var\(--teal\)/);
   assert.match(style, /\.game-tools\.is-ended \.next-level-button\s*\{[\s\S]*color:\s*var\(--teal\)/);
-  assert.match(style, /\.endgame-review-tools \.dimension-toggle-button\s*\{\s*color:\s*var\(--spatial\)/);
   assert.match(style, /\.boundary-demo-button,[\s\S]*\.boundary-demo-button\.is-active\s*\{\s*color:\s*var\(--spatial\)/);
 });
 
