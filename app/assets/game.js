@@ -1837,6 +1837,7 @@
         game.view.transitioning = true;
         game.completion.manualProgress = currentProgress;
         sound.play("ui");
+        updateTurnUI();
         requestRender();
         return;
       }
@@ -1852,6 +1853,7 @@
       game.view.transitioning = true;
       game.completion.manualProgress = currentProgress;
       sound.play("ui");
+      updateTurnUI();
       requestRender();
       return;
     }
