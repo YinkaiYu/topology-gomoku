@@ -1205,12 +1205,10 @@
       elastic: { x: 0, y: 0 },
       dragging: false,
       pointerId: null,
-      pressCell: -1,
       startX: 0,
       startY: 0,
       lastX: 0,
       lastY: 0,
-      lastPointerAt: 0
     };
   }
 
@@ -1710,23 +1708,6 @@
     };
   }
 
-  function startCompletionPresentation(manual) {
-    if (!game || !isEndedView() || game.completion || !canPresentCompletion()) {
-      return;
-    }
-    game.completion = createCompletionState();
-    updateTurnUI();
-    if (manual) {
-      sound.play("ui");
-      window.setTimeout(function playRequestedMorph() {
-        if (game && game.completion && game.completion.phase === "presenting") {
-          sound.play("morph");
-        }
-      }, 120);
-    }
-    requestRender();
-  }
-
   function returnCompletionToFlat() {
     if (!game || !game.completion || game.completion.phase !== "presenting" || !game.completion.settled) {
       return;
@@ -1755,6 +1736,16 @@
     var target = clamp01(Number(progress) || 0);
     if (isEndedView()) {
       if (game.completion && !game.completion.settled) {
+        return;
+      }
+      if (target <= 0.001) {
+        game.completion = null;
+        view.progress = 0;
+        view.target = 0;
+        view.startProgress = 0;
+        view.transitioning = false;
+        updateTurnUI();
+        requestRender();
         return;
       }
       if (!game.completion && target > 0.001) {
@@ -1838,8 +1829,30 @@
       ? clamp01(game.completion.manualProgress)
       : clamp01(game.view.progress);
     if (currentProgress > 0.5 && game.completion) {
+      if (Number.isFinite(game.completion.manualProgress)) {
+        game.view.startProgress = currentProgress;
+        game.view.target = 0;
+        game.view.startedAt = performance.now();
+        game.view.duration = prefersReducedMotion() ? 1 : 920;
+        game.view.transitioning = true;
+        game.completion.manualProgress = currentProgress;
+        sound.play("ui");
+        requestRender();
+        return;
+      }
       game.completion.manualProgress = null;
       returnCompletionToFlat();
+      return;
+    }
+    if (game.completion && Number.isFinite(game.completion.manualProgress)) {
+      game.view.startProgress = currentProgress;
+      game.view.target = 1;
+      game.view.startedAt = performance.now();
+      game.view.duration = prefersReducedMotion() ? 1 : 920;
+      game.view.transitioning = true;
+      game.completion.manualProgress = currentProgress;
+      sound.play("ui");
+      requestRender();
       return;
     }
     if (game.completion) {
@@ -2939,6 +2952,15 @@
       view.transitioning = false;
     } else {
       view.progress = view.startProgress + (view.target - view.startProgress) * Morph.smooth(progress);
+    }
+    if (game.completion && game.completion.settled && Number.isFinite(game.completion.manualProgress)) {
+      game.completion.manualProgress = view.progress;
+    }
+    if (!view.transitioning && isEndedView() && view.target <= 0.001) {
+      game.completion = null;
+      view.progress = 0;
+      view.target = 0;
+      view.startProgress = 0;
     }
     syncGameTools();
   }
@@ -4563,7 +4585,6 @@
     }
     game.view.pointerId = null;
     game.view.dragging = false;
-    game.view.pressCell = -1;
     dom.boardStage.classList.remove("is-view-dragging");
     renderState.pointerId = null;
     renderState.pressedCell = -1;
@@ -4575,14 +4596,13 @@
     var view = game.view;
     view.pointerId = event.pointerId;
     view.dragging = false;
-    view.pressCell = eventToCell(event);
     view.startX = event.clientX;
     view.startY = event.clientY;
     view.lastX = event.clientX;
     view.lastY = event.clientY;
-    view.lastPointerAt = event.timeStamp || performance.now();
+    var pressCell = eventToCell(event);
     renderState.pointerId = event.pointerId;
-    renderState.pressedCell = canPlaceCell(view.pressCell) ? view.pressCell : -1;
+    renderState.pressedCell = canPlaceCell(pressCell) ? pressCell : -1;
     renderState.pressedAt = renderState.pressedCell >= 0 ? (event.timeStamp || performance.now()) : 0;
     if (renderState.pressedCell >= 0) {
       targetPressedStone(renderState.pressedCell, true);
@@ -4612,7 +4632,6 @@
       view.elastic.x = Math.max(-0.14, Math.min(0.14, deltaY * 0.012));
       view.lastX = event.clientX;
       view.lastY = event.clientY;
-      view.lastPointerAt = event.timeStamp || performance.now();
       requestRender();
     }
   }

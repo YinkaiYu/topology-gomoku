@@ -358,6 +358,7 @@ test("复盘与二维三维切换相互独立，曲面可以持续柔性拖动",
   assert.match(game, /function stepReplay\(direction\)/);
   assert.match(game, /Replay\.boardAt\(game\.moves, game\.rules\.cellCount, nextStep, Engine\.EMPTY\)/);
   assert.match(game, /function toggleEndgameViewWithAnimation\(\)/);
+  assert.doesNotMatch(game, /function startCompletionPresentation\(manual\)/);
   assert.match(game, /if \(isEndedView\(\)\) \{\s*toggleEndgameViewWithAnimation\(\);\s*return;/);
   assert.match(game, /function resetCompletionPresentationForAnimation\(\)/);
   assert.match(game, /function endReplayReview\(\)/);
@@ -417,6 +418,10 @@ test("对局中可用进度滑块切换二维与三维且切换时锁定落子",
   assert.match(game, /dom\.dimensionControl\.hidden = !showViewControl/);
   assert.match(game, /function canUseViewControl\(\)/);
   assert.match(game, /game\.completion\.manualProgress = target/);
+  assert.match(game, /view\.startProgress = currentProgress;[\s\S]*view\.target = 0;[\s\S]*game\.completion\.manualProgress = currentProgress/);
+  assert.match(game, /if \(!view\.transitioning && isEndedView\(\) && view\.target <= 0\.001\) \{[\s\S]*game\.completion = null/);
+  assert.doesNotMatch(game, /view\.pressCell/);
+  assert.doesNotMatch(game, /view\.lastPointerAt/);
   assert.match(game, /var viewControlLocked = !canUseViewControl\(\) \|\| Boolean\(game\.completion && !game\.completion\.settled\)/);
   assert.match(game, /game\.completion\.settled = true;/);
   assert.doesNotMatch(game, /dom\.dimensionControl\.hidden = true;\s*dom\.dimensionSlider\.value = "0";/);
