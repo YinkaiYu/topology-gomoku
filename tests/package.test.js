@@ -37,3 +37,26 @@ test("网页构建只写入项目 dist/web 并完整复制静态入口", () => {
   assert.match(build, /Copy-Item -Path \(Join-Path \$appRoot '\*'\)/);
   assert.match(build, /Join-Path \$webOutput 'index\.html'/);
 });
+
+test("长期发行分支纳入版本一致性检查与 CI", () => {
+  const releaseValidation = fs.readFileSync(
+    path.join(ROOT, "scripts", "validate-release-versions.ps1"),
+    "utf8",
+  );
+  const qualityWorkflow = fs.readFileSync(
+    path.join(ROOT, ".github", "workflows", "quality.yml"),
+    "utf8",
+  );
+  const releaseBranches = ["xiaohongshu", "bilibili", "wechat", "web", "zhihu"];
+
+  releaseBranches.forEach((branch) => {
+    assert.match(releaseValidation, new RegExp(`'${branch}'`));
+    assert.match(qualityWorkflow, new RegExp(`^\\s+- ${branch}$`, "m"));
+  });
+});
+
+test("知乎 CloudBase 交付产物不会进入版本控制", () => {
+  const gitignore = fs.readFileSync(path.join(ROOT, ".gitignore"), "utf8");
+  assert.match(gitignore, /^app\/_tmp\/$/m);
+  assert.match(gitignore, /^app\/app\.zip$/m);
+});

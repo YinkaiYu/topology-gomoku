@@ -1,8 +1,8 @@
 # 维护者合并与冲突处理手册
 
-本文供得到仓库所有者明确授权的维护者使用，覆盖 `dev → main → xiaohongshu / bilibili / wechat / web` 的稳定提升与发行整合。日常任务合入 `dev` 的基本流程仍以 [`repository.md`](repository.md) 为准，版本与发布门禁以 [`release.md`](release.md) 为准。
+本文供得到仓库所有者明确授权的维护者使用，覆盖 `dev → main → xiaohongshu / bilibili / wechat / web / zhihu` 的稳定提升与发行整合。日常任务合入 `dev` 的基本流程仍以 [`repository.md`](repository.md) 为准，版本与发布门禁以 [`release.md`](release.md) 为准。
 
-合并的目标不是让 Git 不再报冲突，而是保证每一处最终实现仍属于正确的代码层：共享产品行为来自本轮稳定 `main`，宿主或部署差异留在各自 adapter/boundary，四个发行版接收同一个版本号。
+合并的目标不是让 Git 不再报冲突，而是保证每一处最终实现仍属于正确的代码层：共享产品行为来自本轮稳定 `main`，宿主或部署差异留在各自 adapter/boundary，五个发行版接收同一个版本号。
 
 ## 不可破坏的方向
 
@@ -12,7 +12,8 @@ codex/<shared-task> ──▶ dev ──▶ main
                                   ├──▶ xiaohongshu
                                   ├──▶ bilibili
                                   ├──▶ wechat
-                                  └──▶ web
+                                  ├──▶ web
+                                  └──▶ zhihu
 
 codex/<platform-task> ──▶ 对应平台发行分支
 ```
@@ -37,6 +38,7 @@ git rev-parse xiaohongshu
 git rev-parse bilibili
 git rev-parse wechat
 git rev-parse web
+git rev-parse zhihu
 ```
 
 必须确认：
@@ -46,7 +48,7 @@ git rev-parse web
 3. 本轮唯一 SemVer 已在目标 `main` 内容中确定。
 4. 整合发生在从目标长期分支新建的独立 `codex/release-...` worktree 中。
 
-把本轮提交记入交接记录，例如 `DEV_SHA`、`MAIN_SHA` 和四个渠道整合前提交。后续命令和验证记录优先引用提交 SHA，而不是只写“最新 main”。
+把本轮提交记入交接记录，例如 `DEV_SHA`、`MAIN_SHA` 和五个渠道整合前提交。后续命令和验证记录优先引用提交 SHA，而不是只写“最新 main”。
 
 ## 第一段：从 dev 提升到 main
 
@@ -196,7 +198,7 @@ git merge-base --is-ancestor <INTEGRATION_SHA> <platform-branch>
 - 合并后必须在长期 `wechat` 上重新执行微信检查、构建、固定目标同步和开发者工具刷新；任务分支通过不代表发行 worktree 与外部模板仍一致。
 - 清理时先验证 ancestry 和工作区状态；若预览服务占用目录，只停止该任务专属进程，不影响其他 worktree。
 
-这些经验同样适用于其他渠道：提前收敛共享职责，平台冲突就会集中在少量、可解释的 adapter/boundary 中。个人网站渠道的外部仓库同步按 [`web.md`](web.md) 另行验证。
+这些经验同样适用于其他渠道：提前收敛共享职责，平台冲突就会集中在少量、可解释的 adapter/boundary 中。个人网站渠道的外部仓库同步按 [`web.md`](web.md) 另行验证；知乎渠道的 CloudBase 输入与 iframe 宿主验证按 [`zhihu.md`](zhihu.md) 执行。
 
 ## 合并交接模板
 

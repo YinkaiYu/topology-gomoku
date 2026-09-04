@@ -5,7 +5,7 @@
   <p>
     <img alt="离线游戏" src="https://img.shields.io/badge/完全离线-27241F?style=flat-square" />
     <img alt="七种拓扑" src="https://img.shields.io/badge/拓扑世界-7-B85C38?style=flat-square" />
-    <img alt="四个发行渠道" src="https://img.shields.io/badge/发行渠道-4-5A7D6A?style=flat-square" />
+    <img alt="五个发行渠道" src="https://img.shields.io/badge/发行渠道-5-5A7D6A?style=flat-square" />
     <img alt="MIT License" src="https://img.shields.io/badge/license-MIT-4A6484?style=flat-square" />
   </p>
   <p>一个把五子棋放进圆柱、莫比乌斯带、环面与克莱因瓶的小游戏。</p>
@@ -46,8 +46,9 @@
 - Bilibili Toy：已发布，使用专属 adapter，并完成手机、平板与 PC 的响应式适配
 - 微信小游戏：已发布，使用原生单 Canvas、宿主 adapter 与可复现的构建同步链路
 - 个人网站：通过 `web` 发行分支生成静态目录，部署到网站的 `show/topology-gomoku/` 子路径
+- 知乎 AI Works：已建立 `zhihu` 发行分支，以共享 `app/` 生成 CloudBase 静态交付输入；宿主发布与线上验证进行中
 
-四个发行渠道共享同一套拓扑规则、关卡内容、视觉语言与游戏版本，并分别接入各自宿主或静态站点的生命周期、输入、安全区和发布边界。每次稳定版本仍需在各渠道分别完成构建、预览与发布验证。
+五个发行渠道共享同一套拓扑规则、关卡内容、视觉语言与游戏版本，并分别接入各自宿主或静态站点的生命周期、输入、安全区和发布边界。每次稳定版本仍需在各渠道分别完成构建、预览与发布验证。
 
 ## 开发与文档
 
@@ -58,7 +59,7 @@
 想参与贡献？把下面这段话发给你的 Agent 就好：
 
 ```text
-请帮我参与开源项目“拓扑五子棋”：https://github.com/YinkaiYu/topology-gomoku 。请先完整读取仓库里的 AGENTS.md 和贡献约定，确认当前分支与 worktree；从最新 dev 创建独立的 codex/<task> 分支和 worktree，选择一个范围清晰的 Issue 或小创意。完成实现、必要测试和自检后，在该任务 worktree 拉起本地预览交给我确认；得到我的明确确认前不要合并，确认后只向 dev 提交贡献。不要直接修改 main、dev 或长期发行 worktree，也不要提交密钥、构建产物或与任务无关的改动。dev 到 main 以及四个发行渠道的发布同步由仓库维护者负责。
+请帮我参与开源项目“拓扑五子棋”：https://github.com/YinkaiYu/topology-gomoku 。请先完整读取仓库里的 AGENTS.md 和贡献约定，确认当前分支与 worktree；从最新 dev 创建独立的 codex/<task> 分支和 worktree，选择一个范围清晰的 Issue 或小创意。完成实现、必要测试和自检后，在该任务 worktree 拉起本地预览交给我确认；得到我的明确确认前不要合并，确认后只向 dev 提交贡献。不要直接修改 main、dev 或长期发行 worktree，也不要提交密钥、构建产物或与任务无关的改动。dev 到 main 以及五个发行渠道的发布同步由仓库维护者负责。
 ```
 
 <div align="center">

@@ -18,6 +18,7 @@
 | 小红书容器、JSBridge 或 ZIP 规范 | `.codex/SKILL.md` 及其 references |
 | Bilibili Toy / 微信小游戏宿主约束 | 对应发行分支的平台文档 |
 | 个人网站构建、子路径与部署约束 | `docs/development/web.md` |
+| 知乎 AI Works、CloudBase 输入与 iframe 约束 | `docs/development/zhihu.md` |
 | 新增、移动或删除任意长期文档 | `docs/README.md` 索引及全部反向引用 |
 
 “必查”不等于每次都必须修改，但必须确认现有内容是否仍准确。若没有文档影响，在 Pull Request 中写明原因，不能只留空或默认忽略。

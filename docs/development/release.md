@@ -16,22 +16,23 @@
       ├──▶ xiaohongshu  vX.Y.Z
       ├──▶ bilibili     vX.Y.Z
       ├──▶ wechat       vX.Y.Z
-      └──▶ web          vX.Y.Z
+      ├──▶ web          vX.Y.Z
+      └──▶ zhihu        vX.Y.Z
 ```
 
 - `dev` 可以持续前进；维护者只提升已经完成预览、测试和文档审查的稳定边界。
 - `main` 表示当前稳定产品基线，不承载日常开发。
-- 四个发行分支只从 `main` 更新共享基线，并保留各自 adapter、宿主配置和发布资产。
+- 五个发行分支只从 `main` 更新共享基线，并保留各自 adapter、宿主配置和发布资产。
 - 不从 `dev` 直接同步某个平台，也不在平台之间互相合并。
 
 ## 统一版本规则
 
 - 拓扑五子棋只有一个跨平台游戏 SemVer。版本号只由核心功能沿 `dev → main` 提升时确定，每轮稳定发布以 `main/package.json` 的 `X.Y.Z` 为唯一来源。
-- `xiaohongshu`、`bilibili`、`wechat`、`web` 的 `package.json`、平台清单中的版本/缓存标识和发布标签必须映射到同一个 `X.Y.Z`。
+- `xiaohongshu`、`bilibili`、`wechat`、`web`、`zhihu` 的 `package.json`、平台清单中的版本/缓存标识和发布标签必须映射到同一个 `X.Y.Z`。
 - 平台原生适配、adapter 修复和宿主配置变化不修改游戏 SemVer，也不触发一次核心版本提升；发行分支在下一轮 `main` 同步时接收新的统一版本号。
 - 宿主强制要求的构建号、审核批次或渠道修订号可以按平台规则独立维护，但它们不是游戏 SemVer，不能写回共享版本字段。
-- 四个渠道可以因审核、宿主限制或网站发布节奏在不同日期上线，但不能因此产生不同 SemVer。
-- 发布标签带渠道前缀但共享数字，例如 `xiaohongshu-v1.37.2`、`bilibili-v1.37.2`、`wechat-v1.37.2`、`web-v1.37.2`。
+- 五个渠道可以因审核、宿主限制或网站发布节奏在不同日期上线，但不能因此产生不同 SemVer。
+- 发布标签带渠道前缀但共享数字，例如 `xiaohongshu-v1.37.2`、`bilibili-v1.37.2`、`wechat-v1.37.2`、`web-v1.37.2`、`zhihu-v1.37.2`。
 
 ## 发布步骤
 
@@ -47,9 +48,9 @@
 - 在 `main` 上再次运行 `npm run check`；不得在 `main` 临时开发修复。
 - 记录来源 `dev` 提交、统一版本、验证结果和已知限制。
 
-### 3. 更新四个发行分支
+### 3. 更新五个发行分支
 
-- 分别为 `xiaohongshu`、`bilibili`、`wechat`、`web` 创建独立的发行整合分支/worktree。
+- 分别为 `xiaohongshu`、`bilibili`、`wechat`、`web`、`zhihu` 创建独立的发行整合分支/worktree。
 - 将同一个 `main` 提交同步到每个发行整合分支，只在 adapter/boundary 中解决宿主差异。
 - 检查每个平台的包版本、清单中的版本/缓存标识和发布标签都使用本轮统一 SemVer。
 - 运行共享检查、对应平台构建、模拟器和真机验收；构建产物不提交 Git。
@@ -57,15 +58,17 @@
 
 ### 4. 一致性检查与发布记录
 
-四个长期发行分支同步完成后运行：
+五个长期发行分支同步完成后运行：
 
 ```powershell
 npm run release:check-versions -- X.Y.Z
 ```
 
-该命令检查 `main` 和四个发行分支的 `package.json`。平台清单或宿主后台中的额外版本字段仍需在发布记录中逐项确认。
+该命令检查 `main` 和五个发行分支的 `package.json`。平台清单或宿主后台中的额外版本字段仍需在发布记录中逐项确认。
 
 个人网站渠道还必须执行 `npm run build:web`，把构建结果同步到网站仓库的固定子目录，并完成桌面和移动浏览器预览；完整步骤见 [`web.md`](web.md)。
+
+知乎渠道还必须使用 `$zhihu-ai-works-deploy-helper` 从 `app/` 重新探测，生成并校验纯静态 CloudBase 描述符与项目 ZIP，再完成知乎 iframe 宿主预览；完整步骤见 [`zhihu.md`](zhihu.md)。Skill 只准备交付物，不创建云资源或执行平台发布。
 
 ## Bilibili 发行分支补充要求
 
@@ -102,6 +105,7 @@ main 提交：
 Bilibili 发行提交 / 验证：
 微信发行提交 / 验证：
 个人网站发行提交 / 网站部署提交 / 验证：
+知乎发行提交 / CloudBase 输入 / iframe 验证：
 版本一致性检查：
 已知限制或审核阻塞：
 ```
