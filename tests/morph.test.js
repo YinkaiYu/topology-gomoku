@@ -394,6 +394,7 @@ test("对局中可用进度滑块切换二维与三维且切换时锁定落子",
   const html = fs.readFileSync(path.join(ROOT, "app", "index.html"), "utf8");
   const style = fs.readFileSync(path.join(ROOT, "app", "assets", "style.css"), "utf8");
   assert.match(html, /id="dimensionControl"/);
+  assert.match(html, /board-view-logic\.js/);
   assert.match(html, /id="viewFlatButton"/);
   assert.match(html, /id="viewSpatialButton"/);
   assert.match(html, /id="dimensionSlider"[^>]+type="range"[^>]+min="0"[^>]+max="1"/);
@@ -406,8 +407,8 @@ test("对局中可用进度滑块切换二维与三维且切换时锁定落子",
   assert.match(game, /view\.rotation\.y \+= deltaX \* 0\.009/);
   assert.match(game, /view\.rotation\.x \+= deltaY \* 0\.009/);
   assert.match(game, /game\.view\.pointerId === event\.pointerId/);
-  assert.match(game, /view\.placeEligibleAtDown = canPlaceCell\(pressCell\)/);
-  assert.match(game, /if \(placeEligibleAtDown && !wasDragging && canPlaceCell\(cell\)\)/);
+  assert.match(game, /view\.placeEligibleAtDown = ViewLogic\.placementEligibleAtDown\(canPlaceCell\(pressCell\)\)/);
+  assert.match(game, /ViewLogic\.shouldPlaceOnRelease\(placeEligibleAtDown, wasDragging, canPlaceCell\(cell\)\)/);
   assert.match(game, /game\.view\.transitioning \|\| game\.view\.scrubbing/);
   assert.match(game, /var dueAt = performance\.now\(\) \+ wait/);
   assert.match(game, /game\.view && game\.view\.progress > 0\.001/);

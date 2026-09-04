@@ -3,6 +3,7 @@
 
   var Engine = window.TopologyGomoku;
   var Morph = window.TopologyMorph;
+  var ViewLogic = window.TopologyBoardViewLogic;
   var Replay = window.TopologyReplay;
   var STORAGE_KEY = "topology-gomoku:v1";
   var TUTORIAL_AUTO_ADVANCE_DELAY = 820;
@@ -1536,8 +1537,7 @@
       if (!game || game.status !== "playing" || game.turn !== AI || scheduledToken !== turnToken) {
         return;
       }
-      var viewLocked = game.view && (game.view.transitioning || game.view.scrubbing);
-      if (viewLocked) {
+      if (ViewLogic.shouldDelayAi(game.view)) {
         window.setTimeout(makeAiMove, 50);
         return;
       }
@@ -3726,8 +3726,7 @@
       viewBlend = manualProgress;
     } else {
       var presentationBlend = Morph.spring(progress);
-      morph = game.completion.startProgress
-        + (1 - game.completion.startProgress) * presentationBlend;
+      morph = ViewLogic.interpolateProgress(game.completion.startProgress, presentationBlend);
       viewBlend = Morph.smooth((elapsed - 100) / 1850);
     }
     var restingBounce = game.completion.settled && !game.completion.dragging
@@ -4527,7 +4526,7 @@
     view.lastX = event.clientX;
     view.lastY = event.clientY;
     var pressCell = eventToCell(event);
-    view.placeEligibleAtDown = canPlaceCell(pressCell);
+    view.placeEligibleAtDown = ViewLogic.placementEligibleAtDown(canPlaceCell(pressCell));
     renderState.pointerId = event.pointerId;
     renderState.pressedCell = view.placeEligibleAtDown ? pressCell : -1;
     renderState.pressedAt = renderState.pressedCell >= 0 ? (event.timeStamp || performance.now()) : 0;
@@ -4684,7 +4683,7 @@
       var cell = eventToCell(event);
       var placeEligibleAtDown = view.placeEligibleAtDown;
       clearInteractiveViewPointer();
-      if (placeEligibleAtDown && !wasDragging && canPlaceCell(cell)) {
+      if (ViewLogic.shouldPlaceOnRelease(placeEligibleAtDown, wasDragging, canPlaceCell(cell))) {
         performMove(cell, DEV_MODE ? developer.placementPlayer : HUMAN, { fromPress: true });
       } else {
         requestRender();
