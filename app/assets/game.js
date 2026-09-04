@@ -845,6 +845,7 @@
       winningMask: null,
       winReason: null,
       autoAdvancePending: false,
+      introMode: introMode,
       lastMove: -1,
       demo: null,
       lesson: null,
@@ -1086,6 +1087,7 @@
       hold: 390,
       fade: 330
     };
+    game.introMode = "demo";
     activateDemoPath(game.demo, 0);
     updateTurnUI();
     requestRender();
@@ -1113,6 +1115,7 @@
       paths: paths,
       pathIndex: 0
     };
+    game.introMode = "lesson";
     activateLessonPath(game.lesson, 0);
     game.turn = HUMAN;
     updateTurnUI();
@@ -1130,6 +1133,7 @@
       return;
     }
     game.demo.active = false;
+    game.introMode = "none";
     updateTurnUI();
     requestRender();
   }
@@ -1235,7 +1239,8 @@
     var firstLevel = game.levelIndex === 0;
     var autoAdvancing = ended && Boolean(game.autoAdvancePending);
     var hasNextLevel = passed && game.levelIndex < LEVELS.length - 1;
-    var canUseView = canUseInteractiveView();
+    var introActive = game.introMode === "lesson" || game.introMode === "demo";
+    var canUseView = !introActive && canUseInteractiveView();
     var viewSupported = Boolean(game.levelIndex > 0 && Morph);
     var keepViewControl = Boolean(viewSupported && ended && !autoAdvancing);
     var showViewControl = canUseView || keepViewControl;

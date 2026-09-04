@@ -414,6 +414,8 @@ test("对局中可用进度滑块切换二维与三维且切换时锁定落子",
   assert.match(game, /game\.view && game\.view\.progress > 0\.001/);
   assert.match(game, /activeSheet \|\| \(game\.view && \(game\.view\.transitioning \|\| game\.view\.scrubbing\)\)/);
   assert.match(game, /var keepViewControl = Boolean\(viewSupported && ended && !autoAdvancing\)/);
+  assert.match(game, /var introActive = game\.introMode === "lesson" \|\| game\.introMode === "demo"/);
+  assert.match(game, /var canUseView = !introActive && canUseInteractiveView\(\)/);
   assert.match(game, /dom\.dimensionControl\.classList\.toggle\("is-reserved", viewReserved\)/);
   assert.match(game, /function canUseViewControl\(\)/);
   assert.match(game, /game\.completion\.manualProgress = target/);
