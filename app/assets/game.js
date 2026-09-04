@@ -209,9 +209,8 @@
     turnStatus: document.getElementById("turnStatus"),
     boardStage: document.getElementById("boardStage"),
     dimensionControl: document.getElementById("dimensionControl"),
-    viewToggleButton: document.getElementById("viewToggleButton"),
-    viewToggleButtonText: document.getElementById("viewToggleButtonText"),
-    viewToggleIconPath: document.getElementById("viewToggleIconPath"),
+    viewFlatButton: document.getElementById("viewFlatButton"),
+    viewSpatialButton: document.getElementById("viewSpatialButton"),
     dimensionSlider: document.getElementById("dimensionSlider"),
     boardCanvas: document.getElementById("boardCanvas"),
     thinkingIndicator: document.getElementById("thinkingIndicator"),
@@ -1204,11 +1203,13 @@
       rotation: { x: 0, y: 0, z: 0 },
       elastic: { x: 0, y: 0 },
       dragging: false,
+      scrubbing: false,
       pointerId: null,
       startX: 0,
       startY: 0,
       lastX: 0,
       lastY: 0,
+      placeEligibleAtDown: false,
     };
   }
 
@@ -1234,9 +1235,11 @@
     var autoAdvancing = ended && Boolean(game.autoAdvancePending);
     var hasNextLevel = passed && game.levelIndex < LEVELS.length - 1;
     var canUseView = canUseInteractiveView();
-    var keepViewControl = Boolean(game.levelIndex > 0 && Morph && ended && !autoAdvancing);
+    var viewSupported = Boolean(game.levelIndex > 0 && Morph);
+    var keepViewControl = Boolean(viewSupported && ended && !autoAdvancing);
     var showViewControl = canUseView || keepViewControl;
-    var surfaceVisible = Boolean(game.completion && game.completion.phase === "presenting");
+    var viewReserved = Boolean(viewSupported && !showViewControl);
+    var surfaceVisible = Boolean(game.completion);
     var dimensionTransitioning = Boolean(game.completion && !game.completion.settled);
     var reviewToolsHidden = !ended || autoAdvancing || firstLevel;
 
@@ -1254,30 +1257,28 @@
     dom.reviewToggleButton.disabled = dimensionTransitioning;
     dom.reviewPreviousButton.disabled = dimensionTransitioning || !reviewing || game.review.step <= 0;
     dom.reviewNextButton.disabled = dimensionTransitioning || !reviewing || game.review.step >= game.review.total;
-    dom.dimensionControl.hidden = !showViewControl;
-    if (showViewControl && game.view) {
+    dom.dimensionControl.hidden = !viewSupported;
+    dom.dimensionControl.classList.toggle("is-reserved", viewReserved);
+    dom.dimensionControl.setAttribute("aria-hidden", String(viewReserved));
+    if (viewSupported && game.view) {
       var completionProgress = game.completion && game.completion.settled && Number.isFinite(game.completion.manualProgress)
         ? clamp01(game.completion.manualProgress)
         : null;
       dom.dimensionSlider.value = String(completionProgress === null ? game.view.progress : completionProgress);
       var viewControlLocked = !canUseViewControl() || Boolean(game.completion && !game.completion.settled);
       dom.dimensionSlider.disabled = viewControlLocked || game.view.transitioning;
-      dom.viewToggleButton.disabled = viewControlLocked || game.view.transitioning;
-      var viewIsThreeDimensional = game.view.target > 0.5 || game.view.progress > 0.5;
-      dom.viewToggleButton.setAttribute("aria-label", viewIsThreeDimensional ? "查看二维棋盘" : "查看三维棋局");
-      dom.viewToggleButtonText.textContent = viewIsThreeDimensional ? "二维" : "三维";
-      dom.viewToggleIconPath.setAttribute(
-        "d",
-        viewIsThreeDimensional
-          ? "M4 4h16v16H4zM9.33 4v16M14.67 4v16M4 9.33h16M4 14.67h16"
-          : "M5 6c0-1.7 3.1-3 7-3s7 1.3 7 3-3.1 3-7 3-7-1.3-7-3Zm0 0v12c0 1.7 3.1 3 7 3s7-1.3 7-3V6"
-      );
+      dom.viewFlatButton.disabled = viewControlLocked || game.view.transitioning;
+      dom.viewSpatialButton.disabled = viewControlLocked || game.view.transitioning;
+      var viewProgress = completionProgress === null ? game.view.progress : completionProgress;
+      dom.viewFlatButton.setAttribute("aria-pressed", String(viewProgress <= 0.001));
+      dom.viewSpatialButton.setAttribute("aria-pressed", String(viewProgress >= 0.999));
       dom.boardStage.classList.toggle("is-view-transitioning", game.view.transitioning);
       dom.boardStage.classList.toggle("is-view-spatial", game.view.progress > 0.001);
       dom.boardStage.classList.toggle("is-view-dragging", game.view.dragging);
     } else {
       dom.dimensionSlider.disabled = true;
-      dom.viewToggleButton.disabled = true;
+      dom.viewFlatButton.disabled = true;
+      dom.viewSpatialButton.disabled = true;
       dom.boardStage.classList.remove("is-view-transitioning", "is-view-spatial", "is-view-dragging");
     }
     dom.boundaryDemoButton.hidden = ended || game.levelIndex === 0;
@@ -1313,7 +1314,6 @@
       dom.nextLevelIconPath.setAttribute("d", "m9 6 6 6-6 6");
       dom.boardStage.classList.toggle("is-exploring", surfaceVisible);
       dom.boardStage.classList.toggle("is-settled", !surfaceVisible && !reviewing);
-      dom.boardStage.classList.toggle("is-returning", Boolean(game.completion && game.completion.phase === "returning"));
       return;
     }
 
@@ -1329,7 +1329,7 @@
     dom.restartButton.setAttribute("aria-label", "重新开始");
     dom.restartButtonText.textContent = "重来";
     dom.restartIconPath.setAttribute("d", "M20 7v5h-5M19 12a7 7 0 1 0-2 5");
-    dom.boardStage.classList.remove("is-exploring", "is-settled", "is-dragging", "is-returning");
+    dom.boardStage.classList.remove("is-exploring", "is-settled", "is-dragging");
   }
 
   function updateTurnUI() {
@@ -1348,9 +1348,7 @@
     dom.difficultyLabel.textContent = game.level.tutorial || lessonActive ? "教学" : DIFFICULTIES[prefs.difficulty].label;
     dom.thinkingIndicator.classList.toggle("is-visible", aiActuallyThinking);
     dom.undoButton.disabled = game.moves.length === 0 || game.status !== "playing";
-    if (completionActive && game.completion.phase === "returning") {
-      dom.turnStatus.textContent = "回到二维";
-    } else if (isReviewing()) {
+    if (isReviewing()) {
       dom.turnStatus.textContent = (Replay ? Replay.progressTitle(game.review.step) : "复盘")
         + " · " + game.review.step + " / " + game.review.total;
     } else if (completionActive) {
@@ -1533,15 +1531,26 @@
     }
     var scheduledToken = ++turnToken;
     var wait = DIFFICULTIES[prefs.difficulty].wait;
-    window.setTimeout(function makeAiMove() {
+    var dueAt = performance.now() + wait;
+    function makeAiMove() {
       if (!game || game.status !== "playing" || game.turn !== AI || scheduledToken !== turnToken) {
+        return;
+      }
+      var viewLocked = game.view && (game.view.transitioning || game.view.scrubbing);
+      if (viewLocked) {
+        window.setTimeout(makeAiMove, 50);
+        return;
+      }
+      if (performance.now() < dueAt) {
+        window.setTimeout(makeAiMove, Math.max(16, dueAt - performance.now()));
         return;
       }
       var cell = Engine.chooseMove(game.board, game.rules, prefs.difficulty);
       if (cell >= 0 && scheduledToken === turnToken) {
         performMove(cell, AI);
       }
-    }, wait);
+    }
+    window.setTimeout(makeAiMove, wait);
   }
 
   function chooseCompletionView(winningMask, presentation) {
@@ -1677,22 +1686,27 @@
     return best;
   }
 
-  function createCompletionState(skipMorph) {
+  function createCompletionState(startSnapshot) {
     if (!canPresentCompletion()) {
       return null;
     }
     var startedAt = performance.now();
+    var snapshot = startSnapshot || {};
     var winningMask = game.winningMask;
     var presentation = winningMask
       ? Morph.createPresentation(game.level.topology, game.rules, Array.prototype.slice.call(winningMask.cells))
       : null;
     return {
       active: true,
-      phase: "presenting",
       startedAt: startedAt,
       lineStartedAt: renderState.winAt || startedAt,
       duration: 3000,
-      skipMorph: Boolean(skipMorph),
+      startProgress: clamp01(Number(snapshot.progress) || 0),
+      startRotation: {
+        x: Number(snapshot.rotation && snapshot.rotation.x) || 0,
+        y: Number(snapshot.rotation && snapshot.rotation.y) || 0,
+        z: Number(snapshot.rotation && snapshot.rotation.z) || 0
+      },
       settled: false,
       view: chooseCompletionView(winningMask, presentation),
       presentation: presentation,
@@ -1706,26 +1720,6 @@
       lastPointerAt: 0,
       autoResumeAt: startedAt + 2450
     };
-  }
-
-  function returnCompletionToFlat() {
-    if (!game || !game.completion || game.completion.phase !== "presenting" || !game.completion.settled) {
-      return;
-    }
-    game.completion.phase = "returning";
-    game.completion.startedAt = performance.now();
-    game.completion.duration = prefersReducedMotion() ? 1 : 1050;
-    game.completion.settled = false;
-    game.completion.dragging = false;
-    game.completion.pointerId = null;
-    game.completion.velocity.x = 0;
-    game.completion.velocity.y = 0;
-    game.completion.elastic.velocityX = 0;
-    game.completion.elastic.velocityY = 0;
-    dom.boardStage.classList.remove("is-dragging");
-    sound.play("ui");
-    updateTurnUI();
-    requestRender();
   }
 
   function setInteractiveViewProgress(progress, animate) {
@@ -1749,7 +1743,7 @@
         return;
       }
       if (!game.completion && target > 0.001) {
-        game.completion = createCompletionState(true);
+        game.completion = createCompletionState({ progress: target, rotation: game.view.rotation });
         game.completion.settled = true;
       }
       if (game.completion) {
@@ -1786,94 +1780,40 @@
     requestRender();
   }
 
-  function toggleInteractiveView() {
-    if (!game || !game.view) {
+  function animateInteractiveViewEndpoint(target) {
+    if (!game || !game.view || !canUseViewControl()) {
       return;
     }
+    target = clamp01(target);
     if (isEndedView()) {
-      toggleEndgameViewWithAnimation();
-      return;
-    }
-    setInteractiveViewProgress(game.view.target > 0.5 || game.view.progress > 0.5 ? 0 : 1, true);
-    sound.play("ui");
-  }
-
-  function resetCompletionPresentationForAnimation() {
-    var completion = game.completion;
-    completion.phase = "presenting";
-    completion.startedAt = performance.now();
-    completion.lineStartedAt = renderState.winAt || completion.startedAt;
-    completion.duration = 3000;
-    completion.skipMorph = false;
-    completion.settled = false;
-    completion.manualProgress = null;
-    completion.dragging = false;
-    completion.pointerId = null;
-    completion.velocity.x = 0;
-    completion.velocity.y = 0;
-    completion.elastic.x = 0;
-    completion.elastic.y = 0;
-    completion.elastic.velocityX = 0;
-    completion.elastic.velocityY = 0;
-    dom.boardStage.classList.remove("is-dragging");
-  }
-
-  function toggleEndgameViewWithAnimation() {
-    if (!game || !isEndedView() || !canPresentCompletion() || !canUseViewControl()) {
-      return;
-    }
-    if (game.completion && !game.completion.settled) {
-      return;
-    }
-    var currentProgress = game.completion && Number.isFinite(game.completion.manualProgress)
-      ? clamp01(game.completion.manualProgress)
-      : clamp01(game.view.progress);
-    if (currentProgress > 0.5 && game.completion) {
-      if (Number.isFinite(game.completion.manualProgress)) {
-        game.view.startProgress = currentProgress;
-        game.view.target = 0;
-        game.view.startedAt = performance.now();
-        game.view.duration = prefersReducedMotion() ? 1 : 920;
-        game.view.transitioning = true;
-        game.completion.manualProgress = currentProgress;
-        sound.play("ui");
-        updateTurnUI();
-        requestRender();
+      if (game.completion && !game.completion.settled) {
         return;
       }
-      game.completion.manualProgress = null;
-      returnCompletionToFlat();
-      return;
-    }
-    if (game.completion && Number.isFinite(game.completion.manualProgress)) {
-      game.view.startProgress = currentProgress;
-      game.view.target = 1;
+      var current = game.completion && Number.isFinite(game.completion.manualProgress)
+        ? clamp01(game.completion.manualProgress)
+        : clamp01(game.view.progress);
+      if (Math.abs(target - current) <= 0.001) {
+        return;
+      }
+      if (!game.completion && target > 0.001) {
+        game.completion = createCompletionState({ progress: current, rotation: game.view.rotation });
+        game.completion.settled = true;
+      }
+      if (game.completion) {
+        game.completion.manualProgress = current;
+      }
+      game.view.startProgress = current;
+      game.view.target = target;
       game.view.startedAt = performance.now();
       game.view.duration = prefersReducedMotion() ? 1 : 920;
       game.view.transitioning = true;
-      game.completion.manualProgress = currentProgress;
       sound.play("ui");
       updateTurnUI();
       requestRender();
       return;
     }
-    if (game.completion) {
-      resetCompletionPresentationForAnimation();
-    } else {
-      game.completion = createCompletionState(false);
-    }
-    game.view.progress = 0;
-    game.view.target = 0;
-    game.view.startProgress = 0;
-    game.view.transitioning = false;
+    setInteractiveViewProgress(target, true);
     sound.play("ui");
-    window.setTimeout(function playRequestedMorph() {
-      if (game && game.completion && game.completion.phase === "presenting" && !game.completion.settled) {
-        sound.play("morph");
-      }
-    }, 120);
-    updateTurnUI();
-    requestRender();
   }
 
   function setReplayStep(step, animateMove) {
@@ -1956,12 +1896,12 @@
     game.review = null;
     game.autoAdvancePending = firstLevelAutoAdvance;
     renderState.winAt = performance.now();
-    var startedInSpatialView = Boolean(
-      game.view
-      && (game.view.target > 0.5 || (!game.view.transitioning && game.view.progress > 0.5))
-    );
+    var viewSnapshot = game.view
+      ? { progress: game.view.progress, rotation: game.view.rotation }
+      : { progress: 0, rotation: { x: 0, y: 0, z: 0 } };
+    var startedInSpatialView = viewSnapshot.progress > 0.001;
     var shouldMorph = game.levelIndex > 0 && Boolean(Morph) && (passed || startedInSpatialView);
-    game.completion = shouldMorph ? createCompletionState(startedInSpatialView) : null;
+    game.completion = shouldMorph ? createCompletionState(viewSnapshot) : null;
     if (winningMask && winningMask.seam) {
       renderState.seamPulseAt = performance.now();
       renderState.seamPulseBits = winningMask.seam;
@@ -2879,24 +2819,9 @@
     }
     var completion = game.completion;
     var elapsed = time - completion.startedAt;
-    if (completion.phase === "returning") {
-      if (elapsed >= completion.duration) {
-        game.completion = null;
-        if (game.view) {
-          game.view.progress = 0;
-          game.view.target = 0;
-          game.view.startProgress = 0;
-          game.view.transitioning = false;
-          game.view.dragging = false;
-        }
-        updateTurnUI();
-        requestRender();
-      }
-      return;
-    }
     if (!completion.settled && elapsed >= completion.duration) {
       completion.settled = true;
-      if (completion.phase === "presenting" && game.view) {
+      if (game.view) {
         game.view.progress = 1;
         game.view.target = 1;
         game.view.startProgress = 1;
@@ -3790,32 +3715,30 @@
 
   function drawCompletionMorph(ctx, time) {
     var elapsed = time - game.completion.startedAt;
-    var returning = game.completion.phase === "returning";
-    var progress = returning
-      ? clamp01(elapsed / game.completion.duration)
-      : clamp01((elapsed - 80) / 2550);
-    var manualProgress = !returning && game.completion.settled && Number.isFinite(game.completion.manualProgress)
+    var progress = clamp01((elapsed - 80) / 2550);
+    var manualProgress = game.completion.settled && Number.isFinite(game.completion.manualProgress)
       ? clamp01(game.completion.manualProgress)
       : null;
-    var skipMorph = Boolean(game.completion.skipMorph) && !returning;
-    var morph = manualProgress === null
-      ? (skipMorph ? 1 : (returning ? 1 - Morph.smooth(progress) : Morph.spring(progress)))
-      : manualProgress;
-    var viewBlend = manualProgress === null
-      ? (skipMorph ? 1 : (returning ? morph : Morph.smooth((elapsed - 100) / 1850)))
-      : manualProgress;
-    var rotationBlend = returning ? viewBlend : 1;
-    var restingBounce = !returning && game.completion.settled && !game.completion.dragging
+    var morph;
+    var viewBlend;
+    if (manualProgress !== null) {
+      morph = manualProgress;
+      viewBlend = manualProgress;
+    } else {
+      var presentationBlend = Morph.spring(progress);
+      morph = game.completion.startProgress
+        + (1 - game.completion.startProgress) * presentationBlend;
+      viewBlend = Morph.smooth((elapsed - 100) / 1850);
+    }
+    var restingBounce = game.completion.settled && !game.completion.dragging
       ? Math.sin(time * 0.00245) * 0.012
       : 0;
-    var jellyScale = returning
-      ? 1
-      : 1 + Math.sin(progress * Math.PI * 2.35) * Math.pow(1 - progress, 1.85) * 0.048 + restingBounce * 0.42;
+    var jellyScale = 1 + Math.sin(progress * Math.PI * 2.35) * Math.pow(1 - progress, 1.85) * 0.048 + restingBounce * 0.42;
     var sphereCompletion = game.level.topology === "sphere";
     var orientation = {
-      x: game.completion.view.x * viewBlend + game.completion.rotation.x * rotationBlend,
-      y: game.completion.view.y * viewBlend + game.completion.rotation.y * rotationBlend,
-      z: game.completion.view.z * viewBlend + game.completion.rotation.z * rotationBlend,
+      x: game.completion.startRotation.x * (1 - viewBlend) + game.completion.view.x * viewBlend + game.completion.rotation.x,
+      y: game.completion.startRotation.y * (1 - viewBlend) + game.completion.view.y * viewBlend + game.completion.rotation.y,
+      z: game.completion.startRotation.z * (1 - viewBlend) + game.completion.view.z * viewBlend + game.completion.rotation.z,
       scale: jellyScale,
       shapeX: sphereCompletion ? 1 : 1 + ((Number(game.completion.view.shapeX) || 1) - 1) * viewBlend,
       shapeY: sphereCompletion ? 1 : 1 + ((Number(game.completion.view.shapeY) || 1) - 1) * viewBlend,
@@ -4560,7 +4483,7 @@
   }
 
   function canPlaceOnBoard() {
-    if (!game || game.status !== "playing" || (game.demo && game.demo.active) || activeSheet || (game.view && game.view.transitioning)) {
+    if (!game || game.status !== "playing" || (game.demo && game.demo.active) || activeSheet || (game.view && (game.view.transitioning || game.view.scrubbing))) {
       return false;
     }
     return DEV_MODE || game.turn === HUMAN;
@@ -4587,6 +4510,7 @@
     }
     game.view.pointerId = null;
     game.view.dragging = false;
+    game.view.placeEligibleAtDown = false;
     dom.boardStage.classList.remove("is-view-dragging");
     renderState.pointerId = null;
     renderState.pressedCell = -1;
@@ -4603,8 +4527,9 @@
     view.lastX = event.clientX;
     view.lastY = event.clientY;
     var pressCell = eventToCell(event);
+    view.placeEligibleAtDown = canPlaceCell(pressCell);
     renderState.pointerId = event.pointerId;
-    renderState.pressedCell = canPlaceCell(pressCell) ? pressCell : -1;
+    renderState.pressedCell = view.placeEligibleAtDown ? pressCell : -1;
     renderState.pressedAt = renderState.pressedCell >= 0 ? (event.timeStamp || performance.now()) : 0;
     if (renderState.pressedCell >= 0) {
       targetPressedStone(renderState.pressedCell, true);
@@ -4642,7 +4567,6 @@
     return Boolean(
       game
       && game.completion
-      && game.completion.phase === "presenting"
       && game.status === "ended"
       && !activeSheet
     );
@@ -4758,8 +4682,9 @@
       var view = game.view;
       var wasDragging = view.dragging;
       var cell = eventToCell(event);
+      var placeEligibleAtDown = view.placeEligibleAtDown;
       clearInteractiveViewPointer();
-      if (!wasDragging && canPlaceCell(cell)) {
+      if (placeEligibleAtDown && !wasDragging && canPlaceCell(cell)) {
         performMove(cell, DEV_MODE ? developer.placementPlayer : HUMAN, { fromPress: true });
       } else {
         requestRender();
@@ -4821,9 +4746,29 @@
     dom.reviewToggleButton.addEventListener("click", handleReviewToggle);
     dom.reviewPreviousButton.addEventListener("click", function showPreviousMove() { stepReplay(-1); });
     dom.reviewNextButton.addEventListener("click", function showNextMove() { stepReplay(1); });
-    dom.viewToggleButton.addEventListener("click", toggleInteractiveView);
+    dom.viewFlatButton.addEventListener("click", function switchToFlatView() {
+      animateInteractiveViewEndpoint(0);
+    });
+    dom.viewSpatialButton.addEventListener("click", function switchToSpatialView() {
+      animateInteractiveViewEndpoint(1);
+    });
     dom.dimensionSlider.addEventListener("input", function changeInteractiveView(event) {
       setInteractiveViewProgress(event.target.value, false);
+    });
+    dom.dimensionSlider.addEventListener("pointerdown", function startViewScrubbing() {
+      if (game && game.view) {
+        game.view.scrubbing = true;
+        updateTurnUI();
+      }
+    });
+    ["pointerup", "pointercancel", "change"].forEach(function bindViewScrubEnd(eventName) {
+      dom.dimensionSlider.addEventListener(eventName, function endViewScrubbing() {
+        if (game && game.view) {
+          game.view.scrubbing = false;
+          updateTurnUI();
+          requestRender();
+        }
+      });
     });
     dom.restartButton.addEventListener("click", handleRightTool);
     dom.journeyButton.addEventListener("click", handleJourney);
