@@ -6,6 +6,7 @@ const fs = require("node:fs");
 const path = require("node:path");
 
 const ROOT = path.resolve(__dirname, "..");
+const Content = require("../app/assets/level-config.js");
 const TOPOLOGY_DIR = path.join(ROOT, "app", "assets", "topologies");
 const SILHOUETTE_DIR = path.join(ROOT, "app", "assets", "silhouettes");
 const NAMES = ["plane", "cylinder", "torus", "mobius", "klein", "projective", "sphere"];
@@ -134,10 +135,10 @@ test("首页采用 E 款品牌主视觉并移除二次进入按钮与英文副�
   assert.doesNotMatch(html, /id="homeSettingsButton"/);
   assert.doesNotMatch(html, /class="level-number"/);
   assert.match(html, /<span class="level-type">实射影平面<\/span>\s*<span class="level-name">双生<\/span>/);
-  assert.match(game, /name:\s*"双生"/);
+  assert.equal(Content.LEVELS[5].name, "双生");
   assert.match(html, /<span class="level-type">球面<\/span>\s*<span class="level-name">归圆<\/span>/);
   assert.match(html, /<span class="level-type">莫比乌斯环<\/span>/);
-  assert.match(game, /name:\s*"归圆"/);
+  assert.equal(Content.LEVELS[6].name, "归圆");
 });
 
 test("目录仅保留主视觉呼吸，图鉴与剪影保持静止以保证共享元素无闪烁", () => {
@@ -272,7 +273,7 @@ test("第一关每次通关后都自动以现有切关动效进入第二关", ()
   const style = fs.readFileSync(path.join(ROOT, "app", "assets", "style.css"), "utf8");
   assert.match(game, /firstLevelAutoAdvance\s*=\s*passed\s*&&\s*game\.levelIndex === 0/);
   assert.doesNotMatch(game, /firstTutorialCompletion|!prefs\.completed\[game\.levelIndex\]/);
-  assert.match(game, /TUTORIAL_AUTO_ADVANCE_DELAY\s*=\s*820/);
+  assert.equal(Content.TUTORIAL_AUTO_ADVANCE_DELAY, 820);
   assert.match(game, /transitionToLevel\(1, \{\}\)/);
   assert.match(game, /game\.autoAdvancePending\s*=\s*firstLevelAutoAdvance/);
   assert.match(style, /\.game-tools\.is-auto-advancing\s*\{[^}]*visibility:\s*hidden/s);

@@ -8,6 +8,8 @@ const Morph = require("../app/assets/topology-morph.js");
 const Engine = require("../app/assets/topology.js");
 
 const ROOT = path.resolve(__dirname, "..");
+const Content = require("../app/assets/level-config.js");
+const viewLogic = fs.readFileSync(path.join(ROOT, "app", "assets", "board-view-logic.js"), "utf8");
 
 function samePoint(actual, expected, message) {
   assert.equal(Morph.close(actual, expected, 1e-6), true, message);
@@ -25,7 +27,8 @@ test("二维转三维脚本在游戏脚本之前以本地经典脚本加载", ()
 test("第一关每次进入都逐子教学、隐藏边界演示且仍无 AI 回合", () => {
   const game = fs.readFileSync(path.join(ROOT, "app", "assets", "game.js"), "utf8");
   const style = fs.readFileSync(path.join(ROOT, "app", "assets", "style.css"), "utf8");
-  assert.match(game, /topology:\s*"plane",\s*\n\s*tutorial:\s*true/);
+  assert.equal(Content.LEVELS[0].topology, "plane");
+  assert.equal(Content.LEVELS[0].tutorial, true);
   assert.match(game, /function introModeFor\(levelIndex, options\) \{\s*if \(levelIndex === 0\) \{\s*return "lesson";/);
   assert.match(game, /return hasLearnedLevel\(levelIndex\) \? "demo" : "lesson"/);
   assert.match(game, /if \(introMode === "lesson"\) \{\s*startBoundaryLesson/);
@@ -39,7 +42,7 @@ test("第一关每次进入都逐子教学、隐藏边界演示且仍无 AI 回�
   assert.match(game, /reviewToolsHidden = !ended \|\| autoAdvancing \|\| firstLevel/);
   assert.match(game, /dom\.settledReplayButton\.hidden = !ended \|\| firstLevel/);
   assert.match(style, /\.endgame-review-tools \[hidden\]\s*\{\s*display:\s*none/);
-  assert.match(game, /"传统的五子棋",\s*"就是把五颗子",\s*"连成一条线",\s*"好无趣",\s*"好无聊"/s);
+  assert.deepEqual(Content.TUTORIAL_PROMPTS, ["传统的五子棋", "就是把五颗子", "连成一条线", "好无趣", "好无聊"]);
   assert.match(game, /TUTORIAL_PROMPTS\[Math\.min\(count, TUTORIAL_PROMPTS\.length - 1\)\]/);
   assert.match(game, /Engine\.suggestTutorialMove/);
   assert.match(game, /var guideText = lessonPromptText\(\);/);
@@ -49,7 +52,7 @@ test("第一关每次进入都逐子教学、隐藏边界演示且仍无 AI 回�
 
 test("除第一关外，每关只在首次游玩时逐子教学，重玩改为自动演示", () => {
   const game = fs.readFileSync(path.join(ROOT, "app", "assets", "game.js"), "utf8");
-  assert.equal((game.match(/lessonPaths:\s*\[/g) || []).length, 7);
+  assert.equal(Content.LEVELS.filter(level => level.lessonPaths.length).length, 7);
   assert.match(game, /learnedLevels:\s*\[\]/);
   assert.match(game, /normalizeLearnedLevels\(stored\.learnedLevels, defaults\.completed\)/);
   assert.match(game, /function hasLearnedLevel\(index\)/);
@@ -385,7 +388,7 @@ test("复盘与二维三维切换相互独立，曲面可以持续柔性拖动",
   assert.doesNotMatch(html, /id="resultSheet"/);
   assert.match(game, /chooseCompletionView\(winningMask, presentation\)/);
   assert.match(game, /elastic:\s*\{ x: 0, y: 0, velocityX: 0, velocityY: 0 \}/);
-  assert.match(game, /wobbleX: game\.completion\.startWobble\.x \* \(1 - viewBlend\) \+ game\.completion\.elastic\.x/);
+  assert.match(viewLogic, /wobbleX: completion\.startWobble\.x \* \(1 - viewBlend\) \+ completion\.elastic\.x/);
   assert.match(game, /completion\.elastic\.velocityY \+= yawDelta/);
 });
 
@@ -668,7 +671,7 @@ test("高阶曲面的五子展示会自动朝前且始终附着于曲面交点",
   assert.match(game, /segmentVariation \* 2\.1/);
   assert.match(game, /extremeStretch - 2\.15/);
   assert.match(game, /shapeCost \* 0\.28/);
-  assert.match(game, /shapeX: sphereCompletion \? 1 : 1 \+ \(\(Number\(game\.completion\.view\.shapeX\) \|\| 1\) - 1\) \* viewBlend/);
+  assert.match(viewLogic, /shapeX: sphereCompletion \? 1 : 1 \+ \(\(Number\(completion\.view\.shapeX\) \|\| 1\) - 1\) \* viewBlend/);
   assert.match(game, /var point = completionCellPoint\(cell, morph, spin\);/);
   assert.match(game, /var points = completionGridEdgePoints\(cells\[index\], step, direction, morph, spin\);/);
   assert.match(game, /Morph\.createPresentation\(game\.level\.topology, game\.rules/);
