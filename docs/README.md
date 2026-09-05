@@ -15,6 +15,7 @@
 | 文档 | 内容 |
 | --- | --- |
 | [`development/repository.md`](development/repository.md) | 分支职责、worktree、预览门禁、提升与发布流 |
+| [`development/pr-review.md`](development/pr-review.md) | PR 接收、证据化审查、复审、接手修复、贡献署名与收尾 |
 | [`development/environment.md`](development/environment.md) | Node、PowerShell、uv、Python 字体工具与依赖维护 |
 | [`development/documentation.md`](development/documentation.md) | 文档信息归属、变更触发矩阵与自动门禁 |
 | [`development/merging.md`](development/merging.md) | 维护者合并方向、冲突分类、平台整合验证与安全清理 |
