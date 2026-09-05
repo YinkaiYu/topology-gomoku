@@ -14,6 +14,7 @@
 
 | 文档 | 内容 |
 | --- | --- |
+| [共享运行时边界](development/architecture.md) | 关卡、对局控制、连续视角与原生棋盘绘制的权威源码 |
 | [`development/repository.md`](development/repository.md) | 分支职责、worktree、预览门禁、提升与发布流 |
 | [`development/pr-review.md`](development/pr-review.md) | PR 接收、证据化审查、复审、接手修复、贡献署名与收尾 |
 | [`development/environment.md`](development/environment.md) | Node、PowerShell、uv、Python 字体工具与依赖维护 |
