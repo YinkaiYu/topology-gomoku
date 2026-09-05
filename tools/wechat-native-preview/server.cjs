@@ -21,6 +21,11 @@ function resolveRequest(url) {
   const pathname = decodeURIComponent(new URL(url, "http://127.0.0.1").pathname);
   const relative = pathname === "/" ? "tools/wechat-native-preview/index.html" : pathname.slice(1);
   let candidate = path.resolve(root, relative);
+  if (process.env.TOPOLOGY_SHARED_ASSETS && pathname.startsWith("/app/assets/")) {
+    const shared = path.resolve(process.env.TOPOLOGY_SHARED_ASSETS);
+    const file = path.resolve(shared, pathname.slice("/app/assets/".length));
+    return file.startsWith(shared + path.sep) && fs.existsSync(file) ? file : null;
+  }
   if (!candidate.startsWith(`${root}${path.sep}`) && candidate !== root) {
     return null;
   }

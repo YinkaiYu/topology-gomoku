@@ -15,6 +15,17 @@
 
 视觉上继续遵守 [`../design/visual-language.md`](../design/visual-language.md)：同一套比例、留白、字体层级、颜色、液态玻璃、接缝轨道、棋子和曲面表达，不为“平台感”改写核心玩法或另造美术方言。
 
+## 连续视角原生边界
+
+连续视角使用共享 `board-view-logic.js`、`liquid-range.js` 的纯计算部分与 `board-view-motion.js`，不在微信外壳重新定义二分切换状态。原生场景仅负责画布命中、触摸捕获、旋转阻尼和材质绘制。
+
+- 滑块两端复用二维网格与三维圆柱图标，均为上图下字、无独立玻璃底板；与下方动作共用三列锚点和行距。
+- 边界引导隐藏视角控件但保留整行占位；进入、教学、对局和终局不因按钮数量改变棋盘大小。
+- 轨道点击只启动共享滑行；直接按住玻璃体才鼓起，并把透射轨道收窄。取消、失焦和前后台切换释放手势，不留下 AI 或落子的忙碌锁。
+- 三维短点击按实际投影命中交点；旋转拖动、长按和按下时尚未解锁的手势不落子。终局保存最后实际绘制的姿态，复盘沿用当前连续视角。
+
+`tests/wechat-continuous-view.test.js` 直接执行原生 Main 触摸处理和 SceneRenderer 布局，覆盖三种视口、占位、三列对齐、滑轨/玻璃体区分和按下资格。它不证明微信宿主上的视觉或真实触摸已通过。
+
 Agent 的开发者工具操作统一遵循 [`../development/wechat-agent-workflow.md`](../development/wechat-agent-workflow.md)：以官方 `wechatide-skill` 分场景完成状态门禁、开窗、小游戏模拟器刷新、官方截图/日志和画布坐标自动化，不把小程序 selector/WXML/WXSS 路线误用于小游戏。
 
 ## 已核验的宿主约束
@@ -57,6 +68,10 @@ npm run sync:wechat -- -TargetRoot D:\path\to\wechat-game-preview
 ```
 
 预览目录不是 Git 权威源。任何应该长期保留的修复都先回到任务 worktree 中正确的 `app/assets/` 或 `wechat/`，通过构建和同步重新生成。
+
+共享回流尚待预览确认时，可用 `build-wechat.ps1` / `sync-wechat.ps1` 的 `-SharedAssetsRoot` 指向独立共享任务的 `app/assets`，以验证两侧候选契约；这不是发行同步，也不能绕过 `dev → main → wechat`。此时清单仍使用平台候选自己的版本，正式发行必须在接收稳定 `main` 后不带覆盖参数重新构建、同步和验证。
+
+浏览器原生校准入口 `tools/wechat-native-preview/server.cjs` 支持 `TOPOLOGY_PREVIEW_PORT` 与同义的 `TOPOLOGY_SHARED_ASSETS` 路径覆盖，预览通过原生 Main 处理指针输入。它只是开发校准工具，不接入微信存储、声音和生命周期，也不替代官方模拟器。
 
 ## 开发者工具验收
 

@@ -379,6 +379,17 @@ export default class SceneRenderer {
     if (!state.game) {
       return -1;
     }
+    if (state.game.view.progress > 0.001) {
+      const game = state.game;
+      const art = GameGlobal.TopologyBoardArt;
+      const pose = this.completionPose(game, Date.now());
+      return GameGlobal.TopologyBoardViewLogic.hitProjectedCell(game.rules.cellCount, (cell) => (
+        art.mappedCompletionPoint(game, this.boardLayout,
+          art.cellCenter(game.rules, this.boardLayout, cell),
+          GameGlobal.TopologyMorph.stoneUV(game.rules, cell),
+          { ...pose.orientation, morph: pose.morph })
+      ), x - this.boardRect.x, y - this.boardRect.y, this.boardLayout.cell * 0.52);
+    }
     return GameGlobal.TopologyBoardArt.hitTestCell(
       state.game.rules,
       this.boardLayout,
@@ -630,6 +641,7 @@ export default class SceneRenderer {
   }
 
   hasControlMotion(time) {
+    if (this.viewMaterial && time - this.viewMaterial.startedAt < 650) { return true; }
     const motions = [
       this.controlMotions.difficulty,
       ...Object.keys(this.controlMotions.switches).map((key) => this.controlMotions.switches[key]),
@@ -779,98 +791,40 @@ export default class SceneRenderer {
     this.surfaceAutoResumeAt = 0;
   }
 
-  startPresenting(game, time) {
-    if (!game || !game.completionAvailable) {
-      return false;
-    }
-    this.completionMotion = {
-      key: this.completionKey(game),
-      phase: 'presenting',
-      startedAt: time,
-      duration: 3000,
-      settled: false,
-    };
-    this.surfaceAutoResumeAt = time + 2450;
-    return true;
-  }
-
-  startReturning(game, time) {
-    const pose = this.completionPose(game, time);
-    if (!pose || !pose.settled) {
-      return false;
-    }
-    this.completionMotion = {
-      key: this.completionKey(game),
-      phase: 'returning',
-      startedAt: time,
-      duration: 1050,
-      settled: false,
-    };
-    this.surfaceVelocity = { x: 0, y: 0 };
-    return true;
-  }
-
   completionPose(game, time) {
-    time = this.gameTime(time);
-    if (!game || game.status !== 'ended' || !game.completionAvailable) {
-      this.resetCompletionMotion();
-      return null;
+    if (!game || !game.view) { return null; }
+    const view = game.view;
+    const completion = view.completion;
+    if (completion) {
+      completion.view = this.completionViewFor(game) || { x: 0, y: 0, z: 0 };
     }
-    const key = this.completionKey(game);
-    if (!this.completionMotion && game.viewMode === 'surface') {
-      this.startPresenting(game, game.winAt || time);
+    // Rotation and the exact displayed pose belong to the shared view state.
+    const active = completion || view;
+    this.surfaceRotation = active.rotation;
+    if (this.surfaceState !== active) {
+      this.surfaceState = active;
+      this.surfaceVelocity = { x: 0, y: 0 };
+      this.surfaceElastic = { ...active.elastic, velocityX: 0, velocityY: 0 };
+      this.surfaceAutoResumeAt = completion ? completion.startedAt + 3000 : Infinity;
     }
-    const motion = this.completionMotion;
-    if (!motion || motion.key !== key) {
-      if (game.viewMode === 'surface') {
-        this.startPresenting(game, game.winAt || time);
-        return this.completionPose(game, time);
-      }
-      this.resetCompletionMotion();
-      return null;
-    }
-    const elapsed = Math.max(0, time - motion.startedAt);
-    if (motion.phase === 'returning') {
-      const progress = clamp01(elapsed / motion.duration);
-      if (progress >= 1) {
-        this.resetCompletionMotion();
-        return null;
-      }
-      return {
-        draw: true,
-        morph: 1 - GameGlobal.TopologyMorph.smooth(progress),
-        scale: 1,
-        settled: false,
-      };
-    }
-    const progress = clamp01((elapsed - 80) / 2550);
-    if (elapsed >= motion.duration) {
-      motion.settled = true;
-    }
-    const scale = 1
-      + Math.sin(progress * Math.PI * 2.35) * Math.pow(1 - progress, 1.85) * 0.048;
+    active.elastic.x = this.surfaceElastic.x;
+    active.elastic.y = this.surfaceElastic.y;
+    const automatic = Boolean(completion && !completion.settled);
     return {
-      draw: true,
-      morph: GameGlobal.TopologyMorph.spring(progress),
-      scale,
-      settled: motion.settled,
+      draw: view.progress > 0.001 || automatic,
+      morph: view.progress,
+      orientation: GameGlobal.TopologyBoardViewMotion.orientation(view, this.gameTime(time)),
+      settled: !automatic,
     };
   }
 
-  canToggleDimension(game, time) {
-    if (!game || !game.completionAvailable) {
-      return false;
-    }
-    if (game.viewMode === 'surface') {
-      const pose = this.completionPose(game, time);
-      return Boolean(pose && pose.settled);
-    }
-    return !this.completionMotion;
+  canToggleDimension(game) {
+    return Boolean(game && this.controller.canUseViewControl()
+      && !GameGlobal.TopologyBoardViewMotion.busy(game.view));
   }
 
-  canDragSurface(game, time) {
-    const pose = this.completionPose(game, time);
-    return Boolean(game && game.viewMode === 'surface' && pose && pose.settled);
+  canDragSurface(game) {
+    return Boolean(game && game.view.progress > 0.001 && this.canToggleDimension(game));
   }
 
   beginSurfaceDrag(time) {
@@ -899,7 +853,7 @@ export default class SceneRenderer {
     time = this.gameTime(time);
     const hadMotion = Boolean(this.completionMotion);
     const pose = this.completionPose(game, time);
-    if (!pose) {
+    if (!pose || !pose.draw) {
       return hadMotion;
     }
     if (!pose.settled) {
@@ -913,7 +867,7 @@ export default class SceneRenderer {
       this.surfaceRotation.y += this.surfaceVelocity.y * frameDelta;
       this.surfaceVelocity.x *= friction;
       this.surfaceVelocity.y *= friction;
-      if (time >= this.surfaceAutoResumeAt) {
+      if (game.status === 'ended' && time >= this.surfaceAutoResumeAt) {
         this.surfaceRotation.y += 0.00016 * frameDelta;
       }
     }
@@ -1322,7 +1276,8 @@ export default class SceneRenderer {
       });
     }
 
-    const actionDeckHeight = rowHeight * 2 + verticalGap;
+    const actionRows = game.levelIndex > 0 ? 3 : 2;
+    const actionDeckHeight = rowHeight * actionRows + 10 * (actionRows - 1);
     const boardTop = matchRect.y + matchHeight + verticalGap;
     const availableBoardHeight = Math.max(
       1,
@@ -1353,18 +1308,14 @@ export default class SceneRenderer {
       ctx.translate(this.boardRect.x, this.boardRect.y);
       const completionPose = this.completionPose(game, gameTime);
       if (completionPose && completionPose.draw) {
+        game.view.displayedOrientation = completionPose.orientation;
         const completionGame = gameForReviewFrame(game);
         GameGlobal.TopologyBoardArt.drawCompletion(ctx, {
           game: completionGame,
           layout: this.boardLayout,
           time: gameTime,
-          rotation: this.surfaceRotation,
-          view: this.completionViewFor(game),
-          presentation: this.presentationFor(game),
           morph: completionPose.morph,
-          scale: completionPose.scale,
-          wobbleX: this.surfaceElastic.x,
-          wobbleY: this.surfaceElastic.y,
+          orientation: { ...completionPose.orientation, morph: completionPose.morph },
         });
       } else {
         const boardInteraction = interaction.board
@@ -1393,7 +1344,7 @@ export default class SceneRenderer {
     if (!sharedTarget) {
       this.register('board', this.boardRect, { action: 'board' });
     }
-    this.drawGameActions(state, gameTime, this.boardRect.y + this.boardRect.height + verticalGap, rowHeight);
+    this.drawGameActions(state, gameTime, this.boardRect.y + this.boardRect.height + verticalGap, rowHeight, interaction);
   }
 
   drawMiniStone(x, y, size, light) {
@@ -1435,19 +1386,22 @@ export default class SceneRenderer {
     ctx.restore();
   }
 
-  drawGameActions(state, time, topY, rowHeight) {
+  drawGameActions(state, time, topY, rowHeight, interaction = {}) {
     const game = state.game;
     const compact = this.metrics.height <= 760;
     const content = this.contentBounds(560, compact ? 18 : 16);
     const rowGap = 10;
     const contentWidth = content.width;
+    if (game.levelIndex > 0) {
+      this.drawViewControl(state, time, content, topY, rowHeight, interaction);
+    }
     if (game.status !== 'ended') {
       const actions = [
         {
           key: 'undo',
           label: '悔棋',
           icon: 'undo',
-          disabled: !game.moves.length || game.status !== 'playing',
+          disabled: !game.moves.length || game.status !== 'playing' || GameGlobal.TopologyBoardViewMotion.busy(game.view),
         },
         game.levelIndex > 0 ? {
           key: 'boundary',
@@ -1455,12 +1409,14 @@ export default class SceneRenderer {
           icon: 'boundary',
           tone: 'spatial',
           disabled: game.status !== 'playing'
+            || GameGlobal.TopologyBoardViewMotion.busy(game.view)
             || Boolean(game.lesson && game.lesson.active)
             || Boolean(game.demo && game.demo.active),
         } : null,
         { key: 'restart', label: '重来', icon: 'restart', disabled: false },
       ];
-      this.drawActionRow(actions, content.x, topY + rowHeight + rowGap, contentWidth, rowHeight, 8);
+      const toolsRow = game.levelIndex > 0 ? 2 : 1;
+      this.drawActionRow(actions, content.x, topY + toolsRow * (rowHeight + rowGap), contentWidth, rowHeight, 8);
       return;
     }
 
@@ -1469,7 +1425,7 @@ export default class SceneRenderer {
     }
 
     const reviewing = Boolean(game.review);
-    const completionReady = !game.completionAvailable || this.canToggleDimension(game, time);
+    const completionReady = !GameGlobal.TopologyBoardViewMotion.busy(game.view);
     const firstLevel = game.levelIndex === 0;
     if (firstLevel) {
       const passed = game.outcome === 'win' || game.outcome === 'draw';
@@ -1496,6 +1452,12 @@ export default class SceneRenderer {
     }
     const firstRow = [
       {
+        key: 'previous',
+        label: '上一步',
+        icon: 'previous',
+        disabled: !completionReady || !reviewing || game.review.step <= 0,
+      },
+      {
         key: 'replay-toggle',
         label: reviewing ? '定局' : '复盘',
         icon: reviewing ? 'check' : 'review',
@@ -1503,26 +1465,13 @@ export default class SceneRenderer {
         disabled: !completionReady,
       },
       {
-        key: 'previous',
-        label: '上一步',
-        icon: 'previous',
-        disabled: !completionReady || !reviewing || game.review.step <= 0,
-      },
-      {
         key: 'next-step',
         label: '下一步',
         icon: 'next',
         disabled: !completionReady || !reviewing || game.review.step >= game.review.total,
       },
-      {
-        key: 'dimension',
-        label: game.viewMode === 'surface' ? '二维' : '三维',
-        icon: game.viewMode === 'surface' ? 'board' : 'surface',
-        tone: 'spatial',
-        disabled: !this.canToggleDimension(game, time),
-      },
     ];
-    this.drawActionRow(firstRow, content.x, topY, contentWidth, rowHeight, 4);
+    this.drawActionRow(firstRow, content.x, topY + rowHeight + rowGap, contentWidth, rowHeight, 8);
     const passed = game.outcome === 'win' || game.outcome === 'draw';
     const secondRow = [
       { key: 'journey', label: '旅程', icon: 'journey', disabled: !completionReady },
@@ -1536,7 +1485,83 @@ export default class SceneRenderer {
       },
     ];
     secondRow[2].icon = 'next-level';
-    this.drawActionRow(secondRow, content.x, topY + rowHeight + rowGap, contentWidth, rowHeight, 8);
+    this.drawActionRow(secondRow, content.x, topY + 2 * (rowHeight + rowGap), contentWidth, rowHeight, 8);
+  }
+
+  viewProgressAt(x, offset = 0) {
+    const track = this.viewRangeRect;
+    return track ? clamp01((x - offset - track.x - 14) / Math.max(1, track.width - 28)) : 0;
+  }
+
+  viewThumbRect(progress) {
+    const track = this.viewRangeRect;
+    return track ? rect(track.x + (track.width - 28) * progress, track.y + 11, 28, 22) : null;
+  }
+
+  drawViewControl(state, time, content, y, rowHeight, interaction) {
+    const game = state.game;
+    const hidden = Boolean((game.lesson && game.lesson.active) || (game.demo && game.demo.active)
+      || (game.status !== 'playing' && game.status !== 'ended'));
+    this.viewRangeRect = null;
+    if (hidden) { return; } // The caller reserves this row even during teaching.
+    const disabled = !this.controller.canUseViewControl();
+    const value = game.view.progress;
+    const col = (content.width - 16) / 3;
+    this.drawActionRow([
+      { key: 'view-flat', label: '二维', icon: 'board', disabled, noPanel: true, tone: value <= 0.001 ? 'spatial' : null },
+      null,
+      { key: 'view-spatial', label: '三维', icon: 'surface', disabled, noPanel: true, tone: value >= 0.999 ? 'spatial' : null },
+    ], content.x, y, content.width, rowHeight, 8);
+    this.viewRangeRect = rect(content.x + col / 2 + 30, y + (rowHeight - 44) / 2,
+      content.width - col - 60, 44);
+    const thumb = this.viewThumbRect(value);
+    const centerX = thumb.x + 14;
+    const centerY = thumb.y + 11;
+    const pressed = interaction.mode === 'view-range' && interaction.pressedMovable;
+    const previous = this.viewMaterial || { value: 0, from: 0, target: 0, startedAt: time };
+    const target = pressed ? 1 : 0;
+    if (previous.target !== target) {
+      previous.from = previous.value;
+      previous.target = target;
+      previous.startedAt = time;
+    }
+    const materialProgress = clamp01((time - previous.startedAt) / (pressed ? 192 : 650));
+    previous.value = previous.from + (target - previous.from) * GameGlobal.TopologyLiquidRange.glide(materialProgress);
+    this.viewMaterial = previous;
+    const press = Math.max(0, previous.value);
+    const scaleX = 1 + 0.24 * press;
+    const scaleY = 1 + 0.48 * press;
+    const rail = rect(this.viewRangeRect.x + 14, centerY - 2, this.viewRangeRect.width - 28, 4);
+    const ctx = this.context;
+    const drawRail = () => fillRoundedRect(ctx, rail, 2, 'rgba(49,95,91,0.13)');
+    ctx.save();
+    ctx.globalAlpha *= disabled ? 0.42 : 1;
+    if (press > 0.001) {
+      // Split the real rail around the lens: never draw two superimposed rails.
+      for (const clip of [
+        rect(rail.x - 1, centerY - 4, Math.max(0, centerX - 12 - rail.x), 8),
+        rect(centerX + 12, centerY - 4, Math.max(0, rail.x + rail.width - centerX - 12 + 1), 8),
+      ]) {
+        ctx.save();
+        ctx.beginPath(); ctx.rect(clip.x, clip.y, clip.width, clip.height); ctx.clip();
+        drawRail();
+        ctx.restore();
+      }
+      ctx.save();
+      roundedRectPath(ctx, centerX - 12, centerY - 11 * scaleY, 24, 22 * scaleY, 10);
+      ctx.clip();
+      ctx.translate(centerX, centerY);
+      ctx.scale(1 + (0.43 * scaleX - 1) * press, 1 + (0.34 * scaleY - 1) * press);
+      ctx.translate(-centerX, -centerY);
+      drawRail();
+      ctx.restore();
+    } else { drawRail(); }
+    ctx.save();
+    ctx.translate(centerX, centerY); ctx.scale(scaleX, scaleY); ctx.translate(-centerX, -centerY);
+    glassPanel(ctx, thumb, { variant: 'thumb', radius: 12, pressed, explicitTransform: true });
+    ctx.restore();
+    ctx.restore();
+    this.register('view-range', this.viewRangeRect, { action: 'view-range' }, disabled);
   }
 
   drawActionRow(actions, x, y, width, height, gap) {
@@ -1554,7 +1579,7 @@ export default class SceneRenderer {
       ctx.save();
       ctx.globalAlpha *= action.disabled ? 0.28 : 1;
       if (pressed) {
-        fillRoundedRect(ctx, actionRect, 15, 'rgba(255,255,255,0.18)');
+        if (!action.noPanel) { fillRoundedRect(ctx, actionRect, 15, 'rgba(255,255,255,0.18)'); }
         ctx.translate(actionRect.x + actionRect.width / 2, actionRect.y + actionRect.height / 2 - 1);
         ctx.scale(1.12, 1.12);
         ctx.translate(-(actionRect.x + actionRect.width / 2), -(actionRect.y + actionRect.height / 2 - 1));

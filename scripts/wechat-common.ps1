@@ -10,6 +10,9 @@ $script:WechatAuthoritativeCopies = @(
   [pscustomobject]@{ Source = 'topology-morph.js'; Destination = 'js/shared/topology-morph.js'; Kind = 'shared-js' },
   [pscustomobject]@{ Source = 'game-replay.js'; Destination = 'js/shared/game-replay.js'; Kind = 'shared-js' },
   [pscustomobject]@{ Source = 'level-config.js'; Destination = 'js/shared/level-config.js'; Kind = 'shared-js' },
+  [pscustomobject]@{ Source = 'board-view-logic.js'; Destination = 'js/shared/board-view-logic.js'; Kind = 'shared-js' },
+  [pscustomobject]@{ Source = 'liquid-range.js'; Destination = 'js/shared/liquid-range.js'; Kind = 'shared-js' },
+  [pscustomobject]@{ Source = 'board-view-motion.js'; Destination = 'js/shared/board-view-motion.js'; Kind = 'shared-js' },
   [pscustomobject]@{ Source = 'game-controller.js'; Destination = 'js/shared/game-controller.js'; Kind = 'shared-js' },
   [pscustomobject]@{ Source = 'board-art.js'; Destination = 'js/shared/board-art.js'; Kind = 'shared-js' },
   [pscustomobject]@{ Source = 'brand-icon.png'; Destination = 'assets/brand-icon.png'; Kind = 'derived-image' }

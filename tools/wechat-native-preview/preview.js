@@ -1,4 +1,5 @@
 import SceneRenderer from '/wechat/js/ui/scene-renderer.js';
+import Main from '/wechat/js/main.js';
 import { computeViewportMetrics } from '/wechat/js/platform/wechat-host.js';
 
 const canvas = document.getElementById('wechatPreview');
@@ -71,6 +72,29 @@ const host = {
   },
 };
 const renderer = new SceneRenderer(host, controller);
+const runtime = Object.create(Main.prototype);
+Object.assign(runtime, {
+  controller, renderer, host, pauseReasons: new Set(),
+  interaction: { mode: null, touchId: null },
+  dirty: true, wake() {},
+  sound: { play() {}, unlock() {}, setEnabled() {} },
+});
+host.writeStorage = () => {};
+host.vibrate = () => {};
+canvas.style.touchAction = 'none';
+for (const [eventName, method] of [
+  ['pointerdown', 'onTouchStart'], ['pointermove', 'onTouchMove'],
+  ['pointerup', 'onTouchEnd'], ['pointercancel', 'onTouchCancel'],
+]) {
+  canvas.addEventListener(eventName, (event) => {
+    if (eventName === 'pointerdown') { canvas.setPointerCapture(event.pointerId); }
+    runtime[method]({ changedTouches: [{
+      identifier: event.pointerId, clientX: event.offsetX, clientY: event.offsetY,
+    }] });
+    event.preventDefault();
+  });
+}
+window.addEventListener('blur', () => runtime.onTouchCancel({ changedTouches: [] }));
 
 function seedGame(levelIndex) {
   controller.startLevel(levelIndex, { introMode: 'none' }, Date.now() - 4000);
@@ -96,6 +120,7 @@ function configureState() {
   const levelIndex = Math.max(0, Math.min(6, Number(query.get('level')) || 0));
   if (stateName === 'game' || stateName === 'settings') {
     seedGame(levelIndex);
+    controller.setViewProgress(Number(query.get('progress')) || 0, false, Date.now());
   } else if (stateName === 'end' || stateName === 'review') {
     const game = seedEnding(levelIndex);
     if (stateName === 'review') {
@@ -110,9 +135,15 @@ function configureState() {
 }
 
 function draw() {
-  renderer.render(Date.now(), {});
+  const now = Date.now();
+  controller.tick(now);
+  runtime.processControllerEvents();
+  renderer.updateSurfaceMotion(controller.game, now, 16.67,
+    runtime.interaction.mode === 'view-board' && runtime.interaction.dragged);
+  renderer.render(now, runtime.interaction);
   window.__wechatPreview = { controller, host, renderer };
   document.documentElement.dataset.previewReady = 'true';
+  requestAnimationFrame(draw);
 }
 
 function loadImage(source, onLoad) {

@@ -133,7 +133,7 @@ export default class Main {
         state.game,
         now,
         delta,
-        this.interaction.mode === 'surface',
+        this.interaction.mode === 'view-board' && this.interaction.dragged,
       );
     const animationDelay = this.animationDelay(state, now, surfaceAnimated);
     this.host.keepScreenAwake(Boolean(
@@ -220,6 +220,7 @@ export default class Main {
   }
 
   resetInteraction() {
+    if (this.interaction.mode === 'view-range') { this.controller.setViewScrubbing(false); }
     this.interaction = emptyInteraction();
     this.renderer.setPressedKey(null);
     this.dirty = true;
@@ -277,11 +278,11 @@ export default class Main {
       return;
     }
     if (action === 'board' && state.game) {
-      if (state.game.status === 'ended'
-          && state.game.viewMode === 'surface'
-          && this.renderer.canDragSurface(state.game, now)) {
-        this.interaction.mode = 'surface';
+      if (this.renderer.canDragSurface(state.game, now)) {
+        this.interaction.mode = 'view-board';
         this.interaction.key = 'board';
+        this.interaction.placeEligibleAtDown = this.controller.canPlaceCell(this.renderer.boardCellAt(point.x, point.y));
+        this.interaction.dragged = false;
         this.renderer.beginSurfaceDrag(now);
         this.dirty = true;
         return;
@@ -309,7 +310,15 @@ export default class Main {
       this.resetInteraction();
       return;
     }
-    if (action === 'difficulty') {
+    if (action === 'view-range') {
+      const view = state.game.view;
+      const thumb = this.renderer.viewThumbRect(view.progress);
+      this.interaction.mode = 'view-range';
+      this.interaction.pressedMovable = point.x >= thumb.x && point.x <= thumb.x + thumb.width
+        && point.y >= thumb.y && point.y <= thumb.y + thumb.height;
+      this.interaction.controlGrabOffset = this.interaction.pressedMovable ? point.x - thumb.x - thumb.width / 2 : 0;
+      this.controller.setViewScrubbing(true);
+    } else if (action === 'difficulty') {
       const order = GameGlobal.TopologyGameContent.DIFFICULTY_ORDER;
       const startProgress = Math.max(0, order.indexOf(state.preferences.difficulty));
       this.interaction.mode = 'difficulty';
@@ -373,8 +382,15 @@ export default class Main {
         this.interaction.board.cell = cell;
         this.interaction.board.target = center;
       }
-    } else if (this.interaction.mode === 'surface') {
-      this.renderer.dragSurface(deltaX, deltaY, now - this.interaction.lastAt);
+    } else if (this.interaction.mode === 'view-board') {
+      if (Math.hypot(point.x - this.interaction.startX, point.y - this.interaction.startY) >= 7
+          || now - this.interaction.startedAt >= 240) { this.interaction.dragged = true; }
+      if (this.interaction.dragged) { this.renderer.dragSurface(deltaX, deltaY, now - this.interaction.lastAt); }
+    } else if (this.interaction.mode === 'view-range') {
+      if (Math.abs(point.x - this.interaction.startX) > 3) { this.interaction.controlMoved = true; }
+      if (this.interaction.controlMoved || this.interaction.pressedMovable) {
+        this.controller.setViewProgress(this.renderer.viewProgressAt(point.x, this.interaction.controlGrabOffset), false, now);
+      }
     } else if (this.interaction.mode === 'difficulty') {
       if (Math.abs(point.x - this.interaction.startX) > 3) {
         this.interaction.controlMoved = true;
@@ -441,8 +457,18 @@ export default class Main {
       if (this.controller.canPlaceCell(cell)) {
         this.controller.performMove(cell, GameGlobal.TopologyGomoku.HUMAN, { fromPress: true }, now);
       }
-    } else if (mode === 'surface') {
+    } else if (mode === 'view-board') {
       this.renderer.endSurfaceDrag(now);
+      const cell = this.renderer.boardCellAt(point.x, point.y);
+      if (GameGlobal.TopologyBoardViewLogic.shouldPlaceOnRelease(
+        this.interaction.placeEligibleAtDown,
+        this.interaction.dragged || now - this.interaction.startedAt >= 240,
+        this.controller.canPlaceCell(cell),
+      )) { this.controller.performMove(cell, GameGlobal.TopologyGomoku.HUMAN, null, now); }
+    } else if (mode === 'view-range') {
+      const direct = !this.interaction.controlMoved && !this.interaction.pressedMovable;
+      const value = this.renderer.viewProgressAt(point.x, this.interaction.controlGrabOffset);
+      this.controller.setViewProgress(value, direct, now, true);
     } else if (mode === 'difficulty') {
       const visualProgress = this.interaction.previewDifficultyProgress === undefined
         ? this.interaction.controlStartProgress
@@ -517,7 +543,7 @@ export default class Main {
     }
     if (this.interaction.mode === 'sheet') {
       this.renderer.settleSheetDrag(Date.now(), false);
-    } else if (this.interaction.mode === 'surface') {
+    } else if (this.interaction.mode === 'view-board') {
       this.renderer.endSurfaceDrag(Date.now());
     } else if (this.interaction.mode === 'difficulty') {
       this.renderer.settleControl(
@@ -578,16 +604,8 @@ export default class Main {
       this.controller.restart(now);
     } else if (action === 'boundary') {
       this.controller.replayBoundaryLesson(now);
-    } else if (action === 'dimension') {
-      if (this.renderer.canToggleDimension(game, now)) {
-        if (game.viewMode === 'surface') {
-          this.renderer.startReturning(game, now);
-        } else {
-          this.renderer.surfaceRotation = { x: 0, y: 0, z: 0 };
-          this.renderer.startPresenting(game, now);
-        }
-        this.controller.toggleDimension();
-      }
+    } else if (action === 'view-flat' || action === 'view-spatial') {
+      this.controller.setViewProgress(action === 'view-flat' ? 0 : 1, true, now, true);
     } else if (action === 'replay-toggle') {
       if (game && game.review) {
         this.controller.endReplay();

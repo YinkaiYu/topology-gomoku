@@ -166,12 +166,15 @@ test("微信宿主拒绝零尺寸、倒置和越界胶囊数据", () => {
 test("微信入口先建立 GameGlobal 兼容层，再按依赖顺序创建唯一上屏 Canvas", () => {
   const entry = read("wechat/game.js");
   const imports = [...entry.matchAll(/^import ['"]([^'"]+)['"];$/gm)].map((match) => match[1]);
-  assert.deepEqual(imports.slice(0, 7), [
+  assert.deepEqual(imports.slice(0, 10), [
     "./js/platform/runtime-global",
     "./js/shared/topology",
     "./js/shared/topology-morph",
     "./js/shared/game-replay",
     "./js/shared/level-config",
+    "./js/shared/board-view-logic",
+    "./js/shared/liquid-range",
+    "./js/shared/board-view-motion",
     "./js/shared/game-controller",
     "./js/shared/board-art",
   ]);
@@ -541,26 +544,25 @@ test("难度滑块与开关按连续位置拖动，越界阻尼后以液态 sett
   assert.match(main, /this\.renderer\.settleControl\(\s*'switch'[\s\S]*this\.interaction\.pressedMovable/s);
 });
 
-test("结算操作区固定为复盘四项与旅程三项矩阵", () => {
+test("结算操作区采用视角、复盘、旅程三行三列矩阵", () => {
   const renderer = read("wechat/js/ui/scene-renderer.js");
   const actions = sourceBetween(
     renderer,
-    "  drawGameActions(state, time, topY, rowHeight) {",
+    "  drawGameActions(state, time, topY, rowHeight, interaction = {}) {",
     "  drawActionRow(actions, x, y, width, height, gap) {",
   );
   assert.deepEqual(objectArrayKeys(actions, "firstRow"), [
-    "replay-toggle",
     "previous",
+    "replay-toggle",
     "next-step",
-    "dimension",
   ]);
   assert.deepEqual(objectArrayKeys(actions, "secondRow"), [
     "journey",
     "restart",
     "next-level",
   ]);
-  assert.match(actions, /this\.drawActionRow\(firstRow, content\.x, topY, contentWidth, rowHeight, 4\)/);
-  assert.match(actions, /this\.drawActionRow\(secondRow, content\.x, topY \+ rowHeight \+ rowGap, contentWidth, rowHeight, 8\)/);
+  assert.match(actions, /this\.drawActionRow\(firstRow, content\.x, topY \+ rowHeight \+ rowGap, contentWidth, rowHeight, 8\)/);
+  assert.match(actions, /this\.drawActionRow\(secondRow, content\.x, topY \+ 2 \* \(rowHeight \+ rowGap\), contentWidth, rowHeight, 8\)/);
   assert.match(actions, /\{ key: 'journey', label: '旅程', icon: 'journey'/);
 });
 
@@ -606,10 +608,9 @@ test("宿主安全区压缩图鉴时缩小图案槽，避免图案与关卡注�
 test("终局曲面使用正反形变、接缝胜线与 settled 输入锁", () => {
   const renderer = read("wechat/js/ui/scene-renderer.js");
   const boardArt = read("app/assets/board-art.js");
-  assert.match(renderer, /phase: 'presenting'/);
-  assert.match(renderer, /phase: 'returning'/);
-  assert.match(renderer, /morph: 1 - GameGlobal\.TopologyMorph\.smooth\(progress\)/);
-  assert.match(renderer, /return Boolean\(pose && pose\.settled\)/);
+  assert.match(renderer, /TopologyBoardViewMotion\.orientation/);
+  assert.match(renderer, /TopologyBoardViewMotion\.busy/);
+  assert.match(renderer, /morph: view\.progress/);
   assert.match(boardArt, /Engine\.step\(game\.rules, cells\[index\], direction\)/);
   assert.match(boardArt, /Morph\.seamBridgeUV\(/);
 });

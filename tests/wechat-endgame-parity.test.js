@@ -7,6 +7,8 @@ const path = require("node:path");
 const vm = require("node:vm");
 
 const ROOT = path.resolve(__dirname, "..");
+const sharedRoot = process.env.TOPOLOGY_SHARED_ASSETS || path.join(ROOT, "app/assets");
+const Motion = require(path.join(sharedRoot, "board-view-motion.js"));
 const Engine = require("../app/assets/topology.js");
 const Content = require("../app/assets/level-config.js");
 const ControllerModule = require("../app/assets/game-controller.js");
@@ -43,6 +45,7 @@ function loadSceneRenderer() {
     console,
     wx: {},
     GameGlobal: {
+      TopologyBoardViewMotion: Motion,
       TopologyMorph: {
         smooth: (value) => value,
         spring: (value) => value,
@@ -81,6 +84,7 @@ function endedGame(overrides = {}) {
     completionAvailable: true,
     autoAdvancePending: false,
     winAt: 0,
+    view: Motion.create(),
     ...overrides,
   };
 }
@@ -92,6 +96,13 @@ function rendererWithMotion(game, motion) {
   renderer.surfaceVelocity = { x: 0, y: 0 };
   renderer.surfaceElastic = { x: 0, y: 0, velocityX: 0, velocityY: 0 };
   renderer.surfaceAutoResumeAt = 0;
+  renderer.controller = { canUseViewControl: () => !(game.view.completion && !game.view.completion.settled) };
+  renderer.completionViewFor = () => ({ x: 0, y: 0, z: 0 });
+  if (motion) {
+    Motion.finish(game.view, motion.startedAt, null);
+    game.view.completion.settled = motion.settled;
+    game.view.progress = motion.settled ? 1 : 0.4;
+  }
   renderer.completionMotion = motion
     ? {
         key: renderer.completionKey(game),
@@ -107,6 +118,11 @@ function rendererWithMotion(game, motion) {
 function actionRows(renderer, game, time) {
   const rows = [];
   renderer.contentBounds = () => ({ x: 0, width: 390 });
+  renderer.drawViewControl = () => rows.push({
+    y: 0, actions: ["view-flat", "view-spatial"].map(key => ({
+      key, disabled: !renderer.controller.canUseViewControl(),
+    })),
+  });
   renderer.drawActionRow = (actions, x, y) => {
     rows.push({
       y,
@@ -270,8 +286,8 @@ test("复盘中的稳定曲面仍可绘制并开放维度切换", () => {
   assert.ok(pose && pose.draw && pose.settled);
   assert.equal(renderer.canToggleDimension(game, 3200), true);
   const rows = actionRows(renderer, game, 3200);
-  const dimension = rows.flatMap((row) => row.actions).find((action) => action.key === "dimension");
-  assert.deepEqual(dimension, { key: "dimension", disabled: false });
+  const dimension = rows.flatMap((row) => row.actions).find((action) => action.key === "view-spatial");
+  assert.deepEqual(dimension, { key: "view-spatial", disabled: false });
 });
 
 test("复盘未到终局步时，二维棋盘不画胜线且棋子保持正常明度", () => {
