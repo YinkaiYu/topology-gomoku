@@ -101,4 +101,4 @@ npm run sync:wechat -- -TargetRoot D:\path\to\wechat-game-preview
 
 ## 版本与发布边界
 
-微信原生 adapter、构建脚本、开发者工具配置或宿主兼容修复不修改游戏 SemVer。`dist/wechat/` 的清单继承当前 `package.json` 版本；只有维护者把稳定核心沿 `dev → main` 提升时确定新版本，再由同一个 `main` 与同一个 SemVer 同步到三个发行分支。微信要求的构建号或审核批次可以单独记录，但不得改写游戏版本。
+微信原生 adapter、构建脚本、开发者工具配置或宿主兼容修复不修改游戏 SemVer。`dist/wechat/` 的清单继承当前 `package.json` 版本；只有维护者把稳定核心沿 `dev → main` 提升时确定新版本，再由同一个 `main` 与同一个 SemVer 同步到五个发行分支。微信要求的构建号或审核批次可以单独记录，但不得改写游戏版本。
