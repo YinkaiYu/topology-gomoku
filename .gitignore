@@ -14,3 +14,5 @@ Thumbs.db
 *.log
 *.tgz
 release/*.zip
+app/_tmp/
+app/app.zip

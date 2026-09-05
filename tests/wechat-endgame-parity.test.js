@@ -9,10 +9,10 @@ const vm = require("node:vm");
 const ROOT = path.resolve(__dirname, "..");
 const sharedRoot = process.env.TOPOLOGY_SHARED_ASSETS || path.join(ROOT, "app/assets");
 const Motion = require(path.join(sharedRoot, "board-view-motion.js"));
-const Engine = require("../app/assets/topology.js");
-const Content = require("../app/assets/level-config.js");
-const ControllerModule = require("../app/assets/game-controller.js");
-const BoardArt = require("../app/assets/board-art.js");
+const Engine = require(path.join(sharedRoot, "topology.js"));
+const Content = require(path.join(sharedRoot, "level-config.js"));
+const ControllerModule = require(path.join(sharedRoot, "game-controller.js"));
+const BoardArt = require(path.join(sharedRoot, "board-art.js"));
 
 function read(relativePath) {
   return fs.readFileSync(path.join(ROOT, ...relativePath.split("/")), "utf8");
@@ -228,11 +228,13 @@ test("复盘保持进入前的二维或三维视图，并允许在复盘中继�
     controller.startLevel(1, { skipDemo: true }, 0);
     controller.game.status = "ended";
     controller.game.completionAvailable = true;
-    controller.game.viewMode = initialView;
+    controller.setViewProgress(initialView === "surface" ? 1 : 0, false, 0);
     assert.equal(WechatUiParity.beginReplayPreservingView(controller, controller.game), true);
     assert.equal(controller.game.viewMode, initialView);
     assert.equal(controller.toggleDimension(), true);
     const toggledView = initialView === "surface" ? "board" : "surface";
+    assert.equal(controller.game.viewMode, initialView, "动画开始时仍是实际显示位置");
+    controller.tick(1000);
     assert.equal(controller.game.viewMode, toggledView);
     assert.equal(controller.endReplay(), true);
     assert.equal(controller.game.viewMode, toggledView);

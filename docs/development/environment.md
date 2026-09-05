@@ -25,6 +25,7 @@ npm run check:wechat
 npm run build:wechat
 npm run sync:wechat
 npm run prepare:wechat-agent
+npm run build:web
 npm run fonts:subset
 npm run fonts:subset:wechat
 npm run release:check-versions -- X.Y.Z
@@ -36,7 +37,8 @@ npm run release:check-versions -- X.Y.Z
 - `npm run sync:wechat` 会先执行一次全新构建，再把托管文件同步至 `%USERPROFILE%\Documents\Codex\miniprograms\topology-gomoku`。目标是微信官方小游戏模板派生的开发者工具生成/预览目录，不是源码；同步保留 AppID、`project.config.json`、`project.private.config.json` 及其他未托管文件。
 - `npm run prepare:wechat-agent` 先执行共享检查，再调用自带 fresh build 的 `sync:wechat` 更新默认目录；它不会在同步前重复执行一次相同构建。同步后仍须完成模拟器刷新、截图、console 与画布交互验证。
 - `npm run fonts:subset` 重建 H5 WOFF2；`npm run fonts:subset:wechat` 同时扫描 `app/` 与 `wechat/`，重建隔离的微信本地 TTF。两者都通过 `uv run --locked` 自动创建或同步 `.venv`，无需激活虚拟环境。
-- `npm run release:check-versions -- X.Y.Z` 仅供维护者在稳定同步后检查 `main` 与三个发行分支的统一游戏版本。
+- 知乎交付不新增 npm 构建命令；维护者在 `zhihu` 任务 worktree 中使用 `$zhihu-ai-works-deploy-helper`，并把 `app/` 作为 build-free 静态项目根。
+- `npm run release:check-versions -- X.Y.Z` 仅供维护者在稳定同步后检查 `main` 与五个发行分支的统一游戏版本。
 - 首次同步需要下载 `uv.lock` 中的依赖；之后会复用锁定环境与本地缓存。
 
 ## 微信小游戏本地预览

@@ -982,7 +982,7 @@
     var settings = options || {};
     var game = settings.game;
     var layout = settings.layout;
-    if (!game || !layout || !game.completionAvailable) {
+    if (!game || !layout) {
       return;
     }
     var base = DEFAULT_VIEWS[game.level.topology] || { x: 0.5, y: -0.4, z: 0, scale: 1 };
@@ -990,7 +990,7 @@
     var rotation = settings.rotation || { x: 0, y: 0, z: 0 };
     var morph = settings.morph === undefined ? 1 : clamp01(Number(settings.morph) || 0);
     var viewBlend = Morph.smooth(morph);
-    var orientation = {
+    var orientation = settings.orientation || {
       x: ((Number(view.x) || 0) + (rotation.x || 0)) * viewBlend,
       y: ((Number(view.y) || 0) + (rotation.y || 0)) * viewBlend,
       z: ((Number(view.z) || 0) + (rotation.z || 0)) * viewBlend,
@@ -1154,6 +1154,7 @@
     pointInsideBoard: pointInsideBoard,
     drawBoard: drawBoard,
     drawCompletion: drawCompletion,
+    mappedCompletionPoint: mappedCompletionPoint,
     drawTopologyGlyph: drawTopologyGlyph,
     drawTopologySilhouette: drawTopologySilhouette
   };

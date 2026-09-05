@@ -127,7 +127,8 @@ test("微信 UI 栅格由 H5 权威 SVG 与按钮路径生成", () => {
     "reviewToggleButton",
     "reviewPreviousButton",
     "reviewNextButton",
-    "dimensionToggleButton",
+    "viewFlatButton",
+    "viewSpatialButton",
   ]) {
     assert.match(generator, new RegExp(`pathForButton\\("${button}"\\)`));
   }

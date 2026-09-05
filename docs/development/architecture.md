@@ -11,13 +11,30 @@
 | `app/assets/topology.js` | 七种拓扑步进、胜利掩码、提示、封锁判定与 AI |
 | `app/assets/topology-morph.js` | 二维到三维曲面的参数化、投影与接缝几何 |
 | `app/assets/game-replay.js` | 按手数重建棋盘与复盘文案 |
+| `app/assets/board-view-logic.js` | 松手落子资格、投影命中、连续视角和终局姿态计算 |
+| `app/assets/board-view-motion.js` | 原生 controller 的连续进度、滑行、终局和输入互斥状态 |
 | `app/assets/level-config.js` | 七关尺寸、教学路径、难度和固定节奏 |
 | `app/assets/game-controller.js` | 无宿主计时器的对局、教学、AI、悔棋、复盘与进度状态机 |
 | `app/assets/board-art.js` | Canvas 2D 棋盘、接缝轨道、棋子、提示与三维曲面绘制 |
 
 共享模块使用 UMD 形式：浏览器通过全局对象加载，Node 测试通过 CommonJS 加载，原生平台构建可原样复制后由入口按依赖顺序执行。共享层禁止访问 `document`、`localStorage`、`wx` 或其他宿主对象。
 
+`liquid-range.js` 另提供共享的纯计算 `duration` / `glide`，用于两种渲染方式的距离感知滑行。它的 `bind` 是 H5 DOM 适配入口，原生平台不调用；材质绘制仍由各自渲染边界承担。
+
 H5 当前已直接读取共享关卡内容；现有页面状态与成熟的 DOM 动效仍保留在 `app/assets/game.js`，作为分阶段迁移期间的稳定基线。新增平台必须使用共享 controller 与 board art，不得从这份 H5 外壳复制一套状态机。共享模块的关键行为由 `tests/shared-game-controller.test.js` 与既有拓扑、曲面、复盘测试共同约束。
+
+这些内容、controller 与 Canvas 美术模块由微信基线提交 `1a325fe` 回流至共享开发任务，再补齐连续视角能力。H5 已复用关卡定义、交互资格和姿态计算，但尚未整体改为共享 controller / board art；不能把此次回流表述为已经消除所有历史渲染重复。
+
+## 连续视角契约
+
+- `view.progress` 是当前实际进度，`target` 只是目标；重新抓取、终局和复盘不能用目标值或二维/三维二分状态代替实际进度。
+- adapter 用 `setViewScrubbing` 标记手势，用 `setViewProgress` 更新目标。取消、失焦、离开时必须释放手势；共享 controller 在滑行、拖动滑块和自动终局期间暂停落子及 AI 调度。
+- 空白滑轨点击只滑行；直接按住玻璃体才挤压折射。材质状态不改变上述落子权限。
+- 终局记录最后显示的旋转与晃动、实际进度和展示姿态；渲染器在绘制后保存 `displayedOrientation`。不得用下一帧时钟重算上一帧的起点。
+- 投影命中使用实际曲面坐标；按下时没有落子资格的手势，即使松手前 AI 解锁，也不能落子。拖动和长按旋转不应意外落子。
+- 在引导隐藏视角控件时仍保留布局占位；二维 / 上一步 / 旅程与三维 / 下一步 / 下一关分别共用列锚点，行距一致。
+
+`tests/shared-continuous-view.test.js` 覆盖六曲面、五档进度的所有交点首帧连续性、重新抓取、AI 延迟、取消与后台暂停。H5 的实际外壳连续性由 `tests/board-view-continuity.test.js` 单独约束；平台仍须验证真实输入、材质和宿主生命周期，不能用纯函数测试替代模拟器或真机验收。
 
 ## Adapter 职责
 

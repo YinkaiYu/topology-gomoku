@@ -4,19 +4,23 @@
   var Engine = root && root.TopologyGomoku;
   var Content = root && root.TopologyGameContent;
   var Replay = root && root.TopologyReplay;
+  var Motion = root && root.TopologyBoardViewMotion;
+  var Morph = root && root.TopologyMorph;
   if (typeof module === "object" && module.exports) {
     Engine = require("./topology.js");
     Content = require("./level-config.js");
     Replay = require("./game-replay.js");
+    Motion = require("./board-view-motion.js");
+    Morph = require("./topology-morph.js");
   }
-  var api = factory(Engine, Content, Replay);
+  var api = factory(Engine, Content, Replay, Motion, Morph);
   if (typeof module === "object" && module.exports) {
     module.exports = api;
   }
   if (root) {
     root.TopologyGameController = api;
   }
-})(typeof globalThis !== "undefined" ? globalThis : this, function topologyGameControllerFactory(Engine, Content, Replay) {
+})(typeof globalThis !== "undefined" ? globalThis : this, function topologyGameControllerFactory(Engine, Content, Replay, Motion, Morph) {
   "use strict";
 
   if (!Engine || !Content || !Replay) {
@@ -281,6 +285,7 @@
       lessonReturn: settings.lessonReturn || null,
       review: null,
       viewMode: "board",
+      view: Motion.create(),
       completionAvailable: false
     };
     this.game.board = Engine.createBoard(this.game.rules);
@@ -516,6 +521,7 @@
   };
 
   GameController.prototype.canPlaceCell = function canPlaceCell(cell) {
+    if (this.pausedAt !== null || (this.game && Motion.busy(this.game.view))) { return false; }
     if (!this.game || this.game.status !== "playing" || this.game.turn !== HUMAN) {
       return false;
     }
@@ -553,6 +559,7 @@
   };
 
   GameController.prototype.performMove = function performMove(cell, player, options, time) {
+    if (this.pausedAt !== null || (this.game && Motion.busy(this.game.view))) { return false; }
     var activePlayer = typeof player === "number" ? player : HUMAN;
     if (!this.game || this.game.status !== "playing" || this.game.board[cell] !== Engine.EMPTY) {
       return false;
@@ -666,6 +673,10 @@
     if (!this.game || this.game.status !== "playing" || this.game.turn !== AI) {
       return false;
     }
+    if (Motion.busy(this.game.view)) {
+      this._schedule("ai", 60, time);
+      return false;
+    }
     var cell = Engine.chooseMove(this.game.board, this.game.rules, this.preferences.difficulty, this.random);
     if (cell < 0) {
       return false;
@@ -686,8 +697,14 @@
     this.game.review = null;
     this.game.autoAdvancePending = firstLevelAutoAdvance;
     this.game.winAt = now;
-    this.game.completionAvailable = passed && this.game.levelIndex > 0;
-    this.game.viewMode = this.game.completionAvailable ? "surface" : "board";
+    this.game.completionAvailable = this.game.levelIndex > 0;
+    var shouldMorph = this.game.completionAvailable && (passed || this.game.view.progress > 0.001);
+    this.game.viewMode = shouldMorph ? "surface" : "board";
+    if (shouldMorph) {
+      Motion.finish(this.game.view, now, winningMask
+        ? Morph.createPresentation(this.game.level.topology, this.game.rules, Array.prototype.slice.call(winningMask.cells))
+        : null);
+    }
     if (winningMask && winningMask.seam) {
       this.game.seamPulseAt = now;
       this.game.seamPulseBits = winningMask.seam;
@@ -716,6 +733,7 @@
   };
 
   GameController.prototype.undo = function undo(time) {
+    if (this.game && Motion.busy(this.game.view)) { return false; }
     if (!this.game || this.game.status !== "playing" || !this.game.moves.length) {
       return false;
     }
@@ -743,21 +761,48 @@
     return true;
   };
 
-  GameController.prototype.toggleDimension = function toggleDimension() {
-    if (!this.game || this.game.status !== "ended" || !this.game.completionAvailable) {
-      return false;
+  GameController.prototype.canUseViewControl = function canUseViewControl() {
+    var game = this.game;
+    return Boolean(game && this.pausedAt === null && !game.level.tutorial
+      && !this.isInteractiveLesson() && !(game.demo && game.demo.active)
+      && (game.status === "playing" || (game.status === "ended" && !game.autoAdvancePending))
+      && !(game.view.completion && !game.view.completion.settled));
+  };
+
+  GameController.prototype.setViewProgress = function setViewProgress(value, animate, time, touch) {
+    if (!this.canUseViewControl()) { return false; }
+    if (this.game.status === "ended" && !this.game.view.completion && Number(value) > 0.001) {
+      Motion.finish(this.game.view, this._time(time), this.game.winningMask
+        ? Morph.createPresentation(this.game.level.topology, this.game.rules, Array.prototype.slice.call(this.game.winningMask.cells))
+        : null);
+      this.game.view.completion.settled = true;
     }
-    this.game.viewMode = this.game.viewMode === "surface" ? "board" : "surface";
+    Motion.setProgress(this.game.view, value, this._time(time), animate, touch);
+    this.game.viewMode = this.game.view.progress > 0.001 ? "surface" : "board";
+    this._changed();
+    return true;
+  };
+
+  GameController.prototype.setViewScrubbing = function setViewScrubbing(value) {
+    if (!this.game || (value && !this.canUseViewControl())) { return false; }
+    this.game.view.scrubbing = Boolean(value);
+    if (value) { this.game.view.transitioning = false; }
+    this._changed();
+    return true;
+  };
+
+  GameController.prototype.toggleDimension = function toggleDimension() {
+    if (!this.setViewProgress(this.game && this.game.view.progress < 0.5 ? 1 : 0, true)) { return false; }
     this._sound("ui");
     this._changed();
     return true;
   };
 
   GameController.prototype.beginReplay = function beginReplay() {
+    if (this.game && Motion.busy(this.game.view)) { return false; }
     if (!this.game || this.game.status !== "ended" || this.game.review) {
       return false;
     }
-    this.game.viewMode = "board";
     this.game.review = { step: this.game.moves.length, total: this.game.moves.length };
     this.game.board = Replay.boardAt(
       this.game.moves,
@@ -771,6 +816,7 @@
   };
 
   GameController.prototype.stepReplay = function stepReplay(direction, time) {
+    if (this.game && Motion.busy(this.game.view)) { return false; }
     if (!this.game || !this.game.review) {
       return false;
     }
@@ -843,6 +889,8 @@
       return false;
     }
     var now = this._time(time);
+    var viewChanged = this.game ? Motion.tick(this.game.view, now) : false;
+    if (this.game) { this.game.viewMode = this.game.view.progress > 0.001 ? "surface" : "board"; }
     var due = [];
     var future = [];
     for (var index = 0; index < this.scheduled.length; index += 1) {
@@ -857,7 +905,7 @@
       }
     }
     this.scheduled = future;
-    var changed = false;
+    var changed = viewChanged;
     for (var dueIndex = 0; dueIndex < due.length; dueIndex += 1) {
       var action = due[dueIndex];
       if (action.token !== this.token) {
@@ -894,6 +942,8 @@
       item.due += shift;
     });
     if (this.game && shift > 0) {
+      this.game.view.startedAt += shift;
+      if (this.game.view.completion) { this.game.view.completion.startedAt += shift; }
       ["lastMoveAt", "seamPulseAt", "winAt"].forEach(function shiftTimestamp(key) {
         if (this.game[key]) {
           this.game[key] += shift;

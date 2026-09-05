@@ -95,8 +95,8 @@ async function renderIcons() {
     review: [pathForButton("reviewToggleButton"), teal],
     previous: [pathForButton("reviewPreviousButton"), muted],
     next: [pathForButton("reviewNextButton"), muted],
-    surface: [pathForButton("dimensionToggleButton"), spatial],
-    board: ["M4 4h16v16H4zM9.33 4v16M14.67 4v16M4 9.33h16M4 14.67h16", spatial],
+    surface: [pathForButton("viewSpatialButton"), spatial],
+    board: [pathForButton("viewFlatButton"), spatial],
     check: ["m5 12 4 4L19 6", teal],
   };
   const destinationDirectory = path.join(OUTPUT_ROOT, "icons");
