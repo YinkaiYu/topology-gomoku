@@ -9,6 +9,7 @@
 | 产品能力、玩法、关卡或平台状态 | 根目录 `README.md` |
 | Agent 硬约束、完成标准或安全边界 | 根目录 `AGENTS.md` |
 | 贡献步骤、验证矩阵或 PR 交接 | 根目录 `CONTRIBUTING.md`、PR 模板 |
+| PR 审查、反馈、复审、接手修复或贡献归属 | `docs/development/pr-review.md` |
 | 分支、worktree 或日常任务合并流 | `docs/development/repository.md` |
 | 维护者提升、冲突处理或平台整合 | `docs/development/merging.md` |
 | 稳定版本、平台发布或统一版本规则 | `docs/development/release.md` |
@@ -17,6 +18,8 @@
 | 视觉验收方法、视口、证据或已知限制 | `docs/design/qa.md` |
 | 小红书容器、JSBridge 或 ZIP 规范 | `.codex/SKILL.md` 及其 references |
 | Bilibili Toy / 微信小游戏宿主约束 | 对应发行分支的平台文档 |
+| 个人网站构建、子路径与部署约束 | `docs/development/web.md` |
+| 知乎 AI Works、CloudBase 输入与 iframe 约束 | `docs/development/zhihu.md` |
 | 新增、移动或删除任意长期文档 | `docs/README.md` 索引及全部反向引用 |
 
 “必查”不等于每次都必须修改，但必须确认现有内容是否仍准确。若没有文档影响，在 Pull Request 中写明原因，不能只留空或默认忽略。

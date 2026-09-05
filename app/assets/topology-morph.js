@@ -386,6 +386,20 @@
     return type === "sphere" ? createSpherePresentation(rules, cells) : null;
   }
 
+  // Interpolate the conformal map itself, not the projected points. This keeps
+  // every intermediate surface on the sphere and preserves its glued seams.
+  function blendPresentation(presentation, progress) {
+    if (!presentation || presentation.type !== "sphere-path") {
+      return presentation;
+    }
+    var amount = clamp01(progress);
+    return {
+      type: presentation.type,
+      anchors: presentation.anchors,
+      boost: presentation.boost.map(function blendBoost(value) { return value * amount; })
+    };
+  }
+
   function surfacePoint(type, u, v) {
     if (type === "cylinder") {
       return cylinder(u, v);
@@ -624,6 +638,7 @@
     isPeriodicY: isPeriodicY,
     seamBridgeUV: seamBridgeUV,
     createPresentation: createPresentation,
+    blendPresentation: blendPresentation,
     applyPresentation: applyPresentation,
     prepareSphere: prepareSphere,
     close: close
