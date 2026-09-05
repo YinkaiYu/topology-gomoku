@@ -1,10 +1,10 @@
 (function attachLiquidRange(root, factory) {
+  var api = factory();
   if (typeof module === "object" && module.exports) {
-    module.exports = factory();
-  } else {
-    root.TopologyLiquidRange = factory();
+    module.exports = api;
   }
-}(typeof self !== "undefined" ? self : this, function createLiquidRange() {
+  if (root) { root.TopologyLiquidRange = api; }
+}(typeof globalThis !== "undefined" ? globalThis : this, function createLiquidRange() {
   "use strict";
 
   function clamp(value) { return Math.max(0, Math.min(1, Number(value) || 0)); }
