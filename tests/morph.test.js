@@ -385,7 +385,7 @@ test("复盘与二维三维切换相互独立，曲面可以持续柔性拖动",
   assert.doesNotMatch(html, /id="resultSheet"/);
   assert.match(game, /chooseCompletionView\(winningMask, presentation\)/);
   assert.match(game, /elastic:\s*\{ x: 0, y: 0, velocityX: 0, velocityY: 0 \}/);
-  assert.match(game, /wobbleX: sphereCompletion \? game\.completion\.elastic\.x/);
+  assert.match(game, /wobbleX: game\.completion\.startWobble\.x \* \(1 - viewBlend\) \+ game\.completion\.elastic\.x/);
   assert.match(game, /completion\.elastic\.velocityY \+= yawDelta/);
 });
 
@@ -399,7 +399,7 @@ test("对局中可用进度滑块切换二维与三维且切换时锁定落子",
   assert.match(html, /id="viewSpatialButton"/);
   assert.match(html, /id="dimensionSlider"[^>]+type="range"[^>]+min="0"[^>]+max="1"/);
   assert.match(game, /function createInteractiveViewState\(\)/);
-  assert.match(game, /function setInteractiveViewProgress\(progress, animate\)/);
+  assert.match(game, /function setInteractiveViewProgress\(progress, animate, touchInput\)/);
   assert.match(game, /function updateInteractiveViewMotion\(time\)/);
   assert.match(game, /function drawInteractiveMorph\(ctx, time\)/);
   assert.match(game, /function isInteractiveViewPointerMode\(\)/);
@@ -418,8 +418,8 @@ test("对局中可用进度滑块切换二维与三维且切换时锁定落子",
   assert.match(game, /var canUseView = !introActive && canUseInteractiveView\(\)/);
   assert.match(game, /dom\.dimensionControl\.classList\.toggle\("is-reserved", viewReserved\)/);
   assert.match(game, /function canUseViewControl\(\)/);
-  assert.match(game, /game\.completion\.manualProgress = target/);
-  assert.match(game, /game\.completion\.manualProgress = current;[\s\S]*view\.startProgress = current;[\s\S]*view\.target = target/);
+  assert.match(game, /game\.completion\.manualProgress = animate \? view\.progress : target/);
+  assert.match(game, /view\.startProgress = view\.progress;[\s\S]*view\.target = target/);
   assert.match(game, /if \(!view\.transitioning && isEndedView\(\) && view\.target <= 0\.001\) \{[\s\S]*game\.completion = null/);
   assert.doesNotMatch(game, /view\.pressCell/);
   assert.doesNotMatch(game, /view\.lastPointerAt/);
@@ -428,16 +428,17 @@ test("对局中可用进度滑块切换二维与三维且切换时锁定落子",
   assert.doesNotMatch(game, /dom\.dimensionControl\.hidden = true;\s*dom\.dimensionSlider\.value = "0";/);
   assert.match(game, /viewFlatButton\.addEventListener\("click"/);
   assert.match(game, /viewSpatialButton\.addEventListener\("click"/);
-  assert.match(game, /dimensionSlider\.addEventListener\("input"/);
+  assert.match(game, /dimensionRange = LiquidRange\.bind\(/);
+  assert.match(html, /liquid-range\.js/);
   assert.match(game, /createCompletionState\(viewSnapshot\)/);
   assert.match(game, /Boolean\(Morph\) && \(passed \|\| startedInSpatialView\)/);
   assert.match(game, /startProgress: clamp01\(Number\(snapshot\.progress\) \|\| 0\)/);
   assert.match(game, /startRotation: \{/);
   assert.match(game, /ViewLogic\.interpolateProgress\(game\.completion\.startProgress, presentationBlend\)/);
   assert.match(game, /game\.completion = null;[\s\S]*view\.progress = 0;[\s\S]*view\.target = 0;/);
-  assert.match(style, /\.dimension-control\s*\{[\s\S]*grid-template-columns:\s*auto minmax\(0, 1fr\) auto/);
+  assert.match(style, /\.dimension-control\s*\{[^}]*grid-template-columns:\s*repeat\(3, minmax\(0, 1fr\)\)/);
   assert.match(style, /\.dimension-endpoint\s*\{/);
-  assert.match(style, /\.dimension-slider\s*\{[\s\S]*touch-action:\s*none/);
+  assert.match(style, /\.dimension-range\s*\{[^}]*touch-action:\s*none/);
   assert.match(style, /\.board-stage\.is-view-dragging #boardCanvas\s*\{[\s\S]*cursor: grabbing/);
 });
 

@@ -653,6 +653,7 @@ button,
 .game-screen {
   --game-vertical-gap: 10px;
   --game-control-row-size: 52px;
+  --game-control-column-gap: 8px;
   display: flex;
   flex-direction: column;
   row-gap: var(--game-vertical-gap);
@@ -842,14 +843,17 @@ button,
 }
 
 .dimension-control {
+  position: relative;
   display: grid;
-  grid-template-columns: auto minmax(0, 1fr) auto;
+  flex: 0 0 var(--game-control-row-size);
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   align-items: center;
-  gap: 9px;
-  width: min(100%, 420px);
-  min-height: 46px;
-  margin: -2px auto 0;
-  padding: 3px 0;
+  column-gap: var(--game-control-column-gap);
+  width: 100%;
+  height: var(--game-control-row-size);
+  min-height: var(--game-control-row-size);
+  margin: 0;
+  padding: 0;
 }
 
 .dimension-control[hidden] {
@@ -861,92 +865,152 @@ button,
   pointer-events: none;
 }
 
-.dimension-endpoint {
-  min-width: 42px;
-  height: 36px;
+.tool-button.dimension-endpoint {
+  justify-self: center;
+  width: 44px;
+  min-width: 44px;
+  height: 100%;
   padding: 0 7px;
-  color: rgba(49, 95, 91, 0.7);
-  border: 1px solid transparent;
-  border-radius: 12px;
+  color: var(--muted);
+  border: 0;
   background: transparent;
-  font-size: 12px;
-  font-weight: 700;
-  transition: color 220ms ease, background 220ms ease, border-color 220ms ease, transform 220ms var(--spring);
+  box-shadow: none;
 }
 
-.dimension-endpoint[aria-pressed="true"] {
+#viewFlatButton { grid-column: 1; }
+#viewSpatialButton { grid-column: 3; }
+
+.tool-button.dimension-endpoint[aria-pressed="true"] {
   color: var(--ink);
-  border-color: rgba(255, 255, 255, 0.44);
-  background: rgba(255, 255, 255, 0.16);
-  box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.44);
 }
 
-.dimension-endpoint:active:not(:disabled) {
-  transform: scale(0.95);
+.tool-button.dimension-endpoint:active:not(:disabled) {
+  background: transparent;
+  transform: scale(1.12) translateY(-1px);
 }
 
-.dimension-endpoint:disabled {
-  opacity: 0.42;
+.tool-button.dimension-endpoint:disabled {
+  background: transparent;
+  transform: none;
+}
+
+.dimension-range {
+  --view-progress: 0;
+  --view-thumb-width: 28px;
+  position: absolute;
+  top: 50%;
+  /* Endpoint centers match the first/third columns of both tool rows. Keep
+     the full track between their 44px hit areas, rather than just column 2. */
+  left: calc((100% - 2 * var(--game-control-column-gap)) / 6 + 22px + var(--game-control-column-gap));
+  right: calc((100% - 2 * var(--game-control-column-gap)) / 6 + 22px + var(--game-control-column-gap));
+  transform: translateY(-50%);
+  min-width: 0;
+  height: 44px;
+  cursor: ew-resize;
+  touch-action: none;
+  user-select: none;
+}
+
+.dimension-track,
+.dimension-lens-track {
+  position: absolute;
+  top: calc(50% - 2px);
+  height: 4px;
+  border-radius: 999px;
+  background: rgba(49, 95, 91, 0.13);
+  box-shadow: inset 0 1px 1px rgba(26, 65, 51, 0.09), 0 1px 0 rgba(255, 255, 255, 0.5);
+  pointer-events: none;
+}
+
+.dimension-track {
+  left: calc(var(--view-thumb-width) / 2);
+  right: calc(var(--view-thumb-width) / 2);
+}
+
+.dimension-range.is-dragging .dimension-track {
+  /* Remove the unrefracted rail under the lens, without frosting the glass.
+     Its center follows the exact same normalized travel as the thumb. */
+  -webkit-mask-image: linear-gradient(to right, #000 calc(100% * var(--view-progress) - 13px), transparent calc(100% * var(--view-progress) - 12px), transparent calc(100% * var(--view-progress) + 12px), #000 calc(100% * var(--view-progress) + 13px));
+  mask-image: linear-gradient(to right, #000 calc(100% * var(--view-progress) - 13px), transparent calc(100% * var(--view-progress) - 12px), transparent calc(100% * var(--view-progress) + 12px), #000 calc(100% * var(--view-progress) + 13px));
+}
+
+.dimension-glass-thumb {
+  position: absolute;
+  top: 11px;
+  left: calc((100% - var(--view-thumb-width)) * var(--view-progress));
+  width: var(--view-thumb-width);
+  height: 22px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.54);
+  border-radius: 12px;
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.18), rgba(220, 239, 229, 0.06));
+  -webkit-backdrop-filter: blur(0.2px) saturate(1.12);
+  backdrop-filter: blur(0.2px) saturate(1.12);
+  box-shadow: 0 4px 10px rgba(31, 42, 36, 0.12), inset 0 1px 1px rgba(255, 255, 255, 0.5);
+  /* Position is painted once per frame, together with the board. Only the
+     material eases during a drag; restarting positional CSS transitions jitters. */
+  transition: scale 650ms var(--liquid-snap), border-radius 240ms ease, box-shadow 260ms ease;
+  pointer-events: none;
+}
+
+.dimension-glass-thumb::after {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  box-shadow: inset 1.3px 1px 0.8px rgba(255, 255, 255, 0.3), inset -1.4px -1px 0.8px rgba(35, 98, 77, 0.14);
+  content: "";
+  opacity: 0.24;
+  transition: opacity 180ms ease;
+}
+
+.dimension-lens-track {
+  left: var(--lens-track-offset, 0px);
+  width: var(--lens-track-width, 100%);
+  opacity: 0;
+  /* Compensate for the pressed glass's 1.48-1.56 vertical expansion: the
+     transmitted rail remains about half as thick as the unobstructed rail. */
+  transform: scale(0.43, 0.34);
+  transform-origin: var(--lens-origin-x, 50%) center;
+  filter: saturate(1.16) contrast(1.06);
+  transition: opacity 150ms ease;
+}
+
+.dimension-range.is-dragging .dimension-glass-thumb {
+  border-radius: 14px 11px 14px 11px;
+  box-shadow: 0 7px 16px rgba(31, 42, 36, 0.075), inset 0 1px 0.7px rgba(255, 255, 255, 0.3), inset 1.5px 0 0.8px rgba(55, 220, 188, 0.14), inset -1.5px 0 0.8px rgba(255, 189, 92, 0.11);
+  transition: scale 162ms var(--liquid-drag), border-radius 240ms ease, box-shadow 260ms ease;
+}
+
+.dimension-range.is-dragging .dimension-lens-track,
+.dimension-range.is-dragging .dimension-glass-thumb::after {
+  opacity: 0.9;
 }
 
 .dimension-slider {
+  position: absolute;
+  inset: 0;
   width: 100%;
-  height: 28px;
+  height: 100%;
   margin: 0;
-  appearance: none;
-  border-radius: 999px;
-  background: rgba(27, 54, 45, 0.08);
-  box-shadow: inset 0 1px 3px rgba(26, 65, 51, 0.11), 0 1px 0 rgba(255, 255, 255, 0.56);
-  cursor: ew-resize;
-  touch-action: none;
+  opacity: 0;
+  pointer-events: none;
 }
 
-.dimension-slider::-webkit-slider-runnable-track {
-  height: 8px;
-  border: 1px solid rgba(255, 255, 255, 0.42);
-  border-radius: 999px;
-  background: linear-gradient(90deg, rgba(63, 140, 135, 0.18), rgba(199, 146, 68, 0.18));
-  box-shadow: inset 0 1px 2px rgba(26, 65, 51, 0.12);
+.dimension-range:has(.dimension-slider:focus-visible) .dimension-glass-thumb,
+.dimension-endpoint:focus-visible {
+  outline: 2px solid rgba(49, 95, 91, 0.6);
+  outline-offset: 4px;
 }
 
-.dimension-slider::-moz-range-track {
-  height: 8px;
-  border: 1px solid rgba(255, 255, 255, 0.42);
-  border-radius: 999px;
-  background: linear-gradient(90deg, rgba(63, 140, 135, 0.18), rgba(199, 146, 68, 0.18));
-  box-shadow: inset 0 1px 2px rgba(26, 65, 51, 0.12);
-}
-
-.dimension-slider::-webkit-slider-thumb {
-  appearance: none;
-  width: 22px;
-  height: 22px;
-  margin-top: -8px;
-  border: 1px solid rgba(255, 255, 255, 0.58);
-  border-radius: 50%;
-  background: linear-gradient(145deg, rgba(255, 255, 255, 0.76), rgba(220, 239, 229, 0.48));
-  box-shadow: 0 4px 10px rgba(31, 42, 36, 0.13), inset 0 1px 1px rgba(255, 255, 255, 0.7);
-  transition: transform 180ms var(--spring), box-shadow 180ms ease;
-}
-
-.dimension-slider::-moz-range-thumb {
-  width: 22px;
-  height: 22px;
-  border: 1px solid rgba(255, 255, 255, 0.58);
-  border-radius: 50%;
-  background: linear-gradient(145deg, rgba(255, 255, 255, 0.76), rgba(220, 239, 229, 0.48));
-  box-shadow: 0 4px 10px rgba(31, 42, 36, 0.13), inset 0 1px 1px rgba(255, 255, 255, 0.7);
-  transition: transform 180ms var(--spring), box-shadow 180ms ease;
-}
-
-.dimension-slider:active:not(:disabled)::-webkit-slider-thumb {
-  transform: scale(1.12, 0.92);
-  box-shadow: 0 6px 14px rgba(31, 42, 36, 0.16), inset 0 1px 1px rgba(255, 255, 255, 0.7);
-}
-
-.dimension-slider:disabled {
+.dimension-range.is-disabled {
   opacity: 0.42;
   cursor: default;
+}
+
+@media (pointer: coarse) {
+  .dimension-range.is-dragging .dimension-glass-thumb {
+    transition: scale 192ms var(--liquid-drag), border-radius 240ms ease, box-shadow 260ms ease;
+  }
 }
 
 .thinking {
@@ -997,7 +1061,7 @@ button,
   min-height: 0;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   align-items: center;
-  gap: 4px;
+  column-gap: var(--game-control-column-gap);
   padding-top: 0;
   animation: endgame-tools-arrive 420ms var(--spring) both;
 }
@@ -1036,7 +1100,7 @@ button,
   min-height: 0;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   align-items: center;
-  gap: 8px;
+  column-gap: var(--game-control-column-gap);
   padding-top: 0;
 }
 
