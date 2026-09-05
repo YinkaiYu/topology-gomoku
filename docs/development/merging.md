@@ -1,8 +1,8 @@
 # 维护者合并与冲突处理手册
 
-本文供得到仓库所有者明确授权的维护者使用，覆盖 `dev → main → xiaohongshu / bilibili / wechat` 的稳定提升与发行整合。日常任务合入 `dev` 的基本流程仍以 [`repository.md`](repository.md) 为准，版本与发布门禁以 [`release.md`](release.md) 为准。
+本文供得到仓库所有者明确授权的维护者使用，覆盖 `dev → main → xiaohongshu / bilibili / wechat / web / zhihu` 的稳定提升与发行整合。日常任务合入 `dev` 的基本流程仍以 [`repository.md`](repository.md) 为准，版本与发布门禁以 [`release.md`](release.md) 为准。
 
-合并的目标不是让 Git 不再报冲突，而是保证每一处最终实现仍属于正确的代码层：共享产品行为来自本轮稳定 `main`，宿主差异留在各自 adapter/boundary，三个发行版接收同一个版本号。
+合并的目标不是让 Git 不再报冲突，而是保证每一处最终实现仍属于正确的代码层：共享产品行为来自本轮稳定 `main`，宿主或部署差异留在各自 adapter/boundary，五个发行版接收同一个版本号。
 
 ## 不可破坏的方向
 
@@ -11,14 +11,16 @@ codex/<shared-task> ──▶ dev ──▶ main
                                   │
                                   ├──▶ xiaohongshu
                                   ├──▶ bilibili
-                                  └──▶ wechat
+                                  ├──▶ wechat
+                                  ├──▶ web
+                                  └──▶ zhihu
 
 codex/<platform-task> ──▶ 对应平台发行分支
 ```
 
 - 共享功能、规则、AI、UI、资源、测试、文档和 adapter 契约只沿 `dev → main → 各平台` 单向传播。
 - 平台分支不互相合并，也不从 `dev` 跳过 `main` 接收改动。
-- 平台分支发现共享缺陷时，停止当前发行整合，从 `dev` 建共享修复任务；不能把同一补丁复制到三个平台。
+- 平台分支发现共享缺陷时，停止当前发行整合，从 `dev` 建共享修复任务；不能把同一补丁复制到多个渠道。
 - `main` 和长期发行 worktree 只用于整合与复验，不直接承载临时修复。
 - 平台整合本身不改变游戏 SemVer；版本只在稳定 `dev → main` 提升时确定。
 
@@ -35,6 +37,8 @@ git rev-parse main
 git rev-parse xiaohongshu
 git rev-parse bilibili
 git rev-parse wechat
+git rev-parse web
+git rev-parse zhihu
 ```
 
 必须确认：
@@ -44,7 +48,7 @@ git rev-parse wechat
 3. 本轮唯一 SemVer 已在目标 `main` 内容中确定。
 4. 整合发生在从目标长期分支新建的独立 `codex/release-...` worktree 中。
 
-把本轮提交记入交接记录，例如 `DEV_SHA`、`MAIN_SHA` 和三个平台整合前提交。后续命令和验证记录优先引用提交 SHA，而不是只写“最新 main”。
+把本轮提交记入交接记录，例如 `DEV_SHA`、`MAIN_SHA` 和五个渠道整合前提交。后续命令和验证记录优先引用提交 SHA，而不是只写“最新 main”。
 
 ## 第一段：从 dev 提升到 main
 
@@ -119,13 +123,13 @@ git show :3:path/to/file
 
 出现以下任一情况应中止本轮平台合并，运行 `git merge --abort`：
 
-- 为三个平台重复修补同一规则或 UI；
+- 为多个渠道重复修补同一规则或 UI；
 - 平台实现必须复制一大段 `main` 才能工作；
 - 共享模块直接依赖某个宿主全局对象；
 - 无法说清一个冲突文件属于共享核心还是平台边界；
-- 修复会改变另外两个平台也应遵守的行为契约。
+- 修复会改变其他渠道也应遵守的行为契约。
 
-此时从 `dev` 建独立共享任务，补齐 adapter 契约和确定性测试，重新完成 `dev → main` 后再做平台整合。多走一轮稳定提升，比在三个发行分支制造长期漂移更便宜。
+此时从 `dev` 建独立共享任务，补齐 adapter 契约和确定性测试，重新完成 `dev → main` 后再做平台整合。多走一轮稳定提升，比在多个发行分支制造长期漂移更便宜。
 
 ## 解决完成后的三层审查
 
@@ -194,7 +198,7 @@ git merge-base --is-ancestor <INTEGRATION_SHA> <platform-branch>
 - 合并后必须在长期 `wechat` 上重新执行微信检查、构建、固定目标同步和开发者工具刷新；任务分支通过不代表发行 worktree 与外部模板仍一致。
 - 清理时先验证 ancestry 和工作区状态；若预览服务占用目录，只停止该任务专属进程，不影响其他 worktree。
 
-这些经验同样适用于另外两个平台：提前收敛共享职责，平台冲突就会集中在少量、可解释的 adapter/boundary 中。
+这些经验同样适用于其他渠道：提前收敛共享职责，平台冲突就会集中在少量、可解释的 adapter/boundary 中。个人网站渠道的外部仓库同步按 [`web.md`](web.md) 另行验证；知乎渠道的 CloudBase 输入与 iframe 宿主验证按 [`zhihu.md`](zhihu.md) 执行。
 
 ## 合并交接模板
 

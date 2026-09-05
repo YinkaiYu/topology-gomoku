@@ -8,6 +8,8 @@ on:
       - xiaohongshu
       - bilibili
       - wechat
+      - web
+      - zhihu
   pull_request:
   workflow_dispatch:
 
