@@ -23,6 +23,10 @@
 | [`development/web.md`](development/web.md) | 个人网站静态构建、子路径预览与部署流程 |
 | [`development/zhihu.md`](development/zhihu.md) | 知乎 AI Works、CloudBase 静态输入、iframe 验证与发布流程 |
 
+## 发布说明
+
+- [`releases/1.39.0.md`](releases/1.39.0.md)：连续棋盘视角、液态控件与 PR 协作规范；核心验证和渠道门禁。
+
 ## 设计文档
 
 | 文档 | 内容 |

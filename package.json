@@ -1,6 +1,6 @@
 {
   "name": "topology-gomoku",
-  "version": "1.38.0",
+  "version": "1.39.0",
   "private": true,
   "license": "MIT",
   "description": "拓扑五子棋：面向小红书、Bilibili Toy、微信小游戏、独立网站与知乎 AI Works 的跨平台小游戏",
