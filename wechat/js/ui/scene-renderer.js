@@ -133,6 +133,7 @@ export default class SceneRenderer {
     this.syncContextPixelRatio();
     this.hits = [];
     this.homeRects = {};
+    this.homeMode = 'ai';
     this.boardRect = null;
     this.boardLayout = null;
     this.settingsOpen = false;
@@ -1036,7 +1037,59 @@ export default class SceneRenderer {
       letterSpacing: (compact ? 10 : 12) * 0.03,
     });
 
-    const cardTop = headerY + heroHeight + (compact ? 28 : 36);
+    const modeHeight = compact ? 44 : 48;
+    const modeTop = journeyY + (compact ? 12 : 16);
+    const modeLabelSize = compact ? 10 : 11;
+    const segmentWidth = compact ? 190 : 204;
+    const modeLabelY = modeTop + modeHeight / 2;
+    text(ctx, '模式', contentLeft + 2, modeLabelY, {
+      font: this.host.font(600, modeLabelSize),
+      color: COLORS.muted,
+      letterSpacing: modeLabelSize * 0.12,
+    });
+    const segmentRect = rect(contentLeft + contentWidth - segmentWidth, modeTop + 4, segmentWidth, modeHeight - 8);
+    glassPanel(ctx, segmentRect, {
+      variant: 'track',
+      radius: compact ? 15 : 17,
+      tint: 'rgba(27,54,45,0.045)',
+      middle: 'rgba(255,255,255,0.26)',
+      bottom: 'rgba(232,226,215,0.16)',
+    });
+    const segmentGap = 3;
+    const segmentPadding = 3;
+    const segmentWidthEach = (segmentRect.width - segmentPadding * 2 - segmentGap) / 2;
+    const selectedIndex = this.homeMode === 'duel' ? 1 : 0;
+    const segmentLabels = ['单人对弈', '离线双人'];
+    segmentLabels.forEach((label, index) => {
+      const segment = rect(
+        segmentRect.x + segmentPadding + index * (segmentWidthEach + segmentGap),
+        segmentRect.y + segmentPadding,
+        segmentWidthEach,
+        segmentRect.height - segmentPadding * 2,
+      );
+      if (index === selectedIndex) {
+        glassPanel(ctx, segment, {
+          variant: 'thumb',
+          radius: compact ? 12 : 13,
+          pressed: this.pressedKey === `mode-${this.homeMode}`,
+          tint: 'rgba(255,255,255,0.38)',
+          middle: 'rgba(255,255,255,0.28)',
+          bottom: 'rgba(232,226,215,0.16)',
+        });
+      }
+      text(ctx, label, segment.x + segment.width / 2, segment.y + segment.height / 2, {
+        font: this.host.font(600, compact ? 10 : 11),
+        color: index === selectedIndex ? COLORS.ink : COLORS.muted,
+        align: 'center',
+        letterSpacing: (compact ? 10 : 11) * 0.04,
+      });
+      this.register(`mode-${index === 1 ? 'duel' : 'ai'}`, segment, {
+        action: 'mode',
+        mode: index === 1 ? 'duel' : 'ai',
+      });
+    });
+
+    const cardTop = modeTop + modeHeight + (compact ? 14 : 18);
     const gap = compact ? 6 : 9;
     const columns = 2;
     const cardWidth = (contentWidth - gap) / columns;
@@ -1255,21 +1308,22 @@ export default class SceneRenderer {
       letterSpacing: 11 * 0.05,
     });
 
+    const duel = game.mode === 'duel';
     const humanActive = game.status === 'playing' && game.turn === GameGlobal.TopologyGomoku.HUMAN;
     const aiActive = game.status === 'playing' && game.turn === GameGlobal.TopologyGomoku.AI;
     const chipY = matchRect.y + matchHeight / 2;
     this.drawMiniStone(matchRect.x + 9.5, chipY + (humanActive ? -1 : 0), 19, false);
-    text(ctx, '你', matchRect.x + 26, chipY + (humanActive ? -1 : 0), {
+    text(ctx, duel ? '黑方' : '你', matchRect.x + 26, chipY + (humanActive ? -1 : 0), {
       font: this.host.font(600, 12),
       color: humanActive ? COLORS.ink : COLORS.muted,
     });
     const tutorialHidden = Boolean(game.level.tutorial || (game.lesson && game.lesson.active));
-    if (!tutorialHidden) {
+    if (!tutorialHidden || duel) {
       const difficulty = GameGlobal.TopologyGameContent.DIFFICULTIES[state.preferences.difficulty];
       const difficultyLabel = difficulty ? difficulty.label : '';
       const stoneX = matchRect.x + matchRect.width - 9.5;
       this.drawMiniStone(stoneX, chipY + (aiActive ? -1 : 0), 19, true);
-      text(ctx, difficultyLabel, stoneX - 16.5, chipY + (aiActive ? -1 : 0), {
+      text(ctx, duel ? '白方' : difficultyLabel, stoneX - 16.5, chipY + (aiActive ? -1 : 0), {
         font: this.host.font(600, 12),
         color: aiActive ? COLORS.ink : COLORS.muted,
         align: 'right',

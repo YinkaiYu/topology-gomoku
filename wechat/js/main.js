@@ -448,6 +448,7 @@ export default class Main {
     }
     const point = touchCoordinate(released);
     const now = Date.now();
+    const state = this.controller.getState();
     const mode = this.interaction.mode;
     if (mode === 'board' && this.interaction.board) {
       let cell = this.renderer.boardCellAt(point.x, point.y);
@@ -455,7 +456,12 @@ export default class Main {
         cell = this.interaction.board.cell;
       }
       if (this.controller.canPlaceCell(cell)) {
-        this.controller.performMove(cell, GameGlobal.TopologyGomoku.HUMAN, { fromPress: true }, now);
+        this.controller.performMove(
+          cell,
+          state.game && state.game.mode === 'duel' ? undefined : GameGlobal.TopologyGomoku.HUMAN,
+          { fromPress: true },
+          now,
+        );
       }
     } else if (mode === 'view-board') {
       this.renderer.endSurfaceDrag(now);
@@ -464,7 +470,14 @@ export default class Main {
         this.interaction.placeEligibleAtDown,
         this.interaction.dragged || now - this.interaction.startedAt >= 240,
         this.controller.canPlaceCell(cell),
-      )) { this.controller.performMove(cell, GameGlobal.TopologyGomoku.HUMAN, null, now); }
+      )) {
+        this.controller.performMove(
+          cell,
+          state.game && state.game.mode === 'duel' ? undefined : GameGlobal.TopologyGomoku.HUMAN,
+          null,
+          now,
+        );
+      }
     } else if (mode === 'view-range') {
       const direct = !this.interaction.controlMoved && !this.interaction.pressedMovable;
       const value = this.renderer.viewProgressAt(point.x, this.interaction.controlGrabOffset);
@@ -585,13 +598,19 @@ export default class Main {
       this.sound.play('ui');
     } else if (action === 'level') {
       const source = this.renderer.hitRect(hit.key);
-      if (hit.payload.locked || !this.controller.selectLevel(hit.payload.index, now)) {
+      const mode = this.renderer.homeMode === 'duel' ? 'duel' : 'ai';
+      if (hit.payload.locked || !this.controller.startLevel(hit.payload.index, { mode }, now)) {
         this.renderer.shakeLevel(hit.payload.index, now);
         this.host.vibrate();
       } else {
+        this.sound.play('ui');
         this.renderer.surfaceRotation = { x: 0, y: 0, z: 0 };
         this.renderer.beginTransition('enter', source, hit.payload.index, now);
       }
+    } else if (action === 'mode') {
+      this.renderer.homeMode = hit.payload.mode === 'duel' ? 'duel' : 'ai';
+      this.renderer.setPressedKey(null);
+      this.sound.play('ui');
     } else if ((action === 'back' || action === 'journey') && game) {
       const source = copyBoardRect(this.renderer.boardRect);
       const levelIndex = game.levelIndex;
