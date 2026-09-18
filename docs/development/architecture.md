@@ -14,7 +14,7 @@
 | `app/assets/board-view-logic.js` | 松手落子资格、投影命中、连续视角和终局姿态计算 |
 | `app/assets/board-view-motion.js` | 原生 controller 的连续进度、滑行、终局和输入互斥状态 |
 | `app/assets/level-config.js` | 七关尺寸、教学路径、难度和固定节奏 |
-| `app/assets/game-controller.js` | 无宿主计时器的对局、教学、AI、悔棋、复盘与进度状态机 |
+| `app/assets/game-controller.js` | 无宿主计时器的对局、教学、AI / 离线双人、悔棋、复盘与进度状态机 |
 | `app/assets/board-art.js` | Canvas 2D 棋盘、接缝轨道、棋子、提示与三维曲面绘制 |
 
 共享模块使用 UMD 形式：浏览器通过全局对象加载，Node 测试通过 CommonJS 加载，原生平台构建可原样复制后由入口按依赖顺序执行。共享层禁止访问 `document`、`localStorage`、`wx` 或其他宿主对象。
@@ -49,6 +49,8 @@ H5 当前已直接读取共享关卡内容；现有页面状态与成熟的 DOM 
 - 绘制平台原生场景外壳，并把棋盘区域交给 `board-art.js`。
 
 controller 自身不调用宿主定时器。AI、教学续播和自动切关以逻辑截止时间排队；adapter 在每帧调用 `tick()`，并在前后台切换时调用 `pause()` / `resume()`，从而避免后台时间导致回到前台立即跳步。
+
+对局状态的 `mode` 取 `ai` 或 `duel`。`duel` 模式沿用 `HUMAN`（黑方）与 `AI`（白方）棋子值，但两方都由输入 adapter 传入当前 `turn`，每次合法落子后切换回合；该模式不排队 AI 调度，悔棋只撤回最后一手，并在状态中记录 `winner` 供各平台显示黑方胜、白方胜或和局。
 
 ## 变更规则
 

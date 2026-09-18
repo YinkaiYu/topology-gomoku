@@ -29,14 +29,15 @@ test("第一关每次进入都逐子教学、隐藏边界演示且仍无 AI 回�
   const style = fs.readFileSync(path.join(ROOT, "app", "assets", "style.css"), "utf8");
   assert.equal(Content.LEVELS[0].topology, "plane");
   assert.equal(Content.LEVELS[0].tutorial, true);
-  assert.match(game, /function introModeFor\(levelIndex, options\) \{\s*if \(levelIndex === 0\) \{\s*return "lesson";/);
+  assert.match(game, /function introModeFor\(levelIndex, options\) \{\s*if \(options && options\.mode === "duel"\) \{\s*return "none";/);
+  assert.match(game, /if \(levelIndex === 0\) \{\s*return "lesson";/);
   assert.match(game, /return hasLearnedLevel\(levelIndex\) \? "demo" : "lesson"/);
   assert.match(game, /if \(introMode === "lesson"\) \{\s*startBoundaryLesson/);
   assert.match(game, /dom\.boundaryDemoButton\.hidden = game\.levelIndex === 0/);
   assert.match(game, /dom\.gameTools\.classList\.toggle\("is-basic-tutorial", !ended && game\.levelIndex === 0\)/);
   assert.match(game, /if \(!game \|\| game\.levelIndex === 0 \|\| game\.status === "forcing"/);
-  assert.match(game, /else if \(game\.level\.tutorial \|\| lesson\) \{\s*game\.turn = HUMAN;/);
-  assert.match(game, /game\.level\.tutorial \|\| lessonActive \? 1 : \(game\.turn === AI/);
+  assert.match(game, /else if \(\(game\.level\.tutorial && game\.mode !== "duel"\) \|\| lesson\) \{\s*game\.turn = HUMAN;/);
+  assert.match(game, /game\.mode === "duel"\s*\?\s*1/);
   assert.match(game, /var passed = outcome === "win" \|\| outcome === "draw";/);
   assert.match(game, /var shouldMorph = game\.levelIndex > 0 && Boolean\(Morph\) && \(passed \|\| startedInSpatialView\)/);
   assert.match(game, /reviewToolsHidden = !ended \|\| autoAdvancing \|\| firstLevel/);
@@ -92,14 +93,14 @@ test("对局中重温边界指引后原样恢复棋盘、历史与当前回合",
   assert.match(game, /function snapshotMatchForLesson\(\)/);
   assert.match(game, /board:\s*Array\.prototype\.slice\.call\(game\.board\)/);
   assert.match(game, /moves:\s*game\.moves\.map\(function copyMove/);
-  assert.match(game, /turn:\s*game\.turn,\s*\n\s*lastMove:\s*game\.lastMove/);
+  assert.match(game, /turn:\s*game\.turn,[\s\S]*lastMove:\s*game\.lastMove/);
   assert.match(game, /lessonReturn:\s*options && options\.lessonReturn \? options\.lessonReturn : null/);
   assert.match(game, /transitionToLevel\(levelIndex, \{\s*introMode:\s*"lesson",\s*lessonReturn:\s*lessonReturn/);
   assert.match(game, /resumeMatch\.board\.forEach\(function restoreBoardCell/);
   assert.match(game, /game\.moves = resumeMatch\.moves\.map\(function restoreMove/);
   assert.match(game, /game\.turn = resumeMatch\.turn/);
   assert.match(game, /resumeMatch:\s*game\.lessonReturn/);
-  assert.match(game, /else if \(resumeMatch && game\.turn === AI\) \{\s*scheduleAiMove\(\)/);
+  assert.match(game, /else if \(resumeMatch && game\.mode === "ai" && game\.turn === AI\) \{\s*scheduleAiMove\(\)/);
   assert.match(game, /lesson && \(game\.lessonReturn \|\| !game\.level\.tutorial\)/);
 });
 
@@ -599,7 +600,7 @@ test("棋子按下时沿棋盘法向压薄并在平面内均匀鼓大，松手�
   assert.match(game, /ctx\.scale\(planarScale, planarScale\)/);
   assert.match(game, /shadowOffsetY = radius \* \(0\.18 - landing \* 0\.105\)/);
   assert.match(game, /scaleY = scaleX/);
-  assert.match(game, /performMove\(cell, DEV_MODE \? developer\.placementPlayer : HUMAN, \{ fromPress: releasedFromPress \}\)/);
+  assert.match(game, /performMove\(cell, DEV_MODE \? developer\.placementPlayer : \(game\.mode === "duel" \? game\.turn : HUMAN\), \{ fromPress: releasedFromPress \}\)/);
 });
 
 test("按住棋子拖动时保持连续可见并以阻尼弹簧吸附到最近空交点", () => {
