@@ -62,6 +62,13 @@
   --display-font: "Topo Serif", "Songti SC", "STSong", serif;
 }
 
+/* Only the Xiaohongshu container has the floating chrome that needs the
+   reserved header row. Embedded hosts and Bilibili provide their own chrome,
+   so their game viewport starts at the real safe area. */
+html[data-host-layout="compact"] {
+  --host-top-inset: var(--safe-top);
+}
+
 *,
 *::before,
 *::after {

@@ -21,6 +21,8 @@
 
 `liquid-range.js` 另提供共享的纯计算 `duration` / `glide`，用于两种渲染方式的距离感知滑行。它的 `bind` 是 H5 DOM 适配入口，原生平台不调用；材质绘制仍由各自渲染边界承担。
 
+H5 外壳默认保留小红书小工具上方宿主栏所需的顶部留白。`host-layout.js` 在首屏绘制前识别跨源 iframe 与 Bilibili Toy，并把根节点标记为紧凑宿主布局；该布局只保留真实安全区，避免嵌入式页面因共享顶部留白压缩棋盘高度。Bilibili adapter 后续发出的 `toycontainerchange` 事件会重新应用同一判断，容器状态变化无需复制一套页面样式。
+
 H5 当前已直接读取共享关卡内容；现有页面状态与成熟的 DOM 动效仍保留在 `app/assets/game.js`，作为分阶段迁移期间的稳定基线。新增平台必须使用共享 controller 与 board art，不得从这份 H5 外壳复制一套状态机。共享模块的关键行为由 `tests/shared-game-controller.test.js` 与既有拓扑、曲面、复盘测试共同约束。
 
 这些内容、controller 与 Canvas 美术模块由微信基线提交 `1a325fe` 回流至共享开发任务，再补齐连续视角能力。H5 已复用关卡定义、交互资格和姿态计算，但尚未整体改为共享 controller / board art；不能把此次回流表述为已经消除所有历史渲染重复。

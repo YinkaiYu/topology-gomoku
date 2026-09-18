@@ -77,6 +77,7 @@
 | AI 难度文案与内嵌字体 | [`artifacts/qa-ai-difficulty-labels-v1363.png`](../../artifacts/qa-ai-difficulty-labels-v1363.png) |
 | 终局二维/三维视角与 3 × 2 操作区 | [`二维终局`](../../artifacts/qa-board-view-endgame-2d-2216x1242.png)、[`三维终局`](../../artifacts/qa-board-view-endgame-3d-2216x1242.png)、[`边界合拢`](../../artifacts/qa-board-view-endgame-transition-2216x1242.png) |
 | 对局视角修复交互录制 | [`教程进场`](../../artifacts/qa-board-view-tutorial-entry.mp4)、[`视角转换锁定落子`](../../artifacts/qa-board-view-view-interaction-guard.mp4)、[`玩家胜利`](../../artifacts/qa-board-view-player-win.mp4)、[`AI 胜利`](../../artifacts/qa-board-view-ai-win.mp4) |
+| Issue #9 嵌入式宿主棋盘高度 | [`修改前 390 × 560`](../../artifacts/qa-issue-9-before-390x560.png)、[`修改后 390 × 560`](../../artifacts/qa-issue-9-after-390x560.png) |
 
 较早截图只用于回归和问题溯源，不自动成为新设计的视觉真相。出现冲突时，以最新已确认实现、视觉设计语言和同状态实机/预览证据为准。
 
@@ -116,3 +117,10 @@
 预览确认：
 最终结果：passed / blocked
 ```
+
+### 2026-09-19：Issue #9 嵌入式宿主顶部留白（待用户确认）
+
+- 分支：`codex/fix-issue-9`，从 `dev` 建立；复现状态为第二关进入棋局并完成边界演示后的正常对局，视口为 390 × 560，用同一内容分别切换默认顶部留白与紧凑宿主布局。
+- [修改前](../../artifacts/qa-issue-9-before-390x560.png) 中共享的小红书宿主留白继续占用嵌入式页面高度，棋盘 flex 项被压扁；[修改后](../../artifacts/qa-issue-9-after-390x560.png) 仅保留真实安全区，棋盘恢复完整方形比例，底部行列可见。
+- 自动验证：`npm run check`、`npm run build:xiaohongshu`、`git diff --check` 均通过；本地静态预览已确认 `index.html`、`host-layout.js` 和 `style.css` 返回 200，暂未完成 Bilibili 真机与知乎宿主内预览。
+- 预览确认：等待用户确认后再合入 `dev`；平台发行分支仍需按统一版本流程接收该共享修复。
