@@ -37,3 +37,12 @@ ZIP 路径 / SHA-256 / CRC：
 线上地址与检查：
 已知限制：
 ```
+
+## 1.39.0 线上收尾
+
+- 统一版本：`1.39.0`
+- `zhihu` 整合提交：`5ea0b8d`（`zhihu-v1.39.0`）
+- 知乎 AI Works 项目：[topology-gomoku](https://www.zhihu.com/project/detail/180488)
+- 线上检查：2026-09-19，项目页面可正常打开，发布状态已确认生效。
+- 交付边界：CloudBase 静态输入由 `$zhihu-ai-works-deploy-helper` 准备；云资源与知乎平台发布由维护者在宿主侧完成。
+- 后续版本：每次 `main` 稳定提升后，仍需从新的 `app/` 重新探测、生成 ZIP，并在知乎宿主内复验桌面、移动端和跨源 iframe。
