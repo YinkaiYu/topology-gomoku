@@ -1083,7 +1083,8 @@ export default class SceneRenderer {
         align: 'center',
         letterSpacing: (compact ? 10 : 11) * 0.04,
       });
-      this.register(`mode-${index === 1 ? 'duel' : 'ai'}`, segment, {
+      const touchRect = rect(segment.x, modeTop, segment.width, modeHeight);
+      this.register(`mode-${index === 1 ? 'duel' : 'ai'}`, touchRect, {
         action: 'mode',
         mode: index === 1 ? 'duel' : 'ai',
       });
@@ -1330,7 +1331,7 @@ export default class SceneRenderer {
       });
     }
 
-    const actionRows = game.levelIndex > 0 ? 3 : 2;
+    const actionRows = game.levelIndex > 0 || duel ? 3 : 2;
     const actionDeckHeight = rowHeight * actionRows + 10 * (actionRows - 1);
     const boardTop = matchRect.y + matchHeight + verticalGap;
     const availableBoardHeight = Math.max(
@@ -1469,7 +1470,7 @@ export default class SceneRenderer {
         } : null,
         { key: 'restart', label: '重来', icon: 'restart', disabled: false },
       ];
-      const toolsRow = game.levelIndex > 0 ? 2 : 1;
+      const toolsRow = game.levelIndex > 0 || game.mode === 'duel' ? 2 : 1;
       this.drawActionRow(actions, content.x, topY + toolsRow * (rowHeight + rowGap), contentWidth, rowHeight, 8);
       return;
     }
@@ -1480,7 +1481,7 @@ export default class SceneRenderer {
 
     const reviewing = Boolean(game.review);
     const completionReady = !GameGlobal.TopologyBoardViewMotion.busy(game.view);
-    const firstLevel = game.levelIndex === 0;
+    const firstLevel = game.levelIndex === 0 && game.mode !== 'duel';
     if (firstLevel) {
       const passed = game.outcome === 'win' || game.outcome === 'draw';
       const tutorialActions = [
@@ -1682,7 +1683,9 @@ export default class SceneRenderer {
     const safeRight = Math.max(12, width - (Number(safeArea && safeArea.right) || width));
     const sheetWidth = Math.min(520, width - safeLeft - safeRight);
     const sheetX = safeLeft + (width - safeLeft - safeRight - sheetWidth) / 2;
-    const sheetHeight = Math.min(382, Math.max(344, height - bottomInset - 20));
+    const duel = state.game ? state.game.mode === 'duel' : this.homeMode === 'duel';
+    const difficultySpace = duel ? 0 : 104;
+    const sheetHeight = Math.min(278 + difficultySpace, Math.max(240 + difficultySpace, height - bottomInset - 20));
     const visibleProgress = clamp01(progress);
     const dragCompression = clamp01(dragOffset / Math.max(180, sheetHeight * 0.54));
     const scrimAlpha = visibleProgress * (1 - dragCompression * 0.68);
@@ -1804,81 +1807,83 @@ export default class SceneRenderer {
     this.register('settings-close', closeRect, { action: 'close-settings' });
 
     const difficultyRowY = headY + 50;
-    this.difficultyRect = rect(contentX, difficultyRowY + 44, contentWidth, 46);
+    this.difficultyRect = duel ? null : rect(contentX, difficultyRowY + 44, contentWidth, 46);
     const order = GameGlobal.TopologyGameContent.DIFFICULTY_ORDER;
     const selectedIndex = Math.max(0, order.indexOf(state.preferences.difficulty));
     const difficultyProgress = interaction.mode === 'difficulty'
       && interaction.previewDifficultyProgress !== undefined
       ? interaction.previewDifficultyProgress
       : this.controlProgress('difficulty', null, selectedIndex, time);
-    drawSoftLayer(rect(contentX, difficultyRowY, contentWidth, 90), 0.36, () => {
-      ctx.save();
-      ctx.strokeStyle = 'rgba(255,255,255,0.24)';
-      ctx.lineWidth = 1;
-      ctx.beginPath();
-      ctx.moveTo(contentX, difficultyRowY + 0.5);
-      ctx.lineTo(contentX + contentWidth, difficultyRowY + 0.5);
-      ctx.stroke();
-      ctx.restore();
-      text(ctx, '对手', contentX, difficultyRowY + 24.5, {
-        font: this.host.font(600, 12),
-        color: COLORS.ink,
-        letterSpacing: 12 * 0.06,
-      });
-      glassPanel(ctx, this.difficultyRect, {
-        variant: 'track',
-        radius: 19,
-      });
-      const selected = Math.max(0, Math.min(2, Math.round(difficultyProgress)));
-      const thumbRect = this.difficultyThumbRect(difficultyProgress);
-      const thumbSettleScale = this.controlSettleScale('difficulty', null, time);
-      ctx.save();
-      if (interaction.mode === 'difficulty' && interaction.pressedMovable) {
-        const energy = Math.min(1, Math.abs(interaction.controlFrameDeltaX || 0) / 18);
-        const stretch = 1.24 + energy * 0.12;
-        const lift = 1.62 + energy * 0.08;
-        const anchor = clamp01(difficultyProgress / 2);
-        ctx.translate(-thumbRect.width * (stretch - 1) * anchor * 0.6, 0);
-        ctx.translate(thumbRect.x, thumbRect.y + thumbRect.height / 2);
-        ctx.scale(stretch, lift);
-        ctx.translate(-thumbRect.x, -(thumbRect.y + thumbRect.height / 2));
-      } else if (thumbSettleScale.x !== 1 || thumbSettleScale.y !== 1) {
-        ctx.translate(thumbRect.x + thumbRect.width / 2, thumbRect.y + thumbRect.height / 2);
-        ctx.scale(thumbSettleScale.x, thumbSettleScale.y);
-        ctx.translate(-(thumbRect.x + thumbRect.width / 2), -(thumbRect.y + thumbRect.height / 2));
-      }
-      glassPanel(ctx, thumbRect, {
-        variant: 'thumb',
-        radius: 15,
-        pressed: interaction.mode === 'difficulty' && interaction.pressedMovable,
-        explicitTransform: true,
-      });
-      ctx.restore();
-      order.forEach((difficulty, index) => {
-        const label = GameGlobal.TopologyGameContent.DIFFICULTIES[difficulty].label;
-        const segmentRect = rect(
-          this.difficultyRect.x + index * this.difficultyRect.width / 3,
-          this.difficultyRect.y,
-          this.difficultyRect.width / 3,
-          this.difficultyRect.height,
-        );
-        text(ctx, label, segmentRect.x + segmentRect.width / 2, segmentRect.y + segmentRect.height / 2, {
-          font: this.host.font(600, 11),
-          color: index === selected ? COLORS.ink : COLORS.muted,
-          align: 'center',
+    if (!duel) {
+      drawSoftLayer(rect(contentX, difficultyRowY, contentWidth, 90), 0.36, () => {
+        ctx.save();
+        ctx.strokeStyle = 'rgba(255,255,255,0.24)';
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        ctx.moveTo(contentX, difficultyRowY + 0.5);
+        ctx.lineTo(contentX + contentWidth, difficultyRowY + 0.5);
+        ctx.stroke();
+        ctx.restore();
+        text(ctx, '对手', contentX, difficultyRowY + 24.5, {
+          font: this.host.font(600, 12),
+          color: COLORS.ink,
+          letterSpacing: 12 * 0.06,
         });
-        this.register(`difficulty:${index}`, segmentRect, { action: 'difficulty', index });
+        glassPanel(ctx, this.difficultyRect, {
+          variant: 'track',
+          radius: 19,
+        });
+        const selected = Math.max(0, Math.min(2, Math.round(difficultyProgress)));
+        const thumbRect = this.difficultyThumbRect(difficultyProgress);
+        const thumbSettleScale = this.controlSettleScale('difficulty', null, time);
+        ctx.save();
+        if (interaction.mode === 'difficulty' && interaction.pressedMovable) {
+          const energy = Math.min(1, Math.abs(interaction.controlFrameDeltaX || 0) / 18);
+          const stretch = 1.24 + energy * 0.12;
+          const lift = 1.62 + energy * 0.08;
+          const anchor = clamp01(difficultyProgress / 2);
+          ctx.translate(-thumbRect.width * (stretch - 1) * anchor * 0.6, 0);
+          ctx.translate(thumbRect.x, thumbRect.y + thumbRect.height / 2);
+          ctx.scale(stretch, lift);
+          ctx.translate(-thumbRect.x, -(thumbRect.y + thumbRect.height / 2));
+        } else if (thumbSettleScale.x !== 1 || thumbSettleScale.y !== 1) {
+          ctx.translate(thumbRect.x + thumbRect.width / 2, thumbRect.y + thumbRect.height / 2);
+          ctx.scale(thumbSettleScale.x, thumbSettleScale.y);
+          ctx.translate(-(thumbRect.x + thumbRect.width / 2), -(thumbRect.y + thumbRect.height / 2));
+        }
+        glassPanel(ctx, thumbRect, {
+          variant: 'thumb',
+          radius: 15,
+          pressed: interaction.mode === 'difficulty' && interaction.pressedMovable,
+          explicitTransform: true,
+        });
+        ctx.restore();
+        order.forEach((difficulty, index) => {
+          const label = GameGlobal.TopologyGameContent.DIFFICULTIES[difficulty].label;
+          const segmentRect = rect(
+            this.difficultyRect.x + index * this.difficultyRect.width / 3,
+            this.difficultyRect.y,
+            this.difficultyRect.width / 3,
+            this.difficultyRect.height,
+          );
+          text(ctx, label, segmentRect.x + segmentRect.width / 2, segmentRect.y + segmentRect.height / 2, {
+            font: this.host.font(600, 11),
+            color: index === selected ? COLORS.ink : COLORS.muted,
+            align: 'center',
+          });
+          this.register(`difficulty:${index}`, segmentRect, { action: 'difficulty', index });
+        });
       });
+    }
+
+    drawSoftLayer(rect(contentX, difficultyRowY + difficultySpace, contentWidth, 65), 0.44, () => {
+      this.drawSettingToggle('hints', '落点提示', state.preferences.hints, difficultyRowY + difficultySpace, interaction, time);
+    });
+    drawSoftLayer(rect(contentX, difficultyRowY + difficultySpace + 65, contentWidth, 65), 0.52, () => {
+      this.drawSettingToggle('sound', '声音', state.preferences.sound, difficultyRowY + difficultySpace + 65, interaction, time);
     });
 
-    drawSoftLayer(rect(contentX, difficultyRowY + 104, contentWidth, 65), 0.44, () => {
-      this.drawSettingToggle('hints', '落点提示', state.preferences.hints, difficultyRowY + 104, interaction, time);
-    });
-    drawSoftLayer(rect(contentX, difficultyRowY + 169, contentWidth, 65), 0.52, () => {
-      this.drawSettingToggle('sound', '声音', state.preferences.sound, difficultyRowY + 169, interaction, time);
-    });
-
-    const doneRect = rect(contentX, difficultyRowY + 241, contentWidth, 52);
+    const doneRect = rect(contentX, difficultyRowY + difficultySpace + 137, contentWidth, 52);
     drawSoftLayer(doneRect, 0.6, () => {
       glassPanel(ctx, doneRect, {
         variant: 'dark',

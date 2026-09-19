@@ -278,6 +278,9 @@ export default class Main {
       return;
     }
     if (action === 'board' && state.game) {
+      this.interaction.gameAtDown = state.game;
+      this.interaction.playerAtDown = state.game.turn;
+      this.interaction.moveCountAtDown = state.game.moves.length;
       if (this.renderer.canDragSurface(state.game, now)) {
         this.interaction.mode = 'view-board';
         this.interaction.key = 'board';
@@ -450,15 +453,18 @@ export default class Main {
     const now = Date.now();
     const state = this.controller.getState();
     const mode = this.interaction.mode;
+    const sameTurn = state.game === this.interaction.gameAtDown
+      && state.game && state.game.turn === this.interaction.playerAtDown
+      && state.game.moves.length === this.interaction.moveCountAtDown;
     if (mode === 'board' && this.interaction.board) {
       let cell = this.renderer.boardCellAt(point.x, point.y);
       if (cell < 0 && this.renderer.boardContains(point.x, point.y)) {
         cell = this.interaction.board.cell;
       }
-      if (this.controller.canPlaceCell(cell)) {
+      if (sameTurn && this.controller.canPlaceCell(cell)) {
         this.controller.performMove(
           cell,
-          state.game && state.game.mode === 'duel' ? undefined : GameGlobal.TopologyGomoku.HUMAN,
+          this.interaction.playerAtDown,
           { fromPress: true },
           now,
         );
@@ -469,11 +475,11 @@ export default class Main {
       if (GameGlobal.TopologyBoardViewLogic.shouldPlaceOnRelease(
         this.interaction.placeEligibleAtDown,
         this.interaction.dragged || now - this.interaction.startedAt >= 240,
-        this.controller.canPlaceCell(cell),
+        Boolean(sameTurn && this.controller.canPlaceCell(cell)),
       )) {
         this.controller.performMove(
           cell,
-          state.game && state.game.mode === 'duel' ? undefined : GameGlobal.TopologyGomoku.HUMAN,
+          this.interaction.playerAtDown,
           null,
           now,
         );

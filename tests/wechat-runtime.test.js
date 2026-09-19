@@ -490,7 +490,7 @@ test("禁用的棋盘下方操作静默忽略，不触发模拟器或真机震�
   );
   assert.match(disabledBranch, /this\.resetInteraction\(\);\s*return;/);
   assert.doesNotMatch(disabledBranch, /vibrate\(/);
-  assert.match(main, /if \(hit\.payload\.locked \|\| !this\.controller\.selectLevel[\s\S]*this\.host\.vibrate\(\)/);
+  assert.match(main, /if \(hit\.payload\.locked \|\| !this\.controller\.startLevel[\s\S]*this\.host\.vibrate\(\)/);
 });
 
 test("原生首页保留 H5 的品牌主视觉与旅程层级", () => {
