@@ -308,7 +308,7 @@ button,
   width: 100%;
   height: 100%;
   min-height: 0;
-  grid-template-rows: auto auto minmax(0, 1fr);
+  grid-template-rows: auto auto auto minmax(0, 1fr);
   overflow: hidden;
   gap: 0;
   padding: calc(7px + var(--host-top-inset)) 20px calc(12px + var(--safe-bottom));
@@ -379,7 +379,7 @@ button,
   display: flex;
   align-items: center;
   justify-content: space-between;
-  min-height: 42px;
+  min-height: 44px;
   margin: 0 2px 4px;
   color: var(--muted);
   font-size: 11px;
@@ -387,39 +387,29 @@ button,
   letter-spacing: 0.1em;
 }
 
-.mode-segmented {
+.mode-options {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 3px;
-  min-width: 170px;
-  padding: 3px;
-  border: 1px solid rgba(255, 255, 255, 0.48);
-  border-radius: 15px;
-  background: rgba(27, 54, 45, 0.045);
-  box-shadow: inset 0 1px 3px rgba(26, 65, 51, 0.08), 0 1px 0 rgba(255, 255, 255, 0.58);
+  gap: 8px;
 }
 
-.mode-segmented button {
-  min-height: 30px;
-  padding: 0 9px;
-  color: var(--muted);
-  border-radius: 11px;
-  background: transparent;
-  font-size: 10px;
-  font-weight: 680;
+.tool-button.mode-option {
+  min-width: 88px;
+  min-height: 44px;
+  padding: 0 8px;
+  font-size: 12px;
+  font-weight: 600;
   letter-spacing: 0.04em;
-  transition: color 220ms ease, background 220ms ease, transform 360ms var(--spring);
 }
 
-.mode-segmented button.is-active {
+.tool-button.mode-option.is-active {
   color: var(--ink);
-  background: rgba(255, 255, 255, 0.38);
-  box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.66), 0 3px 8px rgba(35, 62, 52, 0.06);
+  text-decoration: underline;
+  text-underline-offset: 6px;
+  text-decoration-thickness: 1px;
 }
 
-.mode-segmented button:active {
-  transform: scale(1.045);
-}
+.setting-row[hidden] { display: none; }
 
 .progress-count {
   color: var(--ink);
@@ -442,6 +432,7 @@ button,
   min-height: 0;
   grid-template-columns: 1fr;
   grid-template-rows: minmax(0, 1fr) auto auto;
+  row-gap: 3px;
   overflow: hidden;
   padding: clamp(10px, 1.7vh, 14px);
   text-align: center;
@@ -556,6 +547,7 @@ button,
 .level-glyph {
   width: clamp(70px, 21vw, 88px);
   height: clamp(48px, 8.2vh, 70px);
+  max-height: 100%;
   grid-column: 1 / -1;
   grid-row: 1;
   align-self: center;
@@ -571,6 +563,7 @@ button,
   display: grid;
   width: clamp(70px, 21vw, 88px);
   height: clamp(48px, 8.2vh, 70px);
+  max-height: 100%;
   grid-column: 1 / -1;
   grid-row: 1;
   align-self: center;

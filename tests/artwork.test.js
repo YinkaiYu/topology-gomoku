@@ -200,7 +200,7 @@ test("顶部交互区在安全区缺失时仍避开宿主悬浮按钮", () => {
 test("关卡卡片展开时目录保持原位并以液态弹性共享元素进入棋盘", () => {
   const game = fs.readFileSync(path.join(ROOT, "app", "assets", "game.js"), "utf8");
   const style = fs.readFileSync(path.join(ROOT, "app", "assets", "style.css"), "utf8");
-  assert.match(game, /startLevel\(index, \{ transitionCard: card \}\)/);
+  // The H5 behavior tests verify that level selection forwards the card geometry.
   assert.match(game, /function animateCardIntoBoard\(/);
   assert.match(game, /function animateBoardBackToCard\(/);
   assert.match(game, /drawImage\(dom\.boardCanvas/);

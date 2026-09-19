@@ -344,7 +344,7 @@
     selectedLevel = index;
     updateHome();
     sound.play("ui");
-    startLevel(index, { transitionCard: card });
+    startLevel(index, { transitionCard: card, mode: selectedMode });
   }
 
   function showScreen(screen) {
@@ -652,6 +652,9 @@
   }
 
   function introModeFor(levelIndex, options) {
+    if (options && options.introMode === "lesson" && options.lessonReturn) {
+      return "lesson";
+    }
     if (options && options.mode === "duel") {
       return "none";
     }
@@ -669,9 +672,12 @@
 
   function startLevel(index, options) {
     if (dimensionRange) { dimensionRange.cancel(); }
+    options = Object.assign({}, options);
+    var mode = options.resumeMatch ? options.resumeMatch.mode : options.mode;
+    mode = mode === "ai" || mode === "duel" ? mode : selectedMode;
+    options.mode = mode;
     var level = LEVELS[index];
     var introMode = introModeFor(index, options);
-    var mode = options && options.mode === "duel" ? "duel" : selectedMode;
     var resumeMatch = options && options.resumeMatch && options.resumeMatch.levelIndex === index
       ? options.resumeMatch
       : null;
@@ -724,6 +730,8 @@
       game.lastMove = resumeMatch.lastMove;
     }
     renderState.hoverCell = -1;
+    renderState.pointerId = null;
+    renderState.pressedPlayer = null;
     renderState.pressedCell = -1;
     renderState.pressedAt = 0;
     renderState.pressedMotionReady = false;
@@ -822,6 +830,7 @@
     sound.play("ui");
     transitionToLevel(levelIndex, {
       introMode: "lesson",
+      mode: game.mode,
       lessonReturn: lessonReturn
     });
   }
@@ -1102,7 +1111,7 @@
     var passed = isPassedView();
     var reviewing = isReviewing();
     var lessonComplete = game.status === "lesson-complete";
-    var firstLevel = game.levelIndex === 0;
+    var firstLevel = game.levelIndex === 0 && game.mode !== "duel";
     var autoAdvancing = ended && Boolean(game.autoAdvancePending);
     var hasNextLevel = passed && game.levelIndex < LEVELS.length - 1;
     var introActive = game.introMode === "lesson" || game.introMode === "demo";
@@ -1119,7 +1128,7 @@
     dom.gameTools.classList.toggle("is-ended", ended);
     dom.gameTools.classList.toggle("has-next-level", ended && hasNextLevel);
     dom.gameTools.classList.toggle("is-auto-advancing", autoAdvancing);
-    dom.gameTools.classList.toggle("is-basic-tutorial", !ended && game.levelIndex === 0);
+    dom.gameTools.classList.toggle("is-basic-tutorial", !ended && firstLevel);
     dom.endgameReviewTools.hidden = false;
     dom.endgameReviewTools.classList.toggle("is-reserved", reviewToolsHidden);
     dom.endgameReviewTools.setAttribute("aria-hidden", String(reviewToolsHidden));
@@ -1244,14 +1253,14 @@
           : resultMoveText());
     } else if (game.status === "forcing") {
       dom.turnStatus.textContent = "跨界连线";
+    } else if (game.mode === "duel" && !lessonActive) {
+      dom.turnStatus.textContent = game.turn === HUMAN ? "黑方回合" : "白方回合";
     } else if (aiTurn && DEV_MODE && developer.aiPaused) {
       dom.turnStatus.textContent = "AI 已暂停";
     } else if (aiTurn) {
       dom.turnStatus.textContent = "思考中";
     } else {
-      if (game.mode === "duel") {
-        dom.turnStatus.textContent = game.turn === HUMAN ? "黑方回合" : "白方回合";
-      } else if (lessonActive) {
+      if (lessonActive) {
         dom.turnStatus.textContent = lessonPromptText();
       } else if (game.level.tutorial) {
         dom.turnStatus.textContent = "自由落子";
@@ -1287,10 +1296,13 @@
   }
 
   function performMove(cell, player, options) {
-    if (!game || game.status !== "playing" || game.board[cell] !== Engine.EMPTY) {
+    if (!game || game.status !== "playing" || !Number.isInteger(cell)
+      || (player !== HUMAN && player !== AI) || game.board[cell] !== Engine.EMPTY
+      || (game.demo && game.demo.active)) {
       return false;
     }
-    if (game.mode === "duel" && player !== game.turn) {
+    if (game.mode === "duel" && (player !== game.turn || activeSheet
+      || (game.view && (game.view.transitioning || game.view.scrubbing)))) {
       return false;
     }
     var lesson = isInteractiveLesson() ? game.lesson : null;
@@ -1402,6 +1414,7 @@
       if (game.lessonReturn) {
         transitionToLevel(game.levelIndex, {
           introMode: "none",
+          mode: game.lessonReturn.mode,
           resumeMatch: game.lessonReturn
         });
         return;
@@ -1423,7 +1436,7 @@
     var wait = DIFFICULTIES[prefs.difficulty].wait;
     var dueAt = performance.now() + wait;
     function makeAiMove() {
-      if (!game || game.status !== "playing" || game.turn !== AI || scheduledToken !== turnToken) {
+      if (!game || game.mode === "duel" || game.status !== "playing" || game.turn !== AI || scheduledToken !== turnToken) {
         return;
       }
       if (ViewLogic.shouldDelayAi(game.view)) {
@@ -1777,10 +1790,12 @@
     if (passed) {
       rememberLevel(game.levelIndex);
       prefs.completed[game.levelIndex] = true;
-      prefs.bestDifficulty[game.levelIndex] = Math.max(
-        Number(prefs.bestDifficulty[game.levelIndex]) || 0,
-        DIFFICULTIES[prefs.difficulty].rank
-      );
+      if (game.mode !== "duel") {
+        prefs.bestDifficulty[game.levelIndex] = Math.max(
+          Number(prefs.bestDifficulty[game.levelIndex]) || 0,
+          DIFFICULTIES[prefs.difficulty].rank
+        );
+      }
       if (game.levelIndex < LEVELS.length - 1) {
         prefs.unlocked = Math.max(prefs.unlocked, game.levelIndex + 1);
       }
@@ -1829,7 +1844,7 @@
     if (lessonActive) {
       game.lesson.step = game.moves.length;
     }
-    game.turn = game.mode === "duel"
+    game.turn = game.mode === "duel" && !lessonActive
       ? (game.moves.length ? -game.moves[game.moves.length - 1].player : HUMAN)
       : HUMAN;
     renderState.lastMoveAt = performance.now();
@@ -1878,6 +1893,8 @@
   }
 
   function syncSettingsUI() {
+    var duel = Boolean(game && game.mode === "duel");
+    dom.difficultyControl.parentElement.hidden = duel;
     var selectedDifficulty = difficultyIndex(prefs.difficulty);
     previewDifficulty(selectedDifficulty);
     dom.difficultyControl.dataset.index = String(selectedDifficulty);
@@ -1890,7 +1907,7 @@
     dom.hintSwitch.setAttribute("aria-checked", prefs.hints ? "true" : "false");
     syncSwitchUI(dom.soundSwitch, prefs.sound);
     dom.soundSwitch.setAttribute("aria-checked", prefs.sound ? "true" : "false");
-    dom.difficultyLabel.textContent = DIFFICULTIES[prefs.difficulty].label;
+    dom.difficultyLabel.textContent = duel ? "白方" : DIFFICULTIES[prefs.difficulty].label;
   }
 
   function syncSwitchUI(control, enabled) {
@@ -4005,7 +4022,7 @@
     if (!canPlaceCell(cell)) {
       return;
     }
-    var previewPlayer = DEV_MODE ? developer.placementPlayer : (game.mode === "duel" ? game.turn : HUMAN);
+    var previewPlayer = currentInputPlayer();
     var pressed = renderState.pressedCell >= 0;
     var center = pressed && renderState.pressedMotionReady
       ? { x: renderState.pressedX, y: renderState.pressedY }
@@ -4042,20 +4059,21 @@
   }
 
   function tacticalHintPriority(hint) {
-    if (hint.player === HUMAN && hint.kind === "four") {
+    var offensive = hint.player === (game.mode === "duel" ? game.turn : HUMAN);
+    if (offensive && hint.kind === "four") {
       return 4;
     }
-    if (hint.player === AI && hint.kind === "four") {
+    if (!offensive && hint.kind === "four") {
       return 3;
     }
-    if (hint.player === AI && hint.kind === "three") {
+    if (!offensive && hint.kind === "three") {
       return 2;
     }
     return 1;
   }
 
   function drawTacticalHints(ctx, resolveCell, morph) {
-    if (!prefs.hints || !game || game.levelIndex === 0 || game.status !== "playing" || isInteractiveLesson() || (game.demo && game.demo.active)) {
+    if (!prefs.hints || !game || (game.levelIndex === 0 && game.mode !== "duel") || game.status !== "playing" || isInteractiveLesson() || (game.demo && game.demo.active)) {
       return;
     }
     var hintsByCell = Object.create(null);
@@ -4082,7 +4100,7 @@
       var center = resolveCell ? resolveCell(hint.cell) : cellCenter(hint.cell);
       var radius = cellSize * (0.27 - (morph || 0) * 0.035);
       var urgent = hint.kind === "four";
-      var defensive = hint.player === AI;
+      var defensive = hint.player !== (game.mode === "duel" ? game.turn : HUMAN);
       ctx.save();
       ctx.strokeStyle = defensive ? "#d95b4f" : (urgent ? "#c79244" : "#3f8c87");
       ctx.fillStyle = defensive
@@ -4123,7 +4141,7 @@
     ctx.save();
     if (!pressed) {
       ctx.globalAlpha = 0.16;
-      ctx.fillStyle = "#f8f4e9";
+      ctx.fillStyle = currentInputPlayer() === HUMAN ? "#21302c" : "#f8f4e9";
       ctx.beginPath();
       ctx.arc(center.x, center.y, radius, 0, Math.PI * 2);
       ctx.fill();
@@ -4135,7 +4153,7 @@
     ctx.globalAlpha = 0.22 + landing * 0.48;
     ctx.translate(center.x, center.y);
     ctx.scale(1 + landing * 0.04, 1 - landing * 0.06);
-    drawStoneFace(ctx, DEV_MODE ? developer.placementPlayer : HUMAN, radius, false, landing);
+    drawStoneFace(ctx, currentInputPlayer(), radius, false, landing);
     ctx.restore();
   }
 
@@ -4334,6 +4352,22 @@
       && localY <= renderState.layout.bottom + margin;
   }
 
+  function currentInputPlayer() {
+    return game && game.mode === "duel" ? game.turn : (DEV_MODE ? developer.placementPlayer : HUMAN);
+  }
+
+  function rememberBoardPress() {
+    renderState.pressedPlayer = currentInputPlayer();
+    renderState.pressedTurnToken = turnToken;
+    renderState.pressedMoveCount = game.moves.length;
+  }
+
+  function isCurrentBoardPress() {
+    return Boolean(game && renderState.pressedTurnToken === turnToken
+      && renderState.pressedMoveCount === game.moves.length
+      && renderState.pressedPlayer === currentInputPlayer());
+  }
+
   function canPlaceOnBoard() {
     if (!game || game.status !== "playing" || (game.demo && game.demo.active) || activeSheet || (game.view && (game.view.transitioning || game.view.scrubbing))) {
       return false;
@@ -4342,7 +4376,7 @@
   }
 
   function canPlaceCell(cell) {
-    if (!canPlaceOnBoard() || cell < 0 || game.board[cell] !== Engine.EMPTY) {
+    if (!canPlaceOnBoard() || !Number.isInteger(cell) || cell < 0 || game.board[cell] !== Engine.EMPTY) {
       return false;
     }
     return !isInteractiveLesson() || game.lesson.cells[game.lesson.step] === cell;
@@ -4380,6 +4414,7 @@
     view.lastY = event.clientY;
     var pressCell = eventToCell(event);
     view.placeEligibleAtDown = ViewLogic.placementEligibleAtDown(canPlaceCell(pressCell));
+    rememberBoardPress();
     renderState.pointerId = event.pointerId;
     renderState.pressedCell = view.placeEligibleAtDown ? pressCell : -1;
     renderState.pressedAt = renderState.pressedCell >= 0 ? (event.timeStamp || performance.now()) : 0;
@@ -4426,6 +4461,10 @@
 
   function onBoardPointerDown(event) {
     sound.unlock();
+    if (renderState.pointerId != null || (game && game.view && game.view.pointerId != null)
+      || (game && game.completion && game.completion.pointerId != null)) {
+      return;
+    }
     if (canExploreCompletion()) {
       event.preventDefault();
       var completion = game.completion;
@@ -4464,6 +4503,8 @@
     event.preventDefault();
     renderState.pointerId = event.pointerId;
     renderState.pressedCell = eventToCell(event);
+    rememberBoardPress();
+    renderState.placeEligibleAtDown = canPlaceCell(renderState.pressedCell);
     renderState.pressedAt = event.timeStamp || performance.now();
     if (canPlaceCell(renderState.pressedCell)) {
       targetPressedStone(renderState.pressedCell, true);
@@ -4534,10 +4575,11 @@
       var view = game.view;
       var wasDragging = view.dragging;
       var cell = eventToCell(event);
-      var placeEligibleAtDown = view.placeEligibleAtDown;
+      var placeEligibleAtDown = view.placeEligibleAtDown && isCurrentBoardPress();
+      var pressedPlayer = renderState.pressedPlayer;
       clearInteractiveViewPointer();
       if (ViewLogic.shouldPlaceOnRelease(placeEligibleAtDown, wasDragging, canPlaceCell(cell))) {
-        performMove(cell, DEV_MODE ? developer.placementPlayer : (game.mode === "duel" ? game.turn : HUMAN), { fromPress: true });
+        performMove(cell, pressedPlayer, { fromPress: true });
       } else {
         requestRender();
       }
@@ -4556,8 +4598,8 @@
     renderState.pressedCell = -1;
     renderState.pressedAt = 0;
     clearPressedStoneMotion();
-    if (canPlaceCell(cell)) {
-      performMove(cell, DEV_MODE ? developer.placementPlayer : (game.mode === "duel" ? game.turn : HUMAN), { fromPress: releasedFromPress });
+    if (renderState.placeEligibleAtDown && isCurrentBoardPress() && canPlaceCell(cell)) {
+      performMove(cell, renderState.pressedPlayer, { fromPress: releasedFromPress });
     } else {
       requestRender();
     }

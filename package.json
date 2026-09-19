@@ -8,6 +8,7 @@
     "test": "node --test tests/*.test.js",
     "validate": "powershell -NoProfile -ExecutionPolicy Bypass -File ./scripts/validate.ps1",
     "docs:check": "powershell -NoProfile -ExecutionPolicy Bypass -File ./scripts/validate-docs.ps1",
+    "qa:duel": "node scripts/qa-offline-duel.cjs",
     "release:check-versions": "powershell -NoProfile -ExecutionPolicy Bypass -File ./scripts/validate-release-versions.ps1",
     "check": "npm test && npm run validate && npm run docs:check",
     "fonts:subset": "powershell -NoProfile -ExecutionPolicy Bypass -File ./scripts/subset-fonts.ps1",

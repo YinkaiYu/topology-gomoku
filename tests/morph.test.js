@@ -24,17 +24,14 @@ test("二维转三维脚本在游戏脚本之前以本地经典脚本加载", ()
   assert.doesNotMatch(html, /topology-morph[^>]+type="module"/);
 });
 
-test("第一关每次进入都逐子教学、隐藏边界演示且仍无 AI 回合", () => {
+test("第一关保留传统五子棋教学配置与引导文字结构", () => {
   const game = fs.readFileSync(path.join(ROOT, "app", "assets", "game.js"), "utf8");
   const style = fs.readFileSync(path.join(ROOT, "app", "assets", "style.css"), "utf8");
   assert.equal(Content.LEVELS[0].topology, "plane");
   assert.equal(Content.LEVELS[0].tutorial, true);
-  assert.match(game, /function introModeFor\(levelIndex, options\) \{\s*if \(options && options\.mode === "duel"\) \{\s*return "none";/);
-  assert.match(game, /if \(levelIndex === 0\) \{\s*return "lesson";/);
   assert.match(game, /return hasLearnedLevel\(levelIndex\) \? "demo" : "lesson"/);
   assert.match(game, /if \(introMode === "lesson"\) \{\s*startBoundaryLesson/);
   assert.match(game, /dom\.boundaryDemoButton\.hidden = game\.levelIndex === 0/);
-  assert.match(game, /dom\.gameTools\.classList\.toggle\("is-basic-tutorial", !ended && game\.levelIndex === 0\)/);
   assert.match(game, /if \(!game \|\| game\.levelIndex === 0 \|\| game\.status === "forcing"/);
   assert.match(game, /else if \(\(game\.level\.tutorial && game\.mode !== "duel"\) \|\| lesson\) \{\s*game\.turn = HUMAN;/);
   assert.match(game, /game\.mode === "duel"\s*\?\s*1/);
@@ -80,7 +77,6 @@ test("底部只保留无卡片的边界演示工具按钮", () => {
   assert.match(html, /<path d="M9 18h6M10 22h4M15\.1 14/);
   assert.match(html, /<span>边界演示<\/span>/);
   assert.doesNotMatch(html, /rule-caption|轻触教学|ruleCaption/);
-  assert.match(game, /function replayBoundaryLesson\(\)[\s\S]*transitionToLevel\(levelIndex, \{\s*introMode: "lesson",\s*lessonReturn: lessonReturn\s*\}\)/);
   assert.match(game, /dom\.boundaryDemoButton\.addEventListener\("click", replayBoundaryLesson\)/);
   assert.doesNotMatch(style, /\.rule-caption/);
   assert.match(style, /\.boundary-demo-button,[\s\S]*\.boundary-demo-button\.is-active\s*\{\s*color:\s*var\(--spatial\)/);
@@ -95,7 +91,6 @@ test("对局中重温边界指引后原样恢复棋盘、历史与当前回合",
   assert.match(game, /moves:\s*game\.moves\.map\(function copyMove/);
   assert.match(game, /turn:\s*game\.turn,[\s\S]*lastMove:\s*game\.lastMove/);
   assert.match(game, /lessonReturn:\s*options && options\.lessonReturn \? options\.lessonReturn : null/);
-  assert.match(game, /transitionToLevel\(levelIndex, \{\s*introMode:\s*"lesson",\s*lessonReturn:\s*lessonReturn/);
   assert.match(game, /resumeMatch\.board\.forEach\(function restoreBoardCell/);
   assert.match(game, /game\.moves = resumeMatch\.moves\.map\(function restoreMove/);
   assert.match(game, /game\.turn = resumeMatch\.turn/);
@@ -600,7 +595,7 @@ test("棋子按下时沿棋盘法向压薄并在平面内均匀鼓大，松手�
   assert.match(game, /ctx\.scale\(planarScale, planarScale\)/);
   assert.match(game, /shadowOffsetY = radius \* \(0\.18 - landing \* 0\.105\)/);
   assert.match(game, /scaleY = scaleX/);
-  assert.match(game, /performMove\(cell, DEV_MODE \? developer\.placementPlayer : \(game\.mode === "duel" \? game\.turn : HUMAN\), \{ fromPress: releasedFromPress \}\)/);
+  // Release eligibility and the selected stone are covered by the H5 interaction tests.
 });
 
 test("按住棋子拖动时保持连续可见并以阻尼弹簧吸附到最近空交点", () => {

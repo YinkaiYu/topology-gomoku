@@ -102,6 +102,24 @@
 
 [360 × 770 窄屏复验](../../artifacts/qa-view-columns-after-360x770.png)左右中心线分别为 68 px 和 292 px，纵向中心间距同为 62 px，无横向溢出。另在 360 × 740 紧凑断点实测：三排行高均为 44 px，纵向中心间距同为 54 px，滑轨仍保留 44 px 高的交互区域。列中心的子像素舍入差异均小于 0.01 px。此轮只调整布局，不改变图标、材质、棋谱或按钮行为。
 
+## Issue #2：离线双人候选验证（2026-09-19）
+
+任务分支 `codex/issue-2-offline-duel` 从 `dev` 的 `45900d9` 开始。首页新增两种对弈模式，复用无底板工具按钮的字号、颜色和按压反馈，命中区至少 44 px 高；卡片图形随可用网格行高收缩，图形和文字保留间隔。以下截图来自 Headless Chromium 的触摸视口模拟，基线和结果均为全新进度、同一尺寸与静止状态，未使用开发者模式。
+
+| 状态 | 390 × 844 | 360 × 770 |
+| --- | --- | --- |
+| 首页基线 | [修改前](../../artifacts/issue-2/home-before-390x844.png) | [修改前](../../artifacts/issue-2/home-before-360x770.png) |
+| 首页候选 | [修改后](../../artifacts/issue-2/home-after-390x844.png) | [修改后](../../artifacts/issue-2/home-after-360x770.png) |
+| 白方回合 | [回合与棋盘](../../artifacts/issue-2/duel-white-turn-390x844.png) | [回合与棋盘](../../artifacts/issue-2/duel-white-turn-360x770.png) |
+| 双人设置 | [提示与声音](../../artifacts/issue-2/duel-settings-390x844.png) | [提示与声音](../../artifacts/issue-2/duel-settings-360x770.png) |
+| 黑方胜 | [终局与再来](../../artifacts/issue-2/duel-black-win-390x844.png) | [终局与再来](../../artifacts/issue-2/duel-black-win-360x770.png) |
+| 白方胜 | [终局与复盘](../../artifacts/issue-2/duel-white-win-390x844.png) | [终局与复盘](../../artifacts/issue-2/duel-white-win-360x770.png) |
+| 满盘和局 | [和局](../../artifacts/issue-2/duel-draw-390x844.png) | [和局](../../artifacts/issue-2/duel-draw-360x770.png) |
+
+自动验证：`npm run check` 通过 141 项逻辑 / H5 行为 / 字体测试及包、文档校验。`npm run qa:duel` 在首页资源加载后关闭网络，以真实触摸事件验证模式入口、黑白交替、占用拒绝、设置、悔棋、重开、双方胜利、满盘和局、复盘和退出；AI 调用、外部请求、资源失败及页面错误均为 0。终局可见性在状态更新后的绘制帧核对，避免把尚未应用样式的一帧误判为按钮隐藏。规则测试还覆盖七拓扑双方获胜及教学返回，多指与过期松手由 H5 行为测试覆盖。复现命令见[开发环境](../development/environment.md#离线双人浏览器回归)。
+
+预览确认：待用户确认，尚未合回 `dev`。桌面手动浏览器检查因工具无法可靠识别当前网址而停止，未计为通过；本次结论来自本地自动化和截图检查。五个平台宿主的模拟器 / 真机离线验收与稳定发行同步尚未完成，Issue #2 保持开放。
+
 ## 新证据记录模板
 
 ```text
