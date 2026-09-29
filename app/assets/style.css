@@ -2073,6 +2073,17 @@ button,
   }
 }
 
+/* Zhihu's embedded frame can be wide but comparatively short. Keeping the
+   play surface centered and narrower leaves the square board enough vertical
+   room for its status and control rows instead of stretching everything to
+   the frame edges. */
+@media (min-width: 560px) {
+  html[data-host-layout="compact"] .app-shell {
+    max-width: 460px;
+    margin-inline: auto;
+  }
+}
+
 @media (max-height: 760px) {
   .home-scroll {
     padding-top: calc(5px + var(--host-top-inset));
