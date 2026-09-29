@@ -2150,17 +2150,40 @@ html[data-toy-container="bilibili-app"][data-toy-immersive="true"] {
   }
 }
 
-/* Zhihu's embedded frame can be wide but comparatively short. Keeping the
-   play surface centered and narrower leaves the square board enough vertical
-   room for its status and control rows instead of stretching everything to
-   the frame edges. */
+/* Reserve the header, status and all three endgame control rows before
+   choosing the column width. The board stays square and buttons keep their
+   touch targets even in a wide, shallow embedded frame. */
 @media (min-width: 560px) {
   html[data-host-layout="compact"] .app-shell {
-    max-width: 460px;
+    --compact-row-reserve: 300px;
+    width: min(100%, 520px, max(360px, calc(var(--toy-viewport-height, 100dvh) - var(--compact-row-reserve) - var(--safe-top) - var(--safe-bottom))));
+    min-height: 0;
     margin-inline: auto;
   }
-}
 
+  html[data-host-layout="compact"] .board-stage {
+    flex-shrink: 0;
+  }
+
+  @media (max-height: 760px) {
+    html[data-host-layout="compact"] .app-shell {
+      /* 18px padding + 44px header + 44px status + 3*44px controls +
+         5*10px gaps - 36px horizontal padding. */
+      --compact-row-reserve: 252px;
+    }
+  }
+
+  @media (max-height: 531px) {
+    html[data-host-layout="compact"] .game-screen,
+    html[data-host-layout="compact"] .home-screen {
+      overflow-y: auto;
+    }
+
+    html[data-host-layout="compact"] .home-scroll {
+      min-height: 520px;
+    }
+  }
+}
 @media (max-height: 760px) {
   .home-scroll {
     padding-top: calc(5px + var(--host-top-inset));
@@ -2255,6 +2278,41 @@ html[data-toy-container="bilibili-app"][data-toy-immersive="true"] {
   .hero { grid-template-columns: minmax(0, 1fr) 118px; gap: 2px; }
 }
 
+/* Reserve the header, status and all three endgame control rows before
+   choosing the column width. The board stays square and buttons keep their
+   touch targets even in a wide, shallow embedded frame. */
+@media (min-width: 560px) {
+  html[data-host-layout="compact"] .app-shell {
+    --compact-row-reserve: 300px;
+    width: min(100%, 520px, max(360px, calc(var(--toy-viewport-height, 100dvh) - var(--compact-row-reserve) - var(--safe-top) - var(--safe-bottom))));
+    min-height: 0;
+    margin-inline: auto;
+  }
+
+  html[data-host-layout="compact"] .board-stage {
+    flex-shrink: 0;
+  }
+
+  @media (max-height: 760px) {
+    html[data-host-layout="compact"] .app-shell {
+      /* 18px padding + 44px header + 44px status + 3*44px controls +
+         5*10px gaps - 36px horizontal padding. */
+      --compact-row-reserve: 252px;
+    }
+  }
+
+  @media (max-height: 531px) {
+    html[data-host-layout="compact"] .game-screen,
+    html[data-host-layout="compact"] .home-screen {
+      overflow-y: auto;
+    }
+
+    html[data-host-layout="compact"] .home-scroll {
+      min-height: 520px;
+    }
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
@@ -2265,3 +2323,4 @@ html[data-toy-container="bilibili-app"][data-toy-immersive="true"] {
     transition-duration: 1ms !important;
   }
 }
+

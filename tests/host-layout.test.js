@@ -57,10 +57,8 @@ test("紧凑布局只替换宿主顶部留白，仍使用安全区变量", () =>
   assert.match(style, /--host-top-inset:\s*max\(68px,\s*calc\(var\(--safe-top\)\s*\+\s*var\(--host-chrome-clearance\)\)\)/);
 });
 
-test("宽而矮的嵌入窗口将游戏内容居中并限制最大宽度", () => {
+test("宽而矮的嵌入窗口按可用高度限制列宽", () => {
   const style = fs.readFileSync(path.join(ROOT, "app", "assets", "style.css"), "utf8");
-  assert.match(
-    style,
-    /@media \(min-width: 560px\)\s*\{\s*html\[data-host-layout="compact"\] \.app-shell\s*\{[\s\S]*max-width:\s*460px;[\s\S]*margin-inline:\s*auto;/
-  );
+  assert.match(style, /@media \(min-width: 560px\)[\s\S]*html\[data-host-layout="compact"\] \.app-shell[\s\S]*width: min\(100%, 520px, max\(360px,/);
+  assert.match(style, /html\[data-host-layout="compact"\] \.board-stage\s*\{\s*flex-shrink:\s*0;/);
 });
