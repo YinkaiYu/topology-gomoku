@@ -360,7 +360,7 @@ button,
 .mode-selection {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-start;
   min-height: 52px;
   margin: 0 2px 8px;
   color: var(--muted);
@@ -371,14 +371,16 @@ button,
 
 .mode-options {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 12px;
+  grid-template-columns: repeat(2, auto);
+  gap: 28px;
 }
 
 .tool-button.mode-option {
-  min-width: 92px;
+  min-width: 44px;
   min-height: 48px;
-  padding: 0 8px;
+  align-items: flex-start;
+  padding: 0;
+  text-align: left;
   font-size: 16px;
   font-weight: 600;
   letter-spacing: 0.08em;
