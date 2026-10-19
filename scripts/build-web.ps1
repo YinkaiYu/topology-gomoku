@@ -24,6 +24,13 @@ if (Test-Path -LiteralPath $webOutput) {
 New-Item -ItemType Directory -Force -Path $webOutput | Out-Null
 Copy-Item -Path (Join-Path $appRoot '*') -Destination $webOutput -Recurse -Force
 
+# A standalone website has no Xiaohongshu floating toolbar. Declare the host
+# in the generated entry rather than guessing it from a user agent.
+$webEntry = Join-Path $webOutput 'index.html'
+$webHtml = [System.IO.File]::ReadAllText($webEntry)
+$webHtml = $webHtml.Replace('<html lang="zh-CN">', '<html lang="zh-CN" data-host-platform="web">')
+[System.IO.File]::WriteAllText($webEntry, $webHtml, [System.Text.UTF8Encoding]::new($false))
+
 $sourceFiles = @(Get-ChildItem -LiteralPath $appRoot -Recurse -File)
 $outputFiles = @(Get-ChildItem -LiteralPath $webOutput -Recurse -File)
 if ($sourceFiles.Count -ne $outputFiles.Count) {
