@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="zh-CN">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>关卡比例预览</title>
+<style>
+  * { box-sizing: border-box; }
+  body { margin: 0; height: 100vh; display: flex; flex-direction: column; background: #e7e2d8; color: #21302c; font: 14px sans-serif; }
+  nav { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; padding: 12px; }
+  button { border: 1px solid #b3b9ae; border-radius: 12px; padding: 9px 12px; background: #f7f5ee; color: inherit; cursor: pointer; }
+  button[aria-pressed="true"] { background: #21302c; color: #f7f5ee; }
+  main { flex: 1; min-height: 0; display: grid; place-items: center; overflow: hidden; }
+  #stage { position: relative; }
+  iframe { position: absolute; inset: 0; border: 0; transform-origin: top left; }
+  p { margin: 10px; text-align: center; font-size: 12px; }
+</style>
+<nav aria-label="预览窗口">
+  <button data-w="390" data-h="674" aria-pressed="true">B站 / 知乎 · 390 × 674</button>
+  <button data-w="390" data-h="844" data-host="xiaohongshu" aria-pressed="false">小红书 · 390 × 844</button>
+  <button data-w="320" data-h="568" data-host="xiaohongshu" aria-pressed="false">小屏手机 · 320 × 568</button>
+  <button data-w="700" data-h="320" aria-pressed="false">矮窗口 · 700 × 320</button>
+  <button data-w="1440" data-h="900" aria-pressed="false">Web · 1440 × 900</button>
+</nav>
+<main><div id="stage"><iframe title="游戏预览" src="/app/index.html"></iframe></div></main>
+<p>本地布局模拟，可切换人机 / 双人并进入关卡；宿主工具栏与安全区需在平台中复验。</p>
+<script>
+  const frame = document.querySelector('iframe'), stage = document.querySelector('#stage'), main = document.querySelector('main');
+  let selected = document.querySelector('[aria-pressed="true"]');
+  function fit() {
+    const w = Number(selected.dataset.w), h = Number(selected.dataset.h);
+    const scale = Math.min(1, (main.clientWidth - 16) / w, (main.clientHeight - 16) / h);
+    frame.style.width = w + 'px'; frame.style.height = h + 'px';
+    frame.style.transform = 'scale(' + scale + ')';
+    stage.style.width = w * scale + 'px'; stage.style.height = h * scale + 'px';
+    if (frame.contentDocument?.documentElement) frame.contentDocument.documentElement.dataset.hostLayout = selected.dataset.host || 'compact';
+  }
+  frame.addEventListener('load', () => {
+    fit();
+    frame.contentDocument.querySelector('[data-mode="duel"]').click();
+  });
+  document.querySelectorAll('nav button').forEach(button => button.addEventListener('click', () => {
+    selected.setAttribute('aria-pressed', 'false'); selected = button; selected.setAttribute('aria-pressed', 'true'); fit();
+  }));
+  window.addEventListener('resize', fit);
+  fit();
+</script>
+</html>
