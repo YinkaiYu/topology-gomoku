@@ -393,7 +393,6 @@ test("关键中文层级沿用 H5 的字距因子", () => {
   assert.match(optionsFor("text(ctx, '拓扑'"), /letterSpacing: -titleSize \* 0\.065/);
   assert.match(optionsFor("text(ctx, '五子棋'"), /letterSpacing: -titleSize \* 0\.065/);
   assert.doesNotMatch(renderer, /边界之外，也能连成一线。/);
-  assert.match(optionsFor("text(ctx, '旅程'"), /letterSpacing: \(compact \? 10 : 12\) \* 0\.12/);
   assert.match(optionsFor("text(ctx, level.typeName"), /letterSpacing: \(compact \? 8 : 9\) \* 0\.16/);
   assert.match(optionsFor("text(ctx, level.name"), /letterSpacing: \(compact \? 14 : 16\) \* 0\.09/);
   assert.match(optionsFor("text(ctx, game.level.name"), /letterSpacing: 19 \* 0\.08/);
@@ -468,7 +467,7 @@ test("交互式边界提示保留逐段虚线、跨界方向射线与目标浮�
 test("原生目录保留图鉴揭示、连续设置控制与输入锁语义", () => {
   const renderer = read("wechat/js/ui/scene-renderer.js");
   const main = read("wechat/js/main.js");
-  assert.match(renderer, /const revealed = index === 0 \|\| completed/);
+  assert.match(renderer, /const revealed = this\.homeMode ===[^;]+index === 0 \|\| completed/);
   assert.match(renderer, /drawImageContain\(ctx, this\.topologyImage\(level\.topology, compact\), glyphRect\)/);
   assert.match(renderer, /drawImageContain\(ctx, this\.silhouetteImage\(level\.topology, compact\), glyphRect\)/);
   assert.match(renderer, /Math\.round\(difficultyProgress\)/);
@@ -490,10 +489,10 @@ test("禁用的棋盘下方操作静默忽略，不触发模拟器或真机震�
   );
   assert.match(disabledBranch, /this\.resetInteraction\(\);\s*return;/);
   assert.doesNotMatch(disabledBranch, /vibrate\(/);
-  assert.match(main, /if \(hit\.payload\.locked \|\| !this\.controller\.selectLevel[\s\S]*this\.host\.vibrate\(\)/);
+  assert.match(main, /if \(\(mode !== 'duel' && hit\.payload\.locked\) \|\| !this\.controller\.startLevel[\s\S]*this\.host\.vibrate\(\)/);
 });
 
-test("原生首页保留 H5 的品牌主视觉与旅程层级", () => {
+test("原生首页保留 H5 的品牌主视觉与对弈选择", () => {
   const renderer = read("wechat/js/ui/scene-renderer.js");
   const homeStart = renderer.indexOf("  drawHome(state, time) {");
   const homeEnd = renderer.indexOf("  drawLevelCard(", homeStart);
@@ -502,7 +501,8 @@ test("原生首页保留 H5 的品牌主视觉与旅程层级", () => {
   assert.match(home, /ctx\.rotate\(lerp\(-5, -3\.5, breath\) \* Math\.PI \/ 180\)/);
   assert.match(home, /text\(ctx, '拓扑'/);
   assert.match(home, /text\(ctx, '五子棋'/);
-  assert.match(home, /text\(ctx, '旅程'/);
+  assert.match(home, /人机对弈/);
+  assert.doesNotMatch(home, /text\(ctx, '旅程'/);
   assert.doesNotMatch(home, /register\('settings'/);
 });
 

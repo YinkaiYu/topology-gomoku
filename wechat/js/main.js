@@ -278,6 +278,9 @@ export default class Main {
       return;
     }
     if (action === 'board' && state.game) {
+      this.interaction.gameAtDown = state.game;
+      this.interaction.playerAtDown = state.game.turn;
+      this.interaction.moveCountAtDown = state.game.moves.length;
       if (this.renderer.canDragSurface(state.game, now)) {
         this.interaction.mode = 'view-board';
         this.interaction.key = 'board';
@@ -448,14 +451,23 @@ export default class Main {
     }
     const point = touchCoordinate(released);
     const now = Date.now();
+    const state = this.controller.getState();
     const mode = this.interaction.mode;
+    const sameTurn = state.game === this.interaction.gameAtDown
+      && state.game && state.game.turn === this.interaction.playerAtDown
+      && state.game.moves.length === this.interaction.moveCountAtDown;
     if (mode === 'board' && this.interaction.board) {
       let cell = this.renderer.boardCellAt(point.x, point.y);
       if (cell < 0 && this.renderer.boardContains(point.x, point.y)) {
         cell = this.interaction.board.cell;
       }
-      if (this.controller.canPlaceCell(cell)) {
-        this.controller.performMove(cell, GameGlobal.TopologyGomoku.HUMAN, { fromPress: true }, now);
+      if (sameTurn && this.controller.canPlaceCell(cell)) {
+        this.controller.performMove(
+          cell,
+          this.interaction.playerAtDown,
+          { fromPress: true },
+          now,
+        );
       }
     } else if (mode === 'view-board') {
       this.renderer.endSurfaceDrag(now);
@@ -463,8 +475,15 @@ export default class Main {
       if (GameGlobal.TopologyBoardViewLogic.shouldPlaceOnRelease(
         this.interaction.placeEligibleAtDown,
         this.interaction.dragged || now - this.interaction.startedAt >= 240,
-        this.controller.canPlaceCell(cell),
-      )) { this.controller.performMove(cell, GameGlobal.TopologyGomoku.HUMAN, null, now); }
+        Boolean(sameTurn && this.controller.canPlaceCell(cell)),
+      )) {
+        this.controller.performMove(
+          cell,
+          this.interaction.playerAtDown,
+          null,
+          now,
+        );
+      }
     } else if (mode === 'view-range') {
       const direct = !this.interaction.controlMoved && !this.interaction.pressedMovable;
       const value = this.renderer.viewProgressAt(point.x, this.interaction.controlGrabOffset);
@@ -585,13 +604,19 @@ export default class Main {
       this.sound.play('ui');
     } else if (action === 'level') {
       const source = this.renderer.hitRect(hit.key);
-      if (hit.payload.locked || !this.controller.selectLevel(hit.payload.index, now)) {
+      const mode = this.renderer.homeMode === 'duel' ? 'duel' : 'ai';
+      if ((mode !== 'duel' && hit.payload.locked) || !this.controller.startLevel(hit.payload.index, { mode }, now)) {
         this.renderer.shakeLevel(hit.payload.index, now);
         this.host.vibrate();
       } else {
+        this.sound.play('ui');
         this.renderer.surfaceRotation = { x: 0, y: 0, z: 0 };
         this.renderer.beginTransition('enter', source, hit.payload.index, now);
       }
+    } else if (action === 'mode') {
+      this.renderer.homeMode = hit.payload.mode === 'duel' ? 'duel' : 'ai';
+      this.renderer.setPressedKey(null);
+      this.sound.play('ui');
     } else if ((action === 'back' || action === 'journey') && game) {
       const source = copyBoardRect(this.renderer.boardRect);
       const levelIndex = game.levelIndex;

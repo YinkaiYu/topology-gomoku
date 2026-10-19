@@ -54,6 +54,8 @@
 
 微信版本沿用同一套拓扑规则、关卡内容与克制的液态玻璃美术，只把输入、生命周期、存储、音频和安全区接入微信小游戏原生 `wx` 能力。源码、构建、同步和验收边界见 [微信小游戏平台规范](docs/platforms/wechat.md)。
 
+Issue #2 的微信离线双人入口正在独立平台分支准备，尚待共享双人核心按 `dev → main → wechat` 同步及宿主验收，不属于当前已发布能力。
+
 ## 开发与文档
 
 项目的设计语言、环境管理、分支/worktree 流程和视觉 QA 均从 [docs/README.md](docs/README.md) 进入。参与开发前请先阅读 [CONTRIBUTING.md](CONTRIBUTING.md)；Agent 还必须遵守 [AGENTS.md](AGENTS.md)。
