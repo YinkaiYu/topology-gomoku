@@ -130,7 +130,7 @@
 
 ### 2026-10-20：1.40.0 wechat 发行复验
 
-172 项测试、原生构建和固定目录同步通过；原生 Canvas 同步去掉口号、增大标题字号、采用 1.2 倍行距并下移 4 px。官方模拟器首页已显示新排版；控制台存在宿主 WAGame getSystemInfo 的 jsbridge not ready 日志，不将此记为无错误验收。1.40.0 上传已发起，等待开发者工具确认。浏览器原生校准仅验证布局，不替代真机。
+172 项测试、原生构建和固定目录同步通过；原生 Canvas 同步去掉口号、增大标题字号、采用 1.2 倍行距并下移 4 px。官方模拟器首页已显示新排版；控制台存在宿主 WAGame getSystemInfo 的 jsbridge not ready 日志，不将此记为无错误验收。用户确认后查询原上传任务返回 success，1.40.0 包体 1,010,454 字节。公众平台访问被站点安全策略阻止，审核与上线待用户手动完成。浏览器原生校准仅验证布局，不替代真机。
 
 证据：[修改前](../../artifacts/qa-release-1.40.0-wechat-before-390x844.png)、[修改后](../../artifacts/qa-release-1.40.0-wechat-after-390x844.png)、[官方模拟器](../../artifacts/qa-home-title-wechat-1.40.0.png)。来源为稳定 main 53d0bdb；本轮核心首页已获用户确认并授权发行。
 
