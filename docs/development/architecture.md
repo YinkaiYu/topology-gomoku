@@ -14,7 +14,7 @@
 | `app/assets/board-view-logic.js` | 松手落子资格、投影命中、连续视角和终局姿态计算 |
 | `app/assets/board-view-motion.js` | 原生 controller 的连续进度、滑行、终局和输入互斥状态 |
 | `app/assets/level-config.js` | 七关尺寸、教学路径、难度和固定节奏 |
-| `app/assets/game-controller.js` | 无宿主计时器的对局、教学、AI、悔棋、复盘与进度状态机 |
+| `app/assets/game-controller.js` | 无宿主计时器的对局、教学、AI / 离线双人、悔棋、复盘与进度状态机 |
 | `app/assets/board-art.js` | Canvas 2D 棋盘、接缝轨道、棋子、提示与三维曲面绘制 |
 
 共享模块使用 UMD 形式：浏览器通过全局对象加载，Node 测试通过 CommonJS 加载，原生平台构建可原样复制后由入口按依赖顺序执行。共享层禁止访问 `document`、`localStorage`、`wx` 或其他宿主对象。
@@ -56,7 +56,15 @@ H5 当前已直接读取共享关卡内容；现有页面状态与成熟的 DOM 
 
 controller 自身不调用宿主定时器。AI、教学续播和自动切关以逻辑截止时间排队；adapter 在每帧调用 `tick()`，并在前后台切换时调用 `pause()` / `resume()`，从而避免后台时间导致回到前台立即跳步。
 
+对局状态的 `mode` 取 `ai` 或 `duel`，缺省为 `ai`。adapter 用 `startLevel(index, { mode: "duel" })` 进入双人局。`duel` 沿用 `HUMAN`（黑方）与 `AI`（白方）棋子值，黑方先行，每次合法落子后切换回合；`AI` 在此仅表示白子，不代表电脑对手。共享 controller 的 `performMove` 可省略玩家参数以使用当前回合；输入 adapter 应在按下时保存棋局、手数和执棋方，松手时核对未变化并传入该棋色，避免双指或过期手势跨回合落子。
+
+双人局不自动教学，不排队或执行 AI 调度；主动边界教学保留 `mode`、棋盘、历史与回合，教学中仍按黑子指引练习，结束后恢复原局。悔棋撤回最后一手，重开清盘并恢复黑方先行，切换下一关保留模式。双方以现有拓扑五连掩码获胜，满盘无五连为和局；单人专有的封锁 / 无可胜路径通关不在双人局触发。`outcome` 为 `win` 或 `draw`，`winner` 为获胜棋色或 `null`。胜局和和局保留旅程完成与解锁逻辑，但不写入 `bestDifficulty`。首关终局不自动跳关，保留复盘和再来。
+
+`tests/offline-duel-controller.test.js` 对七种拓扑分别执行黑胜和白胜棋谱，并验证满盘和局、无 AI 调用、非法输入、悔棋、暂停和教学往返；`tests/h5-duel.test.js` 直接执行 H5 外壳函数，约束回合文案、终局工具、设置、预览棋色及手势。平台验收仍须在共享版本经 `dev → main` 同步后完成，不能把共享层测试等同于各宿主已离线验收。
+
 ## 变更规则
+
+双人首页直接展示并允许选择全部七关，不以 `preferences.unlocked` 限制入口；切回单人后恢复其进度锁定与图鉴显示。切换模式和进入关卡本身不修改存档。共享 controller 的 `selectLevel(index, time, { mode: "duel" })` 同样跳过进度锁定，仍检查关卡范围；平台 adapter 的卡片展示与命中判断应遵循此契约。
 
 - 拓扑、AI、教学、进度语义、棋盘美术或 adapter 契约的通用变化从 `dev` 建任务实现，并补确定性测试。
 - 平台分支只保留真实宿主差异；不得直接修改共享模块的生成副本。
