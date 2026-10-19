@@ -4,6 +4,7 @@
   var Engine = window.TopologyGomoku;
   var Content = window.TopologyGameContent;
   var Morph = window.TopologyMorph;
+  var BoardArt = window.TopologyBoardArt;
   var ViewLogic = window.TopologyBoardViewLogic;
   var LiquidRange = window.TopologyLiquidRange;
   var dimensionRange = null;
@@ -2612,7 +2613,8 @@
   }
 
   function resizeCanvas() {
-    var rect = dom.boardCanvas.getBoundingClientRect();
+    // Layout dimensions exclude the temporary scale used by page transitions.
+    var rect = { width: dom.boardCanvas.clientWidth, height: dom.boardCanvas.clientHeight };
     if (rect.width < 10 || rect.height < 10) {
       return;
     }
@@ -2636,22 +2638,7 @@
       renderState.layout = null;
       return;
     }
-    var margin = Math.max(34, Math.min(renderState.width, renderState.height) * 0.115);
-    var availableWidth = renderState.width - margin * 2;
-    var availableHeight = renderState.height - margin * 2;
-    var cellSize = Math.min(
-      availableWidth / Math.max(1, game.rules.width - 1),
-      availableHeight / Math.max(1, game.rules.height - 1)
-    );
-    var boardWidth = cellSize * (game.rules.width - 1);
-    var boardHeight = cellSize * (game.rules.height - 1);
-    renderState.layout = {
-      cell: cellSize,
-      left: (renderState.width - boardWidth) / 2,
-      top: (renderState.height - boardHeight) / 2,
-      right: (renderState.width + boardWidth) / 2,
-      bottom: (renderState.height + boardHeight) / 2
-    };
+    renderState.layout = BoardArt.computeLayout(renderState.width, renderState.height, game.rules);
   }
 
   function requestRender() {
@@ -4715,6 +4702,11 @@
     document.addEventListener("pointerdown", function unlockAudioOnce() { sound.unlock(); }, { once: true });
     window.addEventListener("resize", resizeCanvas);
     window.addEventListener("toycontainerchange", resizeCanvas);
+    if (typeof window.ResizeObserver === "function") {
+      // Controls, fonts and the host can resize the panel without a window event.
+      var boardResizeObserver = new window.ResizeObserver(resizeCanvas);
+      boardResizeObserver.observe(dom.boardCanvas);
+    }
     if (window.visualViewport) {
       window.visualViewport.addEventListener("resize", resizeCanvas);
     }
