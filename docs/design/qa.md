@@ -1,5 +1,12 @@
 # 视觉 QA
 
+## 2026-10-20：1.41.1 发行复验
+
+- 以已确认的共享修改为基线，五渠道同版本整合，未产生样式冲突。Bilibili WebKit 双人九种视口检查通过（离线 SDK 桩）；[390×674 结果](../../artifacts/qa-release-1.41.1-bilibili-390x674.png)。真实 Toy 审核预览和状态见[发行记录](../releases/1.41.1.md)。
+- Web 从网站仓库根目录访问固定子路径，验证首页、设置、落子、返回和偏好存储，无脚本异常：[移动](../../artifacts/qa-release-1.41.1-web-390x674.png)、[桌面](../../artifacts/qa-release-1.41.1-web-1440x900.png)。
+- 知乎新交付副本同样验证以上交互：[移动顶层](../../artifacts/qa-release-1.41.1-zhihu-390x674.png)、[桌面顶层](../../artifacts/qa-release-1.41.1-zhihu-1440x900.png)、[跨源 iframe](../../artifacts/qa-release-1.41.1-zhihu-390x674-iframe.png)。本轮尚未代为上传知乎，宿主真机验收仍由维护者完成。
+- 微信从长期发行分支重新构建并同步固定模板，官方开发者工具刷新成功；[原生首页截图](../../artifacts/qa-release-1.41.1-wechat.jpg)。本次 H5 CSS 不改变原生 Canvas，上传成功不代表已审核上线。
+
 ## 2026-10-20：关卡图案与标签比例修复（已确认）
 
 - 从最新 `dev@ce74f9c` 新建 `codex/card-proportions` 独立任务；仅修改共享 H5 卡片样式和验证工具，预览基线为 1.41.0；用户于 2026-10-20 确认预览并授权以 1.41.1 合并发行；微信原生 Canvas 不在本次 H5 样式变更范围内。
