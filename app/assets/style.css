@@ -2154,40 +2154,6 @@ html[data-toy-container="bilibili-app"][data-toy-immersive="true"] {
   }
 }
 
-/* Reserve the header, status and all three endgame control rows before
-   choosing the column width. The board stays square and buttons keep their
-   touch targets even in a wide, shallow embedded frame. */
-@media (min-width: 560px) {
-  html[data-host-layout="compact"] .app-shell {
-    --compact-row-reserve: 300px;
-    width: min(100%, 520px, max(360px, calc(var(--toy-viewport-height, 100dvh) - var(--compact-row-reserve) - var(--safe-top) - var(--safe-bottom))));
-    min-height: 0;
-    margin-inline: auto;
-  }
-
-  html[data-host-layout="compact"] .board-stage {
-    flex-shrink: 0;
-  }
-
-  @media (max-height: 760px) {
-    html[data-host-layout="compact"] .app-shell {
-      /* 18px padding + 44px header + 44px status + 3*44px controls +
-         5*10px gaps - 36px horizontal padding. */
-      --compact-row-reserve: 252px;
-    }
-  }
-
-  @media (max-height: 531px) {
-    html[data-host-layout="compact"] .game-screen,
-    html[data-host-layout="compact"] .home-screen {
-      overflow-y: auto;
-    }
-
-    html[data-host-layout="compact"] .home-scroll {
-      min-height: 520px;
-    }
-  }
-}
 @media (max-height: 760px) {
   .home-scroll {
     padding-top: calc(5px + var(--host-top-inset));
@@ -2221,8 +2187,6 @@ html[data-toy-container="bilibili-app"][data-toy-immersive="true"] {
   .game-topbar { min-height: 44px; }
   .match-strip { min-height: 44px; margin: 0 4px; }
   .board-stage { max-width: min(100%, calc(var(--toy-viewport-height, 100dvh) - 186px - var(--host-top-inset) - var(--safe-bottom))); }
-  .game-tools { min-height: 54px; }
-  .tool-button { height: 44px; }
 }
 
 @media (orientation: landscape) and (max-height: 560px) {
@@ -2270,8 +2234,6 @@ html[data-toy-container="bilibili-app"][data-toy-immersive="true"] {
   .game-topbar { min-height: 38px; }
   .match-strip { min-height: 34px; margin: 0 4px 3px; }
   .board-stage { max-width: min(100%, calc(var(--toy-viewport-height, 100dvh) - 128px - var(--host-top-inset) - var(--safe-bottom))); }
-  .game-tools { min-height: 44px; padding-top: 3px; }
-  .tool-button { height: 40px; }
 }
 
 @media (max-width: 340px) {

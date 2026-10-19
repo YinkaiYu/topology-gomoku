@@ -71,3 +71,10 @@
 - Bilibili Toy 响应式演示：<https://www.bilibili.com/toy/toy-responsive-demo/index.html>
 - 仓库保存的响应式指南：[`bilibili-responsive-guide.md`](bilibili-responsive-guide.md)
 - 官方示例实际引用的响应式指南：<https://s1.hdslb.com/bfs/static/toy/app/toy-responsive-demo/v2/toy-responsive-guide.md>
+# 棋盘短视口复检（2026-10-20）
+
+本轮预览同步共享修复 `52f1196`、`507c0b3`：Canvas 按面板实际尺寸重绘，短面板缩减边距，并使用共享 `board-art.js#computeLayout`。保留 Toy SDK、宿主高度优先级、沉浸开关和键盘操作。
+
+整合时移除了重复的 compact 样式块（其中仍残留 `flex-shrink: 0`），以及与共享操作行冲突的旧 `game-tools` 最小高度和按钮高度覆盖。WebKit 的 497×561 与 700×480 场景均通过，底部工具完整可见。证据：[窄窗口](../../artifacts/qa-board-viewport-toy-shortfix-webkit-497x561-web-build.png)、[横向矮窗口](../../artifacts/qa-board-viewport-toy-shortfix-webkit-700x480-iframe.png)。
+
+复现：`npm run build:web` 后执行 `node scripts/qa-board-viewport.cjs --short-panel --label=toy-shortfix --webkit --offline-sdk`，需要可解析的 Playwright 安装。`--offline-sdk` 仅隔离本地检查中的 SDK 网络依赖，测试 adapter 的无 SDK 回退，不代替真实 Toy 宿主预览。本轮不直接提升长期发行分支或提交审核。
