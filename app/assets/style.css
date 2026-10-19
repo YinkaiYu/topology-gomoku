@@ -450,7 +450,7 @@ html[data-host-layout="compact"] .app-shell {
   grid-template-rows: minmax(0, 1fr) auto auto;
   row-gap: 4px;
   overflow: hidden;
-  padding: clamp(10px, 1.7vh, 14px);
+  padding: 8px 10px;
   text-align: center;
   border: 1px solid rgba(255, 255, 255, 0.58);
   border-radius: 21px;
@@ -494,7 +494,8 @@ html[data-host-layout="compact"] .app-shell {
 .level-card-finale .level-glyph,
 .level-card-finale .level-mystery {
   width: clamp(98px, 28vw, 124px);
-  height: clamp(72px, 11vh, 94px);
+  height: 100%;
+  max-height: 100px;
   grid-column: 1;
   grid-row: 1 / 3;
 }
@@ -561,9 +562,10 @@ html[data-host-layout="compact"] .app-shell {
 }
 
 .level-glyph {
-  width: clamp(70px, 21vw, 88px);
-  height: clamp(48px, 8.2vh, 70px);
-  max-height: 100%;
+  /* Use the card's actual icon row, including in embedded host viewports. */
+  width: min(100%, 104px);
+  height: 100%;
+  max-height: 80px;
   grid-column: 1 / -1;
   grid-row: 1;
   align-self: center;
@@ -577,9 +579,9 @@ html[data-host-layout="compact"] .app-shell {
 .level-mystery {
   position: relative;
   display: grid;
-  width: clamp(70px, 21vw, 88px);
-  height: clamp(48px, 8.2vh, 70px);
-  max-height: 100%;
+  width: min(100%, 104px);
+  height: 100%;
+  max-height: 80px;
   grid-column: 1 / -1;
   grid-row: 1;
   align-self: center;
@@ -654,7 +656,7 @@ html[data-host-layout="compact"] .app-shell {
 .level-name {
   grid-column: 1 / -1;
   grid-row: 3;
-  font-size: 16px;
+  font-size: 17px;
   font-weight: 700;
   letter-spacing: 0.09em;
   line-height: 1.15;
@@ -663,10 +665,10 @@ html[data-host-layout="compact"] .app-shell {
 .level-type {
   grid-column: 1 / -1;
   grid-row: 2;
-  margin-bottom: 3px;
+  margin-bottom: 0;
   color: var(--muted);
-  font-size: 9px;
-  letter-spacing: 0.16em;
+  font-size: 11px;
+  letter-spacing: 0.08em;
   line-height: 1.05;
 }
 
@@ -2191,12 +2193,6 @@ html[data-host-layout="compact"] .app-shell {
   .hero h1 { font-size: clamp(40px, 11.4vw, 52px); }
   .level-grid { gap: 6px; }
   .level-card { padding: 8px 10px; }
-  .level-glyph,
-  .level-mystery { width: 68px; height: 46px; }
-  .level-card-finale .level-glyph,
-  .level-card-finale .level-mystery { width: 92px; height: 62px; }
-  .level-name { font-size: 14px; }
-  .level-type { margin-bottom: 2px; font-size: 8px; }
 
   .game-screen {
     --game-control-row-size: 44px;
@@ -2227,8 +2223,6 @@ html[data-host-layout="compact"] .app-shell {
 @media (max-width: 340px) {
   .home-scroll { padding-right: 14px; padding-left: 14px; }
   .level-card { min-height: 0; padding: 9px; }
-  .level-glyph,
-  .level-mystery { width: 66px; height: 46px; }
   .hero { grid-template-columns: minmax(0, 1fr) 118px; gap: 2px; }
 }
 
@@ -2255,8 +2249,8 @@ html[data-host-layout="compact"] .app-shell {
   .level-card .level-mystery {
     grid-column: 1;
     grid-row: 1 / -1;
-    width: min(100%, 68px);
-    height: 46px;
+    width: min(100%, 104px);
+    height: 100%;
   }
 
   .level-card .level-type {
@@ -2273,14 +2267,16 @@ html[data-host-layout="compact"] .app-shell {
   }
 
   .level-card-finale { padding-inline: 42px; }
+  .level-card-finale .level-glyph,
+  .level-card-finale .level-mystery { width: min(100%, 124px); max-height: 100px; }
 }
 
 @media (max-height: 440px) {
   .hero h1 { font-size: 28px; }
   .hero { grid-template-columns: minmax(0, 1fr) min(80px, 20vh); }
-  .level-card { padding-block: 4px; row-gap: 1px; border-radius: 17px; }
-  .level-card .level-glyph,
-  .level-card .level-mystery { height: 36px; }
+  .level-card { padding-block: 3px; row-gap: 1px; border-radius: 17px; }
+  .level-card .level-name { font-size: 15px; }
+  .level-card .level-type { font-size: 10px; }
 }
 
 /* Preserve touch targets and reserved control rows; recover space from gaps
