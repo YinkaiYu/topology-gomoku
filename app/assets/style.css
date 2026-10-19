@@ -52,6 +52,13 @@
   --display-font: "Topo Serif", "Songti SC", "STSong", serif;
 }
 
+/* Only the Xiaohongshu container has the floating chrome that needs the
+   reserved header row. Embedded hosts and Bilibili provide their own chrome,
+   so their game viewport starts at the real safe area. */
+html[data-host-layout="compact"] {
+  --host-top-inset: var(--safe-top);
+}
+
 *,
 *::before,
 *::after {
@@ -300,6 +307,7 @@ button,
 .home-screen {
   display: flex;
   flex-direction: column;
+  overflow: hidden;
   overscroll-behavior: none;
 }
 
@@ -313,6 +321,10 @@ button,
   gap: 0;
   padding: calc(7px + var(--host-top-inset)) 20px calc(12px + var(--safe-bottom));
   overscroll-behavior: none;
+}
+
+html[data-host-layout="compact"] .app-shell {
+  min-height: 0;
 }
 
 .hero {
@@ -390,6 +402,7 @@ button,
   min-height: 0;
   grid-template-columns: 1fr;
   grid-template-rows: minmax(0, 1fr) auto auto;
+  row-gap: 4px;
   overflow: hidden;
   padding: clamp(10px, 1.7vh, 14px);
   text-align: center;
@@ -804,6 +817,10 @@ button,
 }
 
 #boardCanvas {
+  /* Keep the bitmap out of grid intrinsic sizing: WebKit can otherwise keep
+     its old square height when the flex panel becomes shorter. */
+  position: absolute;
+  inset: 0;
   display: block;
   width: 100%;
   height: 100%;
@@ -2100,6 +2117,87 @@ button,
   .level-glyph,
   .level-mystery { width: 66px; height: 46px; }
   .hero { grid-template-columns: minmax(0, 1fr) 118px; gap: 2px; }
+}
+
+/* Short viewports keep all seven destinations on one fixed screen. Put the
+   icon beside the labels rather than squeezing their three vertical rows. */
+@media (max-height: 700px) {
+  .hero {
+    min-height: 0;
+    grid-template-columns: minmax(0, 1fr) clamp(80px, 20vh, 128px);
+  }
+
+  .hero h1 { font-size: clamp(30px, 7.5vh, 40px); }
+
+  .level-card,
+  .level-card-finale {
+    grid-template-columns: minmax(42px, 0.85fr) minmax(0, 1fr);
+    grid-template-rows: minmax(0, 1fr) auto auto minmax(0, 1fr);
+    column-gap: 6px;
+    row-gap: 4px;
+    padding: 8px 10px;
+  }
+
+  .level-card .level-glyph,
+  .level-card .level-mystery {
+    grid-column: 1;
+    grid-row: 1 / -1;
+    width: min(100%, 68px);
+    height: 46px;
+  }
+
+  .level-card .level-type {
+    grid-column: 2;
+    grid-row: 2;
+    align-self: end;
+    margin-bottom: 0;
+  }
+
+  .level-card .level-name {
+    grid-column: 2;
+    grid-row: 3;
+    align-self: start;
+  }
+
+  .level-card-finale { padding-inline: 42px; }
+}
+
+@media (max-height: 440px) {
+  .hero h1 { font-size: 28px; }
+  .hero { grid-template-columns: minmax(0, 1fr) min(80px, 20vh); }
+  .journey-head { min-height: 20px; margin-bottom: 4px; }
+  .level-card { padding-block: 4px; row-gap: 3px; border-radius: 17px; }
+  .level-card .level-glyph,
+  .level-card .level-mystery { height: 36px; }
+}
+
+/* Preserve touch targets and reserved control rows; recover space from gaps
+   in short host viewports instead of scaling down the entire interface. */
+@media (max-height: 600px) {
+  html[data-host-layout="compact"] .game-screen {
+    --game-vertical-gap: 6px;
+  }
+}
+
+/* Reserve the header, status and all three endgame control rows before
+   choosing the column width. The board stays square and buttons keep their
+   touch targets even in a wide, shallow embedded frame. */
+@media (min-width: 560px) {
+  html[data-host-layout="compact"] .app-shell {
+    --compact-row-reserve: 300px;
+    width: min(100%, 520px, max(360px, calc(var(--toy-viewport-height, 100dvh) - var(--compact-row-reserve) - var(--safe-top) - var(--safe-bottom))));
+    min-height: 0;
+    margin-inline: auto;
+  }
+
+  @media (max-height: 760px) {
+    html[data-host-layout="compact"] .app-shell {
+      /* 18px padding + 44px header + 44px status + 3*44px controls +
+         5*10px gaps - 36px horizontal padding. */
+      --compact-row-reserve: 252px;
+    }
+  }
+
 }
 
 @media (prefers-reduced-motion: reduce) {
