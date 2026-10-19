@@ -81,9 +81,9 @@
 
 较早截图只用于回归和问题溯源，不自动成为新设计的视觉真相。出现冲突时，以最新已确认实现、视觉设计语言和同状态实机/预览证据为准。
 
-## Issue #9：固定首页与矮屏卡片（2026-10-20，待确认）
+## Issue #9：固定首页与矮屏卡片（2026-10-20，已确认）
 
-- 当前修复分支同步 `dev@38ae19a`，平台预览同步稳定 `main@53d0bdb`，统一版本为 `1.40.0`；保留新标题行距与删除口号的修改。本节修复仍待用户确认，不属于已发布的稳定内容。
+- 当前修复分支同步 `dev@38ae19a`，平台预览同步稳定 `main@53d0bdb`，统一版本为 `1.40.0`；保留新标题行距与删除口号的修改。用户于 2026-10-20 确认知乎已手动上传上线，并授权 Bilibili 提交审核、Web 发布与 issue 收尾；本节最终预览 `4457bd2` 已确认。
 - 首页与对局不开放页面滚动，移除旧的矮窗口外层滚动兜底。高度不超过 700px 时，卡片改为左图标、右文字；两行文字作为一个整体居中。进一步降低窗口高度时缩减主视觉与卡片内边距，七关仍在同一屏内。充裕高度保留上下排布。
 - 同状态基线为 `763d7c7`（包含 1.40.0，尚无本节修改），均设置首关已完成、第二关可进入、其余关卡锁定。证据：[466×620 修改前](../../artifacts/qa-home-before-webkit-466x620-web-build.png) / [修改后](../../artifacts/qa-home-after-webkit-466x620-web-build.png)、[700×480 修改前](../../artifacts/qa-home-before-webkit-700x480-iframe.png) / [修改后](../../artifacts/qa-home-after-webkit-700x480-iframe.png)、[700×320 修改前](../../artifacts/qa-home-before-webkit-700x320-iframe.png) / [修改后](../../artifacts/qa-home-after-webkit-700x320-iframe.png)、[390×844 修改前](../../artifacts/qa-home-before-webkit-390x844-web-build.png) / [修改后](../../artifacts/qa-home-after-webkit-390x844-web-build.png)。
 - 复现：先 `npm run build:web`，再运行 `node scripts/qa-board-viewport.cjs --home --label=after`，附加 `--webkit` 覆盖 WebKit；基线使用 `--home --label=before --baseline=763d7c7 --webkit`。需要安装 Playwright 及两个浏览器。
