@@ -111,6 +111,24 @@
 
 [360 × 770 窄屏复验](../../artifacts/qa-view-columns-after-360x770.png)左右中心线分别为 68 px 和 292 px，纵向中心间距同为 62 px，无横向溢出。另在 360 × 740 紧凑断点实测：三排行高均为 44 px，纵向中心间距同为 54 px，滑轨仍保留 44 px 高的交互区域。列中心的子像素舍入差异均小于 0.01 px。此轮只调整布局，不改变图标、材质、棋谱或按钮行为。
 
+## Issue #2：离线双人候选验证（2026-09-19）
+
+任务分支 `codex/issue-2-offline-duel` 从 `dev` 的 `45900d9` 开始。首页新增两种对弈模式，复用无底板工具按钮的字号、颜色和按压反馈，命中区至少 44 px 高；卡片图形随可用网格行高收缩，图形和文字保留间隔。以下截图来自 Headless Chromium 的触摸视口模拟，基线和结果均为全新进度、同一尺寸与静止状态，未使用开发者模式。
+
+| 状态 | 390 × 844 | 360 × 770 |
+| --- | --- | --- |
+| 首页基线 | [修改前](../../artifacts/issue-2/home-before-390x844.png) | [修改前](../../artifacts/issue-2/home-before-360x770.png) |
+| 首页候选 | [修改后](../../artifacts/issue-2/home-after-390x844.png) | [修改后](../../artifacts/issue-2/home-after-360x770.png) |
+| 白方回合 | [回合与棋盘](../../artifacts/issue-2/duel-white-turn-390x844.png) | [回合与棋盘](../../artifacts/issue-2/duel-white-turn-360x770.png) |
+| 双人设置 | [提示与声音](../../artifacts/issue-2/duel-settings-390x844.png) | [提示与声音](../../artifacts/issue-2/duel-settings-360x770.png) |
+| 黑方胜 | [终局与再来](../../artifacts/issue-2/duel-black-win-390x844.png) | [终局与再来](../../artifacts/issue-2/duel-black-win-360x770.png) |
+| 白方胜 | [终局与复盘](../../artifacts/issue-2/duel-white-win-390x844.png) | [终局与复盘](../../artifacts/issue-2/duel-white-win-360x770.png) |
+| 满盘和局 | [和局](../../artifacts/issue-2/duel-draw-390x844.png) | [和局](../../artifacts/issue-2/duel-draw-360x770.png) |
+
+自动验证：`npm run check` 通过 141 项逻辑 / H5 行为 / 字体测试及包、文档校验。`npm run qa:duel` 在首页资源加载后关闭网络，以真实触摸事件验证模式入口、黑白交替、占用拒绝、设置、悔棋、重开、双方胜利、满盘和局、复盘和退出；AI 调用、外部请求、资源失败及页面错误均为 0。终局可见性在状态更新后的绘制帧核对，避免把尚未应用样式的一帧误判为按钮隐藏。规则测试还覆盖七拓扑双方获胜及教学返回，多指与过期松手由 H5 行为测试覆盖。复现命令见[开发环境](../development/environment.md#离线双人浏览器回归)。
+
+预览确认：待用户确认，尚未合回 `dev`。桌面手动浏览器检查因工具无法可靠识别当前网址而停止，未计为通过；本次结论来自本地自动化和截图检查。五个平台宿主的模拟器 / 真机离线验收与稳定发行同步尚未完成，Issue #2 保持开放。
+
 ### 2026-10-20：首页标题简化（用户已确认）
 
 - 分支：`codex/home-title-spacing`；基于远端 `dev` 的 `b8c0e82`，在独立任务 worktree 中完成。
@@ -130,11 +148,31 @@
 - 仓库自动验证：`npm run check` 通过（119 项测试、29 个离线包文件、23 份 Markdown），包括三个内嵌字体字重的文字覆盖检查；`git diff --check` 通过。
 - 用户预览确认：2026-10-20 已确认加大字号、两行左对齐并下移 4 px 的本地预览，授权提交 PR、提升稳定版本并同步五个发行分支。渠道发行状态见对应版本发布记录。
 
+
 ### 2026-10-20：1.40.0 小红书平台提交
 
 - 用户手动选择同一已验证 ZIP 和[新版 3:4 封面](../../artifacts/topology-gomoku-cover-v1.40.0-900x1200.png)，创服平台显示部署成功，版本为 1.40.0；首关进入、打开设置及返回首页通过。
 - 已提交更新，[后台证据](../../artifacts/qa-release-1.40.0-xiaohongshu-submitted.png)显示“审核中 · V1.40.0”，不能据此声称已经上线。
 - Skill 1.8.0 目录与 ZIP 体积审计通过，无警告；Chrome 61 回退和平台 Storage 迁移依用户要求另做。Android 与 iOS 真机兼容性、性能尚未实测。
+
+### 2026-10-20：离线双人同步最新 dev
+
+双人任务分支合入 `dev` 的 `38ae19a`，接收首页标题简化及统一版本 `1.40.0`，保留双人入口与交互。两侧 QA 记录均保留。上方 Issue #2 的候选截图已按合并结果重新生成，首页基线仍为 `45900d9`；此前候选图可从 `6f09eba` 回溯。390 × 844 和 360 × 770 的断网对局回归通过，首页图文间距检查通过，141 项测试、包校验与 24 份 Markdown 校验通过。此次仅把 `dev` 同步到任务分支，双人功能仍待用户预览确认后合回 `dev`。
+
+### 2026-10-20：首页仅保留模式行
+
+按用户反馈删除首页“旅程 / 进度计数”一行，标题与关卡列表之间只保留模式选择，首页网格恢复三行结构；解锁与完成状态继续由关卡卡片表示。模式按钮保留 44 px 触摸高度。相同初始进度、静止状态的对比：[390 × 844 两行](../../artifacts/issue-2/home-two-rows-390x844.png) → [单行](../../artifacts/issue-2/home-after-390x844.png)，[360 × 770 两行](../../artifacts/issue-2/home-two-rows-360x770.png) → [单行](../../artifacts/issue-2/home-after-360x770.png)。141 项测试及包、文档校验通过；两种视口重新执行离线双人浏览器回归。最新首页候选以本节单行截图为准，仍待用户预览确认。
+
+### 2026-10-20：模式行字号与双人全部关卡
+
+模式标签调整为 15 px、常规字重，两项选择为 16 px、600 字重；按钮高 48 px，选项间隔 12 px，行高 52 px。保留已有无底板按钮与细下划线，扩大文字和留白。相同初始单人状态对比：[390 × 844 修改前](../../artifacts/issue-2/home-small-mode-390x844.png) → [修改后](../../artifacts/issue-2/home-after-390x844.png)，[360 × 770 修改前](../../artifacts/issue-2/home-small-mode-360x770.png) → [修改后](../../artifacts/issue-2/home-after-360x770.png)。
+
+双人模式直接展示全部拓扑图形并开放七关：[390 × 844](../../artifacts/issue-2/home-duel-all-levels-390x844.png)、[360 × 770](../../artifacts/issue-2/home-duel-all-levels-360x770.png)。浏览器回归从全新进度逐一进入六个高阶关卡，再切回单人确认恢复六个锁定关卡，随后执行原有断网对局流程。切换模式不写解锁进度；共享 controller 与 H5 行为测试覆盖同一约定。新版入口取代前文“仅已解锁关卡”的候选行为，待用户预览确认。
+
+### 2026-10-20：对弈选项与标题左对齐
+
+删除可见“模式”标签，保留分组的无障碍名称“对弈模式”。“人机对弈 / 离线双人”置于标题下方，首项文字与标题共用左边界；移除按钮水平内边距，选项之间留 28 px，按钮保留 48 px 高触摸区，关卡上方留 8 px。字号仍为 16 px。[390 × 844 原布局](../../artifacts/issue-2/home-labeled-mode-390x844.png) → [新布局](../../artifacts/issue-2/home-after-390x844.png)，[360 × 770 原布局](../../artifacts/issue-2/home-labeled-mode-360x770.png) → [新布局](../../artifacts/issue-2/home-after-360x770.png)；原布局图片沿用上轮保存的入口文案。143 项测试、包与文档校验通过，最新布局仍待用户预览确认。
+
 
 ## 新证据记录模板
 
@@ -174,3 +212,19 @@
 - [700×480 调整前](../../artifacts/qa-board-viewport-before-webkit-700x480-iframe.png) / [调整后](../../artifacts/qa-board-viewport-after-webkit-700x480-iframe.png)：同一窗口内画布高度从 190px 增至 210px，网格高度从 122px 增至 166px（约 36%），轨道、箭头和底部工具完整可见。
 - [497×561 调整前](../../artifacts/qa-board-viewport-before-webkit-497x561-web-build.png) / [调整后](../../artifacts/qa-board-viewport-after-webkit-497x561-web-build.png)。
 - 共享几何测试覆盖七关在四种面板尺寸下的居中、边界轨道空间、末端交点，以及充裕尺寸和显式边距的兼容性。三端预览使用相同共享实现；最终平台预览已获用户确认，发行状态见 1.40.0 发布记录。
+
+### 2026-10-20：双人任务再次同步 dev 的窗口适配
+
+合入 `dev` 的 `4bd2b6d`，接收宿主留白、画布尺寸观察和矮屏卡片布局，保留左对齐的“人机对弈 / 离线双人”与双人全部关卡开放。卡片常规图文间距采用新版 4 px；高度不超过 440 px 时行间距收为 1 px，确保新增对弈选择行之后，卡片内容仍有内部留白。点击验证脚本改用共享棋盘几何，避免旧固定边距造成测试误点。
+
+同一初始进度首页：[390 × 844 同步前](../../artifacts/issue-2/home-before-viewport-sync-390x844.png) / [同步后](../../artifacts/issue-2/home-after-390x844.png)，[360 × 770 同步前](../../artifacts/issue-2/home-before-viewport-sync-360x770.png) / [同步后](../../artifacts/issue-2/home-after-360x770.png)。补充检查：[700 × 320 嵌入首页](../../artifacts/qa-home-duel-dev-sync-chromium-700x320-iframe.png)、[390 × 674 面板缩短后的棋盘](../../artifacts/qa-board-viewport-duel-dev-sync-chromium-390x674-iframe-panel-resize.png)。
+
+验证：151 项测试、离线包与文档校验、Web 构建通过；390 × 844 与 360 × 770 离线双人流程通过，Chromium 首页九种窗口与棋盘七种窗口及元素尺寸变化后的落子检查通过。此轮未重做真机宿主验收。仅同步到任务分支，未合回 dev 或发布。
+
+### 2026-10-20：1.41.0 预览确认
+
+用户确认当前离线双人预览，授权收尾与发布，版本指定为 1.41.0。此前各段候选状态由本次确认替代；渠道实际上传、审核与上线结果分别记录在 [1.41.0 发布记录](../releases/1.41.0.md)。
+
+### 2026-10-20：1.41.0 渠道整合
+
+来源稳定 main `b316dc2`，用户已确认共享预览并授权发布。151 项测试、30 文件包校验及 ZIP 构建通过。共享双人断网流程已验证；本轮宿主上传待完成，未声称线上生效。本地浏览器与模拟器不替代手机真机验收。

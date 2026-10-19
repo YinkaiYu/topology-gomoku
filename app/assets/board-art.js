@@ -429,10 +429,13 @@
 
   function drawMovePreview(ctx, game, layout, time, interaction) {
     var input = interaction || {};
-    var cell = Number.isFinite(input.pressedCell) ? input.pressedCell : -1;
-    if (cell < 0 || game.board[cell] !== Engine.EMPTY || game.turn !== Engine.HUMAN || game.status !== "playing") {
+    var cell = Number.isInteger(input.pressedCell) ? input.pressedCell : -1;
+    var playerTurn = game.turn === Engine.HUMAN || (game.mode === "duel" && game.turn === Engine.AI);
+    if (cell < 0 || game.board[cell] !== Engine.EMPTY || game.status !== "playing"
+      || !playerTurn || (game.demo && game.demo.active)) {
       return;
     }
+    var previewPlayer = game.mode === "duel" ? game.turn : Engine.HUMAN;
     if (game.lesson && game.lesson.active && game.lesson.cells[game.lesson.step] !== cell) {
       return;
     }
@@ -448,27 +451,28 @@
     ctx.shadowColor = "rgba(24, 31, 29, 0.24)";
     ctx.shadowBlur = effectPixels(ctx, radius * (0.34 - landing * 0.08));
     ctx.shadowOffsetY = effectPixels(ctx, radius * (0.18 - landing * 0.105));
-    drawStoneFace(ctx, Engine.HUMAN, radius, false, landing);
+    drawStoneFace(ctx, previewPlayer, radius, false, landing);
     ctx.restore();
   }
 
-  function tacticalPriority(hint) {
-    if (hint.player === Engine.HUMAN && hint.kind === "four") { return 4; }
-    if (hint.player === Engine.AI && hint.kind === "four") { return 3; }
-    if (hint.player === Engine.AI && hint.kind === "three") { return 2; }
+  function tacticalPriority(hint, player) {
+    if (hint.player === player && hint.kind === "four") { return 4; }
+    if (hint.player !== player && hint.kind === "four") { return 3; }
+    if (hint.player !== player && hint.kind === "three") { return 2; }
     return 1;
   }
 
   function drawTacticalHints(ctx, game, layout, preferences) {
-    if (!preferences || !preferences.hints || game.levelIndex === 0 || game.status !== "playing"
+    if (!preferences || !preferences.hints || (game.levelIndex === 0 && game.mode !== "duel") || game.status !== "playing"
       || (game.lesson && game.lesson.active) || (game.demo && game.demo.active)) {
       return;
     }
     var byCell = Object.create(null);
+    var currentPlayer = game.mode === "duel" ? game.turn : Engine.HUMAN;
     [Engine.HUMAN, Engine.AI].forEach(function collect(player) {
       Engine.findLineHints(game.board, game.rules, player).forEach(function remember(hint) {
         var candidate = { cell: hint.cell, kind: hint.kind, player: player };
-        if (!byCell[hint.cell] || tacticalPriority(candidate) > tacticalPriority(byCell[hint.cell])) {
+        if (!byCell[hint.cell] || tacticalPriority(candidate, currentPlayer) > tacticalPriority(byCell[hint.cell], currentPlayer)) {
           byCell[hint.cell] = candidate;
         }
       });
@@ -480,7 +484,7 @@
       }
       var center = cellCenter(game.rules, layout, hint.cell);
       var urgent = hint.kind === "four";
-      var defensive = hint.player === Engine.AI;
+      var defensive = hint.player !== currentPlayer;
       ctx.save();
       ctx.strokeStyle = defensive ? TOKENS.red : (urgent ? TOKENS.gold : TOKENS.teal);
       ctx.fillStyle = defensive
