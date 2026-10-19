@@ -333,6 +333,7 @@ button,
 
 .hero-copy {
   position: relative;
+  top: 4px;
   z-index: 1;
   min-width: 0;
 }
@@ -340,17 +341,10 @@ button,
 .hero h1 {
   max-width: 260px;
   font-family: var(--display-font);
-  font-size: clamp(43px, 12vw, 57px);
+  font-size: clamp(46px, 13vw, 62px);
   font-weight: 600;
   letter-spacing: -0.065em;
-  line-height: 0.94;
-}
-
-.hero-line {
-  margin-top: 12px;
-  color: var(--muted);
-  font-size: 12px;
-  letter-spacing: 0.055em;
+  line-height: 1.2;
 }
 
 .hero-brand {
@@ -2089,8 +2083,7 @@ button,
     padding-bottom: 7px;
   }
 
-  .hero h1 { font-size: clamp(37px, 10.5vw, 48px); }
-  .hero-line { margin-top: 7px; font-size: 10px; }
+  .hero h1 { font-size: clamp(40px, 11.4vw, 52px); }
   .journey-head { min-height: 23px; margin-bottom: 5px; }
   .level-grid { gap: 6px; }
   .level-card { padding: 8px 10px; }
