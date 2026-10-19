@@ -155,11 +155,10 @@ async function assertCardGeometry(page) {
 async function tapCell(page, cell, width = 7, height = 7) {
   const point = await page.locator("#boardCanvas").evaluate((canvas, dimensions) => {
     const rect = canvas.getBoundingClientRect();
-    const margin = Math.max(34, Math.min(rect.width, rect.height) * 0.115);
-    const spacing = Math.min((rect.width - margin * 2) / (dimensions.width - 1), (rect.height - margin * 2) / (dimensions.height - 1));
+    const layout = window.TopologyBoardArt.computeLayout(canvas.clientWidth, canvas.clientHeight, dimensions);
     return {
-      x: rect.x + (rect.width - spacing * (dimensions.width - 1)) / 2 + (dimensions.cell % dimensions.width) * spacing,
-      y: rect.y + (rect.height - spacing * (dimensions.height - 1)) / 2 + Math.floor(dimensions.cell / dimensions.width) * spacing
+      x: rect.x + layout.left + (dimensions.cell % dimensions.width) * layout.cell,
+      y: rect.y + layout.top + Math.floor(dimensions.cell / dimensions.width) * layout.cell
     };
   }, { cell, width, height });
   await page.touchscreen.tap(point.x, point.y);
