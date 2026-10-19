@@ -39,6 +39,11 @@ const server = http.createServer((req, res) => {
     const scenarios = shortPanel ? [[497,561,false,true],[700,480,true,false]] : [[390,674,false,false],[390,674,true,false],[390,560,true,false],[390,844,false,false],[900,560,true,false],[390,674,false,true],[1440,900,false,true]];
     for (const [width,height,embedded,webBuild] of scenarios) {
       const page = await browser.newPage({viewport:{width,height},deviceScaleFactor:2});
+      if (args.includes('--offline-sdk')) {
+        // Exercise the Toy adapter's no-SDK fallback locally; this is not a
+        // substitute for the real Toy-host preview.
+        await page.route('**/toy-sdk.js', route => route.fulfill({contentType:'text/javascript',body:''}));
+      }
       await page.addInitScript(learned => localStorage.setItem('topology-gomoku:v1',JSON.stringify({unlocked:6,learnedLevels:learned?[1]:[],sound:false})), shortPanel);
       const errors=[]; page.on('pageerror',err => errors.push(err.message));
       await page.goto('http://localhost:'+server.address().port+(embedded?'/embed':webBuild?'/show/topology-gomoku/index.html':'/app/index.html'));
