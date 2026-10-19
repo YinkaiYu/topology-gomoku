@@ -194,3 +194,7 @@
 - [700×480 调整前](../../artifacts/qa-board-viewport-before-webkit-700x480-iframe.png) / [调整后](../../artifacts/qa-board-viewport-after-webkit-700x480-iframe.png)：同一窗口内画布高度从 190px 增至 210px，网格高度从 122px 增至 166px（约 36%），轨道、箭头和底部工具完整可见。
 - [497×561 调整前](../../artifacts/qa-board-viewport-before-webkit-497x561-web-build.png) / [调整后](../../artifacts/qa-board-viewport-after-webkit-497x561-web-build.png)。
 - 共享几何测试覆盖七关在四种面板尺寸下的居中、边界轨道空间、末端交点，以及充裕尺寸和显式边距的兼容性。三端预览使用相同共享实现；平台预览确认前不提升发行分支。
+
+### 2026-10-20：Issue #9 共享模块同步复验
+
+稳定 main@776de09 同步后，180 项测试、64 文件构建和固定模板同步通过；官方工具刷新模拟器后[首页正常渲染](../../artifacts/qa-issue-9-wechat-synced.jpg)。原生渲染器显式传入几何选项，保持既有布局，不受 H5 自适应默认边距影响。本轮未重新上传微信包；本地检查不替代手机真机或公众平台审核。
