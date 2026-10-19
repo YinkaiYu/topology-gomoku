@@ -27,7 +27,6 @@
     levelCards: Array.prototype.slice.call(document.querySelectorAll(".level-card")),
     modeSelection: document.getElementById("modeSelection"),
     modeButtons: Array.prototype.slice.call(document.querySelectorAll("[data-mode]")),
-    progressCount: document.getElementById("progressCount"),
     gameSettingsButton: document.getElementById("gameSettingsButton"),
     backButton: document.getElementById("backButton"),
     gameLevelName: document.getElementById("gameLevelName"),
@@ -298,7 +297,6 @@
   }
 
   function updateHome() {
-    var completeCount = 0;
     dom.levelCards.forEach(function updateCard(card, index) {
       var locked = index > prefs.unlocked;
       var complete = Boolean(prefs.completed[index]);
@@ -311,11 +309,7 @@
         "aria-label",
         LEVELS[index].name + (revealed ? "" : " · 图鉴未揭示")
       );
-      if (complete) {
-        completeCount += 1;
-      }
     });
-    dom.progressCount.textContent = completeCount + " / " + LEVELS.length;
     dom.modeButtons.forEach(function updateModeButton(button) {
       var active = button.dataset.mode === selectedMode;
       button.classList.toggle("is-active", active);

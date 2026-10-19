@@ -308,7 +308,7 @@ button,
   width: 100%;
   height: 100%;
   min-height: 0;
-  grid-template-rows: auto auto auto minmax(0, 1fr);
+  grid-template-rows: auto auto minmax(0, 1fr);
   overflow: hidden;
   gap: 0;
   padding: calc(7px + var(--host-top-inset)) 20px calc(12px + var(--safe-bottom));
@@ -357,18 +357,6 @@ button,
   50% { transform: rotate(-3.5deg) translateY(-3px) scale(1.125); }
 }
 
-.journey-head {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  min-height: 28px;
-  margin: 0 2px 8px;
-  color: var(--muted);
-  font-size: 12px;
-  font-weight: 650;
-  letter-spacing: 0.12em;
-}
-
 .mode-selection {
   display: flex;
   align-items: center;
@@ -404,12 +392,6 @@ button,
 }
 
 .setting-row[hidden] { display: none; }
-
-.progress-count {
-  color: var(--ink);
-  font-variant-numeric: tabular-nums;
-  letter-spacing: 0.03em;
-}
 
 .level-grid {
   position: relative;
@@ -2112,7 +2094,6 @@ button,
   }
 
   .hero h1 { font-size: clamp(40px, 11.4vw, 52px); }
-  .journey-head { min-height: 23px; margin-bottom: 5px; }
   .level-grid { gap: 6px; }
   .level-card { padding: 8px 10px; }
   .level-glyph,
