@@ -10,7 +10,12 @@
   }
 
   function needsCompactLayout() {
+    var platform = root.dataset.hostPlatform;
+    var hostname = win.location && win.location.hostname || "";
     return isEmbedded()
+      || platform === "web"
+      || platform === "zhihu"
+      || /(^|\.)aiworks\.site$/i.test(hostname)
       || Boolean(win.toy)
       || Boolean(win.BilibiliToyPlatform)
       || root.dataset.toyContainer === "bilibili-app";
