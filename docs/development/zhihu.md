@@ -24,12 +24,12 @@
 
 ## 发布记录
 
-### 1.40.0 固定首页预览（2026-10-20）
+### 1.40.0 固定首页交付与上线（2026-10-20）
 
 - 基线 `main@53d0bdb`，共享修复 `4457bd2`；高度不足时使用横向关卡卡片，两行文字整体居中，首页和对局不开放页面滚动。共享布局与 Web 构建保持一致。
 - `npm run check`：127 项测试、H5 与文档校验通过。修正了旧预览分支测试文件遗留的冲突标记；旧 Skill 产物移至任务临时目录保留，不再混入源码验证。
 - Skill 更新检查为 `current`（1.2.0）；从干净 `app/` 复制隔离输入、标记知乎平台并重新探测，计划 `frontend-static / static-files`，无阻断项；事件桥、描述符与 ZIP CRC 校验通过，共 35 个文件。
-- 交付 `release/topology-gomoku-zhihu-v1.40.0-fixed-home.zip`，SHA-256 `97DDDE1FE01C7CF780FF3F239B89ACFDF49D673C06BDB54AE490AB3A6FA507FF`。上传仍由维护者手动操作；未创建云资源，未声称平台部署完成。
+- 交付 `release/topology-gomoku-zhihu-v1.40.0-fixed-home.zip`，SHA-256 `97DDDE1FE01C7CF780FF3F239B89ACFDF49D673C06BDB54AE490AB3A6FA507FF`。用户已明确确认手动上传并上线；本次状态来自用户确认。Agent 未创建云资源。代码已经稳定 `main@776de09` 同步到发行分支。
 
 ```text
 统一版本：
