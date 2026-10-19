@@ -75,6 +75,8 @@
 
 首页随共享修复采用固定视口和矮屏横向卡片。删除旧 Toy 横屏首页的双栏覆盖：它要求至少 546px 内容宽度，与共享紧凑列宽冲突，会把关卡挤出屏幕。保留 Toy 高度、安全区、沉浸模式和对局横屏的宿主适配；不再以整页滚动容纳首页。当前预览基线来自稳定 `main@53d0bdb`（1.40.0），尚未替代线上版本。
 
+本轮 `npm run check`（134 项测试）、WebKit 九种首页窗口与两个矮窗口对局、Toy 包体诊断通过。首页证据：[700×320](../../artifacts/qa-home-toy-home-webkit-700x320-iframe.png)、[700×480](../../artifacts/qa-home-toy-home-webkit-700x480-iframe.png)。共享首页验证包含全部卡片可见、文字组居中、滚轮和键盘不移动页面、进入末关再返回。ZIP SHA-256：`C0848F374BB899AEF44DDFC8B0D888B7C684F08AF481BBCD21E58ACB5468C547`；[Toy 预览](https://www.bilibili.com/toy/preview/preview_M1MxbuEj/index.html)，未提交审核。
+
 本轮预览同步共享修复 `52f1196`、`507c0b3`：Canvas 按面板实际尺寸重绘，短面板缩减边距，并使用共享 `board-art.js#computeLayout`。保留 Toy SDK、宿主高度优先级、沉浸开关和键盘操作。
 
 整合时移除了重复的 compact 样式块（其中仍残留 `flex-shrink: 0`），以及与共享操作行冲突的旧 `game-tools` 最小高度和按钮高度覆盖。WebKit 的 497×561 与 700×480 场景均通过，底部工具完整可见。证据：[窄窗口](../../artifacts/qa-board-viewport-toy-shortfix-webkit-497x561-web-build.png)、[横向矮窗口](../../artifacts/qa-board-viewport-toy-shortfix-webkit-700x480-iframe.png)。
