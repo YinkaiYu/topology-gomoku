@@ -817,6 +817,10 @@ button,
 }
 
 #boardCanvas {
+  /* Keep the bitmap out of grid intrinsic sizing: WebKit can otherwise keep
+     its old square height when the flex panel becomes shorter. */
+  position: absolute;
+  inset: 0;
   display: block;
   width: 100%;
   height: 100%;
@@ -2125,10 +2129,6 @@ button,
     width: min(100%, 520px, max(360px, calc(var(--toy-viewport-height, 100dvh) - var(--compact-row-reserve) - var(--safe-top) - var(--safe-bottom))));
     min-height: 0;
     margin-inline: auto;
-  }
-
-  html[data-host-layout="compact"] .board-stage {
-    flex-shrink: 0;
   }
 
   @media (max-height: 760px) {

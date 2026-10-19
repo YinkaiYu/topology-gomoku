@@ -2584,7 +2584,8 @@
   }
 
   function resizeCanvas() {
-    var rect = dom.boardCanvas.getBoundingClientRect();
+    // Layout dimensions exclude the temporary scale used by page transitions.
+    var rect = { width: dom.boardCanvas.clientWidth, height: dom.boardCanvas.clientHeight };
     if (rect.width < 10 || rect.height < 10) {
       return;
     }
@@ -4620,6 +4621,11 @@
     });
     document.addEventListener("pointerdown", function unlockAudioOnce() { sound.unlock(); }, { once: true });
     window.addEventListener("resize", resizeCanvas);
+    if (typeof window.ResizeObserver === "function") {
+      // Controls, fonts and the host can resize the panel without a window event.
+      var boardResizeObserver = new window.ResizeObserver(resizeCanvas);
+      boardResizeObserver.observe(dom.boardCanvas);
+    }
     if (window.visualViewport) {
       window.visualViewport.addEventListener("resize", resizeCanvas);
     }

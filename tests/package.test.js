@@ -36,6 +36,7 @@ test("网页构建只写入项目 dist/web 并完整复制静态入口", () => {
   assert.match(build, /StartsWith\(\$resolvedDistRoot \+ '\\'/);
   assert.match(build, /Copy-Item -Path \(Join-Path \$appRoot '\*'\)/);
   assert.match(build, /Join-Path \$webOutput 'index\.html'/);
+  assert.ok(build.includes('data-host-platform="web"'));
 });
 
 test("长期发行分支纳入版本一致性检查与 CI", () => {

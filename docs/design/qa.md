@@ -125,3 +125,12 @@
 - 宽而矮的嵌入窗口追加按可用高度限制游戏列宽并居中的布局，窄屏不改变原有横向占用，避免通过压缩按钮和状态行换取棋盘宽度。
 - 自动验证：`npm run check`、`npm run build:xiaohongshu`、`git diff --check` 均通过；本地静态预览已确认 `index.html`、`host-layout.js` 和 `style.css` 返回 200，暂未完成 Bilibili 真机与知乎宿主内预览。
 - 预览确认：等待用户确认后再合入 `dev`；平台发行分支仍需按统一版本流程接收该共享修复。
+# Issue #9：面板裁切复检（2026-10-20）
+
+- 根因：WebKit 中 Grid 内 Canvas 的固有高度会在 Flex 面板缩短后保留旧值；此外仅监听窗口 resize 无法覆盖元素尺寸变化。知乎顶层页面与独立 Web 站点还会误用小红书的 68px 顶部预留。
+- 修复：Canvas 脱离 Grid 固有尺寸计算，填满面板并观察元素尺寸；按未缩放的布局尺寸重绘。知乎域名/显式平台标记启用紧凑布局，Web 构建写入平台标记；宽屏面板允许收缩以保留工具行。
+- 可复现脚本：`scripts/qa-board-viewport.cjs`，需要环境可解析 `playwright` 并安装 Chromium/WebKit。先 `npm run build:web`；分别运行 `node scripts/qa-board-viewport.cjs --label=after` 和附加 `--webkit` 的同一命令。历史基线使用 `--label=before --baseline=33fd8ca --webkit`，脚本通过 Git 只读加载历史资源，不回退工作区。
+- 场景：390×674、390×560 的跨源 iframe，390×674 / 390×844 的默认小红书布局，900×560 的宽浅 iframe，390×674 / 1440×900 的 Web 构建。内容固定为环游首段教学；另将面板高度改成 220px，不触发窗口 resize。脚本断言画布边界和位图尺寸、底部按钮可见性，并点击教学下方交点确认下一条提示。
+- [同视口面板缩短前的旧实现](../../artifacts/qa-board-viewport-before-webkit-390x674-iframe-panel-resize.png) 与 [同视口修复后](../../artifacts/qa-board-viewport-after-webkit-390x674-iframe-panel-resize.png) 展示相同 390×674 窗口、相同环游首段教学、相同 220px 面板；旧实现裁掉下半盘，新实现完整居中。
+- [390×560 窄屏修复](../../artifacts/qa-board-viewport-after-webkit-390x560-iframe.png)、[独立 Web 手机布局](../../artifacts/qa-board-viewport-after-webkit-390x674-web-build.png)、[独立 Web 桌面布局](../../artifacts/qa-board-viewport-after-webkit-1440x900-web-build.png)。
+- Chromium / WebKit 共 14 个页面场景通过，4 次元素尺寸变化后的落子通过；`npm run check`（125 tests）与 `npm run build:web` 通过。尚需用户在知乎 iPhone 宿主中复验；本地 WebKit 不等于真机验收。未合并或发布新的渠道版本。

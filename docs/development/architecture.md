@@ -21,7 +21,9 @@
 
 `liquid-range.js` 另提供共享的纯计算 `duration` / `glide`，用于两种渲染方式的距离感知滑行。它的 `bind` 是 H5 DOM 适配入口，原生平台不调用；材质绘制仍由各自渲染边界承担。
 
-H5 外壳默认保留小红书小工具上方宿主栏所需的顶部留白。`host-layout.js` 在首屏绘制前识别跨源 iframe 与 Bilibili Toy，并把根节点标记为紧凑宿主布局；该布局只保留真实安全区，避免嵌入式页面因共享顶部留白压缩棋盘高度。宽而矮的嵌入窗口在 560px 以上宽度时按可用高度收窄并居中，让正方形棋盘和操作行保留可读的纵向空间；窄屏仍使用完整可用宽度。Bilibili adapter 后续发出的 `toycontainerchange` 事件会重新应用同一判断，容器状态变化无需复制一套页面样式。
+H5 外壳默认保留小红书小工具上方宿主栏所需的顶部留白。`host-layout.js` 在首屏绘制前识别 iframe、Bilibili Toy、知乎 `aiworks.site` 域名，以及根节点显式声明的 `data-host-platform="web"` / `"zhihu"`，应用仅保留安全区的紧凑布局。Web 构建在生成入口中声明平台；知乎顶层 WebView 不依赖 iframe 判断。宽而矮的窗口在 560px 以上宽度时收窄并居中，窄屏使用完整可用宽度。Bilibili adapter 的 `toycontainerchange` 事件重新应用同一判断。
+
+棋盘 Canvas 绝对定位填充面板，不参与 Grid 固有尺寸计算，避免 WebKit 在 Flex 压缩面板后仍保留旧画布高度而裁切底部。绘图读取未受转场缩放影响的 `clientWidth/clientHeight`，通过 `ResizeObserver` 同步元素尺寸变化，保留 window/visualViewport resize 作为补充。面板允许纵向收缩，网格按实际画布尺寸等比居中，不能通过禁用收缩把操作行推到窗口外。
 
 H5 当前已直接读取共享关卡内容；现有页面状态与成熟的 DOM 动效仍保留在 `app/assets/game.js`，作为分阶段迁移期间的稳定基线。新增平台必须使用共享 controller 与 board art，不得从这份 H5 外壳复制一套状态机。共享模块的关键行为由 `tests/shared-game-controller.test.js` 与既有拓扑、曲面、复盘测试共同约束。
 
