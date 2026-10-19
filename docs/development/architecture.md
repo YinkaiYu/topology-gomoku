@@ -25,6 +25,8 @@ H5 外壳默认保留小红书小工具上方宿主栏所需的顶部留白。`h
 
 棋盘 Canvas 绝对定位填充面板，不参与 Grid 固有尺寸计算，避免 WebKit 在 Flex 压缩面板后仍保留旧画布高度而裁切底部。绘图读取未受转场缩放影响的 `clientWidth/clientHeight`，通过 `ResizeObserver` 同步元素尺寸变化，保留 window/visualViewport resize 作为补充。面板允许纵向收缩，网格按实际画布尺寸等比居中，不能通过禁用收缩把操作行推到窗口外。
 
+H5 的网格尺寸由共享 `board-art.js#computeLayout` 计算。默认边距随面板短边连续变化：矮面板最低 22px，仍容纳最大 15px 边界轨道偏移与 4.5px 箭头；短边约 360px 起恢复原有比例。显式传入的边距配置继续生效。紧凑宿主高度不超过 600px 时，行间距从 10px 收到 6px，触摸区域与教学/复盘占位不缩小。知乎、Toy 与 Web 均消费同一份布局规则。
+
 H5 当前已直接读取共享关卡内容；现有页面状态与成熟的 DOM 动效仍保留在 `app/assets/game.js`，作为分阶段迁移期间的稳定基线。新增平台必须使用共享 controller 与 board art，不得从这份 H5 外壳复制一套状态机。共享模块的关键行为由 `tests/shared-game-controller.test.js` 与既有拓扑、曲面、复盘测试共同约束。
 
 这些内容、controller 与 Canvas 美术模块由微信基线提交 `1a325fe` 回流至共享开发任务，再补齐连续视角能力。H5 已复用关卡定义、交互资格和姿态计算，但尚未整体改为共享 controller / board art；不能把此次回流表述为已经消除所有历史渲染重复。

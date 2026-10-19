@@ -10,6 +10,7 @@ const args = process.argv.slice(2);
 const engine = args.includes('--webkit') ? webkit : chromium;
 const label = args.find(x => x.startsWith('--label='))?.split('=')[1] || 'before';
 const baseline = args.find(x => x.startsWith('--baseline='))?.split('=')[1];
+const shortPanel = args.includes('--short-panel');
 const server = http.createServer((req, res) => {
   const url = new URL(req.url, 'http://localhost');
   if (url.pathname === '/embed') {
@@ -22,7 +23,10 @@ const server = http.createServer((req, res) => {
   const types = {'.html':'text/html','.js':'text/javascript','.css':'text/css','.woff2':'font/woff2','.svg':'image/svg+xml','.png':'image/png'};
   try {
     res.setHeader('Content-Type',types[path.extname(file)] || 'application/octet-stream');
-    const content = baseline ? execFileSync('git',['show',baseline+':'+localPath.replace(/^\//,'').replace(/^dist\/web\//,'app/')],{cwd:root,maxBuffer:5*1024*1024}) : fs.readFileSync(file);
+    let content = baseline ? execFileSync('git',['show',baseline+':'+localPath.replace(/^\//,'').replace(/^dist\/web\//,'app/')],{cwd:root,maxBuffer:5*1024*1024}) : fs.readFileSync(file);
+    if (baseline && localPath === '/dist/web/index.html') {
+      content=content.toString().replace('<html lang="zh-CN">','<html lang="zh-CN" data-host-platform="web">');
+    }
     res.end(content);
   }
   catch { res.writeHead(404); res.end(); }
@@ -32,14 +36,16 @@ const server = http.createServer((req, res) => {
   if (args.includes('--serve')) { console.log('Preview: http://localhost:8769/show/topology-gomoku/index.html'); return; }
   const browser = await engine.launch({headless:true});
   try {
-    for (const [width,height,embedded,webBuild] of [[390,674,false,false],[390,674,true,false],[390,560,true,false],[390,844,false,false],[900,560,true,false],[390,674,false,true],[1440,900,false,true]]) {
+    const scenarios = shortPanel ? [[497,561,false,true],[700,480,true,false]] : [[390,674,false,false],[390,674,true,false],[390,560,true,false],[390,844,false,false],[900,560,true,false],[390,674,false,true],[1440,900,false,true]];
+    for (const [width,height,embedded,webBuild] of scenarios) {
       const page = await browser.newPage({viewport:{width,height},deviceScaleFactor:2});
-      await page.addInitScript(() => localStorage.setItem('topology-gomoku:v1',JSON.stringify({unlocked:6,learnedLevels:[],sound:false})));
+      await page.addInitScript(learned => localStorage.setItem('topology-gomoku:v1',JSON.stringify({unlocked:6,learnedLevels:learned?[1]:[],sound:false})), shortPanel);
       const errors=[]; page.on('pageerror',err => errors.push(err.message));
       await page.goto('http://localhost:'+server.address().port+(embedded?'/embed':webBuild?'/show/topology-gomoku/index.html':'/app/index.html'));
       const frame = embedded ? page.frames().find(f=>f.url().includes('/app/')) : page.mainFrame();
-      await frame.locator('[data-level="2"]').click();
+      await frame.locator(`[data-level="${shortPanel?1:2}"]`).click();
       await page.waitForTimeout(1400);
+      if (shortPanel) { await frame.locator('#boardCanvas').click(); await page.waitForTimeout(150); }
       const metrics=await frame.evaluate(() => {
         const result={host:document.documentElement.dataset.hostLayout};
         for(const selector of ['.game-screen','.board-stage','#boardCanvas','.game-tools']) {
@@ -73,9 +79,8 @@ const server = http.createServer((req, res) => {
         });
         const point=await frame.evaluate(() => {
           const c=document.querySelector('#boardCanvas'),r=c.getBoundingClientRect();
-          const margin=Math.max(34,Math.min(c.clientWidth,c.clientHeight)*0.115);
-          const cell=Math.min((c.clientWidth-2*margin)/6,(c.clientHeight-2*margin)/5);
-          return {x:r.x+c.clientWidth/2,y:r.y+c.clientHeight/2+1.5*cell};
+          const layout=window.TopologyBoardArt.computeLayout(c.clientWidth,c.clientHeight,{width:7,height:6});
+          return {x:r.x+layout.left+3*layout.cell,y:r.y+layout.top+4*layout.cell};
         });
         await page.mouse.click(point.x,point.y);
         await frame.locator('#turnStatus').filter({hasText:'走到下边界'}).waitFor();
