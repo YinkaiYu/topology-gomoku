@@ -2120,6 +2120,14 @@ button,
   .hero { grid-template-columns: minmax(0, 1fr) 118px; gap: 2px; }
 }
 
+/* Preserve touch targets and reserved control rows; recover space from gaps
+   in short host viewports instead of scaling down the entire interface. */
+@media (max-height: 600px) {
+  html[data-host-layout="compact"] .game-screen {
+    --game-vertical-gap: 6px;
+  }
+}
+
 /* Reserve the header, status and all three endgame control rows before
    choosing the column width. The board stays square and buttons keep their
    touch targets even in a wide, shallow embedded frame. */

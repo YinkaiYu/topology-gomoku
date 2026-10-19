@@ -77,7 +77,14 @@
     var settings = options || {};
     var minimumMargin = Number(settings.minimumMargin) || 34;
     var marginRatio = Number(settings.marginRatio) || 0.115;
-    var margin = Math.max(minimumMargin, Math.min(width, height) * marginRatio);
+    var shortSide = Math.min(width, height);
+    var margin = Math.max(minimumMargin, shortSide * marginRatio);
+    if (settings.minimumMargin === undefined && settings.marginRatio === undefined) {
+      // Short panels should not spend a third of their height on fixed padding.
+      // Keep room for the 15px rail offset and 4.5px arrow; blend back to the
+      // established proportions as the panel grows, without a breakpoint jump.
+      margin = Math.min(margin, 22 + Math.max(0, shortSide - 220) * 0.14);
+    }
     var availableWidth = Math.max(1, width - margin * 2);
     var availableHeight = Math.max(1, height - margin * 2);
     var cell = Math.min(
