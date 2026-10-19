@@ -126,7 +126,7 @@
 
 131 项测试、32 个包文件、26 份文档和 ZIP 构建通过；Toy doctor 无发现。390 × 844 与 1280 × 900 下首关、设置和返回检查通过。已按用户明确确认提交 Toy 26525273613312 审核，提交后由 auditing 转为 published，已审核通过并发布。保留现有 Toy SDK、宿主视口与键盘边界，短横屏标题同比放大并移除已废弃的口号样式。
 
-证据：[移动端](../../artifacts/qa-release-1.40.0-bilibili-390x844.png)、[桌面](../../artifacts/qa-release-1.40.0-bilibili-1280x900.png)。来源为稳定 main 53d0bdb；本轮核心首页已获用户确认并授权发行。
+证据：[正式页面](../../artifacts/qa-release-1.40.0-bilibili-live.png)、[移动端](../../artifacts/qa-release-1.40.0-bilibili-390x844.png)、[桌面](../../artifacts/qa-release-1.40.0-bilibili-1280x900.png)。来源为稳定 main 53d0bdb；本轮核心首页已获用户确认并授权发行。
 
 ## 新证据记录模板
 
