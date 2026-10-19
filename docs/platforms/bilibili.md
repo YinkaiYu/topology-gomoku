@@ -73,6 +73,8 @@
 - 官方示例实际引用的响应式指南：<https://s1.hdslb.com/bfs/static/toy/app/toy-responsive-demo/v2/toy-responsive-guide.md>
 # 棋盘短视口复检（2026-10-20）
 
+首页随共享修复采用固定视口和矮屏横向卡片。删除旧 Toy 横屏首页的双栏覆盖：它要求至少 546px 内容宽度，与共享紧凑列宽冲突，会把关卡挤出屏幕。保留 Toy 高度、安全区、沉浸模式和对局横屏的宿主适配；不再以整页滚动容纳首页。当前预览基线来自稳定 `main@53d0bdb`（1.40.0），尚未替代线上版本。
+
 本轮预览同步共享修复 `52f1196`、`507c0b3`：Canvas 按面板实际尺寸重绘，短面板缩减边距，并使用共享 `board-art.js#computeLayout`。保留 Toy SDK、宿主高度优先级、沉浸开关和键盘操作。
 
 整合时移除了重复的 compact 样式块（其中仍残留 `flex-shrink: 0`），以及与共享操作行冲突的旧 `game-tools` 最小高度和按钮高度覆盖。WebKit 的 497×561 与 700×480 场景均通过，底部工具完整可见。证据：[窄窗口](../../artifacts/qa-board-viewport-toy-shortfix-webkit-497x561-web-build.png)、[横向矮窗口](../../artifacts/qa-board-viewport-toy-shortfix-webkit-700x480-iframe.png)。
