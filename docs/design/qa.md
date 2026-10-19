@@ -136,6 +136,12 @@
 
 证据：[线上页面](../../artifacts/qa-release-1.40.0-web-live.png)、[移动端](../../artifacts/qa-release-1.40.0-web-390x844.png)、[桌面](../../artifacts/qa-release-1.40.0-web-1280x900.png)。来源为稳定 main 53d0bdb；本轮核心首页已获用户确认并授权发行。
 
+### 2026-10-20：Issue #9 网站部署复验
+
+从网站仓库根目录提供静态服务，验证真实 `/show/topology-gomoku/index.html` 子路径。390×674、1440×900、700×320 的七张卡片完整可见；手机和桌面设置、环游教学下方落子、返回与存档恢复通过，无页面脚本异常。共享修改前后对比沿用本页 Issue #9 证据。
+
+部署结果：[手机首页](../../artifacts/qa-issue-9-site-home-390x674.png)、[手机棋盘](../../artifacts/qa-issue-9-site-board-390x674.png)、[桌面首页](../../artifacts/qa-issue-9-site-home-1440x900.png)、[桌面棋盘](../../artifacts/qa-issue-9-site-board-1440x900.png)、[矮窗口](../../artifacts/qa-issue-9-site-home-700x320.png)。网站提交 `93907ae1e54da8d76e6f54b218b29237e993509b` 已推送，Pages 返回 `built`；正式网站 CSS 与确认版本一致，浏览器复查首页显示正常。
+
 ## 新证据记录模板
 
 ```text
