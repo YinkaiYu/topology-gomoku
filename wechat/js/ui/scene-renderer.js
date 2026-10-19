@@ -1001,11 +1001,11 @@ export default class SceneRenderer {
     }
 
     const titleSize = compact
-      ? Math.max(37, Math.min(48, this.metrics.width * 0.105))
-      : Math.max(43, Math.min(57, this.metrics.width * 0.12));
-    const titleLine = titleSize * 0.94;
+      ? Math.max(40, Math.min(52, this.metrics.width * 0.114))
+      : Math.max(46, Math.min(62, this.metrics.width * 0.13));
+    const titleLine = titleSize * 1.2;
     const titleX = contentLeft + 2;
-    const titleFirstY = headerY + (compact ? 18 : 25.5) + titleLine / 2;
+    const titleFirstY = headerY + (heroHeight - 13) / 2 - titleLine / 2 + 4;
     text(ctx, '拓扑', titleX, titleFirstY, {
       font: this.host.font(600, titleSize),
       color: COLORS.ink,
@@ -1015,11 +1015,6 @@ export default class SceneRenderer {
       font: this.host.font(600, titleSize),
       color: COLORS.ink,
       letterSpacing: -titleSize * 0.065,
-    });
-    text(ctx, '边界之外，也能连成一线。', titleX, headerY + heroHeight - (compact ? 25 : 47), {
-      font: this.host.font(400, compact ? 10 : 12),
-      color: COLORS.muted,
-      letterSpacing: (compact ? 10 : 12) * 0.055,
     });
 
     const completed = state.preferences.completed.filter(Boolean).length;

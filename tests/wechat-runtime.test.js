@@ -392,7 +392,7 @@ test("关键中文层级沿用 H5 的字距因子", () => {
   const optionsFor = (call) => sourceBetween(renderer, call, "});");
   assert.match(optionsFor("text(ctx, '拓扑'"), /letterSpacing: -titleSize \* 0\.065/);
   assert.match(optionsFor("text(ctx, '五子棋'"), /letterSpacing: -titleSize \* 0\.065/);
-  assert.match(optionsFor("text(ctx, '边界之外，也能连成一线。'"), /letterSpacing: \(compact \? 10 : 12\) \* 0\.055/);
+  assert.doesNotMatch(renderer, /边界之外，也能连成一线。/);
   assert.match(optionsFor("text(ctx, '旅程'"), /letterSpacing: \(compact \? 10 : 12\) \* 0\.12/);
   assert.match(optionsFor("text(ctx, level.typeName"), /letterSpacing: \(compact \? 8 : 9\) \* 0\.16/);
   assert.match(optionsFor("text(ctx, level.name"), /letterSpacing: \(compact \? 14 : 16\) \* 0\.09/);
