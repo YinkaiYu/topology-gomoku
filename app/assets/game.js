@@ -4,6 +4,7 @@
   var Engine = window.TopologyGomoku;
   var Content = window.TopologyGameContent;
   var Morph = window.TopologyMorph;
+  var BoardArt = window.TopologyBoardArt;
   var ViewLogic = window.TopologyBoardViewLogic;
   var LiquidRange = window.TopologyLiquidRange;
   var dimensionRange = null;
@@ -2637,22 +2638,7 @@
       renderState.layout = null;
       return;
     }
-    var margin = Math.max(34, Math.min(renderState.width, renderState.height) * 0.115);
-    var availableWidth = renderState.width - margin * 2;
-    var availableHeight = renderState.height - margin * 2;
-    var cellSize = Math.min(
-      availableWidth / Math.max(1, game.rules.width - 1),
-      availableHeight / Math.max(1, game.rules.height - 1)
-    );
-    var boardWidth = cellSize * (game.rules.width - 1);
-    var boardHeight = cellSize * (game.rules.height - 1);
-    renderState.layout = {
-      cell: cellSize,
-      left: (renderState.width - boardWidth) / 2,
-      top: (renderState.height - boardHeight) / 2,
-      right: (renderState.width + boardWidth) / 2,
-      bottom: (renderState.height + boardHeight) / 2
-    };
+    renderState.layout = BoardArt.computeLayout(renderState.width, renderState.height, game.rules);
   }
 
   function requestRender() {
