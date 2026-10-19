@@ -7,6 +7,7 @@
 - 使用已安装的 `$zhihu-ai-works-deploy-helper`，并以 Skill 当前协议、生成器和 schema 为交付依据。每次准备前先执行 Skill 自带的更新检查。
 - 当前项目把 `app/` 作为 build-free 静态项目根。不要把仓库根 `package.json` 或 PowerShell 小红书构建脚本误识别成 CloudBase 的 Node 构建输入。
 - 静态交付包含 `_tmp/deploy-plan.json`、`_tmp/frontend.deploy.json` 和 `app.zip`。Skill 1.2.0 还会生成前端埋点桥接、票据物化脚本及仅含 `build:track` 的构建 manifest；这些只在隔离的 `app/` 交付副本中生成，不写回共享游戏源码，不构成 Node 后端。不得生成 `backend.deploy.json`、`cloudbaserc.json`、`scf_bootstrap` 或后端运行时文件。
+- 在隔离交付副本的 HTML 根节点声明 `data-host-platform="zhihu"` 后再从头探测；共享外壳也识别 `aiworks.site` 域名，覆盖知乎用顶层 WebView 打开游戏的情况，避免误用小红书顶部预留。验证同时覆盖 iframe 与顶层页面。
 - `_tmp/` 与 `app.zip` 是本地交付产物，不提交 Git。Skill 只准备可上传 ZIP，不创建或修改 CloudBase 资源，也不执行知乎发布。
 - 知乎 AI Works 支持部署的项目需要可以被 iframe 内嵌。任何有效的 `frame-ancestors`、`X-Frame-Options`、frameguard 或 JS 防内嵌命中都是硬门禁，必须按 Skill 的授权与复检流程处理，不能带阻断继续打包。
 

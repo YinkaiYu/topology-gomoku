@@ -77,8 +77,17 @@
 | AI 难度文案与内嵌字体 | [`artifacts/qa-ai-difficulty-labels-v1363.png`](../../artifacts/qa-ai-difficulty-labels-v1363.png) |
 | 终局二维/三维视角与 3 × 2 操作区 | [`二维终局`](../../artifacts/qa-board-view-endgame-2d-2216x1242.png)、[`三维终局`](../../artifacts/qa-board-view-endgame-3d-2216x1242.png)、[`边界合拢`](../../artifacts/qa-board-view-endgame-transition-2216x1242.png) |
 | 对局视角修复交互录制 | [`教程进场`](../../artifacts/qa-board-view-tutorial-entry.mp4)、[`视角转换锁定落子`](../../artifacts/qa-board-view-view-interaction-guard.mp4)、[`玩家胜利`](../../artifacts/qa-board-view-player-win.mp4)、[`AI 胜利`](../../artifacts/qa-board-view-ai-win.mp4) |
+| Issue #9 嵌入式宿主棋盘高度 | [`修改前 390 × 560`](../../artifacts/qa-issue-9-before-390x560.png)、[`修改后 390 × 560`](../../artifacts/qa-issue-9-after-390x560.png) |
 
 较早截图只用于回归和问题溯源，不自动成为新设计的视觉真相。出现冲突时，以最新已确认实现、视觉设计语言和同状态实机/预览证据为准。
+
+## Issue #9：固定首页与矮屏卡片（2026-10-20，已确认）
+
+- 当前修复分支同步 `dev@38ae19a`，平台预览同步稳定 `main@53d0bdb`，统一版本为 `1.40.0`；保留新标题行距与删除口号的修改。用户于 2026-10-20 确认知乎已手动上传上线，并授权 Bilibili 提交审核、Web 发布与 issue 收尾；本节最终预览 `4457bd2` 已确认。
+- 首页与对局不开放页面滚动，移除旧的矮窗口外层滚动兜底。高度不超过 700px 时，卡片改为左图标、右文字；两行文字作为一个整体居中。进一步降低窗口高度时缩减主视觉与卡片内边距，七关仍在同一屏内。充裕高度保留上下排布。
+- 同状态基线为 `763d7c7`（包含 1.40.0，尚无本节修改），均设置首关已完成、第二关可进入、其余关卡锁定。证据：[466×620 修改前](../../artifacts/qa-home-before-webkit-466x620-web-build.png) / [修改后](../../artifacts/qa-home-after-webkit-466x620-web-build.png)、[700×480 修改前](../../artifacts/qa-home-before-webkit-700x480-iframe.png) / [修改后](../../artifacts/qa-home-after-webkit-700x480-iframe.png)、[700×320 修改前](../../artifacts/qa-home-before-webkit-700x320-iframe.png) / [修改后](../../artifacts/qa-home-after-webkit-700x320-iframe.png)、[390×844 修改前](../../artifacts/qa-home-before-webkit-390x844-web-build.png) / [修改后](../../artifacts/qa-home-after-webkit-390x844-web-build.png)。
+- 复现：先 `npm run build:web`，再运行 `node scripts/qa-board-viewport.cjs --home --label=after`，附加 `--webkit` 覆盖 WebKit；基线使用 `--home --label=before --baseline=763d7c7 --webkit`。需要安装 Playwright 及两个浏览器。
+- 校验包含九种视口/宿主组合、全部卡片边界与图文间距、文字组居中、鼠标滚轮、键盘逐卡片焦点、末关进入与返回；Chromium 另发送触摸滑动，断言页面位置不变。用 `--short-panel` 复验对局画布与底部按钮。平台预览复用共享实现，Bilibili 本地检查使用 `--offline-sdk`；本地浏览器验证不替代真实知乎/Bilibili 宿主验收。
 
 关卡卡片共享转场已在 390 × 844 视口完成双向验收：进入采用 300 ms 的统一等比低阻尼回弹，返回采用 240 ms 的合成器变换；真实卡片与过渡外壳交叠交接，棋盘内容保持等比，最终边界、29 px 圆角和静态可见性均准确，无裁切、闪烁或控制台异常。长期实现约束见 [`shared-transitions.md`](shared-transitions.md)。
 
@@ -135,3 +144,27 @@
 预览确认：
 最终结果：passed / blocked
 ```
+
+### 2026-09-19：Issue #9 嵌入式宿主顶部留白（待用户确认）
+
+- 分支：`codex/fix-issue-9`，从 `dev` 建立；复现状态为第二关进入棋局并完成边界演示后的正常对局，视口为 390 × 560，用同一内容分别切换默认顶部留白与紧凑宿主布局。
+- [修改前](../../artifacts/qa-issue-9-before-390x560.png) 中共享的小红书宿主留白继续占用嵌入式页面高度，棋盘 flex 项被压扁；[修改后](../../artifacts/qa-issue-9-after-390x560.png) 仅保留真实安全区，棋盘恢复完整方形比例，底部行列可见。
+- 宽而矮的嵌入窗口追加按可用高度限制游戏列宽并居中的布局，窄屏不改变原有横向占用，避免通过压缩按钮和状态行换取棋盘宽度。
+- 自动验证：`npm run check`、`npm run build:xiaohongshu`、`git diff --check` 均通过；本地静态预览已确认 `index.html`、`host-layout.js` 和 `style.css` 返回 200，暂未完成 Bilibili 真机与知乎宿主内预览。
+- 预览确认：等待用户确认后再合入 `dev`；平台发行分支仍需按统一版本流程接收该共享修复。
+## Issue #9：面板裁切复检（2026-10-20）
+
+- 根因：WebKit 中 Grid 内 Canvas 的固有高度会在 Flex 面板缩短后保留旧值；此外仅监听窗口 resize 无法覆盖元素尺寸变化。知乎顶层页面与独立 Web 站点还会误用小红书的 68px 顶部预留。
+- 修复：Canvas 脱离 Grid 固有尺寸计算，填满面板并观察元素尺寸；按未缩放的布局尺寸重绘。知乎域名/显式平台标记启用紧凑布局，Web 构建写入平台标记；宽屏面板允许收缩以保留工具行。
+- 可复现脚本：`scripts/qa-board-viewport.cjs`，需要环境可解析 `playwright` 并安装 Chromium/WebKit。先 `npm run build:web`；分别运行 `node scripts/qa-board-viewport.cjs --label=after` 和附加 `--webkit` 的同一命令。历史基线使用 `--label=before --baseline=33fd8ca --webkit`，脚本通过 Git 只读加载历史资源，不回退工作区。
+- 场景：390×674、390×560 的跨源 iframe，390×674 / 390×844 的默认小红书布局，900×560 的宽浅 iframe，390×674 / 1440×900 的 Web 构建。内容固定为环游首段教学；另将面板高度改成 220px，不触发窗口 resize。脚本断言画布边界和位图尺寸、底部按钮可见性，并点击教学下方交点确认下一条提示。
+- [同视口面板缩短前的旧实现](../../artifacts/qa-board-viewport-before-webkit-390x674-iframe-panel-resize.png) 与 [同视口修复后](../../artifacts/qa-board-viewport-after-webkit-390x674-iframe-panel-resize.png) 展示相同 390×674 窗口、相同环游首段教学、相同 220px 面板；旧实现裁掉下半盘，新实现完整居中。
+- [390×560 窄屏修复](../../artifacts/qa-board-viewport-after-webkit-390x560-iframe.png)、[独立 Web 手机布局](../../artifacts/qa-board-viewport-after-webkit-390x674-web-build.png)、[独立 Web 桌面布局](../../artifacts/qa-board-viewport-after-webkit-1440x900-web-build.png)。
+- Chromium / WebKit 共 14 个页面场景通过，4 次元素尺寸变化后的落子通过；`npm run check`（125 tests）与 `npm run build:web` 通过。尚需用户在知乎 iPhone 宿主中复验；本地 WebKit 不等于真机验收。未合并或发布新的渠道版本。
+
+## Issue #9：矮面板棋盘占比（2026-10-20）
+
+- 同一回廊对局，497×561 独立 Web 与 700×480 iframe；脚本附加 `--short-panel`，历史基线为 `--label=before --baseline=52f1196 --webkit`，新实现为 `--label=after --webkit`。进入已学关卡并跳过演示，保持二维空盘。
+- [700×480 调整前](../../artifacts/qa-board-viewport-before-webkit-700x480-iframe.png) / [调整后](../../artifacts/qa-board-viewport-after-webkit-700x480-iframe.png)：同一窗口内画布高度从 190px 增至 210px，网格高度从 122px 增至 166px（约 36%），轨道、箭头和底部工具完整可见。
+- [497×561 调整前](../../artifacts/qa-board-viewport-before-webkit-497x561-web-build.png) / [调整后](../../artifacts/qa-board-viewport-after-webkit-497x561-web-build.png)。
+- 共享几何测试覆盖七关在四种面板尺寸下的居中、边界轨道空间、末端交点，以及充裕尺寸和显式边距的兼容性。三端预览使用相同共享实现；平台预览确认前不提升发行分支。
