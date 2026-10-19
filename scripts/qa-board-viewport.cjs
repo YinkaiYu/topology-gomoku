@@ -12,9 +12,12 @@ const label = args.find(x => x.startsWith('--label='))?.split('=')[1] || 'before
 const baseline = args.find(x => x.startsWith('--baseline='))?.split('=')[1];
 const shortPanel = args.includes('--short-panel');
 const home = args.includes('--home');
+const cardSizes = args.includes('--card-sizes');
+const duel = args.includes('--duel');
 
 async function checkHome(page, frame, name) {
   await frame.locator('.level-card').first().waitFor();
+  if (duel) await frame.locator('[data-mode="duel"]').click();
   await frame.evaluate(() => document.fonts.ready);
   await page.waitForTimeout(900);
   const metrics = await frame.evaluate(() => {
@@ -30,6 +33,7 @@ async function checkHome(page, frame, name) {
       cards: Array.from(document.querySelectorAll('.level-card'), card => ({
         card:rect(card), glyph:rect(card.querySelector('.level-glyph')),
         mystery:rect(card.querySelector('.level-mystery') || card.querySelector('.level-glyph')),
+        revealed:card.classList.contains('is-revealed') || !card.querySelector('.level-mystery'),
         type:rect(card.querySelector('.level-type')),name:rect(card.querySelector('.level-name')),
         horizontal:getComputedStyle(card.querySelector('.level-type')).gridColumnStart==='2'
       }))
@@ -42,13 +46,19 @@ async function checkHome(page, frame, name) {
   assert.ok(metrics.scroll.bottom<=metrics.viewport.height+1,`${name}: scroller must fit viewport`);
   assert.equal(metrics.scroll.overflow,'hidden');
   assert.ok(metrics.scroll.scrollHeight<=metrics.scroll.clientHeight+1,`${name}: home must fit without scrolling`);
-  for (const {card,glyph,mystery,type,name:title,horizontal} of metrics.cards) {
+  for (const {card,glyph,mystery,revealed,type,name:title,horizontal} of metrics.cards) {
+    const icon = revealed ? glyph : mystery;
     assert.ok(card.x>=0 && card.right<=metrics.viewport.width+1,`${name}: no horizontal overflow`);
-    for(const child of [glyph,mystery,type,title]) {
+    for(const child of [icon,type,title]) {
       assert.ok(child.y>=card.y+3 && child.bottom<=card.bottom-3,`${name}: card content fits with padding`);
+      assert.ok(child.x>=card.x+3 && child.right<=card.right-3,`${name}: card content fits horizontally`);
     }
-    if(!horizontal) assert.ok(Math.max(glyph.bottom,mystery.bottom)+3<=type.y,`${name}: icon and label must not overlap`);
-    else assert.ok(Math.max(glyph.right,mystery.right)+3<=type.x,`${name}: horizontal icon and label must not overlap`);
+    if(cardSizes) {
+      assert.ok(type.height>=10 && type.height<=13,`${name}: readable single-line topology label`);
+      assert.ok(title.height>=17,`${name}: readable level name`);
+    }
+    if(!horizontal) assert.ok(icon.bottom+3<=type.y,`${name}: icon and label must not overlap`);
+    else assert.ok(icon.right+3<=type.x,`${name}: horizontal icon and label must not overlap`);
     if(horizontal && metrics.viewport.height<=700) {
       assert.ok(Math.abs((type.y+title.bottom-card.y-card.bottom)/2)<0.6,`${name}: label group must be vertically centered`);
     }
@@ -119,7 +129,7 @@ const server = http.createServer((req, res) => {
   if (args.includes('--serve')) { console.log('Preview: http://localhost:8769/show/topology-gomoku/index.html'); return; }
   const browser = await engine.launch({headless:true});
   try {
-    const scenarios = home ? [[466,620,false,true],[497,561,false,true],[700,480,true,false],[390,480,true,false],[320,480,true,false],[700,320,true,false],[390,844,false,true],[1440,900,false,true],[390,674,false,false]] : shortPanel ? [[497,561,false,true],[700,480,true,false]] : [[390,674,false,false],[390,674,true,false],[390,560,true,false],[390,844,false,false],[900,560,true,false],[390,674,false,true],[1440,900,false,true]];
+    const scenarios = home && cardSizes ? [[390,674,true,false],[390,844,false,false],[390,844,false,true],[390,760,false,false],[320,568,false,false],[390,480,true,false],[700,320,true,false],[700,480,true,false],[1440,900,false,true]] : home ? [[466,620,false,true],[497,561,false,true],[700,480,true,false],[390,480,true,false],[320,480,true,false],[700,320,true,false],[390,844,false,true],[1440,900,false,true],[390,674,false,false]] : shortPanel ? [[497,561,false,true],[700,480,true,false]] : [[390,674,false,false],[390,674,true,false],[390,560,true,false],[390,844,false,false],[900,560,true,false],[390,674,false,true],[1440,900,false,true]];
     for (const [width,height,embedded,webBuild] of scenarios) {
       const page = await browser.newPage({viewport:{width,height},deviceScaleFactor:2});
       if (args.includes('--offline-sdk')) {
@@ -134,7 +144,7 @@ const server = http.createServer((req, res) => {
       await page.goto('http://localhost:'+server.address().port+(embedded?'/embed':webBuild?'/show/topology-gomoku/index.html':'/app/index.html'));
       const frame = embedded ? page.frames().find(f=>f.url().includes('/app/')) : page.mainFrame();
       if(home) {
-        await checkHome(page,frame,`${engine.name()}-${width}x${height}-${embedded?'iframe':webBuild?'web-build':'default'}`);
+        await checkHome(page,frame,`${cardSizes?'cards-':''}${duel?'duel-':''}${engine.name()}-${width}x${height}-${embedded?'iframe':webBuild?'web-build':'default'}`);
         assert.deepEqual(errors,[]);
         await page.close();
         continue;
