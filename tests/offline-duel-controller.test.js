@@ -13,6 +13,19 @@ function duel(index = 0, preferences = {}) {
   return controller;
 }
 
+test("双人入口直接选择全部关卡，不修改单人解锁进度", () => {
+  const controller = new GameController({ now: () => 0 });
+  Content.LEVELS.forEach((_level, index) => {
+    assert.equal(controller.selectLevel(index, 0, { mode: MODE_DUEL }), true);
+    assert.equal(controller.game.levelIndex, index);
+    assert.equal(controller.game.mode, MODE_DUEL);
+  });
+  assert.equal(controller.preferences.unlocked, 0);
+  assert.equal(controller.selectLevel(6, 0), false);
+  assert.equal(controller.selectLevel(NaN, 0, { mode: MODE_DUEL }), false);
+  assert.equal(controller.selectLevel(7, 0, { mode: MODE_DUEL }), false);
+});
+
 // Full legal boards with balanced black/white counts and no five-in-a-row.
 const DRAW_BOARDS = [
   "bbbwwbwwbwbwwbbbwbbbwbwbwbwbwwbwwbbwwwbbbbwwwwbwb",

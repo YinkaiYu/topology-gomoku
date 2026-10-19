@@ -129,6 +129,30 @@ function harness(names, overrides = {}) {
   };
 }
 
+test("H5 双人模式开放并展示全部关卡，切回单人恢复原解锁状态", () => {
+  const { context, dom } = harness(["updateHome", "setSelectedMode", "selectLevel"]);
+  dom.modeButtons = ["ai", "duel"].map(mode => ({ ...element(), dataset: { mode } }));
+  context.prefs.unlocked = 0;
+  const before = JSON.stringify(context.prefs);
+  const entered = [];
+  context.startLevel = (index, options) => entered.push({ index, mode: options.mode });
+  context.setSelectedMode("duel");
+  dom.levelCards.forEach((card, index) => {
+    assert.equal(card.attributes["aria-disabled"], "false");
+    assert.equal(card.classList.contains("is-revealed"), true);
+    context.selectLevel(index, card);
+  });
+  assert.equal(entered.length, Content.LEVELS.length);
+  assert.ok(entered.every(entry => entry.mode === "duel"));
+  context.setSelectedMode("ai");
+  dom.levelCards.forEach((card, index) => {
+    assert.equal(card.attributes["aria-disabled"], index === 0 ? "false" : "true");
+    context.selectLevel(index, card);
+  });
+  assert.equal(entered.length, Content.LEVELS.length + 1);
+  assert.equal(JSON.stringify(context.prefs), before);
+});
+
 test("H5 首页首关选择实际传递模式，显式模式优先于首页选择", () => {
   for (const mode of ["ai", "duel"]) {
     const { context, calls, dom, flushTimers } = harness(["selectLevel", "introModeFor", "startLevel"], { selectedMode: mode });

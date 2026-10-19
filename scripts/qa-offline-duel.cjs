@@ -211,6 +211,20 @@ async function runViewport(browser, url, viewport) {
 
     await page.locator('[data-mode="duel"]').tap();
     assert.equal(await page.locator('[data-mode="duel"]').getAttribute("aria-pressed"), "true");
+    assert.equal(await page.locator('.level-card.is-locked').count(), 0);
+    assert.equal(await page.locator('.level-card.is-revealed').count(), 7);
+    await screenshot(page, `home-duel-all-levels-${size}.png`);
+    for (let index = 1; index < 7; index += 1) {
+      await page.locator(`[data-level="${index}"]`).tap();
+      await ready(page);
+      await expectText(page, "turnStatus", "黑方回合");
+      await page.locator("#backButton").tap();
+      await ready(page);
+      await page.locator("#homeScreen.is-active").waitFor();
+    }
+    await page.locator('[data-mode="ai"]').tap();
+    assert.equal(await page.locator('.level-card.is-locked').count(), 6);
+    await page.locator('[data-mode="duel"]').tap();
     await page.locator('[data-level="0"]').tap();
     await ready(page);
     await expectText(page, "turnStatus", "黑方回合");

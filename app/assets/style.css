@@ -361,33 +361,33 @@ button,
   display: flex;
   align-items: center;
   justify-content: space-between;
-  min-height: 44px;
-  margin: 0 2px 4px;
+  min-height: 52px;
+  margin: 0 2px 8px;
   color: var(--muted);
-  font-size: 11px;
-  font-weight: 650;
+  font-size: 15px;
+  font-weight: 400;
   letter-spacing: 0.1em;
 }
 
 .mode-options {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 8px;
+  gap: 12px;
 }
 
 .tool-button.mode-option {
-  min-width: 88px;
-  min-height: 44px;
+  min-width: 92px;
+  min-height: 48px;
   padding: 0 8px;
-  font-size: 12px;
+  font-size: 16px;
   font-weight: 600;
-  letter-spacing: 0.04em;
+  letter-spacing: 0.08em;
 }
 
 .tool-button.mode-option.is-active {
   color: var(--ink);
   text-decoration: underline;
-  text-underline-offset: 6px;
+  text-underline-offset: 8px;
   text-decoration-thickness: 1px;
 }
 

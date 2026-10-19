@@ -147,6 +147,12 @@
 
 按用户反馈删除首页“旅程 / 进度计数”一行，标题与关卡列表之间只保留模式选择，首页网格恢复三行结构；解锁与完成状态继续由关卡卡片表示。模式按钮保留 44 px 触摸高度。相同初始进度、静止状态的对比：[390 × 844 两行](../../artifacts/issue-2/home-two-rows-390x844.png) → [单行](../../artifacts/issue-2/home-after-390x844.png)，[360 × 770 两行](../../artifacts/issue-2/home-two-rows-360x770.png) → [单行](../../artifacts/issue-2/home-after-360x770.png)。141 项测试及包、文档校验通过；两种视口重新执行离线双人浏览器回归。最新首页候选以本节单行截图为准，仍待用户预览确认。
 
+### 2026-10-20：模式行字号与双人全部关卡
+
+模式标签调整为 15 px、常规字重，两项选择为 16 px、600 字重；按钮高 48 px，选项间隔 12 px，行高 52 px。保留已有无底板按钮与细下划线，扩大文字和留白。相同初始单人状态对比：[390 × 844 修改前](../../artifacts/issue-2/home-small-mode-390x844.png) → [修改后](../../artifacts/issue-2/home-after-390x844.png)，[360 × 770 修改前](../../artifacts/issue-2/home-small-mode-360x770.png) → [修改后](../../artifacts/issue-2/home-after-360x770.png)。
+
+双人模式直接展示全部拓扑图形并开放七关：[390 × 844](../../artifacts/issue-2/home-duel-all-levels-390x844.png)、[360 × 770](../../artifacts/issue-2/home-duel-all-levels-360x770.png)。浏览器回归从全新进度逐一进入六个高阶关卡，再切回单人确认恢复六个锁定关卡，随后执行原有断网对局流程。切换模式不写解锁进度；共享 controller 与 H5 行为测试覆盖同一约定。新版入口取代前文“仅已解锁关卡”的候选行为，待用户预览确认。
+
 ## 新证据记录模板
 
 ```text

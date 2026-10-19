@@ -96,12 +96,11 @@ test("莫比乌斯带具有一条连续的真实边界描线", () => {
   assert.match(svg, /data-ink-layer="pressure"/);
 });
 
-test("目录中的高阶拓扑必须通关后才揭示图鉴", () => {
+test("目录保留单人未揭示图鉴的剪影材质", () => {
   const html = fs.readFileSync(path.join(ROOT, "app", "index.html"), "utf8");
   const game = fs.readFileSync(path.join(ROOT, "app", "assets", "game.js"), "utf8");
   const style = fs.readFileSync(path.join(ROOT, "app", "assets", "style.css"), "utf8");
   assert.equal((html.match(/class="level-mystery"/g) || []).length, 6);
-  assert.match(game, /var revealed = index === 0 \|\| complete;/);
   assert.match(game, /classList\.toggle\("is-revealed", revealed\)/);
   assert.match(style, /\.level-card:not\(\.is-revealed\) \.level-glyph/);
   assert.match(style, /\.level-card\.is-revealed \.level-mystery/);

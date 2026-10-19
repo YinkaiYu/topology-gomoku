@@ -224,15 +224,17 @@
     return true;
   };
 
-  GameController.prototype.selectLevel = function selectLevel(index, time) {
+  GameController.prototype.selectLevel = function selectLevel(index, time, options) {
     var levelIndex = Math.round(Number(index));
-    if (levelIndex < 0 || levelIndex >= LEVELS.length || levelIndex > this.preferences.unlocked) {
+    var settings = options || {};
+    if (!Number.isInteger(levelIndex) || levelIndex < 0 || levelIndex >= LEVELS.length
+      || (settings.mode !== MODE_DUEL && levelIndex > this.preferences.unlocked)) {
       this._sound("locked");
       return false;
     }
     this.selectedLevel = levelIndex;
     this._sound("ui");
-    return this.startLevel(levelIndex, {}, time);
+    return this.startLevel(levelIndex, settings, time);
   };
 
   GameController.prototype._introModeFor = function introModeFor(levelIndex, options, mode) {

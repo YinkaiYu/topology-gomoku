@@ -298,9 +298,9 @@
 
   function updateHome() {
     dom.levelCards.forEach(function updateCard(card, index) {
-      var locked = index > prefs.unlocked;
+      var locked = selectedMode !== "duel" && index > prefs.unlocked;
       var complete = Boolean(prefs.completed[index]);
-      var revealed = index === 0 || complete;
+      var revealed = selectedMode === "duel" || index === 0 || complete;
       card.classList.toggle("is-locked", locked);
       card.classList.toggle("is-complete", complete);
       card.classList.toggle("is-revealed", revealed);
@@ -327,7 +327,7 @@
   }
 
   function selectLevel(index, card) {
-    if (index > prefs.unlocked) {
+    if (selectedMode !== "duel" && index > prefs.unlocked) {
       var card = dom.levelCards[index];
       card.classList.remove("is-shaking");
       void card.offsetWidth;
