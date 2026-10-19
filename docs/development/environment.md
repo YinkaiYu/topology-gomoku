@@ -41,6 +41,7 @@ npm run release:check-versions -- X.Y.Z
 - `npm run release:check-versions -- X.Y.Z` 仅供维护者在稳定同步后检查 `main` 与五个发行分支的统一游戏版本。
 - 首次同步需要下载 `uv.lock` 中的依赖；之后会复用锁定环境与本地缓存。
 
+
 ## 微信小游戏本地预览
 
 微信适配任务交给开发者工具前运行：
@@ -56,6 +57,13 @@ npm run sync:wechat -- -TargetRoot D:\path\to\wechat-game-preview
 ```
 
 同步成功后用微信开发者工具以“小游戏”项目打开目标目录。Agent 应按 [`wechat-agent-workflow.md`](wechat-agent-workflow.md) 使用官方 `wechatide-skill` 完成 initializer、compiler、debugger 和 automator 链路；业务工具只通过 PATH 中的 `wechatide` 调用，不使用 8.3 短路径或安装目录绝对入口。真机验收清单见 [`../platforms/wechat.md`](../platforms/wechat.md)。不要把开发者工具生成的私有配置、预览文件或目标目录内容复制回仓库。
+
+## 离线双人浏览器回归
+
+`npm run qa:duel` 是可选的本地浏览器验证，需要环境已提供 Playwright 和 Chromium；可通过 `NODE_PATH` 指向已有的 Node 包目录，不新增游戏运行时依赖。脚本临时启动只监听本机的静态服务，并从 Git 基线 `45900d9` 导出首页作同尺寸对比。首页加载后断网，使用真实触摸事件验证双人入口、黑白胜负、占用点拒绝、悔棋、重开、设置、复盘和退出，同时记录 AI 调用与外部请求。
+
+截图写入 `artifacts/issue-2/`，详细结果与基线导出保存在忽略的 `.tmp/issue-2/browser-qa/`。此脚本是桌面 Chromium 的触摸视口模拟，不能替代宿主模拟器或手机验收。保留可供用户预览的服务可运行 `npm run qa:duel -- --serve --port 4174`；已有服务时用 `npm run qa:duel -- --url http://127.0.0.1:4174` 复验。
+
 
 ## Python 环境
 
