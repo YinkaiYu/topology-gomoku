@@ -30,6 +30,8 @@
   var STORAGE_KEY = "topology-gomoku:v1";
   var HUMAN = Engine.HUMAN;
   var AI = Engine.AI;
+  var MODE_AI = "ai";
+  var MODE_DUEL = "duel";
   var LEVELS = Content.LEVELS;
   var DIFFICULTIES = Content.DIFFICULTIES;
 
@@ -164,6 +166,7 @@
     return {
       scene: this.scene,
       selectedLevel: this.selectedLevel,
+      modes: { ai: MODE_AI, duel: MODE_DUEL },
       levels: LEVELS,
       difficulties: DIFFICULTIES,
       preferences: this.preferences,
@@ -221,18 +224,23 @@
     return true;
   };
 
-  GameController.prototype.selectLevel = function selectLevel(index, time) {
+  GameController.prototype.selectLevel = function selectLevel(index, time, options) {
     var levelIndex = Math.round(Number(index));
-    if (levelIndex < 0 || levelIndex >= LEVELS.length || levelIndex > this.preferences.unlocked) {
+    var settings = options || {};
+    if (!Number.isInteger(levelIndex) || levelIndex < 0 || levelIndex >= LEVELS.length
+      || (settings.mode !== MODE_DUEL && levelIndex > this.preferences.unlocked)) {
       this._sound("locked");
       return false;
     }
     this.selectedLevel = levelIndex;
     this._sound("ui");
-    return this.startLevel(levelIndex, {}, time);
+    return this.startLevel(levelIndex, settings, time);
   };
 
-  GameController.prototype._introModeFor = function introModeFor(levelIndex, options) {
+  GameController.prototype._introModeFor = function introModeFor(levelIndex, options, mode) {
+    if (mode === MODE_DUEL || (options && options.mode === MODE_DUEL)) {
+      return options && options.introMode ? options.introMode : "none";
+    }
     if (levelIndex === 0) {
       return "lesson";
     }
@@ -249,10 +257,12 @@
     var levelIndex = clamp(Math.round(Number(index) || 0), 0, LEVELS.length - 1);
     var level = LEVELS[levelIndex];
     var settings = options || {};
-    var introMode = this._introModeFor(levelIndex, settings);
     var resumeMatch = settings.resumeMatch && settings.resumeMatch.levelIndex === levelIndex
       ? settings.resumeMatch
       : null;
+    var mode = (settings.mode || (resumeMatch && resumeMatch.mode)
+      || (settings.lessonReturn && settings.lessonReturn.mode)) === MODE_DUEL ? MODE_DUEL : MODE_AI;
+    var introMode = this._introModeFor(levelIndex, settings, mode);
     var now = this._time(time);
     this._invalidate();
     this.scene = "game";
@@ -260,6 +270,7 @@
     this.game = {
       levelIndex: levelIndex,
       level: level,
+      mode: mode,
       rules: Engine.createRules({
         type: level.topology,
         width: level.width,
@@ -269,6 +280,7 @@
       board: null,
       moves: [],
       turn: HUMAN,
+      winner: null,
       status: "playing",
       outcome: null,
       winningMask: null,
@@ -301,7 +313,7 @@
       this._startBoundaryLesson(now);
     } else if (introMode === "demo") {
       this._startBoundaryDemo(now);
-    } else if (resumeMatch && this.game.turn === AI) {
+    } else if (resumeMatch && this.game.mode === MODE_AI && this.game.turn === AI) {
       this._scheduleAi(now);
     }
     this._emit("navigate", { scene: "game", levelIndex: levelIndex });
@@ -328,7 +340,10 @@
     }
     var levelIndex = this.game.levelIndex;
     this._sound("ui");
-    return this.startLevel(levelIndex, { introMode: "demo" }, time);
+    return this.startLevel(levelIndex, {
+      introMode: this.game.mode === MODE_DUEL ? "none" : "demo",
+      mode: this.game.mode
+    }, time);
   };
 
   GameController.prototype.nextLevel = function nextLevel(time) {
@@ -340,7 +355,7 @@
       return false;
     }
     this._sound("ui");
-    return this.startLevel(this.game.levelIndex + 1, {}, time);
+    return this.startLevel(this.game.levelIndex + 1, { mode: this.game.mode }, time);
   };
 
   GameController.prototype._traceDefinition = function traceDefinition(definition) {
@@ -484,6 +499,8 @@
       board: Array.prototype.slice.call(this.game.board),
       moves: copyMoves(this.game.moves),
       turn: this.game.turn,
+      mode: this.game.mode,
+      winner: this.game.winner,
       lastMove: this.game.lastMove
     };
   };
@@ -499,6 +516,7 @@
     }
     this._sound("ui");
     return this.startLevel(levelIndex, {
+      mode: this.game.mode,
       introMode: "lesson",
       lessonReturn: lessonReturn
     }, time);
@@ -522,13 +540,15 @@
 
   GameController.prototype.canPlaceCell = function canPlaceCell(cell) {
     if (this.pausedAt !== null || (this.game && Motion.busy(this.game.view))) { return false; }
-    if (!this.game || this.game.status !== "playing" || this.game.turn !== HUMAN) {
+    if (!this.game || this.game.status !== "playing") {
       return false;
     }
+    if (this.game.turn !== HUMAN && this.game.turn !== AI) { return false; }
+    if (this.game.mode !== MODE_DUEL && this.game.turn !== HUMAN) { return false; }
     if (this.game.demo && this.game.demo.active) {
       return false;
     }
-    if (cell < 0 || cell >= this.game.board.length || this.game.board[cell] !== Engine.EMPTY) {
+    if (!Number.isInteger(cell) || cell < 0 || cell >= this.game.board.length || this.game.board[cell] !== Engine.EMPTY) {
       return false;
     }
     if (this.isInteractiveLesson()) {
@@ -560,15 +580,19 @@
 
   GameController.prototype.performMove = function performMove(cell, player, options, time) {
     if (this.pausedAt !== null || (this.game && Motion.busy(this.game.view))) { return false; }
-    var activePlayer = typeof player === "number" ? player : HUMAN;
-    if (!this.game || this.game.status !== "playing" || this.game.board[cell] !== Engine.EMPTY) {
+    if (!this.game || this.game.status !== "playing"
+      || !Number.isInteger(cell) || cell < 0 || cell >= this.game.board.length
+      || this.game.board[cell] !== Engine.EMPTY || (this.game.demo && this.game.demo.active)) {
+      return false;
+    }
+    var activePlayer = player === undefined
+      ? (this.game.mode === MODE_DUEL ? this.game.turn : HUMAN)
+      : player;
+    if ((activePlayer !== HUMAN && activePlayer !== AI) || activePlayer !== this.game.turn) {
       return false;
     }
     var lesson = this.isInteractiveLesson() ? this.game.lesson : null;
     if (lesson && (activePlayer !== HUMAN || lesson.cells[lesson.step] !== cell)) {
-      return false;
-    }
-    if (!lesson && activePlayer === HUMAN && !this.canPlaceCell(cell)) {
       return false;
     }
     var now = this._time(time);
@@ -595,16 +619,24 @@
       if (lesson && (this.game.lessonReturn || !this.game.level.tutorial)) {
         this._finishBoundaryLesson(winningMask, now);
       } else {
-        this._finishGame(activePlayer === HUMAN ? "win" : "lose", winningMask, null, now);
+        this._finishGame(
+          this.game.mode === MODE_DUEL ? "win" : (activePlayer === HUMAN ? "win" : "lose"),
+          winningMask,
+          null,
+          now,
+          activePlayer
+        );
       }
-    } else if (this.game.level.tutorial || lesson) {
+    } else if ((this.game.level.tutorial && this.game.mode !== MODE_DUEL) || lesson) {
       this.game.turn = HUMAN;
-    } else if (Engine.playerWinsByBlockingAi(this.game.board, this.game.rules)) {
-      this._finishGame("win", null, "blocked", now);
-    } else if (Engine.playerHasNoWinningPath(this.game.board, this.game.rules)) {
-      this._finishGame("win", null, "settled", now);
+    } else if (this.game.mode !== MODE_DUEL && Engine.playerWinsByBlockingAi(this.game.board, this.game.rules)) {
+      this._finishGame("win", null, "blocked", now, HUMAN);
+    } else if (this.game.mode !== MODE_DUEL && Engine.playerHasNoWinningPath(this.game.board, this.game.rules)) {
+      this._finishGame("win", null, "settled", now, AI);
     } else if (Engine.boardIsFull(this.game.board)) {
       this._finishGame("draw", null, null, now);
+    } else if (this.game.mode === MODE_DUEL) {
+      this.game.turn = -activePlayer;
     } else if (activePlayer === HUMAN) {
       this.game.turn = AI;
       this._scheduleAi(now);
@@ -657,6 +689,7 @@
     var levelIndex = this.game.levelIndex;
     var resumeMatch = this.game.lessonReturn;
     return this.startLevel(levelIndex, {
+      mode: this.game.mode,
       introMode: "none",
       resumeMatch: resumeMatch || null
     }, time);
@@ -666,11 +699,18 @@
     this.scheduled = this.scheduled.filter(function keepNonAi(item) {
       return item.kind !== "ai";
     });
+    if (!this.game || this.game.mode !== MODE_AI || this.game.status !== "playing"
+      || this.game.turn !== AI || this.isInteractiveLesson() || (this.game.demo && this.game.demo.active)) {
+      return false;
+    }
     this._schedule("ai", DIFFICULTIES[this.preferences.difficulty].wait, time);
+    return true;
   };
 
   GameController.prototype._runAi = function runAi(time) {
-    if (!this.game || this.game.status !== "playing" || this.game.turn !== AI) {
+    if (this.pausedAt !== null || !this.game || this.game.mode !== MODE_AI
+      || this.game.status !== "playing" || this.game.turn !== AI
+      || this.isInteractiveLesson() || (this.game.demo && this.game.demo.active)) {
       return false;
     }
     if (Motion.busy(this.game.view)) {
@@ -684,13 +724,14 @@
     return this.performMove(cell, AI, null, time);
   };
 
-  GameController.prototype._finishGame = function finishGame(outcome, winningMask, reason, time) {
+  GameController.prototype._finishGame = function finishGame(outcome, winningMask, reason, time, winner) {
     var now = this._time(time);
     var passed = outcome === "win" || outcome === "draw";
-    var firstLevelAutoAdvance = passed && this.game.levelIndex === 0 && LEVELS.length > 1;
+    var firstLevelAutoAdvance = passed && this.game.mode !== MODE_DUEL && this.game.levelIndex === 0 && LEVELS.length > 1;
     this._invalidate();
     this.game.status = "ended";
     this.game.outcome = outcome;
+    this.game.winner = typeof winner === "number" ? winner : null;
     this.game.turn = 0;
     this.game.winningMask = winningMask;
     this.game.winReason = reason || null;
@@ -712,10 +753,12 @@
     if (passed) {
       this._rememberLevel(this.game.levelIndex);
       this.preferences.completed[this.game.levelIndex] = true;
-      this.preferences.bestDifficulty[this.game.levelIndex] = Math.max(
-        Number(this.preferences.bestDifficulty[this.game.levelIndex]) || 0,
-        DIFFICULTIES[this.preferences.difficulty].rank
-      );
+      if (this.game.mode === MODE_AI) {
+        this.preferences.bestDifficulty[this.game.levelIndex] = Math.max(
+          Number(this.preferences.bestDifficulty[this.game.levelIndex]) || 0,
+          DIFFICULTIES[this.preferences.difficulty].rank
+        );
+      }
       if (this.game.levelIndex < LEVELS.length - 1) {
         this.preferences.unlocked = Math.max(this.preferences.unlocked, this.game.levelIndex + 1);
       }
@@ -739,9 +782,11 @@
     }
     this._invalidate();
     var lessonActive = this.isInteractiveLesson();
-    var removeCount = this.game.level.tutorial || lessonActive
+    var removeCount = this.game.mode === MODE_DUEL
       ? 1
-      : (this.game.turn === AI ? 1 : Math.min(2, this.game.moves.length));
+      : (this.game.level.tutorial || lessonActive
+        ? 1
+        : (this.game.turn === AI ? 1 : Math.min(2, this.game.moves.length)));
     while (removeCount > 0 && this.game.moves.length) {
       var move = this.game.moves.pop();
       this.game.board[move.cell] = Engine.EMPTY;
@@ -753,7 +798,9 @@
     if (lessonActive) {
       this.game.lesson.step = this.game.moves.length;
     }
-    this.game.turn = HUMAN;
+    this.game.turn = this.game.mode === MODE_DUEL && !lessonActive
+      ? (this.game.moves.length ? -this.game.moves[this.game.moves.length - 1].player : HUMAN)
+      : HUMAN;
     this.game.lastMoveAt = this._time(time);
     this.game.seamPulseAt = 0;
     this._sound("ui");
@@ -868,15 +915,21 @@
       return "边界已懂";
     }
     if (game.status === "ended") {
+      if (game.mode === MODE_DUEL) {
+        return game.outcome === "draw" ? "和局" : (game.winner === HUMAN ? "黑方胜" : "白方胜");
+      }
       return game.autoAdvancePending
         ? "下一关"
         : Replay.resultText(game.outcome, game.moves.length);
     }
-    if (game.turn === AI) {
-      return "思考中";
-    }
     if (this.isInteractiveLesson()) {
       return this.lessonPrompt();
+    }
+    if (game.mode === MODE_DUEL) {
+      return game.turn === HUMAN ? "黑方回合" : "白方回合";
+    }
+    if (game.turn === AI) {
+      return "思考中";
     }
     if (game.level.tutorial) {
       return "自由落子";
@@ -962,6 +1015,8 @@
 
   return {
     STORAGE_KEY: STORAGE_KEY,
+    MODE_AI: MODE_AI,
+    MODE_DUEL: MODE_DUEL,
     defaultPreferences: defaultPreferences,
     normalizePreferences: normalizePreferences,
     GameController: GameController
