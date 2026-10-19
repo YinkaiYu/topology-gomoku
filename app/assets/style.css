@@ -369,23 +369,43 @@ html[data-host-layout="compact"] .app-shell {
   50% { transform: rotate(-3.5deg) translateY(-3px) scale(1.125); }
 }
 
-.journey-head {
+.mode-selection {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  min-height: 28px;
+  justify-content: flex-start;
+  min-height: 52px;
   margin: 0 2px 8px;
   color: var(--muted);
-  font-size: 12px;
-  font-weight: 650;
-  letter-spacing: 0.12em;
+  font-size: 15px;
+  font-weight: 400;
+  letter-spacing: 0.1em;
 }
 
-.progress-count {
-  color: var(--ink);
-  font-variant-numeric: tabular-nums;
-  letter-spacing: 0.03em;
+.mode-options {
+  display: grid;
+  grid-template-columns: repeat(2, auto);
+  gap: 28px;
 }
+
+.tool-button.mode-option {
+  min-width: 44px;
+  min-height: 48px;
+  align-items: flex-start;
+  padding: 0;
+  text-align: left;
+  font-size: 16px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+}
+
+.tool-button.mode-option.is-active {
+  color: var(--ink);
+  text-decoration: underline;
+  text-underline-offset: 8px;
+  text-decoration-thickness: 1px;
+}
+
+.setting-row[hidden] { display: none; }
 
 .level-grid {
   position: relative;
@@ -517,6 +537,7 @@ html[data-host-layout="compact"] .app-shell {
 .level-glyph {
   width: clamp(70px, 21vw, 88px);
   height: clamp(48px, 8.2vh, 70px);
+  max-height: 100%;
   grid-column: 1 / -1;
   grid-row: 1;
   align-self: center;
@@ -532,6 +553,7 @@ html[data-host-layout="compact"] .app-shell {
   display: grid;
   width: clamp(70px, 21vw, 88px);
   height: clamp(48px, 8.2vh, 70px);
+  max-height: 100%;
   grid-column: 1 / -1;
   grid-row: 1;
   align-self: center;
@@ -2090,7 +2112,6 @@ html[data-host-layout="compact"] .app-shell {
   }
 
   .hero h1 { font-size: clamp(40px, 11.4vw, 52px); }
-  .journey-head { min-height: 23px; margin-bottom: 5px; }
   .level-grid { gap: 6px; }
   .level-card { padding: 8px 10px; }
   .level-glyph,
@@ -2165,8 +2186,7 @@ html[data-host-layout="compact"] .app-shell {
 @media (max-height: 440px) {
   .hero h1 { font-size: 28px; }
   .hero { grid-template-columns: minmax(0, 1fr) min(80px, 20vh); }
-  .journey-head { min-height: 20px; margin-bottom: 4px; }
-  .level-card { padding-block: 4px; row-gap: 3px; border-radius: 17px; }
+  .level-card { padding-block: 4px; row-gap: 1px; border-radius: 17px; }
   .level-card .level-glyph,
   .level-card .level-mystery { height: 36px; }
 }

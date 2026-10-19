@@ -126,6 +126,47 @@ test("AI 等待期间悔棋取消待落子，AI 落子后悔棋撤销双方各�
   assert.equal(controller.game.turn, Engine.HUMAN);
 });
 
+test("离线双人模式只按当前黑白回合落子并支持单手悔棋", () => {
+  const controller = createController({ unlocked: 0 });
+  controller.startLevel(0, { mode: ControllerModule.MODE_DUEL }, 0);
+  assert.equal(controller.game.mode, ControllerModule.MODE_DUEL);
+  assert.equal(controller.game.turn, Engine.HUMAN);
+  assert.equal(controller.nextScheduledAt(), null);
+
+  assert.equal(controller.performMove(8, Engine.HUMAN, null, 1), true);
+  assert.equal(controller.game.turn, Engine.AI);
+  assert.equal(controller.performMove(9, Engine.HUMAN, null, 2), false);
+  assert.equal(controller.performMove(0, Engine.AI, null, 3), true);
+  assert.equal(controller.game.turn, Engine.HUMAN);
+  assert.equal(controller.undo(4), true);
+  assert.equal(controller.game.moves.length, 1);
+  assert.equal(controller.game.turn, Engine.AI);
+  assert.equal(controller.nextScheduledAt(), null);
+});
+
+test("离线双人模式胜负显示胜方且首关不自动切关", () => {
+  const controller = createController({ unlocked: 0 });
+  controller.startLevel(0, { mode: ControllerModule.MODE_DUEL }, 0);
+  [
+    [8, Engine.HUMAN], [0, Engine.AI],
+    [9, Engine.HUMAN], [1, Engine.AI],
+    [10, Engine.HUMAN], [2, Engine.AI],
+    [11, Engine.HUMAN], [3, Engine.AI],
+    [12, Engine.HUMAN]
+  ].forEach(([cell, player], index) => {
+    assert.equal(controller.performMove(cell, player, null, index + 1), true);
+  });
+  assert.equal(controller.game.status, "ended");
+  assert.equal(controller.game.outcome, "win");
+  assert.equal(controller.game.winner, Engine.HUMAN);
+  assert.equal(controller.game.autoAdvancePending, false);
+  assert.equal(controller.statusText(), "黑方胜");
+  assert.equal(controller.restart(30), true);
+  assert.equal(controller.game.mode, ControllerModule.MODE_DUEL);
+  assert.equal(controller.game.status, "playing");
+  assert.equal(controller.game.moves.length, 0);
+});
+
 test("前后台暂停会冻结 AI 截止时间而不是回前台立即落子", () => {
   const controller = createController({ unlocked: 1, learnedLevels: [1] });
   controller.startLevel(1, { skipDemo: true }, 0);

@@ -26,9 +26,11 @@
             <img class="hero-brand" src="./assets/brand-icon.png" alt="" aria-hidden="true" />
           </div>
 
-          <div class="journey-head">
-            <span>旅程</span>
-            <span class="progress-count" id="progressCount">0 / 7</span>
+          <div class="mode-selection" id="modeSelection" role="group" aria-label="对弈模式">
+            <div class="mode-options">
+              <button class="tool-button mode-option is-active" type="button" data-mode="ai" aria-pressed="true">人机对弈</button>
+              <button class="tool-button mode-option" type="button" data-mode="duel" aria-pressed="false">离线双人</button>
+            </div>
           </div>
 
           <div class="level-grid" id="levelGrid">
@@ -102,7 +104,7 @@
         <div class="match-strip">
           <div class="player-chip is-active" id="humanChip">
             <span class="mini-stone stone-dark"></span>
-            <span>你</span>
+            <span id="humanChipLabel">你</span>
           </div>
           <div class="turn-status" id="turnStatus" role="status">你的回合</div>
           <div class="player-chip" id="aiChip">
