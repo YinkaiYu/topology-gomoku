@@ -13,7 +13,6 @@
     <img alt="原神千星奇域热度：2.4万+" src="https://img.shields.io/badge/原神千星奇域热度-2.4万%2B-5A7D6A?style=flat-square" />
   </p>
   <p>一个把五子棋放进圆柱、莫比乌斯带、环面与克莱因瓶的小游戏。</p>
-  <p>原作者：<a href="https://www.yykspace.com/">余荫铠</a></p>
   <img src="promo/exports/topology-gomoku-home-cover-3x4-v1.41.1.png" width="420" alt="拓扑五子棋实际首页：离线双人模式与七个拓扑关卡" />
   <p><sub>游戏首页 · 离线双人模式</sub></p>
   <p>
@@ -83,7 +82,7 @@
 | 拓扑五子棋 | `127344607235` |
 | 拓扑五子棋-双人对弈 | `131639574531` |
 
-## 社区的另一种玩法
+### 网页联机版
 
 社区创作者也在这张棋盘上加入了自己的想法：
 
