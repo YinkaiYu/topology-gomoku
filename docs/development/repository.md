@@ -7,7 +7,7 @@
 ```text
 外部贡献者 / 普通开发 Agent                仓库维护者
 
-dev ──▶ codex/<task> worktree
+dev ──▶ <task-branch> worktree
  ▲            │
  └── 预览确认 ┘
               │
@@ -31,10 +31,10 @@ dev ──▶ codex/<task> worktree
 维护者还有一条独立的平台适配支线：
 
 ```text
-bilibili ──▶ codex/bilibili-<task> worktree ──预览确认──▶ bilibili
-wechat   ──▶ codex/wechat-<task> worktree   ──预览确认──▶ wechat
-web      ──▶ codex/web-<task> worktree      ──预览确认──▶ web
-zhihu    ──▶ codex/zhihu-<task> worktree    ──预览确认──▶ zhihu
+bilibili ──▶ <bilibili-task-branch> worktree ──预览确认──▶ bilibili
+wechat   ──▶ <wechat-task-branch> worktree   ──预览确认──▶ wechat
+web      ──▶ <web-task-branch> worktree      ──预览确认──▶ web
+zhihu    ──▶ <zhihu-task-branch> worktree    ──预览确认──▶ zhihu
 ```
 
 这条支线只处理无法进入共享基线的宿主 API、生命周期、组件、资源和发布配置。`dev/main` 当前天然对标小红书 H5，因此小红书工作通常仍从 `dev` 开始；只有容器、JSBridge、ZIP 和发布配置等纯宿主内容才从 `xiaohongshu` 建平台任务。个人网站任务只维护静态构建、固定子路径和外部网站仓库同步，具体见 [`web.md`](web.md)；知乎任务只维护 CloudBase 输入、iframe 宿主验证和发布记录，具体见 [`zhihu.md`](zhihu.md)。
@@ -58,7 +58,7 @@ xiaohongshu-tools/               main
 
 ```powershell
 # 所有日常功能、修复、设计、测试与文档任务
-git worktree add -b codex/<task> .worktrees/<task> dev
+git worktree add -b <task-branch> .worktrees/<task> dev
 ```
 
 开始前始终运行：
@@ -119,9 +119,9 @@ git worktree list
 
 ## 命名约定
 
-- Agent 任务分支：`codex/<topic>`。
-- 人工短期分支：`feat/<topic>`、`fix/<topic>`、`docs/<topic>` 等。
-- 维护者发行整合分支可使用 `codex/release-<platform>-<semver>`。
+- 任务分支应简短并描述任务，不区分人工或 Agent，也不限定工具或前缀；可使用 `feat/<topic>`、`fix/<topic>`、`docs/<topic>` 等。
+- 工具默认的前缀（如 `codex/<topic>`）可以保留，但不是仓库要求。本文及其他开发文档中的具体分支名均为示例，不要求社区贡献者使用同一前缀。
+- 维护者发行整合分支可使用 `release/<platform>-<semver>`。
 - 五个渠道 tag 使用相同 SemVer，例如 `xiaohongshu-v1.37.2`、`bilibili-v1.37.2`、`wechat-v1.37.2`、`web-v1.37.2`、`zhihu-v1.37.2`；不得各自使用不同产品版本。
 
 分支名描述集成责任，目录名描述代码责任。即使未来平台迁移到不同工程形态，共享规则的测试向量、视觉原则和行为契约仍应保持一致。

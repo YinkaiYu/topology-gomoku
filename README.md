@@ -4,12 +4,23 @@
   <p><strong>边界之外，也能连成一线。</strong></p>
   <p>
     <img alt="离线游戏" src="https://img.shields.io/badge/完全离线-27241F?style=flat-square" />
-    <img alt="七种拓扑" src="https://img.shields.io/badge/拓扑世界-7-B85C38?style=flat-square" />
-    <img alt="五个发行渠道" src="https://img.shields.io/badge/发行渠道-5-5A7D6A?style=flat-square" />
-    <img alt="MIT License" src="https://img.shields.io/badge/license-MIT-4A6484?style=flat-square" />
+    <a href="CONTRIBUTING.md"><img alt="Agent Ready：支持 AI 协作贡献" src="https://img.shields.io/badge/Agent-Ready-5A7D6A?style=flat-square" /></a>
+    <a href="LICENSE"><img alt="MIT License" src="https://img.shields.io/badge/license-MIT-4A6484?style=flat-square" /></a>
+  </p>
+  <p>
+    <img alt="小红书玩家：2.5万+" src="https://img.shields.io/badge/小红书玩家-2.5万%2B-B85C38?style=flat-square" />
+    <img alt="B站游玩：3.3万+" src="https://img.shields.io/badge/B站游玩-3.3万%2B-4A6484?style=flat-square" />
+    <img alt="原神千星奇域热度：2.4万+" src="https://img.shields.io/badge/原神千星奇域热度-2.4万%2B-5A7D6A?style=flat-square" />
   </p>
   <p>一个把五子棋放进圆柱、莫比乌斯带、环面与克莱因瓶的小游戏。</p>
-  <img src="promo/exports/topology-gomoku-cover-3x4.png" width="420" alt="拓扑五子棋封面" />
+  <img src="promo/exports/topology-gomoku-home-cover-3x4-v1.41.1.png" width="420" alt="拓扑五子棋实际首页：离线双人模式与七个拓扑关卡" />
+  <p><sub>游戏首页 · 离线双人模式</sub></p>
+  <p>
+    <a href="https://www.bilibili.com/video/BV16stL6JExU/">
+      <img src="promo/exports/topology-gomoku-footprints-pv-cover-16x9.png" width="640" alt="《拓扑五子棋》章节预告 PV「足迹回环」封面，点击前往 B站观看" />
+    </a>
+  </p>
+  <p><a href="https://www.bilibili.com/video/BV16stL6JExU/">点击观看 · 章节预告 PV「足迹回环」</a></p>
 </div>
 
 ## 熟悉的五子棋，陌生的世界
@@ -42,27 +53,53 @@
 
 在首页选择“离线双人”即可直接进入全部七个关卡，无需解锁，黑方先行，每次合法落子后交给另一方。双人局直接开局，双方均以五连获胜，满盘且没有五连时和局；单人的封锁通关规则不适用于双人局。悔棋撤回最后一手，重来恢复黑方先行，终局可以复盘、再来或返回旅程。从第二关起仍可主动查看边界演示，完成指引后恢复原棋盘与执棋方。双人胜局和和局沿用旅程解锁，但不记作 AI 难度成绩。
 
-## 多渠道发行
+## 活动与荣誉
 
-- 小红书小工具：已发布，以共享 H5 基线生成完全离线的 ZIP 包
-- Bilibili Toy：已发布，使用专属 adapter，并完成手机、平板与 PC 的响应式适配
-- 微信小游戏：已发布，使用原生单 Canvas、宿主 adapter 与可复现的构建同步链路
-- 个人网站：通过 `web` 发行分支生成静态目录，部署到网站的 `show/topology-gomoku/` 子路径
-- 知乎 AI Works：以共享 `app/` 生成 CloudBase 静态交付输入；用户已确认手动上传 1.41.1，最新线上版本尚未独立核实，详见[发行记录](docs/releases/1.41.1.md)
+- 小红书 VibeCoding 大赛：人文知识赛道入围并获奖，决赛正在进行。
+- 小红书国风 VibeCoding 大赏：获得「Vibe 国风潜力奖」。
+- 原神千星奇域：入选原神官方「绮衣赏珍·晴暖」活动关卡。
+- 知乎 AI Works 科学季：登上「最热」项目首位。
+- Bilibili Toy：全站游戏榜 Top 100。
 
-五个发行渠道共享同一套拓扑规则、关卡内容、视觉语言与游戏版本，并分别接入各自宿主或静态站点的生命周期、输入、安全区和发布边界。每次稳定版本仍需在各渠道分别完成构建、预览与发布验证。
+## 在哪里玩
 
-## 开发与文档
+| 平台 | 游玩入口 |
+| --- | --- |
+| 小红书 | [小工具·拓扑五子棋](https://www.xiaohongshu.com/s/poster?bgimg=https%3A%2F%2Fsns-redskillhub-s1.xhscdn.com%2Fred_app_image%2F1040g4m8326i89vkp4q005on8i5f7qmruthk9v10%3Fsign%3D76b351ad52de1e1fb4bb4586473c375c%26t%3D6cb8d1bf&deeplink=xhsdiscover%3A%2F%2FminiTool%2F6a8f70ebe29cdb0015d5b744%3Fsource%3Dh5%26page_key%3D28%26xhsMpScreenMode%3Dfull) |
+| Bilibili Toy | [拓扑五子棋](https://www.bilibili.com/toy/topology-gomoku/index.html) |
+| 微信 | 在微信小程序中搜索「拓扑五子棋」 |
+| Web | [直接在浏览器中游玩](https://www.yykspace.com/show/topology-gomoku/) |
+| 知乎 AI Works | [知乎作品页](https://www.zhihu.com/project/detail/180488) · [直接游玩](https://4ud8bsupy79l.aiworks.site/) |
 
-项目的设计语言、环境管理、分支/worktree 流程和视觉 QA 均从 [docs/README.md](docs/README.md) 进入。参与开发前请先阅读 [CONTRIBUTING.md](CONTRIBUTING.md)；Agent 还必须遵守 [AGENTS.md](AGENTS.md)。
+### 原神千星奇域
+
+千星奇域版由社区创作者**嘟嘟可**制作，原神 UID：`170427528`。你也可以在 [B站「神奇嘟嘟可」](https://space.bilibili.com/233587917)和 [GitHub @1475505](https://github.com/1475505)找到这位创作者。
+
+在原神千星奇域中，可通过以下 GUID 查找关卡：
+
+| 关卡名 | GUID |
+| --- | --- |
+| 拓扑五子棋 | `127344607235` |
+| 拓扑五子棋-双人对弈 | `131639574531` |
+
+### 网页联机版
+
+社区创作者也在这张棋盘上加入了自己的想法：
+
+- [联机版](https://topology-gomoku.qqs.tw)：社区二次开发的联机版本。
+- [中秋版](https://moon-gomoku.qqs.tw)：社区二次开发的中秋主题版本。
+
+欢迎体验这些作品，也欢迎分享你的版本。
 
 ## 把你的想法放上棋盘
 
-想参与贡献？把下面这段话发给你的 Agent 就好：
+欢迎一起让拓扑五子棋变得更有趣。无论是带着自己的想法，还是想从一个小改进开始，都可以把下面这段话直接发给你常用的 AI 编程助手：
 
 ```text
-请帮我参与开源项目“拓扑五子棋”：https://github.com/YinkaiYu/topology-gomoku 。请先完整读取仓库里的 AGENTS.md 和贡献约定，确认当前分支与 worktree；从最新 dev 创建独立的 codex/<task> 分支和 worktree，选择一个范围清晰的 Issue 或小创意。完成实现、必要测试和自检后，在该任务 worktree 拉起本地预览交给我确认；得到我的明确确认前不要合并，确认后只向 dev 提交贡献。不要直接修改 main、dev 或长期发行 worktree，也不要提交密钥、构建产物或与任务无关的改动。dev 到 main 以及五个发行渠道的发布同步由仓库维护者负责。
+请帮我参与开源项目“拓扑五子棋”：https://github.com/YinkaiYu/topology-gomoku 。请帮我选择一个范围清晰的 Issue 或小创意，和我一起确定要改进的内容，再完成改进并展示成果，让我体验并提出反馈。
 ```
+
+如果已有想法，也欢迎在后面补充你期待的玩法、遇到的问题或希望改善的体验。每一个小改进都值得参与。
 
 <div align="center">
   <p>以 MIT License 开放。</p>
