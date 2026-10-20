@@ -5,6 +5,10 @@
   "license": "MIT",
   "description": "拓扑五子棋：面向小红书、Bilibili Toy、微信小游戏、独立网站与知乎 AI Works 的跨平台小游戏",
   "scripts": {
+    "arena": "node arena/cli.cjs",
+    "arena:up": "node arena/cli.cjs up",
+    "arena:test": "node --test tests/arena-*.test.js",
+    "arena:qa": "node scripts/qa-arena.cjs",
     "test": "node --test tests/*.test.js",
     "validate": "powershell -NoProfile -ExecutionPolicy Bypass -File ./scripts/validate.ps1",
     "docs:check": "powershell -NoProfile -ExecutionPolicy Bypass -File ./scripts/validate-docs.ps1",

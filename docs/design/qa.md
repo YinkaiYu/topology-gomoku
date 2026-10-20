@@ -1,5 +1,17 @@
 # 视觉 QA
 
+## 2026-10-21：Arena 本地 Agent 对弈室
+
+- 独立 `arena` 渠道首版，基于 `dev@76bef39`。新界面沿用原作内嵌衬线字体、暖纸色/青绿、轻玻璃控件与共享棋盘绘制，不修改原 H5 页面。
+- 自动复现：准备 Playwright 到 `NODE_PATH` 后运行 `npm run arena:qa`。脚本启动隔离数据目录和随机 loopback 端口，不读取正在使用的房主凭证、不改用户棋局。
+- 同视口对比使用 1440×900 和 390×844，同为环面 7×6、双人模式、二维棋盘。对比空盘与相同前四手 `[0, 7, 1, 8]`；原产品没有观战界面，因此原版仅作棋盘、字体与材质基线，不声称是同一页面改版。
+- 桌面：[原版空盘](../../artifacts/arena/original-empty-1440x900.png) / [对弈室空盘](../../artifacts/arena/empty-1440x900.png)，[原版四手](../../artifacts/arena/original-live-1440x900.png) / [对弈室四手](../../artifacts/arena/live-1440x900.png)。
+- 窄屏：[原版空盘](../../artifacts/arena/original-empty-390x844.png) / [对弈室空盘](../../artifacts/arena/empty-390x844.png)，[原版四手](../../artifacts/arena/original-live-390x844.png) / [对弈室四手](../../artifacts/arena/live-390x844.png)。
+- 其他状态：[创建](../../artifacts/arena/home-1440x900.png)、[三维](../../artifacts/arena/surface-1440x900.png)、[终局](../../artifacts/arena/ended-1440x900.png)、[复盘](../../artifacts/arena/replay-1440x900.png)、[窄屏三维](../../artifacts/arena/surface-390x844.png)、[窄屏复盘](../../artifacts/arena/replay-390x844.png)。
+- [结构化结果](../../artifacts/arena/verification.json)记录邀请不含房主凭证、地址栏凭证移除、SSE 更新、暂停恢复、终局、复盘、下载、刷新恢复和无横向溢出检查。两视口均无浏览器异常。截图使用明确的脚本棋谱与公开示例发言，不作为模型棋力证明。
+- 新发言区域可滚动，长历史收进时间线；棋盘不被发言覆盖。动态中文采用源字体完整字符集的三字重本地 WOFF2，字体测试覆盖静态文案与开放中文发言。
+- 本次为桌面 Chromium 的窄屏模拟，不冒充真机验收；MCP 协议客户端测试也不等同于五个产品客户端都完成了人工实测。用户预览确认仍待完成。
+
 ## 2026-10-20：1.41.1 发行复验
 
 - 以已确认的共享修改为基线，五渠道同版本整合，未产生样式冲突。Bilibili WebKit 双人九种视口检查通过（离线 SDK 桩）；[390×674 结果](../../artifacts/qa-release-1.41.1-bilibili-390x674.png)。真实 Toy 审核预览和状态见[发行记录](../releases/1.41.1.md)。

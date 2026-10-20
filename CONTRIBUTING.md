@@ -2,6 +2,8 @@
 
 感谢你愿意让拓扑五子棋变得更有趣。玩法、数学规则、视觉、声音、性能、无障碍、测试、文档和平台适配都属于有价值的贡献。
 
+> **Arena 渠道例外**：此分支的本地 Agent 对弈室功能按仓库所有者确认的独立发行方式维护，从 `arena` 建任务 worktree，预览确认后合回 `arena`，不进入 `dev/main`。`arena` 可直接同步 `dev` 的共享更新。下文五个原有平台的流程保持原义。使用与验收见 [Arena 开发说明](docs/development/arena.md)。
+
 ## 开始之前
 
 1. 完整阅读 `AGENTS.md`，运行 `git status --short --branch` 与 `git worktree list`。

@@ -1,27 +1,83 @@
 <div align="center">
   <img src="release/topology-gomoku-icon.png" width="112" alt="拓扑五子棋图标" />
-  <h1>拓扑五子棋</h1>
-  <p><strong>边界之外，也能连成一线。</strong></p>
-  <p>
-    <img alt="离线游戏" src="https://img.shields.io/badge/完全离线-27241F?style=flat-square" />
-    <a href="CONTRIBUTING.md"><img alt="Agent Ready：支持 AI 协作贡献" src="https://img.shields.io/badge/Agent-Ready-5A7D6A?style=flat-square" /></a>
-    <a href="LICENSE"><img alt="MIT License" src="https://img.shields.io/badge/license-MIT-4A6484?style=flat-square" /></a>
-  </p>
-  <p>
-    <img alt="小红书玩家：2.5万+" src="https://img.shields.io/badge/小红书玩家-2.5万%2B-B85C38?style=flat-square" />
-    <img alt="B站游玩：3.3万+" src="https://img.shields.io/badge/B站游玩-3.3万%2B-4A6484?style=flat-square" />
-    <img alt="原神千星奇域热度：2.4万+" src="https://img.shields.io/badge/原神千星奇域热度-2.4万%2B-5A7D6A?style=flat-square" />
-  </p>
-  <p>一个把五子棋放进圆柱、莫比乌斯带、环面与克莱因瓶的小游戏。</p>
-  <img src="promo/exports/topology-gomoku-home-cover-3x4-v1.41.1.png" width="420" alt="拓扑五子棋实际首页：离线双人模式与七个拓扑关卡" />
-  <p><sub>游戏首页 · 离线双人模式</sub></p>
-  <p>
-    <a href="https://www.bilibili.com/video/BV16stL6JExU/">
-      <img src="promo/exports/topology-gomoku-footprints-pv-cover-16x9.png" width="640" alt="《拓扑五子棋》章节预告 PV「足迹回环」封面，点击前往 B站观看" />
-    </a>
-  </p>
-  <p><a href="https://www.bilibili.com/video/BV16stL6JExU/">点击观看 · 章节预告 PV「足迹回环」</a></p>
+  <h1>拓扑五子棋 · Agent 对弈室</h1>
+  <p><strong>邀两位棋手，围观边界之外的较量。</strong></p>
+  <p>同一台电脑上的本地 agent 对弈，浏览器实时观战。</p>
+  <p>MCP · CLI · Skill · MIT License</p>
 </div>
+
+## 让 agent 上场
+
+请 Codex、Claude Code、DeepSeek Harness、Kimi Code、OpenCode 等本地 agent 来下拓扑五子棋。可以让一名 agent 挑战内置 AI，也可以邀请两名 agent 分执黑白，并由第三名 agent 实时解说。
+
+观众在浏览器看到棋盘，也能读到棋手对上一手的反应、落子前的简短想法、落子后的解释。这里展示的是棋手主动写给观众的公开表达；不读取模型内部的完整思考过程。解说员独立观察局势，发表带有手数的点评。
+
+这是 `arena` 独立发行渠道：对弈室专属功能保留在该分支，持续从 `dev` 同步共享游戏更新。首版发布前，可直接使用当前预览目录中的代码。分支与技术边界见[开发说明](docs/development/arena.md)。
+
+## 跟着三步，开始观战
+
+准备一份包含 `arena/cli.cjs` 的本地代码，以及能在这台电脑运行命令的 agent。运行环境需要 Node.js 20 或更新版本。模型仍使用各客户端自己的账户，对弈室不需要模型 API key；棋局本地运行不代表云模型可以断网使用。
+
+### 1. 请一个 agent 打开对弈室
+
+在已打开本项目的 agent 会话中复制以下提示。它可以完成依赖安装、服务启动和 MCP 配置准备：
+
+```text
+请帮我在这台电脑上启动“拓扑五子棋 Agent 对弈室”。先确认当前代码包含 arena/cli.cjs，读取 README、docs/development/arena.md 和 arena/skills/topology-gomoku-arena/SKILL.md。使用 Node.js 20+，运行 npm ci --prefix arena，再运行 node arena/cli.cjs up，检查服务并打开浏览器。
+
+请为当前 agent 客户端生成并合并必要的 MCP 配置，仅新增或更新 topology-gomoku-arena 条目，保留现有其他设置；如果配置要重新加载，先用 CLI 继续，不要卡在重启会话上。不要改动游戏源码，不要启动重复服务，不要给选手房主凭证。告诉我浏览器已可使用，让我选择模式和拓扑、创建比赛。若当前目录没有本产品代码，请指出缺少的 checkout，不假定远端 arena 分支已经发布。
+
+我随后可能把解说邀请发给你；届时请兼任本场解说员。
+```
+
+熟悉终端的用户也可以直接启动：
+
+```sh
+npm ci --prefix arena
+node arena/cli.cjs up
+```
+
+启动后会打开浏览器。重复启动会复用当前 checkout 的同一个服务。关闭 agent 会话不会关闭对局服务。
+
+### 2. 在浏览器创建比赛，复制角色邀请
+
+选择拓扑和模式后，页面生成对应角色的邀请。将黑方邀请发给一名 agent，将白方邀请发给另一名 agent；单 agent 对内置 AI 只需要黑方邀请。每名选手使用自己的会话，连接同一个本地地址。
+
+邀请中包含连接地址、比赛 ID、角色凭证和操作方法，无需手填。如果 agent 尚未加载 MCP，它可以用 CLI 加入并下棋。将可选的解说邀请发给第三名 agent，也可以直接发给刚才启动服务的 agent。
+
+### 3. 双方就绪后，在浏览器开始
+
+浏览器显示加入状态。双方就绪后点击开始，随后观看落子、棋手表达与解说。房主可以暂停和继续；解说员缺席不会阻塞比赛。终局后保留棋谱与公开内容，可在浏览器回看。
+
+如果某个 agent 结束了任务，在它原来的会话中复制下面的话：
+
+```text
+请继续你刚才的拓扑五子棋比赛，保留原身份和凭证。先读取当前棋局与最新事件，再按你的角色继续参赛或解说。轮到自己时自主落子，等待时使用有时限的等待工具，直到终局或我要求停止。若连接或客户端权限阻止继续，请报告具体原因，不要新建另一场比赛。
+```
+
+MCP 无法自动唤醒已经结束的 agent。客户端的工具权限、联网权限和会话时限仍适用；暂停、连接恢复和继续提示用于衔接这些情况。
+
+## 接入与管理
+
+- **MCP** 是主要工具入口；[Skill](arena/skills/topology-gomoku-arena/SKILL.md) 提供参赛、公开表达和解说流程。
+- **CLI** 可独立完成启动、检查、停止和工具调用，适用于 MCP 尚未加载的当前会话。
+- **Plugin** 不是必需安装项。首版提供可移植 Skill 和客户端配置片段，不要求用户先安装一套插件。
+- **浏览器** 保持原作的简约视觉语言，棋盘居中，公开表达和解说辅助观赏。
+
+```sh
+node arena/cli.cjs status
+node arena/cli.cjs stop
+node arena/cli.cjs mcp-config codex
+node arena/cli.cjs help
+```
+
+`mcp-config` 还支持 `claude`、`kimi`、`opencode` 和 `deepseek`。它只生成配置片段，不会覆盖现有配置。所有客户端必须能访问同一台电脑的 loopback 服务；远端 agent、WSL/容器的独立网络环境不自动等同于这个条件。
+
+更换端口、CLI JSON 调用、配置位置、角色权限与故障恢复见[Agent 对弈室开发说明](docs/development/arena.md)。比赛和本机凭证保存在被 Git 忽略的 `.arena/` 中，请勿发布房主链接、邀请或运行文件。语音与视频导出暂不在首版范围内。
+
+## 关于原作
+
+拓扑五子棋把五子棋放进圆柱、莫比乌斯带、环面与克莱因瓶。对弈室复用原作的七种拓扑规则和本地 AI；以下介绍的是原游戏的旅程与跨平台版本。
 
 ## 熟悉的五子棋，陌生的世界
 

@@ -7,7 +7,8 @@ $markdownFiles = @(
   Get-ChildItem -LiteralPath $projectRoot -Recurse -Force -File -Filter '*.md' |
     Where-Object {
       $relative = $_.FullName.Substring($projectRootPrefix.Length)
-      $relative -notmatch '^(?:\.git|\.worktrees|node_modules|\.venv|\.uv-cache)(?:[\\/]|$)'
+      $relative -notmatch '^(?:\.git|\.worktrees|\.arena|node_modules|\.venv|\.uv-cache)(?:[\\/]|$)' -and
+      $relative -notmatch '(?:^|[\\/])node_modules(?:[\\/]|$)'
     }
 )
 

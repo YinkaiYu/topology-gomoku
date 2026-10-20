@@ -33,7 +33,7 @@ def required_codepoints() -> set[int]:
     return codepoints
 
 
-def build_subset(source: Path, weight: int, codepoints: set[int]) -> Path:
+def build_subset(source: Path, weight: int, codepoints: set[int], output_root: Path = FONT_ROOT) -> Path:
     font = TTFont(source, recalcTimestamp=False)
     if "fvar" not in font:
         raise ValueError(f"Expected a variable font with a wght axis: {source}")
@@ -54,7 +54,8 @@ def build_subset(source: Path, weight: int, codepoints: set[int]) -> Path:
     subsetter.subset(font)
     font.flavor = "woff2"
 
-    output = FONT_ROOT / f"noto-serif-sc-{weight}.woff2"
+    output_root.mkdir(parents=True, exist_ok=True)
+    output = output_root / f"noto-serif-sc-{weight}.woff2"
     font.save(output, reorderTables=False)
     return output
 
@@ -80,6 +81,18 @@ def main() -> None:
         output = build_subset(source, weight, codepoints)
         print(f"generated {output.relative_to(ROOT)} ({output.stat().st_size} bytes)")
     print(f"covered {len(codepoints)} codepoints")
+    # Arena hosts arbitrary public player/commentator text. A static UI subset
+    # cannot cover future sentences, so keep every character in the licensed
+    # source font for this local-only channel, separately from the H5 package.
+    arena_root = ROOT / "arena"
+    if arena_root.is_dir():
+        full_font = TTFont(source, lazy=True)
+        arena_codepoints = set(full_font.getBestCmap())
+        full_font.close()
+        for weight in WEIGHTS:
+            output = build_subset(source, weight, arena_codepoints, arena_root / "public" / "fonts")
+            print(f"generated {output.relative_to(ROOT)} ({output.stat().st_size} bytes)")
+        print(f"arena covered {len(arena_codepoints)} source-font codepoints")
 
 
 if __name__ == "__main__":

@@ -1,0 +1,12 @@
+{
+  "name": "topology-gomoku-arena",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Local agent arena transport and spectator host",
+  "license": "MIT",
+  "engines": { "node": ">=20" },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "1.32.1",
+    "zod": "^3.25.76"
+  }
+}

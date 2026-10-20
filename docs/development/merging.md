@@ -1,5 +1,7 @@
 # 维护者合并与冲突处理手册
 
+> **Arena 例外**：本地 Agent 对弈室以 `arena` 为集成目标，允许从 `dev` 同步；独立 worktree、逐类解决冲突、验证、预览确认与快进接收的门禁仍适用。专属实现不回流 `dev/main`。见 [arena.md](arena.md)。
+
 本文供得到仓库所有者明确授权的维护者使用，覆盖 `dev → main → xiaohongshu / bilibili / wechat / web / zhihu` 的稳定提升与发行整合。日常任务合入 `dev` 的基本流程仍以 [`repository.md`](repository.md) 为准，版本与发布门禁以 [`release.md`](release.md) 为准。
 
 合并的目标不是让 Git 不再报冲突，而是保证每一处最终实现仍属于正确的代码层：共享产品行为来自本轮稳定 `main`，宿主或部署差异留在各自 adapter/boundary，五个发行版接收同一个版本号。

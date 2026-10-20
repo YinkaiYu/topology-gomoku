@@ -181,3 +181,21 @@ test("所有应用文本都由三个内嵌字体字重完整覆盖", () => {
     );
   });
 });
+
+test("Arena 静态文案与开放中文发言由三个本地字体字重覆盖", () => {
+  const arenaRoot = path.join(ROOT, "arena", "public");
+  if (!fs.existsSync(arenaRoot)) return;
+  const required = new Set();
+  for (const file of appTextFiles(arenaRoot)) {
+    for (const character of fs.readFileSync(file, "utf8")) {
+      if (character.codePointAt(0) > 0x7f && !/\s/u.test(character)) required.add(character.codePointAt(0));
+    }
+  }
+  for (const character of "对弈解说观战犹豫惊讶接缝反击围堵腾挪斡旋麒麟") required.add(character.codePointAt(0));
+  for (const weight of FONT_WEIGHTS) {
+    const cmap = readCmap(fs.readFileSync(path.join(arenaRoot, "fonts", `noto-serif-sc-${weight}.woff2`)));
+    assert.ok(cmap.size > 25000, "Arena needs the source font character set, not only known UI text");
+    const missing = [...required].filter((point) => !cmap.has(point));
+    assert.deepEqual(missing, [], `Arena ${weight} missing: ${missing.map((point) => String.fromCodePoint(point)).join("")}`);
+  }
+});

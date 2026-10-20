@@ -14,6 +14,7 @@
 
 | 文档 | 内容 |
 | --- | --- |
+| [Agent 对弈室](development/arena.md) | 独立 Arena 分支、本地服务、MCP/CLI、角色邀请、观战解说与验收 |
 | [共享运行时边界](development/architecture.md) | 关卡、对局控制、连续视角与原生棋盘绘制的权威源码 |
 | [`development/repository.md`](development/repository.md) | 分支职责、worktree、预览门禁、提升与发布流 |
 | [`development/pr-review.md`](development/pr-review.md) | PR 接收、证据化审查、复审、接手修复、贡献署名与收尾 |

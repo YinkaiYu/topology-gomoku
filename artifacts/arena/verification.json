@@ -1,0 +1,67 @@
+{
+  "baseline": "76bef39",
+  "gameVersion": "1.41.1",
+  "serviceVersion": "0.1.0",
+  "fixture": "Deterministic scripted players and commentary; not a model strength comparison.",
+  "checks": [
+    "host URL fragment removed",
+    "invitation excludes host token",
+    "live SSE",
+    "2D/3D",
+    "pause/resume",
+    "terminal result",
+    "replay scrub",
+    "credential-free export",
+    "reload recovery",
+    "no horizontal overflow",
+    "no browser errors"
+  ],
+  "results": [
+    {
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "sequence": [
+        0,
+        7,
+        1,
+        8,
+        2,
+        9,
+        3,
+        10,
+        4
+      ],
+      "errors": [],
+      "geometry": {
+        "width": 1440,
+        "scrollWidth": 1440
+      },
+      "result": "passed"
+    },
+    {
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "sequence": [
+        0,
+        7,
+        1,
+        8,
+        2,
+        9,
+        3,
+        10,
+        4
+      ],
+      "errors": [],
+      "geometry": {
+        "width": 390,
+        "scrollWidth": 390
+      },
+      "result": "passed"
+    }
+  ]
+}

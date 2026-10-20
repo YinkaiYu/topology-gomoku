@@ -2,6 +2,17 @@
 
 本文件适用于整个仓库，供参与开发的 Agent 和人类协作者共同遵守。
 
+## Arena 发行渠道的明确例外
+
+仓库所有者已确认：`arena` 是面向同一台电脑上本地 agent 的独立长期发行分支，可直接从 `dev` 同步共享基线。以下约定优先于本文中“普通任务一律进入 dev”和“五渠道必须经 main 同步”的通用条款，仅对 Arena 生效：
+
+- 对局服务、MCP、CLI、参赛/解说 Skill、观战界面、启动配置和本渠道文档只在 `arena` 维护，不合入 `dev` 或 `main`。
+- 开发从 `arena` 建独立任务分支/worktree，完成验证、本地预览并获得用户明确确认后合回 `arena`；不得提前合并。
+- 同步 `dev` 在独立任务 worktree 完成，记录共享基线提交并按边界处理冲突；不修改其他发行分支。共享规则不复制、不手改生成副本。
+- 本地服务仅绑定 loopback；邀请凭证、房主凭证、运行信息与比赛原始记录放在被忽略的 `.arena/`，不提交。
+- 游戏 SemVer 随共享基线接收，不因 Arena 适配修改。`arena/package.json` 的版本只表示本地服务/工具协议发行版本，不冒充游戏版本。
+- 新增行为运行 `npm test`、`npm run docs:check` 与实际 CLI/MCP/浏览器验收；详情见 [Arena 开发说明](docs/development/arena.md)。
+
 ## 先确认工作位置
 
 - 开始前完整阅读本文件与 `CONTRIBUTING.md`，运行 `git status --short --branch` 和 `git worktree list`，确认当前分支与 worktree。开发流程由 Agent 按仓库约定执行，不依赖用户在 prompt 中重复技术步骤。

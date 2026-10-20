@@ -1,5 +1,7 @@
 # 开发环境与依赖
 
+Arena 渠道额外需要 Node.js 20 或更新版本。运行 `npm ci --prefix arena` 安装锁定的 MCP SDK 与 schema 依赖，`npm run arena:up` 启动本地服务。依赖仅属于 `arena/`，不会进入原有 H5 包。详细命令见 [arena.md](arena.md)。Arena 公开发言使用完整源字体字符集生成的 400/600/700 WOFF2，仍通过 `npm run fonts:subset` 和 uv 锁定环境生成，不依赖系统中文字体。
+
 仓库以 Node.js 运行测试与 H5 校验，以 PowerShell 执行 Windows 构建脚本；Python 只用于确定性生成拓扑 SVG 和内嵌字体子集。
 
 ## 基础工具
