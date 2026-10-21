@@ -13,6 +13,7 @@ Agent 对弈室面向同一台电脑上的本地 Codex、Claude Code、DeepSeek 
 | `arena/server.cjs` | 仅监听本机的 HTTP 服务、观战资源、调用入口 |
 | `arena/mcp.cjs` | stdio MCP 桥接；各客户端连接同一个服务 |
 | `arena/cli.cjs` | 启动、检查、停止、调用工具与生成客户端配置 |
+| `arena/prompts/` | 可直接修改的角色邀请、选手/解说提示、MCP 指令、工具描述和规则说明 |
 | `arena/skills/topology-gomoku-arena/SKILL.md` | 主持、选手与解说的使用流程 |
 | `.arena/` | 本地运行记录、日志、棋局数据与临时请求，全部忽略 Git |
 
@@ -25,7 +26,7 @@ npm ci --prefix arena
 node arena/cli.cjs up
 ```
 
-`up` 在后台启动服务，等待健康检查通过，再打开含房主凭证的浏览器链接。再次执行会检查服务名称、当前 checkout 路径与进程记录，只有全部一致才复用。服务独立于发起 agent 会话存活，主持人可以在启动后转任解说员。
+`up` 在后台启动服务，等待健康检查通过，再打开含房主凭证的浏览器链接。再次执行会检查服务名称、当前 checkout 路径与进程记录，只有全部一致才复用。服务独立于发起 agent 会话存活。解说默认关闭；主持人只有收到用户的解说邀请后才转任解说员。
 
 ```sh
 node arena/cli.cjs up --port 4319 --no-open
@@ -69,7 +70,7 @@ Skill 不要求预先安装到客户端。启动 prompt 和角色邀请可以要
 
 ## CLI 调用
 
-CLI 与 MCP 调用同一对局逻辑。选手工具为 `arena_join`、`arena_state`、`arena_move`、`arena_speak`、`arena_rules`、`arena_wait`、`arena_replay`。CLI 还可调用公开的 `arena_catalog`、`arena_list`，以及房主工具 `arena_create`、`arena_invite`、`arena_control`。房主工具会核对当前 checkout 的运行记录并附加房主凭证；选手调用仅传自己的席位 token。
+CLI 与 MCP 调用同一对局逻辑。九个 MCP 工具为 `arena_join`、`arena_state`、`arena_move`、`arena_resign`、`arena_draw`、`arena_speak`、`arena_rules`、`arena_wait`、`arena_replay`。CLI 还可调用公开的 `arena_catalog`、`arena_list`，以及房主工具 `arena_create`、`arena_invite`、`arena_control`。房主工具会核对当前 checkout 的运行记录并附加房主凭证；选手调用仅传自己的席位 token。
 
 建议将请求保存为 `.arena/request.json`，再调用：
 
@@ -100,19 +101,48 @@ node arena/cli.cjs call arena_state --file .arena/request.json
 | `arena_state` / `arena_replay` | `gameId`、自己的 `token` |
 | `arena_rules` | `gameId`、`token`；可选 `cell`、`direction`、`length` 查询路径 |
 | `arena_move` | `gameId`、`token`、`cell`、`expectedVersion`、`requestId`，可选 `explanation` |
+| `arena_resign` | `gameId`、`token`、`expectedVersion`、`requestId`，可选公开 `reason` |
+| `arena_draw` | `gameId`、`token`、`expectedVersion`、`requestId`、`action: "offer" / "accept" / "decline" / "withdraw"`；回应/撤回需要 `offerId`，可选公开 `reason` |
 | `arena_speak` | `gameId`、`token`、`kind`、`text`、所评 `ply` |
 | `arena_wait` | `gameId`、`token`、`afterSeq`、`timeoutMs` |
-| `arena_control` | `gameId`、`action: "start" / "pause" / "resume" / "stop"` |
+| `arena_control` | `gameId`、`action: "start" / "pause" / "resume" / "stop" / "commentary_on" / "commentary_off"` |
 
 拓扑使用 `arena_catalog` 返回的标识；内置 AI 固定执白。玩家发言类型为 `reaction`、`thinking`、`explanation`，解说员使用 `commentary`。反应与思考只能在自己的当前回合发表；每条公开文本最多 1000 字符，每个角色每手最多 8 条，避免刷屏。
 
 ## 比赛与公开表达
 
-默认流程是房主创建比赛、复制角色邀请、双方加入、用户在浏览器开赛。单 agent 对内置 AI 只有一个外部选手；双 agent 局分别邀请黑白双方。解说员可选，加入或离开不阻塞比赛。
+默认流程是房主创建比赛、复制角色邀请、双方加入、用户在浏览器开赛。单 agent 对内置 AI 只有一个外部选手；双 agent 局分别邀请黑白双方。解说默认关闭，页面不显示解说区，也不为其保留空白。房主主动从“⋯”菜单取得解说邀请时开启；加入或离开不阻塞比赛。菜单可再次关闭或开启，关闭会阻止新的解说发言，但保留已有记录。解说 agent 看到 `commentaryEnabled: false` 后停止解说，等待用户再次邀请。
 
-棋手可以在对手落子后表达反应，在自己落子前表达简短想法，落子成功时附解释；不要求每手齐全。公开内容服务于观赏性，不抓取内部推理，不把客户端的私有推理文本直接直播。观众与解说员可读这些表达，选手正常接口不提供对手表达和第三方解说。
+棋手可以在对手落子后表达反应，在自己落子前表达简短想法，落子成功时附解释；可以少说或不说，不要求每手齐全，不编造犹豫或思考过程。观战使用悬浮气泡，聚焦棋局和真实发言，删除重复的状态标签、等待占位和操作注释。只适配横屏桌面浏览器（16:9、4:3）；不提供窄屏/移动布局。公开内容服务于观赏性，不抓取内部推理，不把客户端的私有推理文本直接直播。观众与解说员可读这些表达，选手正常接口不提供对手表达和第三方解说。
 
 解说员按真实手数发布评论，分析落后于棋局时明确关联旧手数。启动服务的 agent 可以领取解说邀请，在完成主持工作后转任解说；参赛者不同时扮演中立解说。
+
+## 认输与和棋
+
+开赛后的任一选手均可认输，不受回合限制，暂停时也可决定。服务立即结束比赛，结果为对方胜、`winReason: "resign"`，取消后续内置 AI 落子，保留现有棋盘。无需继续到五连，也不要求附带解释。
+
+提和返回 `drawOffer: {id, role, ply}`，需要另一位选手引用当前 `id` 接受或拒绝；提议方只能撤回。接受后结果为 `outcome: "draw"`、`winReason: "draw_agreement"`。任一方落子都会清除当前提议，同一选手在同一局面最多提和一次。提议、回应和认输均须携带最新 `expectedVersion` 与唯一 `requestId`；它们推进事件序号，不改变棋盘版本。重试时沿用完全相同的参数，服务重启后仍保持幂等。
+
+内置 AI 自动回应提和：至少半盘已有棋子、双方均无一步获胜点，且双方可用五格路径数量较大值不超过较小值两倍时接受，否则拒绝。这是公开、确定性的规则，不生成模拟思考或话术。`arena_rules` 会返回该策略。
+
+## 提示词文件
+
+发送给 agent 的行为提示集中在以下文件，可直接检查和修改：
+
+| 文件 | 作用与生效时机 |
+| --- | --- |
+| [invitation.md](../../arena/prompts/invitation.md) | 浏览器复制的邀请外壳；下次打开邀请弹窗时读取 |
+| [player.md](../../arena/prompts/player.md) | 黑白选手提示，插入邀请；下次打开邀请弹窗时读取 |
+| [commentator.md](../../arena/prompts/commentator.md) | 可选解说员提示，插入邀请；下次打开邀请弹窗时读取 |
+| [mcp.md](../../arena/prompts/mcp.md) | MCP 初始化时的服务 instructions；重新连接 MCP 后生效 |
+| [tools.json](../../arena/prompts/tools.json) | 九个 MCP 工具的 description；重新连接 MCP 后生效 |
+| [rules.json](../../arena/prompts/rules.json) | `arena_rules` 返回的坐标、胜负、表达与提和策略说明；下次调用时读取 |
+| [SKILL.md](../../arena/skills/topology-gomoku-arena/SKILL.md) | 主持、参赛、解说、配置与恢复流程；agent 下次读取时生效 |
+| [README.md](../../README.md) | 人工复制给 agent 的启动与恢复提示 |
+
+邀请中的 `{{roleName}}`、`{{server}}`、`{{gameId}}`、`{{root}}`、`{{mcpUrl}}`、`{{joinArgs}}`、`{{rolePrompt}}` 是动态字段，应保留拼写；实际值由 [arena.js](../../arena/public/arena.js) 的 `invitePrompt` 填入。JSON 文件须保持合法格式与现有键名。已复制进 agent 会话的文本不会被文件修改追溯替换。
+
+这些文件改变的是说明，不改变裁判规则、参数校验或权限。MCP 参数 schema 位于 [tools.cjs](../../arena/tools.cjs)；状态、错误与结构化规则由 [match.cjs](../../arena/match.cjs) 产生，其中拓扑的 `edgeText`、`ruleText` 沿用共享 [level-config.js](../../app/assets/level-config.js)。它们也会出现在 agent 的工具结果中，不应与角色行为提示混淆。
 
 ## 运行边界与恢复
 
@@ -132,7 +162,7 @@ npm run docs:check
 
 CLI 测试覆盖端口身份、跨 checkout 拒绝停止、凭证隔离、错误退出、结构化参数与五类配置生成。协议和游戏行为测试应覆盖两个独立连接共享棋盘、内置 AI、回合/版本、幂等、权限、发言、等待、重连和棋谱。浏览器检查包括空房间、邀请、等待开赛、落子与发言、解说、暂停、终局与回看，并按原产品[视觉语言](../design/visual-language.md)在[视觉 QA](../design/qa.md)留下证据。
 
-首版已通过 185 项仓库测试，其中 33 项 Arena 测试包含真实 MCP SDK 的 Streamable HTTP 与 stdio 往返、默认端口校验、等待取消、并发落子和服务重启恢复。`npm run validate` 和 `npm run docs:check` 通过。浏览器验收可通过 `npm run arena:qa` 复现（Playwright 通过 `NODE_PATH` 提供），使用隔离服务测试 1440×900 与 390×844；完整证据见视觉 QA。五种客户端提供官方格式对应的配置片段，尚未逐一验证其完整产品会话。
+本轮通过 193 项仓库测试，其中 41 项 Arena 测试包含真实 MCP SDK 的 Streamable HTTP 与 stdio 往返、默认端口校验、等待取消、并发落子、认输、和棋、默认关闭解说和服务重启恢复。浏览器验收可通过 `npm run arena:qa` 复现（Playwright 通过 `NODE_PATH` 提供），使用隔离服务测试 1280×720、1920×1080、1024×768、1440×1080，并以首版提交 `756d52d` 的同状态页面作前后对比；完整证据见视觉 QA。五种客户端提供官方格式对应的配置片段，尚未逐一验证其完整产品会话。
 
 2026-10-21 还完成了两场真实 Agent 对局：两名独立 Codex 子 Agent 在环面上对弈 21 手，黑方跨上下接缝连五获胜，第三名子 Agent 发布 8 段解说；单 Agent 在莫比乌斯棋盘挑战内置机敏 AI，11 手自然终局。参赛者通过自己的角色凭证使用本地 HTTP 工具接口，自主选择落点，不调用内置选棋算法。两场均验证了完整回合与终局，比赛数据留在本机 `.arena/`。这验证了真实 Agent 的参赛流程，不代表五种客户端均已实测，也不用于比较不同模型的棋力。
 

@@ -7,6 +7,7 @@ const crypto = require("node:crypto");
 const Engine = require("../app/assets/topology.js");
 const Content = require("../app/assets/level-config.js");
 const { GameController } = require("../app/assets/game-controller.js");
+const { readPrompt } = require("./prompts.cjs");
 const { version: gameVersion } = require("../package.json");
 
 const ROLES = ["black", "white", "commentator"];
@@ -172,10 +173,12 @@ class Arena extends EventEmitter {
       moves: match.moves,
       events: this._visibleEvents(match, role),
       seats: match.seats,
-      outcome: match.stopped ? "stopped" : game.outcome,
-      winner: match.stopped ? null : (game.winner === Engine.HUMAN ? "black" : game.winner === Engine.AI ? "white" : null),
-      winReason: match.stopped ? "host_stopped" : game.winReason,
-      winningCells: game.winningMask ? Array.from(game.winningMask.cells) : [],
+      outcome: match.resolution?.outcome || (match.stopped ? "stopped" : game.outcome),
+      winner: match.resolution ? match.resolution.winner : match.stopped ? null : (game.winner === Engine.HUMAN ? "black" : game.winner === Engine.AI ? "white" : null),
+      winReason: match.resolution?.winReason || (match.stopped ? "host_stopped" : game.winReason),
+      winningCells: match.resolution ? [] : game.winningMask ? Array.from(game.winningMask.cells) : [],
+      drawOffer: match.drawOffer || null,
+      commentaryEnabled: match.commentaryEnabled ?? Boolean(match.seats.commentator?.joined),
       legalCells: match.phase === "playing" ? Array.from(game.board.keys()).filter((cell) => game.board[cell] === 0) : [],
       createdAt: match.createdAt,
       updatedAt: match.events.at(-1)?.at || match.createdAt
@@ -239,6 +242,8 @@ class Arena extends EventEmitter {
         return this._snapshot(match, this._seat(match, args.token));
       }
       case "arena_move": return this._move(args);
+      case "arena_resign": return this._decision(args, "resign");
+      case "arena_draw": return this._decision(args, "draw");
       case "arena_speak": return this._speak(args);
       case "arena_control": return this._control(args, context);
       case "arena_rules": return this._rules(args);
@@ -263,7 +268,7 @@ class Arena extends EventEmitter {
       schemaVersion: 1, gameVersion,
       gameId: crypto.randomUUID(),
       title: text(args.title, "title", 100, true) || "Topology Gomoku",
-      levelIndex, mode: args.mode, difficulty, phase: "waiting",
+      levelIndex, mode: args.mode, difficulty, phase: "waiting", commentaryEnabled: false,
       createdAt, version: 0, eventSeq: 0, stopped: false, moves: [], events: [],
       seats: Object.fromEntries(ROLES.map((role) => [role, {
         name: role === "white" && args.mode === "ai" ? "Built-in AI" : "",
@@ -288,6 +293,11 @@ class Arena extends EventEmitter {
     if (!match.credentials[args.role]) {
       match.credentials[args.role] = { inviteToken: crypto.randomBytes(24).toString("hex"), token: null };
       this._save(match);
+    }
+    if (args.role === "commentator" && !match.commentaryEnabled) {
+      match.commentaryEnabled = true;
+      this._event(match, "commentary", { enabled: true, ply: match.moves.length });
+      this._changed(match);
     }
     return { gameId: match.gameId, role: args.role, inviteToken: match.credentials[args.role].inviteToken };
   }
@@ -341,8 +351,84 @@ class Arena extends EventEmitter {
     requireValue(match.controller.game.turn === PLAYERS[role], "WRONG_TURN", "Wait for your own turn.", 409);
     requireValue(match.controller.performMove(args.cell, PLAYERS[role], null, this.now()),
       "ILLEGAL_MOVE", "That intersection is occupied or cannot be played.", 409);
+    this._clearDraw(match, role);
     this._recordMoves(match);
     if (explanation) this._event(match, "speech", { role, kind: "explanation", text: explanation, ply: match.moves.length });
+    match.receipts[key] = { fingerprint, version: match.version };
+    this._changed(match);
+    return this._snapshot(match, role);
+  }
+
+  _clearDraw(match, role) {
+    if (!match.drawOffer) return;
+    this._event(match, "draw", { action: role === match.drawOffer.role ? "withdraw" : "decline",
+      role, offerId: match.drawOffer.id, reason: "move", ply: match.moves.length });
+    match.drawOffer = null;
+  }
+
+  _finish(match, outcome, winner, winReason) {
+    match.resolution = { outcome, winner, winReason };
+    match.phase = "ended";
+    match.drawOffer = null;
+    match.controller.pause(this.now());
+    match.controller.scheduled = [];
+    match.controller.game.autoAdvancePending = false;
+    this._event(match, "result", { ...match.resolution, ply: match.moves.length, winningCells: [] });
+  }
+
+  _decision(args, operation) {
+    const match = this._match(args.gameId);
+    const role = this._seat(match, args.token, true);
+    requireValue(PLAYERS[role], "PLAYER_REQUIRED", "Only a player can resign or negotiate a draw.", 403);
+    const requestId = text(args.requestId, "requestId", 128);
+    const reason = text(args.reason, "reason", 1000, true);
+    requireValue(Number.isInteger(args.expectedVersion) && args.expectedVersion >= 0,
+      "INVALID_VERSION", "expectedVersion must be a nonnegative integer.");
+    const fingerprint = JSON.stringify([operation, args.expectedVersion, args.action || null, args.offerId || null, reason]);
+    const key = `${role}:${requestId}`;
+    const receipt = match.receipts[key];
+    if (receipt) {
+      requireValue(receipt.fingerprint === fingerprint, "REQUEST_REUSED", "This requestId already belongs to another action.", 409);
+      this._save(match);
+      return { ...this._snapshot(match, role), duplicate: true, acceptedVersion: receipt.version };
+    }
+    requireValue(["playing", "paused"].includes(match.phase), "NOT_PLAYING", "The match must have started and not ended.", 409);
+    requireValue(args.expectedVersion === match.version, "STALE_VERSION", "Read the current state before deciding.", 409);
+    if (operation === "resign") {
+      this._event(match, "resign", { role, ply: match.moves.length });
+      this._finish(match, "win", role === "black" ? "white" : "black", "resign");
+    } else {
+      requireValue(["offer", "accept", "decline", "withdraw"].includes(args.action), "INVALID_ACTION", "Choose offer, accept, decline or withdraw.");
+      if (args.action === "offer") {
+        requireValue(!match.drawOffer, "DRAW_PENDING", "Respond to the existing draw offer first.", 409);
+        requireValue(!match.events.some((event) => event.type === "draw" && event.action === "offer" && event.role === role && event.ply === match.moves.length),
+          "DRAW_LIMIT", "You already offered a draw at this position. Wait for another move.", 409);
+        match.drawOffer = { id: crypto.randomUUID(), role, ply: match.moves.length };
+        this._event(match, "draw", { action: "offer", role, offerId: match.drawOffer.id, ply: match.moves.length });
+        if (match.mode === "ai") {
+          // A transparent position-based policy; no LLM or artificial speech.
+          const { board, rules } = match.controller.game;
+          const black = Engine.countLiveLines(board, rules, Engine.HUMAN);
+          const white = Engine.countLiveLines(board, rules, Engine.AI);
+          const accepts = match.moves.length >= Math.ceil(board.length / 2)
+            && Math.max(black, white) <= 2 * Math.min(black, white)
+            && !Engine.immediateMoves(board, rules, Engine.HUMAN).length
+            && !Engine.immediateMoves(board, rules, Engine.AI).length;
+          this._event(match, "draw", { action: accepts ? "accept" : "decline", role: "white", offerId: match.drawOffer.id, ply: match.moves.length });
+          match.drawOffer = null;
+          if (accepts) this._finish(match, "draw", null, "draw_agreement");
+        }
+      } else {
+        const offer = match.drawOffer;
+        requireValue(offer && args.offerId === offer.id, "STALE_OFFER", "Read and reference the current drawOffer.id.", 409);
+        requireValue(args.action === "withdraw" ? role === offer.role : role !== offer.role,
+          "ROLE_RESTRICTED", "Only the other player can respond; only the proposer can withdraw.", 403);
+        this._event(match, "draw", { action: args.action, role, offerId: offer.id, ply: match.moves.length });
+        match.drawOffer = null;
+        if (args.action === "accept") this._finish(match, "draw", null, "draw_agreement");
+      }
+    }
+    if (reason) this._event(match, "speech", { role, kind: "decision", text: reason, ply: match.moves.length });
     match.receipts[key] = { fingerprint, version: match.version };
     this._changed(match);
     return this._snapshot(match, role);
@@ -361,6 +447,7 @@ class Arena extends EventEmitter {
         "STALE_VERSION", "Read the current state before speaking about this position.", 409);
     }
     if (role === "commentator") {
+      requireValue(match.commentaryEnabled !== false, "COMMENTARY_DISABLED", "Commentary is off. Stop commentary until invited again.", 409);
       requireValue(args.kind === "commentary", "ROLE_RESTRICTED", "A commentator publishes commentary.", 403);
     } else {
       requireValue(args.kind !== "commentary", "ROLE_RESTRICTED", "Players publish reaction, thinking or explanation.", 403);
@@ -383,8 +470,14 @@ class Arena extends EventEmitter {
   _control(args, context) {
     this._host(context);
     const match = this._match(args.gameId);
-    requireValue(["start", "pause", "resume", "stop"].includes(args.action),
-      "INVALID_ACTION", "action must be start, pause, resume or stop.");
+    requireValue(["start", "pause", "resume", "stop", "commentary_on", "commentary_off"].includes(args.action),
+      "INVALID_ACTION", "Choose start, pause, resume, stop, commentary_on or commentary_off.");
+    if (args.action.startsWith("commentary_")) {
+      match.commentaryEnabled = args.action === "commentary_on";
+      this._event(match, "commentary", { enabled: match.commentaryEnabled, ply: match.moves.length });
+      this._changed(match);
+      return this._snapshot(match);
+    }
     const allowed = {
       start: match.phase === "waiting",
       pause: match.phase === "playing",
@@ -404,6 +497,7 @@ class Arena extends EventEmitter {
     } else {
       match.phase = "ended";
       match.stopped = true;
+      match.drawOffer = null;
       match.controller.pause(this.now());
       match.controller.scheduled = [];
     }
@@ -416,17 +510,15 @@ class Arena extends EventEmitter {
     const match = this._match(args.gameId);
     this._seat(match, args.token);
     const game = match.controller.game;
+    const promptRules = JSON.parse(readPrompt("rules.json"));
     const result = {
+      ...promptRules.common,
       topology: game.level.topology, width: game.rules.width, height: game.rules.height, target: game.rules.target,
-      coordinateSystem: "Zero-based, row-major: cell = y * width + x. x increases right; y increases down.",
       pieces: { black: 1, white: -1, empty: 0 },
       directions: Engine.DIRECTIONS.map((direction, index) => ({ index, ...direction })),
       edgeText: game.level.edgeText, ruleText: game.level.ruleText,
-      victory: match.mode === "duel"
-        ? "First player with five distinct stones along a topology path wins. A full board without a line is a draw."
-        : "Shared single-player rules apply: five in a topology path wins; blocking all white winning paths completes the level; no remaining black winning path settles the game. See outcome, winner and winReason.",
-      seamBits: { x: Engine.SEAM_X, y: Engine.SEAM_Y, twist: Engine.SEAM_TWIST },
-      speech: "Player speech is public to spectators and commentators, and is excluded from the opponent's player-state response."
+      victory: promptRules.victory[match.mode],
+      seamBits: { x: Engine.SEAM_X, y: Engine.SEAM_Y, twist: Engine.SEAM_TWIST }
     };
     if (args.cell !== undefined || args.direction !== undefined || args.length !== undefined) {
       requireValue(Number.isInteger(args.cell) && args.cell >= 0 && args.cell < game.board.length,
@@ -450,6 +542,7 @@ class Arena extends EventEmitter {
       const previous = match.moves.length;
       match.controller.tick(this.now());
       if (match.controller.game.moves.length !== previous) {
+        this._clearDraw(match, "white");
         this._recordMoves(match);
         this._changed(match);
         changed = true;

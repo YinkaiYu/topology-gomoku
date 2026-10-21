@@ -191,7 +191,7 @@ for (const transport of ["http", "stdio"]) {
     await client.connect(wire);
     const listed = await client.listTools();
     assert.deepEqual(listed.tools.map((tool) => tool.name).sort(), [
-      "arena_join", "arena_move", "arena_replay", "arena_rules", "arena_speak", "arena_state", "arena_wait"
+      "arena_draw", "arena_join", "arena_move", "arena_replay", "arena_resign", "arena_rules", "arena_speak", "arena_state", "arena_wait"
     ]);
     await rpc("arena_control", { gameId, action: "start" }, true);
     const move = await client.callTool({ name: "arena_move", arguments: { gameId, token: seats.black.token, cell: 0, expectedVersion: 0, requestId: "first", explanation: "Occupy the seam." } });
@@ -203,10 +203,20 @@ for (const transport of ["http", "stdio"]) {
     const state = await client.callTool({ name: "arena_state", arguments: { gameId, token: seats.white.token } });
     assert.equal(state.structuredContent.turn, "white");
     assert.ok(!state.structuredContent.events.some((event) => event.type === "speech"));
+    const offer = await client.callTool({ name: "arena_draw", arguments: { gameId, token: seats.black.token, action: "offer", expectedVersion: 1, requestId: "offer" } });
+    assert.equal(offer.isError, undefined);
+    const declined = await client.callTool({ name: "arena_draw", arguments: { gameId, token: seats.white.token, action: "decline", offerId: offer.structuredContent.drawOffer.id, expectedVersion: 1, requestId: "decline" } });
+    assert.equal(declined.structuredContent.drawOffer, null);
+    const other = await rpc("arena_create", { topology: "plane", mode: "ai" }, true);
+    const otherInvite = await rpc("arena_invite", { gameId: other.result.gameId, role: "black" }, true);
+    const joined = await client.callTool({ name: "arena_join", arguments: { ...otherInvite.result, name: "Conceding player" } });
+    await rpc("arena_control", { gameId: other.result.gameId, action: "start" }, true);
+    const conceded = await client.callTool({ name: "arena_resign", arguments: { gameId: other.result.gameId, token: joined.structuredContent.token, expectedVersion: 0, requestId: "resign" } });
+    assert.equal(conceded.structuredContent.winReason, "resign");
     const baseline = app.arena.listenerCount("change");
     const pending = client.callTool({
       name: "arena_wait",
-      arguments: { gameId, token: seats.white.token, afterSeq: state.structuredContent.eventSeq, timeoutMs: 25000 }
+      arguments: { gameId, token: seats.white.token, afterSeq: declined.structuredContent.eventSeq, timeoutMs: 25000 }
     }).catch((error) => error);
     const startedDeadline = Date.now() + 1000;
     while (app.arena.listenerCount("change") === baseline && Date.now() < startedDeadline) {

@@ -51,9 +51,12 @@
     $("error-banner").hidden = false;
   }
   function connection(connected, label) {
-    $("connection").dataset.status = connected ? "connected" : "disconnected";
-    $("connection").lastElementChild.textContent = label || (connected ? "本地连接" : "连接中断");
+    const node = $("connection");
+    node.dataset.status = connected ? "connected" : "disconnected";
+    node.title = label || (connected ? "已连接" : "连接中断");
+    node.setAttribute("aria-label", node.title);
   }
+
   async function call(name, args = {}, admin = false) {
     const headers = { "Content-Type": "application/json" };
     if (admin && hostToken) headers.Authorization = "Bearer " + hostToken;
@@ -66,7 +69,7 @@
     try { return await action(); } catch (err) { error(err.message || "连接未完成，请重试。"); return null; }
   }
   async function copy(value) {
-    try { await navigator.clipboard.writeText(value); toast("邀请词已复制，发给对应的 Agent 即可。"); }
+    try { await navigator.clipboard.writeText(value); toast("已复制"); }
     catch (_) {
       $("invite-text").focus();
       $("invite-text").select();
@@ -98,52 +101,67 @@
   }
   function renderVoice(role) {
     const node = $(role + "-voice");
-    const events = voiceEvents(role).slice(-3);
+    const events = voiceEvents(role).slice(-2).reverse();
+    const key = state.gameId + ":" + events.map((event) => event.seq).join(",");
+    if (node.dataset.events === key) return;
+    node.dataset.events = key;
     node.replaceChildren();
-    if (!events.length) {
-      node.append(element("p", "voice-placeholder", isJoined(state?.seats?.[role]) ? "等待棋手说棋。" : "棋手的反应、思考与落子说明会在这里出现。"));
-      return;
-    }
-    events.reverse().forEach((event) => {
-      const item = element("div", "voice-item");
-      item.append(element("span", "voice-meta", voiceMeta(event)), element("p", "", event.text));
+    events.forEach((event) => {
+      const item = element("blockquote", "voice-item speech-bubble");
+      item.title = voiceMeta(event);
+      item.setAttribute("aria-label", voiceMeta(event));
+      item.append(element("p", "", event.text));
       node.append(item);
     });
   }
+
   function renderSeat(role) {
     const seat = state.seats?.[role];
     const joined = isJoined(seat);
     text(role + "-name", joined ? state.mode === "ai" && role === "white" ? "内置 AI" : seat.name || names[role] : "等待棋手");
     text(role + "-model", joined ? seat.model || "" : "");
+    $(role + "-model").hidden = !seat?.model;
     $(role + "-turn").hidden = state.phase !== "playing" || state.turn !== role || replayPly !== null;
     const invite = document.querySelector('[data-invite="' + role + '"]');
-    invite.hidden = !hostToken || state.phase === "ended" || (state.mode === "ai" && role === "white");
-    invite.firstChild.textContent = joined ? "复制继续参赛提示 " : "复制" + names[role] + "邀请 ";
+    invite.hidden = !hostToken || joined || state.phase === "ended";
+    invite.firstChild.textContent = "邀请" + names[role] + " ";
+    document.querySelector('[data-reinvite="' + role + '"]').hidden = state.phase === "ended" || (state.mode === "ai" && role === "white");
     renderVoice(role);
   }
   function updateActivity() {
     if (!state) return;
     ["black", "white"].forEach((role) => {
       const seat = state.seats?.[role];
-      if (!isJoined(seat)) { text(role + "-activity", "尚未加入"); return; }
-      if (state.phase === "ended") { text(role + "-activity", "本局已完成"); return; }
-      if (state.mode === "ai" && role === "white") { text(role + "-activity", "内置棋手"); return; }
-      const elapsed = seat.lastSeen ? Math.max(0, Date.now() - new Date(seat.lastSeen).getTime()) : Infinity;
-      const recent = Number.isFinite(elapsed) && elapsed < 45000;
-      text(role + "-activity", recent ? (state.phase === "playing" && state.turn === role ? "轮到它了 · 正在决策" : "已连接") : (Number.isFinite(elapsed) ? Math.max(1, Math.floor(elapsed / 60000)) + " 分钟前有响应" : "已加入"));
+      $(role + "-name").title = seat?.model || "";
     });
   }
+
   function renderCommentary() {
+    $("commentary").hidden = !state.commentaryEnabled;
+    $("commentary-toggle").hidden = !isJoined(state.seats?.commentator) && !state.commentaryEnabled;
+    text("commentary-toggle", state.commentaryEnabled ? "关闭解说" : "开启解说");
+    document.querySelector('[data-reinvite="commentator"]').hidden = state.phase === "ended";
     const commentator = state.seats?.commentator;
-    text("commentary-heading", isJoined(commentator) ? commentator.name || "解说员" : "留一个旁观的视角");
-    document.querySelector('[data-invite="commentator"]').hidden = !hostToken || state.phase === "ended";
-    const node = $("commentary-text");
-    node.replaceChildren();
     const event = voiceEvents("commentator").at(-1);
-    if (event) node.append(element("span", "voice-meta", voiceMeta(event)), element("p", "", event.text));
-    else node.append(element("p", "voice-placeholder", isJoined(commentator) ? "解说员已入席，等待它的第一段点评。" : "可以邀请启动服务的 Agent 兼任解说，也可以只听两位棋手说棋。"));
+    text("commentary-heading", event ? commentator?.name || "解说" : "");
+    const invite = document.querySelector('[data-invite="commentator"]');
+    invite.hidden = !hostToken || isJoined(commentator) || state.phase === "ended";
+    $("commentary").classList.toggle("has-speech", Boolean(event));
+    $("commentary").classList.toggle("is-empty", !event && invite.hidden);
+    const node = $("commentary-text");
+    const key = state.gameId + ":" + (event?.seq || "");
+    if (node.dataset.events === key) return;
+    node.dataset.events = key;
+    node.replaceChildren();
+    if (event) {
+      node.title = voiceMeta(event);
+      node.append(element("p", "", event.text));
+    }
   }
+
   function outcomeLabel() {
+    if (state.winReason === "resign") return names[state.winner === "black" ? "white" : "black"] + "认输 · " + names[state.winner] + "胜";
+    if (state.winReason === "draw_agreement") return "双方和棋";
     if (state.mode === "ai" && state.winReason === "settled") return "定局 · 本局收束";
     if (state.mode === "ai" && state.winReason === "blocked") return "完成棋局 · 已封住白方连线";
     if (state.winner) return (state.winner === 1 ? "黑方" : state.winner === -1 ? "白方" : names[state.winner] || state.winner) + "获胜";
@@ -159,9 +177,8 @@
     $("match").hidden = false;
     $("new-button").hidden = !hostToken;
     text("match-title-display", state.title || level.name + " · 对弈");
-    text("match-topology", level.name + " / " + level.typeName + " · " + state.width + " × " + state.height);
-    text("phase-label", replayPly !== null ? "棋局回看" : phases[state.phase] || state.phase);
-    text("turn-label", replayPly !== null ? "第 " + replayPly + " / " + state.ply + " 手" : state.phase === "ended" ? outcomeLabel() : state.phase === "playing" ? "第 " + (state.ply + 1) + " 手 · " + (names[state.turn] || "") + "行棋" : state.phase === "paused" ? "等待房主继续" : joined ? "双方已就绪" : "邀请棋手入席");
+    text("match-topology", level.typeName);
+    text("turn-label", replayPly !== null ? "第 " + replayPly + " / " + state.ply + " 手" : state.phase === "ended" ? outcomeLabel() : state.phase === "playing" ? (names[state.turn] || "") + "行棋" : state.phase === "paused" ? "已暂停" : joined ? "已就绪" : "等待入席");
     renderSeat("black"); renderSeat("white"); updateActivity(); renderCommentary();
     $("match-actions").hidden = !hostToken;
     $("start-button").hidden = state.phase !== "waiting";
@@ -169,12 +186,11 @@
     $("pause-button").hidden = state.phase !== "playing";
     $("resume-button").hidden = state.phase !== "paused";
     $("stop-button").hidden = state.phase === "ended";
-    text("ready-note", state.phase === "waiting" ? (joined ? "棋手已就绪，可以开始了。" : "将邀请词分别发给棋手，双方加入后开始。") : "发言为面向观众的公开表达");
     const moves = state.moves || [];
     $("replay-controls").hidden = !moves.length;
     $("replay-range").max = String(moves.length);
     $("replay-range").value = String(replayPly === null ? moves.length : replayPly);
-    text("replay-label", replayPly === null ? "第 " + moves.length + " 手 · " + (state.phase === "ended" ? "定局" : "当前") : "第 " + replayPly + " 手 · 复盘");
+    text("replay-label", replayPly === null ? "第 " + moves.length + " 手" : "第 " + replayPly + " 手 · 复盘");
     $("previous-move").disabled = (replayPly === null ? moves.length : replayPly) <= 0;
     $("next-move").disabled = replayPly === null || replayPly >= moves.length;
     $("return-live").hidden = replayPly === null;
@@ -182,10 +198,10 @@
     $("surface-view").disabled = state.topology === "plane";
     $("view-range").disabled = state.topology === "plane";
     if (state.topology === "plane") morph = morphTarget = 0;
-    const notice = replayPly !== null ? "正在回看 · 实时棋局继续保留" : state.phase === "waiting" ? "棋手入席后，由房主开始" : state.phase === "paused" ? "已暂停 · 棋局静候继续" : "";
+    const notice = replayPly === null && state.drawOffer ? names[state.drawOffer.role] + "提议和棋" : "";
     text("board-notice", notice);
     $("board-notice").hidden = !notice;
-    text("board-caption", (level.edgeText || level.ruleTitle || "") + (morph > .5 ? " · 拖动曲面旋转" : " · 坐标从左上角开始"));
+
     drawBoard();
     if ($("timeline-dialog").open) renderTimeline();
   }
@@ -308,7 +324,6 @@
       morph = from + (morphTarget - from) * ease;
       drawBoard();
       if (amount < 1) morphFrame = requestAnimationFrame(frame);
-      else if (state) text("board-caption", (levelFor(state.topology).edgeText || "") + (morph > .5 ? " · 拖动曲面旋转" : " · 坐标从左上角开始"));
     }
     morphFrame = requestAnimationFrame(frame);
   }
@@ -326,40 +341,27 @@
       applyState(result.state || result);
     } finally { pending = false; render(); }
   }
-  function invitePrompt(invite, role) {
-    const gameId = invite.gameId || state.gameId;
-    const root = bootstrap.workspacePath || "本仓库目录";
-    const server = location.origin;
-    const roleText = role === "commentator" ? "独立解说员" : names[role] + "棋手";
+  async function invitePrompt(invite, role) {
+    const response = await fetch("/api/prompts");
+    if (!response.ok) throw new Error("邀请词未能加载。");
+    const prompts = await response.json();
     const seat = state.seats?.[role];
     const rejoining = isJoined(seat);
-    const joinArgs = JSON.stringify({ gameId, inviteToken: invite.inviteToken, name: rejoining ? seat.name : "请填写你的棋手名称", model: rejoining ? seat.model || "" : "请如实填写模型名称，不确定则留空" });
-    return [
-      "请作为" + roleText + "加入我电脑上的拓扑五子棋对弈室，并持续参与到本局结束。",
-      "",
-      "服务地址：" + server,
-      "棋局：" + gameId,
-      "角色：" + role,
-      "邀请凭证：" + invite.inviteToken,
-      "本地仓库：" + root,
-      "",
-      "请先阅读仓库中的 README.md、docs/development/arena.md 和 arena/skills/topology-gomoku-arena/SKILL.md，按其说明接入。优先使用已配置的拓扑五子棋 MCP（" + (bootstrap.mcpUrl || server + "/mcp") + "），调用 arena_join；如果当前会话还没有 MCP 工具，直接用仓库里的 CLI 连接同一服务，不要另开对局服务。",
-      (rejoining ? "恢复加入参数（必须保留原来的 name 和 model）：" : "加入参数示例（请填写你的名称和真实模型名称）：") + joinArgs,
-      "",
-      role === "commentator"
-        ? "你只能观察和解说，不代替棋手落子，不控制比赛。用 arena_wait 等待新事件，结合棋盘、拓扑接缝与棋手的公开表达，发表有趣而准确的场边解说。每段解说关联你实际观察的手数；比赛未开始或暂无变化时继续等待。"
-        : "加入后先读取规则与坐标约定。房主开始比赛后，等待自己的回合，自主决定落子。可以先对对手的棋作出反应，公开一小段落子前的考虑，再提交落子和说明。表达服务于观赏性，保持自然、有个性，不要求提供完整内部推理；不要调用内置 AI 替自己选点。使用棋局版本和唯一请求标识安全提交，比赛未开始或轮到对方时继续等待。",
-      "",
-      "CLI 备用入口：在上述仓库目录把加入参数写入 .arena/ 下的临时 JSON 文件，然后执行 node arena/cli.cjs call arena_join --url " + server + " --file <参数文件路径>。保存返回的座位 token，后续所有选手或解说工具调用均使用它。不把角色凭证分享给其他选手。",
-      "使用 arena_wait 时，afterSeq 取最近 state.eventSeq，timeoutMs 不超过 25000。等待超时后继续读取并等待；落子请求结果不确定时，先读取状态，仅以完全相同参数和 requestId 重试原请求。",
-      "请一直循环读取、等待和行动，直到棋局结束。若会话被中断，请用这份邀请恢复原来的角色，不创建新棋局。"
-    ].join("\n");
+    const fields = {
+      roleName: role === "commentator" ? "解说员" : names[role] + "棋手",
+      server: location.origin, gameId: invite.gameId, root: bootstrap.workspacePath,
+      mcpUrl: bootstrap.mcpUrl,
+      joinArgs: JSON.stringify({ gameId: invite.gameId, inviteToken: invite.inviteToken, name: rejoining ? seat.name : "你的名称", model: rejoining ? seat.model || "" : "" }),
+      rolePrompt: role === "commentator" ? prompts.commentator : prompts.player
+    };
+    return prompts.invitation.replace(/\{\{(\w+)\}\}/g, (_, key) => fields[key] ?? "");
   }
+
   async function invite(role) {
     if (!state || !hostToken) return;
     const result = await call("arena_invite", { gameId: state.gameId, role }, true);
     text("invite-heading", role === "commentator" ? "邀请解说员" : "邀请" + names[role] + "棋手");
-    $("invite-text").value = invitePrompt(result, role);
+    $("invite-text").value = await invitePrompt(result, role);
     $("invite-dialog").showModal();
   }
   async function showRooms() {
@@ -381,7 +383,12 @@
   }
   function eventDescription(event) {
     if (event.text) return event.text;
+    if (event.type === "resign") return names[event.role] + "认输";
+    if (event.type === "commentary") return event.enabled ? "开启解说" : "关闭解说";
+    if (event.type === "draw") return names[event.role] + ({ offer: "提议和棋", accept: "接受和棋", decline: "拒绝和棋", withdraw: "撤回和棋提议" })[event.action];
     if (event.type === "control") return ({ start: "开始对弈", pause: event.reason === "service_restart" ? "服务已恢复，棋局暂停等待继续" : "棋局暂停", resume: "继续对弈", stop: "房主结束棋局" })[event.action] || "棋局状态更新";
+    if (event.type === "result" && event.winReason === "resign") return names[event.winner] + "获胜（对方认输）";
+    if (event.type === "result" && event.winReason === "draw_agreement") return "双方同意和棋";
     if (event.type === "result") return event.winReason === "settled" ? "定局 · 本局收束" : event.winReason === "blocked" ? "完成棋局 · 已封住白方连线" : event.winner ? (names[event.winner] || "") + "获胜" : event.outcome === "draw" ? "和棋" : "棋局结束";
     if (event.type === "move" || event.kind === "move") {
       const move = (state.moves || []).find((item) => item.ply === event.ply);
@@ -427,7 +434,7 @@
     link.href = url; link.download = "topology-arena-" + state.gameId.replace(/[^a-zA-Z0-9_-]/g, "") + ".json";
     link.click();
     setTimeout(() => URL.revokeObjectURL(url), 1000);
-    toast("棋谱已保存，包含落子、公开表达与解说。");
+    toast("已保存");
   }
   async function boot() {
     const response = await fetch("/api/bootstrap");
@@ -468,7 +475,9 @@
     const rect = dialog.getBoundingClientRect();
     if (event.clientX < rect.left || event.clientX > rect.right || event.clientY < rect.top || event.clientY > rect.bottom) dialog.close();
   }));
+  document.querySelectorAll("[data-reinvite]").forEach((button) => button.addEventListener("click", () => guarded(() => invite(button.dataset.reinvite))));
   $("copy-invite").addEventListener("click", () => copy($("invite-text").value));
+  $("commentary-toggle").addEventListener("click", () => guarded(() => control(state.commentaryEnabled ? "commentary_off" : "commentary_on")));
   $("rooms-button").addEventListener("click", () => guarded(showRooms));
   $("new-button").addEventListener("click", showWelcome);
   $("start-button").addEventListener("click", () => guarded(() => control("start")));

@@ -18,10 +18,10 @@
     <header class="masthead">
       <a class="brand" href="/" aria-label="拓扑五子棋对弈室首页">
         <img src="/assets/brand-icon.png" width="38" height="38" alt="">
-        <span>拓扑五子棋 <small>对弈室</small></span>
+        <span>拓扑五子棋</span>
       </a>
       <nav aria-label="对弈室操作">
-        <span class="connection" id="connection" role="status"><i></i><span>正在连接</span></span>
+        <span class="connection" id="connection" role="status"><i></i></span>
         <button class="quiet-button" id="rooms-button" type="button">棋局记录</button>
         <button class="glass-button compact" id="new-button" type="button" hidden>新棋局</button>
       </nav>
@@ -31,12 +31,12 @@
       <section class="welcome-intro">
         <p class="eyebrow">本地 Agent 对弈</p>
         <h1>拓扑<br>五子棋</h1>
-        <p class="welcome-copy">邀请两位棋手，<br>看一场发生在曲面上的对弈。</p>
+
         <div class="welcome-art" aria-hidden="true"><img id="welcome-glyph" src="/assets/topologies/torus.svg" alt=""></div>
-        <p class="welcome-footnote">同一台电脑 · 浏览器观战 · 可邀请独立解说</p>
+
       </section>
       <section class="setup-panel glass" aria-labelledby="setup-title">
-        <div class="section-heading"><h2 id="setup-title">开一局棋</h2><span class="eyebrow">从这里开始</span></div>
+        <div class="section-heading"><h2 id="setup-title">开一局棋</h2></div>
         <form id="create-form">
           <label class="field-label" for="match-title">棋局名称 <span>选填</span></label>
           <input class="text-input" id="match-title" maxlength="80" placeholder="给这场相遇起个名字" autocomplete="off">
@@ -51,7 +51,7 @@
           <p class="topology-description" id="topology-description"></p>
           <div class="difficulty-row" id="difficulty-row" hidden><label for="difficulty">内置 AI</label><select id="difficulty"><option value="easy">随性</option><option value="normal" selected>机敏</option><option value="hard">深思</option></select></div>
           <button class="glass-button primary create-button" id="create-button" type="submit">创建棋局 <span aria-hidden="true">↗</span></button>
-          <p class="setup-note">创建后，复制邀请词发给各自的 Agent。</p>
+
         </form>
         <p class="spectator-notice" id="spectator-notice" hidden>这是观战窗口。请让启动对弈室的 Agent 打开房主入口，再创建棋局。</p>
       </section>
@@ -60,15 +60,15 @@
     <main id="match" class="match" hidden>
       <section class="match-heading">
         <div class="match-heading-title"><p class="eyebrow" id="match-topology"></p><h1 id="match-title-display"></h1></div>
-        <div class="match-state"><span class="phase-label" id="phase-label"></span><p id="turn-label"></p></div>
+        <div class="match-state"><p id="turn-label"></p></div>
       </section>
       <div class="arena-stage">
         <section class="player player-black" aria-labelledby="black-name">
-          <div class="player-identity"><span class="stone black-stone" aria-hidden="true"></span><div><p class="role-label">执黑 · 先手</p><h2 id="black-name">等待棋手</h2></div><span class="turn-dot" id="black-turn" aria-label="轮到黑方" hidden></span></div>
+          <div class="player-identity"><span class="stone black-stone" aria-hidden="true"></span><div><h2 id="black-name">等待棋手</h2></div><span class="turn-dot" id="black-turn" aria-label="轮到黑方" hidden></span></div>
           <p class="player-model" id="black-model"></p>
-          <p class="seat-activity" id="black-activity"></p>
+
           <button class="quiet-button invite-button" data-invite="black" type="button" hidden>复制黑方邀请 <span aria-hidden="true">↗</span></button>
-          <div class="player-voice" id="black-voice" aria-live="polite"><p class="voice-placeholder">棋手的反应、思考与落子说明<br>会在这里出现。</p></div>
+          <div class="player-voice" id="black-voice" aria-live="polite"></div>
         </section>
 
         <section class="board-column" aria-label="棋局">
@@ -89,21 +89,21 @@
             </div>
             <button class="quiet-button return-live" id="return-live" type="button" hidden>回到当前棋局</button>
           </div>
-          <p class="board-caption" id="board-caption"></p>
+
         </section>
 
         <section class="player player-white" aria-labelledby="white-name">
-          <div class="player-identity"><span class="stone white-stone" aria-hidden="true"></span><div><p class="role-label">执白 · 后手</p><h2 id="white-name">等待棋手</h2></div><span class="turn-dot" id="white-turn" aria-label="轮到白方" hidden></span></div>
+          <div class="player-identity"><span class="stone white-stone" aria-hidden="true"></span><div><h2 id="white-name">等待棋手</h2></div><span class="turn-dot" id="white-turn" aria-label="轮到白方" hidden></span></div>
           <p class="player-model" id="white-model"></p>
-          <p class="seat-activity" id="white-activity"></p>
+
           <button class="quiet-button invite-button" data-invite="white" type="button" hidden>复制白方邀请 <span aria-hidden="true">↗</span></button>
-          <div class="player-voice" id="white-voice" aria-live="polite"><p class="voice-placeholder">棋手的反应、思考与落子说明<br>会在这里出现。</p></div>
+          <div class="player-voice" id="white-voice" aria-live="polite"></div>
         </section>
       </div>
 
-      <section class="commentary" aria-labelledby="commentary-heading">
-        <div class="commentary-heading"><div><p class="eyebrow">场边解说</p><h2 id="commentary-heading">留一个旁观的视角</h2></div><button class="quiet-button" data-invite="commentator" type="button" hidden>邀请解说 <span aria-hidden="true">↗</span></button></div>
-        <div class="commentary-text" id="commentary-text" aria-live="polite"><p class="voice-placeholder">可以邀请启动服务的 Agent 兼任解说，也可以只听两位棋手说棋。</p></div>
+      <section class="commentary" id="commentary" aria-labelledby="commentary-heading">
+        <div class="commentary-heading"><h2 id="commentary-heading"></h2><button class="quiet-button" data-invite="commentator" type="button" hidden>邀请解说</button></div>
+        <div class="commentary-text" id="commentary-text" aria-live="polite"></div>
       </section>
 
       <footer class="match-footer">
@@ -111,10 +111,10 @@
           <button class="glass-button primary compact" id="start-button" type="button">开始对弈</button>
           <button class="quiet-button" id="pause-button" type="button" hidden>暂停</button>
           <button class="glass-button compact" id="resume-button" type="button" hidden>继续对弈</button>
-          <button class="quiet-button danger" id="stop-button" type="button" hidden>结束棋局</button>
+          <details class="host-options"><summary aria-label="棋局管理" title="棋局管理">⋯</summary><div class="host-menu"><button class="quiet-button" id="commentary-toggle" type="button" hidden>关闭解说</button><button class="quiet-button" data-reinvite="black" type="button">黑方邀请</button><button class="quiet-button" data-reinvite="white" type="button">白方邀请</button><button class="quiet-button" data-reinvite="commentator" type="button">解说邀请</button><button class="quiet-button danger" id="stop-button" type="button" hidden>结束棋局</button></div></details>
         </div>
-        <p class="ready-note" id="ready-note"></p>
-        <div class="record-actions"><button class="quiet-button" id="timeline-button" type="button">棋局时间线</button><button class="quiet-button" id="export-button" type="button">保存棋谱</button></div>
+
+        <div class="record-actions"><button class="quiet-button" id="timeline-button" type="button">时间线</button><button class="quiet-button" id="export-button" type="button">保存棋谱</button></div>
       </footer>
     </main>
     <div class="error-banner" id="error-banner" role="alert" hidden><span id="error-text"></span><button class="quiet-button" id="retry-button" type="button">重试连接</button><button class="quiet-button" id="dismiss-error" type="button" aria-label="关闭提示">×</button></div>
@@ -127,13 +127,13 @@
   </dialog>
   <dialog id="invite-dialog" class="panel-dialog invite-dialog">
     <div class="dialog-heading"><h2 id="invite-heading">邀请棋手</h2><button class="quiet-button" data-close type="button" aria-label="关闭">×</button></div>
-    <p class="dialog-intro">把下面这段话发给同一台电脑上的 Agent。加入后，它会出现在棋盘旁。</p>
+
     <textarea id="invite-text" rows="12" readonly spellcheck="false" aria-label="Agent 邀请词"></textarea>
     <div class="dialog-footer"><p class="muted">邀请词包含本局角色凭证，请只交给对应的 Agent。</p><button class="glass-button primary compact" id="copy-invite" type="button">复制邀请词</button></div>
   </dialog>
   <dialog id="timeline-dialog" class="panel-dialog timeline-dialog">
     <div class="dialog-heading"><h2>棋局时间线</h2><button class="quiet-button" data-close type="button" aria-label="关闭">×</button></div>
-    <p class="dialog-intro">公开表达与解说，按发生顺序留在棋局里。</p>
+
     <ol id="timeline" class="timeline"></ol>
     <details class="accessible-board"><summary>查看文字棋盘</summary><div id="text-board"></div></details>
   </dialog>

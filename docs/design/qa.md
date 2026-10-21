@@ -1,9 +1,28 @@
 # 视觉 QA
 
-## 2026-10-21：Arena 本地 Agent 对弈室
+## 2026-10-21：Arena 观战精简、默认关闭解说
+
+- 保留棋盘与双方发言的视觉重心，删除重复状态、说明文字和空发言占位；发言改为悬浮玻璃气泡。解说默认关闭，主动邀请后开启，关闭时不留布局占位。新增认输、提和提示与协商终局。
+- 自动复现：提供 Playwright 到 `NODE_PATH` 后运行 `npm run arena:qa`。脚本使用隔离服务与数据；以 `756d52d` 的原 HTML/CSS/JS 为基线，在同一环面 7×6、同一前四手 `[0, 7, 1, 8]` 与同一发言数据上比较。
+- 所有发言均为明确的测试样例，不是实际模型对局，不证明模型棋力。本轮仅面向横屏电脑浏览器，不再适配窄屏/移动端。
+
+| 视口 | 修改前 | 修改后（开启解说） | 关闭解说 |
+| --- | --- | --- | --- |
+| 1280×720，16:9 | [基线](../../artifacts/arena-refinement/before-live-1280x720.png) | [气泡](../../artifacts/arena-refinement/live-1280x720.png) | [默认布局](../../artifacts/arena-refinement/no-commentary-1280x720.png) |
+| 1920×1080，16:9 | [基线](../../artifacts/arena-refinement/before-live-1920x1080.png) | [气泡](../../artifacts/arena-refinement/live-1920x1080.png) | [默认布局](../../artifacts/arena-refinement/no-commentary-1920x1080.png) |
+| 1024×768，4:3 | [基线](../../artifacts/arena-refinement/before-live-1024x768.png) | [气泡](../../artifacts/arena-refinement/live-1024x768.png) | [默认布局](../../artifacts/arena-refinement/no-commentary-1024x768.png) |
+| 1440×1080，4:3 | [基线](../../artifacts/arena-refinement/before-live-1440x1080.png) | [气泡](../../artifacts/arena-refinement/live-1440x1080.png) | [默认布局](../../artifacts/arena-refinement/no-commentary-1440x1080.png) |
+
+- 其他状态：[创建](../../artifacts/arena-refinement/home-1280x720.png)、[空房间前](../../artifacts/arena-refinement/before-empty-1024x768.png) / [空房间后](../../artifacts/arena-refinement/empty-1024x768.png)、[三维](../../artifacts/arena-refinement/surface-1920x1080.png)、[提议和棋](../../artifacts/arena-refinement/draw-offer-1024x768.png)、[双方和棋](../../artifacts/arena-refinement/draw-1024x768.png)、[认输](../../artifacts/arena-refinement/resign-1024x768.png)、[回看](../../artifacts/arena-refinement/replay-1024x768.png)。
+- [结构化结果](../../artifacts/arena-refinement/verification.json)：四个视口无横向溢出、棋盘/解说/页脚重叠或浏览器错误；检查默认关闭、关闭后释放空间、刷新保留开关、邀请从提示词文件生成、SSE、三维切换、暂停恢复、认输、提和接受、连五、回看与无凭证导出。
+- 193 项仓库测试通过，其中 41 项 Arena 测试覆盖两种真实 MCP 传输、决策幂等与重启恢复。本轮仍在独立任务分支，等待用户预览确认。
+
+## 2026-10-21：Arena 本地 Agent 对弈室首版（历史基线）
+
+以下为首版的历史证据；当前布局、视口与复现脚本以上一节为准，窄屏不再属于本产品验收范围。
 
 - 独立 `arena` 渠道首版，基于 `dev@76bef39`。新界面沿用原作内嵌衬线字体、暖纸色/青绿、轻玻璃控件与共享棋盘绘制，不修改原 H5 页面。
-- 自动复现：准备 Playwright 到 `NODE_PATH` 后运行 `npm run arena:qa`。脚本启动隔离数据目录和随机 loopback 端口，不读取正在使用的房主凭证、不改用户棋局。
+- 历史复现使用提交 `756d52d` 中的 `npm run arena:qa`。脚本启动隔离数据目录和随机 loopback 端口，不读取正在使用的房主凭证、不改用户棋局。
 - 同视口对比使用 1440×900 和 390×844，同为环面 7×6、双人模式、二维棋盘。对比空盘与相同前四手 `[0, 7, 1, 8]`；原产品没有观战界面，因此原版仅作棋盘、字体与材质基线，不声称是同一页面改版。
 - 桌面：[原版空盘](../../artifacts/arena/original-empty-1440x900.png) / [对弈室空盘](../../artifacts/arena/empty-1440x900.png)，[原版四手](../../artifacts/arena/original-live-1440x900.png) / [对弈室四手](../../artifacts/arena/live-1440x900.png)。
 - 窄屏：[原版空盘](../../artifacts/arena/original-empty-390x844.png) / [对弈室空盘](../../artifacts/arena/empty-390x844.png)，[原版四手](../../artifacts/arena/original-live-390x844.png) / [对弈室四手](../../artifacts/arena/live-390x844.png)。

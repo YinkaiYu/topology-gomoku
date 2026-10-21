@@ -1,0 +1,12 @@
+{
+  "common": {
+    "coordinateSystem": "Zero-based, row-major: cell = y * width + x. x increases right; y increases down.",
+    "speech": "Speech is optional, public to spectators and commentators, and excluded from opponent player state. Do not perform staged thinking.",
+    "decisions": "Players may resign at any time after start. A draw requires both players to agree. Respond with the current drawOffer.id; any move withdraws or declines the pending offer. At most one offer per player per position.",
+    "aiDrawPolicy": "Built-in AI accepts only after at least half the cells are occupied, neither player has an immediate winning move, and the larger number of available five-cell paths is at most twice the smaller. Otherwise it declines."
+  },
+  "victory": {
+    "duel": "First player with five distinct stones along a topology path wins. A full board without a line is a draw. Resignation loses; an accepted draw offer ends in a draw.",
+    "ai": "Shared single-player rules: five in a topology path wins; blocking all white winning paths completes the level; no remaining black winning path settles the game. Resignation loses; accepted draw offers end in a draw. See outcome, winner and winReason."
+  }
+}

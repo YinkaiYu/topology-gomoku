@@ -1,0 +1,86 @@
+{
+  "baseline": "756d52d",
+  "fixture": "Deterministic four-move torus, same state before/after; scripted speech, not model dialogue.",
+  "checks": [
+    "16:9 and 4:3 desktop",
+    "floating speech",
+    "reduced labels",
+    "commentary defaults off, releases layout space, and stays off after reload",
+    "host commentary toggle",
+    "invitations from editable prompts",
+    "SSE",
+    "2D/3D",
+    "pause/resume",
+    "draw offer/accept",
+    "resignation",
+    "five-stone result",
+    "replay/export",
+    "no overflow or browser errors"
+  ],
+  "results": [
+    {
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "board": {
+        "x": 379.265625,
+        "y": 130,
+        "right": 900.71875,
+        "bottom": 455,
+        "width": 521.453125,
+        "height": 325
+      },
+      "errors": [],
+      "result": "passed"
+    },
+    {
+      "viewport": {
+        "width": 1920,
+        "height": 1080
+      },
+      "board": {
+        "x": 617.046875,
+        "y": 160,
+        "right": 1302.9375,
+        "bottom": 777,
+        "width": 685.890625,
+        "height": 617
+      },
+      "errors": [],
+      "result": "passed"
+    },
+    {
+      "viewport": {
+        "width": 1024,
+        "height": 768
+      },
+      "board": {
+        "x": 311.421875,
+        "y": 130,
+        "right": 712.5625,
+        "bottom": 503,
+        "width": 401.140625,
+        "height": 373
+      },
+      "errors": [],
+      "result": "passed"
+    },
+    {
+      "viewport": {
+        "width": 1440,
+        "height": 1080
+      },
+      "board": {
+        "x": 426.671875,
+        "y": 160,
+        "right": 1013.3125,
+        "bottom": 777,
+        "width": 586.640625,
+        "height": 617
+      },
+      "errors": [],
+      "result": "passed"
+    }
+  ]
+}

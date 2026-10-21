@@ -360,3 +360,149 @@ test("host stop ends a game without altering the board version and a commentator
   assert.equal(stopped.turn, null);
   assert.throws(() => game.arena.call("arena_control", { gameId: game.gameId, action: "resume" }, HOST), errorCode("INVALID_PHASE"));
 });
+
+test("either player can resign without waiting for a five or their turn, with safe retries", () => {
+  for (const level of Content.LEVELS) for (const loser of ["black", "white"]) {
+    const g = setup({}, { topology: level.topology });
+    g.start();
+    g.move(0);
+    const args = { gameId: g.gameId, token: g[loser].token, expectedVersion: 1, requestId: "concede", reason: "No useful continuation." };
+    const state = g.arena.call("arena_resign", args);
+    assert.equal(state.phase, "ended");
+    assert.equal(state.winner, loser === "black" ? "white" : "black");
+    assert.equal(state.winReason, "resign");
+    assert.equal(state.ply, 1);
+    assert.deepEqual(state.winningCells, []);
+    assert.equal(g.arena.call("arena_resign", args).duplicate, true);
+    assert.equal(g.state().eventSeq, state.eventSeq);
+    assert.throws(() => g.arena.call("arena_resign", { ...args, reason: "Changed" }), errorCode("REQUEST_REUSED"));
+    assert.throws(() => g.move(1), errorCode("NOT_PLAYING"));
+    g.arena.tick();
+    assert.equal(g.state().ply, 1);
+  }
+});
+
+test("decisions require a player, current board and a started match, but allow pausing", () => {
+  const g = setup(); const observer = g.join("commentator");
+  const args = { gameId: g.gameId, token: g.black.token, expectedVersion: 0, requestId: "decision" };
+  assert.throws(() => g.arena.call("arena_resign", args), errorCode("NOT_PLAYING"));
+  g.start();
+  for (const operation of ["arena_resign", "arena_draw"]) {
+    assert.throws(() => g.arena.call(operation, { ...args, token: observer.token, action: "offer" }), errorCode("PLAYER_REQUIRED"));
+    assert.throws(() => g.arena.call(operation, { ...args, expectedVersion: 2, action: "offer" }), errorCode("STALE_VERSION"));
+  }
+  g.arena.call("arena_control", { gameId: g.gameId, action: "pause" }, HOST);
+  assert.equal(g.arena.call("arena_resign", args).winReason, "resign");
+});
+
+test("draw agreement requires a matching offer and the other player's consent", () => {
+  const g = setup(); g.start();
+  const offerArgs = { gameId: g.gameId, token: g.black.token, action: "offer", expectedVersion: 0, requestId: "offer" };
+  const offered = g.arena.call("arena_draw", offerArgs);
+  const offerId = offered.drawOffer.id;
+  assert.equal(offered.phase, "playing");
+  assert.equal(offered.version, 0);
+  assert.equal(g.arena.call("arena_draw", offerArgs).drawOffer.id, offerId);
+  const reply = { ...offerArgs, token: g.white.token, action: "accept", offerId, requestId: "reply" };
+  assert.throws(() => g.arena.call("arena_draw", { ...reply, token: g.black.token }), errorCode("ROLE_RESTRICTED"));
+  assert.throws(() => g.arena.call("arena_draw", { ...reply, offerId: "old-offer" }), errorCode("STALE_OFFER"));
+  assert.throws(() => g.arena.call("arena_draw", { ...reply, action: "withdraw" }), errorCode("ROLE_RESTRICTED"));
+  const agreed = g.arena.call("arena_draw", reply);
+  assert.equal(agreed.phase, "ended");
+  assert.equal(agreed.outcome, "draw");
+  assert.equal(agreed.winReason, "draw_agreement");
+  assert.equal(agreed.winner, null);
+  assert.equal(agreed.ply, 0);
+  assert.equal(agreed.drawOffer, null);
+  assert.equal(g.arena.call("arena_draw", reply).eventSeq, agreed.eventSeq);
+  assert.throws(() => g.arena.call("arena_resign", { ...reply, requestId: "late" }), errorCode("NOT_PLAYING"));
+});
+
+test("draw offers can be declined or withdrawn, cannot spam a position, and moves invalidate them", () => {
+  const g = setup(); g.start();
+  const decide = (role, action, requestId, offerId) => g.arena.call("arena_draw", {
+    gameId: g.gameId, token: g[role].token, action, requestId, offerId, expectedVersion: g.state().version
+  });
+  const first = decide("black", "offer", "b-offer").drawOffer.id;
+  assert.throws(() => decide("white", "offer", "conflict"), errorCode("DRAW_PENDING"));
+  assert.equal(decide("white", "decline", "decline", first).phase, "playing");
+  assert.throws(() => decide("black", "offer", "spam"), errorCode("DRAW_LIMIT"));
+  const second = decide("white", "offer", "w-offer").drawOffer.id;
+  assert.equal(decide("white", "withdraw", "withdraw", second).drawOffer, null);
+  g.move(0);
+  const third = decide("black", "offer", "new-position").drawOffer.id;
+  g.move(1);
+  assert.equal(g.state().drawOffer, null);
+  assert.throws(() => decide("white", "accept", "late-accept", third), errorCode("STALE_OFFER"));
+  const fourth = decide("black", "offer", "another-position").drawOffer.id;
+  g.move(2);
+  assert.equal(g.state().events.find(e => e.type === "draw" && e.offerId === fourth && e.reason === "move").action, "withdraw");
+});
+
+test("negotiation and terminal decisions survive restart without replaying an AI move", (t) => {
+  for (const ending of ["resign", "draw"]) {
+    const directory = fs.mkdtempSync(path.join(os.tmpdir(), "arena-decisions-"));
+    t.after(() => fs.rmSync(directory, { recursive: true, force: true }));
+    const g = setup({ dataDir: directory }); g.start(); g.move(0);
+    const args = { gameId: g.gameId, token: g.black.token, expectedVersion: 1, requestId: "offer", action: "offer" };
+    const offerId = g.arena.call("arena_draw", args).drawOffer.id;
+    g.arena.close();
+    const restored = new Arena({ dataDir: directory });
+    assert.equal(restored.call("arena_state", { gameId: g.gameId }).drawOffer.id, offerId);
+    const decision = { gameId: g.gameId, token: g.white.token, expectedVersion: 1, requestId: "finish", action: "accept", offerId };
+    const result = restored.call(ending === "resign" ? "arena_resign" : "arena_draw", decision);
+    restored.close();
+    const final = new Arena({ dataDir: directory });
+    assert.deepEqual(final.call("arena_state", { gameId: g.gameId }), result);
+    assert.equal(final.call(ending === "resign" ? "arena_resign" : "arena_draw", decision).duplicate, true);
+    final.tick();
+    assert.equal(final.call("arena_state", { gameId: g.gameId }).ply, 1);
+    final.close();
+  }
+});
+
+test("built-in AI declines early draw offers and stops scheduled moves on resignation", () => {
+  let time = 0;
+  const g = setup({ now: () => time }, { mode: "ai" }); g.start();
+  const declined = g.arena.call("arena_draw", { gameId: g.gameId, token: g.black.token, action: "offer", expectedVersion: 0, requestId: "offer" });
+  assert.equal(declined.drawOffer, null);
+  assert.ok(declined.events.some(e => e.type === "draw" && e.action === "decline" && e.role === "white"));
+  g.move(0);
+  g.arena.call("arena_resign", { gameId: g.gameId, token: g.black.token, expectedVersion: 1, requestId: "concede" });
+  time = 10000; g.arena.tick();
+  assert.equal(g.state().ply, 1);
+  assert.equal(g.state().winner, "white");
+});
+
+test("built-in AI accepts a balanced late position and leaves the board intact", (t) => {
+  const cells = [11,31,27,40,2,29,3,15,26,41,30,22,24,35,46,16,13,17,28,7,12,42,4,25,23];
+  let time = 0, next = 1;
+  t.mock.method(Engine, "chooseMove", () => { const cell = cells[next]; next += 2; return cell; });
+  const g = setup({ now: () => time }, { mode: "ai" }); g.start();
+  for (let index = 0; index < cells.length; index += 2) {
+    g.move(cells[index]);
+    if (index + 1 < cells.length) { time += 1000; g.arena.tick(); }
+  }
+  assert.equal(g.state().phase, "playing");
+  const board = g.state().board;
+  const agreed = g.arena.call("arena_draw", { gameId: g.gameId, token: g.black.token, action: "offer", expectedVersion: 25, requestId: "balanced-draw" });
+  assert.equal(agreed.winReason, "draw_agreement");
+  assert.equal(agreed.outcome, "draw");
+  time += 1000; g.arena.tick();
+  assert.deepEqual(g.state().board, board);
+  assert.equal(g.state().ply, 25);
+});
+
+test("new matches leave commentary off until the host explicitly invites a commentator", () => {
+  const g = setup();
+  assert.equal(g.state().commentaryEnabled, false);
+  assert.throws(() => g.arena.call("arena_invite", { gameId:g.gameId, role:"commentator" }), errorCode("HOST_REQUIRED"));
+  assert.equal(g.state().commentaryEnabled, false);
+  const commentator = g.join("commentator");
+  assert.equal(g.state().commentaryEnabled, true);
+  g.arena.call("arena_control", { gameId: g.gameId, action: "commentary_off" }, HOST);
+  assert.equal(g.state().commentaryEnabled, false);
+  assert.throws(() => g.arena.call("arena_speak", { gameId:g.gameId, token:commentator.token, kind:"commentary", text:"Not enabled", ply:0 }), errorCode("COMMENTARY_DISABLED"));
+  g.arena.call("arena_control", { gameId:g.gameId, action:"commentary_on" }, HOST);
+  assert.equal(g.state().commentaryEnabled, true);
+});
