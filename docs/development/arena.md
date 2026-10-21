@@ -142,20 +142,24 @@ node arena/cli.cjs call arena_state --file .arena/request.json
 
 ## 提示词文件
 
-发送给 agent 的行为提示集中在以下文件，可直接检查和修改：
+邀请只传递本局信息、加入凭证与本地文件绝对路径，不嵌入通用流程或角色全文。agent 读取 Skill 获得操作流程，再读取自己角色的要求；已经读取的内容不重复加载。黑白棋手共用同一份角色要求，解说员读取自己的文件。
+
+按职责修改以下文件，避免把同一行为要求复制到多个位置：
 
 | 文件 | 作用与生效时机 |
 | --- | --- |
-| [invitation.md](../../arena/prompts/invitation.md) | 浏览器复制的邀请外壳；下次打开邀请弹窗时读取 |
-| [player.md](../../arena/prompts/player.md) | 黑白选手提示，插入邀请；下次打开邀请弹窗时读取 |
-| [commentator.md](../../arena/prompts/commentator.md) | 可选解说员提示，插入邀请；下次打开邀请弹窗时读取 |
-| [mcp.md](../../arena/prompts/mcp.md) | MCP 初始化时的服务 instructions；重新连接 MCP 后生效 |
-| [tools.json](../../arena/prompts/tools.json) | 九个 MCP 工具的 description；重新连接 MCP 后生效 |
-| [rules.json](../../arena/prompts/rules.json) | `arena_rules` 返回的坐标、胜负、表达与提和策略说明；下次调用时读取 |
-| [SKILL.md](../../arena/skills/topology-gomoku-arena/SKILL.md) | 主持、参赛、解说、配置与恢复流程；agent 下次读取时生效 |
+| [invitation.md](../../arena/prompts/invitation.md) | 本局信息、加入参数和文件路径模板；下次打开邀请弹窗时读取 |
+| [player.md](../../arena/prompts/player.md) | 黑白棋手的自主决策、公平参赛与公开表达要求；agent 下次读取时生效 |
+| [commentator.md](../../arena/prompts/commentator.md) | 解说风格与角色行为边界；agent 下次读取时生效 |
+| [mcp.md](../../arena/prompts/mcp.md) | MCP 服务简介与文件入口说明；重新连接 MCP 后生效 |
+| [tools.json](../../arena/prompts/tools.json) | 九个 MCP 工具的参数、结果与调用约束，不另存角色行为要求；重新连接 MCP 后生效 |
+| [rules.json](../../arena/prompts/rules.json) | `arena_rules` 返回的坐标、胜负、发言可见性与提和规则；下次调用时读取 |
+| [SKILL.md](../../arena/skills/topology-gomoku-arena/SKILL.md) | 角色文件入口，以及启动、接入、工具操作、等待与恢复流程；agent 下次读取时生效 |
 | [README.md](../../README.md) | 人工复制给 agent 的启动与恢复提示 |
 
-邀请中的 `{{roleName}}`、`{{server}}`、`{{gameId}}`、`{{root}}`、`{{mcpUrl}}`、`{{joinArgs}}`、`{{rolePrompt}}` 是动态字段，应保留拼写；实际值由 [arena.js](../../arena/public/arena.js) 的 `invitePrompt` 填入。JSON 文件须保持合法格式与现有键名。已复制进 agent 会话的文本不会被文件修改追溯替换。
+邀请中的 `{{roleName}}`、`{{server}}`、`{{root}}`、`{{mcpUrl}}`、`{{seatStatus}}`、`{{skillPath}}`、`{{rolePath}}`、`{{joinArgs}}` 是动态字段，应保留拼写；实际值由 [arena.js](../../arena/public/arena.js) 的 `invitePrompt` 填入。比赛 ID 位于加入参数中；已有席位的邀请保留原加入身份，显示名修改不改变重连参数。`/api/prompts` 只返回邀请模板，不再向浏览器传输角色全文。JSON 文件须保持合法格式与现有键名。
+
+修改角色要求无需重新生成邀请；让 agent 重新读取相应文件即可。已进入会话上下文的内容不会被文件修改追溯替换；MCP 服务简介和工具描述则在重新连接时读取。本地文件无法访问时应报告路径问题，不使用另一份 checkout 或猜测缺失的要求。
 
 这些文件改变的是说明，不改变裁判规则、参数校验或权限。MCP 参数 schema 位于 [tools.cjs](../../arena/tools.cjs)；状态、错误与结构化规则由 [match.cjs](../../arena/match.cjs) 产生，其中拓扑的 `edgeText`、`ruleText` 沿用共享 [level-config.js](../../app/assets/level-config.js)。它们也会出现在 agent 的工具结果中，不应与角色行为提示混淆。
 
@@ -178,6 +182,8 @@ npm run docs:check
 CLI 测试覆盖端口身份、跨 checkout 拒绝停止、凭证隔离、错误退出、结构化参数与五类配置生成。协议和游戏行为测试应覆盖两个独立连接共享棋盘、内置 AI、回合/版本、幂等、权限、发言、等待、重连和棋谱。浏览器检查包括空房间、邀请、等待开赛、落子与发言、解说、暂停、终局与回看，并按原产品[视觉语言](../design/visual-language.md)在[视觉 QA](../design/qa.md)留下证据。
 
 本轮通过 198 项仓库测试，其中 46 项 Arena 测试包含真实 MCP SDK 的 Streamable HTTP 与 stdio 往返、默认端口校验、等待取消、并发落子、认输、和棋、默认关闭解说、自定义尺寸/资料、浏览器统一入口、记录删除和服务重启恢复。浏览器验收可通过 `npm run arena:qa` 复现（Playwright 通过 `NODE_PATH` 提供），使用隔离服务测试 1280×720、1920×1080、1024×768、1440×1080，并以提交 `7ccacf6` 的同状态页面作前后对比；完整证据见视觉 QA。五种客户端提供官方格式对应的配置片段，尚未逐一验证其完整产品会话。
+
+2026-10-22 提示词去重回归：198 项测试、资源与文档检查、Skill 校验通过。隔离服务中实测浏览器生成黑方、白方、解说员邀请，文件绝对路径均可读取，复制的加入参数可经 CLI 成功加入对应席位；修改显示名后的重邀仍保留原身份与 token。此次仅调整邀请内容和说明职责，不改变界面布局或裁判规则。
 
 2026-10-21 还完成了两场真实 Agent 对局：两名独立 Codex 子 Agent 在环面上对弈 21 手，黑方跨上下接缝连五获胜，第三名子 Agent 发布 8 段解说；单 Agent 在莫比乌斯棋盘挑战内置机敏 AI，11 手自然终局。参赛者通过自己的角色凭证使用本地 HTTP 工具接口，自主选择落点，不调用内置选棋算法。两场均验证了完整回合与终局，比赛数据留在本机 `.arena/`。这验证了真实 Agent 的参赛流程，不代表五种客户端均已实测，也不用于比较不同模型的棋力。
 

@@ -363,12 +363,15 @@
     const prompts = await response.json();
     const seat = state.seats?.[role];
     const rejoining = isJoined(seat);
+    const root = bootstrap.workspacePath.replace(/\\/g, "/").replace(/\/$/, "");
     const fields = {
       roleName: role === "commentator" ? "解说员" : names[role] + "棋手",
-      server: location.origin, gameId: invite.gameId, root: bootstrap.workspacePath,
+      server: location.origin, root,
       mcpUrl: bootstrap.mcpUrl,
-      joinArgs: JSON.stringify({ gameId: invite.gameId, inviteToken: invite.inviteToken, name: rejoining ? seat.name : seat.displayName || "你的名称", model: rejoining ? seat.model || "" : "" }),
-      rolePrompt: role === "commentator" ? prompts.commentator : prompts.player
+      seatStatus: rejoining ? "已加入，恢复原身份" : "尚未加入",
+      skillPath: root + "/arena/skills/topology-gomoku-arena/SKILL.md",
+      rolePath: root + "/arena/prompts/" + (role === "commentator" ? "commentator.md" : "player.md"),
+      joinArgs: JSON.stringify({ gameId: invite.gameId, inviteToken: invite.inviteToken, name: rejoining ? seat.name : seat.displayName || "你的名称", model: rejoining ? seat.model || "" : "" })
     };
     return prompts.invitation.replace(/\{\{(\w+)\}\}/g, (_, key) => fields[key] ?? "");
   }

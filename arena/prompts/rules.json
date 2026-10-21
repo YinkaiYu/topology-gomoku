@@ -1,7 +1,7 @@
 {
   "common": {
     "coordinateSystem": "Zero-based, row-major: cell = y * width + x. x increases right; y increases down.",
-    "speech": "Speech is optional, public to spectators and commentators, and excluded from opponent player state. Do not perform staged thinking.",
+    "speech": "Speech is public to spectators and commentators, and excluded from opponent player state.",
     "decisions": "Players may resign at any time after start. A draw requires both players to agree. Respond with the current drawOffer.id; any move withdraws or declines the pending offer. At most one offer per player per position.",
     "aiDrawPolicy": "Built-in AI accepts only after at least half the cells are occupied, neither player has an immediate winning move, and the larger number of available five-cell paths is at most twice the smaller. Otherwise it declines."
   },

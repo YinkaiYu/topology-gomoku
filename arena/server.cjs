@@ -197,7 +197,7 @@ async function startServer(options = {}) {
         return json(response, 200, { version: VERSION, gameVersion: GAME_VERSION, baseCommit: BASE_COMMIT, workspacePath: ROOT, mcpUrl: `${url}/mcp` });
       }
       if (request.method === "GET" && pathname === "/api/prompts") {
-        return json(response, 200, { invitation: readPrompt("invitation.md"), player: readPrompt("player.md"), commentator: readPrompt("commentator.md") });
+        return json(response, 200, { invitation: readPrompt("invitation.md") });
       }
       if (request.method === "POST" && pathname === "/api/shutdown") {
         if (!context.hostAuthorized) throw problem("HOST_REQUIRED", "Host permission required.", 403);
