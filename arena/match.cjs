@@ -173,7 +173,7 @@ class Arena extends EventEmitter {
 
   _visibleEvents(match, role) {
     return match.events.filter((event) =>
-      !PLAYERS[role] || event.type !== "speech" || event.role === role);
+      !role || !["note", "speech"].includes(event.type) || event.role === role);
   }
 
   _snapshot(match, role = null) {
@@ -294,7 +294,7 @@ class Arena extends EventEmitter {
       case "arena_move": return this._move(args);
       case "arena_resign": return this._decision(args, "resign");
       case "arena_draw": return this._decision(args, "draw");
-      case "arena_speak": return this._speak(args);
+      case "arena_note": return this._note(args);
       case "arena_control": return this._control(args, context);
       case "arena_rules": return this._rules(args);
       case "arena_replay": {
@@ -383,13 +383,13 @@ class Arena extends EventEmitter {
     const role = this._seat(match, args.token, true);
     requireValue(PLAYERS[role], "PLAYER_REQUIRED", "Only a player can place stones.", 403);
     const requestId = text(args.requestId, "requestId", 128);
-    const explanation = text(args.explanation, "explanation", 1000, true);
+    requireValue(args.explanation === undefined, "INVALID_ARGUMENT", "Send text separately with arena_note.");
     requireValue(Number.isInteger(args.cell) && args.cell >= 0 && args.cell < match.controller.game.board.length,
       "INVALID_CELL", "cell must be an integer on this board.");
     requireValue(Number.isInteger(args.expectedVersion) && args.expectedVersion >= 0,
       "INVALID_VERSION", "expectedVersion must be a nonnegative integer.");
     const key = `${role}:${requestId}`;
-    const fingerprint = JSON.stringify([args.cell, args.expectedVersion, explanation]);
+    const fingerprint = JSON.stringify([args.cell, args.expectedVersion, ""]);
     const receipt = match.receipts[key];
     if (receipt) {
       requireValue(receipt.fingerprint === fingerprint, "REQUEST_REUSED", "This requestId was used for a different move.", 409);
@@ -405,7 +405,6 @@ class Arena extends EventEmitter {
       "ILLEGAL_MOVE", "That intersection is occupied or cannot be played.", 409);
     this._clearDraw(match, role);
     this._recordMoves(match);
-    if (explanation) this._event(match, "speech", { role, kind: "explanation", text: explanation, ply: match.moves.length });
     match.receipts[key] = { fingerprint, version: match.version };
     this._changed(match);
     return this._snapshot(match, role);
@@ -433,10 +432,10 @@ class Arena extends EventEmitter {
     const role = this._seat(match, args.token, true);
     requireValue(PLAYERS[role], "PLAYER_REQUIRED", "Only a player can resign or negotiate a draw.", 403);
     const requestId = text(args.requestId, "requestId", 128);
-    const reason = text(args.reason, "reason", 1000, true);
+    requireValue(args.reason === undefined, "INVALID_ARGUMENT", "Send text separately with arena_note.");
     requireValue(Number.isInteger(args.expectedVersion) && args.expectedVersion >= 0,
       "INVALID_VERSION", "expectedVersion must be a nonnegative integer.");
-    const fingerprint = JSON.stringify([operation, args.expectedVersion, args.action || null, args.offerId || null, reason]);
+    const fingerprint = JSON.stringify([operation, args.expectedVersion, args.action || null, args.offerId || null, ""]);
     const key = `${role}:${requestId}`;
     const receipt = match.receipts[key];
     if (receipt) {
@@ -480,41 +479,34 @@ class Arena extends EventEmitter {
         if (args.action === "accept") this._finish(match, "draw", null, "draw_agreement");
       }
     }
-    if (reason) this._event(match, "speech", { role, kind: "decision", text: reason, ply: match.moves.length });
     match.receipts[key] = { fingerprint, version: match.version };
     this._changed(match);
     return this._snapshot(match, role);
   }
 
-  _speak(args) {
+  _note(args) {
     const match = this._match(args.gameId);
     const role = this._seat(match, args.token, true);
-    requireValue(["reaction", "thinking", "explanation", "commentary"].includes(args.kind),
-      "INVALID_KIND", "Choose reaction, thinking, explanation or commentary.");
+    requireValue(args.kind === undefined, "INVALID_ARGUMENT", "Notes do not need a kind.");
+    const requestId = text(args.requestId, "requestId", 128);
     const message = text(args.text, "text", 1000);
     requireValue(Number.isInteger(args.ply) && args.ply >= 0 && args.ply <= match.moves.length,
       "INVALID_PLY", "ply must refer to the current position or a recorded move.");
-    if (args.expectedVersion !== undefined) {
-      requireValue(Number.isInteger(args.expectedVersion) && args.expectedVersion === match.version,
-        "STALE_VERSION", "Read the current state before speaking about this position.", 409);
+    const key = `${role}:${requestId}`;
+    const fingerprint = JSON.stringify(["note", args.ply, message]);
+    const receipt = match.receipts[key];
+    if (receipt) {
+      requireValue(receipt.fingerprint === fingerprint, "REQUEST_REUSED", "This requestId already belongs to another action.", 409);
+      this._save(match);
+      return { event: clone(match.events.find(event => event.seq === receipt.eventSeq)), state: this._snapshot(match, role), duplicate: true };
     }
     if (role === "commentator") {
       requireValue(match.commentaryEnabled !== false, "COMMENTARY_DISABLED", "Commentary is off. Stop commentary until invited again.", 409);
-      requireValue(args.kind === "commentary", "ROLE_RESTRICTED", "A commentator publishes commentary.", 403);
-    } else {
-      requireValue(args.kind !== "commentary", "ROLE_RESTRICTED", "Players publish reaction, thinking or explanation.", 403);
-      if (args.kind === "explanation") {
-        requireValue(args.ply > 0 && match.moves[args.ply - 1].player === role,
-          "INVALID_PLY", "An explanation must refer to your own recorded move.");
-      } else {
-        requireValue(match.phase === "playing" && match.controller.game.turn === PLAYERS[role]
-          && args.ply === match.moves.length,
-        "WRONG_TURN", "Publish reactions and thinking during your turn at the current position.", 409);
-      }
     }
-    const count = match.events.filter((event) => event.type === "speech" && event.role === role && event.ply === args.ply).length;
-    requireValue(count < 8, "SPEECH_LIMIT", "This role has already published eight messages for this position.", 409);
-    const event = this._event(match, "speech", { role, kind: args.kind, text: message, ply: args.ply });
+    const count = match.events.filter((event) => ["note", "speech"].includes(event.type) && event.role === role && event.ply === args.ply).length;
+    requireValue(count < 8, "NOTE_LIMIT", "This role has already sent eight notes for this position.", 409);
+    const event = this._event(match, "note", { role, text: message, ply: args.ply });
+    match.receipts[key] = { fingerprint, eventSeq: event.seq };
     this._changed(match);
     return { event: clone(event), state: this._snapshot(match, role) };
   }

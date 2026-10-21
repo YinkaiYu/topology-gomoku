@@ -194,7 +194,7 @@ test("arena validates turn, version, integer coordinates and idempotent move req
   assert.throws(() => game.move(0, { expectedVersion: "0" }), errorCode("INVALID_VERSION"));
   const args = {
     gameId: game.gameId, token: game.black.token, cell: 0, expectedVersion: 0,
-    requestId: "black-first", explanation: "Control the corner."
+    requestId: "black-first"
   };
   const played = game.arena.call("arena_move", args);
   assert.equal(played.ply, 1);
@@ -232,37 +232,94 @@ test("invitations reconnect seats without silently changing identity or revoking
   assert.ok(!JSON.stringify(game.arena.call("arena_list")).includes(game.white.token));
 });
 
-test("speech is chronological, limited to legitimate positions and filtered from opponent tools", () => {
+test("notes accompany any game phase and are visible only to their author and spectators", () => {
   const game = setup();
   const commentator = game.join("commentator", "Commentator", "declared-model");
-  game.start();
-  const speak = (token, kind, ply, value) => game.arena.call("arena_speak", {
-    gameId: game.gameId, token, kind, ply, text: value
+  let nextId = 0;
+  const note = (token, ply, value) => game.arena.call("arena_note", {
+    gameId: game.gameId, token, ply, text: value, requestId: `note-${++nextId}`
   });
-  const before = game.state().version;
-  speak(game.black.token, "thinking", 0, "I will make an opening.");
-  assert.equal(game.state().version, before);
-  assert.throws(() => speak(game.white.token, "thinking", 0, "Wrong turn"), errorCode("WRONG_TURN"));
-  assert.throws(() => speak(game.black.token, "explanation", 0, "No move"), errorCode("INVALID_PLY"));
-  assert.throws(() => speak(commentator.token, "thinking", 0, "No"), errorCode("ROLE_RESTRICTED"));
+  note(game.black.token, 0, "The board wraps around.");
+  game.start();
+  note(game.white.token, 0, "Watching the opening.");
   assert.throws(() => game.move(0, { token: commentator.token }), errorCode("PLAYER_REQUIRED"));
-  game.move(0, { explanation: "Take a corner." });
-  speak(game.white.token, "reaction", 1, "An unusual opening.");
-  speak(commentator.token, "commentary", 1, "The game begins at a corner.");
-  assert.throws(() => speak(commentator.token, "commentary", 2, "Future"), errorCode("INVALID_PLY"));
-  const publicSpeech = game.state().events.filter((event) => event.type === "speech");
-  assert.equal(publicSpeech.length, 4);
-  for (const [role, token] of [["black", game.black.token], ["white", game.white.token]]) {
+  assert.throws(() => game.move(0, { explanation: "Use notes instead." }), errorCode("INVALID_ARGUMENT"));
+  game.move(0);
+  note(game.black.token, 1, "The seam connects these cells.");
+  note(game.white.token, 1, "An unusual opening.");
+  note(commentator.token, 1, "The game begins at a corner.");
+  for (const ply of [-1, 0.5, 2]) assert.throws(() => note(game.black.token, ply, "Invalid position"), errorCode("INVALID_PLY"));
+  game.arena.call("arena_control", { gameId: game.gameId, action: "pause" }, HOST);
+  note(game.black.token, 0, "Looking back at the empty board.");
+  game.arena.call("arena_resign", { gameId: game.gameId, token: game.white.token, expectedVersion: 1, requestId: "resign" });
+  note(game.white.token, 1, "That opening did not work out.");
+  assert.equal(game.state().version, 1);
+  assert.equal(game.state().phase, "ended");
+  const notes = game.state().events.filter((event) => event.type === "note");
+  assert.equal(notes.length, 7);
+  assert.deepEqual(notes.map(event => event.ply), [0, 0, 1, 1, 1, 0, 1]);
+  for (const [role, token] of [["black", game.black.token], ["white", game.white.token], ["commentator", commentator.token]]) {
     for (const operation of ["arena_state", "arena_replay"]) {
       const state = game.arena.call(operation, { gameId: game.gameId, token });
-      assert.ok(state.events.filter((event) => event.type === "speech").every((event) => event.role === role));
+      assert.deepEqual(state.events.filter((event) => event.type === "note"), notes.filter(event => event.role === role));
+      assert.ok(state.events.some(event => event.type === "resign"));
     }
   }
-  assert.equal(game.arena.call("arena_state", { gameId: game.gameId, token: commentator.token })
-    .events.filter((event) => event.type === "speech").length, 4);
-  assert.throws(() => speak(game.white.token, "thinking", 1, "x".repeat(1001)), errorCode("INVALID_ARGUMENT"));
-  for (let index = 0; index < 7; index += 1) speak(game.white.token, "thinking", 1, `Thought ${index}`);
-  assert.throws(() => speak(game.white.token, "thinking", 1, "Too much"), errorCode("SPEECH_LIMIT"));
+  assert.throws(() => note(undefined, 1, "No seat"), errorCode("TOKEN_REQUIRED"));
+  assert.throws(() => note(game.white.token, 1, "x".repeat(1001)), errorCode("INVALID_ARGUMENT"));
+});
+
+test("notes retry once, enforce per-position limits and persist the receipt before acknowledgement", (t) => {
+  const game = setup();
+  const args = { gameId: game.gameId, token: game.black.token, ply: 0, text: "Opening.", requestId: "note" };
+  const saved = t.mock.method(game.arena, "_save", () => { throw new Error("Disk unavailable"); });
+  assert.throws(() => game.arena.call("arena_note", args), /Disk unavailable/);
+  saved.mock.restore();
+  const retried = game.arena.call("arena_note", args);
+  assert.equal(retried.duplicate, true);
+  assert.equal(retried.state.events.filter(event => event.type === "note").length, 1);
+  assert.throws(() => game.arena.call("arena_note", { ...args, text: "Changed" }), errorCode("REQUEST_REUSED"));
+  for (let index = 1; index < 8; index++) game.arena.call("arena_note", { ...args, requestId: `note-${index}` });
+  assert.throws(() => game.arena.call("arena_note", { ...args, requestId: "overflow" }), errorCode("NOTE_LIMIT"));
+  assert.equal(game.arena.call("arena_note", args).event.seq, retried.event.seq);
+  assert.equal(game.state().events.filter(event => event.type === "note").length, 8);
+  game.start();
+  assert.throws(() => game.move(0, { requestId: "note" }), errorCode("REQUEST_REUSED"));
+  game.move(0);
+  assert.equal(game.arena.call("arena_note", { ...args, ply: 1, requestId: "next-position" }).state.version, 1);
+});
+
+test("legacy speech remains visible to spectators but not other seats after restart", (t) => {
+  const dataDir = fs.mkdtempSync(path.join(os.tmpdir(), "arena-legacy-notes-"));
+  let restored;
+  t.after(() => {
+    restored?.close();
+    fs.rmSync(dataDir, { recursive: true, force: true });
+  });
+  const game = setup({ dataDir });
+  const commentator = game.join("commentator");
+  game.start();
+  game.move(0);
+  const invitation = game.arena.call("arena_invite", { gameId: game.gameId, role: "white" }, HOST);
+  game.arena.close();
+  const filename = path.join(dataDir, `match-${game.gameId}.json`);
+  const saved = JSON.parse(fs.readFileSync(filename, "utf8"));
+  for (const role of ["black", "white", "commentator"]) {
+    saved.events.push({ seq: ++saved.eventSeq, type: "speech", at: new Date(1000).toISOString(),
+      role, kind: role === "commentator" ? "commentary" : "thinking", text: `Legacy ${role}`, ply: 1 });
+  }
+  fs.writeFileSync(filename, JSON.stringify(saved));
+  restored = new Arena({ dataDir });
+  const speech = result => result.events.filter(event => event.type === "speech");
+  assert.equal(speech(restored.call("arena_replay", { gameId: game.gameId })).length, 3);
+  for (const [role, token] of [["black", game.black.token], ["white", game.white.token], ["commentator", commentator.token]]) {
+    for (const name of ["arena_state", "arena_replay"]) {
+      assert.deepEqual(speech(restored.call(name, { gameId: game.gameId, token })).map(event => event.text), [`Legacy ${role}`]);
+    }
+  }
+  const rejoined = restored.call("arena_join", { ...invitation, name: "white" });
+  assert.deepEqual(speech(rejoined.state).map(event => event.text), ["Legacy white"]);
+  assert.equal(rejoined.token, game.white.token);
 });
 
 test("arena rules trace twisted seams without providing strategy evaluation", () => {
@@ -286,7 +343,9 @@ test("restart restores seats, board and receipts, pauses active games, and expor
   });
   const game = setup({ dataDir }, { topology: "cylinder" });
   game.start();
-  game.move(0, { requestId: "saved-request", explanation: "Opening." });
+  game.move(0, { requestId: "saved-request" });
+  const noteArgs = { gameId: game.gameId, token: game.black.token, ply: 1, text: "Opening.", requestId: "saved-note" };
+  const originalNote = game.arena.call("arena_note", noteArgs).event;
   game.move(1);
   const before = game.state();
   game.arena.close();
@@ -300,10 +359,13 @@ test("restart restores seats, board and receipts, pauses active games, and expor
   assert.equal(state.events.at(-1).reason, "service_restart");
   const retry = restored.call("arena_move", {
     gameId: game.gameId, token: game.black.token, cell: 0, expectedVersion: 0,
-    requestId: "saved-request", explanation: "Opening."
+    requestId: "saved-request"
   });
   assert.equal(retry.duplicate, true);
   assert.equal(retry.ply, 2);
+  const retriedNote = restored.call("arena_note", noteArgs);
+  assert.equal(retriedNote.duplicate, true);
+  assert.deepEqual(retriedNote.event, originalNote);
   restored.call("arena_control", { gameId: game.gameId, action: "resume" }, HOST);
   restored.call("arena_move", {
     gameId: game.gameId, token: game.black.token, cell: 2, expectedVersion: 2, requestId: "next"
@@ -366,7 +428,7 @@ test("either player can resign without waiting for a five or their turn, with sa
     const g = setup({}, { topology: level.topology });
     g.start();
     g.move(0);
-    const args = { gameId: g.gameId, token: g[loser].token, expectedVersion: 1, requestId: "concede", reason: "No useful continuation." };
+    const args = { gameId: g.gameId, token: g[loser].token, expectedVersion: 1, requestId: "concede" };
     const state = g.arena.call("arena_resign", args);
     assert.equal(state.phase, "ended");
     assert.equal(state.winner, loser === "black" ? "white" : "black");
@@ -375,7 +437,7 @@ test("either player can resign without waiting for a five or their turn, with sa
     assert.deepEqual(state.winningCells, []);
     assert.equal(g.arena.call("arena_resign", args).duplicate, true);
     assert.equal(g.state().eventSeq, state.eventSeq);
-    assert.throws(() => g.arena.call("arena_resign", { ...args, reason: "Changed" }), errorCode("REQUEST_REUSED"));
+    assert.throws(() => g.arena.call("arena_resign", { ...args, expectedVersion: 2 }), errorCode("REQUEST_REUSED"));
     assert.throws(() => g.move(1), errorCode("NOT_PLAYING"));
     g.arena.tick();
     assert.equal(g.state().ply, 1);
@@ -502,7 +564,7 @@ test("new matches leave commentary off until the host explicitly invites a comme
   assert.equal(g.state().commentaryEnabled, true);
   g.arena.call("arena_control", { gameId: g.gameId, action: "commentary_off" }, HOST);
   assert.equal(g.state().commentaryEnabled, false);
-  assert.throws(() => g.arena.call("arena_speak", { gameId:g.gameId, token:commentator.token, kind:"commentary", text:"Not enabled", ply:0 }), errorCode("COMMENTARY_DISABLED"));
+  assert.throws(() => g.arena.call("arena_note", { gameId:g.gameId, token:commentator.token, requestId:"disabled", text:"Not enabled", ply:0 }), errorCode("COMMENTARY_DISABLED"));
   g.arena.call("arena_control", { gameId:g.gameId, action:"commentary_on" }, HOST);
   assert.equal(g.state().commentaryEnabled, true);
 });

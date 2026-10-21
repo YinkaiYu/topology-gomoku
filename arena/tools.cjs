@@ -20,16 +20,16 @@ const tools = {
     readOnly: true
   },
   arena_move: {
-    schema: { ...seat, cell: z.number().int().nonnegative(), expectedVersion: z.number().int().nonnegative(), requestId: id, explanation: z.string().max(1000).optional() }
+    schema: { ...seat, cell: z.number().int().nonnegative(), expectedVersion: z.number().int().nonnegative(), requestId: id }
   },
-  arena_speak: {
-    schema: { ...seat, kind: z.enum(["reaction", "thinking", "explanation", "commentary"]), text: z.string().min(1).max(1000), ply: z.number().int().nonnegative(), expectedVersion: z.number().int().nonnegative().optional() }
+  arena_note: {
+    schema: { ...seat, text: z.string().min(1).max(1000), ply: z.number().int().nonnegative(), requestId: id }
   },
   arena_resign: {
-    schema: { ...seat, expectedVersion: z.number().int().nonnegative(), requestId: id, reason: z.string().max(1000).optional() }
+    schema: { ...seat, expectedVersion: z.number().int().nonnegative(), requestId: id }
   },
   arena_draw: {
-    schema: { ...seat, action: z.enum(["offer", "accept", "decline", "withdraw"]), offerId: id.optional(), expectedVersion: z.number().int().nonnegative(), requestId: id, reason: z.string().max(1000).optional() }
+    schema: { ...seat, action: z.enum(["offer", "accept", "decline", "withdraw"]), offerId: id.optional(), expectedVersion: z.number().int().nonnegative(), requestId: id }
   },
   arena_wait: {
     schema: { ...seat, afterSeq: z.number().int().nonnegative(), timeoutMs: z.number().int().min(0).max(25000).default(20000) },
@@ -48,7 +48,8 @@ function createMcp(call) {
   for (const [name, entry] of Object.entries(tools)) {
     server.registerTool(name, {
       description: descriptions[name],
-      inputSchema: entry.schema,
+      inputSchema: ["arena_move", "arena_note", "arena_resign", "arena_draw"].includes(name)
+        ? z.object(entry.schema).strict() : entry.schema,
       annotations: { readOnlyHint: Boolean(entry.readOnly), destructiveHint: false, openWorldHint: false }
     }, async (args, extra) => {
       try {

@@ -98,7 +98,7 @@ test('CLI host actions authenticate locally while player calls preserve seat cre
   const requestPath = path.join(fx.root, '.arena', 'request.json');
   await fs.writeFile(requestPath, JSON.stringify({ gameId: 'game', token: 'seat-token', text: '这一步先守住接缝。' }));
   assert.equal((await fx.run(['call', 'arena_create', '--json', '{"title":"对局"}'])).code, 0);
-  assert.equal((await fx.run(['call', 'arena_speak', '--file', requestPath])).code, 0);
+  assert.equal((await fx.run(['call', 'arena_note', '--file', requestPath])).code, 0);
   assert.equal((await fx.run(['stop'])).code, 0);
   const calls = fx.requests.filter(request => request.url !== '/api/health');
   assert.equal(calls[0].auth, 'Bearer private-host-token');
@@ -119,7 +119,7 @@ test('CLI propagates invalid moves as nonzero failures', async t => {
 
 test('JSON input supports BOM files and stdin without shell interpolation', async t => {
   const fx = await fixture(t);
-  const result = await fx.run(['call', 'arena_speak', '--json', '-'], { stdin: Readable.from(['{"text":"$HOME `echo` 中文"}']) });
+  const result = await fx.run(['call', 'arena_note', '--json', '-'], { stdin: Readable.from(['{"text":"$HOME `echo` 中文"}']) });
   assert.equal(result.code, 0, result.err);
   assert.equal(JSON.parse(result.out).result.arguments.text, '$HOME `echo` 中文');
   assert.deepEqual(await readArguments({ json: '\uFEFF{"cell":1}' }), { cell: 1 });

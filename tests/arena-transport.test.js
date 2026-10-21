@@ -6,6 +6,8 @@ const fs = require("node:fs");
 const os = require("node:os");
 const path = require("node:path");
 const http = require("node:http");
+const { execFile } = require("node:child_process");
+const { promisify } = require("node:util");
 const { startServer, validLocalRequest } = require("../arena/server.cjs");
 const { Client } = require("../arena/node_modules/@modelcontextprotocol/sdk/dist/cjs/client/index.js");
 const { StreamableHTTPClientTransport } = require("../arena/node_modules/@modelcontextprotocol/sdk/dist/cjs/client/streamableHttp.js");
@@ -160,7 +162,7 @@ test("concurrent moves are serialized around the authoritative version", async (
   assert.equal(state.board.filter(Boolean).length, 1);
 });
 
-test("SSE spectators see reflections, while player waiting and replay remain filtered", async (t) => {
+test("SSE spectators see notes, while player and commentator waits and replays remain filtered", async (t) => {
   const { app, rpc, gameId, seats } = await fixture(t);
   await rpc("arena_control", { gameId, action: "start" }, true);
   const streamAbort = new AbortController();
@@ -170,14 +172,39 @@ test("SSE spectators see reflections, while player waiting and replay remain fil
   const first = new TextDecoder().decode((await reader.read()).value);
   assert.match(first, /event: state/);
   const seq = (await rpc("arena_state", { gameId, token: seats.white.token })).result.eventSeq;
-  const waiting = rpc("arena_wait", { gameId, token: seats.white.token, afterSeq: seq, timeoutMs: 2000 });
-  await rpc("arena_speak", { gameId, token: seats.black.token, kind: "thinking", ply: 0, text: "I see a seam." });
+  const waiting = [seats.white, seats.commentator].map(seat => rpc("arena_wait", { gameId, token: seat.token, afterSeq: seq, timeoutMs: 2000 }));
+  await rpc("arena_note", { gameId, token: seats.black.token, requestId: "seam", ply: 0, text: "I see a seam." });
   const next = new TextDecoder().decode((await reader.read()).value);
   assert.match(next, /I see a seam/);
-  assert.ok(!(await waiting).result.events.some((event) => event.text === "I see a seam."));
-  assert.ok(!(await rpc("arena_replay", { gameId, token: seats.white.token })).result.events.some((event) => event.text));
+  for (const result of await Promise.all(waiting)) assert.ok(!result.result.events.some((event) => event.text));
+  for (const seat of [seats.white, seats.commentator]) assert.ok(!(await rpc("arena_replay", { gameId, token: seat.token })).result.events.some((event) => event.text));
   assert.equal((await rpc("arena_wait", { gameId, timeoutMs: 0, afterSeq: 0 })).status, 401);
   assert.equal((await rpc("arena_wait", { gameId, token: seats.black.token, afterSeq: 0, timeoutMs: 999999 })).status, 400);
+});
+
+test("README service discovery finds the Skill and real CLI notes preserve text and seat privacy", async (t) => {
+  const { app, rpc, gameId, seats, directory } = await fixture(t);
+  const health = await (await fetch(`${app.url}/api/health`)).json();
+  assert.equal(health.service, "topology-gomoku-arena");
+  assert.ok(fs.existsSync(path.join(health.workspacePath, "arena/skills/topology-gomoku-arena/SKILL.md")));
+  const cli = path.join(health.workspacePath, "arena/cli.cjs");
+  const file = path.join(directory, "note.json");
+  const args = { gameId, token: seats.black.token, text: '咦，接缝相连。`$() "quotes"\n再看一眼。', ply: 0, requestId: "cli-note" };
+  fs.writeFileSync(file, JSON.stringify(args), "utf8");
+  const run = async () => {
+    const { stdout } = await promisify(execFile)(process.execPath, [cli, "call", "arena_note", "--url", app.url, "--file", file]);
+    return JSON.parse(stdout);
+  };
+  const first = await run();
+  assert.equal(first.ok, true);
+  assert.equal(first.result.event.text, args.text);
+  const retry = await run();
+  assert.equal(retry.result.duplicate, true);
+  assert.equal(retry.result.event.seq, first.result.event.seq);
+  for (const seat of [seats.white, seats.commentator]) {
+    assert.ok(!(await rpc("arena_state", { gameId, token: seat.token })).result.events.some(event => event.text === args.text));
+  }
+  assert.equal((await rpc("arena_state", { gameId })).result.events.filter(event => event.text === args.text).length, 1);
 });
 
 for (const transport of ["http", "stdio"]) {
@@ -191,18 +218,29 @@ for (const transport of ["http", "stdio"]) {
     await client.connect(wire);
     const listed = await client.listTools();
     assert.deepEqual(listed.tools.map((tool) => tool.name).sort(), [
-      "arena_draw", "arena_join", "arena_move", "arena_replay", "arena_resign", "arena_rules", "arena_speak", "arena_state", "arena_wait"
+      "arena_draw", "arena_join", "arena_move", "arena_note", "arena_replay", "arena_resign", "arena_rules", "arena_state", "arena_wait"
     ]);
+    assert.equal(listed.tools.find(tool => tool.name === "arena_move").inputSchema.properties.explanation, undefined);
+    assert.equal(listed.tools.find(tool => tool.name === "arena_note").inputSchema.properties.kind, undefined);
     await rpc("arena_control", { gameId, action: "start" }, true);
-    const move = await client.callTool({ name: "arena_move", arguments: { gameId, token: seats.black.token, cell: 0, expectedVersion: 0, requestId: "first", explanation: "Occupy the seam." } });
+    const moveArgs = { gameId, token: seats.black.token, cell: 0, expectedVersion: 0, requestId: "first" };
+    assert.equal((await client.callTool({ name: "arena_move", arguments: { ...moveArgs, explanation: "Old field" } })).isError, true);
+    const move = await client.callTool({ name: "arena_move", arguments: moveArgs });
     assert.equal(move.isError, undefined);
     assert.equal(move.structuredContent.ply, 1);
+    const noteArgs = { gameId, token: seats.black.token, ply: 1, text: "Occupy the seam.", requestId: "seam-note" };
+    const note = await client.callTool({ name: "arena_note", arguments: noteArgs });
+    assert.equal(note.isError, undefined);
+    assert.equal(note.structuredContent.event.text, noteArgs.text);
+    assert.equal((await client.callTool({ name: "arena_note", arguments: noteArgs })).structuredContent.duplicate, true);
     assert.equal((await rpc("arena_state", { gameId })).result.board[0], 1);
     const bad = await client.callTool({ name: "arena_move", arguments: { gameId, token: seats.commentator.token, cell: 1, expectedVersion: 1, requestId: "illegal" } });
     assert.equal(bad.isError, true);
     const state = await client.callTool({ name: "arena_state", arguments: { gameId, token: seats.white.token } });
     assert.equal(state.structuredContent.turn, "white");
-    assert.ok(!state.structuredContent.events.some((event) => event.type === "speech"));
+    assert.ok(!state.structuredContent.events.some((event) => event.type === "note"));
+    const observer = await client.callTool({ name: "arena_state", arguments: { gameId, token: seats.commentator.token } });
+    assert.ok(!observer.structuredContent.events.some((event) => event.type === "note"));
     const offer = await client.callTool({ name: "arena_draw", arguments: { gameId, token: seats.black.token, action: "offer", expectedVersion: 1, requestId: "offer" } });
     assert.equal(offer.isError, undefined);
     const declined = await client.callTool({ name: "arena_draw", arguments: { gameId, token: seats.white.token, action: "decline", offerId: offer.structuredContent.drawOffer.id, expectedVersion: 1, requestId: "decline" } });

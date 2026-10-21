@@ -1,5 +1,20 @@
 # 视觉 QA
 
+## 2026-10-22：随想工具与接入流程回归
+
+- 棋手文字统一为随想，保留自下而上的悬浮气泡、左右头像及固定复盘控件。MCP 接入提示放在 README，邀请窗口只传递席位信息，不增加配置步骤或说明面板。
+- 设置 `ARENA_QA_BASE=e82016b`、`ARENA_QA_EVIDENCE=artifacts/arena-notes`，提供 Playwright 到 `NODE_PATH` 后运行 `npm run arena:qa`。隔离服务使用相同四手环面棋谱与样例文字，样例不代表真实模型对话。此次保留下列对比及终局/复盘截图。
+
+| 视口 | 四手棋局前 / 后 |
+| --- | --- |
+| 1280×720 | [之前](../../artifacts/arena-notes/before-live-1280x720.png) / [现在](../../artifacts/arena-notes/live-1280x720.png) |
+| 1920×1080 | [之前](../../artifacts/arena-notes/before-live-1920x1080.png) / [现在](../../artifacts/arena-notes/live-1920x1080.png) |
+| 1024×768 | [之前](../../artifacts/arena-notes/before-live-1024x768.png) / [现在](../../artifacts/arena-notes/live-1024x768.png) |
+| 1440×1080 | [之前](../../artifacts/arena-notes/before-live-1440x1080.png) / [现在](../../artifacts/arena-notes/live-1440x1080.png) |
+
+- [新随想](../../artifacts/arena-notes/chat-1024x768.png)、[和棋终局](../../artifacts/arena-notes/ended-1024x768.png)、[复盘](../../artifacts/arena-notes/replay-1024x768.png)；[结构化检查结果](../../artifacts/arena-notes/verification.json)。四种视口均无溢出或浏览器错误，邀请、资料、记录、SSE、暂停恢复、解说开关与导出通过；复盘前后棋盘和头像位置完全一致。
+- 201 项测试通过，其中 49 项 Arena 测试包含真实 MCP HTTP/stdio、CLI 随想及重试、其他席位过滤和旧棋谱恢复。资源、文档与 Skill 格式校验通过。未逐一实测五种客户端完整对弈，未发布远端 `arena` 分支。
+
 ## 2026-10-21：Arena 聊天布局、棋手资料与统一入口
 
 - 首页采用大 logo 与单行标题，上下排列并整体垂直居中。设置使用原游戏滑杆图标，放在创建面板右上角；对局放在居中的关卡名旁。删除左上品牌、棋局名称、绿色连接/回合指示点与底部设置栏。

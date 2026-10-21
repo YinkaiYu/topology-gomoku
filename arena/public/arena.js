@@ -30,7 +30,6 @@
   const rulesCache = new Map();
   const names = { black: "黑方", white: "白方", commentator: "解说员", host: "房主", system: "棋局" };
   const phases = { waiting: "等待入席", playing: "正在对弈", paused: "暂歇片刻", ended: "本局已结束" };
-  const kinds = { reaction: "回应", thinking: "落子前", thought: "落子前", explanation: "落子说明", commentary: "场边解说", comment: "场边解说" };
 
   function text(id, value) { $(id).textContent = value == null ? "" : String(value); }
   function element(tag, className, value) {
@@ -95,7 +94,7 @@
   }
   function voiceEvents(role) { return visibleEvents().filter((event) => event.role === role && typeof event.text === "string" && event.text.trim()); }
   function voiceMeta(event) {
-    return (event.ply ? "第 " + event.ply + " 手 · " : "开局前 · ") + (kinds[event.kind] || (event.role === "commentator" ? "场边解说" : "棋手说棋"));
+    return (event.ply ? "第 " + event.ply + " 手 · " : "开局前 · ") + (event.role === "commentator" ? "场边解说" : "棋手随想");
   }
   function renderVoice(role) {
     const node = $(role + "-voice"), events = voiceEvents(role).slice(-20);
