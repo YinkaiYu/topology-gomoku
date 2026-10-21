@@ -36,7 +36,8 @@ function text(value, field, max, optional = false) {
   return cleaned;
 }
 
-const AVATARS = ["deepseek-color", "openai", "claude-color", "gemini-color", "kimi-color", "qwen-color", "opencode"];
+// Keep the previous OpenCode avatar valid for saved profiles and replays.
+const AVATARS = ["deepseek-color", "openai", "claude-color", "gemini-color", "kimi-color", "qwen-color", "grok", "opencode"];
 function profile(value = {}) {
   requireValue(value && typeof value === "object" && !Array.isArray(value), "INVALID_PROFILE", "Expected a player profile.");
   const name = text(value.name, "name", 60, true);

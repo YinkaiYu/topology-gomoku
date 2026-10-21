@@ -8,7 +8,7 @@
   const gameKey = "topology-arena-game";
   if (location.hash) history.replaceState(null, "", location.pathname + location.search);
   sessionStorage.removeItem("topology-arena-host");
-  const avatarChoices = [{id:"",name:"默认"},{id:"deepseek-color",name:"DeepSeek"},{id:"openai",name:"OpenAI"},{id:"claude-color",name:"Claude"},{id:"gemini-color",name:"Gemini"},{id:"kimi-color",name:"Kimi"},{id:"qwen-color",name:"Qwen"},{id:"opencode",name:"OpenCode"}];
+  const avatarChoices = [{id:"",name:"默认"},{id:"deepseek-color",name:"DeepSeek"},{id:"openai",name:"OpenAI"},{id:"claude-color",name:"Claude"},{id:"gemini-color",name:"Gemini"},{id:"kimi-color",name:"Kimi"},{id:"qwen-color",name:"Qwen"},{id:"grok",name:"Grok"}];
   let drafts = {black:{name:"",avatar:""},white:{name:"",avatar:""}};
   try { const saved=JSON.parse(localStorage.getItem("arena-player-profiles"));if(saved?.black && saved?.white)drafts=saved; } catch {}
   let profileTarget = null, selectedAvatar = "", confirmAction = null, uploadEpoch = 0;
@@ -118,21 +118,23 @@
         item.animate(previous?[{transform:"translateY("+dy+"px)"},{transform:"translateY(0)"}]:[{opacity:0,transform:"translateY(18px)"},{opacity:1,transform:"translateY(0)"}],{duration:320,easing:"cubic-bezier(.2,.8,.2,1)"});}
     }
   }
-  function avatarInto(node, avatar, name) {
-    const key=(avatar || "")+":"+name;if(node._avatarKey===key)return;node._avatarKey=key;
+  function avatarInto(node, avatar, role) {
+    const key=(avatar || "")+":"+role;if(node._avatarKey===key)return;node._avatarKey=key;
+    const hasImage=Boolean(avatar && (avatar.startsWith("data:image/png;base64,") || avatarChoices.some(a=>a.id===avatar) || avatar==="opencode"));
     node.replaceChildren();node.classList.toggle("uploaded",Boolean(avatar?.startsWith("data:image/png;base64,")));
-    if(avatar && (avatar.startsWith("data:image/png;base64,") || avatarChoices.some(a=>a.id===avatar))){const img=element("img");img.src=avatar.startsWith("data:")?avatar:"/avatars/"+avatar+".svg";img.alt="";node.append(img);}
-    else node.append(element("span","initial",Array.from(name || "棋")[0]));
+    node.classList.toggle("stone-avatar",!hasImage);
+    if(hasImage){const img=element("img");img.src=avatar.startsWith("data:")?avatar:"/avatars/"+avatar+".svg";img.alt="";node.append(img);}
+    else {const stone=element("span","stone "+role+"-stone");stone.setAttribute("aria-hidden","true");node.append(stone);}
   }
-  function profileButton(node, value, fallback) {
-    node.replaceChildren();const avatar=element("span","avatar");avatarInto(avatar,value.avatar,value.name||fallback);node.append(avatar,element("span","",value.name||fallback));
+  function profileButton(node, value, role) {
+    node.replaceChildren();const avatar=element("span","avatar");avatarInto(avatar,value.avatar,role);node.append(avatar,element("span","",value.name||names[role]));
   }
-  function renderDrafts(){for(const role of ["black","white"])profileButton($("setup-"+role),drafts[role],names[role]);}
+  function renderDrafts(){for(const role of ["black","white"])profileButton($("setup-"+role),drafts[role],role);}
   function renderSeat(role) {
     const seat=state.seats[role], name=seat.displayName || (state.mode==="ai" && role==="white"?"内置 AI":seat.name || names[role]);
-    text(role+"-name",name);avatarInto($(role+"-avatar"),seat.avatar,name);
+    text(role+"-name",name);avatarInto($(role+"-avatar"),seat.avatar,role);
     $(role+"-name").title=name+(seat.model?" · "+seat.model:"");
-    profileButton($("settings-"+role),{name,avatar:seat.avatar},names[role]);
+    profileButton($("settings-"+role),{name,avatar:seat.avatar},role);
     document.querySelector('[data-invite="'+role+'"]').hidden=state.phase==="ended" || (state.mode==="ai" && role==="white");
     renderVoice(role);
   }
@@ -155,11 +157,11 @@
     text("profile-heading",names[role]+"棋手");$("avatar-upload").value="";renderAvatarOptions();$("profile-dialog").showModal();
   }
   function renderAvatarOptions(){
-    avatarInto($("profile-preview"),selectedAvatar,$("profile-name").value || names[profileTarget.role]);
+    avatarInto($("profile-preview"),selectedAvatar,profileTarget.role);
     const parent=$("avatar-options");parent.replaceChildren();
     for(const avatar of avatarChoices){const button=element("button","avatar-option");button.type="button";button.setAttribute("aria-pressed",String(selectedAvatar===avatar.id));button.dataset.avatar=avatar.id;
-      if(avatar.id){const img=element("img");img.src="/avatars/"+avatar.id+".svg";img.alt="";button.append(img);}else{const span=element("span","avatar");avatarInto(span,"",names[profileTarget.role]);button.append(span);}
-      button.append(element("span","",avatar.name));button.addEventListener("click",()=>{uploadEpoch++;selectedAvatar=avatar.id;renderAvatarOptions();});parent.append(button);}
+      if(avatar.id){const img=element("img");img.src="/avatars/"+avatar.id+".svg";img.alt="";button.append(img);}else{const span=element("span","avatar");avatarInto(span,"",profileTarget.role);button.append(span);}
+      button.append(element("span","",avatar.name));button.addEventListener("click",()=>{uploadEpoch++;selectedAvatar=avatar.id;if(avatar.id)$("profile-name").value=avatar.name;renderAvatarOptions();});parent.append(button);}
   }
   async function uploadAvatar(file){
     if(!file)return;const epoch=++uploadEpoch;
@@ -520,7 +522,6 @@
   $("board-width").addEventListener("input",()=>{if($("board-height").disabled)$("board-height").value=$("board-width").value;});
   for(const role of ["black","white"])$("setup-"+role).addEventListener("click",()=>openProfile(role,true));
   document.querySelectorAll("[data-profile]").forEach(button=>button.addEventListener("click",()=>openProfile(button.dataset.profile)));
-  $("profile-name").addEventListener("input",()=>avatarInto($("profile-preview"),selectedAvatar,$("profile-name").value || names[profileTarget.role]));
   $("avatar-upload").addEventListener("change",()=>guarded(async()=>{const button=$("profile-form").querySelector('[type="submit"]');button.disabled=true;try{await uploadAvatar($("avatar-upload").files[0]);}finally{button.disabled=false;}}));
   $("profile-form").addEventListener("submit",event=>{event.preventDefault();guarded(async()=>{
     const value={name:$("profile-name").value.trim(),avatar:selectedAvatar},target=profileTarget;

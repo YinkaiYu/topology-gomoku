@@ -1,5 +1,20 @@
 # 视觉 QA
 
+## 2026-10-22：棋子默认头像与 AI 名称联动
+
+- 未配置的头像直接使用对应黑白棋子，复用既有棋子材质；对局中不再叠加重复的小棋色徽标。选择内置 AI 头像即填入对应名称，可继续手动改成昵称；切回默认或上传图片保留名字。头像列表用 Grok 替换 OpenCode，已有 OpenCode 头像记录仍可显示，客户端接入支持不变。
+- 设置 `ARENA_QA_BASE=09a0bea`、`ARENA_QA_EVIDENCE=artifacts/arena-avatars`，提供 Playwright 到 `NODE_PATH` 后运行 `npm run arena:qa`。基线和当前页面使用相同视口、默认资料与交互，棋局仍为同一四手测试局；只保留本轮相关截图。
+
+| 视口 | 默认首页前 / 后 |
+| --- | --- |
+| 1280×720 | [之前](../../artifacts/arena-avatars/before-home-1280x720.png) / [现在](../../artifacts/arena-avatars/home-1280x720.png) |
+| 1920×1080 | [之前](../../artifacts/arena-avatars/before-home-1920x1080.png) / [现在](../../artifacts/arena-avatars/home-1920x1080.png) |
+| 1024×768 | [之前](../../artifacts/arena-avatars/before-home-1024x768.png) / [现在](../../artifacts/arena-avatars/home-1024x768.png) |
+| 1440×1080 | [之前](../../artifacts/arena-avatars/before-home-1440x1080.png) / [现在](../../artifacts/arena-avatars/home-1440x1080.png) |
+
+- 选择 DeepSeek 后：[之前](../../artifacts/arena-avatars/before-profile-1280x720.png) / [自动填名](../../artifacts/arena-avatars/profile-1280x720.png)；[Grok 选项](../../artifacts/arena-avatars/grok-1024x768.png)、[对局默认头像](../../artifacts/arena-avatars/default-room-1280x720.png)。
+- [结构化结果](../../artifacts/arena-avatars/verification.json)：四视口均通过七种 AI 头像的名称联动、黑白棋默认图形、自定义名字与上传保留、Grok 保存刷新以及原有邀请、观战和管理回归；无页面溢出或浏览器错误。201 项仓库测试、资源与文档检查通过。
+
 ## 2026-10-22：随想工具与接入流程回归
 
 - 棋手文字统一为随想，保留自下而上的悬浮气泡、左右头像及固定复盘控件。MCP 接入提示放在 README，邀请窗口只传递席位信息，不增加配置步骤或说明面板。
