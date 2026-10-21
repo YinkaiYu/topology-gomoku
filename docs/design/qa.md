@@ -1,9 +1,27 @@
 # 视觉 QA
 
-## 2026-10-21：Arena 观战精简、默认关闭解说
+## 2026-10-21：Arena 聊天布局、棋手资料与统一入口
+
+- 首页采用大 logo 与单行标题，上下排列并整体垂直居中。设置使用原游戏滑杆图标，放在创建面板右上角；对局放在居中的关卡名旁。删除左上品牌、棋局名称、绿色连接/回合指示点与底部设置栏。
+- 棋手头像和名称位于气泡外侧，黑方在左、白方在右，靠近最新发言；消息从底部向上推进，历史内容可滚动。复盘按钮与手数共用固定行，棋盘及双方头像的位置不跳动。
+- 浏览器统一入口，设置包含邀请、对局管理、资料与记录。支持七家内置 AI 图标、自定义名称和本地头像上传；创建时配置 5–19 棋盘尺寸（球面正方形）。记录显示时间，结束/删除/清空均需确认，清空保留未结束棋局。
+- 自动复现：提供 Playwright 到 `NODE_PATH` 后运行 `npm run arena:qa`。使用隔离服务与数据，以提交 `7ccacf6` 的 HTML/CSS/JS 为基线，同一环面 7×6、同一前四手 `[0, 7, 1, 8]` 与同一发言数据比较。样例发言用于布局验收，不是模型实际对话或棋力证明。
+
+| 桌面视口 | 首页前 / 后 | 四手棋局前 / 后 |
+| --- | --- | --- |
+| 1280×720，16:9 | [之前](../../artifacts/arena-room/before-home-1280x720.png) / [现在](../../artifacts/arena-room/home-1280x720.png) | [之前](../../artifacts/arena-room/before-live-1280x720.png) / [现在](../../artifacts/arena-room/live-1280x720.png) |
+| 1920×1080，16:9 | [之前](../../artifacts/arena-room/before-home-1920x1080.png) / [现在](../../artifacts/arena-room/home-1920x1080.png) | [之前](../../artifacts/arena-room/before-live-1920x1080.png) / [现在](../../artifacts/arena-room/live-1920x1080.png) |
+| 1024×768，4:3 | [之前](../../artifacts/arena-room/before-home-1024x768.png) / [现在](../../artifacts/arena-room/home-1024x768.png) | [之前](../../artifacts/arena-room/before-live-1024x768.png) / [现在](../../artifacts/arena-room/live-1024x768.png) |
+| 1440×1080，4:3 | [之前](../../artifacts/arena-room/before-home-1440x1080.png) / [现在](../../artifacts/arena-room/home-1440x1080.png) | [之前](../../artifacts/arena-room/before-live-1440x1080.png) / [现在](../../artifacts/arena-room/live-1440x1080.png) |
+
+- 其他状态：[头像设置](../../artifacts/arena-room/profile-1024x768.png)、[新发言向上推进](../../artifacts/arena-room/chat-1280x720.png)、[设置](../../artifacts/arena-room/settings-1280x720.png)、[记录](../../artifacts/arena-room/records-1024x768.png)、[三维](../../artifacts/arena-room/surface-1920x1080.png)、[主动开启解说](../../artifacts/arena-room/commentary-1440x1080.png)、[终局](../../artifacts/arena-room/ended-1024x768.png) / [复盘](../../artifacts/arena-room/replay-1024x768.png)。
+- [结构化结果](../../artifacts/arena-room/verification.json)：四视口无页面溢出或浏览器错误。验证首次进入、内置/上传头像及名称刷新保留、自定义 9×8 与球面联动、SSE、暂停恢复、和棋、导出、记录结束/删除/清空与当前棋局被删除后的返回；复盘前后棋盘和身份几何位置完全一致。
+- 198 项仓库测试通过，其中 46 项 Arena 测试覆盖实际 HTTP/stdio MCP、尺寸与资料持久化、统一本地入口、删除流清理和原有对弈不变量。桌面 Chromium 实测；移动端不属于本轮范围，尚未逐一实测五种 agent 客户端完整会话。当前保持独立任务分支，等待预览确认。
+
+## 2026-10-21：Arena 观战精简、默认关闭解说（历史基线）
 
 - 保留棋盘与双方发言的视觉重心，删除重复状态、说明文字和空发言占位；发言改为悬浮玻璃气泡。解说默认关闭，主动邀请后开启，关闭时不留布局占位。新增认输、提和提示与协商终局。
-- 自动复现：提供 Playwright 到 `NODE_PATH` 后运行 `npm run arena:qa`。脚本使用隔离服务与数据；以 `756d52d` 的原 HTML/CSS/JS 为基线，在同一环面 7×6、同一前四手 `[0, 7, 1, 8]` 与同一发言数据上比较。
+- 历史复现：使用提交 `7ccacf6` 的脚本，提供 Playwright 到 `NODE_PATH` 后运行 `npm run arena:qa`。脚本使用隔离服务与数据；以 `756d52d` 的原 HTML/CSS/JS 为基线，在同一环面 7×6、同一前四手 `[0, 7, 1, 8]` 与同一发言数据上比较。
 - 所有发言均为明确的测试样例，不是实际模型对局，不证明模型棋力。本轮仅面向横屏电脑浏览器，不再适配窄屏/移动端。
 
 | 视口 | 修改前 | 修改后（开启解说） | 关闭解说 |

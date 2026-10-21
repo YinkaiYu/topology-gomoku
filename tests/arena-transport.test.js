@@ -263,3 +263,21 @@ test("stdio bridge refuses HTTP redirects instead of forwarding seat credentials
   assert.equal(response.isError, true);
   assert.equal(redirected, 0);
 });
+
+
+test("every local browser entry obtains an HttpOnly session without a host URL", async(t)=>{
+  const {app}=await fixture(t);const response=await fetch(app.url+"/api/bootstrap");const data=await response.json();
+  assert.ok(!JSON.stringify(data).includes(app.hostToken));const cookie=response.headers.get("set-cookie");assert.match(cookie,/HttpOnly/);assert.match(cookie,/SameSite=Strict/);
+  const rpc=await fetch(app.url+"/api/call",{method:"POST",headers:{"Content-Type":"application/json",Cookie:cookie.split(";")[0],Origin:app.url},body:JSON.stringify({name:"arena_create",arguments:{mode:"duel",topology:"torus",width:10,height:9}})});
+  assert.equal(rpc.status,200);assert.equal((await rpc.json()).result.width,10);
+  const foreign=await fetch(app.url+"/api/bootstrap",{headers:{"Sec-Fetch-Site":"cross-site"}});assert.equal(foreign.status,403);assert.equal(foreign.headers.get("set-cookie"),null);
+  const foreignMutation=await fetch(app.url+"/api/call",{method:"POST",headers:{"Content-Type":"application/json",Cookie:cookie.split(";")[0],Origin:"https://example.com"},body:'{}'});assert.equal(foreignMutation.status,403);
+});
+
+test("deleting a record closes its spectator stream with a deletion event",async(t)=>{
+  const {app,gameId,rpc}=await fixture(t);await rpc("arena_control",{gameId,action:"stop"},true);
+  const response=await fetch(app.url+"/api/events?gameId="+gameId), reader=response.body.getReader();await reader.read();
+  assert.equal((await rpc("arena_delete",{gameId},true)).status,200);
+  const next=await reader.read();assert.match(Buffer.from(next.value).toString(),/event: deleted/);assert.equal((await reader.read()).done,true);
+  assert.equal(app.arena.listenerCount("deleted"),0);assert.equal((await rpc("arena_state",{gameId})).status,404);
+});

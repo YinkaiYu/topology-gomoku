@@ -1,108 +1,68 @@
 "use strict";
-// Deterministic browser fixtures, not model performance claims.
-const { chromium } = require("playwright");
-const assert = require("node:assert/strict");
-const fs = require("node:fs");
-const os = require("node:os");
-const path = require("node:path");
-const { execFileSync } = require("node:child_process");
-const { startServer } = require("../arena/server.cjs");
-const ROOT = path.resolve(__dirname, "..");
-const EVIDENCE = path.join(ROOT, "artifacts", "arena-refinement");
-const BASE = "756d52d";
-const sequence = [0,7,1,8,2,9,3,10,4];
-const comments = ["先从边界落子，看看这盘棋会怎样绕回来。","对手选择了边上，我也留住相邻的一条线。","沿着这条线继续展开，同时观察另一侧。","两侧其实相连，不能只看眼前这一小块。"];
-async function ready(page) {
-  await page.evaluate(async () => { await document.fonts.ready; await Promise.all([...document.images].map(i => i.decode().catch(() => {}))); await new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r))); });
-}
-async function shot(page, name) { await ready(page); await page.screenshot({ path:path.join(EVIDENCE,name), animations:"disabled" }); }
-async function main() {
-  fs.mkdirSync(EVIDENCE,{recursive:true});
-  const temp = fs.mkdtempSync(path.join(os.tmpdir(),"arena-desktop-"));
-  const app = await startServer({port:0,dataDir:temp,writeRuntime:false});
-  const browser = await chromium.launch({headless:true});
-  const baseline = Object.fromEntries(["index.html","arena.js","arena.css"].map(name => [name,execFileSync("git",["show",BASE+":arena/public/"+name],{cwd:ROOT})]));
-  const host = {hostAuthorized:true};
-  const call = (name,args) => app.arena.call(name,args,host);
-  function create(title="曲面上的相遇") {
-    const s=call("arena_create",{topology:"torus",mode:"duel",title}), gameId=s.gameId, tokens={};
-    for(const [role,name] of [["black","墨白"],["white","听雨"],["commentator","场边客"]])tokens[role]=call("arena_join",{...call("arena_invite",{gameId,role}),name}).token;
-    call("arena_control",{gameId,action:"start"});
-    return {gameId,tokens};
+// Repeatable UI fixtures, not model dialogue or model performance evidence.
+const {chromium}=require("playwright");
+const assert=require("node:assert/strict"),fs=require("node:fs"),os=require("node:os"),path=require("node:path");
+const {execFileSync}=require("node:child_process");const {startServer}=require("../arena/server.cjs");
+const ROOT=path.resolve(__dirname,".."), EVIDENCE=path.join(ROOT,"artifacts","arena-room"), BASE="7ccacf6";
+const sequence=[0,7,1,8,2,9,3,10,4];
+const speech=["先从边界落子，看看这盘棋会怎样绕回来。","对手选择了边上，我也留住相邻的一条线。","沿着这条线继续展开，同时观察另一侧。","两侧其实相连，不能只看眼前这一小块。"];
+async function ready(page){await page.evaluate(async()=>{await document.fonts.ready;await Promise.all([...document.images].map(i=>i.decode().catch(()=>{})));await new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r)));});}
+async function shot(page,name){await ready(page);await page.screenshot({path:path.join(EVIDENCE,name),animations:"disabled"});}
+async function main(){
+ fs.mkdirSync(EVIDENCE,{recursive:true});const temp=fs.mkdtempSync(path.join(os.tmpdir(),"arena-room-"));
+ const app=await startServer({port:0,dataDir:temp,writeRuntime:false}),browser=await chromium.launch({headless:true});
+ const host={hostAuthorized:true},call=(name,args={})=>app.arena.call(name,args,host);
+ const baseline=Object.fromEntries(["index.html","arena.js","arena.css"].map(name=>[name,execFileSync("git",["show",BASE+":arena/public/"+name],{cwd:ROOT})]));
+ const create=()=>{const {gameId}=call("arena_create",{topology:"torus",mode:"duel",title:"曲面上的相遇",players:{black:{avatar:"deepseek-color"},white:{avatar:"claude-color"}}}),tokens={};for(const [role,name]of [["black","墨白"],["white","听雨"]])tokens[role]=call("arena_join",{...call("arena_invite",{gameId,role}),name}).token;call("arena_control",{gameId,action:"start"});return{gameId,tokens};};
+ const results=[];
+ try{
+  for(const viewport of [{width:1280,height:720},{width:1920,height:1080},{width:1024,height:768},{width:1440,height:1080}]){
+   const size=viewport.width+"x"+viewport.height,context=await browser.newContext({viewport,deviceScaleFactor:1,reducedMotion:"reduce"});const page=await context.newPage(),errors=[];
+   page.on("pageerror",e=>errors.push(e.message));page.on("console",m=>{if(m.type()==="error")errors.push(m.text());});
+   await page.goto(app.url);await page.locator("#create-button").waitFor({state:"visible"});assert.equal(await page.evaluate(()=>location.hash),"");
+   const oldContext=await browser.newContext({viewport,deviceScaleFactor:1,reducedMotion:"reduce"}),before=await oldContext.newPage();
+   await before.route("**/*",async route=>{const u=new URL(route.request().url()),n=u.pathname==="/"?"index.html":u.pathname.slice(1);if(baseline[n])await route.fulfill({body:baseline[n],contentType:n.endsWith("css")?"text/css":n.endsWith("js")?"text/javascript":"text/html"});else await route.continue();});
+   await before.goto(app.url+"/#host="+app.hostToken);if(await before.locator("#new-button").isVisible())await before.locator("#new-button").click();
+   await shot(before,"before-home-"+size+".png");await shot(page,"home-"+size+".png");
+   const home=await page.evaluate(()=>{const intro=document.querySelector('.welcome-intro').getBoundingClientRect(),title=document.querySelector('.welcome-intro h1'),range=document.createRange();range.selectNodeContents(title);return{centerY:intro.y+intro.height/2,titleLines:range.getClientRects().length,settingsInPanel:!!document.querySelector('.setup-panel #settings-button')};});
+   assert.ok(Math.abs(home.centerY-viewport.height/2)<1);assert.equal(home.titleLines,1);assert.equal(home.settingsInPanel,true);
+   assert.ok(!(await page.locator("#welcome").innerText()).includes("本地 Agent"));assert.equal(await page.locator(".hero-brand").count(),1);
+   await page.locator('.topology-option:has(input[value="sphere"])').click();await page.locator("#board-width").fill("11");assert.equal(await page.locator("#board-height").inputValue(),"11");assert.equal(await page.locator("#board-height").isDisabled(),true);
+   await page.locator('.topology-option:has(input[value="torus"])').click();await page.locator("#board-width").fill("9");await page.locator("#board-height").fill("8");
+   await page.locator("#setup-black").click();await page.locator("#profile-name").fill("蓝色大肥鱼");await page.locator('[data-avatar="deepseek-color"]').click();await shot(page,"profile-"+size+".png");await page.locator('#profile-form [type="submit"]').click();
+   const png=await page.evaluate(()=>{const c=document.createElement("canvas");c.width=c.height=96;const x=c.getContext("2d");x.fillStyle="#827aa8";x.fillRect(0,0,96,96);x.fillStyle="#eee9d9";x.beginPath();x.arc(48,48,25,0,Math.PI*2);x.fill();return c.toDataURL("image/png").split(",")[1];});
+   await page.locator("#setup-white").click();await page.locator("#profile-name").fill("听雨");await page.locator("#avatar-upload").setInputFiles({name:"avatar.png",mimeType:"image/png",buffer:Buffer.from(png,"base64")});await page.waitForFunction(()=>document.querySelector("#profile-preview img")?.src.startsWith("data:image/png"));await page.locator('#profile-form [type="submit"]').click();
+   await page.locator("#create-button").click();await page.locator("#settings-dialog").waitFor({state:"visible"});
+   const custom=call("arena_list").matches[0],customState=call("arena_state",{gameId:custom.gameId});assert.equal(customState.width,9);assert.equal(customState.height,8);assert.equal(customState.seats.black.displayName,"蓝色大肥鱼");assert.ok(customState.seats.white.avatar.startsWith("data:image/png;base64,"));assert.equal(customState.seats.black.joined,false);
+   assert.equal(await page.locator("#start-button").isDisabled(),true);await page.locator('[data-invite="black"]').click();await page.locator("#invite-dialog").waitFor({state:"visible"});const invitation=await page.locator("#invite-text").inputValue();assert.ok(invitation.includes("蓝色大肥鱼")&&invitation.includes("arena_resign")&&!invitation.includes(app.hostToken)&&!invitation.includes("{{"));await page.locator("#invite-dialog [data-close]").click();await page.locator("#settings-dialog [data-close]").click();
+   assert.equal(await page.locator("#commentary").isVisible(),false);await page.reload();await page.locator("#match").waitFor({state:"visible"});assert.equal(await page.locator("#black-name").textContent(),"蓝色大肥鱼");assert.ok((await page.locator("#white-avatar img").getAttribute("src")).startsWith("data:"));
+   call("arena_control",{gameId:custom.gameId,action:"stop"});
+   const {gameId,tokens}=create();await page.goto(app.url+"/?game="+gameId);await page.locator("#match").waitFor({state:"visible"});await before.goto(app.url+"/?game="+gameId+"#host="+app.hostToken);await before.locator("#match").waitFor({state:"visible"});
+   await shot(before,"before-empty-"+size+".png");await shot(page,"empty-"+size+".png");
+   for(let i=0;i<4;i++)call("arena_move",{gameId,token:tokens[i%2?"white":"black"],cell:sequence[i],expectedVersion:i,requestId:"qa-"+i,explanation:speech[i]});
+   await page.waitForFunction(()=>document.getElementById("board").getAttribute("aria-label").includes("第 4 手"));await before.waitForFunction(()=>document.getElementById("board").getAttribute("aria-label").includes("第 4 手"));
+   await shot(before,"before-live-"+size+".png");await shot(page,"live-"+size+".png");await oldContext.close();
+   for(const role of ['black','white']){const avatar=await page.locator('#'+role+'-avatar').boundingBox(),bubble=await page.locator('#'+role+'-voice .voice-item').last().boundingBox();assert.ok(role==='black'?avatar.x+avatar.width<bubble.x:avatar.x>bubble.x+bubble.width,'avatars flank the bubbles');}
+   assert.equal(await page.locator('.chapter-heading #settings-button').count(),1);
+   const geometry=await page.evaluate(()=>{const r=document.getElementById("board").getBoundingClientRect();const v=document.getElementById("black-voice");const b=[...v.children].map(n=>({top:n.getBoundingClientRect().top,bottom:n.getBoundingClientRect().bottom,text:n.textContent}));return{board:{x:r.x,y:r.y,width:r.width,height:r.height},scrollWidth:document.documentElement.scrollWidth,scrollHeight:document.documentElement.scrollHeight,bubbles:b,voiceBottom:v.getBoundingClientRect().bottom};});
+   assert.ok(geometry.scrollWidth<=viewport.width && geometry.scrollHeight<=viewport.height);assert.ok(geometry.board.width>=300&&geometry.board.height>=220);assert.ok(geometry.bubbles[0].top<geometry.bubbles[1].top);assert.equal(geometry.bubbles[1].text,speech[2]);assert.ok(geometry.bubbles[1].bottom<=geometry.voiceBottom);
+   const oldBottom=geometry.bubbles[1].top;call("arena_speak",{gameId,token:tokens.black,kind:"thinking",ply:4,text:"这一手得兼顾接缝两侧。"});await page.waitForFunction(()=>document.querySelectorAll("#black-voice .voice-item").length===3);
+   const shifted=await page.locator("#black-voice .voice-item").nth(1).boundingBox();assert.ok(shifted.y<oldBottom,"existing bubbles move upward");await shot(page,"chat-"+size+".png");
+   await page.locator("#surface-view").click();await page.waitForFunction(()=>document.getElementById("view-range").value==="100");await shot(page,"surface-"+size+".png");await page.locator("#flat-view").click();
+   await page.locator("#settings-button").click();await shot(page,"settings-"+size+".png");await page.locator("#pause-button").click();await page.locator("#resume-button").click();await page.locator("#settings-dialog").waitFor({state:"hidden"});
+   const commentator=call("arena_join",{...call("arena_invite",{gameId,role:"commentator"}),name:"场边客"});call("arena_speak",{gameId,token:commentator.token,kind:"commentary",ply:4,text:"双方围绕接缝展开，另一侧也需要留意。"});await page.locator("#commentary").waitFor({state:"visible"});await shot(page,"commentary-"+size+".png");await page.locator("#settings-button").click();await page.locator("#commentary-toggle").click();await page.locator("#settings-dialog [data-close]").click();await page.locator("#commentary").waitFor({state:"hidden"});
+   const offer=call("arena_draw",{gameId,token:tokens.black,action:"offer",expectedVersion:4,requestId:"offer"});await page.locator("#board-notice").waitFor({state:"visible"});call("arena_draw",{gameId,token:tokens.white,action:"accept",offerId:offer.drawOffer.id,expectedVersion:4,requestId:"accept",reason:"这局就此握手。"});await page.waitForFunction(()=>document.getElementById("turn-label").textContent==="双方和棋");await shot(page,"ended-"+size+".png");
+   const boardBefore=await page.locator("#board").boundingBox(),playerBefore=await page.locator(".player-identity").first().boundingBox();await page.locator("#replay-range").fill("2");await page.locator("#replay-range").dispatchEvent("input");await shot(page,"replay-"+size+".png");assert.deepEqual(await page.locator("#board").boundingBox(),boardBefore,"replay must not shift board");assert.deepEqual(await page.locator(".player-identity").first().boundingBox(),playerBefore,"replay must not shift players");await page.locator("#return-live").click();assert.deepEqual(await page.locator("#board").boundingBox(),boardBefore);
+   await page.locator("#settings-button").click();const downloadPromise=page.waitForEvent("download");await page.locator("#export-button").click();const data=JSON.parse(fs.readFileSync(await (await downloadPromise).path(),"utf8"));assert.equal(data.winReason,"draw_agreement");assert.ok(!JSON.stringify(data).includes(tokens.black));
+   await page.locator("#rooms-button").click();await page.locator("#rooms-dialog").waitFor({state:"visible"});assert.match(await page.locator("#room-list").innerText(),/\d{4}\/\d{2}\/\d{2}/);await shot(page,"records-"+size+".png");
+   const active=create();await page.locator("#rooms-dialog [data-close]").click();await page.locator("#settings-button").click();await page.locator("#rooms-button").click();
+   await page.locator('[data-game="'+active.gameId+'"]').click();await page.locator("#confirm-action").click();await page.locator("#confirm-dialog").waitFor({state:"hidden"});assert.equal(call("arena_state",{gameId:active.gameId}).phase,"ended");
+   await page.locator('[data-game="'+active.gameId+'"]').click();await page.locator("#confirm-action").click();await page.locator("#confirm-dialog").waitFor({state:"hidden"});assert.throws(()=>call("arena_state",{gameId:active.gameId}),{code:"GAME_NOT_FOUND"});
+   const preserve=create();await page.locator("#clear-records").click();await page.locator("#confirm-action").click();await page.locator("#confirm-dialog").waitFor({state:"hidden"});assert.ok(call("arena_list").matches.every(m=>m.phase!=="ended"));assert.equal(call("arena_state",{gameId:preserve.gameId}).phase,"playing");
+   await page.locator("#rooms-dialog [data-close]").click();await page.locator("#create-button").waitFor({state:"visible"});call("arena_control",{gameId:preserve.gameId,action:"stop"});call("arena_clear");
+   assert.deepEqual(errors,[]);results.push({viewport,board:geometry.board,bubbleDirection:"up",replayShift:0,errors,result:"passed"});await context.close();
   }
-  const results=[];
-  try {
-    for(const viewport of [{width:1280,height:720},{width:1920,height:1080},{width:1024,height:768},{width:1440,height:1080}]) {
-      const size=viewport.width+"x"+viewport.height;
-      const context=await browser.newContext({viewport,deviceScaleFactor:1,reducedMotion:"reduce"});
-      const page=await context.newPage(), errors=[];
-      page.on("pageerror",e=>errors.push(e.message));
-      page.on("console",m=>{if(m.type()==="error")errors.push(m.text());});
-      await page.goto(app.url+"/#host="+app.hostToken);
-      // Each context is fresh; previous fixture matches may be selected by boot.
-      if(await page.locator("#new-button").isVisible())await page.locator("#new-button").click();
-      await page.locator("#create-button").waitFor({state:"visible"});
-      await shot(page,"home-"+size+".png");
-      await page.locator("#match-title").fill("邀请测试");
-      await page.locator("#create-button").click();
-      await page.locator("#match").waitFor({state:"visible"});
-      assert.equal(await page.locator("#commentary").isVisible(), false, "commentary defaults off without reserved space");
-      await page.locator('[data-invite="black"]').click();
-      await page.locator("#invite-dialog").waitFor({state:"visible"});
-      const invitation=await page.locator("#invite-text").inputValue();
-      assert.ok(invitation.includes("arena_resign") && invitation.includes("arena_draw") && invitation.includes("SKILL.md"));
-      assert.ok(!invitation.includes("{{") && !invitation.includes(app.hostToken));
-      const abandoned=call("arena_list").matches[0];call("arena_control",{gameId:abandoned.gameId,action:"stop"});
-      const {gameId,tokens}=create();
-      await page.goto(app.url+"/?game="+gameId+"#host="+app.hostToken);
-      await page.locator("#match").waitFor({state:"visible"});
-      const oldContext=await browser.newContext({viewport,deviceScaleFactor:1,reducedMotion:"reduce"});
-      const before=await oldContext.newPage();
-      await before.route("**/*",async route=>{const url=new URL(route.request().url());const name=url.pathname==="/"?"index.html":url.pathname.slice(1);if(baseline[name])await route.fulfill({body:baseline[name],contentType:name.endsWith("css")?"text/css":name.endsWith("js")?"text/javascript":"text/html"});else await route.continue();});
-      await before.goto(app.url+"/?game="+gameId+"#host="+app.hostToken);
-      await before.locator("#match").waitFor({state:"visible"});
-      await shot(before,"before-empty-"+size+".png");await shot(page,"empty-"+size+".png");
-      for(let i=0;i<4;i++)call("arena_move",{gameId,token:tokens[i%2?"white":"black"],cell:sequence[i],expectedVersion:i,requestId:"qa-"+i,explanation:comments[i]});
-      call("arena_speak",{gameId,token:tokens.commentator,kind:"commentary",ply:4,text:"双方都在边界附近展开。环面的另一侧并不遥远，接下来要留意跨边界的连线。"});
-      await page.waitForFunction(()=>document.getElementById("board").getAttribute("aria-label").includes("第 4 手"));
-      await before.waitForFunction(()=>document.getElementById("board").getAttribute("aria-label").includes("第 4 手"));
-      await shot(before,"before-live-"+size+".png");await shot(page,"live-"+size+".png");
-      const geometry=await page.evaluate(()=>{
-        const rect=id=>{const r=document.getElementById(id).getBoundingClientRect();return {x:r.x,y:r.y,right:r.right,bottom:r.bottom,width:r.width,height:r.height};};
-        const bubble=document.querySelector(".speech-bubble"), style=getComputedStyle(bubble);
-        return {width:innerWidth,scrollWidth:document.documentElement.scrollWidth,board:rect("board"),commentary:rect("commentary"),bubble:{background:style.backgroundImage,shadow:style.boxShadow},text:document.getElementById("match").innerText};
-      });
-      assert.ok(geometry.scrollWidth<=viewport.width);
-      assert.ok(geometry.board.width>=300 && geometry.board.height>=220);
-      assert.ok(geometry.board.bottom<=geometry.commentary.y);
-      assert.ok(geometry.commentary.bottom<=viewport.height-35);
-      assert.notEqual(geometry.bubble.background,"none");assert.notEqual(geometry.bubble.shadow,"none");
-      for(const unwanted of ["坐标从左上角开始","公开表达","正在决策","等待棋手说棋","落子说明"])assert.ok(!geometry.text.includes(unwanted));
-      await oldContext.close();
-      await page.locator(".host-options summary").click();await page.locator("#commentary-toggle").click();
-      await page.locator("#commentary").waitFor({state:"hidden"});await page.locator(".host-options summary").click();
-      const quietBoard=await page.locator("#board").boundingBox();
-      assert.ok(quietBoard.height>geometry.board.height+100, "disabled commentary releases its layout space");
-      await shot(page,"no-commentary-"+size+".png");
-      await page.reload();await page.locator("#match").waitFor({state:"visible"});assert.equal(await page.locator("#commentary").isVisible(),false);
-      await page.locator(".host-options summary").click();await page.locator("#commentary-toggle").click();
-      await page.locator("#commentary").waitFor({state:"visible"});await page.locator(".host-options summary").click();
-      await page.locator("#surface-view").click();await page.waitForFunction(()=>document.getElementById("view-range").value==="100");await shot(page,"surface-"+size+".png");await page.locator("#flat-view").click();
-      await page.locator("#pause-button").click();await page.locator("#resume-button").click();
-      const offer=call("arena_draw",{gameId,token:tokens.black,action:"offer",expectedVersion:4,requestId:"draw-offer"});
-      await page.locator("#board-notice").waitFor({state:"visible"});await shot(page,"draw-offer-"+size+".png");
-      call("arena_draw",{gameId,token:tokens.white,action:"accept",offerId:offer.drawOffer.id,expectedVersion:4,requestId:"draw-accept",reason:"这局就此握手。"});
-      await page.waitForFunction(()=>document.getElementById("turn-label").textContent==="双方和棋");await shot(page,"draw-"+size+".png");
-      await page.locator("#replay-range").fill("2");await page.locator("#replay-range").dispatchEvent("input");await shot(page,"replay-"+size+".png");
-      const downloadPromise=page.waitForEvent("download");await page.locator("#export-button").click();const download=await downloadPromise;const data=JSON.parse(fs.readFileSync(await download.path(),"utf8"));assert.equal(data.winReason,"draw_agreement");assert.ok(!JSON.stringify(data).includes(tokens.black));
-      await page.reload();await page.locator("#match").waitFor({state:"visible"});await page.locator("#timeline-button").click();await page.locator("#timeline-dialog").waitFor({state:"visible"});assert.ok((await page.locator("#timeline").innerText()).includes("双方同意和棋"));await page.locator("#timeline-dialog [data-close]").click();
-      const conceded=create("一局已定");call("arena_move",{gameId:conceded.gameId,token:conceded.tokens.black,cell:0,expectedVersion:0,requestId:"first"});call("arena_resign",{gameId:conceded.gameId,token:conceded.tokens.white,expectedVersion:1,requestId:"resign",reason:"我认输。"});
-      await page.goto(app.url+"/?game="+conceded.gameId);await page.waitForFunction(()=>document.getElementById("turn-label").textContent.includes("认输"));await shot(page,"resign-"+size+".png");
-      const winning=create("五连终局");for(let i=0;i<sequence.length;i++)call("arena_move",{gameId:winning.gameId,token:winning.tokens[i%2?"white":"black"],cell:sequence[i],expectedVersion:i,requestId:"winning-"+i});await page.goto(app.url+"/?game="+winning.gameId);await page.waitForFunction(()=>document.getElementById("turn-label").textContent==="黑方获胜");
-      assert.deepEqual(errors,[]);results.push({viewport,board:geometry.board,errors,result:"passed"});await context.close();
-    }
-    fs.writeFileSync(path.join(EVIDENCE,"verification.json"),JSON.stringify({baseline:BASE,fixture:"Deterministic four-move torus, same state before/after; scripted speech, not model dialogue.",checks:["16:9 and 4:3 desktop","floating speech","reduced labels","commentary defaults off, releases layout space, and stays off after reload","host commentary toggle","invitations from editable prompts","SSE","2D/3D","pause/resume","draw offer/accept","resignation","five-stone result","replay/export","no overflow or browser errors"],results},null,2)+"\n");
-    console.log("Arena desktop QA passed: "+results.length+" viewports.");
-  } finally {await browser.close();await app.close();fs.rmSync(temp,{recursive:true,force:true});}
+  fs.writeFileSync(path.join(EVIDENCE,"verification.json"),JSON.stringify({baseline:BASE,fixture:"Same four-move 7x6 torus and scripted speech before/after, not model dialogue.",checks:["16:9 and 4:3 desktops","unified browser entry","upward chat bubbles","built-in and uploaded avatars","display names survive refresh","custom 9x8 board and square sphere control","fixed replay geometry","centered chapter glyph/name","settings-only management","dated records","stop/delete/clear with active games preserved","default commentary off","SSE","2D/3D","pause/resume","draw/replay/export","no overflow or browser errors"],results},null,2)+"\n");console.log("Arena room QA passed: "+results.length+" viewports.");
+ }finally{await browser.close();await app.close();fs.rmSync(temp,{recursive:true,force:true});}
 }
 main().catch(e=>{console.error(e);process.exitCode=1;});

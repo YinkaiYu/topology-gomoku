@@ -30,7 +30,7 @@ async function bodyJSON(request) {
   const chunks = [];
   for await (const chunk of request) {
     size += chunk.length;
-    if (size > 131072) throw problem("BODY_TOO_LARGE", "Request exceeds 128 KiB.", 413);
+    if (size > 262144) throw problem("BODY_TOO_LARGE", "Request exceeds 256 KiB.", 413);
     chunks.push(chunk);
   }
   try {
@@ -183,15 +183,18 @@ async function startServer(options = {}) {
     try {
       if (closed) throw problem("SHUTDOWN", "Arena is stopping.", 503);
       if (!validLocalRequest(request, server.address()?.port)) throw problem("LOCAL_ONLY", "Use this arena's local origin.", 403);
+      if (request.headers["sec-fetch-site"] === "cross-site") throw problem("LOCAL_ONLY", "Open the local arena directly.", 403);
       const parsed = new URL(request.url, url);
       const pathname = decodeURIComponent(parsed.pathname);
       const bearer = request.headers.authorization?.replace(/^Bearer /, "");
-      const context = { hostAuthorized: equalSecret(bearer, hostToken) };
+      const cookie = (request.headers.cookie || "").split(";").map(s => s.trim()).find(s => s.startsWith(`arena_${server.address().port}=`))?.split("=")[1];
+      const context = { hostAuthorized: equalSecret(bearer, hostToken) || equalSecret(cookie, hostToken) };
       if (request.method === "GET" && pathname === "/api/health") {
         return json(response, 200, { service: SERVICE, version: VERSION, gameVersion: GAME_VERSION, pid: process.pid, workspacePath: ROOT });
       }
       if (request.method === "GET" && pathname === "/api/bootstrap") {
-        return json(response, 200, { version: VERSION, gameVersion: GAME_VERSION, baseCommit: BASE_COMMIT, hostRequired: true, workspacePath: ROOT, mcpUrl: `${url}/mcp` });
+        response.setHeader("Set-Cookie", `arena_${server.address().port}=${hostToken}; HttpOnly; SameSite=Strict; Path=/`);
+        return json(response, 200, { version: VERSION, gameVersion: GAME_VERSION, baseCommit: BASE_COMMIT, workspacePath: ROOT, mcpUrl: `${url}/mcp` });
       }
       if (request.method === "GET" && pathname === "/api/prompts") {
         return json(response, 200, { invitation: readPrompt("invitation.md"), player: readPrompt("player.md"), commentator: readPrompt("commentator.md") });
@@ -232,8 +235,10 @@ async function startServer(options = {}) {
         send(state);
         const changed = (id) => { if (id === gameId) send(arena.call("arena_state", { gameId })); };
         arena.on("change", changed);
+        const deleted = (id) => { if (id === gameId) { response.write('event: deleted\ndata: {}\n\n'); cleanup(); response.end(); } };
+        arena.on("deleted", deleted);
         const heartbeat = setInterval(() => send(arena.call("arena_state", { gameId })), 10000);
-        const cleanup = () => { clearInterval(heartbeat); arena.off("change", changed); streams.delete(response); };
+        const cleanup = () => { clearInterval(heartbeat); arena.off("change", changed); arena.off("deleted", deleted); streams.delete(response); };
         streams.set(response, cleanup);
         response.on("close", cleanup);
         return;

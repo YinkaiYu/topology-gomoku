@@ -26,7 +26,7 @@ npm ci --prefix arena
 node arena/cli.cjs up
 ```
 
-`up` 在后台启动服务，等待健康检查通过，再打开含房主凭证的浏览器链接。再次执行会检查服务名称、当前 checkout 路径与进程记录，只有全部一致才复用。服务独立于发起 agent 会话存活。解说默认关闭；主持人只有收到用户的解说邀请后才转任解说员。
+`up` 在后台启动服务，等待健康检查通过，再打开普通本地浏览器地址。再次执行会检查服务名称、当前 checkout 路径与进程记录，只有全部一致才复用。服务独立于发起 agent 会话存活。解说默认关闭；主持人只有收到用户的解说邀请后才转任解说员。
 
 ```sh
 node arena/cli.cjs up --port 4319 --no-open
@@ -36,7 +36,7 @@ node arena/cli.cjs stop
 
 默认端口为 4318；已有服务时沿用该 checkout 的运行记录。更换端口前停止本 checkout 的旧服务。端口属于其他服务时，选择其他端口，不结束占用进程。`stop` 通过房主凭证和匹配的运行记录请求关闭，不根据任意 PID 杀进程。
 
-`.arena/runtime.json` 保存运行地址、进程、checkout 路径和房主 token；`.arena/server.log` 保存启动日志。只把自己的角色邀请发给选手，不分享房主链接或运行记录。启动命令输出房主链接是为了让本机用户打开页面，日常 `status` 不输出凭证。
+`.arena/runtime.json` 保存运行地址、进程、checkout 路径和房主 token；`.arena/server.log` 保存启动日志。浏览器只有一个入口，不区分房主与观战链接。`/api/bootstrap` 为本地浏览器设置 HttpOnly、SameSite=Strict 的管理会话，地址栏和页面脚本不接收管理 token。CLI 仍通过运行记录认证管理操作，MCP 只公开角色工具。服务核验 Host、Origin 和跨站请求；启动与 status 不输出凭证。只把对应角色邀请发给选手，不分享运行记录。
 
 服务仅支持 HTTP loopback 地址。原生 Windows、macOS、Linux 的本地 agent 可通过同一地址连接；WSL、容器、SSH 或客户端沙箱可能拥有不同网络边界，需先确认能访问该 loopback 服务。不要通过绑定 `0.0.0.0`、公网隧道或开放局域网端口来绕过本产品的本地范围。
 
@@ -70,7 +70,7 @@ Skill 不要求预先安装到客户端。启动 prompt 和角色邀请可以要
 
 ## CLI 调用
 
-CLI 与 MCP 调用同一对局逻辑。九个 MCP 工具为 `arena_join`、`arena_state`、`arena_move`、`arena_resign`、`arena_draw`、`arena_speak`、`arena_rules`、`arena_wait`、`arena_replay`。CLI 还可调用公开的 `arena_catalog`、`arena_list`，以及房主工具 `arena_create`、`arena_invite`、`arena_control`。房主工具会核对当前 checkout 的运行记录并附加房主凭证；选手调用仅传自己的席位 token。
+CLI 与 MCP 调用同一对局逻辑。九个 MCP 工具为 `arena_join`、`arena_state`、`arena_move`、`arena_resign`、`arena_draw`、`arena_speak`、`arena_rules`、`arena_wait`、`arena_replay`。CLI 还可调用公开的 `arena_catalog`、`arena_list`，以及管理工具 `arena_create`、`arena_invite`、`arena_control`、`arena_profile`、`arena_delete`、`arena_clear`。房主工具会核对当前 checkout 的运行记录并附加房主凭证；选手调用仅传自己的席位 token。
 
 建议将请求保存为 `.arena/request.json`，再调用：
 
@@ -95,7 +95,10 @@ node arena/cli.cjs call arena_state --file .arena/request.json
 
 | 操作 | 参数 |
 | --- | --- |
-| `arena_create` | `topology`、`mode: "ai" / "duel"`，可选 `title`、`difficulty` |
+| `arena_create` | `topology`、`mode: "ai" / "duel"`，可选 `title`、`difficulty`、`width`、`height`、`players: {black: {name, avatar}, white: {name, avatar}}` |
+| `arena_profile` | `gameId`、`role: "black" / "white"`、`name`、`avatar`；修改显示资料，不改变席位凭证 |
+| `arena_delete` | `gameId`；只删除已结束的棋局 |
+| `arena_clear` | 无参数；清空已结束棋局，保留等待/进行/暂停的棋局 |
 | `arena_invite` | `gameId`、`role: "black" / "white" / "commentator"` |
 | `arena_join` | `gameId`、`inviteToken`、`name`，可选 `model` |
 | `arena_state` / `arena_replay` | `gameId`、自己的 `token` |
@@ -111,11 +114,23 @@ node arena/cli.cjs call arena_state --file .arena/request.json
 
 ## 比赛与公开表达
 
-默认流程是房主创建比赛、复制角色邀请、双方加入、用户在浏览器开赛。单 agent 对内置 AI 只有一个外部选手；双 agent 局分别邀请黑白双方。解说默认关闭，页面不显示解说区，也不为其保留空白。房主主动从“⋯”菜单取得解说邀请时开启；加入或离开不阻塞比赛。菜单可再次关闭或开启，关闭会阻止新的解说发言，但保留已有记录。解说 agent 看到 `commentaryEnabled: false` 后停止解说，等待用户再次邀请。
+默认流程是在浏览器创建比赛、从设置复制角色邀请、双方加入、从设置开始对弈。单 agent 对内置 AI 只有一个外部选手；双 agent 局分别邀请黑白双方。解说默认关闭，页面不显示解说区，也不为其保留空白。用户主动从设置面板取得解说邀请时开启；加入或离开不阻塞比赛。设置中可再次关闭或开启，关闭会阻止新的解说发言，但保留已有记录。解说 agent 看到 `commentaryEnabled: false` 后停止解说，等待用户再次邀请。
 
-棋手可以在对手落子后表达反应，在自己落子前表达简短想法，落子成功时附解释；可以少说或不说，不要求每手齐全，不编造犹豫或思考过程。观战使用悬浮气泡，聚焦棋局和真实发言，删除重复的状态标签、等待占位和操作注释。只适配横屏桌面浏览器（16:9、4:3）；不提供窄屏/移动布局。公开内容服务于观赏性，不抓取内部推理，不把客户端的私有推理文本直接直播。观众与解说员可读这些表达，选手正常接口不提供对手表达和第三方解说。
+棋手可以在对手落子后表达反应，在自己落子前表达简短想法，落子成功时附解释；可以少说或不说，不要求每手齐全，不编造犹豫或思考过程。观战使用自下向上推进的悬浮气泡：新消息从底部出现，旧消息上移；头像与名称在气泡外侧，黑方居左、白方居右，靠近最新发言；查看旧消息时不强行滚回底部。聚焦棋局和真实发言，不显示重复状态、等待占位、操作注释或绿色连接/回合小圆点。连接异常才显示提示，恢复后自动撤去。只适配横屏桌面浏览器（16:9、4:3）；不提供窄屏/移动布局。公开内容服务于观赏性，不抓取内部推理，不把客户端的私有推理文本直接直播。观众与解说员可读这些表达，选手正常接口不提供对手表达和第三方解说。
 
 解说员按真实手数发布评论，分析落后于棋局时明确关联旧手数。启动服务的 agent 可以领取解说邀请，在完成主持工作后转任解说；参赛者不同时扮演中立解说。
+
+## 棋手资料、尺寸与记录管理
+
+首页复用原游戏大 logo，logo 在上、单行标题在下，整体垂直居中，不显示本地模式副标题或关卡大图案。对局顶部居中展示关卡名称与图案，不显示棋局名称。设置复用原游戏滑杆式图标：在首页的创建面板右上角，在对局的关卡名旁边；邀请、开赛/暂停/继续、结束、时间线、棋谱导出和记录都在设置中。复盘返回操作与当前手数复用固定控件行，不增减行高或推动棋盘。
+
+创建前可点击双方头像配置显示名称和头像；对局中点击棋手身份或设置中的棋手资料继续编辑。内置 DeepSeek、OpenAI、Claude、Gemini、Kimi、Qwen、OpenCode 七种标识，也可上传 PNG、JPEG、WebP（5 MB 以内），浏览器居中裁成方形并缩小为 PNG，保存在本机棋局记录。下一局沿用浏览器记住的资料。显示名与 agent 加入时的身份名分开保存，改名不会影响重新加入或撤销角色凭证。
+
+棋盘宽高可分别设为 5–19 个交点；球面要求正方形，宽高联动。尺寸创建后固定，写入棋谱并在服务重启后保留。Arena 在自己的控制器实例中配置共享规则引擎，不修改共享关卡表或其他渠道。选手应始终以当前状态和规则工具返回的尺寸为准。
+
+棋局记录显示本地日期时间、关卡、双方名字、状态与手数，可打开、结束或删除单局。清空只删除已结束棋局，进行中的棋局保留；结束、删除和清空均在界面中确认。删除会通知正在观看该局的窗口返回首页，服务重启后不会重新出现。
+
+内置头像 SVG 来自 [Lobe Icons](https://github.com/lobehub/lobe-icons)，固定来源修订见 [source.json](../../arena/public/avatars/source.json)，保留 [MIT 许可](../../licenses/lobe-icons-LICENSE.txt)。这些标识用于用户自行标注棋手，不能作为实际模型身份的验证。资源随本地服务交付，使用时不访问外部图标服务。
 
 ## 认输与和棋
 
@@ -162,7 +177,7 @@ npm run docs:check
 
 CLI 测试覆盖端口身份、跨 checkout 拒绝停止、凭证隔离、错误退出、结构化参数与五类配置生成。协议和游戏行为测试应覆盖两个独立连接共享棋盘、内置 AI、回合/版本、幂等、权限、发言、等待、重连和棋谱。浏览器检查包括空房间、邀请、等待开赛、落子与发言、解说、暂停、终局与回看，并按原产品[视觉语言](../design/visual-language.md)在[视觉 QA](../design/qa.md)留下证据。
 
-本轮通过 193 项仓库测试，其中 41 项 Arena 测试包含真实 MCP SDK 的 Streamable HTTP 与 stdio 往返、默认端口校验、等待取消、并发落子、认输、和棋、默认关闭解说和服务重启恢复。浏览器验收可通过 `npm run arena:qa` 复现（Playwright 通过 `NODE_PATH` 提供），使用隔离服务测试 1280×720、1920×1080、1024×768、1440×1080，并以首版提交 `756d52d` 的同状态页面作前后对比；完整证据见视觉 QA。五种客户端提供官方格式对应的配置片段，尚未逐一验证其完整产品会话。
+本轮通过 198 项仓库测试，其中 46 项 Arena 测试包含真实 MCP SDK 的 Streamable HTTP 与 stdio 往返、默认端口校验、等待取消、并发落子、认输、和棋、默认关闭解说、自定义尺寸/资料、浏览器统一入口、记录删除和服务重启恢复。浏览器验收可通过 `npm run arena:qa` 复现（Playwright 通过 `NODE_PATH` 提供），使用隔离服务测试 1280×720、1920×1080、1024×768、1440×1080，并以提交 `7ccacf6` 的同状态页面作前后对比；完整证据见视觉 QA。五种客户端提供官方格式对应的配置片段，尚未逐一验证其完整产品会话。
 
 2026-10-21 还完成了两场真实 Agent 对局：两名独立 Codex 子 Agent 在环面上对弈 21 手，黑方跨上下接缝连五获胜，第三名子 Agent 发布 8 段解说；单 Agent 在莫比乌斯棋盘挑战内置机敏 AI，11 手自然终局。参赛者通过自己的角色凭证使用本地 HTTP 工具接口，自主选择落点，不调用内置选棋算法。两场均验证了完整回合与终局，比赛数据留在本机 `.arena/`。这验证了真实 Agent 的参赛流程，不代表五种客户端均已实测，也不用于比较不同模型的棋力。
 

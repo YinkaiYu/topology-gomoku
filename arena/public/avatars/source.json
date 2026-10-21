@@ -1,0 +1,14 @@
+{
+  "repository": "https://github.com/lobehub/lobe-icons",
+  "commit": "21b2144f4ebe87ead9b7c0e10067759ae261b03e",
+  "icons": [
+    "deepseek-color",
+    "openai",
+    "claude-color",
+    "gemini-color",
+    "kimi-color",
+    "qwen-color",
+    "opencode"
+  ],
+  "license": "MIT"
+}

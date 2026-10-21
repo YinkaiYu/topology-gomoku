@@ -5,14 +5,13 @@
   const Engine = window.TopologyGomoku;
   const Art = window.TopologyBoardArt;
   const Content = window.TopologyGameContent;
-  const hostKey = "topology-arena-host";
   const gameKey = "topology-arena-game";
-  const fragment = new URLSearchParams(location.hash.slice(1));
-  if (fragment.has("host")) {
-    sessionStorage.setItem(hostKey, fragment.get("host"));
-    history.replaceState(null, "", location.pathname + location.search);
-  }
-  const hostToken = sessionStorage.getItem(hostKey) || "";
+  if (location.hash) history.replaceState(null, "", location.pathname + location.search);
+  sessionStorage.removeItem("topology-arena-host");
+  const avatarChoices = [{id:"",name:"默认"},{id:"deepseek-color",name:"DeepSeek"},{id:"openai",name:"OpenAI"},{id:"claude-color",name:"Claude"},{id:"gemini-color",name:"Gemini"},{id:"kimi-color",name:"Kimi"},{id:"qwen-color",name:"Qwen"},{id:"opencode",name:"OpenCode"}];
+  let drafts = {black:{name:"",avatar:""},white:{name:"",avatar:""}};
+  try { const saved=JSON.parse(localStorage.getItem("arena-player-profiles"));if(saved?.black && saved?.white)drafts=saved; } catch {}
+  let profileTarget = null, selectedAvatar = "", confirmAction = null, uploadEpoch = 0;
   let bootstrap = {};
   let levels = Content.LEVELS;
   let matches = [];
@@ -46,20 +45,19 @@
     clearTimeout(toastTimer);
     toastTimer = setTimeout(() => { $("toast").hidden = true; }, 3200);
   }
-  function error(message) {
+  function error(message, kind = "operation") {
+    $("error-banner").dataset.kind=kind;
     text("error-text", message);
     $("error-banner").hidden = false;
   }
   function connection(connected, label) {
-    const node = $("connection");
-    node.dataset.status = connected ? "connected" : "disconnected";
-    node.title = label || (connected ? "已连接" : "连接中断");
-    node.setAttribute("aria-label", node.title);
+    if(!connected)error(label || "连接中断，正在重连。", "connection");
+    else if($("error-banner").dataset.kind==="connection")$("error-banner").hidden=true;
   }
 
   async function call(name, args = {}, admin = false) {
     const headers = { "Content-Type": "application/json" };
-    if (admin && hostToken) headers.Authorization = "Bearer " + hostToken;
+
     const response = await fetch("/api/call", { method: "POST", headers, body: JSON.stringify({ name, arguments: args }) });
     const data = await response.json();
     if (!response.ok || data.ok === false || data.error) throw new Error(data.error?.message || "操作未完成，请稍后重试。");
@@ -83,14 +81,14 @@
   }
   function displayPlayer(role) {
     const seat = state?.seats?.[role];
-    return seat?.name || names[role] || role || "";
+    return seat?.displayName || seat?.name || names[role] || role || "";
   }
   function formatTime(at) {
     if (!at) return "";
     const date = new Date(at);
     return Number.isNaN(date.getTime()) ? "" : date.toLocaleTimeString("zh-CN", { hour: "2-digit", minute: "2-digit", second: "2-digit", hour12: false });
   }
-  function isJoined(seat) { return Boolean(seat && (seat.joined || seat.name)); }
+  function isJoined(seat) { return Boolean(seat?.joined); }
   function visibleEvents() {
     const events = state?.events || [];
     return replayPly === null ? events : events.filter((event) => Number(event.ply || 0) <= replayPly);
@@ -100,64 +98,79 @@
     return (event.ply ? "第 " + event.ply + " 手 · " : "开局前 · ") + (kinds[event.kind] || (event.role === "commentator" ? "场边解说" : "棋手说棋"));
   }
   function renderVoice(role) {
-    const node = $(role + "-voice");
-    const events = voiceEvents(role).slice(-2).reverse();
-    const key = state.gameId + ":" + events.map((event) => event.seq).join(",");
+    const node = $(role + "-voice"), events = voiceEvents(role).slice(-20);
+    const key = state.gameId + ":" + events.map(event => event.seq).join(",");
     if (node.dataset.events === key) return;
-    node.dataset.events = key;
-    node.replaceChildren();
-    events.forEach((event) => {
-      const item = element("blockquote", "voice-item speech-bubble");
-      item.title = voiceMeta(event);
-      item.setAttribute("aria-label", voiceMeta(event));
-      item.append(element("p", "", event.text));
+    const sameGame=node.dataset.game===state.gameId;
+    const follow = !sameGame || replayPly !== null || node.scrollHeight-node.scrollTop-node.clientHeight<36;
+    const old = new Map([...node.children].map(n=>[n.dataset.seq,{node:n,y:n.getBoundingClientRect().y}]));
+    if(!sameGame){node.replaceChildren();old.clear();}
+    node.dataset.events=key;node.dataset.game=state.gameId;
+    const retained=new Set(events.map(e=>String(e.seq)));
+    for(const child of [...node.children])if(!retained.has(child.dataset.seq))child.remove();
+    for(const event of events){
+      let item=old.get(String(event.seq))?.node;
+      if(!item){item=element("blockquote","voice-item speech-bubble");item.dataset.seq=String(event.seq);item.title=voiceMeta(event);item.setAttribute("aria-label",voiceMeta(event));item.append(element("p","",event.text));}
       node.append(item);
-    });
-  }
-
-  function renderSeat(role) {
-    const seat = state.seats?.[role];
-    const joined = isJoined(seat);
-    text(role + "-name", joined ? state.mode === "ai" && role === "white" ? "内置 AI" : seat.name || names[role] : "等待棋手");
-    text(role + "-model", joined ? seat.model || "" : "");
-    $(role + "-model").hidden = !seat?.model;
-    $(role + "-turn").hidden = state.phase !== "playing" || state.turn !== role || replayPly !== null;
-    const invite = document.querySelector('[data-invite="' + role + '"]');
-    invite.hidden = !hostToken || joined || state.phase === "ended";
-    invite.firstChild.textContent = "邀请" + names[role] + " ";
-    document.querySelector('[data-reinvite="' + role + '"]').hidden = state.phase === "ended" || (state.mode === "ai" && role === "white");
-    renderVoice(role);
-  }
-  function updateActivity() {
-    if (!state) return;
-    ["black", "white"].forEach((role) => {
-      const seat = state.seats?.[role];
-      $(role + "-name").title = seat?.model || "";
-    });
-  }
-
-  function renderCommentary() {
-    $("commentary").hidden = !state.commentaryEnabled;
-    $("commentary-toggle").hidden = !isJoined(state.seats?.commentator) && !state.commentaryEnabled;
-    text("commentary-toggle", state.commentaryEnabled ? "关闭解说" : "开启解说");
-    document.querySelector('[data-reinvite="commentator"]').hidden = state.phase === "ended";
-    const commentator = state.seats?.commentator;
-    const event = voiceEvents("commentator").at(-1);
-    text("commentary-heading", event ? commentator?.name || "解说" : "");
-    const invite = document.querySelector('[data-invite="commentator"]');
-    invite.hidden = !hostToken || isJoined(commentator) || state.phase === "ended";
-    $("commentary").classList.toggle("has-speech", Boolean(event));
-    $("commentary").classList.toggle("is-empty", !event && invite.hidden);
-    const node = $("commentary-text");
-    const key = state.gameId + ":" + (event?.seq || "");
-    if (node.dataset.events === key) return;
-    node.dataset.events = key;
-    node.replaceChildren();
-    if (event) {
-      node.title = voiceMeta(event);
-      node.append(element("p", "", event.text));
+    }
+    if(follow)node.scrollTop=node.scrollHeight;
+    if(sameGame && follow && replayPly===null && !matchMedia("(prefers-reduced-motion: reduce)").matches){
+      for(const item of node.children){const previous=old.get(item.dataset.seq);const dy=previous?previous.y-item.getBoundingClientRect().y:18;
+        item.animate(previous?[{transform:"translateY("+dy+"px)"},{transform:"translateY(0)"}]:[{opacity:0,transform:"translateY(18px)"},{opacity:1,transform:"translateY(0)"}],{duration:320,easing:"cubic-bezier(.2,.8,.2,1)"});}
     }
   }
+  function avatarInto(node, avatar, name) {
+    const key=(avatar || "")+":"+name;if(node._avatarKey===key)return;node._avatarKey=key;
+    node.replaceChildren();node.classList.toggle("uploaded",Boolean(avatar?.startsWith("data:image/png;base64,")));
+    if(avatar && (avatar.startsWith("data:image/png;base64,") || avatarChoices.some(a=>a.id===avatar))){const img=element("img");img.src=avatar.startsWith("data:")?avatar:"/avatars/"+avatar+".svg";img.alt="";node.append(img);}
+    else node.append(element("span","initial",Array.from(name || "棋")[0]));
+  }
+  function profileButton(node, value, fallback) {
+    node.replaceChildren();const avatar=element("span","avatar");avatarInto(avatar,value.avatar,value.name||fallback);node.append(avatar,element("span","",value.name||fallback));
+  }
+  function renderDrafts(){for(const role of ["black","white"])profileButton($("setup-"+role),drafts[role],names[role]);}
+  function renderSeat(role) {
+    const seat=state.seats[role], name=seat.displayName || (state.mode==="ai" && role==="white"?"内置 AI":seat.name || names[role]);
+    text(role+"-name",name);avatarInto($(role+"-avatar"),seat.avatar,name);
+    $(role+"-name").title=name+(seat.model?" · "+seat.model:"");
+    profileButton($("settings-"+role),{name,avatar:seat.avatar},names[role]);
+    document.querySelector('[data-invite="'+role+'"]').hidden=state.phase==="ended" || (state.mode==="ai" && role==="white");
+    renderVoice(role);
+  }
+  function renderCommentary() {
+    const commentator=state.seats.commentator, event=voiceEvents("commentator").at(-1);
+    $("commentary").hidden=!state.commentaryEnabled || !event;
+    $("commentary-toggle").hidden=!isJoined(commentator) && !state.commentaryEnabled;
+    text("commentary-toggle",state.commentaryEnabled?"关闭解说":"开启解说");
+    document.querySelector('[data-invite="commentator"]').hidden=state.phase==="ended";
+    text("commentary-heading",commentator?.displayName || commentator?.name || "解说");
+    const node=$("commentary-text"), key=state.gameId+":"+(event?.seq || "");if(node.dataset.events===key)return;
+    node.dataset.events=key;node.replaceChildren();if(event){node.title=voiceMeta(event);node.append(element("p","",event.text));}
+  }
+  function openSettings(){ $("match-settings").hidden=!state;$("settings-dialog").showModal(); }
+  function closeSettings(){ $("settings-dialog").close(); }
+  function openProfile(role, setup=false){
+    uploadEpoch++;profileTarget={role,gameId:setup?null:state?.gameId};
+    const seat=setup?drafts[role]:state.seats[role];selectedAvatar=seat.avatar || "";
+    $("profile-name").value=setup?seat.name:seat.displayName || "";$("profile-name").placeholder=setup?names[role]:displayPlayer(role);
+    text("profile-heading",names[role]+"棋手");$("avatar-upload").value="";renderAvatarOptions();$("profile-dialog").showModal();
+  }
+  function renderAvatarOptions(){
+    avatarInto($("profile-preview"),selectedAvatar,$("profile-name").value || names[profileTarget.role]);
+    const parent=$("avatar-options");parent.replaceChildren();
+    for(const avatar of avatarChoices){const button=element("button","avatar-option");button.type="button";button.setAttribute("aria-pressed",String(selectedAvatar===avatar.id));button.dataset.avatar=avatar.id;
+      if(avatar.id){const img=element("img");img.src="/avatars/"+avatar.id+".svg";img.alt="";button.append(img);}else{const span=element("span","avatar");avatarInto(span,"",names[profileTarget.role]);button.append(span);}
+      button.append(element("span","",avatar.name));button.addEventListener("click",()=>{uploadEpoch++;selectedAvatar=avatar.id;renderAvatarOptions();});parent.append(button);}
+  }
+  async function uploadAvatar(file){
+    if(!file)return;const epoch=++uploadEpoch;
+    if(!["image/png","image/jpeg","image/webp"].includes(file.type) || file.size>5*1024*1024)throw Error("请选择 5 MB 以内的 PNG、JPEG 或 WebP 图片。");
+    const data=await new Promise((resolve,reject)=>{const reader=new FileReader();reader.onload=()=>resolve(reader.result);reader.onerror=reject;reader.readAsDataURL(file);});
+    const img=new Image();img.src=data;await img.decode();let result="";
+    for(const size of [192,128,96]){const canvas=document.createElement("canvas");canvas.width=canvas.height=size;const ctx=canvas.getContext("2d"),side=Math.min(img.width,img.height);ctx.drawImage(img,(img.width-side)/2,(img.height-side)/2,side,side,0,0,size,size);result=canvas.toDataURL("image/png");if(result.length<=100000)break;}
+    if(epoch!==uploadEpoch)return;selectedAvatar=result;renderAvatarOptions();
+  }
+  function confirmMutation(heading, description, action){text("confirm-heading",heading);text("confirm-description",description);confirmAction=action;$("confirm-dialog").showModal();}
 
   function outcomeLabel() {
     if (state.winReason === "resign") return names[state.winner === "black" ? "white" : "black"] + "认输 · " + names[state.winner] + "胜";
@@ -175,26 +188,25 @@
     const joined = isJoined(state.seats?.black) && isJoined(state.seats?.white);
     $("welcome").hidden = true;
     $("match").hidden = false;
-    $("new-button").hidden = !hostToken;
-    text("match-title-display", state.title || level.name + " · 对弈");
-    text("match-topology", level.typeName);
+    placeSettings("match");
+    text("match-level", level.name);$("match-glyph").src="/assets/topologies/"+state.topology+".svg";
     text("turn-label", replayPly !== null ? "第 " + replayPly + " / " + state.ply + " 手" : state.phase === "ended" ? outcomeLabel() : state.phase === "playing" ? (names[state.turn] || "") + "行棋" : state.phase === "paused" ? "已暂停" : joined ? "已就绪" : "等待入席");
-    renderSeat("black"); renderSeat("white"); updateActivity(); renderCommentary();
-    $("match-actions").hidden = !hostToken;
+    renderSeat("black"); renderSeat("white"); renderCommentary();
+    $("match-settings").hidden = false;
     $("start-button").hidden = state.phase !== "waiting";
     $("start-button").disabled = !joined || pending;
     $("pause-button").hidden = state.phase !== "playing";
     $("resume-button").hidden = state.phase !== "paused";
     $("stop-button").hidden = state.phase === "ended";
+    for(const id of ["pause-button","resume-button","stop-button","commentary-toggle"])$(id).disabled=pending;
     const moves = state.moves || [];
-    $("replay-controls").hidden = !moves.length;
+    $("replay-range").disabled = !moves.length;
     $("replay-range").max = String(moves.length);
     $("replay-range").value = String(replayPly === null ? moves.length : replayPly);
-    text("replay-label", replayPly === null ? "第 " + moves.length + " 手" : "第 " + replayPly + " 手 · 复盘");
+    text("replay-label", replayPly === null ? "第 " + moves.length + " 手" : state.phase === "ended" ? "回到定局" : "回到当前棋局");
     $("previous-move").disabled = (replayPly === null ? moves.length : replayPly) <= 0;
     $("next-move").disabled = replayPly === null || replayPly >= moves.length;
-    $("return-live").hidden = replayPly === null;
-    text("return-live", state.phase === "ended" ? "回到定局" : "回到当前棋局");
+    $("return-live").disabled = replayPly === null;
     $("surface-view").disabled = state.topology === "plane";
     $("view-range").disabled = state.topology === "plane";
     if (state.topology === "plane") morph = morphTarget = 0;
@@ -225,8 +237,9 @@
     if (epoch !== gameEpoch) return;
     state = null;
     applyState(next.state || next);
-    localStorage.setItem(gameKey, gameId);
+    localStorage.setItem(gameKey, gameId);history.replaceState(null,"","/?game="+encodeURIComponent(gameId));
     source = new EventSource("/api/events?gameId=" + encodeURIComponent(gameId));
+    source.addEventListener("deleted", () => { if(epoch===gameEpoch){showWelcome();toast("棋局记录已删除");} });
     source.addEventListener("open", () => { if (epoch === gameEpoch) connection(true); });
     source.addEventListener("state", (event) => {
       if (epoch !== gameEpoch) return;
@@ -241,10 +254,14 @@
     state = null;
     $("welcome").hidden = false;
     $("match").hidden = true;
-    $("new-button").hidden = true;
-    $("create-form").hidden = !hostToken;
-    $("spectator-notice").hidden = Boolean(hostToken);
+    placeSettings("home");
+    $("match-settings").hidden = true;closeSettings();renderDrafts();history.replaceState(null,"","/");
     localStorage.removeItem(gameKey);
+  }
+  function placeSettings(screen) {
+    const slot = $(screen + "-settings-slot");
+    const button = $("settings-button");
+    if (button.parentElement !== slot) slot.append(button);
   }
   function renderTopologyOptions() {
     const parent = $("topology-options");
@@ -258,7 +275,7 @@
       const img = document.createElement("img");
       img.src = "/assets/topologies/" + level.topology + ".svg"; img.alt = "";
       span.append(img, element("span", "", level.name));
-      label.append(input, span); label.title = level.typeName + " · " + level.edgeText;
+      label.append(input, span); label.title = level.typeName;
       input.addEventListener("change", updateTopology);
       parent.append(label);
       if (!levels.some((item) => item.topology === "torus") && index === 0) input.checked = true;
@@ -269,8 +286,7 @@
     const selected = document.querySelector('input[name="topology"]:checked');
     if (!selected) return;
     const level = levelFor(selected.value);
-    text("topology-description", level.typeName + " · " + (level.ruleText || level.edgeText || "") + " · " + level.width + " × " + level.height);
-    $("welcome-glyph").src = "/assets/topologies/" + level.topology + ".svg";
+    $("board-width").value=level.width;$("board-height").value=level.height;$("board-height").disabled=level.topology==="sphere";
   }
   function drawBoard() {
     if (!state) return;
@@ -351,38 +367,41 @@
       roleName: role === "commentator" ? "解说员" : names[role] + "棋手",
       server: location.origin, gameId: invite.gameId, root: bootstrap.workspacePath,
       mcpUrl: bootstrap.mcpUrl,
-      joinArgs: JSON.stringify({ gameId: invite.gameId, inviteToken: invite.inviteToken, name: rejoining ? seat.name : "你的名称", model: rejoining ? seat.model || "" : "" }),
+      joinArgs: JSON.stringify({ gameId: invite.gameId, inviteToken: invite.inviteToken, name: rejoining ? seat.name : seat.displayName || "你的名称", model: rejoining ? seat.model || "" : "" }),
       rolePrompt: role === "commentator" ? prompts.commentator : prompts.player
     };
     return prompts.invitation.replace(/\{\{(\w+)\}\}/g, (_, key) => fields[key] ?? "");
   }
 
   async function invite(role) {
-    if (!state || !hostToken) return;
+    if (!state) return;
     const result = await call("arena_invite", { gameId: state.gameId, role }, true);
     text("invite-heading", role === "commentator" ? "邀请解说员" : "邀请" + names[role] + "棋手");
     $("invite-text").value = await invitePrompt(result, role);
     $("invite-dialog").showModal();
   }
   async function showRooms() {
-    const result = await call("arena_list");
-    matches = result.matches || [];
-    const node = $("room-list");
-    node.replaceChildren();
-    if (!matches.length) node.append(element("p", "room-empty", "还没有棋局。创建第一局，邀请棋手来相遇。"));
-    matches.forEach((match) => {
-      const button = element("button", "room-row"); button.type = "button";
-      const label = element("span");
-      const level = levelFor(match.topology);
-      label.append(element("strong", "", match.title || level.name + " · 对弈"), element("small", "", level.typeName + " · " + (match.mode === "ai" ? "Agent 与内置 AI" : "两位 Agent") + " · " + (match.ply || 0) + " 手"));
-      button.append(label, element("span", "", phases[match.phase] || ""));
-      button.addEventListener("click", () => guarded(async () => { await selectGame(match.gameId); $("rooms-dialog").close(); }));
-      node.append(button);
-    });
-    $("rooms-dialog").showModal();
+    closeSettings();const result=await call("arena_list");matches=result.matches || [];
+    const node=$("room-list");node.replaceChildren();if(!matches.length)node.append(element("p","room-empty","还没有棋局"));
+    $("clear-records").disabled=!matches.some(m=>m.phase==="ended");
+    for(const match of matches){const row=element("div","room-row"),button=element("button","room-open");button.type="button";
+      const player=role=>match.seats[role].displayName || (match.mode==="ai" && role==="white"?"内置 AI":match.seats[role].name || names[role]);
+      const date=new Date(match.createdAt).toLocaleString("zh-CN",{year:"numeric",month:"2-digit",day:"2-digit",hour:"2-digit",minute:"2-digit",hour12:false});
+      button.append(element("strong","",levelFor(match.topology).name+" · "+player("black")+" 与 "+player("white")),element("small","",date+" · "+phases[match.phase]+" · "+match.ply+" 手"));
+      button.addEventListener("click",()=>guarded(async()=>{await selectGame(match.gameId);$("rooms-dialog").close();}));row.append(button);
+      const action=element("button","quiet-button danger",match.phase==="ended"?"删除":"结束");action.type="button";action.dataset.game=match.gameId;
+      action.addEventListener("click",()=>confirmMutation(match.phase==="ended"?"删除这局记录？":"结束这场对弈？",match.phase==="ended"?"棋谱和发言将一并删除。":"保留棋谱和发言。",async()=>{
+        if(match.phase==="ended"){await call("arena_delete",{gameId:match.gameId},true);if(state?.gameId===match.gameId)showWelcome();}
+        else {const next=await call("arena_control",{gameId:match.gameId,action:"stop"},true);if(state?.gameId===match.gameId)applyState(next);}
+        await showRooms();
+      }));row.append(action);node.append(row);
+    }
+    if(!$("rooms-dialog").open)$("rooms-dialog").showModal();
   }
+
   function eventDescription(event) {
     if (event.text) return event.text;
+    if (event.type === "profile") return names[event.role]+"更新了棋手资料";
     if (event.type === "resign") return names[event.role] + "认输";
     if (event.type === "commentary") return event.enabled ? "开启解说" : "关闭解说";
     if (event.type === "draw") return names[event.role] + ({ offer: "提议和棋", accept: "接受和棋", decline: "拒绝和棋", withdraw: "撤回和棋提议" })[event.action];
@@ -449,8 +468,7 @@
     connection(true);
     $("error-banner").hidden = true;
     const requested = new URLSearchParams(location.search).get("game");
-    const saved = requested || localStorage.getItem(gameKey);
-    const chosen = matches.find((item) => item.gameId === saved) || matches.find((item) => item.phase === "playing") || matches.find((item) => item.phase === "waiting");
+    const chosen = matches.find((item) => item.gameId === requested);
     if (chosen) await selectGame(chosen.gameId);
     else showWelcome();
   }
@@ -462,8 +480,8 @@
       pending = true; $("create-button").disabled = true;
       try {
         const topology = document.querySelector('input[name="topology"]:checked').value;
-        const result = await call("arena_create", { topology, mode: document.querySelector('input[name="mode"]:checked').value, difficulty: $("difficulty").value, title: $("match-title").value.trim() || levelFor(topology).name + " · 对弈" }, true);
-        await selectGame(result.gameId || result.state?.gameId);
+        const result = await call("arena_create", { topology, mode: document.querySelector('input[name="mode"]:checked').value, difficulty: $("difficulty").value, width:Number($("board-width").value),height:Number($("board-height").value),players:drafts }, true);
+        await selectGame(result.gameId || result.state?.gameId);openSettings();
       } finally { pending = false; $("create-button").disabled = false; }
     });
   });
@@ -475,14 +493,14 @@
     const rect = dialog.getBoundingClientRect();
     if (event.clientX < rect.left || event.clientX > rect.right || event.clientY < rect.top || event.clientY > rect.bottom) dialog.close();
   }));
-  document.querySelectorAll("[data-reinvite]").forEach((button) => button.addEventListener("click", () => guarded(() => invite(button.dataset.reinvite))));
+
   $("copy-invite").addEventListener("click", () => copy($("invite-text").value));
   $("commentary-toggle").addEventListener("click", () => guarded(() => control(state.commentaryEnabled ? "commentary_off" : "commentary_on")));
   $("rooms-button").addEventListener("click", () => guarded(showRooms));
   $("new-button").addEventListener("click", showWelcome);
-  $("start-button").addEventListener("click", () => guarded(() => control("start")));
+  $("start-button").addEventListener("click", () => guarded(async () => {await control("start");closeSettings();}));
   $("pause-button").addEventListener("click", () => guarded(() => control("pause")));
-  $("resume-button").addEventListener("click", () => guarded(() => control("resume")));
+  $("resume-button").addEventListener("click", () => guarded(async () => {await control("resume");closeSettings();}));
   $("stop-button").addEventListener("click", () => $("stop-dialog").showModal());
   $("confirm-stop").addEventListener("click", () => guarded(async () => { await control("stop"); $("stop-dialog").close(); }));
   $("timeline-button").addEventListener("click", () => { renderTimeline(); $("timeline-dialog").showModal(); });
@@ -496,6 +514,19 @@
   $("previous-move").addEventListener("click", () => setReplay((replayPly === null ? state.moves.length : replayPly) - 1));
   $("next-move").addEventListener("click", () => setReplay((replayPly === null ? state.moves.length : replayPly) + 1));
   $("return-live").addEventListener("click", () => { replayPly = null; render(); });
+  $("settings-button").addEventListener("click",openSettings);
+  $("board-width").addEventListener("input",()=>{if($("board-height").disabled)$("board-height").value=$("board-width").value;});
+  for(const role of ["black","white"])$("setup-"+role).addEventListener("click",()=>openProfile(role,true));
+  document.querySelectorAll("[data-profile]").forEach(button=>button.addEventListener("click",()=>openProfile(button.dataset.profile)));
+  $("profile-name").addEventListener("input",()=>avatarInto($("profile-preview"),selectedAvatar,$("profile-name").value || names[profileTarget.role]));
+  $("avatar-upload").addEventListener("change",()=>guarded(async()=>{const button=$("profile-form").querySelector('[type="submit"]');button.disabled=true;try{await uploadAvatar($("avatar-upload").files[0]);}finally{button.disabled=false;}}));
+  $("profile-form").addEventListener("submit",event=>{event.preventDefault();guarded(async()=>{
+    const value={name:$("profile-name").value.trim(),avatar:selectedAvatar},target=profileTarget;
+    if(target.gameId){const next=await call("arena_profile",{gameId:target.gameId,role:target.role,...value},true);if(state?.gameId===target.gameId)applyState(next);}
+    drafts[target.role]=value;localStorage.setItem("arena-player-profiles",JSON.stringify(drafts));renderDrafts();$("profile-dialog").close();
+  });});
+  $("clear-records").addEventListener("click",()=>confirmMutation("清空已结束棋局？","棋谱和发言将一并删除，进行中的棋局会保留。",async()=>{const result=await call("arena_clear",{},true);if(result.deleted.includes(state?.gameId))showWelcome();await showRooms();}));
+  $("confirm-action").addEventListener("click",()=>guarded(async()=>{const action=confirmAction;if(!action)return;confirmAction=null;await action();$("confirm-dialog").close();}));
   $("board").addEventListener("pointerdown", (event) => {
     if (morph < .2 || !state || state.topology === "plane") return;
     drag = { x: event.clientX, y: event.clientY, id: event.pointerId };
@@ -511,7 +542,7 @@
   ["pointerup", "pointercancel", "lostpointercapture"].forEach((name) => $("board").addEventListener(name, () => { drag = null; }));
   new ResizeObserver(drawBoard).observe($("board-wrap"));
   document.fonts.ready.then(drawBoard);
-  setInterval(updateActivity, 10000);
+
   window.addEventListener("pagehide", () => { if (source) source.close(); });
   guarded(boot);
 })();

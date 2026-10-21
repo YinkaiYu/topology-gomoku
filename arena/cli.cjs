@@ -8,7 +8,7 @@ const { spawn } = require('node:child_process');
 
 const SERVICE = 'topology-gomoku-arena';
 const DEFAULT_URL = 'http://127.0.0.1:4318';
-const HOST_TOOLS = new Set(['arena_create', 'arena_invite', 'arena_control']);
+const HOST_TOOLS = new Set(['arena_create', 'arena_invite', 'arena_control', 'arena_profile', 'arena_delete', 'arena_clear']);
 
 function fail(code, message) {
   const error = new Error(message);
@@ -205,9 +205,8 @@ async function up(root, options, dependencies) {
     }
     if (!data) fail('START_FAILED', `Arena did not become ready. Inspect ${logPath}; the selected port may be busy.`);
   }
-  const hostUrl = `${url}/#host=${encodeURIComponent(runtime.hostToken)}`;
-  stdout.write(`${JSON.stringify({ ok: true, result: { running: true, reused, url, hostUrl, pid: data.pid, version: data.version } }, null, 2)}\n`);
-  if (!options['no-open']) await openBrowser(hostUrl, spawnImpl, stderr);
+  stdout.write(`${JSON.stringify({ ok: true, result: { running: true, reused, url, pid: data.pid, version: data.version } }, null, 2)}\n`);
+  if (!options['no-open']) await openBrowser(url, spawnImpl, stderr);
 }
 
 const HELP = `Topology Gomoku Arena — local agents, one shared board

@@ -506,3 +506,48 @@ test("new matches leave commentary off until the host explicitly invites a comme
   g.arena.call("arena_control", { gameId:g.gameId, action:"commentary_on" }, HOST);
   assert.equal(g.state().commentaryEnabled, true);
 });
+
+
+test("custom board sizes use shared rules and survive restoration for every topology", (t) => {
+  const directory=fs.mkdtempSync(path.join(os.tmpdir(),"arena-sizes-"));t.after(()=>fs.rmSync(directory,{recursive:true,force:true}));
+  const arena=new Arena({dataDir:directory});
+  for(const level of Content.LEVELS){
+    const width=9,height=level.topology==="sphere"?9:8;
+    const state=arena.call("arena_create",{mode:"duel",topology:level.topology,width,height},HOST);
+    const tokens={};for(const role of ["black","white"])tokens[role]=arena.call("arena_join",{...arena.call("arena_invite",{gameId:state.gameId,role},HOST),name:role}).token;
+    arena.call("arena_control",{gameId:state.gameId,action:"start"},HOST);
+    const sequence=[0,9,1,10,2,11,3,12,4];
+    for(let i=0;i<sequence.length;i++)arena.call("arena_move",{gameId:state.gameId,token:tokens[i%2?"white":"black"],cell:sequence[i],expectedVersion:i,requestId:"size-"+i});
+    assert.equal(arena.call("arena_state",{gameId:state.gameId}).winner,"black");
+    assert.equal(arena.call("arena_rules",{gameId:state.gameId,token:tokens.black}).width,width);
+  }
+  const ids=arena.call("arena_list").matches.map(m=>m.gameId);arena.close();const restored=new Arena({dataDir:directory});
+  for(const gameId of ids){const state=restored.call("arena_state",{gameId});assert.equal(state.width,9);assert.equal(state.height,state.topology==="sphere"?9:8);assert.equal(state.board.length,state.width*state.height);assert.equal(state.winner,"black");}
+  restored.close();
+  const empty=new Arena();for(const args of [{width:4},{width:20},{width:7.5},{width:NaN},{height:0},{topology:"sphere",width:8,height:9}])assert.throws(()=>empty.call("arena_create",{mode:"duel",topology:"plane",...args},HOST),errorCode("INVALID_SIZE"));
+  const large=empty.call("arena_create",{mode:"ai",topology:"plane",width:19,height:19},HOST);assert.equal(large.board.length,361);
+});
+
+test("display profiles preserve role identity, credentials and moves, and reject unsafe avatars", (t) => {
+  const directory=fs.mkdtempSync(path.join(os.tmpdir(),"arena-profiles-"));t.after(()=>fs.rmSync(directory,{recursive:true,force:true}));
+  const g=setup({dataDir:directory});g.start();g.move(0);
+  const args={gameId:g.gameId,role:"black",name:"蓝色大肥鱼",avatar:"deepseek-color"};
+  assert.throws(()=>g.arena.call("arena_profile",args),errorCode("HOST_REQUIRED"));
+  const edited=g.arena.call("arena_profile",args,HOST);assert.equal(edited.seats.black.displayName,args.name);assert.equal(edited.seats.black.name,g.black.state.seats.black.name);assert.equal(edited.version,1);
+  assert.equal(g.arena.call("arena_state",{gameId:g.gameId,token:g.black.token}).seats.black.avatar,"deepseek-color");
+  for(const avatar of ["https://example.com/avatar.png","data:image/svg+xml,<svg/>","data:image/png;base64,AAAA","../../secret"])assert.throws(()=>g.arena.call("arena_profile",{...args,avatar},HOST),errorCode("INVALID_AVATAR"));
+  g.arena.close();const restored=new Arena({dataDir:directory});assert.equal(restored.call("arena_state",{gameId:g.gameId}).seats.black.displayName,args.name);restored.close();
+  const created=new Arena().call("arena_create",{topology:"torus",mode:"duel",players:{black:{name:"DeepSeek",avatar:"deepseek-color"}}},HOST);assert.equal(created.seats.black.joined,false);assert.equal(created.seats.black.displayName,"DeepSeek");
+});
+
+test("record management deletes only ended games and never resurrects them on restart", (t) => {
+  const directory=fs.mkdtempSync(path.join(os.tmpdir(),"arena-delete-"));t.after(()=>fs.rmSync(directory,{recursive:true,force:true}));
+  const arena=new Arena({dataDir:directory}),make=()=>arena.call("arena_create",{topology:"torus",mode:"duel"},HOST);
+  const waiting=make(),ended=make();
+  assert.throws(()=>arena.call("arena_delete",{gameId:waiting.gameId},HOST),errorCode("NOT_ENDED"));
+  assert.throws(()=>arena.call("arena_clear",{}),errorCode("HOST_REQUIRED"));
+  arena.call("arena_control",{gameId:ended.gameId,action:"stop"},HOST);
+  assert.deepEqual(arena.call("arena_clear",{},HOST).deleted,[ended.gameId]);assert.equal(arena.call("arena_list").matches.length,1);
+  assert.throws(()=>arena.call("arena_state",{gameId:ended.gameId}),errorCode("GAME_NOT_FOUND"));
+  arena.close();const restored=new Arena({dataDir:directory});assert.deepEqual(restored.call("arena_list").matches.map(m=>m.gameId),[waiting.gameId]);restored.close();
+});

@@ -9,7 +9,7 @@ description: Start a local Topology Gomoku Arena, join as a player, or provide l
 
 ## 根据邀请选择角色
 
-- **主持**：在包含 `arena/cli.cjs` 的 checkout 中运行 `npm ci --prefix arena`，然后 `node arena/cli.cjs up`。它会复用本 checkout 的健康服务并打开浏览器。把房主链接留给本机用户；选手只接收自己的角色邀请。用户可以在浏览器创建并开始比赛。默认不启用解说，也不主动领取解说席位。仅在用户明确邀请后才转任解说员。
+- **主持**：在包含 `arena/cli.cjs` 的 checkout 中运行 `npm ci --prefix arena`，然后 `node arena/cli.cjs up`。它会复用本 checkout 的健康服务并打开浏览器。把普通本地地址交给用户；浏览器不区分房主入口和观战入口。选手只接收自己的角色邀请。用户可配置双方名称、头像、棋盘尺寸，创建后从设置中邀请和开赛。默认不启用解说，也不主动领取解说席位。仅在用户明确邀请后才转任解说员。
 - **选手**：读取邀请中的服务地址、比赛 ID、角色和加入凭证，调用 `arena_join`。保存返回的座位 token，后续调用带上比赛 ID 和 token。只有首次加入用 inviteToken。
 - **解说员**：同样用自己的邀请加入；只观察和发表解说，不控制开局、暂停或落子。
 

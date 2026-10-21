@@ -15,116 +15,75 @@
 </head>
 <body>
   <div class="app-shell">
-    <header class="masthead">
-      <a class="brand" href="/" aria-label="拓扑五子棋对弈室首页">
-        <img src="/assets/brand-icon.png" width="38" height="38" alt="">
-        <span>拓扑五子棋</span>
-      </a>
-      <nav aria-label="对弈室操作">
-        <span class="connection" id="connection" role="status"><i></i></span>
-        <button class="quiet-button" id="rooms-button" type="button">棋局记录</button>
-        <button class="glass-button compact" id="new-button" type="button" hidden>新棋局</button>
-      </nav>
-    </header>
-
     <main id="welcome" class="welcome" hidden>
-      <section class="welcome-intro">
-        <p class="eyebrow">本地 Agent 对弈</p>
-        <h1>拓扑<br>五子棋</h1>
-
-        <div class="welcome-art" aria-hidden="true"><img id="welcome-glyph" src="/assets/topologies/torus.svg" alt=""></div>
-
-      </section>
+      <section class="welcome-intro"><img class="hero-brand" src="/assets/brand-icon.png" alt=""><h1>拓扑五子棋</h1></section>
       <section class="setup-panel glass" aria-labelledby="setup-title">
-        <div class="section-heading"><h2 id="setup-title">开一局棋</h2></div>
+        <div class="setup-heading"><h2 id="setup-title">开一局棋</h2><span id="home-settings-slot"><button class="icon-button" id="settings-button" type="button" aria-label="设置" title="设置"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h10M18 7h2M4 17h2M10 17h10M14 5v4M6 15v4" /></svg></button></span></div>
         <form id="create-form">
-          <label class="field-label" for="match-title">棋局名称 <span>选填</span></label>
-          <input class="text-input" id="match-title" maxlength="80" placeholder="给这场相遇起个名字" autocomplete="off">
-          <fieldset class="mode-field">
-            <legend>对弈方式</legend>
-            <div class="segmented" id="mode-options">
-              <label><input type="radio" name="mode" value="duel" checked><span>两位 Agent</span></label>
-              <label><input type="radio" name="mode" value="ai"><span>Agent 与内置 AI</span></label>
-            </div>
-          </fieldset>
-          <fieldset class="topology-field"><legend>选择棋面</legend><div id="topology-options" class="topology-options"></div></fieldset>
-          <p class="topology-description" id="topology-description"></p>
+          <fieldset><legend class="sr-only">对弈方式</legend><div class="segmented" id="mode-options">
+            <label><input type="radio" name="mode" value="duel" checked><span>两位 Agent</span></label>
+            <label><input type="radio" name="mode" value="ai"><span>Agent 与内置 AI</span></label>
+          </div></fieldset>
+          <fieldset class="topology-field"><legend class="sr-only">选择棋面</legend><div id="topology-options" class="topology-options"></div></fieldset>
+          <div class="size-row"><span>棋盘</span><label><span class="sr-only">棋盘宽度</span><input id="board-width" type="number" min="5" max="19" value="7" required></label><span aria-hidden="true">×</span><label><span class="sr-only">棋盘高度</span><input id="board-height" type="number" min="5" max="19" value="6" required></label></div>
+          <div class="setup-players"><button id="setup-black" class="profile-choice" type="button" aria-label="设置黑方棋手"></button><span class="versus">与</span><button id="setup-white" class="profile-choice" type="button" aria-label="设置白方棋手"></button></div>
           <div class="difficulty-row" id="difficulty-row" hidden><label for="difficulty">内置 AI</label><select id="difficulty"><option value="easy">随性</option><option value="normal" selected>机敏</option><option value="hard">深思</option></select></div>
           <button class="glass-button primary create-button" id="create-button" type="submit">创建棋局 <span aria-hidden="true">↗</span></button>
-
         </form>
-        <p class="spectator-notice" id="spectator-notice" hidden>这是观战窗口。请让启动对弈室的 Agent 打开房主入口，再创建棋局。</p>
       </section>
     </main>
-
     <main id="match" class="match" hidden>
-      <section class="match-heading">
-        <div class="match-heading-title"><p class="eyebrow" id="match-topology"></p><h1 id="match-title-display"></h1></div>
-        <div class="match-state"><p id="turn-label"></p></div>
-      </section>
+      <header class="match-heading"><div class="chapter-heading"><img id="match-glyph" alt=""><h1 id="match-level"></h1><span id="match-settings-slot"></span></div></header>
       <div class="arena-stage">
         <section class="player player-black" aria-labelledby="black-name">
-          <div class="player-identity"><span class="stone black-stone" aria-hidden="true"></span><div><h2 id="black-name">等待棋手</h2></div><span class="turn-dot" id="black-turn" aria-label="轮到黑方" hidden></span></div>
-          <p class="player-model" id="black-model"></p>
-
-          <button class="quiet-button invite-button" data-invite="black" type="button" hidden>复制黑方邀请 <span aria-hidden="true">↗</span></button>
-          <div class="player-voice" id="black-voice" aria-live="polite"></div>
+          <button class="player-identity" data-profile="black" type="button" title="设置黑方棋手"><span class="avatar" id="black-avatar"></span><h2 id="black-name">黑方</h2><span class="stone black-stone" aria-label="黑方"></span></button>
+          <div class="player-voice" id="black-voice" role="log" aria-live="polite"></div>
         </section>
-
         <section class="board-column" aria-label="棋局">
-          <div class="board-wrap" id="board-wrap">
-            <canvas id="board" role="img" aria-label="等待棋局"></canvas>
-            <div class="board-notice glass" id="board-notice" hidden></div>
-          </div>
+          <div class="board-wrap" id="board-wrap"><canvas id="board" role="img" aria-label="等待棋局"></canvas><div class="board-notice glass" id="board-notice" hidden></div></div>
           <div class="board-tools">
+            <p id="turn-label" class="turn-label"></p>
             <div class="view-controls" id="view-controls">
-              <button class="view-button" id="flat-view" type="button" aria-label="二维棋盘"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="5" width="14" height="14" rx="1"></rect><path d="M5 12h14M12 5v14"></path></svg><span>二维</span></button>
+              <button class="view-button" id="flat-view" type="button" aria-label="二维棋盘"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="5" width="14" height="14" rx="1"></rect><path d="M5 12h14M12 5v14"></path></svg></button>
               <input id="view-range" type="range" min="0" max="100" value="0" aria-label="棋盘展开程度">
-              <button class="view-button" id="surface-view" type="button" aria-label="三维曲面"><svg viewBox="0 0 24 24" aria-hidden="true"><ellipse cx="12" cy="12" rx="8" ry="7"></ellipse><ellipse cx="12" cy="12" rx="4" ry="7"></ellipse><path d="M4 12h16"></path></svg><span>三维</span></button>
+              <button class="view-button" id="surface-view" type="button" aria-label="三维曲面"><svg viewBox="0 0 24 24" aria-hidden="true"><ellipse cx="12" cy="12" rx="8" ry="7"></ellipse><ellipse cx="12" cy="12" rx="4" ry="7"></ellipse><path d="M4 12h16"></path></svg></button>
             </div>
-            <div class="replay-controls" id="replay-controls" hidden>
+            <div class="replay-controls" id="replay-controls">
               <button id="previous-move" class="quiet-button" type="button" aria-label="上一步">←</button>
-              <div class="replay-center"><label for="replay-range" id="replay-label">第 0 手</label><input id="replay-range" type="range" min="0" max="0" value="0" aria-label="复盘手数"></div>
+              <div class="replay-center"><button id="return-live" type="button" title="回到当前棋局"><span id="replay-label">第 0 手</span></button><input id="replay-range" type="range" min="0" max="0" value="0" aria-label="复盘手数"></div>
               <button id="next-move" class="quiet-button" type="button" aria-label="下一步">→</button>
             </div>
-            <button class="quiet-button return-live" id="return-live" type="button" hidden>回到当前棋局</button>
           </div>
-
         </section>
-
         <section class="player player-white" aria-labelledby="white-name">
-          <div class="player-identity"><span class="stone white-stone" aria-hidden="true"></span><div><h2 id="white-name">等待棋手</h2></div><span class="turn-dot" id="white-turn" aria-label="轮到白方" hidden></span></div>
-          <p class="player-model" id="white-model"></p>
-
-          <button class="quiet-button invite-button" data-invite="white" type="button" hidden>复制白方邀请 <span aria-hidden="true">↗</span></button>
-          <div class="player-voice" id="white-voice" aria-live="polite"></div>
+          <button class="player-identity" data-profile="white" type="button" title="设置白方棋手"><span class="avatar" id="white-avatar"></span><h2 id="white-name">白方</h2><span class="stone white-stone" aria-label="白方"></span></button>
+          <div class="player-voice" id="white-voice" role="log" aria-live="polite"></div>
         </section>
       </div>
-
-      <section class="commentary" id="commentary" aria-labelledby="commentary-heading">
-        <div class="commentary-heading"><h2 id="commentary-heading"></h2><button class="quiet-button" data-invite="commentator" type="button" hidden>邀请解说</button></div>
-        <div class="commentary-text" id="commentary-text" aria-live="polite"></div>
-      </section>
-
-      <footer class="match-footer">
-        <div class="match-actions" id="match-actions" hidden>
-          <button class="glass-button primary compact" id="start-button" type="button">开始对弈</button>
-          <button class="quiet-button" id="pause-button" type="button" hidden>暂停</button>
-          <button class="glass-button compact" id="resume-button" type="button" hidden>继续对弈</button>
-          <details class="host-options"><summary aria-label="棋局管理" title="棋局管理">⋯</summary><div class="host-menu"><button class="quiet-button" id="commentary-toggle" type="button" hidden>关闭解说</button><button class="quiet-button" data-reinvite="black" type="button">黑方邀请</button><button class="quiet-button" data-reinvite="white" type="button">白方邀请</button><button class="quiet-button" data-reinvite="commentator" type="button">解说邀请</button><button class="quiet-button danger" id="stop-button" type="button" hidden>结束棋局</button></div></details>
-        </div>
-
-        <div class="record-actions"><button class="quiet-button" id="timeline-button" type="button">时间线</button><button class="quiet-button" id="export-button" type="button">保存棋谱</button></div>
-      </footer>
+      <section class="commentary" id="commentary" aria-labelledby="commentary-heading" hidden><h2 id="commentary-heading"></h2><div class="commentary-text" id="commentary-text" aria-live="polite"></div></section>
     </main>
     <div class="error-banner" id="error-banner" role="alert" hidden><span id="error-text"></span><button class="quiet-button" id="retry-button" type="button">重试连接</button><button class="quiet-button" id="dismiss-error" type="button" aria-label="关闭提示">×</button></div>
     <div class="toast glass" id="toast" role="status" hidden></div>
   </div>
 
+  <dialog id="settings-dialog" class="panel-dialog settings-dialog">
+    <div class="dialog-heading"><h2>设置</h2><button class="quiet-button" data-close type="button" aria-label="关闭">×</button></div>
+    <div class="settings-grid"><button class="setting-button" id="new-button" type="button">新棋局</button><button class="setting-button" id="rooms-button" type="button">棋局记录</button></div>
+    <section id="match-settings" hidden>
+      <div class="settings-grid match-control"><button class="setting-button" id="start-button" type="button">开始对弈</button><button class="setting-button" id="pause-button" type="button" hidden>暂停</button><button class="setting-button" id="resume-button" type="button" hidden>继续对弈</button><button class="setting-button danger" id="stop-button" type="button">结束棋局</button></div>
+      <div class="settings-players"><div><button class="profile-choice" id="settings-black" data-profile="black" type="button"></button><button class="quiet-button" data-invite="black" type="button">黑方邀请 ↗</button></div><div><button class="profile-choice" id="settings-white" data-profile="white" type="button"></button><button class="quiet-button" data-invite="white" type="button">白方邀请 ↗</button></div></div>
+      <div class="settings-grid"><button class="setting-button" id="timeline-button" type="button">时间线</button><button class="setting-button" id="export-button" type="button">保存棋谱</button><button class="setting-button" data-invite="commentator" type="button">邀请解说</button><button class="setting-button" id="commentary-toggle" type="button" hidden>关闭解说</button></div>
+    </section>
+  </dialog>
+  <dialog id="profile-dialog" class="panel-dialog profile-dialog">
+    <div class="dialog-heading"><h2 id="profile-heading">棋手</h2><button class="quiet-button" data-close type="button" aria-label="关闭">×</button></div>
+    <form id="profile-form"><div class="profile-preview"><span class="avatar" id="profile-preview"></span><input class="text-input" id="profile-name" maxlength="60" aria-label="棋手名称" placeholder="棋手名称"></div><div class="avatar-options" id="avatar-options" aria-label="选择头像"></div><div class="dialog-footer"><label class="quiet-button upload-label" for="avatar-upload">上传头像<input id="avatar-upload" type="file" accept="image/png,image/jpeg,image/webp" hidden></label><button class="glass-button compact" type="submit">保存</button></div></form>
+  </dialog>
   <dialog id="rooms-dialog" class="panel-dialog">
     <div class="dialog-heading"><h2>棋局记录</h2><button class="quiet-button" data-close type="button" aria-label="关闭">×</button></div>
-    <div class="room-list" id="room-list"></div>
+    <div class="room-list" id="room-list"></div><div class="dialog-footer"><button id="clear-records" class="quiet-button danger" type="button">清空已结束棋局</button></div>
   </dialog>
+  <dialog id="confirm-dialog" class="panel-dialog small-dialog"><div class="dialog-heading"><h2 id="confirm-heading"></h2><button class="quiet-button" data-close type="button" aria-label="关闭">×</button></div><p class="dialog-intro" id="confirm-description"></p><div class="dialog-footer"><button class="quiet-button" data-close type="button">取消</button><button class="glass-button compact" id="confirm-action" type="button">确认</button></div></dialog>
   <dialog id="invite-dialog" class="panel-dialog invite-dialog">
     <div class="dialog-heading"><h2 id="invite-heading">邀请棋手</h2><button class="quiet-button" data-close type="button" aria-label="关闭">×</button></div>
 

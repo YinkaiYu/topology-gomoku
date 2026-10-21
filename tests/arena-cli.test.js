@@ -63,7 +63,9 @@ test('up reuses a healthy owned service without spawning another process', async
   assert.equal(result.code, 0, result.err);
   const value = JSON.parse(result.out).result;
   assert.equal(value.reused, true);
-  assert.equal(value.hostUrl, `${fx.url}/#host=private-host-token`);
+  assert.equal(value.url, fx.url);
+  assert.equal(value.hostUrl, undefined);
+  assert.ok(!JSON.stringify(value).includes('private-host-token'));
 });
 
 test('up and stop refuse a service belonging to another checkout', async t => {

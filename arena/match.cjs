@@ -36,7 +36,28 @@ function text(value, field, max, optional = false) {
   return cleaned;
 }
 
-function controllerFor(levelIndex, mode, difficulty, now, random) {
+const AVATARS = ["deepseek-color", "openai", "claude-color", "gemini-color", "kimi-color", "qwen-color", "opencode"];
+function profile(value = {}) {
+  requireValue(value && typeof value === "object" && !Array.isArray(value), "INVALID_PROFILE", "Expected a player profile.");
+  const name = text(value.name, "name", 60, true);
+  const avatar = value.avatar || "";
+  requireValue(typeof avatar === "string", "INVALID_AVATAR", "Choose a built-in avatar or upload a PNG.");
+  if (avatar && !AVATARS.includes(avatar)) {
+    requireValue(avatar.length <= 100000 && /^data:image\/png;base64,[A-Za-z0-9+/]+={0,2}$/.test(avatar), "INVALID_AVATAR", "Use a PNG avatar up to 256 pixels and 75 KiB.");
+    const data = Buffer.from(avatar.slice(22), "base64");
+    requireValue(data.length >= 24 && data.subarray(0,8).equals(Buffer.from([137,80,78,71,13,10,26,10]))
+      && data.toString("ascii",12,16) === "IHDR" && data.readUInt32BE(16) > 0 && data.readUInt32BE(16) <= 256
+      && data.readUInt32BE(20) > 0 && data.readUInt32BE(20) <= 256, "INVALID_AVATAR", "Use a PNG avatar up to 256 pixels.");
+  }
+  return { displayName: name, avatar };
+}
+function dimensions(level, width = level.width, height = level.height) {
+  requireValue(Number.isInteger(width) && Number.isInteger(height) && width >= 5 && width <= 19 && height >= 5 && height <= 19,
+    "INVALID_SIZE", "Board width and height must be integers from 5 to 19.");
+  requireValue(level.topology !== "sphere" || width === height, "INVALID_SIZE", "The sphere requires a square board.");
+  return { width, height };
+}
+function controllerFor(levelIndex, mode, difficulty, now, random, size) {
   const controller = new GameController({
     now, random, preferences: { difficulty, unlocked: Content.LEVELS.length - 1, hints: false, sound: false }
   });
@@ -45,7 +66,11 @@ function controllerFor(levelIndex, mode, difficulty, now, random) {
   // instance only. All moves and adjudication still use the shared controller.
   controller.startLevel(levelIndex, { mode: "duel", introMode: "none" }, now());
   controller.game.mode = mode;
-  controller.game.level = { ...controller.game.level, tutorial: false };
+  controller.game.level = { ...controller.game.level, ...size, tutorial: false };
+  if (size) {
+    controller.game.rules = Engine.createRules({ type: controller.game.level.topology, ...size, target: 5 });
+    controller.game.board = Engine.createBoard(controller.game.rules);
+  }
   controller.drainEvents();
   return controller;
 }
@@ -74,7 +99,8 @@ class Arena extends EventEmitter {
         && Number.isInteger(saved.levelIndex) && Content.LEVELS[saved.levelIndex]
         && ["ai", "duel"].includes(saved.mode) && Array.isArray(saved.moves)
         && Array.isArray(saved.events), "INVALID_SAVE", `Cannot restore ${filename}.`, 500);
-      const controller = controllerFor(saved.levelIndex, saved.mode, saved.difficulty, this.now, this.random);
+      const size = dimensions(Content.LEVELS[saved.levelIndex], saved.width, saved.height);
+      const controller = controllerFor(saved.levelIndex, saved.mode, saved.difficulty, this.now, this.random, size);
       for (const move of saved.moves) {
         requireValue(PLAYERS[move.player] && controller.performMove(move.cell, PLAYERS[move.player], null, this.now()),
           "INVALID_SAVE", `Invalid replay in ${filename}.`, 500);
@@ -84,7 +110,7 @@ class Arena extends EventEmitter {
         controller.game.autoAdvancePending = false;
       }
       controller.drainEvents();
-      const match = { ...saved, controller, receipts: saved.receipts || {} };
+      const match = { ...saved, ...size, controller, receipts: saved.receipts || {} };
       requireValue(match.version === match.moves.length
         && match.eventSeq === (match.events.at(-1)?.seq || 0),
       "INVALID_SAVE", `Inconsistent counters in ${filename}.`, 500);
@@ -235,6 +261,30 @@ class Arena extends EventEmitter {
           })
         };
       case "arena_create": return this._create(args, context);
+      case "arena_profile": {
+        this._host(context);
+        const match = this._match(args.gameId);
+        requireValue(PLAYERS[args.role], "INVALID_ROLE", "Choose black or white.");
+        Object.assign(match.seats[args.role], profile(args));
+        this._event(match, "profile", { role: args.role, ply: match.moves.length });
+        this._changed(match);
+        return this._snapshot(match);
+      }
+      case "arena_delete": {
+        this._host(context);
+        const match = this._match(args.gameId);
+        requireValue(match.phase === "ended", "NOT_ENDED", "End the match before deleting it.", 409);
+        if (this.dataDir) fs.unlinkSync(path.join(this.dataDir, `match-${match.gameId}.json`));
+        this.matches.delete(match.gameId);
+        this.emit("deleted", match.gameId);
+        return { deleted: [match.gameId] };
+      }
+      case "arena_clear": {
+        this._host(context);
+        const ids = [...this.matches.values()].filter(m => m.phase === "ended").map(m => m.gameId);
+        for (const gameId of ids) this.call("arena_delete", { gameId }, context);
+        return { deleted: ids };
+      }
       case "arena_invite": return this._invite(args, context);
       case "arena_join": return this._join(args);
       case "arena_state": {
@@ -264,18 +314,20 @@ class Arena extends EventEmitter {
     requireValue(typeof difficulty === "string" && Object.hasOwn(Content.DIFFICULTIES, difficulty),
       "INVALID_DIFFICULTY", "Choose a difficulty from arena_catalog.");
     const createdAt = this._at();
+    const size = dimensions(Content.LEVELS[levelIndex], args.width, args.height);
+    const profiles = Object.fromEntries(["black", "white"].map(role => [role, profile(args.players?.[role])]));
     const match = {
       schemaVersion: 1, gameVersion,
       gameId: crypto.randomUUID(),
       title: text(args.title, "title", 100, true) || "Topology Gomoku",
-      levelIndex, mode: args.mode, difficulty, phase: "waiting", commentaryEnabled: false,
+      levelIndex, ...size, mode: args.mode, difficulty, phase: "waiting", commentaryEnabled: false,
       createdAt, version: 0, eventSeq: 0, stopped: false, moves: [], events: [],
       seats: Object.fromEntries(ROLES.map((role) => [role, {
         name: role === "white" && args.mode === "ai" ? "Built-in AI" : "",
-        model: "", joined: role === "white" && args.mode === "ai", lastSeen: null
+        ...profiles[role], model: "", joined: role === "white" && args.mode === "ai", lastSeen: null
       }])),
       credentials: {}, receipts: {},
-      controller: controllerFor(levelIndex, args.mode, difficulty, this.now, this.random)
+      controller: controllerFor(levelIndex, args.mode, difficulty, this.now, this.random, size)
     };
     match.controller.pause(this.now());
     this._event(match, "created", { ply: 0, mode: match.mode, topology: args.topology });
@@ -313,7 +365,7 @@ class Arena extends EventEmitter {
     if (!credential.token) {
       requireValue(match.phase !== "ended", "GAME_ENDED", "This game has ended.", 409);
       credential.token = crypto.randomBytes(32).toString("hex");
-      match.seats[role] = { name, model, joined: true, lastSeen: this._at() };
+      match.seats[role] = { ...match.seats[role], name, model, joined: true, lastSeen: this._at() };
       this._event(match, "joined", { role, name, model, ply: match.moves.length });
       this._changed(match);
     } else {
