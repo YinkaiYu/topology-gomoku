@@ -146,24 +146,31 @@
     ctx.restore();
   }
 
-  function drawGrid(ctx, game, layout) {
+  function railOffset(layout, settings) {
+    return settings && settings.extendGridToRails ? layout.cell * 0.5 : Math.min(15, layout.cell * 0.4);
+  }
+
+  function drawGrid(ctx, game, layout, settings) {
     var x;
     var y;
+    var offset = settings && settings.extendGridToRails ? railOffset(layout, settings) : 0;
+    var horizontalExtension = game.level.xConnection || game.level.topology === "sphere" ? offset : 0;
+    var verticalExtension = game.level.yConnection || game.level.topology === "sphere" ? offset : 0;
     ctx.save();
     ctx.strokeStyle = "rgba(108, 103, 94, 0.5)";
     ctx.lineWidth = Math.max(0.7, layout.cell * 0.025);
     for (x = 0; x < game.rules.width; x += 1) {
       var px = layout.left + x * layout.cell;
       ctx.beginPath();
-      ctx.moveTo(px, layout.top);
-      ctx.lineTo(px, layout.bottom);
+      ctx.moveTo(px, layout.top - verticalExtension);
+      ctx.lineTo(px, layout.bottom + verticalExtension);
       ctx.stroke();
     }
     for (y = 0; y < game.rules.height; y += 1) {
       var py = layout.top + y * layout.cell;
       ctx.beginPath();
-      ctx.moveTo(layout.left, py);
-      ctx.lineTo(layout.right, py);
+      ctx.moveTo(layout.left - horizontalExtension, py);
+      ctx.lineTo(layout.right + horizontalExtension, py);
       ctx.stroke();
     }
     ctx.fillStyle = "rgba(72, 71, 65, 0.48)";
@@ -227,8 +234,8 @@
     return pulse;
   }
 
-  function drawRailPair(ctx, layout, orientation, color, twisted, pulse) {
-    var offset = Math.min(15, layout.cell * 0.4);
+  function drawRailPair(ctx, layout, orientation, color, twisted, pulse, settings) {
+    var offset = railOffset(layout, settings);
     ctx.save();
     ctx.strokeStyle = color;
     ctx.fillStyle = color;
@@ -264,8 +271,8 @@
     ctx.restore();
   }
 
-  function drawSphereRails(ctx, game, layout, time) {
-    var offset = Math.min(15, layout.cell * 0.4);
+  function drawSphereRails(ctx, game, layout, time, settings) {
+    var offset = railOffset(layout, settings);
     var pairs = [
       { color: TOKENS.teal, pulse: seamPulse(game, Engine.SEAM_X, time), sides: ["top", "left"] },
       { color: TOKENS.gold, pulse: seamPulse(game, Engine.SEAM_Y, time), sides: ["bottom", "right"] }
@@ -296,16 +303,16 @@
     });
   }
 
-  function drawTopologyRails(ctx, game, layout, time) {
+  function drawTopologyRails(ctx, game, layout, time, settings) {
     if (game.level.topology === "sphere") {
-      drawSphereRails(ctx, game, layout, time);
+      drawSphereRails(ctx, game, layout, time, settings);
       return;
     }
     if (game.level.xConnection) {
-      drawRailPair(ctx, layout, "vertical", TOKENS.teal, game.level.xConnection === "twist", seamPulse(game, Engine.SEAM_X, time));
+      drawRailPair(ctx, layout, "vertical", TOKENS.teal, game.level.xConnection === "twist", seamPulse(game, Engine.SEAM_X, time), settings);
     }
     if (game.level.yConnection) {
-      drawRailPair(ctx, layout, "horizontal", TOKENS.gold, game.level.yConnection === "twist", seamPulse(game, Engine.SEAM_Y, time));
+      drawRailPair(ctx, layout, "horizontal", TOKENS.gold, game.level.yConnection === "twist", seamPulse(game, Engine.SEAM_Y, time), settings);
     }
     if (!game.level.xConnection && !game.level.yConnection) {
       ctx.save();
@@ -737,8 +744,8 @@
       return;
     }
     drawPaperTexture(ctx, layout.width, layout.height);
-    drawTopologyRails(ctx, game, layout, time);
-    drawGrid(ctx, game, layout);
+    drawTopologyRails(ctx, game, layout, time, settings);
+    drawGrid(ctx, game, layout, settings);
     drawLessonConnections(ctx, game, layout, time);
     drawLessonGuide(ctx, game, layout, time, settings.fontFamily);
     drawDemo(ctx, game, layout, time);
@@ -1031,7 +1038,7 @@
     if (morph < 0.98) {
       ctx.save();
       ctx.globalAlpha *= 1 - morph;
-      drawTopologyRails(ctx, game, layout, Number(settings.time) || 0);
+      drawTopologyRails(ctx, game, layout, Number(settings.time) || 0, settings);
       ctx.restore();
     }
     var winnerSet = winningCellSet(game);

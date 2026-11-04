@@ -21,6 +21,8 @@ Arena 独立渠道在 `arena/` 包装本节的共享规则与 controller，增�
 
 共享模块使用 UMD 形式：浏览器通过全局对象加载，Node 测试通过 CommonJS 加载，原生平台构建可原样复制后由入口按依赖顺序执行。共享层禁止访问 `document`、`localStorage`、`wx` 或其他宿主对象。
 
+`board-art.js` 的 `drawBoard` / `drawCompletion` 可选 `extendGridToRails: true`，将已连接边界的辅助线置于最外交点之外半格；二维网格延伸到辅助线，未连接的边不延伸。球面的四边均连接，按既有相邻边配对着色。默认关闭，不改变现有调用方。启用者须为半格辅助线、箭头与轴标签预留画布边距；此选项不改变交点坐标、命中范围或拓扑规则。
+
 `liquid-range.js` 另提供共享的纯计算 `duration` / `glide`，用于两种渲染方式的距离感知滑行。它的 `bind` 是 H5 DOM 适配入口，原生平台不调用；材质绘制仍由各自渲染边界承担。
 
 H5 外壳默认保留小红书小工具上方宿主栏所需的顶部留白。`host-layout.js` 在首屏绘制前识别 iframe、Bilibili Toy、知乎 `aiworks.site` 域名，以及根节点显式声明的 `data-host-platform="web"` / `"zhihu"`，应用仅保留安全区的紧凑布局。Web 构建在生成入口中声明平台；知乎顶层 WebView 不依赖 iframe 判断。宽而矮的窗口在 560px 以上宽度时收窄并居中，窄屏使用完整可用宽度。Bilibili adapter 的 `toycontainerchange` 事件重新应用同一判断。
