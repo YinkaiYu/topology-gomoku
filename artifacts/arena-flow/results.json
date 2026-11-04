@@ -1,0 +1,34 @@
+[
+  {
+    "viewport": {
+      "width": 1280,
+      "height": 720
+    },
+    "checks": "clock settings and validation, chronology, shared scrolling, reader position, long notes, uniform opacity at both edges, coordinates, replay, profiles without duplicate color badges, timeout and result in settings",
+    "errors": []
+  },
+  {
+    "viewport": {
+      "width": 1920,
+      "height": 1080
+    },
+    "checks": "clock settings and validation, chronology, shared scrolling, reader position, long notes, uniform opacity at both edges, coordinates, replay, profiles without duplicate color badges, timeout and result in settings",
+    "errors": []
+  },
+  {
+    "viewport": {
+      "width": 1024,
+      "height": 768
+    },
+    "checks": "clock settings and validation, chronology, shared scrolling, reader position, long notes, uniform opacity at both edges, coordinates, replay, profiles without duplicate color badges, timeout and result in settings",
+    "errors": []
+  },
+  {
+    "viewport": {
+      "width": 1440,
+      "height": 1080
+    },
+    "checks": "clock settings and validation, chronology, shared scrolling, reader position, long notes, uniform opacity at both edges, coordinates, replay, profiles without duplicate color badges, timeout and result in settings",
+    "errors": []
+  }
+]

@@ -2,6 +2,24 @@
 
 Arena 发布状态：2026-10-22 用户已确认发布当前版本，并计划自行完整测试使用流程；见[渠道发布记录](../development/arena.md#渠道发布记录)。以下各轮验收的待确认、未发布描述保留当时状态。
 
+## 2026-11-04：共同聊天时间轴、坐标与棋钟
+
+本轮为任务分支候选，尚未合入或发布 `arena`。观战界面移除气泡内部滚动区域，双方消息按事件顺序交错、共同滚动；靠近上下边缘时整条消息与头像统一降低透明度，气泡内部不施加渐变。棋钟移到顶部左右两侧，棋色只在棋钟旁标示，坐标放大为 14–16 px。棋盘下方只保留视角与复盘操作，终局结果在设置中查看。
+
+提供 Playwright 到 `NODE_PATH` 后运行 `node scripts/qa-arena-flow.cjs`。脚本启动隔离服务，以 `38b9a8d` 为前版页面，前后使用同一暂停的 7×7 莫比乌斯棋局、D4/E4 两手、相同样例随想及一条旧长消息。所有文字均为测试样例，不代表真实模型发言或棋力。四种视口覆盖 16:9、4:3。
+
+| 视口 | 旧长消息前 / 后 | 新随想 |
+| --- | --- | --- |
+| 1280×720 | [之前](../../artifacts/arena-flow/long-before-1280x720.png) / [现在](../../artifacts/arena-flow/long-after-1280x720.png) | [对局](../../artifacts/arena-flow/conversation-1280x720.png) |
+| 1920×1080 | [之前](../../artifacts/arena-flow/long-before-1920x1080.png) / [现在](../../artifacts/arena-flow/long-after-1920x1080.png) | [对局](../../artifacts/arena-flow/conversation-1920x1080.png) |
+| 1024×768 | [之前](../../artifacts/arena-flow/long-before-1024x768.png) / [现在](../../artifacts/arena-flow/long-after-1024x768.png) | [对局](../../artifacts/arena-flow/conversation-1024x768.png) |
+| 1440×1080 | [之前](../../artifacts/arena-flow/long-before-1440x1080.png) / [现在](../../artifacts/arena-flow/long-after-1440x1080.png) | [对局](../../artifacts/arena-flow/conversation-1440x1080.png) |
+
+- [上端透明度](../../artifacts/arena-flow/fade-top-1280x720.png)、[下端透明度](../../artifacts/arena-flow/fade-bottom-1280x720.png)、[棋钟设置](../../artifacts/arena-flow/settings-1280x720.png)、[超时后棋盘](../../artifacts/arena-flow/timeout-1280x720.png)、[设置内结果](../../artifacts/arena-flow/result-1280x720.png)。
+- [结构化结果](../../artifacts/arena-flow/results.json)：四视口均通过单一时间轴、共同位移、历史阅读锚点、长消息完整换行、上下两端整条透明度、坐标、复盘几何、重复头像编辑、棋钟输入校验、服务超时及结果入口检查，无页面溢出或浏览器错误。
+- 以 `ARENA_QA_BASE=38b9a8d`、`ARENA_QA_EVIDENCE=.tmp/arena-regression` 运行原有 `npm run arena:qa`，四视口的首页、资料、邀请、棋局管理、SSE、暂停恢复、2D/3D、和棋、复盘与导出回归通过。临时回归产物不作为本轮长期证据。
+- 半格网格延伸复用下文独立共享任务的可选渲染能力，默认关闭，Arena 主动开启；不改裁判连接规则。此次未修改正在使用的旧服务或旧棋局，真实客户端的完整限时对局仍待用户试玩确认。
+
 ## 2026-10-22：棋子默认头像与 AI 名称联动
 
 - 未配置的头像直接使用对应黑白棋子，复用既有棋子材质；对局中不再叠加重复的小棋色徽标。选择内置 AI 头像即填入对应名称，可继续手动改成昵称；切回默认或上传图片保留名字。头像列表用 Grok 替换 OpenCode，已有 OpenCode 头像记录仍可显示，客户端接入支持不变。

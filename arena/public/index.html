@@ -11,6 +11,7 @@
   <script defer src="/assets/topology-morph.js"></script>
   <script defer src="/assets/board-art.js"></script>
   <script defer src="/assets/level-config.js"></script>
+  <script defer src="/coordinates.js"></script>
   <script defer src="/arena.js"></script>
 </head>
 <body>
@@ -33,16 +34,18 @@
       </section>
     </main>
     <main id="match" class="match" hidden>
-      <header class="match-heading"><div class="chapter-heading"><img id="match-glyph" alt=""><h1 id="match-level"></h1><span id="match-settings-slot"></span></div></header>
+      <header class="match-heading"><span class="chess-clock" id="black-clock" aria-label="黑方剩余时间" hidden><span class="stone black-stone"></span><span></span></span><div class="chapter-heading"><img id="match-glyph" alt=""><h1 id="match-level"></h1><span id="match-settings-slot"></span></div><span class="chess-clock" id="white-clock" aria-label="白方剩余时间" hidden><span></span><span class="stone white-stone"></span></span></header>
       <div class="arena-stage">
-        <section class="player player-black" aria-labelledby="black-name">
-          <button class="player-identity" data-profile="black" type="button" title="设置黑方棋手"><span class="avatar" id="black-avatar"></span><h2 id="black-name">黑方</h2><span class="stone black-stone" aria-label="黑方"></span></button>
-          <div class="player-voice" id="black-voice" role="log" aria-live="polite"></div>
-        </section>
+        <div class="conversation" id="conversation" tabindex="0" role="log" aria-label="棋手随想" aria-live="polite">
+          <div class="conversation-rows" id="conversation-rows"><div class="empty-seats" id="empty-seats">
+            <button class="player-identity" id="black-identity" data-profile="black" type="button" title="设置黑方棋手"><span class="avatar" id="black-avatar"></span><h2 id="black-name">黑方</h2></button>
+            <button class="player-identity" id="white-identity" data-profile="white" type="button" title="设置白方棋手"><span class="avatar" id="white-avatar"></span><h2 id="white-name">白方</h2></button>
+          </div></div>
+        </div>
         <section class="board-column" aria-label="棋局">
           <div class="board-wrap" id="board-wrap"><canvas id="board" role="img" aria-label="等待棋局"></canvas><div class="board-notice glass" id="board-notice" hidden></div></div>
           <div class="board-tools">
-            <p id="turn-label" class="turn-label"></p>
+            <p id="turn-label" class="sr-only" role="status" aria-live="polite"></p>
             <div class="view-controls" id="view-controls">
               <button class="view-button" id="flat-view" type="button" aria-label="二维棋盘"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="5" width="14" height="14" rx="1"></rect><path d="M5 12h14M12 5v14"></path></svg></button>
               <input id="view-range" type="range" min="0" max="100" value="0" aria-label="棋盘展开程度">
@@ -55,10 +58,6 @@
             </div>
           </div>
         </section>
-        <section class="player player-white" aria-labelledby="white-name">
-          <button class="player-identity" data-profile="white" type="button" title="设置白方棋手"><span class="avatar" id="white-avatar"></span><h2 id="white-name">白方</h2><span class="stone white-stone" aria-label="白方"></span></button>
-          <div class="player-voice" id="white-voice" role="log" aria-live="polite"></div>
-        </section>
       </div>
       <section class="commentary" id="commentary" aria-labelledby="commentary-heading" hidden><h2 id="commentary-heading"></h2><div class="commentary-text" id="commentary-text" aria-live="polite"></div></section>
     </main>
@@ -69,7 +68,9 @@
   <dialog id="settings-dialog" class="panel-dialog settings-dialog">
     <div class="dialog-heading"><h2>设置</h2><button class="quiet-button" data-close type="button" aria-label="关闭">×</button></div>
     <div class="settings-grid"><button class="setting-button" id="new-button" type="button">新棋局</button><button class="setting-button" id="rooms-button" type="button">棋局记录</button></div>
+    <section id="clock-settings"><label class="clock-toggle"><span>棋钟</span><input type="checkbox" id="clock-enabled" checked></label><div class="clock-options"><label>每方 <input id="clock-minutes" type="number" min="1" max="60" value="5" required> 分钟</label><label>每步加 <input id="clock-increment" type="number" min="0" max="60" value="5" required> 秒</label></div></section>
     <section id="match-settings" hidden>
+      <p id="match-result" class="match-result" hidden></p>
       <div class="settings-grid match-control"><button class="setting-button" id="start-button" type="button">开始对弈</button><button class="setting-button" id="pause-button" type="button" hidden>暂停</button><button class="setting-button" id="resume-button" type="button" hidden>继续对弈</button><button class="setting-button danger" id="stop-button" type="button">结束棋局</button></div>
       <div class="settings-players"><div><button class="profile-choice" id="settings-black" data-profile="black" type="button"></button><button class="quiet-button" data-invite="black" type="button">黑方邀请 ↗</button></div><div><button class="profile-choice" id="settings-white" data-profile="white" type="button"></button><button class="quiet-button" data-invite="white" type="button">白方邀请 ↗</button></div></div>
       <div class="settings-grid"><button class="setting-button" id="timeline-button" type="button">时间线</button><button class="setting-button" id="export-button" type="button">保存棋谱</button><button class="setting-button" data-invite="commentator" type="button">邀请解说</button><button class="setting-button" id="commentary-toggle" type="button" hidden>关闭解说</button></div>
