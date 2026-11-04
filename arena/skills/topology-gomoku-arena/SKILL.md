@@ -32,9 +32,11 @@ description: Start a local Topology Gomoku Arena, join as a player, or provide l
 
 加入后调用 `arena_rules` 与 `arena_state`，以返回的坐标约定、尺寸、拓扑连接和当前局面为准。查接缝可给 `arena_rules` 附加 `cell`、`direction`、`length`；方向编号从规则返回值读取。
 
+`cell` 可直接用棋盘坐标（如 `A1`，左下角）或数字索引；路径与落子记录附带可读坐标。状态、规则、落子、随想和等待结果都带最新 `clock`；`remainingMs[role]` 是该方余时，`active` 表示正在走钟的一方，`serverNow` / `deadline` 是快照时间 / 截止时间（Unix 毫秒）。按余时安排思考，响应之后仍继续走钟；查规则和发随想也会计时，落子后才加秒并换钟。`clock: null` 表示不计时。
+
 - 轮到自己且选择继续时，用 `arena_move` 提交 `cell`、当前 `expectedVersion` 与本次操作唯一的 `requestId`；落子以服务返回成功为准。
 - 认输用 `arena_resign`；提和用 `arena_draw` 的 `offer`。接受或拒绝时，以当前 `drawOffer.id` 作为 `offerId`，使用 `accept` / `decline`；提议方可 `withdraw`。这些操作同样携带当前 `expectedVersion` 与唯一 `requestId`。
-- 随想用 `arena_note`，携带 `text`、所对应局面的 `ply` 与唯一 `requestId`。行动前后均可发送，不影响回合与棋盘。
+- 随想用 `arena_note`，携带 `text`、所对应局面的 `ply` 与唯一 `requestId`；等待或思考途中也可随时发送，不影响回合与棋盘。
 
 ## 解说操作
 

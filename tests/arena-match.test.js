@@ -269,7 +269,7 @@ test("notes accompany any game phase and are visible only to their author and sp
   assert.throws(() => note(game.white.token, 1, "x".repeat(1001)), errorCode("INVALID_ARGUMENT"));
 });
 
-test("notes retry once, enforce per-position limits and persist the receipt before acknowledgement", (t) => {
+test("notes retry once, allow multiple short thoughts at one position and persist before acknowledgement", (t) => {
   const game = setup();
   const args = { gameId: game.gameId, token: game.black.token, ply: 0, text: "Opening.", requestId: "note" };
   const saved = t.mock.method(game.arena, "_save", () => { throw new Error("Disk unavailable"); });
@@ -280,9 +280,9 @@ test("notes retry once, enforce per-position limits and persist the receipt befo
   assert.equal(retried.state.events.filter(event => event.type === "note").length, 1);
   assert.throws(() => game.arena.call("arena_note", { ...args, text: "Changed" }), errorCode("REQUEST_REUSED"));
   for (let index = 1; index < 8; index++) game.arena.call("arena_note", { ...args, requestId: `note-${index}` });
-  assert.throws(() => game.arena.call("arena_note", { ...args, requestId: "overflow" }), errorCode("NOTE_LIMIT"));
+  game.arena.call("arena_note", { ...args, requestId: "another-thought" });
   assert.equal(game.arena.call("arena_note", args).event.seq, retried.event.seq);
-  assert.equal(game.state().events.filter(event => event.type === "note").length, 8);
+  assert.equal(game.state().events.filter(event => event.type === "note").length, 9);
   game.start();
   assert.throws(() => game.move(0, { requestId: "note" }), errorCode("REQUEST_REUSED"));
   game.move(0);
@@ -338,7 +338,11 @@ test("arena rules trace twisted seams without providing strategy evaluation", ()
 
 test("rule paths explain Mobius boundaries and repeated cells without discarding the traversed prefix", () => {
   const game = setup({}, { topology: "mobius", width: 7, height: 7 });
-  const query = (cell, direction, length) => game.arena.call("arena_rules", { gameId: game.gameId, cell, direction, length });
+  // Coordinate annotations have their own round-trip tests; keep these fixtures
+  // focused on the shared numeric geometry and termination contract.
+  const query = (cell, direction, length) => JSON.parse(JSON.stringify(
+    game.arena.call("arena_rules", { gameId: game.gameId, cell, direction, length }),
+    (key, value) => ["coordinate", "coordinates"].includes(key) ? undefined : value));
   const vertical = query(0, 2, 8);
   assert.deepEqual(vertical.path, {
     requestedLength: 8, cells: [0, 7, 14, 21, 28, 35, 42], seams: [0, 0, 0, 0, 0, 0], directions: [2, 2, 2, 2, 2, 2, 2],
@@ -379,13 +383,14 @@ test("diagnostic rule paths agree with adjudication across all topologies and di
           assert.equal(traced.complete, expected !== null, label);
           assert.deepEqual({ cells: traced.cells, seams: traced.seams, directions: traced.directions },
             expected || Engine.tracePath(rules, cell, direction, traced.cells.length), label);
-          assert.deepEqual(next, Engine.step(rules, cell, direction), label);
+          const numericStep = step => step && { cell: step.cell, direction: step.direction, seam: step.seam };
+          assert.deepEqual(numericStep(next), Engine.step(rules, cell, direction), label);
           if (!traced.complete) {
             assert.ok(traced.cells.length < length, label);
             assert.equal(traced.stop.cell, traced.cells.at(-1), label);
             assert.equal(traced.stop.direction, traced.directions.at(-1), label);
             const blocked = Engine.step(rules, traced.stop.cell, traced.stop.direction);
-            assert.deepEqual(traced.stop.next, blocked, label);
+            assert.deepEqual(numericStep(traced.stop.next), blocked, label);
             assert.equal(traced.stop.reason, blocked ? "repeated_cell" : "boundary", label);
             if (blocked) assert.ok(traced.cells.includes(blocked.cell), label);
           }

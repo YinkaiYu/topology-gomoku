@@ -243,7 +243,7 @@ for (const transport of ["http", "stdio", "cli"]) {
     assert.equal(boundary.path.stop.reason, "boundary");
     assert.equal(boundary.path.stop.next, null);
     assert.equal(boundary.next.cell, 7);
-    const cycle = await query({ cell: 24, direction: 0, length: 9 });
+    const cycle = await query({ cell: "D4", direction: 0, length: 9 });
     assert.equal(cycle.path.complete, false);
     assert.equal(cycle.path.stop.reason, "repeated_cell");
     assert.equal(cycle.path.stop.next.cell, 24);
@@ -252,7 +252,7 @@ for (const transport of ["http", "stdio", "cli"]) {
     assert.deepEqual(diagonal.path.cells, [6, 35, 29]);
     assert.deepEqual(diagonal.path.directions, [1, 7, 7]);
     await rpc("arena_control", { gameId, action: "start" }, true);
-    await rpc("arena_move", { gameId, token: seats.black.token, cell: 24, expectedVersion: 0, requestId: "first" });
+    await rpc("arena_move", { gameId, token: seats.black.token, cell: "D4", expectedVersion: 0, requestId: "first" });
     const state = (await rpc("arena_note", { gameId, token: seats.white.token, text: "private-thought", ply: 1, requestId: "note" })).result.state;
     const current = await query({ cell: 24, direction: 0, length: 9 });
     assert.deepEqual(current.state, { gameId, phase: "playing", turn: "white", ply: 1, version: 1, eventSeq: state.eventSeq });
@@ -283,15 +283,20 @@ for (const transport of ["http", "stdio"]) {
     assert.equal(listed.tools.find(tool => tool.name === "arena_move").inputSchema.properties.explanation, undefined);
     assert.equal(listed.tools.find(tool => tool.name === "arena_note").inputSchema.properties.kind, undefined);
     await rpc("arena_control", { gameId, action: "start" }, true);
-    const moveArgs = { gameId, token: seats.black.token, cell: 0, expectedVersion: 0, requestId: "first" };
+    const moveArgs = { gameId, token: seats.black.token, cell: `A${seats.black.state.height}`, expectedVersion: 0, requestId: "first" };
     assert.equal((await client.callTool({ name: "arena_move", arguments: { ...moveArgs, explanation: "Old field" } })).isError, true);
     const move = await client.callTool({ name: "arena_move", arguments: moveArgs });
     assert.equal(move.isError, undefined);
     assert.equal(move.structuredContent.ply, 1);
+    assert.equal(move.structuredContent.clock.active, "white");
+    assert.equal(move.structuredContent.clock.incrementMs, 5000);
+    assert.equal(move.structuredContent.clock.deadline - move.structuredContent.clock.serverNow, move.structuredContent.clock.remainingMs.white);
     const noteArgs = { gameId, token: seats.black.token, ply: 1, text: "Occupy the seam.", requestId: "seam-note" };
     const note = await client.callTool({ name: "arena_note", arguments: noteArgs });
     assert.equal(note.isError, undefined);
     assert.equal(note.structuredContent.event.text, noteArgs.text);
+    assert.equal(note.structuredContent.state.clock.deadline, move.structuredContent.clock.deadline);
+    assert.ok(note.structuredContent.state.clock.remainingMs.white <= move.structuredContent.clock.remainingMs.white);
     assert.equal((await client.callTool({ name: "arena_note", arguments: noteArgs })).structuredContent.duplicate, true);
     assert.equal((await rpc("arena_state", { gameId })).result.board[0], 1);
     const bad = await client.callTool({ name: "arena_move", arguments: { gameId, token: seats.commentator.token, cell: 1, expectedVersion: 1, requestId: "illegal" } });
@@ -299,6 +304,11 @@ for (const transport of ["http", "stdio"]) {
     const state = await client.callTool({ name: "arena_state", arguments: { gameId, token: seats.white.token } });
     assert.equal(state.structuredContent.turn, "white");
     assert.ok(!state.structuredContent.events.some((event) => event.type === "note"));
+    const timedWait = await client.callTool({ name: "arena_wait", arguments: { gameId, token: seats.white.token, afterSeq: state.structuredContent.eventSeq, timeoutMs: 30 } });
+    assert.equal(timedWait.structuredContent.eventSeq, state.structuredContent.eventSeq);
+    assert.equal(timedWait.structuredContent.clock.deadline, state.structuredContent.clock.deadline);
+    assert.ok(timedWait.structuredContent.clock.remainingMs.white < state.structuredContent.clock.remainingMs.white, "Even an event-free wait returns the current balance to the player");
+    assert.equal(timedWait.structuredContent.clock.remainingMs.black, state.structuredContent.clock.remainingMs.black);
     const observer = await client.callTool({ name: "arena_state", arguments: { gameId, token: seats.commentator.token } });
     assert.ok(!observer.structuredContent.events.some((event) => event.type === "note"));
     const offer = await client.callTool({ name: "arena_draw", arguments: { gameId, token: seats.black.token, action: "offer", expectedVersion: 1, requestId: "offer" } });
@@ -328,6 +338,24 @@ for (const transport of ["http", "stdio"]) {
       await new Promise((resolve) => setTimeout(resolve, 10));
     }
     assert.equal(app.arena.listenerCount("change"), baseline, "Closing an MCP client cancels its server-side wait");
+  });
+}
+
+for (const transport of ["http", "stdio"]) {
+  test(`real MCP ${transport} waits receive a clock timeout without any player action`, async t => {
+    const { app, rpc, gameId, seats } = await fixture(t, { clock: { initialMs: 1000, incrementMs: 0 } });
+    const client = new Client({ name: "arena-clock-test", version: "1.0.0" });
+    t.after(() => client.close());
+    await client.connect(transport === "http" ? new StreamableHTTPClientTransport(new URL(`${app.url}/mcp`))
+      : new StdioClientTransport({ command: process.execPath, args: [path.resolve(__dirname, "../arena/mcp.cjs"), "--url", app.url], stderr: "pipe" }));
+    const state = (await rpc("arena_control", { gameId, action: "start" }, true)).result;
+    const result = await client.callTool({ name: "arena_wait", arguments: { gameId, token: seats.white.token, afterSeq: state.eventSeq, timeoutMs: 5000 } });
+    assert.equal(result.isError, undefined);
+    assert.equal(result.structuredContent.phase, "ended");
+    assert.equal(result.structuredContent.winReason, "timeout");
+    assert.equal(result.structuredContent.winner, "white");
+    assert.equal(result.structuredContent.clock.remainingMs.black, 0);
+    assert.equal(result.structuredContent.ply, 0);
   });
 }
 

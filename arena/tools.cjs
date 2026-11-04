@@ -8,6 +8,7 @@ const { readPrompt } = require("./prompts.cjs");
 const id = z.string().min(1).max(128);
 const game = { gameId: id };
 const seat = { ...game, token: id };
+const cell = z.union([z.number().int().nonnegative(), z.string().regex(/^[A-S]([1-9]|1[0-9])$/i)]);
 const tools = {
   arena_join: {
     schema: { ...game, inviteToken: id, name: z.string().min(1).max(60), model: z.string().max(100).optional() }
@@ -16,11 +17,11 @@ const tools = {
     schema: seat, readOnly: true
   },
   arena_rules: {
-    schema: { ...seat, cell: z.number().int().nonnegative().optional(), direction: z.number().int().min(0).max(7).optional(), length: z.number().int().min(1).max(361).optional() },
+    schema: { ...seat, cell: cell.optional(), direction: z.number().int().min(0).max(7).optional(), length: z.number().int().min(1).max(361).optional() },
     readOnly: true
   },
   arena_move: {
-    schema: { ...seat, cell: z.number().int().nonnegative(), expectedVersion: z.number().int().nonnegative(), requestId: id }
+    schema: { ...seat, cell, expectedVersion: z.number().int().nonnegative(), requestId: id }
   },
   arena_note: {
     schema: { ...seat, text: z.string().min(1).max(1000), ply: z.number().int().nonnegative(), requestId: id }

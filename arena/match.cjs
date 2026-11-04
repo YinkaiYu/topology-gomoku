@@ -8,6 +8,8 @@ const Engine = require("../app/assets/topology.js");
 const Content = require("../app/assets/level-config.js");
 const { GameController } = require("../app/assets/game-controller.js");
 const { readPrompt } = require("./prompts.cjs");
+const Coordinates = require("./public/coordinates.js");
+const Clock = require("./clock.cjs");
 const { version: gameVersion } = require("../package.json");
 
 const ROLES = ["black", "white", "commentator"];
@@ -57,6 +59,19 @@ function dimensions(level, width = level.width, height = level.height) {
     "INVALID_SIZE", "Board width and height must be integers from 5 to 19.");
   requireValue(level.topology !== "sphere" || width === height, "INVALID_SIZE", "The sphere requires a square board.");
   return { width, height };
+}
+function clockFor(value) {
+  if (value === null) return null;
+  value = value === undefined ? { initialMs: 300000, incrementMs: 5000 } : value;
+  requireValue(value && typeof value === "object" && Number.isInteger(value.initialMs) && value.initialMs >= 1000 && value.initialMs <= 3600000
+    && Number.isInteger(value.incrementMs) && value.incrementMs >= 0 && value.incrementMs <= 60000,
+  "INVALID_CLOCK", "clock needs initialMs (1000–3600000) and incrementMs (0–60000), or null for an untimed game.");
+  return { initialMs: value.initialMs, incrementMs: value.incrementMs, remainingMs: { black: value.initialMs, white: value.initialMs }, active: null, runningSince: null };
+}
+function inputCell(value, rules) {
+  const cell = Coordinates.cell(value, rules.width, rules.height);
+  requireValue(cell !== null, "INVALID_CELL", "cell must be an on-board coordinate such as A1, or a zero-based cell index.");
+  return cell;
 }
 function controllerFor(levelIndex, mode, difficulty, now, random, size) {
   const controller = new GameController({
@@ -134,6 +149,8 @@ class Arena extends EventEmitter {
       }
       controller.drainEvents();
       const match = { ...saved, ...size, controller, receipts: saved.receipts || {} };
+      // Saved balances are checkpointed; downtime never consumes a player's time.
+      match.clock = saved.clock ? { ...saved.clock, active: null, runningSince: null } : null;
       requireValue(match.version === match.moves.length
         && match.eventSeq === (match.events.at(-1)?.seq || 0),
       "INVALID_SAVE", `Inconsistent counters in ${filename}.`, 500);
@@ -150,6 +167,7 @@ class Arena extends EventEmitter {
   _save(match) {
     if (!this.dataDir) return;
     const { controller, ...saved } = match;
+    if (match.clock) saved.clock = { ...match.clock, remainingMs: Clock.remaining(match.clock, this.now()), active: null, runningSince: null };
     const filename = path.join(this.dataDir, `match-${match.gameId}.json`);
     const temporary = `${filename}.${crypto.randomBytes(8).toString("hex")}.tmp`;
     try {
@@ -175,7 +193,18 @@ class Arena extends EventEmitter {
   _match(gameId) {
     requireValue(typeof gameId === "string" && this.matches.has(gameId),
       "GAME_NOT_FOUND", "This game does not exist.", 404);
-    return this.matches.get(gameId);
+    const match = this.matches.get(gameId);
+    this._expireClock(match);
+    return match;
+  }
+
+  _expireClock(match, now = this.now()) {
+    if (match.phase !== "playing" || !match.clock?.active || Clock.remaining(match.clock, now)[match.clock.active] > 0) return false;
+    const loser = match.clock.active;
+    Clock.freeze(match.clock, now);
+    this._finish(match, "win", loser === "black" ? "white" : "black", "timeout");
+    this._changed(match);
+    return true;
   }
 
   _host(context) {
@@ -216,6 +245,7 @@ class Arena extends EventEmitter {
       schemaVersion: 1,
       gameVersion: match.gameVersion,
       ...this._progress(match),
+      clock: Clock.snapshot(match.clock, this.now()),
       title: match.title,
       mode: match.mode,
       difficulty: match.difficulty,
@@ -225,8 +255,8 @@ class Arena extends EventEmitter {
       height: game.rules.height,
       target: game.rules.target,
       board: Array.from(game.board),
-      moves: match.moves,
-      events: this._visibleEvents(match, role),
+      moves: match.moves.map(move => ({ ...move, coordinate: Coordinates.label(move.cell, game.rules.width, game.rules.height) })),
+      events: this._visibleEvents(match, role).map(event => event.type === "move" ? { ...event, coordinate: Coordinates.label(event.cell, game.rules.width, game.rules.height) } : event),
       seats: match.seats,
       outcome: match.resolution?.outcome || (match.stopped ? "stopped" : game.outcome),
       winner: match.resolution ? match.resolution.winner : match.stopped ? null : (game.winner === Engine.HUMAN ? "black" : game.winner === Engine.AI ? "white" : null),
@@ -240,7 +270,7 @@ class Arena extends EventEmitter {
     });
   }
 
-  _recordMoves(match) {
+  _recordMoves(match, now = this.now()) {
     const game = match.controller.game;
     for (let index = match.moves.length; index < game.moves.length; index += 1) {
       const source = game.moves[index];
@@ -248,11 +278,13 @@ class Arena extends EventEmitter {
         cell: source.cell, player: source.player === Engine.HUMAN ? "black" : "white",
         ply: index + 1, at: this._at()
       };
+      Clock.moved(match.clock, move.player, now);
       match.moves.push(move);
       match.version += 1;
       this._event(match, "move", { ...move, version: match.version });
     }
     if (game.status === "ended" && match.phase !== "ended") {
+      Clock.freeze(match.clock, now);
       match.phase = "ended";
       game.autoAdvancePending = false;
       match.controller.scheduled = [];
@@ -281,6 +313,7 @@ class Arena extends EventEmitter {
       case "arena_list":
         return {
           matches: Array.from(this.matches.values()).reverse().map((match) => {
+            this._expireClock(match);
             const state = this._snapshot(match);
             return {
               gameId: state.gameId, title: state.title, topology: state.topology, mode: state.mode,
@@ -356,6 +389,7 @@ class Arena extends EventEmitter {
         ...profiles[role], model: "", joined: role === "white" && args.mode === "ai", lastSeen: null
       }])),
       credentials: {}, receipts: {},
+      clock: clockFor(args.clock),
       controller: controllerFor(levelIndex, args.mode, difficulty, this.now, this.random, size)
     };
     match.controller.pause(this.now());
@@ -413,12 +447,11 @@ class Arena extends EventEmitter {
     requireValue(PLAYERS[role], "PLAYER_REQUIRED", "Only a player can place stones.", 403);
     const requestId = text(args.requestId, "requestId", 128);
     requireValue(args.explanation === undefined, "INVALID_ARGUMENT", "Send text separately with arena_note.");
-    requireValue(Number.isInteger(args.cell) && args.cell >= 0 && args.cell < match.controller.game.board.length,
-      "INVALID_CELL", "cell must be an integer on this board.");
+    const cell = inputCell(args.cell, match.controller.game.rules);
     requireValue(Number.isInteger(args.expectedVersion) && args.expectedVersion >= 0,
       "INVALID_VERSION", "expectedVersion must be a nonnegative integer.");
     const key = `${role}:${requestId}`;
-    const fingerprint = JSON.stringify([args.cell, args.expectedVersion, ""]);
+    const fingerprint = JSON.stringify([cell, args.expectedVersion, ""]);
     const receipt = match.receipts[key];
     if (receipt) {
       requireValue(receipt.fingerprint === fingerprint, "REQUEST_REUSED", "This requestId was used for a different move.", 409);
@@ -427,13 +460,15 @@ class Arena extends EventEmitter {
       this._save(match);
       return { ...this._snapshot(match, role), duplicate: true, acceptedVersion: receipt.version };
     }
-    requireValue(match.phase === "playing", "NOT_PLAYING", "Wait until the host starts or resumes the game.", 409);
+    const now = this.now();
+    this._expireClock(match, now);
+    requireValue(match.phase === "playing", "NOT_PLAYING", "The match must be playing; read arena_state for the current phase and result.", 409);
     requireValue(args.expectedVersion === match.version, "STALE_VERSION", "Read the current state before moving.", 409);
     requireValue(match.controller.game.turn === PLAYERS[role], "WRONG_TURN", "Wait for your own turn.", 409);
-    requireValue(match.controller.performMove(args.cell, PLAYERS[role], null, this.now()),
+    requireValue(match.controller.performMove(cell, PLAYERS[role], null, now),
       "ILLEGAL_MOVE", "That intersection is occupied or cannot be played.", 409);
     this._clearDraw(match, role);
-    this._recordMoves(match);
+    this._recordMoves(match, now);
     match.receipts[key] = { fingerprint, version: match.version };
     this._changed(match);
     return this._snapshot(match, role);
@@ -447,6 +482,7 @@ class Arena extends EventEmitter {
   }
 
   _finish(match, outcome, winner, winReason) {
+    Clock.freeze(match.clock, this.now());
     match.resolution = { outcome, winner, winReason };
     match.phase = "ended";
     match.drawOffer = null;
@@ -532,8 +568,6 @@ class Arena extends EventEmitter {
     if (role === "commentator") {
       requireValue(match.commentaryEnabled !== false, "COMMENTARY_DISABLED", "Commentary is off. Stop commentary until invited again.", 409);
     }
-    const count = match.events.filter((event) => ["note", "speech"].includes(event.type) && event.role === role && event.ply === args.ply).length;
-    requireValue(count < 8, "NOTE_LIMIT", "This role has already sent eight notes for this position.", 409);
     const event = this._event(match, "note", { role, text: message, ply: args.ply });
     match.receipts[key] = { fingerprint, eventSeq: event.seq };
     this._changed(match);
@@ -562,12 +596,15 @@ class Arena extends EventEmitter {
       requireValue(match.seats.black.joined && match.seats.white.joined,
         "SEATS_NOT_READY", "Both player seats must be ready before starting.", 409);
       match.phase = "playing";
+      Clock.start(match.clock, match.controller.game.turn === Engine.HUMAN ? "black" : "white", this.now());
       match.controller.resume(this.now());
       if (match.mode === "ai" && match.controller.game.turn === Engine.AI) match.controller._scheduleAi(this.now());
     } else if (args.action === "pause") {
+      Clock.freeze(match.clock, this.now());
       match.phase = "paused";
       match.controller.pause(this.now());
     } else {
+      Clock.freeze(match.clock, this.now());
       match.phase = "ended";
       match.stopped = true;
       match.drawOffer = null;
@@ -587,6 +624,7 @@ class Arena extends EventEmitter {
     const result = {
       ...promptRules.common,
       state: this._progress(match),
+      clock: Clock.snapshot(match.clock, this.now()),
       topology: game.level.topology, width: game.rules.width, height: game.rules.height, target: game.rules.target,
       pieces: { black: 1, white: -1, empty: 0 },
       directions: Engine.DIRECTIONS.map((direction, index) => ({ index, ...direction })),
@@ -595,15 +633,17 @@ class Arena extends EventEmitter {
       seamBits: { x: Engine.SEAM_X, y: Engine.SEAM_Y, twist: Engine.SEAM_TWIST }
     };
     if (args.cell !== undefined || args.direction !== undefined || args.length !== undefined) {
-      requireValue(Number.isInteger(args.cell) && args.cell >= 0 && args.cell < game.board.length,
-        "INVALID_CELL", "cell must be an integer on this board.");
+      const cell = inputCell(args.cell, game.rules);
       requireValue(Number.isInteger(args.direction) && args.direction >= 0 && args.direction < 8,
         "INVALID_DIRECTION", "direction must be an integer from 0 to 7.");
       const length = args.length === undefined ? game.rules.target : args.length;
       requireValue(Number.isInteger(length) && length >= 1 && length <= game.board.length,
         "INVALID_LENGTH", "length must be between 1 and the board cell count.");
-      result.path = traceRulePath(game.rules, args.cell, args.direction, length);
-      result.next = Engine.step(game.rules, args.cell, args.direction);
+      result.path = traceRulePath(game.rules, cell, args.direction, length);
+      result.path.coordinates = result.path.cells.map(value => Coordinates.label(value, game.rules.width, game.rules.height));
+      result.next = Engine.step(game.rules, cell, args.direction);
+      const annotate = step => { if (step) step.coordinate = Coordinates.label(step.cell, game.rules.width, game.rules.height); };
+      annotate(result.next); annotate(result.path.stop); annotate(result.path.stop?.next);
     }
     return result;
   }
@@ -613,11 +653,13 @@ class Arena extends EventEmitter {
     let changed = false;
     for (const match of this.matches.values()) {
       if (match.phase !== "playing") continue;
+      const now = this.now();
+      if (this._expireClock(match, now)) { changed = true; continue; }
       const previous = match.moves.length;
       match.controller.tick(this.now());
       if (match.controller.game.moves.length !== previous) {
         this._clearDraw(match, "white");
-        this._recordMoves(match);
+        this._recordMoves(match, now);
         this._changed(match);
         changed = true;
       }
