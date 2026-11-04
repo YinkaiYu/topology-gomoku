@@ -81,6 +81,16 @@ Arena 发布状态：2026-10-22 用户已确认发布当前版本，并计划自
 - 新发言区域可滚动，长历史收进时间线；棋盘不被发言覆盖。动态中文采用源字体完整字符集的三字重本地 WOFF2，字体测试覆盖静态文案与开放中文发言。
 - 本次为桌面 Chromium 的窄屏模拟，不冒充真机验收；MCP 协议客户端测试也不等同于五个产品客户端都完成了人工实测。用户预览确认仍待完成。
 
+## 2026-11-04：可选的半格拓扑辅助线
+
+共享绘图新增 `extendGridToRails` 选项，默认不启用；已有调用方保持原样。启用后，已连接边的网格延伸半格至辅助线，开放边不延伸。以下均为同一 800×600 视口、7×7 棋盘、相同两颗棋子，旧绘图基线为 `76bef39`：
+
+- 莫比乌斯：[之前](../../artifacts/boundary-guides/mobius-before.png) / [之后](../../artifacts/boundary-guides/mobius-after.png)，只有左右网格延长，保留扭转箭头。
+- 环面：[之前](../../artifacts/boundary-guides/torus-before.png) / [之后](../../artifacts/boundary-guides/torus-after.png)，两组连接边均延长。
+- 球面：[之前](../../artifacts/boundary-guides/sphere-before.png) / [之后](../../artifacts/boundary-guides/sphere-after.png)，保留相邻边配对颜色。
+
+通过 `npm run check`（152 项测试、资源和文档检查），新增绘制测试覆盖七种拓扑的端点与辅助线位置，以及关闭选项时原有绘图不变。配置 Playwright 后运行 `node scripts/qa-boundary-guides.cjs` 可复现浏览器证据。仅在独立共享任务分支验证，尚未合入 `dev`，未发布其他渠道；Arena 预览通过该可选参数启用。
+
 ## 2026-10-20：1.41.1 发行复验
 
 - 以已确认的共享修改为基线，五渠道同版本整合，未产生样式冲突。Bilibili WebKit 双人九种视口检查通过（离线 SDK 桩）；[390×674 结果](../../artifacts/qa-release-1.41.1-bilibili-390x674.png)。真实 Toy 审核预览和状态见[发行记录](../releases/1.41.1.md)。
