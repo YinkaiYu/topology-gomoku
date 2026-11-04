@@ -55,6 +55,13 @@ function briefingFor(rules) {
     board: fill(wording.board, fields),
     orientation: wording.orientation,
     boundaryRules: wording.boundaries[type].map(text => fill(text, fields)),
+    definition: {
+      parameters: { W: width, H: height },
+      notation: wording.definitionNotation,
+      directionTable: Engine.DIRECTIONS.map((direction, index) => ({ index, ...direction, toward: wording.directions[index] })),
+      initialStages: wording.initialStages,
+      ...wording.definitions[type]
+    },
     continuity: wording.continuity,
     openBoundary: wording.openBoundary,
     examples,

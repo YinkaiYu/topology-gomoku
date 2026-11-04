@@ -244,6 +244,9 @@ for (const transport of ["http", "stdio", "cli"]) {
     const query = (extra = {}) => call({ gameId, token: seats.black.token, ...extra });
     const waiting = await query();
     assert.equal(waiting.state.phase, "waiting");
+    assert.deepEqual(waiting.briefing.definition.parameters, { W: 7, H: 7 });
+    assert.equal(waiting.briefing.definition.directionTable.length, 8);
+    assert.ok(waiting.briefing.definition.cases.some(rule => rule.next === null));
     const boundary = await query({ cell: 0, direction: 2, length: 8 });
     assert.deepEqual(boundary.path.cells, [0, 7, 14, 21, 28, 35, 42]);
     assert.equal(boundary.path.complete, false);
@@ -338,6 +341,8 @@ for (const transport of ["http", "stdio"]) {
     assert.equal(briefing.topology, joinedState.topology); assert.equal(briefing.target, joinedState.target);
     assert.ok(briefing.briefing.boundaryRules.length > 0);
     assert.ok(briefing.briefing.examples.length > 0);
+    assert.deepEqual(briefing.briefing.definition.parameters, { W: joinedState.width, H: joinedState.height });
+    assert.equal(briefing.briefing.definition.directionTable.length, 8);
     const reread = await client.callTool({ name: "arena_rules", arguments: { gameId: other.result.gameId, token: joined.structuredContent.token } });
     assert.deepEqual(reread.structuredContent.briefing, briefing.briefing);
     await client.callTool({ name: "arena_ready", arguments: { gameId: other.result.gameId, token: joined.structuredContent.token } });

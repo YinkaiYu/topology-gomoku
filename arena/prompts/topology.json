@@ -6,6 +6,79 @@
   "line": "{{path}} 是 {{target}} 个不同交点组成的一条连续线路；若这些点均为同一方棋子，即构成该方的连线。这里只说明几何，不评价当前落点。",
   "names": { "plane": "平面", "cylinder": "圆柱", "torus": "环面", "mobius": "莫比乌斯环", "klein": "克莱因瓶", "projective": "实射影平面", "sphere": "球面" },
   "directions": ["右", "右下", "下", "左下", "左", "左上", "上", "右上"],
+  "definitionNotation": {
+    "coordinates": "整数坐标 x=0..W−1 向右增大，y=0..H−1 向下增大；dx 向右为正，dy 向下为正。观众坐标换算：x=列序(A=1)−1，y=H−行号；反向为列序=x+1、行号=H−y，故 A1=(0,H−1)。",
+    "inputs": "本局尺寸见 parameters；球面要求 W=H。(dx,dy) 取 directionTable，其 index 对应 arena_rules.directions 的索引。",
+    "mod": "mod(a,n)=((a%n)+n)%n，% 为取余，结果为 0..n−1。",
+    "evaluation": "依次执行 initialStages、stages，再检查 cases。同一对象内同时赋值，右侧读取赋值前的值；crossX/crossY 按原始 u/v 算出后保持不变。",
+    "cases": "取第一个 when 成立的分支；next=null 表示没有下一步，否则同时取值 [x',y',dx',dy']。用新方向 (dx',dy') 在 directionTable 中查 nextDirection；下一步使用新位置和新方向。",
+    "repetition": "单步映射可能返回已经访问过的交点，包括原点本身；沿线计数遇到重复交点即停止，同一个交点只能算一颗棋子。"
+  },
+  "initialStages": [
+    { "u": "x + dx", "v": "y + dy" },
+    { "crossX": "u < 0 || u >= W", "crossY": "v < 0 || v >= H" }
+  ],
+  "definitions": {
+    "plane": {
+      "stages": [],
+      "cases": [
+        { "when": "crossX || crossY", "next": null },
+        { "when": "true", "next": ["u", "v", "dx", "dy"] }
+      ]
+    },
+    "cylinder": {
+      "stages": [],
+      "cases": [
+        { "when": "crossY", "next": null },
+        { "when": "true", "next": ["mod(u, W)", "v", "dx", "dy"] }
+      ]
+    },
+    "torus": {
+      "stages": [],
+      "cases": [
+        { "when": "true", "next": ["mod(u, W)", "mod(v, H)", "dx", "dy"] }
+      ]
+    },
+    "mobius": {
+      "stages": [
+        { "X": "crossX ? mod(u, W) : u", "Y": "crossX ? H - 1 - v : v", "DY": "crossX ? -dy : dy" }
+      ],
+      "cases": [
+        { "when": "Y < 0 || Y >= H", "next": null },
+        { "when": "true", "next": ["X", "Y", "dx", "DY"] }
+      ]
+    },
+    "klein": {
+      "stages": [
+        { "X": "mod(u, W)", "Y": "mod(v, H)" },
+        { "Y": "crossX ? H - 1 - Y : Y", "DY": "crossX ? -dy : dy" }
+      ],
+      "cases": [
+        { "when": "true", "next": ["X", "Y", "dx", "DY"] }
+      ]
+    },
+    "projective": {
+      "stages": [
+        { "X": "mod(u, W)", "Y": "mod(v, H)" },
+        { "Y": "crossX ? H - 1 - Y : Y", "DY": "crossX ? -dy : dy" },
+        { "X": "crossY ? W - 1 - X : X", "DX": "crossY ? -dx : dx" }
+      ],
+      "cases": [
+        { "when": "true", "next": ["X", "Y", "DX", "DY"] }
+      ]
+    },
+    "sphere": {
+      "stages": [],
+      "cases": [
+        { "when": "crossX && crossY", "next": null },
+        { "when": "v < 0", "next": ["0", "u", "-dy", "dx"] },
+        { "when": "u < 0", "next": ["v", "0", "dy", "-dx"] },
+        { "when": "v >= H", "next": ["W - 1", "u", "-dy", "dx"] },
+        { "when": "u >= W", "next": ["v", "H - 1", "dy", "-dx"] },
+        { "when": "true", "next": ["u", "v", "dx", "dy"] }
+      ]
+    }
+  },
   "boundaries": {
     "plane": ["上、下、左、右四条边都不相接，越界的路径在边上终止。"],
     "cylinder": ["左边与右边直接相接，越界后沿原方向继续。", "上边和下边不相接，纵向越界的路径在边上终止。"],
