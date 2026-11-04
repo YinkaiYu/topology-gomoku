@@ -2,6 +2,23 @@
 
 Arena 发布状态：2026-10-22 用户已确认发布当前版本，并计划自行完整测试使用流程；见[渠道发布记录](../development/arena.md#渠道发布记录)。以下各轮验收的待确认、未发布描述保留当时状态。
 
+## 2026-11-04：气泡一体轮廓与回合反馈
+
+继续在本轮任务分支预览，尚未合回 `arena`。底部状态字号调整为 15 px，视角与复盘图标统一为 28 px；状态行及两条滑块均占 44 px 行高、4 px 行间距。气泡的玻璃底色与描边采用同一条含曲线尾角的闭合轮廓，左右镜像，不再叠加独立的菱形尖角。
+
+正在等待落子的棋手显示一条短三点气泡，只表示当前回合，不代表客户端实际推理状态，也不写入消息历史。它随换手切换，在暂停、终局、复盘或观战连接中断时收起。走钟方数字清晰、冒号轻微呼吸；停钟方数字变浅，换钟有一次短促缩放强调。减少动态效果时保留静态提示与明暗区分。
+
+提供 Playwright 到 `NODE_PATH`，设置 `ARENA_FLOW_BASE=a6c154d`、`ARENA_FLOW_EVIDENCE=artifacts/arena-turn-feedback` 后运行 `node scripts/qa-arena-flow.cjs`。前后使用同一暂停棋局和样例发言；另外通过实际开赛、落子、暂停及复盘检查回合反馈。测试文字均为合成样例，不代表模型对话。保留与本轮相关的前后、双边行棋和终局截图。
+
+| 视口 | 前 / 后 | 黑方行棋 / 白方行棋 |
+| --- | --- | --- |
+| 1280×720 | [之前](../../artifacts/arena-turn-feedback/conversation-before-1280x720.png) / [现在](../../artifacts/arena-turn-feedback/conversation-1280x720.png) | [黑方](../../artifacts/arena-turn-feedback/active-black-1280x720.png) / [白方](../../artifacts/arena-turn-feedback/active-white-1280x720.png) |
+| 1920×1080 | [之前](../../artifacts/arena-turn-feedback/conversation-before-1920x1080.png) / [现在](../../artifacts/arena-turn-feedback/conversation-1920x1080.png) | [黑方](../../artifacts/arena-turn-feedback/active-black-1920x1080.png) / [白方](../../artifacts/arena-turn-feedback/active-white-1920x1080.png) |
+| 1024×768 | [之前](../../artifacts/arena-turn-feedback/conversation-before-1024x768.png) / [现在](../../artifacts/arena-turn-feedback/conversation-1024x768.png) | [黑方](../../artifacts/arena-turn-feedback/active-black-1024x768.png) / [白方](../../artifacts/arena-turn-feedback/active-white-1024x768.png) |
+| 1440×1080 | [之前](../../artifacts/arena-turn-feedback/conversation-before-1440x1080.png) / [现在](../../artifacts/arena-turn-feedback/conversation-1440x1080.png) | [黑方](../../artifacts/arena-turn-feedback/active-black-1440x1080.png) / [白方](../../artifacts/arena-turn-feedback/active-white-1440x1080.png) |
+
+[结构化检查](../../artifacts/arena-turn-feedback/results.json)记录四视口的等距排版、字号与图标、真实换手时的气泡归属、走钟动效、停钟明暗、暂停/复盘/终局清理、减少动态效果和消息事件数不变；原有滚动、长消息、头像及复盘几何检查通过，无浏览器错误。以相同基线运行 `npm run arena:qa` 的四视口回归也通过。216 项测试、资源与文档检查通过；此次不改变计时裁判。
+
 ## 2026-11-04：气泡手数与底部控件整理
 
 本轮为独立任务分支预览，尚未合回 `arena`。每条气泡上方显示关联局面的“第 N 手”，未落子时显示“开局”；悬停显示实际发送时间。底部状态与手数合成一行，放在两条滑块上方；回看手数与返回操作复用这行，终局结果也在此显示，不再放在设置中。两条轨道加长并保持同宽、端点列对齐、滑块尺寸一致。

@@ -1,0 +1,54 @@
+[
+  {
+    "viewport": {
+      "width": 1280,
+      "height": 720
+    },
+    "tracks": {
+      "before": 379.828125,
+      "after": 379.828125,
+      "aligned": true
+    },
+    "checks": "uniform footer spacing and larger type/icons, connected bubble outline, transient turn bubble, clock handover and pulse, inactive clock dimming, pause/replay/end cleanup, reduced motion, no invented notes, ply labels, shared scrolling and reader position, long notes, whole-row opacity, replay geometry, profiles, timeout",
+    "errors": []
+  },
+  {
+    "viewport": {
+      "width": 1920,
+      "height": 1080
+    },
+    "tracks": {
+      "before": 448,
+      "after": 448,
+      "aligned": true
+    },
+    "checks": "uniform footer spacing and larger type/icons, connected bubble outline, transient turn bubble, clock handover and pulse, inactive clock dimming, pause/replay/end cleanup, reduced motion, no invented notes, ply labels, shared scrolling and reader position, long notes, whole-row opacity, replay geometry, profiles, timeout",
+    "errors": []
+  },
+  {
+    "viewport": {
+      "width": 1024,
+      "height": 768
+    },
+    "tracks": {
+      "before": 254.765625,
+      "after": 254.765625,
+      "aligned": true
+    },
+    "checks": "uniform footer spacing and larger type/icons, connected bubble outline, transient turn bubble, clock handover and pulse, inactive clock dimming, pause/replay/end cleanup, reduced motion, no invented notes, ply labels, shared scrolling and reader position, long notes, whole-row opacity, replay geometry, profiles, timeout",
+    "errors": []
+  },
+  {
+    "viewport": {
+      "width": 1440,
+      "height": 1080
+    },
+    "tracks": {
+      "before": 441.296875,
+      "after": 441.296875,
+      "aligned": true
+    },
+    "checks": "uniform footer spacing and larger type/icons, connected bubble outline, transient turn bubble, clock handover and pulse, inactive clock dimming, pause/replay/end cleanup, reduced motion, no invented notes, ply labels, shared scrolling and reader position, long notes, whole-row opacity, replay geometry, profiles, timeout",
+    "errors": []
+  }
+]

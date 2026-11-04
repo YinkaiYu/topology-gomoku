@@ -56,6 +56,8 @@ node arena/cli.cjs mcp-config deepseek
 
 每条命令只输出对应片段，不修改客户端配置。片段使用实际 Node 可执行文件、当前 checkout 的绝对桥接路径与服务地址；移动 checkout 或改端口后应重新生成。不要将这些本机路径提交到 Git。所有 stdio 子进程只是桥接，客户端关闭它们不会销毁共享棋局。
 
+更新工具 schema 或工具说明后，除重启 HTTP 服务，还需让各客户端重启 stdio MCP 连接并重新发现工具。桥接进程在启动时加载 `tools.cjs`，不会因后台服务重启而自动更新；因此旧桥接可能继续拒绝已经被新版服务接受的字母坐标。地址与 checkout 未改变时无需重写配置。参赛文件也需由 agent 重新读取。
+
 | 客户端 | 片段位置与格式 |
 | --- | --- |
 | Codex | `.codex/config.toml` 或用户配置中的 `[mcp_servers.topology-gomoku-arena]` |

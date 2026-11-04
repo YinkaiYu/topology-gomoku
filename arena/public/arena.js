@@ -29,6 +29,8 @@
   let toastTimer = null;
   let lastStateSequence = -1;
   let pending = false;
+  let streamConnected = false;
+  const turnActivity = element("div", "turn-activity");
   const rulesCache = new Map();
   const names = { black: "黑方", white: "白方", commentator: "解说员", host: "房主", system: "棋局" };
   const phases = { waiting: "等待入席", playing: "正在对弈", paused: "暂歇片刻", ended: "本局已结束" };
@@ -52,8 +54,11 @@
     $("error-banner").hidden = false;
   }
   function connection(connected, label) {
+    const changed = streamConnected !== connected;
+    streamConnected = connected;
     if(!connected)error(label || "连接中断，正在重连。", "connection");
     else if($("error-banner").dataset.kind==="connection")$("error-banner").hidden=true;
+    if (changed && state) renderConversation();
   }
 
   async function call(name, args = {}, admin = false) {
@@ -99,10 +104,33 @@
     return voicePosition(event) + " · " + (event.role === "commentator" ? "场边解说" : "棋手随想");
   }
   function voicePosition(event) { return event.ply ? "第 " + event.ply + " 手" : "开局"; }
+  function bubbleSurface(bubble) {
+    const material = element("span", "bubble-material"), glass = element("span", "bubble-glass");
+    material.setAttribute("aria-hidden", "true");
+    const outline = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+    outline.classList.add("bubble-outline");
+    outline.append(document.createElementNS(outline.namespaceURI, "path"));
+    material.append(glass, outline); bubble.prepend(material);
+    return bubble;
+  }
+  function paintBubbleSurfaces() {
+    if (!state) return;
+    for (const bubble of $("conversation-rows").querySelectorAll(".speech-bubble")) {
+      const { width, height } = bubble.getBoundingClientRect();
+      const w = width + 10, h = height - .5, left = 10.5, right = w - .5, r = Math.min(22, (height - 1) / 2);
+      if (!width || !height) continue;
+      // A single contour includes the curved tail: no separate triangle or seam.
+      const d = `M ${left+r} .5 H ${right-r} Q ${right} .5 ${right} ${r+.5} V ${h-r} Q ${right} ${h} ${right-r} ${h} H ${left+r} Q ${left} ${h} ${left} ${h-r} V 39 C ${left} 35 4 34 .5 29 C 6 30 ${left} 28 ${left} 24 V ${r+.5} Q ${left} .5 ${left+r} .5 Z`;
+      const material = bubble.querySelector(".bubble-material"), outline = material.querySelector("svg");
+      material.querySelector(".bubble-glass").style.clipPath = `path("${d}")`;
+      outline.setAttribute("viewBox", `0 0 ${w} ${height}`);
+      outline.firstElementChild.setAttribute("d", d);
+    }
+  }
   function fadeConversation() {
     if (!state) return;
     const bounds = $("conversation").getBoundingClientRect(), fade = Math.min(110, bounds.height * .2);
-    for (const row of $("conversation-rows").querySelectorAll(".chat-row")) {
+    for (const row of $("conversation-rows").querySelectorAll(".chat-row,.turn-activity")) {
       const rect = row.getBoundingClientRect();
       // Long legacy messages remain readable while their middle is in view.
       // Each message and its avatar share one uniform alpha; text is never masked.
@@ -115,7 +143,8 @@
   function renderConversation() {
     const viewport = $("conversation"), rows = $("conversation-rows"), empty = $("empty-seats");
     const events = visibleEvents().filter(event => ["black", "white"].includes(event.role) && typeof event.text === "string" && event.text.trim());
-    const key = JSON.stringify([state.gameId, replayPly, events.map(event => event.seq), ...["black", "white"].map(role => [displayPlayer(role), state.seats[role].avatar])]);
+    const activeRole = streamConnected && state.phase === "playing" && replayPly === null ? state.turn : null;
+    const key = JSON.stringify([state.gameId, replayPly, activeRole, events.map(event => event.seq), ...["black", "white"].map(role => [displayPlayer(role), state.seats[role].avatar])]);
     if (viewport.dataset.events === key) return;
     viewport.dataset.events = key;
     const sameGame = viewport.dataset.game === state.gameId;
@@ -137,11 +166,11 @@
         timestamp.title = formatTime(event.at);
         const bubble = element("blockquote", "voice-item speech-bubble");
         bubble.title = voiceMeta(event); bubble.append(element("p", "", event.text));
-        player.append(timestamp, bubble); row.append(player);
+        player.append(timestamp, bubbleSurface(bubble)); row.append(player);
       }
       const player = row.firstElementChild, current = player.querySelector(".player-identity");
       let identity = current;
-      if (event.seq === last[event.role]) identity = seatIdentities[event.role];
+      if (event.seq === last[event.role] && event.role !== activeRole) identity = seatIdentities[event.role];
       else if (!current || current === seatIdentities[event.role]) {
         identity = seatIdentities[event.role].cloneNode(true);
         identity.removeAttribute("id"); identity.querySelectorAll("[id]").forEach(node => node.removeAttribute("id"));
@@ -151,7 +180,22 @@
       identity.querySelector("h2").textContent = displayPlayer(event.role);
       rows.insertBefore(row, empty);
     }
-    for (const role of ["black", "white"]) if (last[role] === undefined) empty.append(seatIdentities[role]);
+    for (const role of ["black", "white"]) if (last[role] === undefined && role !== activeRole) empty.append(seatIdentities[role]);
+    if (activeRole) {
+      if (turnActivity.dataset.role !== activeRole || turnActivity.dataset.game !== state.gameId) {
+        const player = element("section", "player player-" + activeRole);
+        const bubble = bubbleSurface(element("div", "turn-bubble speech-bubble")), dots = element("span", "waiting-dots");
+        dots.setAttribute("aria-hidden", "true");
+        for (let i = 0; i < 3; i++) dots.append(element("i"));
+        bubble.append(dots); player.append(bubble); turnActivity.replaceChildren(player);
+      }
+      turnActivity.dataset.role = activeRole; turnActivity.dataset.game = state.gameId;
+      turnActivity.setAttribute("role", "status"); turnActivity.setAttribute("aria-label", "等待" + names[activeRole] + "落子");
+      turnActivity.title = "等待" + names[activeRole] + "落子";
+      turnActivity.firstElementChild.prepend(seatIdentities[activeRole]);
+      rows.insertBefore(turnActivity, empty);
+    } else turnActivity.remove();
+    paintBubbleSurfaces();
     if (follow) viewport.scrollTop = viewport.scrollHeight;
     else if (anchor?.node.isConnected) viewport.scrollTop += anchor.node.getBoundingClientRect().y - anchor.y;
     fadeConversation();
@@ -188,7 +232,13 @@
       const active = clock.active === role && state.phase === "playing";
       const remaining = active ? Math.max(0, clock.deadline - Date.now()) : clock.remainingMs[role];
       const seconds = Math.ceil(remaining / 1000);
-      node.querySelector("span:not(.stone)").textContent = Math.floor(seconds / 60) + ":" + String(seconds % 60).padStart(2, "0");
+      node.querySelector(".clock-minutes").textContent = Math.floor(seconds / 60);
+      node.querySelector(".clock-seconds").textContent = String(seconds % 60).padStart(2, "0");
+      if (active && (node.dataset.active !== "true" || node.dataset.game !== state.gameId) && !matchMedia("(prefers-reduced-motion: reduce)").matches) {
+        node._turnAnimation?.cancel();
+        node._turnAnimation = node.animate([{ transform: "scale(1)" }, { transform: "scale(1.09)", offset: .35 }, { transform: "scale(1)" }], { duration: 650, easing: "ease-out" });
+      } else if (!active) node._turnAnimation?.cancel();
+      node.dataset.game = state.gameId;
       node.dataset.active = String(active); node.dataset.low = String(remaining < 30000);
     }
   }
@@ -288,6 +338,7 @@
     const epoch = ++gameEpoch;
     if (source) source.close();
     source = null;
+    streamConnected = false;
     replayPly = null;
     lastStateSequence = -1;
     morph = morphTarget = 0;
@@ -591,7 +642,7 @@
   $("clock-enabled").addEventListener("change",()=>{for(const id of ["clock-minutes","clock-increment"])$(id).disabled=!$("clock-enabled").checked;});
   setInterval(renderClocks, 200);
   $("conversation").addEventListener("scroll", fadeConversation, { passive: true });
-  new ResizeObserver(fadeConversation).observe($("conversation"));
+  new ResizeObserver(() => { paintBubbleSurfaces(); fadeConversation(); }).observe($("conversation"));
   $("avatar-upload").addEventListener("change",()=>guarded(async()=>{const button=$("profile-form").querySelector('[type="submit"]');button.disabled=true;try{await uploadAvatar($("avatar-upload").files[0]);}finally{button.disabled=false;}}));
   $("profile-form").addEventListener("submit",event=>{event.preventDefault();guarded(async()=>{
     const value={name:$("profile-name").value.trim(),avatar:selectedAvatar},target=profileTarget;
@@ -614,7 +665,7 @@
   });
   ["pointerup", "pointercancel", "lostpointercapture"].forEach((name) => $("board").addEventListener(name, () => { drag = null; }));
   new ResizeObserver(drawBoard).observe($("board-wrap"));
-  document.fonts.ready.then(drawBoard);
+  document.fonts.ready.then(() => { drawBoard(); paintBubbleSurfaces(); fadeConversation(); });
 
   window.addEventListener("pagehide", () => { if (source) source.close(); });
   guarded(boot);

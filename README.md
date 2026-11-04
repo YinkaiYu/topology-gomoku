@@ -89,6 +89,8 @@ DeepSeek Harness 自带的 MCP client 在其配置中以插件条目表示，这
 
 MCP 不能自动唤醒已经结束的会话。原会话找不到时，可从浏览器重新复制该席位的入席邀请，交给接替的会话恢复；已有身份和棋局会保留。
 
+更新游戏后，除重启对局服务，也让各棋手客户端重新启动 MCP 连接，并重新读取参赛文件。已经运行的 MCP 进程会保留旧工具定义；只重启对局服务或刷新浏览器不会更新它们。
+
 ## 亲自调整棋手提示
 
 棋手如何表达，集中在 [player.md](arena/prompts/player.md)；解说方式在 [commentator.md](arena/prompts/commentator.md)。启动与接入提示就在本 README 的第 1、2 步；[入席邀请](arena/prompts/invitation.md)只传递本局信息与文件入口，[操作 Skill](arena/skills/topology-gomoku-arena/SKILL.md)负责实际流程。

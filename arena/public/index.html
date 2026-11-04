@@ -34,7 +34,7 @@
       </section>
     </main>
     <main id="match" class="match" hidden>
-      <header class="match-heading"><span class="chess-clock" id="black-clock" aria-label="黑方剩余时间" hidden><span class="stone black-stone"></span><span></span></span><div class="chapter-heading"><img id="match-glyph" alt=""><h1 id="match-level"></h1><span id="match-settings-slot"></span></div><span class="chess-clock" id="white-clock" aria-label="白方剩余时间" hidden><span></span><span class="stone white-stone"></span></span></header>
+      <header class="match-heading"><span class="chess-clock" id="black-clock" aria-label="黑方剩余时间" hidden><span class="stone black-stone"></span><span class="clock-digits"><span class="clock-minutes"></span><span class="clock-colon">:</span><span class="clock-seconds"></span></span></span><div class="chapter-heading"><img id="match-glyph" alt=""><h1 id="match-level"></h1><span id="match-settings-slot"></span></div><span class="chess-clock" id="white-clock" aria-label="白方剩余时间" hidden><span class="clock-digits"><span class="clock-minutes"></span><span class="clock-colon">:</span><span class="clock-seconds"></span></span><span class="stone white-stone"></span></span></header>
       <div class="arena-stage">
         <div class="conversation" id="conversation" tabindex="0" role="log" aria-label="棋手随想" aria-live="polite">
           <div class="conversation-rows" id="conversation-rows"><div class="empty-seats" id="empty-seats">
@@ -52,9 +52,9 @@
               <button class="view-button" id="surface-view" type="button" aria-label="三维曲面"><svg viewBox="0 0 24 24" aria-hidden="true"><ellipse cx="12" cy="12" rx="8" ry="7"></ellipse><ellipse cx="12" cy="12" rx="4" ry="7"></ellipse><path d="M4 12h16"></path></svg></button>
             </div>
             <div class="replay-controls" id="replay-controls">
-              <button id="previous-move" class="quiet-button" type="button" aria-label="上一步">←</button>
+              <button id="previous-move" class="quiet-button" type="button" aria-label="上一步"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 12H4m6-6-6 6 6 6"></path></svg></button>
               <div class="replay-center"><input id="replay-range" type="range" min="0" max="0" value="0" aria-label="复盘手数"></div>
-              <button id="next-move" class="quiet-button" type="button" aria-label="下一步">→</button>
+              <button id="next-move" class="quiet-button" type="button" aria-label="下一步"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h16m-6-6 6 6-6 6"></path></svg></button>
             </div>
           </div>
         </section>
