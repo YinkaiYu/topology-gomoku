@@ -1,0 +1,48 @@
+{
+  "baseline": "60bc785",
+  "viewport": {
+    "width": 1280,
+    "height": 720
+  },
+  "checks": {
+    "keyboardToPointer": true,
+    "pointerClick": true,
+    "pointerDrag": true,
+    "pointerCancel": true,
+    "realFocusRetained": true,
+    "arrowWithoutBlur": true,
+    "tabPreservesKeyboardAccess": true,
+    "keyboardOutlinesRemoved": true,
+    "numericEditing": true
+  },
+  "results": [
+    {
+      "previous": true,
+      "pointerRing": true,
+      "ranges": [
+        {
+          "id": "view-range",
+          "pointerRing": true
+        },
+        {
+          "id": "replay-range",
+          "pointerRing": true
+        }
+      ]
+    },
+    {
+      "previous": false,
+      "pointerRing": false,
+      "ranges": [
+        {
+          "id": "view-range",
+          "pointerRing": false
+        },
+        {
+          "id": "replay-range",
+          "pointerRing": false
+        }
+      ]
+    }
+  ]
+}

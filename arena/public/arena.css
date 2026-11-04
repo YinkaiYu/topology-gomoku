@@ -11,7 +11,7 @@ input[type=number]{appearance:textfield;-moz-appearance:textfield}
 input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-spin-button{-webkit-appearance:none;margin:0}
 button{border:0;background:none;cursor:pointer}
 button:disabled{opacity:.4;cursor:default}
-button:focus-visible,input:focus-visible,select:focus-visible,summary:focus-visible{outline:2px solid var(--teal);outline-offset:4px}
+:focus{outline:none}
 h1,h2,p{margin:0}
 a{color:inherit}
 .sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
@@ -38,7 +38,6 @@ fieldset{padding:0;border:0;margin:0 0 18px;min-width:0}
 .segmented input,.topology-option input{position:absolute;opacity:0;width:1px;height:1px}
 .segmented label>span{position:relative;z-index:1;display:flex;align-items:center;justify-content:center;min-height:36px;font-size:12px;border:1px solid transparent;border-radius:15px;color:var(--muted);transition:color 260ms ease}
 .segmented label.is-current>span{color:var(--ink);text-shadow:0 1px 0 rgba(255,255,255,.82)}
-.segmented input:focus-visible+span,.topology-option input:focus-visible+span{outline:2px solid var(--teal)}
 .topology-options{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
 .topology-option{position:relative;cursor:pointer}
 .topology-option>span{display:flex;flex-direction:column;align-items:center;justify-content:center;border:1px solid transparent;border-radius:14px;min-height:79px;gap:4px;font-size:13px}
@@ -176,7 +175,6 @@ fieldset{padding:0;border:0;margin:0 0 18px;min-width:0}
 .liquid-range.is-dragging .dimension-glass-thumb{border-radius:14px 11px 14px 11px;box-shadow:0 7px 16px rgba(31,42,36,.075),inset 0 1px .7px rgba(255,255,255,.3),inset 1.5px 0 .8px rgba(55,220,188,.14),inset -1.5px 0 .8px rgba(255,189,92,.11);transition:scale 162ms var(--liquid-drag),border-radius 240ms ease,box-shadow 260ms ease}
 .liquid-range.is-dragging .dimension-lens-track,.liquid-range.is-dragging .dimension-glass-thumb::after{opacity:.9}
 .liquid-range .liquid-range-input{position:absolute;inset:0;width:100%;height:100%;margin:0;opacity:0;pointer-events:none}
-.liquid-range:has(input:focus-visible) .dimension-glass-thumb{outline:2px solid rgba(49,95,91,.6);outline-offset:4px}
 .liquid-range.is-disabled{opacity:.42;cursor:default}
 .view-controls,.replay-controls{display:grid;grid-template-columns:44px minmax(0,1fr) 44px;align-items:center;column-gap:12px;height:44px}
 .view-button,.replay-controls>button{height:44px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;padding:0;border-radius:15px;font-size:9px;color:var(--muted);transition:transform 360ms var(--spring),color 220ms ease,background 220ms ease}

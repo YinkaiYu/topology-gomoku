@@ -4,10 +4,12 @@ const assert = require("node:assert/strict");
 const fs = require("node:fs");
 const os = require("node:os");
 const path = require("node:path");
+const { execFileSync } = require("node:child_process");
 const { chromium } = require("playwright");
 const { startServer } = require("../arena/server.cjs");
 const EVIDENCE = path.resolve(__dirname, "../artifacts/arena-clock-options");
 const pause = milliseconds => new Promise(resolve => setTimeout(resolve, milliseconds));
+const FOCUS_BASE = "60bc785";
 
 async function alignedSegment(page, id) {
   const boxes = await page.locator(id).evaluate(control => ({
@@ -23,6 +25,149 @@ async function rangePosition(page, id) {
     value: Number(input.value), maximum: Number(input.max), disabled: input.disabled,
     progress: Number(input.closest(".liquid-range").style.getPropertyValue("--view-progress"))
   }));
+}
+
+async function tabTo(page, selector) {
+  for (let count = 0; count < 40; count++) {
+    await page.keyboard.press("Tab");
+    if (await page.locator(selector).evaluate(node => node === document.activeElement)) return;
+  }
+  throw new Error(`Keyboard focus did not reach ${selector}`);
+}
+
+async function hasFocusRing(page, selector) {
+  return page.locator(selector).evaluate(node => {
+    const style = getComputedStyle(node);
+    return style.outlineStyle !== "none" && parseFloat(style.outlineWidth) > 0;
+  });
+}
+
+async function cancelPointer(page, selector) {
+  const target = page.locator(selector);
+  await target.evaluate(node => node.addEventListener("pointerdown", event => { node.qaPointerId = event.pointerId; }, { once: true }));
+  const box = await target.boundingBox();
+  await page.mouse.move(box.x + box.width / 2, box.y + box.height / 2);
+  await page.mouse.down();
+  await page.mouse.move(box.x + box.width / 2 + 12, box.y + box.height / 2, { steps: 3 });
+  await target.evaluate(node => node.dispatchEvent(new PointerEvent("pointercancel", { pointerId: node.qaPointerId, bubbles: true })));
+  await page.mouse.up();
+}
+
+async function verifyFocus(browser, url, gameId) {
+  const baseline = Object.fromEntries(["index.html", "arena.js", "arena.css", "liquid-controls.js"].map(name => [name,
+    execFileSync("git", ["show", `${FOCUS_BASE}:arena/public/${name}`], { cwd: path.resolve(__dirname, "..") })]));
+  const results = [];
+  for (const previous of [true, false]) {
+    const context = await browser.newContext({ viewport: { width: 1280, height: 720 }, reducedMotion: "reduce" });
+    try {
+      const page = await context.newPage();
+      if (previous) await page.route("**/*", async route => {
+        const pathname = new URL(route.request().url()).pathname;
+        const name = pathname === "/" ? "index.html" : pathname.slice(1);
+        if (baseline[name]) await route.fulfill({ body: baseline[name], contentType: name.endsWith("css") ? "text/css" : name.endsWith("js") ? "text/javascript" : "text/html" });
+        else await route.continue();
+      });
+      await page.goto(url);
+      await page.locator("#create-button").waitFor();
+      await tabTo(page, '#clock-modes input:checked');
+      await page.keyboard.press("ArrowRight");
+      const clockRing = '#clock-modes input:checked + span';
+      if (!previous) assert.equal(await hasFocusRing(page, clockRing), false);
+      await page.locator('label:has(input[name="clock-mode"][value="relaxed"])').click();
+      const pointerRing = await hasFocusRing(page, clockRing);
+      if (!previous) assert.equal(pointerRing, false, "Pointer input leaves no focus outline");
+      assert.equal(await page.locator('#clock-modes input:checked').evaluate(node => node === document.activeElement), true);
+      await page.evaluate(() => document.fonts.ready);
+      await page.screenshot({ path: path.join(EVIDENCE, previous ? "focus-pointer-before.png" : "focus-pointer-after.png"), animations: "disabled" });
+      if (!previous) {
+        // Keep real focus after the pointer action so an arrow works immediately.
+        await page.keyboard.press("ArrowLeft");
+        assert.equal(await page.locator('input[name="clock-mode"][value="standard"]').isChecked(), true);
+        assert.equal(await hasFocusRing(page, clockRing), false);
+        const thumb = await page.locator("#clock-modes .segmented-glass-thumb").boundingBox();
+        const last = await page.locator('label:has(input[name="clock-mode"][value="untimed"])').boundingBox();
+        await page.mouse.move(thumb.x + thumb.width / 2, thumb.y + thumb.height / 2);
+        await page.mouse.down();
+        assert.equal(await hasFocusRing(page, clockRing), false);
+        await page.mouse.move(last.x + last.width / 2, last.y + last.height / 2, { steps: 6 });
+        await page.mouse.up();
+        assert.equal(await hasFocusRing(page, clockRing), false);
+        await page.keyboard.press("ArrowLeft");
+        assert.equal(await hasFocusRing(page, clockRing), false);
+        await cancelPointer(page, "#clock-modes");
+        assert.equal(await hasFocusRing(page, clockRing), false);
+        await page.keyboard.press("Tab");
+        await page.keyboard.press("Shift+Tab");
+        assert.equal(await page.locator('#clock-modes input:checked').evaluate(node => node === document.activeElement), true);
+        assert.equal(await hasFocusRing(page, clockRing), false);
+
+        for (const [id, name, clickValue] of [["mode-options", "mode", "duel"], ["difficulty-options", "difficulty", "easy"]]) {
+          if (name === "difficulty") await page.locator('label:has(input[name="mode"][value="ai"])').click();
+          await tabTo(page, `#${id} input:checked`);
+          await page.keyboard.press("ArrowRight");
+          assert.equal(await hasFocusRing(page, `#${id} input:checked + span`), false);
+          await page.locator(`label:has(input[name="${name}"][value="${clickValue}"])`).click();
+          assert.equal(await hasFocusRing(page, `#${id} input:checked + span`), false);
+          assert.equal(await page.locator(`#${id} input:checked`).evaluate(node => node === document.activeElement), true);
+          await page.keyboard.press("ArrowRight");
+          assert.equal(await hasFocusRing(page, `#${id} input:checked + span`), false);
+        }
+        await tabTo(page, "#board-width");
+        assert.equal(await hasFocusRing(page, "#board-width"), false);
+        await page.keyboard.press("Control+A");
+        await page.keyboard.type("9");
+        await page.keyboard.press("ArrowUp");
+        assert.equal(await page.locator("#board-width").inputValue(), "10");
+        assert.equal(await hasFocusRing(page, "#board-width"), false);
+        await page.locator("#board-height").click();
+        await page.keyboard.press("Control+A");
+        await page.keyboard.type("8");
+        assert.equal(await page.locator("#board-height").inputValue(), "8");
+        assert.equal(await hasFocusRing(page, "#board-height"), false);
+      }
+
+      await page.goto(`${url}/?game=${gameId}`);
+      await page.locator("#match").waitFor();
+      const ranges = [];
+      for (const id of ["view-range", "replay-range"]) {
+        await tabTo(page, `#${id}`);
+        await page.keyboard.press("End");
+        const control = `.liquid-range:has(#${id})`;
+        const ring = `${control} .dimension-glass-thumb`;
+        if (!previous) assert.equal(await hasFocusRing(page, ring), false);
+        const box = await page.locator(control).boundingBox();
+        await page.mouse.click(box.x + box.width * .35, box.y + box.height / 2);
+        const rangePointerRing = await hasFocusRing(page, ring);
+        if (!previous) assert.equal(rangePointerRing, false);
+        assert.equal(await page.locator(`#${id}`).evaluate(node => node === document.activeElement), true);
+        if (!previous) {
+          const value = Number(await page.locator(`#${id}`).inputValue());
+          await page.keyboard.press("ArrowRight");
+          assert.ok(Number(await page.locator(`#${id}`).inputValue()) > value);
+          if (!previous) assert.equal(await hasFocusRing(page, ring), false);
+          const thumb = await page.locator(ring).boundingBox();
+          await page.mouse.move(thumb.x + thumb.width / 2, thumb.y + thumb.height / 2);
+          await page.mouse.down();
+          assert.equal(await hasFocusRing(page, ring), false);
+          await page.mouse.move(box.x + box.width * .65, box.y + box.height / 2, { steps: 5 });
+          await page.mouse.up();
+          assert.equal(await hasFocusRing(page, ring), false);
+          await page.keyboard.press("ArrowLeft");
+          if (!previous) assert.equal(await hasFocusRing(page, ring), false);
+          await cancelPointer(page, control);
+          assert.equal(await hasFocusRing(page, ring), false);
+          await page.keyboard.press("Tab");
+          await page.keyboard.press("Shift+Tab");
+          assert.equal(await page.locator(`#${id}`).evaluate(node => node === document.activeElement), true);
+          if (!previous) assert.equal(await hasFocusRing(page, ring), false);
+        }
+        ranges.push({ id, pointerRing: rangePointerRing });
+      }
+      results.push({ previous, pointerRing, ranges });
+    } finally { await context.close(); }
+  }
+  fs.writeFileSync(path.join(EVIDENCE, "focus-results.json"), JSON.stringify({ baseline: FOCUS_BASE, viewport: { width: 1280, height: 720 },
+    checks: { keyboardToPointer: true, pointerClick: true, pointerDrag: true, pointerCancel: true, realFocusRetained: true, arrowWithoutBlur: true, tabPreservesKeyboardAccess: true, keyboardOutlinesRemoved: true, numericEditing: true }, results }, null, 2));
 }
 
 async function main() {
@@ -83,6 +228,7 @@ async function main() {
       call("arena_move", { gameId, token: tokens[index % 2 ? "white" : "black"], cell, expectedVersion: index, requestId: `move-${index}` });
     }
     call("arena_control", { gameId, action: "pause" });
+    await verifyFocus(browser, app.url, gameId);
     await page.waitForFunction(() => document.getElementById("replay-range").max === "4");
     const viewBox = await page.locator("#view-range").evaluate(input => input.closest(".liquid-range").getBoundingClientRect().toJSON());
     await page.mouse.click(viewBox.x + viewBox.width * .8, viewBox.y + viewBox.height / 2);
