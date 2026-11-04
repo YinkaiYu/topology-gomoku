@@ -390,6 +390,44 @@ test("waits keep following on timeout and return immediately once it is the call
 });
 
 for (const transport of ["http", "stdio"]) {
+  test(`real MCP ${transport} preparation waits survive idle returns and receive automatic start`, async t => {
+    const { app, rpc, gameId, seats } = await fixture(t);
+    const client = new Client({ name: "arena-preparation-test", version: "1.0.0" });
+    t.after(() => client.close());
+    await client.connect(transport === "http" ? new StreamableHTTPClientTransport(new URL(`${app.url}/mcp`))
+      : new StdioClientTransport({ command: process.execPath, args: [path.resolve(__dirname, "../arena/mcp.cjs"), "--url", app.url], stderr: "pipe" }));
+    const call = async (name, extra = {}) => {
+      const result = await client.callTool({ name, arguments: { gameId, token: seats.black.token, ...extra } });
+      assert.equal(result.isError, undefined);
+      return result.structuredContent;
+    };
+    let state = await call("arena_ready");
+    for (let i = 0; i < 2; i++) {
+      const previousSeq = state.eventSeq;
+      state = await call("arena_wait", { afterSeq: previousSeq, timeoutMs: 20 });
+      assert.equal(state.phase, "waiting");
+      assert.equal(state.guidance.action, "wait");
+      assert.equal(state.eventSeq, previousSeq);
+      assert.equal(state.seats.white.ready, false);
+      assert.equal(state.clock.active, null);
+      assert.deepEqual(state.clock.remainingMs, { black: 300000, white: 300000 });
+    }
+    const baseline = app.arena.listenerCount("change");
+    const pending = call("arena_wait", { afterSeq: state.eventSeq, timeoutMs: 25000 });
+    const deadline = Date.now() + 2000;
+    while (app.arena.listenerCount("change") === baseline && Date.now() < deadline) await new Promise(resolve => setTimeout(resolve, 5));
+    assert.ok(app.arena.listenerCount("change") > baseline, "Preparation wait must remain subscribed");
+    await rpc("arena_ready", { gameId, token: seats.white.token });
+    state = await pending;
+    assert.equal(state.phase, "playing");
+    assert.equal(state.guidance.action, "act");
+    assert.equal(state.clock.active, "black");
+    assert.equal(app.arena.listenerCount("change"), baseline);
+    state = await call("arena_move", { cell: "D4", expectedVersion: state.version, requestId: "prepared-opening" });
+    assert.equal(state.ply, 1);
+    assert.equal(state.turn, "white");
+  });
+
   test(`real MCP ${transport} waits receive a clock timeout without any player action`, async t => {
     const { app, rpc, gameId, seats } = await fixture(t, { clock: { initialMs: 1000, incrementMs: 0 } });
     const client = new Client({ name: "arena-clock-test", version: "1.0.0" });
