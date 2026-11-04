@@ -96,8 +96,9 @@
   }
   function voiceEvents(role) { return visibleEvents().filter((event) => event.role === role && typeof event.text === "string" && event.text.trim()); }
   function voiceMeta(event) {
-    return (event.ply ? "第 " + event.ply + " 手 · " : "开局前 · ") + (event.role === "commentator" ? "场边解说" : "棋手随想");
+    return voicePosition(event) + " · " + (event.role === "commentator" ? "场边解说" : "棋手随想");
   }
+  function voicePosition(event) { return event.ply ? "第 " + event.ply + " 手" : "开局"; }
   function fadeConversation() {
     if (!state) return;
     const bounds = $("conversation").getBoundingClientRect(), fade = Math.min(110, bounds.height * .2);
@@ -131,9 +132,12 @@
       if (!row) {
         row = element("div", "chat-row"); row.dataset.seq = String(event.seq); row.dataset.role = event.role;
         const player = element("section", "player player-" + event.role);
+        const timestamp = element("time", "voice-time", voicePosition(event));
+        if (event.at && !Number.isNaN(new Date(event.at).getTime())) timestamp.dateTime = new Date(event.at).toISOString();
+        timestamp.title = formatTime(event.at);
         const bubble = element("blockquote", "voice-item speech-bubble");
         bubble.title = voiceMeta(event); bubble.append(element("p", "", event.text));
-        player.append(bubble); row.append(player);
+        player.append(timestamp, bubble); row.append(player);
       }
       const player = row.firstElementChild, current = player.querySelector(".player-identity");
       let identity = current;
@@ -227,11 +231,11 @@
     if (state.winReason === "timeout") return names[state.winner === "black" ? "white" : "black"] + "超时 · " + names[state.winner] + "胜";
     if (state.winReason === "resign") return names[state.winner === "black" ? "white" : "black"] + "认输 · " + names[state.winner] + "胜";
     if (state.winReason === "draw_agreement") return "双方和棋";
-    if (state.mode === "ai" && state.winReason === "settled") return "定局 · 本局收束";
-    if (state.mode === "ai" && state.winReason === "blocked") return "完成棋局 · 已封住白方连线";
+    if (state.mode === "ai" && state.winReason === "settled") return "定局";
+    if (state.mode === "ai" && state.winReason === "blocked") return "已封住白方连线";
     if (state.winner) return (state.winner === 1 ? "黑方" : state.winner === -1 ? "白方" : names[state.winner] || state.winner) + "获胜";
     if (state.outcome === "draw" || state.winReason === "draw") return "和棋";
-    if (state.outcome === "stopped" || state.winReason === "stopped") return "房主结束了本局";
+    if (state.outcome === "stopped" || state.winReason === "stopped") return "房主结束";
     return "对弈结束";
   }
   function render() {
@@ -242,10 +246,12 @@
     $("match").hidden = false;
     placeSettings("match");
     text("match-level", level.name);$("match-glyph").src="/assets/topologies/"+state.topology+".svg";
-    text("turn-label", replayPly !== null ? "第 " + replayPly + " / " + state.ply + " 手" : state.phase === "ended" ? outcomeLabel() : state.phase === "playing" ? (names[state.turn] || "") + "行棋" : state.phase === "paused" ? "已暂停" : joined ? "已就绪" : "等待入席");
+    const status = state.phase === "ended" ? outcomeLabel() : state.phase === "playing" ? (names[state.turn] || "") + "行棋" : state.phase === "paused" ? "已暂停" : joined ? "已就绪" : "等待入席";
+    const returnLabel = state.phase === "ended" ? "回到定局" : "回到当前棋局";
+    const positionLabel = replayPly === null ? "第 " + state.ply + " 手 · " + status : "第 " + replayPly + " / " + state.ply + " 手 · " + returnLabel;
+    text("turn-label", positionLabel);
+    $("return-live").title = replayPly === null ? positionLabel : returnLabel;
     renderConversation(); renderSeat("black"); renderSeat("white"); renderCommentary(); renderClocks();
-    $("match-result").hidden = state.phase !== "ended";
-    text("match-result", state.phase === "ended" ? outcomeLabel() : "");
     $("match-settings").hidden = false;
     $("start-button").hidden = state.phase !== "waiting";
     $("start-button").disabled = !joined || pending;
@@ -257,7 +263,6 @@
     $("replay-range").disabled = !moves.length;
     $("replay-range").max = String(moves.length);
     $("replay-range").value = String(replayPly === null ? moves.length : replayPly);
-    text("replay-label", replayPly === null ? "第 " + moves.length + " 手" : state.phase === "ended" ? "回到定局" : "回到当前棋局");
     $("previous-move").disabled = (replayPly === null ? moves.length : replayPly) <= 0;
     $("next-move").disabled = replayPly === null || replayPly >= moves.length;
     $("return-live").disabled = replayPly === null;

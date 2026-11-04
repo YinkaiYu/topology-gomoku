@@ -73,7 +73,8 @@ fieldset{padding:0;border:0;margin:0 0 18px;min-width:0}
 .chat-row[data-role=white]>.player{grid-column:3}
 .player{min-width:0;min-height:0;display:grid;grid-template-columns:64px minmax(0,1fr);gap:8px}
 .player-white{grid-template-columns:minmax(0,1fr) 64px}
-.player-identity{position:relative;grid-row:1;grid-column:1;align-self:start;display:flex;flex-direction:column;align-items:center;gap:10px;text-align:center;width:64px;padding:6px 0}
+.player-identity{position:relative;grid-row:2;grid-column:1;align-self:start;display:flex;flex-direction:column;align-items:center;gap:10px;text-align:center;width:64px;padding:6px 0}
+.empty-seats>.player-identity{grid-row:1}
 .player-white .player-identity{grid-column:2}
 .player-identity h2{font-size:13px;font-weight:400;overflow-wrap:anywhere;width:100%;line-height:1.6;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
 .avatar{width:48px;height:48px;flex-shrink:0;border:1px solid rgba(255,255,255,.7);border-radius:50%;background:rgba(255,255,255,.3);display:grid;place-items:center;overflow:hidden}
@@ -85,7 +86,9 @@ fieldset{padding:0;border:0;margin:0 0 18px;min-width:0}
 .stone{display:inline-block;width:12px;height:12px;border-radius:50%;flex-shrink:0;box-shadow:0 2px 4px rgba(37,43,33,.13)}
 .black-stone{background:radial-gradient(circle at 32% 27%,#68746d,#26342e 50%,#14221c)}
 .white-stone{background:radial-gradient(circle at 32% 27%,#fffef8,#e5e3d8 75%,#d5d4c8);border:1px solid rgba(112,114,94,.15)}
-.voice-item{grid-row:1;grid-column:2;position:relative;min-width:0;margin:0 7px;padding:18px 20px;border-radius:22px;align-self:start}
+.voice-time{grid-row:1;grid-column:2;margin:0 17px 7px;min-height:18px;font-size:12px;line-height:18px;color:var(--muted)}
+.player-white .voice-time{grid-column:1;text-align:right}
+.voice-item{grid-row:2;grid-column:2;position:relative;min-width:0;margin:0 7px;padding:18px 20px;border-radius:22px;align-self:start}
 .player-white .voice-item{grid-column:1}
 .voice-item p{font-size:17px;line-height:1.85;white-space:pre-wrap;overflow-wrap:anywhere}
 .speech-bubble,.commentary{border:1px solid rgba(255,255,255,.7);background:linear-gradient(135deg,rgba(255,255,255,.43),rgba(243,246,234,.19));box-shadow:inset 0 1px 0 rgba(255,255,255,.65),0 12px 30px -17px rgba(39,58,45,.25);backdrop-filter:blur(10px)}
@@ -95,8 +98,10 @@ fieldset{padding:0;border:0;margin:0 0 18px;min-width:0}
 .board-wrap{position:relative;width:100%;flex:1;min-height:180px}
 #board{width:100%;height:100%;display:block;touch-action:none}
 .board-notice{position:absolute;bottom:8px;left:50%;transform:translateX(-50%);border-radius:20px;padding:10px 18px;font-size:12px;white-space:nowrap;pointer-events:none}
-.board-tools{width:100%;max-width:360px;flex-shrink:0}
-.match-result{font-size:18px;text-align:center;margin:18px 0;color:var(--ink)}
+.board-tools{width:100%;max-width:560px;flex-shrink:0}
+.position-summary{display:block;width:100%;height:28px;padding:0;font-size:12px;line-height:28px;color:var(--muted);white-space:nowrap}
+.position-summary:enabled{color:var(--teal)}
+.position-summary:disabled{opacity:1}
 .chess-clock{grid-row:1;justify-self:center;font-size:22px;font-variant-numeric:tabular-nums;display:flex;gap:11px;align-items:center;color:var(--muted)}
 .chess-clock>.stone{width:18px;height:18px}
 #black-clock{grid-column:1}
@@ -107,15 +112,13 @@ fieldset{padding:0;border:0;margin:0 0 18px;min-width:0}
 .clock-toggle input{accent-color:var(--teal);width:18px;height:18px}
 .clock-options{margin-top:16px;flex-wrap:wrap}
 .clock-options input{width:58px;text-align:center;padding:8px;border:1px solid var(--edge);border-radius:12px;background:rgba(255,255,255,.24)}
-.view-controls,.replay-controls{display:grid;grid-template-columns:44px 1fr 44px;align-items:center;column-gap:24px;height:44px}
+.view-controls,.replay-controls{display:grid;grid-template-columns:44px minmax(0,1fr) 44px;align-items:center;column-gap:12px;height:44px}
 .view-button{min-height:44px;display:grid;place-items:center;color:var(--muted)}
 .view-button.active{color:var(--teal)}
 .view-button svg,.icon-button svg{width:23px;height:23px;fill:none;stroke:currentColor;stroke-width:1.15}
 .replay-controls>button{font-size:19px}
-.replay-center{text-align:center;line-height:1}
-.replay-center button{font-size:11px;color:var(--muted);height:23px;padding:2px 10px;max-width:100%;white-space:nowrap}
-.replay-center button:enabled{color:var(--teal)}
-.replay-center input{height:21px;display:block}
+.replay-center{min-width:0;text-align:center;line-height:1}
+.replay-center input{display:block}
 input[type=range]{appearance:none;margin:0;width:100%;height:40px;background:transparent;cursor:pointer}
 input[type=range]::-webkit-slider-runnable-track{height:2px;background:rgba(109,126,107,.24);border-radius:2px}
 input[type=range]::-webkit-slider-thumb{appearance:none;width:29px;height:21px;margin-top:-9px;border-radius:12px;border:1px solid rgba(255,255,255,.85);background:linear-gradient(135deg,rgba(235,245,233,.85),rgba(218,235,222,.72));box-shadow:0 3px 8px rgba(50,68,49,.12),inset 0 1px 0 #fff;transition:transform 180ms}
@@ -123,8 +126,6 @@ input[type=range]:active::-webkit-slider-thumb{transform:scale(1.11,1.12)}
 input[type=range]::-moz-range-track{height:2px;background:rgba(109,126,107,.24)}
 input[type=range]::-moz-range-thumb{width:29px;height:21px;border-radius:12px;border:1px solid #fff;background:#e5efe4}
 input[type=range]:disabled{opacity:.3;cursor:default}
-.replay-center input{height:21px}
-.replay-center input::-webkit-slider-thumb{width:18px;height:16px;margin-top:-7px}
 .commentary{flex-shrink:0;align-self:center;width:min(100%,1100px);display:grid;grid-template-columns:100px 1fr;gap:22px;border-radius:24px;padding:18px 24px;margin:12px 0;min-height:100px;max-height:150px}
 .commentary h2{font-size:14px;font-weight:400;color:var(--muted);align-self:center}
 .commentary-text{font-size:17px;line-height:1.85;overflow:auto;white-space:pre-wrap}
@@ -201,5 +202,3 @@ input[type=range]:disabled{opacity:.3;cursor:default}
 .player-identity h2{font-size:12px}
 .player-identity .avatar{width:40px;height:40px}}
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{transition:none!important;scroll-behavior:auto!important}}
-
-.replay-center button:disabled{opacity:1}

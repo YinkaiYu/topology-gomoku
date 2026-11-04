@@ -2,6 +2,23 @@
 
 Arena 发布状态：2026-10-22 用户已确认发布当前版本，并计划自行完整测试使用流程；见[渠道发布记录](../development/arena.md#渠道发布记录)。以下各轮验收的待确认、未发布描述保留当时状态。
 
+## 2026-11-04：气泡手数与底部控件整理
+
+本轮为独立任务分支预览，尚未合回 `arena`。每条气泡上方显示关联局面的“第 N 手”，未落子时显示“开局”；悬停显示实际发送时间。底部状态与手数合成一行，放在两条滑块上方；回看手数与返回操作复用这行，终局结果也在此显示，不再放在设置中。两条轨道加长并保持同宽、端点列对齐、滑块尺寸一致。
+
+提供 Playwright 到 `NODE_PATH`，设置 `ARENA_FLOW_BASE=7abbb79`、`ARENA_FLOW_EVIDENCE=artifacts/arena-message-context` 后运行 `node scripts/qa-arena-flow.cjs`。前后使用同一暂停的 7×7 莫比乌斯棋局、D4/E4 两手及同一组样例随想，样例不代表真实模型发言。本轮只保留聊天、底部、复盘及终局相关截图；其余回归截图可由脚本再生成。
+
+| 视口 | 同状态前 / 后 | 滑轨宽度前 / 后 |
+| --- | --- | --- |
+| 1280×720 | [之前](../../artifacts/arena-message-context/conversation-before-1280x720.png) / [现在](../../artifacts/arena-message-context/conversation-1280x720.png) | 224 / 380 px |
+| 1920×1080 | [之前](../../artifacts/arena-message-context/conversation-before-1920x1080.png) / [现在](../../artifacts/arena-message-context/conversation-1920x1080.png) | 224 / 448 px |
+| 1024×768 | [之前](../../artifacts/arena-message-context/conversation-before-1024x768.png) / [现在](../../artifacts/arena-message-context/conversation-1024x768.png) | 224 / 255 px |
+| 1440×1080 | [之前](../../artifacts/arena-message-context/conversation-before-1440x1080.png) / [现在](../../artifacts/arena-message-context/conversation-1440x1080.png) | 224 / 441 px |
+
+- [回看手数与返回操作](../../artifacts/arena-message-context/replay-1024x768.png)、[底部终局结果](../../artifacts/arena-message-context/timeout-1024x768.png)、[结构化检查](../../artifacts/arena-message-context/results.json)。
+- 四视口通过消息手数关联、实际时间提示、共同滚动及阅读锚点、上下整条透明度、状态位于滑块上方、轨道对齐与加长、复盘前后棋盘几何不变、长状态不溢出，以及原有棋钟和资料操作检查；无浏览器错误。
+- 原有 `npm run arena:qa` 以 `ARENA_QA_BASE=7abbb79`、`ARENA_QA_EVIDENCE=.tmp/arena-regression` 通过四视口回归。216 项测试、资源及文档校验通过。本轮不改变规则、棋钟或 MCP 协议。
+
 ## 2026-11-04：共同聊天时间轴、坐标与棋钟
 
 本轮已于 2026-11-04 经用户预览确认，合入本地 `arena` 并更新本地服务；尚未推送远端。观战界面移除气泡内部滚动区域，双方消息按事件顺序交错、共同滚动；靠近上下边缘时整条消息与头像统一降低透明度，气泡内部不施加渐变。棋钟移到顶部左右两侧，棋色只在棋钟旁标示，坐标放大为 14–16 px。棋盘下方只保留视角与复盘操作，终局结果在设置中查看。

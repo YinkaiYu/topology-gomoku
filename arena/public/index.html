@@ -45,7 +45,7 @@
         <section class="board-column" aria-label="棋局">
           <div class="board-wrap" id="board-wrap"><canvas id="board" role="img" aria-label="等待棋局"></canvas><div class="board-notice glass" id="board-notice" hidden></div></div>
           <div class="board-tools">
-            <p id="turn-label" class="sr-only" role="status" aria-live="polite"></p>
+            <button id="return-live" class="position-summary" type="button" title="回到当前棋局"><span id="turn-label" role="status" aria-live="polite">第 0 手</span></button>
             <div class="view-controls" id="view-controls">
               <button class="view-button" id="flat-view" type="button" aria-label="二维棋盘"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="5" width="14" height="14" rx="1"></rect><path d="M5 12h14M12 5v14"></path></svg></button>
               <input id="view-range" type="range" min="0" max="100" value="0" aria-label="棋盘展开程度">
@@ -53,7 +53,7 @@
             </div>
             <div class="replay-controls" id="replay-controls">
               <button id="previous-move" class="quiet-button" type="button" aria-label="上一步">←</button>
-              <div class="replay-center"><button id="return-live" type="button" title="回到当前棋局"><span id="replay-label">第 0 手</span></button><input id="replay-range" type="range" min="0" max="0" value="0" aria-label="复盘手数"></div>
+              <div class="replay-center"><input id="replay-range" type="range" min="0" max="0" value="0" aria-label="复盘手数"></div>
               <button id="next-move" class="quiet-button" type="button" aria-label="下一步">→</button>
             </div>
           </div>
@@ -70,7 +70,6 @@
     <div class="settings-grid"><button class="setting-button" id="new-button" type="button">新棋局</button><button class="setting-button" id="rooms-button" type="button">棋局记录</button></div>
     <section id="clock-settings"><label class="clock-toggle"><span>棋钟</span><input type="checkbox" id="clock-enabled" checked></label><div class="clock-options"><label>每方 <input id="clock-minutes" type="number" min="1" max="60" value="5" required> 分钟</label><label>每步加 <input id="clock-increment" type="number" min="0" max="60" value="5" required> 秒</label></div></section>
     <section id="match-settings" hidden>
-      <p id="match-result" class="match-result" hidden></p>
       <div class="settings-grid match-control"><button class="setting-button" id="start-button" type="button">开始对弈</button><button class="setting-button" id="pause-button" type="button" hidden>暂停</button><button class="setting-button" id="resume-button" type="button" hidden>继续对弈</button><button class="setting-button danger" id="stop-button" type="button">结束棋局</button></div>
       <div class="settings-players"><div><button class="profile-choice" id="settings-black" data-profile="black" type="button"></button><button class="quiet-button" data-invite="black" type="button">黑方邀请 ↗</button></div><div><button class="profile-choice" id="settings-white" data-profile="white" type="button"></button><button class="quiet-button" data-invite="white" type="button">白方邀请 ↗</button></div></div>
       <div class="settings-grid"><button class="setting-button" id="timeline-button" type="button">时间线</button><button class="setting-button" id="export-button" type="button">保存棋谱</button><button class="setting-button" data-invite="commentator" type="button">邀请解说</button><button class="setting-button" id="commentary-toggle" type="button" hidden>关闭解说</button></div>

@@ -1,0 +1,54 @@
+[
+  {
+    "viewport": {
+      "width": 1280,
+      "height": 720
+    },
+    "tracks": {
+      "before": 224,
+      "after": 379.828125,
+      "aligned": true
+    },
+    "checks": "message ply labels and wall-time tooltips, combined status above longer aligned sliders, clock settings and validation, chronology, shared scrolling, reader position, long notes, uniform opacity at both edges, coordinates, replay geometry and labels, profiles without duplicate color badges, timeout result at bottom",
+    "errors": []
+  },
+  {
+    "viewport": {
+      "width": 1920,
+      "height": 1080
+    },
+    "tracks": {
+      "before": 224,
+      "after": 448,
+      "aligned": true
+    },
+    "checks": "message ply labels and wall-time tooltips, combined status above longer aligned sliders, clock settings and validation, chronology, shared scrolling, reader position, long notes, uniform opacity at both edges, coordinates, replay geometry and labels, profiles without duplicate color badges, timeout result at bottom",
+    "errors": []
+  },
+  {
+    "viewport": {
+      "width": 1024,
+      "height": 768
+    },
+    "tracks": {
+      "before": 224,
+      "after": 254.765625,
+      "aligned": true
+    },
+    "checks": "message ply labels and wall-time tooltips, combined status above longer aligned sliders, clock settings and validation, chronology, shared scrolling, reader position, long notes, uniform opacity at both edges, coordinates, replay geometry and labels, profiles without duplicate color badges, timeout result at bottom",
+    "errors": []
+  },
+  {
+    "viewport": {
+      "width": 1440,
+      "height": 1080
+    },
+    "tracks": {
+      "before": 224,
+      "after": 441.296875,
+      "aligned": true
+    },
+    "checks": "message ply labels and wall-time tooltips, combined status above longer aligned sliders, clock settings and validation, chronology, shared scrolling, reader position, long notes, uniform opacity at both edges, coordinates, replay geometry and labels, profiles without duplicate color badges, timeout result at bottom",
+    "errors": []
+  }
+]
