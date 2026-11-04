@@ -47,7 +47,7 @@ async function shot(page, name) {
       await page.locator("#dismiss-error").click();
       const { gameId, tokens } = create();
       await page.goto(`${app.url}/?game=${gameId}`);
-      await page.waitForFunction(() => document.querySelector("#turn-label").textContent === "第 0 手 · 黑方行棋");
+      await page.waitForFunction(() => document.querySelector("#turn-label").textContent === "第 0 手 黑方行棋");
       await page.locator('.turn-activity[data-role="black"]').waitFor();
       call("arena_move", { gameId, token: tokens.black, cell: "D4", expectedVersion: 0, requestId: "first" });
       call("arena_move", { gameId, token: tokens.white, cell: "E4", expectedVersion: 1, requestId: "second" });
@@ -72,7 +72,7 @@ async function shot(page, name) {
       assert.ok((await page.locator("#black-clock").boundingBox()).y < (await page.locator("#board").boundingBox()).y);
       assert.equal(await page.locator(".player-identity>.stone").count(), 0);
       assert.equal((await page.locator("#black-clock>.stone").boundingBox()).width, 18);
-      assert.equal(await page.locator("#turn-label").innerText(), "第 2 手 · 已暂停");
+      assert.equal(await page.locator("#turn-label").textContent(), "第 2 手 已暂停");
       assert.ok((await page.locator("#turn-label").boundingBox()).height > 1);
       assert.equal(await page.locator("#match-result").count(), 0);
       assert.deepEqual(await page.locator(".voice-time").allTextContents(), ["开局", "第 1 手", "第 2 手", "第 2 手", "第 2 手", "第 2 手"]);
@@ -130,13 +130,13 @@ async function shot(page, name) {
       const board = await page.locator("#board").boundingBox();
       await page.locator("#previous-move").click();
       assert.deepEqual(await page.locator("#board").boundingBox(), board);
-      assert.equal(await page.locator("#turn-label").innerText(), "第 1 / 2 手 · 回到当前棋局");
+      assert.equal(await page.locator("#turn-label").textContent(), "第 1 / 2 手 回到当前棋局");
       assert.deepEqual(await page.locator(".voice-time").allTextContents(), ["开局", "第 1 手"]);
       assert.equal(await page.locator("#return-live").evaluate(node => node.scrollWidth > node.clientWidth), false, "Combined replay label fits its control");
       await shot(page, `replay-${size}.png`);
       await page.locator("#return-live").click();
       assert.deepEqual(await page.locator("#board").boundingBox(), board);
-      assert.equal(await page.locator("#turn-label").innerText(), "第 2 手 · 已暂停");
+      assert.equal(await page.locator("#turn-label").textContent(), "第 2 手 已暂停");
       await page.locator("#settings-button").click(); await page.locator("#timeline-button").click();
       assert.ok((await page.locator("#timeline").innerText()).includes("D4"));
       assert.ok((await page.locator("#timeline").innerText()).includes("E4"));
@@ -184,7 +184,7 @@ async function shot(page, name) {
       await page.waitForFunction(() => document.querySelector("#turn-label").textContent.includes("超时"));
       assert.equal(await page.locator("#black-clock .clock-digits").textContent(), "0:00");
       assert.equal(await page.locator(".turn-activity").count(), 0);
-      assert.equal(await page.locator("#turn-label").innerText(), "第 0 手 · 黑方超时 · 白方胜");
+      assert.equal(await page.locator("#turn-label").textContent(), "第 0 手 黑方超时 白方胜");
       assert.equal(await page.locator("#return-live").evaluate(node => node.scrollWidth > node.clientWidth), false, "Combined result fits its control");
       await shot(page, `timeout-${size}.png`);
       await page.locator("#settings-button").click();

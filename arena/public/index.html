@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="referrer" content="no-referrer">
-  <title>拓扑五子棋 · 对弈室</title>
+  <title>拓扑五子棋对弈室</title>
   <link rel="icon" href="/assets/brand-icon.png">
   <link rel="stylesheet" href="/arena.css">
   <script defer src="/assets/topology.js"></script>
@@ -95,7 +95,7 @@
     <div class="dialog-heading"><h2 id="invite-heading">邀请棋手</h2><button class="quiet-button" data-close type="button" aria-label="关闭">×</button></div>
 
     <textarea id="invite-text" rows="12" readonly spellcheck="false" aria-label="Agent 邀请词"></textarea>
-    <div class="dialog-footer"><p class="muted">邀请词包含本局角色凭证，请只交给对应的 Agent。</p><button class="glass-button primary compact" id="copy-invite" type="button">复制邀请词</button></div>
+    <div class="dialog-footer"><button class="glass-button primary compact" id="copy-invite" type="button">复制邀请词</button></div>
   </div></dialog>
   <dialog id="timeline-dialog" class="panel-dialog timeline-dialog"><div class="dialog-content">
     <div class="dialog-heading"><h2>棋局时间线</h2><button class="quiet-button" data-close type="button" aria-label="关闭">×</button></div>
@@ -105,7 +105,6 @@
   </div></dialog>
   <dialog id="stop-dialog" class="panel-dialog small-dialog"><div class="dialog-content">
     <div class="dialog-heading"><h2>结束这场对弈？</h2><button class="quiet-button" data-close type="button" aria-label="关闭">×</button></div>
-    <p class="dialog-intro">棋手将停止落子，已有棋谱和随想会保留。</p>
     <div class="dialog-footer"><button class="quiet-button" data-close type="button">再看一会儿</button><button class="glass-button compact" id="confirm-stop" type="button">结束棋局</button></div>
   </div></dialog>
   <noscript>请启用 JavaScript 后打开本地对弈室。</noscript>

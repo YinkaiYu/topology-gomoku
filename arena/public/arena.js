@@ -38,6 +38,15 @@
   const phases = { waiting: "准备中", playing: "正在对弈", paused: "暂歇片刻", ended: "本局已结束" };
 
   function text(id, value) { $(id).textContent = value == null ? "" : String(value); }
+  function spacedText(node, parts) {
+    node.classList.add("text-parts");
+    node.replaceChildren();
+    parts.filter(Boolean).forEach((part, index) => {
+      if (index) node.append(document.createTextNode(" "));
+      node.append(element("span", "", part));
+    });
+    return node;
+  }
   function element(tag, className, value) {
     const node = document.createElement(tag);
     if (className) node.className = className;
@@ -316,19 +325,25 @@
     for(const size of [192,128,96]){const canvas=document.createElement("canvas");canvas.width=canvas.height=size;const ctx=canvas.getContext("2d"),side=Math.min(img.width,img.height);ctx.drawImage(img,(img.width-side)/2,(img.height-side)/2,side,side,0,0,size,size);result=canvas.toDataURL("image/png");if(result.length<=100000)break;}
     if(epoch!==uploadEpoch)return;selectedAvatar=result;renderAvatarOptions();
   }
-  function confirmMutation(heading, description, action){text("confirm-heading",heading);text("confirm-description",description);confirmAction=action;$("confirm-dialog").showModal();}
+  function confirmMutation(heading, description, action) {
+    text("confirm-heading", heading);
+    text("confirm-description", description);
+    $("confirm-description").hidden = !description;
+    confirmAction = action;
+    $("confirm-dialog").showModal();
+  }
 
-  function outcomeLabel(match) {
+  function outcomeParts(match) {
     const winner = match.winner === 1 ? "black" : match.winner === -1 ? "white" : match.winner;
-    if (match.winReason === "timeout") return names[winner === "black" ? "white" : "black"] + "超时 · " + names[winner] + "胜";
-    if (match.winReason === "resign") return names[winner === "black" ? "white" : "black"] + "认输 · " + names[winner] + "胜";
-    if (match.winReason === "draw_agreement") return "双方和棋";
-    if (match.mode === "ai" && match.winReason === "settled") return "定局";
-    if (match.mode === "ai" && match.winReason === "blocked") return winner ? names[winner] + "获胜 · 封锁" : "已封住白方连线";
-    if (winner) return (names[winner] || winner) + "获胜";
-    if (match.outcome === "draw" || match.winReason === "draw") return "和棋";
-    if (match.outcome === "stopped" || match.winReason === "stopped") return "房主结束";
-    return "对弈结束";
+    if (match.winReason === "timeout") return [names[winner === "black" ? "white" : "black"] + "超时", names[winner] + "胜"];
+    if (match.winReason === "resign") return [names[winner === "black" ? "white" : "black"] + "认输", names[winner] + "胜"];
+    if (match.winReason === "draw_agreement") return ["双方和棋"];
+    if (match.mode === "ai" && match.winReason === "settled") return ["定局"];
+    if (match.mode === "ai" && match.winReason === "blocked") return winner ? [names[winner] + "获胜", "封锁"] : ["已封住白方连线"];
+    if (winner) return [(names[winner] || winner) + "获胜"];
+    if (match.outcome === "draw" || match.winReason === "draw") return ["和棋"];
+    if (match.outcome === "stopped" || match.winReason === "stopped") return ["房主结束"];
+    return ["对弈结束"];
   }
   function render() {
     if (!state) return;
@@ -339,10 +354,10 @@
     placeSettings("match");
     text("match-level", level.name);$("match-glyph").src="/assets/topologies/"+state.topology+".svg";
     const preparing = !joined ? "等待入席" : state.seats.black.ready && state.seats.white.ready ? "准备就绪" : state.seats.black.ready ? "等待白方就绪" : state.seats.white.ready ? "等待黑方就绪" : "双方准备中";
-    const status = state.phase === "ended" ? outcomeLabel(state) : state.phase === "playing" ? (names[state.turn] || "") + "行棋" : state.phase === "paused" ? "已暂停" : preparing;
+    const status = state.phase === "ended" ? outcomeParts(state) : [state.phase === "playing" ? (names[state.turn] || "") + "行棋" : state.phase === "paused" ? "已暂停" : preparing];
     const returnLabel = state.phase === "ended" ? "回到定局" : "回到当前棋局";
-    const positionLabel = replayPly === null ? "第 " + state.ply + " 手 · " + status : "第 " + replayPly + " / " + state.ply + " 手 · " + returnLabel;
-    text("turn-label", positionLabel);
+    const positionParts = replayPly === null ? ["第 " + state.ply + " 手", ...status] : ["第 " + replayPly + " / " + state.ply + " 手", returnLabel];
+    spacedText($("turn-label"), positionParts);
     renderConversation(); renderSeat("black"); renderSeat("white"); renderCommentary(); renderClocks();
     $("match-settings").hidden = false;
     $("pause-button").hidden = state.phase !== "playing";
@@ -558,12 +573,12 @@
       const player=role=>match.seats[role].displayName || (match.mode==="ai" && role==="white"?"内置 AI":match.seats[role].name || names[role]);
       const date=new Date(match.createdAt).toLocaleString("zh-CN",{year:"numeric",month:"2-digit",day:"2-digit",hour:"2-digit",minute:"2-digit",hour12:false});
       const metadata = element("small", "room-meta");
-      const resultLabel = match.phase === "ended" ? outcomeLabel(match) : phases[match.phase];
-      metadata.append(element("span", "", date), element("span", "room-result", resultLabel), element("span", "", match.ply + " 手"));
-      button.append(element("strong","",levelFor(match.topology).name+" · "+player("black")+" 与 "+player("white")), metadata);
+      const resultParts = match.phase === "ended" ? outcomeParts(match) : [phases[match.phase]];
+      metadata.append(element("span", "", date), spacedText(element("span", "room-result"), resultParts), element("span", "", match.ply + " 手"));
+      button.append(spacedText(element("strong"), [levelFor(match.topology).name, player("black")+" 与 "+player("white")]), metadata);
       button.addEventListener("click",()=>guarded(async()=>{await selectGame(match.gameId);$("rooms-dialog").close();}));row.append(button);
       const action=element("button","quiet-button danger",match.phase==="ended"?"删除":"结束");action.type="button";action.dataset.game=match.gameId;
-      action.addEventListener("click",()=>confirmMutation(match.phase==="ended"?"删除这局记录？":"结束这场对弈？",match.phase==="ended"?"棋谱和发言将一并删除。":"保留棋谱和发言。",async()=>{
+      action.addEventListener("click",()=>confirmMutation(match.phase==="ended"?"删除这局记录？":"结束这场对弈？",match.phase==="ended"?"棋谱和发言将一并删除。":"",async()=>{
         if(match.phase==="ended"){await call("arena_delete",{gameId:match.gameId},true);if(state?.gameId===match.gameId)showWelcome();}
         else {const next=await call("arena_control",{gameId:match.gameId,action:"stop"},true);if(state?.gameId===match.gameId)applyState(next);}
         await showRooms();
@@ -583,7 +598,7 @@
     if (event.type === "result" && event.winReason === "resign") return names[event.winner] + "获胜（对方认输）";
     if (event.type === "result" && event.winReason === "draw_agreement") return "双方同意和棋";
     if (event.type === "result" && event.winReason === "timeout") return names[event.winner] + "获胜（对方超时）";
-    if (event.type === "result") return event.winReason === "settled" ? "定局 · 本局收束" : event.winReason === "blocked" ? "完成棋局 · 已封住白方连线" : event.winner ? (names[event.winner] || "") + "获胜" : event.outcome === "draw" ? "和棋" : "棋局结束";
+    if (event.type === "result") return event.winReason === "settled" ? "定局" : event.winReason === "blocked" ? "已封住白方连线" : event.winner ? (names[event.winner] || "") + "获胜" : event.outcome === "draw" ? "和棋" : "棋局结束";
     if (event.type === "move" || event.kind === "move") {
       const move = (state.moves || []).find((item) => item.ply === event.ply);
       const cell = event.cell ?? move?.cell;
@@ -599,7 +614,8 @@
     if (!events.length) list.append(element("li", "", "棋局尚未开始。"));
     events.forEach((event) => {
       const item = element("li"); item.dataset.kind = event.type;
-      item.append(element("span", "event-meta", [formatTime(event.at), event.ply ? "第 " + event.ply + " 手" : "开局前", event.role ? displayPlayer(event.role) : ""].filter(Boolean).join(" · ")), element("p", "", eventDescription(event)));
+      const metadata = spacedText(element("span", "event-meta"), [formatTime(event.at), event.ply ? "第 " + event.ply + " 手" : "开局前", event.role ? displayPlayer(event.role) : ""]);
+      item.append(metadata, element("p", "", eventDescription(event)));
       list.append(item);
     });
     renderTextBoard();
@@ -732,7 +748,7 @@
     if(target.gameId){const next=await call("arena_profile",{gameId:target.gameId,role:target.role,...value},true);if(state?.gameId===target.gameId)applyState(next);}
     drafts[target.role]=value;localStorage.setItem("arena-player-profiles",JSON.stringify(drafts));renderDrafts();$("profile-dialog").close();
   });});
-  $("clear-records").addEventListener("click",()=>confirmMutation("清空已结束棋局？","棋谱和发言将一并删除，进行中的棋局会保留。",async()=>{const result=await call("arena_clear",{},true);if(result.deleted.includes(state?.gameId))showWelcome();await showRooms();}));
+  $("clear-records").addEventListener("click",()=>confirmMutation("清空已结束棋局？","棋谱和发言将一并删除。",async()=>{const result=await call("arena_clear",{},true);if(result.deleted.includes(state?.gameId))showWelcome();await showRooms();}));
   $("confirm-action").addEventListener("click",()=>guarded(async()=>{const action=confirmAction;if(!action)return;confirmAction=null;await action();$("confirm-dialog").close();}));
   $("board").addEventListener("pointerdown", (event) => {
     if (morph < .2 || !state || state.topology === "plane") return;

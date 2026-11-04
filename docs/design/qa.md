@@ -1,5 +1,13 @@
 # 视觉 QA
 
+## 2026-11-05 邀请面板与状态文字间距
+
+`node scripts/qa-arena-dialog-copy.cjs` 以 `a85716a` 为基线，在同一 1280×720 棋局与邀请弹窗比较删除注释后的布局。截图中的邀请统一替换为固定示例参数，真实复制校验在内存完成。测试覆盖邀请全选、键盘复制、复制按钮、键盘导航、名字和棋盘尺寸编辑、结束棋局及删除确认。邀请框与复制按钮在基线和当前版本均得到 `outline: none`，指针和键盘聚焦的边框、阴影测量一致。当前版本另测聊天区、文字棋盘展开按钮和输入框的焦点样式。
+
+真实溢出的邀请文本已验证可滚动，当前样式为细滚动条与透明轨道。Headless Chromium 的覆盖式滚动条会自动淡出，结果同时记录 `scrollbar-width`、`scrollbar-color` 与滚动位置。[邀请面板之前](../../artifacts/arena-clock-options/invitation-before.png)、[邀请面板现在](../../artifacts/arena-clock-options/invitation-after.png)及[结构化结果](../../artifacts/arena-clock-options/dialog-copy-results.json)可复核。
+
+棋盘底部状态、记录标题与结果、时间线元信息使用分段文字和间距。专项检查各组可见文字的分隔符、计算样式间距及实际元素间隙，并确认结束棋局后棋盘位置稳定。[底部状态](../../artifacts/arena-clock-options/status-spacing.png)、[记录](../../artifacts/arena-clock-options/records-spacing.png)和[时间线](../../artifacts/arena-clock-options/timeline-spacing.png)保留本轮结果。`qa-arena-flow.cjs` 的四视口回归通过，其他既有 QA 的当前页面文案断言已同步更新，历史基线断言保留原文。
+
 ## 2026-11-05 焦点提示清理
 
 按用户要求统一取消控件的额外焦点外框，选择结果继续由选中状态表达。`node scripts/qa-arena-liquid-controls.cjs` 增加以 `60bc785` 为基线的聚焦回归，通过真实 Tab 和方向键进入控件后再点击、拖动和取消指针操作。基线中的棋钟选择器、视角滑块和复盘滑块均复现鼠标操作后遗留外框，当前版本均通过外框消失断言，同时验证实际焦点、原地方向键换档、Tab 重入和棋盘尺寸编辑。

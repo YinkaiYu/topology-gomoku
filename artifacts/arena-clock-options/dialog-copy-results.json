@@ -1,0 +1,93 @@
+{
+  "baseline": "a85716a",
+  "viewport": {
+    "width": 1280,
+    "height": 720
+  },
+  "screenshotInvitation": "Fixed fake credentials and example text",
+  "results": [
+    {
+      "previous": true,
+      "focus": [
+        {
+          "selector": "#invite-text",
+          "pointerOutline": "none",
+          "keyboardOutline": "none",
+          "stableBorderAndShadow": true
+        },
+        {
+          "selector": "#copy-invite",
+          "pointerOutline": "none",
+          "keyboardOutline": "none",
+          "stableBorderAndShadow": true
+        }
+      ],
+      "selectAll": true,
+      "keyboardCopy": true,
+      "copyButton": true,
+      "scrollbar": {
+        "overflow": true,
+        "width": "auto",
+        "color": "auto"
+      },
+      "scrollable": true,
+      "spacing": null
+    },
+    {
+      "previous": false,
+      "focus": [
+        {
+          "selector": "#invite-text",
+          "pointerOutline": "none",
+          "keyboardOutline": "none",
+          "stableBorderAndShadow": true
+        },
+        {
+          "selector": "#copy-invite",
+          "pointerOutline": "none",
+          "keyboardOutline": "none",
+          "stableBorderAndShadow": true
+        },
+        {
+          "selector": "#conversation",
+          "pointerOutline": "none",
+          "keyboardOutline": "none",
+          "stableBorderAndShadow": true
+        },
+        {
+          "selector": ".accessible-board summary",
+          "pointerOutline": "none",
+          "keyboardOutline": "none",
+          "stableBorderAndShadow": true
+        },
+        {
+          "selector": "#profile-name",
+          "pointerOutline": "none",
+          "keyboardOutline": "none",
+          "stableBorderAndShadow": true
+        },
+        {
+          "selector": "#board-width",
+          "pointerOutline": "none",
+          "keyboardOutline": "none",
+          "stableBorderAndShadow": true
+        }
+      ],
+      "selectAll": true,
+      "keyboardCopy": true,
+      "copyButton": true,
+      "scrollbar": {
+        "overflow": true,
+        "width": "thin",
+        "color": "rgba(62, 84, 74, 0.3) rgba(0, 0, 0, 0)"
+      },
+      "scrollable": true,
+      "spacing": {
+        "footer": true,
+        "timeline": true,
+        "records": true,
+        "fixedBoard": true
+      }
+    }
+  ]
+}

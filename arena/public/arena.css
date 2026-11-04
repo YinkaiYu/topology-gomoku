@@ -11,8 +11,10 @@ input[type=number]{appearance:textfield;-moz-appearance:textfield}
 input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-spin-button{-webkit-appearance:none;margin:0}
 button{border:0;background:none;cursor:pointer}
 button:disabled{opacity:.4;cursor:default}
-:focus{outline:none}
+:focus,:focus-visible{outline:none}
 h1,h2,p{margin:0}
+.text-parts{display:inline-flex;align-items:baseline;gap:.8em;flex-wrap:wrap}
+.text-parts>span{min-width:0;overflow-wrap:anywhere}
 a{color:inherit}
 .sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
 .app-shell{height:100dvh;min-height:640px;min-width:960px;display:flex;flex-direction:column;padding:24px clamp(28px,4vw,68px);background:radial-gradient(circle at 89% 37%,rgba(69,154,139,.105),transparent 33%),radial-gradient(circle at 8% 78%,rgba(205,158,88,.09),transparent 34%),radial-gradient(circle at 12% 0%,rgba(255,255,255,.72),transparent 35%),linear-gradient(145deg,#f5f2eb 0%,var(--paper) 56%,#ece6db 100%)}
@@ -235,7 +237,6 @@ fieldset{padding:0;border:0;margin:0 0 18px;min-width:0}
 .dialog-heading button{font-size:24px;padding:0 8px}
 .dialog-intro{font-size:13px;line-height:1.9;color:var(--muted)}
 .dialog-footer{display:flex;justify-content:flex-end;align-items:center;gap:18px;margin-top:20px}
-.dialog-footer .muted{flex:1;font-size:11px;line-height:1.8;color:var(--muted)}
 .small-dialog{width:420px}
 .settings-dialog{width:450px}
 .settings-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
@@ -260,17 +261,24 @@ fieldset{padding:0;border:0;margin:0 0 18px;min-width:0}
 .room-row{display:flex;align-items:center;gap:12px;border-bottom:1px solid var(--edge);padding:12px 0}
 .room-open{flex:1;min-width:0;text-align:left;padding:6px 0}
 .room-open strong{display:block;font-size:16px;font-weight:400}
+.room-open strong.text-parts{display:flex}
 .room-open small{display:block;font-size:11px;color:var(--muted);margin-top:8px}
 .room-open .room-meta{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
 .room-result{color:var(--ink)}
 .room-row>.quiet-button{font-size:12px}
 .room-empty{padding:24px 0;color:var(--muted);font-size:14px}
 .invite-dialog textarea{width:100%;padding:16px;border-radius:14px;border:1px solid var(--edge);resize:none;background:rgba(255,255,255,.25);font-size:12px;line-height:1.9}
+.dialog-content,.invite-dialog textarea,.commentary-text{scrollbar-width:thin;scrollbar-color:rgba(62,84,74,.3) transparent}
+.dialog-content::-webkit-scrollbar,.invite-dialog textarea::-webkit-scrollbar,.commentary-text::-webkit-scrollbar{width:6px;height:6px;background:transparent}
+.dialog-content::-webkit-scrollbar-button,.invite-dialog textarea::-webkit-scrollbar-button,.commentary-text::-webkit-scrollbar-button{width:0;height:0;display:none}
+.dialog-content::-webkit-scrollbar-thumb,.invite-dialog textarea::-webkit-scrollbar-thumb,.commentary-text::-webkit-scrollbar-thumb{border-radius:999px;background:rgba(62,84,74,.3)}
+.dialog-content::-webkit-scrollbar-track,.invite-dialog textarea::-webkit-scrollbar-track,.commentary-text::-webkit-scrollbar-track,
+.dialog-content::-webkit-scrollbar-corner,.invite-dialog textarea::-webkit-scrollbar-corner,.commentary-text::-webkit-scrollbar-corner{background:transparent}
 .timeline{list-style:none;padding:0;margin:0}
 .timeline li{padding:14px 0 16px 17px;border-left:1px solid rgba(105,127,99,.23);position:relative}
 .timeline li::before{content:"";position:absolute;top:19px;left:-3px;width:5px;height:5px;background:#c8c1b5;border-radius:50%}
 .timeline li[data-kind=move]::before{background:var(--teal)}
-.event-meta{color:var(--muted);font-size:11px;display:block;margin-bottom:7px}
+.event-meta{color:var(--muted);font-size:11px;display:flex;margin-bottom:7px}
 .timeline p{font-size:14px;line-height:1.85;white-space:pre-wrap;overflow-wrap:anywhere}
 .accessible-board{margin-top:20px;padding-top:16px;border-top:1px solid var(--edge);font-size:12px;color:var(--muted)}
 .accessible-board summary{cursor:pointer;min-height:32px;list-style:none}

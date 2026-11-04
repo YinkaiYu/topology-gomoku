@@ -28,7 +28,7 @@ async function shot(page, name) {
       await page.goto(`${app.url}/?game=${gameId}`);
       await page.waitForFunction(() => document.getElementById("turn-label").textContent.includes("等待入席"));
       for (const role of ["black", "white"]) tokens[role] = call("arena_join", { ...call("arena_invite", { gameId, role }), name:role }).token;
-      await page.waitForFunction(() => document.getElementById("turn-label").textContent === "第 0 手 · 双方准备中");
+      await page.waitForFunction(() => document.getElementById("turn-label").textContent === "第 0 手 双方准备中");
       assert.equal(call("arena_state", { gameId }).clock.active, null);
       assert.equal(await page.locator(".turn-activity").count(), 0);
       await before.route("**/*", async route => {
@@ -43,7 +43,7 @@ async function shot(page, name) {
       const board = await page.locator("#board").boundingBox();
       call("arena_rules", { gameId, token:tokens.black });
       call("arena_ready", { gameId, token:tokens.black });
-      await page.waitForFunction(() => document.getElementById("turn-label").textContent === "第 0 手 · 等待白方就绪");
+      await page.waitForFunction(() => document.getElementById("turn-label").textContent === "第 0 手 等待白方就绪");
       assert.deepEqual(call("arena_state", { gameId }).clock.remainingMs, { black:300000, white:300000 });
       await page.locator("#settings-button").click();
       assert.equal(await page.locator("#start-button").count(), 0);
@@ -53,7 +53,7 @@ async function shot(page, name) {
       await page.locator("#settings-dialog [data-close]").click();
       call("arena_rules", { gameId, token:tokens.white });
       call("arena_ready", { gameId, token:tokens.white });
-      await page.waitForFunction(() => document.getElementById("turn-label").textContent === "第 0 手 · 黑方行棋");
+      await page.waitForFunction(() => document.getElementById("turn-label").textContent === "第 0 手 黑方行棋");
       await page.locator('.turn-activity[data-role="black"]').waitFor();
       assert.equal(call("arena_state", { gameId }).clock.active, "black");
       assert.deepEqual(await page.locator("#board").boundingBox(), board);
