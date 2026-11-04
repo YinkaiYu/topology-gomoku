@@ -33,20 +33,18 @@ async function shot(page, name) {
       page.on("pageerror", error => errors.push(error.message));
       page.on("console", message => { if (message.type() === "error") errors.push(message.text()); });
       await page.goto(app.url); await page.locator("#create-button").waitFor({ state: "visible" });
-      await page.locator("#settings-button").click();
-      assert.equal(await page.locator("#clock-enabled").isChecked(), true);
-      assert.equal(await page.locator("#clock-minutes").inputValue(), "5");
-      assert.equal(await page.locator("#clock-increment").inputValue(), "5");
+      assert.equal(await page.locator('input[name="clock-mode"][value="quick"]').isChecked(), true);
+      await page.locator('label:has(input[name="clock-mode"][value="standard"])').click();
+      assert.equal(await page.locator('input[name="clock-mode"][value="standard"]').isChecked(), true);
       await shot(page, `settings-${size}.png`);
-      await page.locator("#clock-minutes").fill("0");
-      await page.locator("#settings-dialog [data-close]").click();
+      await page.locator("#board-width").fill("0");
       const count = app.arena.matches.size;
       await page.locator("#create-button").click();
-      await page.locator("#settings-dialog").waitFor({ state: "visible" });
+      await page.locator("#error-banner").waitFor({ state: "visible" });
       assert.equal(app.arena.matches.size, count);
-      assert.equal(await page.locator("#clock-minutes").evaluate(input => input.validity.valid), false);
-      await page.locator("#clock-minutes").fill("5");
-      await page.locator("#settings-dialog [data-close]").click();
+      assert.equal(await page.locator("#board-width").evaluate(input => input.validity.valid), false);
+      await page.locator("#board-width").fill("7");
+      await page.locator("#dismiss-error").click();
       const { gameId, tokens } = create();
       await page.goto(`${app.url}/?game=${gameId}`);
       await page.waitForFunction(() => document.querySelector("#turn-label").textContent === "第 0 手 · 黑方行棋");
@@ -69,7 +67,7 @@ async function shot(page, name) {
       assert.ok(summary.y + summary.height <= viewTrack.y && viewTrack.y + viewTrack.height <= replayTrack.y, "One status row sits above both aligned tracks");
       assert.ok(Math.abs((viewTrack.y + viewTrack.height/2 - summary.y - summary.height/2) - (replayTrack.y - viewTrack.y)) < 1, "Status and slider rows share equal center spacing");
       assert.equal(await page.locator("#turn-label").evaluate(node => getComputedStyle(node).fontSize), "15px");
-      assert.equal((await page.locator("#flat-view svg").boundingBox()).width, 28);
+      assert.equal((await page.locator("#flat-view svg").boundingBox()).width, 20);
       await shot(beforeConversation, `conversation-before-${size}.png`); await beforeConversation.close();
       assert.ok((await page.locator("#black-clock").boundingBox()).y < (await page.locator("#board").boundingBox()).y);
       assert.equal(await page.locator(".player-identity>.stone").count(), 0);
@@ -78,7 +76,7 @@ async function shot(page, name) {
       assert.ok((await page.locator("#turn-label").boundingBox()).height > 1);
       assert.equal(await page.locator("#match-result").count(), 0);
       assert.deepEqual(await page.locator(".voice-time").allTextContents(), ["开局", "第 1 手", "第 2 手", "第 2 手", "第 2 手", "第 2 手"]);
-      assert.ok(await page.locator(".voice-time").evaluateAll(nodes => nodes.every(node => /^\d{2}:\d{2}:\d{2}$/.test(node.title) && node.dateTime && node.getBoundingClientRect().bottom <= node.parentElement.querySelector(".voice-item").getBoundingClientRect().top)));
+      assert.ok(await page.locator(".voice-time").evaluateAll(nodes => nodes.every(node => !node.hasAttribute("title") && node.dateTime && node.getBoundingClientRect().bottom <= node.parentElement.querySelector(".voice-item").getBoundingClientRect().top)));
       assert.equal(await page.locator("#conversation").evaluate(node => getComputedStyle(node).maskImage), "none");
       const geometry = await page.evaluate(() => {
         const rows = [...document.querySelectorAll(".chat-row")];

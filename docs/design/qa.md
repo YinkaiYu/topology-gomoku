@@ -1,5 +1,28 @@
 # 视觉 QA
 
+## 2026-11-05 棋钟选择、记录结果与面板材质
+
+任务分支 `codex/arena-clock-options` 从 `arena@18caf06` 开始。首页直接选择 5 分钟加 5 秒、15 分钟加 15 秒、30 分钟加 30 秒或不限时，四档切换保持卡片布局固定。对弈方式、棋钟和 AI 难度复用可拖动的液态选择器，视角与复盘使用同源玻璃滑块。棋盘尺寸保留直接编辑和键盘操作，使用自有错误提示。棋局记录显示胜方、和棋或房主结束，页面通过可见标签和无障碍名称表达控件含义。
+
+首页与设置面板参照 `main@3977ba0` 的 `app/assets/style.css` 中 `.settings-sheet` 双层玻璃和 `.scrim` 参数，复用轮廓、边缘光与透明度。脚本通过 Git 只读加载 main 资源，在 1280×720 捕获[原游戏设置参考](../../artifacts/arena-clock-options/main-settings-reference-1280x720.png)。Arena 前后对比使用相同视口、默认资料、同一准备局以及同四盘合成终局，基线前端由隔离服务拦截加载。
+
+| 视口 | 首页前 / 后 | 对局设置前 / 后 | 棋局记录前 / 后 |
+| --- | --- | --- | --- |
+| 1280×720 | [之前](../../artifacts/arena-clock-options/home-before-1280x720.png) / [现在](../../artifacts/arena-clock-options/home-1280x720.png) | [之前](../../artifacts/arena-clock-options/settings-before-1280x720.png) / [现在](../../artifacts/arena-clock-options/settings-1280x720.png) | [之前](../../artifacts/arena-clock-options/records-before-1280x720.png) / [现在](../../artifacts/arena-clock-options/records-1280x720.png) |
+| 1920×1080 | [之前](../../artifacts/arena-clock-options/home-before-1920x1080.png) / [现在](../../artifacts/arena-clock-options/home-1920x1080.png) | [之前](../../artifacts/arena-clock-options/settings-before-1920x1080.png) / [现在](../../artifacts/arena-clock-options/settings-1920x1080.png) | [之前](../../artifacts/arena-clock-options/records-before-1920x1080.png) / [现在](../../artifacts/arena-clock-options/records-1920x1080.png) |
+| 1024×768 | [之前](../../artifacts/arena-clock-options/home-before-1024x768.png) / [现在](../../artifacts/arena-clock-options/home-1024x768.png) | [之前](../../artifacts/arena-clock-options/settings-before-1024x768.png) / [现在](../../artifacts/arena-clock-options/settings-1024x768.png) | [之前](../../artifacts/arena-clock-options/records-before-1024x768.png) / [现在](../../artifacts/arena-clock-options/records-1024x768.png) |
+| 1440×1080 | [之前](../../artifacts/arena-clock-options/home-before-1440x1080.png) / [现在](../../artifacts/arena-clock-options/home-1440x1080.png) | [之前](../../artifacts/arena-clock-options/settings-before-1440x1080.png) / [现在](../../artifacts/arena-clock-options/settings-1440x1080.png) | [之前](../../artifacts/arena-clock-options/records-before-1440x1080.png) / [现在](../../artifacts/arena-clock-options/records-1440x1080.png) |
+
+提供 Playwright 到 `NODE_PATH` 后运行 `node scripts/qa-arena-clock-options.cjs` 可复现。四视口均通过四档创建、入席计时规则、准备阶段停钟、无效尺寸拦截、键盘切换、棋局结果和页面错误检查。几何断言覆盖首页左右边线、四档等宽、切档卡片位置固定、设置列中心、底部状态与两条滑块等距、轨道端点及图标中心对齐。四枚底部图标路径与 main 参考逐一核对。[结构化结果](../../artifacts/arena-clock-options/results.json)记录实际通过项。[1280×720 AI 模式](../../artifacts/arena-clock-options/ai-1280x720.png)和[1024×768 AI 模式](../../artifacts/arena-clock-options/ai-1024x768.png)覆盖展开难度选择的状态。
+
+坐标轴使用 Canvas 实际绘制位置与字形边界测量，四视口覆盖平面、莫比乌斯和环面。开放边的坐标更靠近棋盘，连接边为辅助线保留间距，边缘棋子与坐标文字之间有留白。[平面前](../../artifacts/arena-clock-options/axis-plane-before.png) / [后](../../artifacts/arena-clock-options/axis-plane.png)、[莫比乌斯前](../../artifacts/arena-clock-options/axis-mobius-before.png) / [后](../../artifacts/arena-clock-options/axis-mobius.png)、[环面前](../../artifacts/arena-clock-options/axis-torus-before.png) / [后](../../artifacts/arena-clock-options/axis-torus.png)均为同一 1280×720 视口和 A1/G1 边缘落子。
+
+`node scripts/qa-arena-liquid-controls.cjs` 验证普通动效下的点击滑行、快速切换目标、键盘换档、拖拽吸附、禁用状态、离散复盘取消后的对齐、滑行中回首页和切局的收束，以及减少动态效果。[按压拖动中的玻璃滑块](../../artifacts/arena-clock-options/liquid-thumb-dragging.png)对应实际按压缩放大于 1、释放后恢复 1 的断言。[控件结果](../../artifacts/arena-clock-options/liquid-controls-results.json)和[长时间线滚动后的玻璃面板](../../artifacts/arena-clock-options/timeline-scrolled-glass.png)保留实际验收记录。
+
+设置 `ARENA_QA_BASE=18caf06`、`ARENA_QA_EVIDENCE=.tmp/clock-options-regression` 运行 `npm run arena:qa`，以及设置 `ARENA_FLOW_BASE=18caf06`、`ARENA_FLOW_EVIDENCE=.tmp/clock-options-flow` 运行 `node scripts/qa-arena-flow.cjs`，四视口完整流程与观战回归通过。此轮证据来自桌面 Chromium，用户预览确认待完成。
+
+`node scripts/qa-arena-chat-motion.cjs` 在 1280×720 对实际消息流逐帧取样，验证旧气泡平移中的中间位置、新气泡渐入、70 ms 间隔连续消息的动画接续、阅读历史时的滚动锚点、减少动态效果及棋盘位置稳定。实际行棋时，既有等待气泡在新随想到来时保持位置，动画中滚轮进入历史后终止位移动效，下一条消息仍保留阅读锚点。[消息到来前](../../artifacts/arena-clock-options/chat-motion-before.png)、[运动中](../../artifacts/arena-clock-options/chat-motion-middle.png)、[运动结束](../../artifacts/arena-clock-options/chat-motion-after.png)和[逐帧结果](../../artifacts/arena-clock-options/chat-motion-results.json)可用于复核。
+
 ## 2026-11-04：入席、准备与自动开赛
 
 本轮在任务分支预览，尚未合入 `arena`。准备状态使用既有底部状态行；设置只在开赛前显示各棋手是否入席、准备中或已就绪。移除手动开始按钮，双方通过客户端确认就绪后自动开始；暂停与继续保留。开赛不改变棋盘几何，也不把准备事件显示成棋手随想。

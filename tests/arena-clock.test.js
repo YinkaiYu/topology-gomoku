@@ -54,6 +54,10 @@ test("time expires at the deadline without a player call; late moves, draw respo
     assert.equal(g.arena.tick(), true);
     const ended = g.state();
     assert.equal(ended.phase, "ended"); assert.equal(ended.winner, "white"); assert.equal(ended.winReason, "timeout");
+    const recorded = g.arena.call("arena_list").matches[0];
+    assert.equal(recorded.winner, ended.winner);
+    assert.equal(recorded.outcome, ended.outcome);
+    assert.equal(recorded.winReason, ended.winReason);
     assert.equal(ended.ply, 0); assert.equal(ended.version, 0); assert.equal(ended.clock.active, null);
     assert.deepEqual(ended.clock.remainingMs, { black: 0, white: 1000 });
     assert.throws(() => g.move("D4", "black"), { code: "NOT_PLAYING" });
@@ -89,11 +93,14 @@ test("clock checkpoints survive restart without charging downtime and legacy mat
   const dataDir = fs.mkdtempSync(path.join(os.tmpdir(), "arena-clock-"));
   const g = setup({ dataDir }); let restored;
   t.after(() => { restored?.close(); fs.rmSync(dataDir, { recursive: true, force: true }); });
-  g.control("start"); g.advance(23456); g.arena.close();
+  g.control("start"); g.advance(23456);
+  const originalRule = g.arena.call("arena_rules", { gameId: g.gameId, token: g.tokens.black }).clockRule;
+  g.arena.close();
   restored = new Arena({ dataDir, now: () => 99999999 });
   const state = restored.call("arena_state", { gameId: g.gameId });
   assert.equal(state.phase, "paused"); assert.equal(state.clock.active, null);
   assert.equal(state.clock.remainingMs.black, 276544);
+  assert.equal(restored.call("arena_rules", { gameId: g.gameId, token: g.tokens.black }).clockRule, originalRule);
   restored.call("arena_control", { gameId: g.gameId, action: "resume" }, HOST);
   assert.equal(restored.call("arena_state", { gameId: g.gameId }).clock.remainingMs.black, 276544);
   restored.close();
@@ -101,6 +108,7 @@ test("clock checkpoints survive restart without charging downtime and legacy mat
   delete saved.clock; fs.writeFileSync(file, JSON.stringify(saved));
   restored = new Arena({ dataDir });
   assert.equal(restored.call("arena_state", { gameId: g.gameId }).clock, null);
+  assert.match(restored.call("arena_rules", { gameId: g.gameId }).clockRule, /本局不限时/);
 });
 test("A1 coordinates round-trip on every supported board size, with bottom-left origin and no skipped column", () => {
   for (let width = 5; width <= 19; width++) for (let height = 5; height <= 19; height++) {
@@ -125,6 +133,57 @@ test("clock configuration is bounded, and explicitly untimed games never expire"
   const g = setup({}, { clock: null }); g.control("start"); g.advance(100000000);
   assert.equal(g.state().phase, "playing"); assert.equal(g.state().clock, null);
   g.move("A1"); assert.equal(g.state().moves[0].coordinate, "A1");
+});
+
+test("joining discloses the selected clock exactly and keeps its initial allowance distinct from remaining time", () => {
+  const fallbackRule = JSON.parse(fs.readFileSync(path.resolve(__dirname, "../arena/prompts/rules.json"), "utf8")).common.clockRule;
+  assert.equal(typeof fallbackRule, "string", "Already-running services still read the generic rule until restart");
+  const configurations = [
+    { clock: { initialMs: 300000, incrementMs: 5000 }, initial: "5 分钟", increment: "5 秒" },
+    { clock: { initialMs: 900000, incrementMs: 15000 }, initial: "15 分钟", increment: "15 秒" },
+    { clock: { initialMs: 1800000, incrementMs: 30000 }, initial: "30 分钟", increment: "30 秒" },
+    { clock: { initialMs: 75125, incrementMs: 0 }, initial: "75.125 秒", increment: "0 秒" },
+    { clock: { initialMs: 61000, incrementMs: 1250 }, initial: "61 秒", increment: "1.25 秒" }
+  ];
+  for (const configuration of configurations) {
+    const g = setup({}, { clock: configuration.clock });
+    const joined = g.arena.call("arena_join", {
+      ...g.arena.call("arena_invite", { gameId: g.gameId, role: "black" }, HOST), name: "black"
+    });
+    assert.ok(joined.rules.clockRule.includes(`每方初始 ${configuration.initial}`));
+    assert.notEqual(joined.rules.clockRule, fallbackRule, "New services return the current match's exact rule");
+    assert.ok(joined.rules.clockRule.includes(`成功落子加 ${configuration.increment}`));
+    assert.equal(joined.rules.clock.initialMs, configuration.clock.initialMs);
+    assert.equal(joined.rules.clock.incrementMs, configuration.clock.incrementMs);
+    assert.equal(joined.state.clock.active, null);
+    const ready = g.arena.call("arena_ready", { gameId: g.gameId, token: g.tokens.black });
+    assert.equal(ready.clock.active, null);
+    assert.deepEqual(ready.clock.remainingMs, {
+      black: configuration.clock.initialMs, white: configuration.clock.initialMs
+    });
+    g.control("start");
+    g.advance(1000);
+    g.move("D4");
+    const rules = g.arena.call("arena_rules", { gameId: g.gameId, token: g.tokens.black });
+    assert.equal(rules.clockRule, joined.rules.clockRule);
+    assert.equal(rules.clock.remainingMs.black, configuration.clock.initialMs - 1000 + configuration.clock.incrementMs);
+    g.arena.close();
+  }
+  const g = setup({}, { clock: null });
+  const joined = g.arena.call("arena_join", {
+    ...g.arena.call("arena_invite", { gameId: g.gameId, role: "black" }, HOST), name: "black"
+  });
+  assert.equal(joined.rules.clock, null);
+  assert.match(joined.rules.clockRule, /本局不限时/);
+  assert.match(joined.rules.clockRule, /超时判负规则关闭/);
+  const ready = g.arena.call("arena_ready", { gameId: g.gameId, token: g.tokens.black });
+  assert.equal(ready.clock, null);
+  assert.doesNotMatch(ready.guidance.text, /启动.*棋钟/);
+  g.control("start");
+  g.advance(100000000);
+  assert.equal(g.arena.call("arena_rules", { gameId: g.gameId, token: g.tokens.black }).clockRule, joined.rules.clockRule);
+  assert.equal(g.state().phase, "playing");
+  g.arena.close();
 });
 
 test("seat guidance tracks time, turn, pauses and termination without becoming a match event", () => {

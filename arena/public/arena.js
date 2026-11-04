@@ -30,6 +30,8 @@
   let lastStateSequence = -1;
   let pending = false;
   let streamConnected = false;
+  let conversationFrame = 0;
+  let conversationAnimations = [];
   const turnActivity = element("div", "turn-activity");
   const rulesCache = new Map();
   const names = { black: "黑方", white: "白方", commentator: "解说员", host: "房主", system: "棋局" };
@@ -100,9 +102,6 @@
     return replayPly === null ? events : events.filter((event) => Number(event.ply || 0) <= replayPly);
   }
   function voiceEvents(role) { return visibleEvents().filter((event) => event.role === role && typeof event.text === "string" && event.text.trim()); }
-  function voiceMeta(event) {
-    return voicePosition(event) + " · " + (event.role === "commentator" ? "场边解说" : "棋手随想");
-  }
   function voicePosition(event) { return event.ply ? "第 " + event.ply + " 手" : "开局"; }
   function bubbleSurface(bubble) {
     const material = element("span", "bubble-material"), glass = element("span", "bubble-glass");
@@ -140,6 +139,27 @@
       row.style.opacity = String(progress * progress * (3 - 2 * progress));
     }
   }
+  function stopConversationMotion() {
+    cancelAnimationFrame(conversationFrame);
+    conversationAnimations.forEach(animation => animation.cancel());
+    conversationAnimations = [];
+  }
+  function paintConversationMotion() {
+    fadeConversation();
+    if (conversationAnimations.some(animation => animation.playState === "running")) {
+      conversationFrame = requestAnimationFrame(paintConversationMotion);
+    }
+  }
+  function interruptConversationMotion() {
+    if (!conversationAnimations.some(animation => animation.playState === "running")) return;
+    const viewport = $("conversation");
+    const anchor = [...$("conversation-rows").querySelectorAll(".chat-row")]
+      .find(row => row.getBoundingClientRect().bottom > viewport.getBoundingClientRect().top);
+    const y = anchor?.getBoundingClientRect().y;
+    stopConversationMotion();
+    if (anchor) viewport.scrollTop += anchor.getBoundingClientRect().y - y;
+    fadeConversation();
+  }
   function renderConversation() {
     const viewport = $("conversation"), rows = $("conversation-rows"), empty = $("empty-seats");
     const events = visibleEvents().filter(event => ["black", "white"].includes(event.role) && typeof event.text === "string" && event.text.trim());
@@ -148,9 +168,17 @@
     if (viewport.dataset.events === key) return;
     viewport.dataset.events = key;
     const sameGame = viewport.dataset.game === state.gameId;
+    const wasLive = viewport.dataset.replay === "live";
+    viewport.dataset.replay = replayPly === null ? "live" : String(replayPly);
     const follow = !sameGame || replayPly !== null || viewport.scrollHeight - viewport.scrollTop - viewport.clientHeight < 36;
-    const old = new Map([...rows.querySelectorAll(".chat-row")].map(node => [node.dataset.seq, { node, y: node.getBoundingClientRect().y }]));
+    const positions = new Map([...rows.children].map(node => [node, {
+      y: node.getBoundingClientRect().y,
+      opacity: node.firstElementChild ? Number(getComputedStyle(node.firstElementChild).opacity) : 1
+    }]));
+    const old = new Map([...rows.querySelectorAll(".chat-row")].map(node => [node.dataset.seq, { node, y: positions.get(node).y }]));
     const anchor = [...old.values()].find(item => item.node.getBoundingClientRect().bottom > viewport.getBoundingClientRect().top);
+    // Capture the current visual positions before cancelling an interrupted move.
+    stopConversationMotion();
     if (!sameGame) { empty.append(seatIdentities.black, seatIdentities.white); rows.replaceChildren(empty); old.clear(); }
     viewport.dataset.game = state.gameId;
     const retained = new Set(events.map(event => String(event.seq)));
@@ -163,9 +191,8 @@
         const player = element("section", "player player-" + event.role);
         const timestamp = element("time", "voice-time", voicePosition(event));
         if (event.at && !Number.isNaN(new Date(event.at).getTime())) timestamp.dateTime = new Date(event.at).toISOString();
-        timestamp.title = formatTime(event.at);
         const bubble = element("blockquote", "voice-item speech-bubble");
-        bubble.title = voiceMeta(event); bubble.append(element("p", "", event.text));
+        bubble.append(element("p", "", event.text));
         player.append(timestamp, bubbleSurface(bubble)); row.append(player);
       }
       const player = row.firstElementChild, current = player.querySelector(".player-identity");
@@ -191,19 +218,32 @@
       }
       turnActivity.dataset.role = activeRole; turnActivity.dataset.game = state.gameId;
       turnActivity.setAttribute("role", "status"); turnActivity.setAttribute("aria-label", "等待" + names[activeRole] + "落子");
-      turnActivity.title = "等待" + names[activeRole] + "落子";
       turnActivity.firstElementChild.prepend(seatIdentities[activeRole]);
       rows.insertBefore(turnActivity, empty);
     } else turnActivity.remove();
     paintBubbleSurfaces();
     if (follow) viewport.scrollTop = viewport.scrollHeight;
     else if (anchor?.node.isConnected) viewport.scrollTop += anchor.node.getBoundingClientRect().y - anchor.y;
-    fadeConversation();
-    if (sameGame && follow && replayPly === null && !matchMedia("(prefers-reduced-motion: reduce)").matches) {
-      for (const row of rows.querySelectorAll(".chat-row")) if (!old.has(row.dataset.seq)) {
-        row.animate([{ opacity: 0, transform: "translateY(18px)" }, { opacity: Number(row.style.opacity), transform: "translateY(0)" }], { duration: 280, easing: "ease-out" });
+    if (sameGame && follow && wasLive && replayPly === null && !matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      const motion = { duration: 420, easing: "cubic-bezier(.2,.7,.2,1)" };
+      const newRows = [...rows.querySelectorAll(".chat-row")].filter(row => !old.has(row.dataset.seq));
+      const shift = Math.max(18, ...[...old.values()].filter(item => item.node.isConnected)
+        .map(item => item.y - item.node.getBoundingClientRect().y));
+      for (const row of rows.children) {
+        const previous = positions.get(row);
+        const offset = previous ? previous.y - row.getBoundingClientRect().y : shift;
+        if (Math.abs(offset) > .5) {
+          conversationAnimations.push(row.animate([
+            { transform: `translateY(${offset}px)` }, { transform: "translateY(0)" }
+          ], motion));
+        }
+        const opacity = newRows.includes(row) ? 0 : previous?.opacity ?? 1;
+        if (opacity < 1 && row.firstElementChild) {
+          conversationAnimations.push(row.firstElementChild.animate([{ opacity }, { opacity: 1 }], motion));
+        }
       }
     }
+    paintConversationMotion();
   }
   function avatarInto(node, avatar, role) {
     const key=(avatar || "")+":"+role;if(node._avatarKey===key)return;node._avatarKey=key;
@@ -220,7 +260,6 @@
   function renderSeat(role) {
     const seat=state.seats[role], name=seat.displayName || (state.mode==="ai" && role==="white"?"内置 AI":seat.name || names[role]);
     text(role+"-name",name);avatarInto($(role+"-avatar"),seat.avatar,role);
-    $(role+"-name").title=name+(seat.model?" · "+seat.model:"");
     profileButton($("settings-"+role),{name,avatar:seat.avatar},role);
     text("ready-"+role, !isJoined(seat) ? "未入席" : seat.ready ? "已就绪" : "准备中");
     $("ready-"+role).hidden=state.phase!=="waiting";
@@ -252,9 +291,9 @@
     document.querySelector('[data-invite="commentator"]').hidden=state.phase==="ended";
     text("commentary-heading",commentator?.displayName || commentator?.name || "解说");
     const node=$("commentary-text"), key=state.gameId+":"+(event?.seq || "");if(node.dataset.events===key)return;
-    node.dataset.events=key;node.replaceChildren();if(event){node.title=voiceMeta(event);node.append(element("p","",event.text));}
+    node.dataset.events=key;node.replaceChildren();if(event)node.append(element("p","",event.text));
   }
-  function openSettings(){ $("match-settings").hidden=!state;$("clock-settings").hidden=Boolean(state);$("settings-dialog").showModal(); }
+  function openSettings(){ $("match-settings").hidden=!state;$("settings-dialog").showModal(); }
   function closeSettings(){ $("settings-dialog").close(); }
   function openProfile(role, setup=false){
     uploadEpoch++;profileTarget={role,gameId:setup?null:state?.gameId};
@@ -279,15 +318,16 @@
   }
   function confirmMutation(heading, description, action){text("confirm-heading",heading);text("confirm-description",description);confirmAction=action;$("confirm-dialog").showModal();}
 
-  function outcomeLabel() {
-    if (state.winReason === "timeout") return names[state.winner === "black" ? "white" : "black"] + "超时 · " + names[state.winner] + "胜";
-    if (state.winReason === "resign") return names[state.winner === "black" ? "white" : "black"] + "认输 · " + names[state.winner] + "胜";
-    if (state.winReason === "draw_agreement") return "双方和棋";
-    if (state.mode === "ai" && state.winReason === "settled") return "定局";
-    if (state.mode === "ai" && state.winReason === "blocked") return "已封住白方连线";
-    if (state.winner) return (state.winner === 1 ? "黑方" : state.winner === -1 ? "白方" : names[state.winner] || state.winner) + "获胜";
-    if (state.outcome === "draw" || state.winReason === "draw") return "和棋";
-    if (state.outcome === "stopped" || state.winReason === "stopped") return "房主结束";
+  function outcomeLabel(match) {
+    const winner = match.winner === 1 ? "black" : match.winner === -1 ? "white" : match.winner;
+    if (match.winReason === "timeout") return names[winner === "black" ? "white" : "black"] + "超时 · " + names[winner] + "胜";
+    if (match.winReason === "resign") return names[winner === "black" ? "white" : "black"] + "认输 · " + names[winner] + "胜";
+    if (match.winReason === "draw_agreement") return "双方和棋";
+    if (match.mode === "ai" && match.winReason === "settled") return "定局";
+    if (match.mode === "ai" && match.winReason === "blocked") return winner ? names[winner] + "获胜 · 封锁" : "已封住白方连线";
+    if (winner) return (names[winner] || winner) + "获胜";
+    if (match.outcome === "draw" || match.winReason === "draw") return "和棋";
+    if (match.outcome === "stopped" || match.winReason === "stopped") return "房主结束";
     return "对弈结束";
   }
   function render() {
@@ -299,11 +339,10 @@
     placeSettings("match");
     text("match-level", level.name);$("match-glyph").src="/assets/topologies/"+state.topology+".svg";
     const preparing = !joined ? "等待入席" : state.seats.black.ready && state.seats.white.ready ? "准备就绪" : state.seats.black.ready ? "等待白方就绪" : state.seats.white.ready ? "等待黑方就绪" : "双方准备中";
-    const status = state.phase === "ended" ? outcomeLabel() : state.phase === "playing" ? (names[state.turn] || "") + "行棋" : state.phase === "paused" ? "已暂停" : preparing;
+    const status = state.phase === "ended" ? outcomeLabel(state) : state.phase === "playing" ? (names[state.turn] || "") + "行棋" : state.phase === "paused" ? "已暂停" : preparing;
     const returnLabel = state.phase === "ended" ? "回到定局" : "回到当前棋局";
     const positionLabel = replayPly === null ? "第 " + state.ply + " 手 · " + status : "第 " + replayPly + " / " + state.ply + " 手 · " + returnLabel;
     text("turn-label", positionLabel);
-    $("return-live").title = replayPly === null ? positionLabel : returnLabel;
     renderConversation(); renderSeat("black"); renderSeat("white"); renderCommentary(); renderClocks();
     $("match-settings").hidden = false;
     $("pause-button").hidden = state.phase !== "playing";
@@ -314,6 +353,7 @@
     $("replay-range").disabled = !moves.length;
     $("replay-range").max = String(moves.length);
     $("replay-range").value = String(replayPly === null ? moves.length : replayPly);
+    window.ArenaLiquidControls.syncRange($("replay-range"));
     $("previous-move").disabled = (replayPly === null ? moves.length : replayPly) <= 0;
     $("next-move").disabled = replayPly === null || replayPly >= moves.length;
     $("return-live").disabled = replayPly === null;
@@ -337,6 +377,9 @@
   }
   async function selectGame(gameId) {
     const epoch = ++gameEpoch;
+    cancelAnimationFrame(morphFrame);
+    window.ArenaLiquidControls.cancelRanges();
+    stopConversationMotion();
     if (source) source.close();
     source = null;
     streamConnected = false;
@@ -360,6 +403,9 @@
   }
   function showWelcome() {
     ++gameEpoch;
+    cancelAnimationFrame(morphFrame);
+    window.ArenaLiquidControls.cancelRanges();
+    stopConversationMotion();
     if (source) source.close();
     source = null;
     state = null;
@@ -386,7 +432,7 @@
       const img = document.createElement("img");
       img.src = "/assets/topologies/" + level.topology + ".svg"; img.alt = "";
       span.append(img, element("span", "", level.name));
-      label.append(input, span); label.title = level.typeName;
+      label.append(input, span);
       input.addEventListener("change", updateTopology);
       parent.append(label);
       if (!levels.some((item) => item.topology === "torus") && index === 0) input.checked = true;
@@ -432,13 +478,18 @@
     else Art.drawBoard(ctx, { game, layout, time: 2000, fontFamily: '"Topo Serif",serif', extendGridToRails: true });
     if (morph < .1) {
       ctx.save(); ctx.fillStyle = "#65665e"; ctx.font = Math.min(16, Math.max(14, layout.cell * .65)) + 'px "Topo Serif",serif'; ctx.textAlign = "center"; ctx.textBaseline = "middle";
-      const labelOffset = layout.cell * .5 + 16;
-      for (let x = 0; x < state.width; x++) ctx.fillText(String.fromCharCode(65+x), layout.left + layout.cell * x, layout.bottom + labelOffset);
-      for (let y = 0; y < state.height; y++) ctx.fillText(String(state.height-y), layout.left - labelOffset, layout.top + layout.cell * y);
+      // Open edges need only stone clearance (the radius used by Art.drawStones).
+      const openOffset = layout.cell * .37 + 12;
+      const railOffset = layout.cell * .5 + 16;
+      const bottomOffset = game.level.yConnection || state.topology === "sphere" ? railOffset : openOffset;
+      const leftOffset = game.level.xConnection || state.topology === "sphere" ? railOffset : openOffset;
+      for (let x = 0; x < state.width; x++) ctx.fillText(String.fromCharCode(65+x), layout.left + layout.cell * x, layout.bottom + bottomOffset);
+      for (let y = 0; y < state.height; y++) ctx.fillText(String(state.height-y), layout.left - leftOffset, layout.top + layout.cell * y);
       ctx.restore();
     }
     canvas.setAttribute("aria-label", levelFor(state.topology).typeName + "棋盘，第 " + shownMoves.length + " 手。" + (last ? (lastPlayer === 1 ? "黑方" : "白方") + "最近落在 " + Coordinates.label(last.cell, state.width, state.height) + "。" : "尚未落子。") + "文字棋盘见棋局时间线。");
-    $("view-range").value = String(Math.round(morph * 100));
+    $("view-range").value = String(morph * 100);
+    window.ArenaLiquidControls.syncRange($("view-range"));
     $("flat-view").classList.toggle("active", morph < .5);
     $("surface-view").classList.toggle("active", morph >= .5);
   }
@@ -448,11 +499,11 @@
     if (direct || matchMedia("(prefers-reduced-motion: reduce)").matches) { morph = morphTarget; drawBoard(); return; }
     const from = morph;
     const start = performance.now();
-    const duration = 420;
+    const duration = window.TopologyLiquidRange.duration(morphTarget - from, false);
     function frame(now) {
       const amount = Math.min(1, (now - start) / duration);
-      const ease = amount * amount * (3 - 2 * amount);
-      morph = from + (morphTarget - from) * ease;
+      const ease = window.TopologyLiquidRange.glide(amount);
+      morph = Math.max(0, Math.min(1, from + (morphTarget - from) * ease));
       drawBoard();
       if (amount < 1) morphFrame = requestAnimationFrame(frame);
     }
@@ -506,7 +557,10 @@
     for(const match of matches){const row=element("div","room-row"),button=element("button","room-open");button.type="button";
       const player=role=>match.seats[role].displayName || (match.mode==="ai" && role==="white"?"内置 AI":match.seats[role].name || names[role]);
       const date=new Date(match.createdAt).toLocaleString("zh-CN",{year:"numeric",month:"2-digit",day:"2-digit",hour:"2-digit",minute:"2-digit",hour12:false});
-      button.append(element("strong","",levelFor(match.topology).name+" · "+player("black")+" 与 "+player("white")),element("small","",date+" · "+phases[match.phase]+" · "+match.ply+" 手"));
+      const metadata = element("small", "room-meta");
+      const resultLabel = match.phase === "ended" ? outcomeLabel(match) : phases[match.phase];
+      metadata.append(element("span", "", date), element("span", "room-result", resultLabel), element("span", "", match.ply + " 手"));
+      button.append(element("strong","",levelFor(match.topology).name+" · "+player("black")+" 与 "+player("white")), metadata);
       button.addEventListener("click",()=>guarded(async()=>{await selectGame(match.gameId);$("rooms-dialog").close();}));row.append(button);
       const action=element("button","quiet-button danger",match.phase==="ended"?"删除":"结束");action.type="button";action.dataset.game=match.gameId;
       action.addEventListener("click",()=>confirmMutation(match.phase==="ended"?"删除这局记录？":"结束这场对弈？",match.phase==="ended"?"棋谱和发言将一并删除。":"保留棋谱和发言。",async()=>{
@@ -594,6 +648,25 @@
     else showWelcome();
   }
 
+  function readIntegerInput(id, label) {
+    const input = $(id);
+    if (!input.checkValidity()) {
+      input.setAttribute("aria-invalid", "true");
+      input.focus();
+      throw new Error(label + "请输入 " + input.min + "–" + input.max + " 之间的整数。");
+    }
+    return Number(input.value);
+  }
+  function selectedClock() {
+    const mode = document.querySelector('input[name="clock-mode"]:checked').value;
+    if (mode === "untimed") return null;
+    const presets = {
+      quick: { initialMs: 300000, incrementMs: 5000 },
+      standard: { initialMs: 900000, incrementMs: 15000 },
+      relaxed: { initialMs: 1800000, incrementMs: 30000 }
+    };
+    return presets[mode];
+  }
   $("create-form").addEventListener("submit", (event) => {
     event.preventDefault();
     guarded(async () => {
@@ -601,10 +674,13 @@
       pending = true; $("create-button").disabled = true;
       try {
         const topology = document.querySelector('input[name="topology"]:checked').value;
-        const invalidClock = [$("clock-minutes"), $("clock-increment")].find(input => !input.checkValidity());
-        if ($("clock-enabled").checked && invalidClock) { openSettings(); invalidClock.reportValidity(); return; }
-        const clock = $("clock-enabled").checked ? { initialMs: Number($("clock-minutes").value)*60000, incrementMs: Number($("clock-increment").value)*1000 } : null;
-        const result = await call("arena_create", { topology, mode: document.querySelector('input[name="mode"]:checked').value, difficulty: $("difficulty").value, width:Number($("board-width").value),height:Number($("board-height").value),players:drafts,clock }, true);
+        const width = readIntegerInput("board-width", "棋盘宽度");
+        const height = readIntegerInput("board-height", "棋盘高度");
+        const result = await call("arena_create", {
+          topology, mode: document.querySelector('input[name="mode"]:checked').value,
+          difficulty: document.querySelector('input[name="difficulty"]:checked').value,
+          width, height, players: drafts, clock: selectedClock()
+        }, true);
         await selectGame(result.gameId || result.state?.gameId);openSettings();
       } finally { pending = false; $("create-button").disabled = false; }
     });
@@ -641,9 +717,14 @@
   $("board-width").addEventListener("input",()=>{if($("board-height").disabled)$("board-height").value=$("board-width").value;});
   for(const role of ["black","white"])$("setup-"+role).addEventListener("click",()=>openProfile(role,true));
   document.addEventListener("click",event=>{const button=event.target.closest("[data-profile]");if(button)openProfile(button.dataset.profile);});
-  $("clock-enabled").addEventListener("change",()=>{for(const id of ["clock-minutes","clock-increment"])$(id).disabled=!$("clock-enabled").checked;});
+  document.querySelectorAll('input[type="number"]').forEach(input => input.addEventListener("input", () => input.removeAttribute("aria-invalid")));
   setInterval(renderClocks, 200);
   $("conversation").addEventListener("scroll", fadeConversation, { passive: true });
+  $("conversation").addEventListener("wheel", interruptConversationMotion, { passive: true });
+  $("conversation").addEventListener("pointerdown", interruptConversationMotion, { passive: true });
+  $("conversation").addEventListener("keydown", event => {
+    if (["ArrowUp", "ArrowDown", "PageUp", "PageDown", "Home", "End", " "].includes(event.key)) interruptConversationMotion();
+  });
   new ResizeObserver(() => { paintBubbleSurfaces(); fadeConversation(); }).observe($("conversation"));
   $("avatar-upload").addEventListener("change",()=>guarded(async()=>{const button=$("profile-form").querySelector('[type="submit"]');button.disabled=true;try{await uploadAvatar($("avatar-upload").files[0]);}finally{button.disabled=false;}}));
   $("profile-form").addEventListener("submit",event=>{event.preventDefault();guarded(async()=>{

@@ -12,6 +12,8 @@
   <script defer src="/assets/board-art.js"></script>
   <script defer src="/assets/level-config.js"></script>
   <script defer src="/coordinates.js"></script>
+  <script defer src="/assets/liquid-range.js"></script>
+  <script defer src="/liquid-controls.js"></script>
   <script defer src="/arena.js"></script>
 </head>
 <body>
@@ -19,16 +21,22 @@
     <main id="welcome" class="welcome" hidden>
       <section class="welcome-intro"><img class="hero-brand" src="/assets/brand-icon.png" alt=""><h1>拓扑五子棋</h1></section>
       <section class="setup-panel glass" aria-labelledby="setup-title">
-        <div class="setup-heading"><h2 id="setup-title">开一局棋</h2><span id="home-settings-slot"><button class="icon-button" id="settings-button" type="button" aria-label="设置" title="设置"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h10M18 7h2M4 17h2M10 17h10M14 5v4M6 15v4" /></svg></button></span></div>
-        <form id="create-form">
+        <div class="setup-heading"><h2 id="setup-title">开一局棋</h2><span id="home-settings-slot"><button class="icon-button" id="settings-button" type="button" aria-label="设置"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h10M18 7h2M4 17h2M10 17h10M14 5v4M6 15v4" /></svg></button></span></div>
+        <form id="create-form" novalidate>
           <fieldset><legend class="sr-only">对弈方式</legend><div class="segmented" id="mode-options">
             <label><input type="radio" name="mode" value="duel" checked><span>两位 Agent</span></label>
             <label><input type="radio" name="mode" value="ai"><span>Agent 与内置 AI</span></label>
           </div></fieldset>
           <fieldset class="topology-field"><legend class="sr-only">选择棋面</legend><div id="topology-options" class="topology-options"></div></fieldset>
           <div class="size-row"><span>棋盘</span><label><span class="sr-only">棋盘宽度</span><input id="board-width" type="number" min="5" max="19" value="7" required></label><span aria-hidden="true">×</span><label><span class="sr-only">棋盘高度</span><input id="board-height" type="number" min="5" max="19" value="6" required></label></div>
+          <fieldset class="clock-field"><legend>棋钟</legend><div class="segmented" id="clock-modes">
+            <label><input type="radio" name="clock-mode" value="quick" aria-label="每方 5 分钟，每步加 5 秒" checked><span><b>5 分钟</b><small>+ 5 秒</small></span></label>
+            <label><input type="radio" name="clock-mode" value="standard" aria-label="每方 15 分钟，每步加 15 秒"><span><b>15 分钟</b><small>+ 15 秒</small></span></label>
+            <label><input type="radio" name="clock-mode" value="relaxed" aria-label="每方 30 分钟，每步加 30 秒"><span><b>30 分钟</b><small>+ 30 秒</small></span></label>
+            <label><input type="radio" name="clock-mode" value="untimed"><span>不限时</span></label>
+          </div></fieldset>
           <div class="setup-players"><button id="setup-black" class="profile-choice" type="button" aria-label="设置黑方棋手"></button><span class="versus">与</span><button id="setup-white" class="profile-choice" type="button" aria-label="设置白方棋手"></button></div>
-          <div class="difficulty-row" id="difficulty-row" hidden><label for="difficulty">内置 AI</label><select id="difficulty"><option value="easy">随性</option><option value="normal" selected>机敏</option><option value="hard">深思</option></select></div>
+          <fieldset class="difficulty-row" id="difficulty-row" hidden><legend class="sr-only">内置 AI 难度</legend><span>内置 AI</span><div class="segmented" id="difficulty-options"><label><input type="radio" name="difficulty" value="easy"><span>随性</span></label><label><input type="radio" name="difficulty" value="normal" checked><span>机敏</span></label><label><input type="radio" name="difficulty" value="hard"><span>深思</span></label></div></fieldset>
           <button class="glass-button primary create-button" id="create-button" type="submit">创建棋局 <span aria-hidden="true">↗</span></button>
         </form>
       </section>
@@ -38,23 +46,23 @@
       <div class="arena-stage">
         <div class="conversation" id="conversation" tabindex="0" role="log" aria-label="棋手随想" aria-live="polite">
           <div class="conversation-rows" id="conversation-rows"><div class="empty-seats" id="empty-seats">
-            <button class="player-identity" id="black-identity" data-profile="black" type="button" title="设置黑方棋手"><span class="avatar" id="black-avatar"></span><h2 id="black-name">黑方</h2></button>
-            <button class="player-identity" id="white-identity" data-profile="white" type="button" title="设置白方棋手"><span class="avatar" id="white-avatar"></span><h2 id="white-name">白方</h2></button>
+            <button class="player-identity" id="black-identity" data-profile="black" type="button" aria-label="设置黑方棋手"><span class="avatar" id="black-avatar"></span><h2 id="black-name">黑方</h2></button>
+            <button class="player-identity" id="white-identity" data-profile="white" type="button" aria-label="设置白方棋手"><span class="avatar" id="white-avatar"></span><h2 id="white-name">白方</h2></button>
           </div></div>
         </div>
         <section class="board-column" aria-label="棋局">
           <div class="board-wrap" id="board-wrap"><canvas id="board" role="img" aria-label="等待棋局"></canvas><div class="board-notice glass" id="board-notice" hidden></div></div>
           <div class="board-tools">
-            <button id="return-live" class="position-summary" type="button" title="回到当前棋局"><span id="turn-label" role="status" aria-live="polite">第 0 手</span></button>
+            <button id="return-live" class="position-summary" type="button"><span id="turn-label" role="status" aria-live="polite">第 0 手</span></button>
             <div class="view-controls" id="view-controls">
-              <button class="view-button" id="flat-view" type="button" aria-label="二维棋盘"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="5" width="14" height="14" rx="1"></rect><path d="M5 12h14M12 5v14"></path></svg></button>
-              <input id="view-range" type="range" min="0" max="100" value="0" aria-label="棋盘展开程度">
-              <button class="view-button" id="surface-view" type="button" aria-label="三维曲面"><svg viewBox="0 0 24 24" aria-hidden="true"><ellipse cx="12" cy="12" rx="8" ry="7"></ellipse><ellipse cx="12" cy="12" rx="4" ry="7"></ellipse><path d="M4 12h16"></path></svg></button>
+              <button class="view-button" id="flat-view" type="button" aria-label="二维棋盘"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 4h16v16H4zM9.33 4v16M14.67 4v16M4 9.33h16M4 14.67h16"></path></svg><span>二维</span></button>
+              <input id="view-range" type="range" min="0" max="100" step="any" value="0" aria-label="棋盘展开程度">
+              <button class="view-button" id="surface-view" type="button" aria-label="三维曲面"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 6c0-1.7 3.1-3 7-3s7 1.3 7 3-3.1 3-7 3-7-1.3-7-3Zm0 0v12c0 1.7 3.1 3 7 3s7-1.3 7-3V6"></path></svg><span>三维</span></button>
             </div>
             <div class="replay-controls" id="replay-controls">
-              <button id="previous-move" class="quiet-button" type="button" aria-label="上一步"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 12H4m6-6-6 6 6 6"></path></svg></button>
+              <button id="previous-move" class="quiet-button" type="button" aria-label="上一步"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12H6m5-5-5 5 5 5"></path></svg><span>上一步</span></button>
               <div class="replay-center"><input id="replay-range" type="range" min="0" max="0" value="0" aria-label="复盘手数"></div>
-              <button id="next-move" class="quiet-button" type="button" aria-label="下一步"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h16m-6-6 6 6-6 6"></path></svg></button>
+              <button id="next-move" class="quiet-button" type="button" aria-label="下一步"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h13m-5-5 5 5-5 5"></path></svg><span>下一步</span></button>
             </div>
           </div>
         </section>
@@ -65,42 +73,41 @@
     <div class="toast glass" id="toast" role="status" hidden></div>
   </div>
 
-  <dialog id="settings-dialog" class="panel-dialog settings-dialog">
+  <dialog id="settings-dialog" class="panel-dialog settings-dialog"><div class="dialog-content">
     <div class="dialog-heading"><h2>设置</h2><button class="quiet-button" data-close type="button" aria-label="关闭">×</button></div>
     <div class="settings-grid"><button class="setting-button" id="new-button" type="button">新棋局</button><button class="setting-button" id="rooms-button" type="button">棋局记录</button></div>
-    <section id="clock-settings"><label class="clock-toggle"><span>棋钟</span><input type="checkbox" id="clock-enabled" checked></label><div class="clock-options"><label>每方 <input id="clock-minutes" type="number" min="1" max="60" value="5" required> 分钟</label><label>每步加 <input id="clock-increment" type="number" min="0" max="60" value="5" required> 秒</label></div></section>
     <section id="match-settings" hidden>
       <div class="settings-grid match-control"><button class="setting-button" id="pause-button" type="button" hidden>暂停</button><button class="setting-button" id="resume-button" type="button" hidden>继续对弈</button><button class="setting-button danger" id="stop-button" type="button">结束棋局</button></div>
       <div class="settings-players"><div><button class="profile-choice" id="settings-black" data-profile="black" type="button"></button><span class="seat-ready" id="ready-black"></span><button class="quiet-button" data-invite="black" type="button">黑方邀请 ↗</button></div><div><button class="profile-choice" id="settings-white" data-profile="white" type="button"></button><span class="seat-ready" id="ready-white"></span><button class="quiet-button" data-invite="white" type="button">白方邀请 ↗</button></div></div>
       <div class="settings-grid"><button class="setting-button" id="timeline-button" type="button">时间线</button><button class="setting-button" id="export-button" type="button">保存棋谱</button><button class="setting-button" data-invite="commentator" type="button">邀请解说</button><button class="setting-button" id="commentary-toggle" type="button" hidden>关闭解说</button></div>
     </section>
-  </dialog>
-  <dialog id="profile-dialog" class="panel-dialog profile-dialog">
+  </div></dialog>
+  <dialog id="profile-dialog" class="panel-dialog profile-dialog"><div class="dialog-content">
     <div class="dialog-heading"><h2 id="profile-heading">棋手</h2><button class="quiet-button" data-close type="button" aria-label="关闭">×</button></div>
     <form id="profile-form"><div class="profile-preview"><span class="avatar" id="profile-preview"></span><input class="text-input" id="profile-name" maxlength="60" aria-label="棋手名称" placeholder="棋手名称"></div><div class="avatar-options" id="avatar-options" aria-label="选择头像"></div><div class="dialog-footer"><label class="quiet-button upload-label" for="avatar-upload">上传头像<input id="avatar-upload" type="file" accept="image/png,image/jpeg,image/webp" hidden></label><button class="glass-button compact" type="submit">保存</button></div></form>
-  </dialog>
-  <dialog id="rooms-dialog" class="panel-dialog">
+  </div></dialog>
+  <dialog id="rooms-dialog" class="panel-dialog"><div class="dialog-content">
     <div class="dialog-heading"><h2>棋局记录</h2><button class="quiet-button" data-close type="button" aria-label="关闭">×</button></div>
     <div class="room-list" id="room-list"></div><div class="dialog-footer"><button id="clear-records" class="quiet-button danger" type="button">清空已结束棋局</button></div>
-  </dialog>
-  <dialog id="confirm-dialog" class="panel-dialog small-dialog"><div class="dialog-heading"><h2 id="confirm-heading"></h2><button class="quiet-button" data-close type="button" aria-label="关闭">×</button></div><p class="dialog-intro" id="confirm-description"></p><div class="dialog-footer"><button class="quiet-button" data-close type="button">取消</button><button class="glass-button compact" id="confirm-action" type="button">确认</button></div></dialog>
-  <dialog id="invite-dialog" class="panel-dialog invite-dialog">
+  </div></dialog>
+  <dialog id="confirm-dialog" class="panel-dialog small-dialog"><div class="dialog-content"><div class="dialog-heading"><h2 id="confirm-heading"></h2><button class="quiet-button" data-close type="button" aria-label="关闭">×</button></div><p class="dialog-intro" id="confirm-description"></p><div class="dialog-footer"><button class="quiet-button" data-close type="button">取消</button><button class="glass-button compact" id="confirm-action" type="button">确认</button></div></div></dialog>
+  <dialog id="invite-dialog" class="panel-dialog invite-dialog"><div class="dialog-content">
     <div class="dialog-heading"><h2 id="invite-heading">邀请棋手</h2><button class="quiet-button" data-close type="button" aria-label="关闭">×</button></div>
 
     <textarea id="invite-text" rows="12" readonly spellcheck="false" aria-label="Agent 邀请词"></textarea>
     <div class="dialog-footer"><p class="muted">邀请词包含本局角色凭证，请只交给对应的 Agent。</p><button class="glass-button primary compact" id="copy-invite" type="button">复制邀请词</button></div>
-  </dialog>
-  <dialog id="timeline-dialog" class="panel-dialog timeline-dialog">
+  </div></dialog>
+  <dialog id="timeline-dialog" class="panel-dialog timeline-dialog"><div class="dialog-content">
     <div class="dialog-heading"><h2>棋局时间线</h2><button class="quiet-button" data-close type="button" aria-label="关闭">×</button></div>
 
     <ol id="timeline" class="timeline"></ol>
     <details class="accessible-board"><summary>查看文字棋盘</summary><div id="text-board"></div></details>
-  </dialog>
-  <dialog id="stop-dialog" class="panel-dialog small-dialog">
+  </div></dialog>
+  <dialog id="stop-dialog" class="panel-dialog small-dialog"><div class="dialog-content">
     <div class="dialog-heading"><h2>结束这场对弈？</h2><button class="quiet-button" data-close type="button" aria-label="关闭">×</button></div>
     <p class="dialog-intro">棋手将停止落子，已有棋谱和随想会保留。</p>
     <div class="dialog-footer"><button class="quiet-button" data-close type="button">再看一会儿</button><button class="glass-button compact" id="confirm-stop" type="button">结束棋局</button></div>
-  </dialog>
+  </div></dialog>
   <noscript>请启用 JavaScript 后打开本地对弈室。</noscript>
 </body>
 </html>

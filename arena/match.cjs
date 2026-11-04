@@ -327,7 +327,8 @@ class Arena extends EventEmitter {
             return {
               gameId: state.gameId, title: state.title, topology: state.topology, mode: state.mode,
               phase: state.phase, ply: state.ply, turn: state.turn, seats: state.seats,
-              winner: state.winner, outcome: state.outcome, createdAt: state.createdAt, updatedAt: state.updatedAt
+              winner: state.winner, outcome: state.outcome, winReason: state.winReason,
+              createdAt: state.createdAt, updatedAt: state.updatedAt
             };
           })
         };
@@ -670,6 +671,7 @@ class Arena extends EventEmitter {
       ...promptRules.common,
       state: progress,
       clock,
+      clockRule: Clock.describe(clock, promptRules.clock),
       topology: game.level.topology, width: game.rules.width, height: game.rules.height, target: game.rules.target,
       briefing: briefingFor(game.rules),
       pieces: { black: 1, white: -1, empty: 0 },

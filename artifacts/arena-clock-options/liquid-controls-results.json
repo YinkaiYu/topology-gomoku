@@ -1,0 +1,19 @@
+{
+  "viewport": {
+    "width": 1280,
+    "height": 720
+  },
+  "checks": {
+    "clickGlide": true,
+    "rapidRetarget": true,
+    "keyboard": true,
+    "dragSnap": true,
+    "disabled": true,
+    "rangeKeyboard": true,
+    "replayCancelSnap": true,
+    "navigationCancel": true,
+    "reducedMotion": true,
+    "timelineShell": true
+  },
+  "errors": []
+}

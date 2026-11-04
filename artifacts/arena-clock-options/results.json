@@ -1,0 +1,1827 @@
+{
+  "baseline": "18caf06",
+  "mainReference": "3977ba0",
+  "fixture": "Fresh creation panel, identical preparation settings and four synthetic finished matches",
+  "results": [
+    {
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "clockModes": [
+        "quick",
+        "standard",
+        "relaxed",
+        "untimed"
+      ],
+      "fixedClockLayout": true,
+      "preparationClockStopped": true,
+      "results": [
+        "black",
+        "white",
+        "draw",
+        "stopped"
+      ],
+      "axes": [
+        {
+          "topology": "plane",
+          "previous": {
+            "cell": 61.14285714285714,
+            "bottom": 46.571428571428555,
+            "left": 46.57142857142857,
+            "heading": {
+              "x": 582.359375,
+              "y": 21,
+              "width": 115.25,
+              "height": 46,
+              "top": 21,
+              "right": 697.609375,
+              "bottom": 67,
+              "left": 582.359375
+            },
+            "glyph": {
+              "x": 582.359375,
+              "y": 21,
+              "width": 46,
+              "height": 46,
+              "top": 21,
+              "right": 628.359375,
+              "bottom": 67,
+              "left": 582.359375
+            },
+            "stoneBottomGap": 18.698571428571412,
+            "stoneLeftGap": 20.948571428571427
+          },
+          "current": {
+            "cell": 61.14285714285714,
+            "bottom": 34.62285714285713,
+            "left": 34.62285714285714,
+            "heading": {
+              "x": 582.359375,
+              "y": 21,
+              "width": 115.25,
+              "height": 46,
+              "top": 21,
+              "right": 697.609375,
+              "bottom": 67,
+              "left": 582.359375
+            },
+            "glyph": {
+              "x": 582.359375,
+              "y": 21,
+              "width": 46,
+              "height": 46,
+              "top": 21,
+              "right": 628.359375,
+              "bottom": 67,
+              "left": 582.359375
+            },
+            "stoneBottomGap": 6.749999999999986,
+            "stoneLeftGap": 9
+          }
+        },
+        {
+          "topology": "mobius",
+          "previous": {
+            "cell": 61.14285714285714,
+            "bottom": 46.571428571428555,
+            "left": 46.57142857142857,
+            "heading": {
+              "x": 582.359375,
+              "y": 21,
+              "width": 115.25,
+              "height": 46,
+              "top": 21,
+              "right": 697.609375,
+              "bottom": 67,
+              "left": 582.359375
+            },
+            "glyph": {
+              "x": 582.359375,
+              "y": 21,
+              "width": 46,
+              "height": 46,
+              "top": 21,
+              "right": 628.359375,
+              "bottom": 67,
+              "left": 582.359375
+            },
+            "stoneBottomGap": 18.698571428571412,
+            "stoneLeftGap": 20.948571428571427
+          },
+          "current": {
+            "cell": 61.14285714285714,
+            "bottom": 34.62285714285713,
+            "left": 46.57142857142857,
+            "heading": {
+              "x": 582.359375,
+              "y": 21,
+              "width": 115.25,
+              "height": 46,
+              "top": 21,
+              "right": 697.609375,
+              "bottom": 67,
+              "left": 582.359375
+            },
+            "glyph": {
+              "x": 582.359375,
+              "y": 21,
+              "width": 46,
+              "height": 46,
+              "top": 21,
+              "right": 628.359375,
+              "bottom": 67,
+              "left": 582.359375
+            },
+            "stoneBottomGap": 6.749999999999986,
+            "stoneLeftGap": 20.948571428571427
+          }
+        },
+        {
+          "topology": "torus",
+          "previous": {
+            "cell": 61.14285714285714,
+            "bottom": 46.571428571428555,
+            "left": 46.57142857142857,
+            "heading": {
+              "x": 582.359375,
+              "y": 21,
+              "width": 115.25,
+              "height": 46,
+              "top": 21,
+              "right": 697.609375,
+              "bottom": 67,
+              "left": 582.359375
+            },
+            "glyph": {
+              "x": 582.359375,
+              "y": 21,
+              "width": 46,
+              "height": 46,
+              "top": 21,
+              "right": 628.359375,
+              "bottom": 67,
+              "left": 582.359375
+            },
+            "stoneBottomGap": 18.698571428571412,
+            "stoneLeftGap": 20.948571428571427
+          },
+          "current": {
+            "cell": 61.14285714285714,
+            "bottom": 46.571428571428555,
+            "left": 46.57142857142857,
+            "heading": {
+              "x": 582.359375,
+              "y": 21,
+              "width": 115.25,
+              "height": 46,
+              "top": 21,
+              "right": 697.609375,
+              "bottom": 67,
+              "left": 582.359375
+            },
+            "glyph": {
+              "x": 582.359375,
+              "y": 21,
+              "width": 46,
+              "height": 46,
+              "top": 21,
+              "right": 628.359375,
+              "bottom": 67,
+              "left": 582.359375
+            },
+            "stoneBottomGap": 18.698571428571412,
+            "stoneLeftGap": 20.948571428571427
+          }
+        }
+      ],
+      "homeAlignment": {
+        "content": [
+          {
+            "x": 751,
+            "y": 89,
+            "width": 388,
+            "height": 44,
+            "top": 89,
+            "right": 1139,
+            "bottom": 133,
+            "left": 751
+          },
+          {
+            "x": 751,
+            "y": 147,
+            "width": 388,
+            "height": 46,
+            "top": 147,
+            "right": 1139,
+            "bottom": 193,
+            "left": 751
+          },
+          {
+            "x": 751,
+            "y": 207,
+            "width": 388,
+            "height": 144,
+            "top": 207,
+            "right": 1139,
+            "bottom": 351,
+            "left": 751
+          },
+          {
+            "x": 751,
+            "y": 365,
+            "width": 388,
+            "height": 35,
+            "top": 365,
+            "right": 1139,
+            "bottom": 400,
+            "left": 751
+          },
+          {
+            "x": 751,
+            "y": 447,
+            "width": 388,
+            "height": 58,
+            "top": 447,
+            "right": 1139,
+            "bottom": 505,
+            "left": 751
+          },
+          {
+            "x": 751,
+            "y": 519,
+            "width": 388,
+            "height": 48,
+            "top": 519,
+            "right": 1139,
+            "bottom": 567,
+            "left": 751
+          },
+          {
+            "x": 751,
+            "y": 583,
+            "width": 388,
+            "height": 48,
+            "top": 583,
+            "right": 1139,
+            "bottom": 631,
+            "left": 751
+          }
+        ],
+        "labels": [
+          {
+            "x": 756,
+            "y": 452,
+            "width": 92.25,
+            "height": 48,
+            "top": 452,
+            "right": 848.25,
+            "bottom": 500,
+            "left": 756
+          },
+          {
+            "x": 851.25,
+            "y": 452,
+            "width": 92.25,
+            "height": 48,
+            "top": 452,
+            "right": 943.5,
+            "bottom": 500,
+            "left": 851.25
+          },
+          {
+            "x": 946.5,
+            "y": 452,
+            "width": 92.25,
+            "height": 48,
+            "top": 452,
+            "right": 1038.75,
+            "bottom": 500,
+            "left": 946.5
+          },
+          {
+            "x": 1041.75,
+            "y": 452,
+            "width": 92.25,
+            "height": 48,
+            "top": 452,
+            "right": 1134,
+            "bottom": 500,
+            "left": 1041.75
+          }
+        ]
+      },
+      "matchAlignment": {
+        "rows": [
+          {
+            "x": 394.078125,
+            "y": 566,
+            "width": 491.828125,
+            "height": 44,
+            "top": 566,
+            "right": 885.90625,
+            "bottom": 610,
+            "left": 394.078125
+          },
+          {
+            "x": 394.078125,
+            "y": 614,
+            "width": 491.828125,
+            "height": 44,
+            "top": 614,
+            "right": 885.90625,
+            "bottom": 658,
+            "left": 394.078125
+          },
+          {
+            "x": 394.078125,
+            "y": 662,
+            "width": 491.828125,
+            "height": 44,
+            "top": 662,
+            "right": 885.90625,
+            "bottom": 706,
+            "left": 394.078125
+          }
+        ],
+        "ranges": [
+          {
+            "x": 450.078125,
+            "y": 614,
+            "width": 379.828125,
+            "height": 44,
+            "top": 614,
+            "right": 829.90625,
+            "bottom": 658,
+            "left": 450.078125
+          },
+          {
+            "x": 450.078125,
+            "y": 662,
+            "width": 379.828125,
+            "height": 44,
+            "top": 662,
+            "right": 829.90625,
+            "bottom": 706,
+            "left": 450.078125
+          }
+        ],
+        "icons": [
+          {
+            "x": 394.078125,
+            "y": 614,
+            "width": 44,
+            "height": 44,
+            "top": 614,
+            "right": 438.078125,
+            "bottom": 658,
+            "left": 394.078125
+          },
+          {
+            "x": 841.90625,
+            "y": 614,
+            "width": 44,
+            "height": 44,
+            "top": 614,
+            "right": 885.90625,
+            "bottom": 658,
+            "left": 841.90625
+          },
+          {
+            "x": 394.078125,
+            "y": 662,
+            "width": 44,
+            "height": 44,
+            "top": 662,
+            "right": 438.078125,
+            "bottom": 706,
+            "left": 394.078125
+          },
+          {
+            "x": 841.90625,
+            "y": 662,
+            "width": 44,
+            "height": 44,
+            "top": 662,
+            "right": 885.90625,
+            "bottom": 706,
+            "left": 841.90625
+          }
+        ],
+        "profiles": [
+          {
+            "x": 443,
+            "y": 342.5,
+            "width": 192,
+            "height": 112,
+            "top": 342.5,
+            "right": 635,
+            "bottom": 454.5,
+            "left": 443
+          },
+          {
+            "x": 645,
+            "y": 342.5,
+            "width": 192,
+            "height": 112,
+            "top": 342.5,
+            "right": 837,
+            "bottom": 454.5,
+            "left": 645
+          }
+        ],
+        "settings": [
+          {
+            "x": 443,
+            "y": 195.5,
+            "width": 192,
+            "height": 48,
+            "top": 195.5,
+            "right": 635,
+            "bottom": 243.5,
+            "left": 443
+          },
+          {
+            "x": 645,
+            "y": 195.5,
+            "width": 192,
+            "height": 48,
+            "top": 195.5,
+            "right": 837,
+            "bottom": 243.5,
+            "left": 645
+          }
+        ]
+      },
+      "nativeTooltips": 0,
+      "nativeSelects": 0,
+      "numericAppearance": "textfield",
+      "errors": []
+    },
+    {
+      "viewport": {
+        "width": 1920,
+        "height": 1080
+      },
+      "clockModes": [
+        "quick",
+        "standard",
+        "relaxed",
+        "untimed"
+      ],
+      "fixedClockLayout": true,
+      "preparationClockStopped": true,
+      "results": [
+        "black",
+        "white",
+        "draw",
+        "stopped"
+      ],
+      "axes": [
+        {
+          "topology": "plane",
+          "previous": {
+            "cell": 84.31473214285714,
+            "bottom": 58.157366071428555,
+            "left": 58.15736607142857,
+            "heading": {
+              "x": 892.96875,
+              "y": 33,
+              "width": 134.03125,
+              "height": 58,
+              "top": 33,
+              "right": 1027,
+              "bottom": 91,
+              "left": 892.96875
+            },
+            "glyph": {
+              "x": 892.96875,
+              "y": 33,
+              "width": 58,
+              "height": 58,
+              "top": 33,
+              "right": 950.96875,
+              "bottom": 91,
+              "left": 892.96875
+            },
+            "stoneBottomGap": 21.710915178571415,
+            "stoneLeftGap": 23.960915178571426
+          },
+          "current": {
+            "cell": 84.31473214285714,
+            "bottom": 43.196450892857115,
+            "left": 43.19645089285714,
+            "heading": {
+              "x": 892.96875,
+              "y": 33,
+              "width": 134.03125,
+              "height": 58,
+              "top": 33,
+              "right": 1027,
+              "bottom": 91,
+              "left": 892.96875
+            },
+            "glyph": {
+              "x": 892.96875,
+              "y": 33,
+              "width": 58,
+              "height": 58,
+              "top": 33,
+              "right": 950.96875,
+              "bottom": 91,
+              "left": 892.96875
+            },
+            "stoneBottomGap": 6.749999999999975,
+            "stoneLeftGap": 9
+          }
+        },
+        {
+          "topology": "mobius",
+          "previous": {
+            "cell": 84.31473214285714,
+            "bottom": 58.157366071428555,
+            "left": 58.15736607142857,
+            "heading": {
+              "x": 892.96875,
+              "y": 33,
+              "width": 134.03125,
+              "height": 58,
+              "top": 33,
+              "right": 1027,
+              "bottom": 91,
+              "left": 892.96875
+            },
+            "glyph": {
+              "x": 892.96875,
+              "y": 33,
+              "width": 58,
+              "height": 58,
+              "top": 33,
+              "right": 950.96875,
+              "bottom": 91,
+              "left": 892.96875
+            },
+            "stoneBottomGap": 21.710915178571415,
+            "stoneLeftGap": 23.960915178571426
+          },
+          "current": {
+            "cell": 84.31473214285714,
+            "bottom": 43.196450892857115,
+            "left": 58.15736607142857,
+            "heading": {
+              "x": 892.96875,
+              "y": 33,
+              "width": 134.03125,
+              "height": 58,
+              "top": 33,
+              "right": 1027,
+              "bottom": 91,
+              "left": 892.96875
+            },
+            "glyph": {
+              "x": 892.96875,
+              "y": 33,
+              "width": 58,
+              "height": 58,
+              "top": 33,
+              "right": 950.96875,
+              "bottom": 91,
+              "left": 892.96875
+            },
+            "stoneBottomGap": 6.749999999999975,
+            "stoneLeftGap": 23.960915178571426
+          }
+        },
+        {
+          "topology": "torus",
+          "previous": {
+            "cell": 84.31473214285714,
+            "bottom": 58.157366071428555,
+            "left": 58.15736607142857,
+            "heading": {
+              "x": 892.96875,
+              "y": 33,
+              "width": 134.03125,
+              "height": 58,
+              "top": 33,
+              "right": 1027,
+              "bottom": 91,
+              "left": 892.96875
+            },
+            "glyph": {
+              "x": 892.96875,
+              "y": 33,
+              "width": 58,
+              "height": 58,
+              "top": 33,
+              "right": 950.96875,
+              "bottom": 91,
+              "left": 892.96875
+            },
+            "stoneBottomGap": 21.710915178571415,
+            "stoneLeftGap": 23.960915178571426
+          },
+          "current": {
+            "cell": 84.31473214285714,
+            "bottom": 58.157366071428555,
+            "left": 58.15736607142857,
+            "heading": {
+              "x": 892.96875,
+              "y": 33,
+              "width": 134.03125,
+              "height": 58,
+              "top": 33,
+              "right": 1027,
+              "bottom": 91,
+              "left": 892.96875
+            },
+            "glyph": {
+              "x": 892.96875,
+              "y": 33,
+              "width": 58,
+              "height": 58,
+              "top": 33,
+              "right": 950.96875,
+              "bottom": 91,
+              "left": 892.96875
+            },
+            "stoneBottomGap": 21.710915178571415,
+            "stoneLeftGap": 23.960915178571426
+          }
+        }
+      ],
+      "homeAlignment": {
+        "content": [
+          {
+            "x": 1075,
+            "y": 248,
+            "width": 380,
+            "height": 44,
+            "top": 248,
+            "right": 1455,
+            "bottom": 292,
+            "left": 1075
+          },
+          {
+            "x": 1075,
+            "y": 316,
+            "width": 380,
+            "height": 46,
+            "top": 316,
+            "right": 1455,
+            "bottom": 362,
+            "left": 1075
+          },
+          {
+            "x": 1075,
+            "y": 380,
+            "width": 380,
+            "height": 164,
+            "top": 380,
+            "right": 1455,
+            "bottom": 544,
+            "left": 1075
+          },
+          {
+            "x": 1075,
+            "y": 562,
+            "width": 380,
+            "height": 35,
+            "top": 562,
+            "right": 1455,
+            "bottom": 597,
+            "left": 1075
+          },
+          {
+            "x": 1075,
+            "y": 644,
+            "width": 380,
+            "height": 58,
+            "top": 644,
+            "right": 1455,
+            "bottom": 702,
+            "left": 1075
+          },
+          {
+            "x": 1075,
+            "y": 720,
+            "width": 380,
+            "height": 48,
+            "top": 720,
+            "right": 1455,
+            "bottom": 768,
+            "left": 1075
+          },
+          {
+            "x": 1075,
+            "y": 784,
+            "width": 380,
+            "height": 48,
+            "top": 784,
+            "right": 1455,
+            "bottom": 832,
+            "left": 1075
+          }
+        ],
+        "labels": [
+          {
+            "x": 1080,
+            "y": 649,
+            "width": 90.25,
+            "height": 48,
+            "top": 649,
+            "right": 1170.25,
+            "bottom": 697,
+            "left": 1080
+          },
+          {
+            "x": 1173.25,
+            "y": 649,
+            "width": 90.25,
+            "height": 48,
+            "top": 649,
+            "right": 1263.5,
+            "bottom": 697,
+            "left": 1173.25
+          },
+          {
+            "x": 1266.5,
+            "y": 649,
+            "width": 90.25,
+            "height": 48,
+            "top": 649,
+            "right": 1356.75,
+            "bottom": 697,
+            "left": 1266.5
+          },
+          {
+            "x": 1359.75,
+            "y": 649,
+            "width": 90.25,
+            "height": 48,
+            "top": 649,
+            "right": 1450,
+            "bottom": 697,
+            "left": 1359.75
+          }
+        ]
+      },
+      "matchAlignment": {
+        "rows": [
+          {
+            "x": 679.984375,
+            "y": 916,
+            "width": 560,
+            "height": 44,
+            "top": 916,
+            "right": 1239.984375,
+            "bottom": 960,
+            "left": 679.984375
+          },
+          {
+            "x": 679.984375,
+            "y": 964,
+            "width": 560,
+            "height": 44,
+            "top": 964,
+            "right": 1239.984375,
+            "bottom": 1008,
+            "left": 679.984375
+          },
+          {
+            "x": 679.984375,
+            "y": 1012,
+            "width": 560,
+            "height": 44,
+            "top": 1012,
+            "right": 1239.984375,
+            "bottom": 1056,
+            "left": 679.984375
+          }
+        ],
+        "ranges": [
+          {
+            "x": 735.984375,
+            "y": 964,
+            "width": 448,
+            "height": 44,
+            "top": 964,
+            "right": 1183.984375,
+            "bottom": 1008,
+            "left": 735.984375
+          },
+          {
+            "x": 735.984375,
+            "y": 1012,
+            "width": 448,
+            "height": 44,
+            "top": 1012,
+            "right": 1183.984375,
+            "bottom": 1056,
+            "left": 735.984375
+          }
+        ],
+        "icons": [
+          {
+            "x": 679.984375,
+            "y": 964,
+            "width": 44,
+            "height": 44,
+            "top": 964,
+            "right": 723.984375,
+            "bottom": 1008,
+            "left": 679.984375
+          },
+          {
+            "x": 1195.984375,
+            "y": 964,
+            "width": 44,
+            "height": 44,
+            "top": 964,
+            "right": 1239.984375,
+            "bottom": 1008,
+            "left": 1195.984375
+          },
+          {
+            "x": 679.984375,
+            "y": 1012,
+            "width": 44,
+            "height": 44,
+            "top": 1012,
+            "right": 723.984375,
+            "bottom": 1056,
+            "left": 679.984375
+          },
+          {
+            "x": 1195.984375,
+            "y": 1012,
+            "width": 44,
+            "height": 44,
+            "top": 1012,
+            "right": 1239.984375,
+            "bottom": 1056,
+            "left": 1195.984375
+          }
+        ],
+        "profiles": [
+          {
+            "x": 763,
+            "y": 522.5,
+            "width": 192,
+            "height": 112,
+            "top": 522.5,
+            "right": 955,
+            "bottom": 634.5,
+            "left": 763
+          },
+          {
+            "x": 965,
+            "y": 522.5,
+            "width": 192,
+            "height": 112,
+            "top": 522.5,
+            "right": 1157,
+            "bottom": 634.5,
+            "left": 965
+          }
+        ],
+        "settings": [
+          {
+            "x": 763,
+            "y": 375.5,
+            "width": 192,
+            "height": 48,
+            "top": 375.5,
+            "right": 955,
+            "bottom": 423.5,
+            "left": 763
+          },
+          {
+            "x": 965,
+            "y": 375.5,
+            "width": 192,
+            "height": 48,
+            "top": 375.5,
+            "right": 1157,
+            "bottom": 423.5,
+            "left": 965
+          }
+        ]
+      },
+      "nativeTooltips": 0,
+      "nativeSelects": 0,
+      "numericAppearance": "textfield",
+      "errors": []
+    },
+    {
+      "viewport": {
+        "width": 1024,
+        "height": 768
+      },
+      "clockModes": [
+        "quick",
+        "standard",
+        "relaxed",
+        "untimed"
+      ],
+      "fixedClockLayout": true,
+      "preparationClockStopped": true,
+      "results": [
+        "black",
+        "white",
+        "draw",
+        "stopped"
+      ],
+      "axes": [
+        {
+          "topology": "plane",
+          "previous": {
+            "cell": 44.39508928571428,
+            "bottom": 38.19754464285711,
+            "left": 38.19754464285714,
+            "heading": {
+              "x": 454.359375,
+              "y": 21,
+              "width": 115.25,
+              "height": 46,
+              "top": 21,
+              "right": 569.609375,
+              "bottom": 67,
+              "left": 454.359375
+            },
+            "glyph": {
+              "x": 454.359375,
+              "y": 21,
+              "width": 46,
+              "height": 46,
+              "top": 21,
+              "right": 500.359375,
+              "bottom": 67,
+              "left": 454.359375
+            },
+            "stoneBottomGap": 16.52136160714283,
+            "stoneLeftGap": 18.771361607142858
+          },
+          "current": {
+            "cell": 44.39508928571428,
+            "bottom": 28.426183035714303,
+            "left": 28.426183035714285,
+            "heading": {
+              "x": 454.359375,
+              "y": 21,
+              "width": 115.25,
+              "height": 46,
+              "top": 21,
+              "right": 569.609375,
+              "bottom": 67,
+              "left": 454.359375
+            },
+            "glyph": {
+              "x": 454.359375,
+              "y": 21,
+              "width": 46,
+              "height": 46,
+              "top": 21,
+              "right": 500.359375,
+              "bottom": 67,
+              "left": 454.359375
+            },
+            "stoneBottomGap": 6.750000000000021,
+            "stoneLeftGap": 9.000000000000004
+          }
+        },
+        {
+          "topology": "mobius",
+          "previous": {
+            "cell": 44.39508928571428,
+            "bottom": 38.19754464285711,
+            "left": 38.19754464285714,
+            "heading": {
+              "x": 454.359375,
+              "y": 21,
+              "width": 115.25,
+              "height": 46,
+              "top": 21,
+              "right": 569.609375,
+              "bottom": 67,
+              "left": 454.359375
+            },
+            "glyph": {
+              "x": 454.359375,
+              "y": 21,
+              "width": 46,
+              "height": 46,
+              "top": 21,
+              "right": 500.359375,
+              "bottom": 67,
+              "left": 454.359375
+            },
+            "stoneBottomGap": 16.52136160714283,
+            "stoneLeftGap": 18.771361607142858
+          },
+          "current": {
+            "cell": 44.39508928571428,
+            "bottom": 28.426183035714303,
+            "left": 38.19754464285714,
+            "heading": {
+              "x": 454.359375,
+              "y": 21,
+              "width": 115.25,
+              "height": 46,
+              "top": 21,
+              "right": 569.609375,
+              "bottom": 67,
+              "left": 454.359375
+            },
+            "glyph": {
+              "x": 454.359375,
+              "y": 21,
+              "width": 46,
+              "height": 46,
+              "top": 21,
+              "right": 500.359375,
+              "bottom": 67,
+              "left": 454.359375
+            },
+            "stoneBottomGap": 6.750000000000021,
+            "stoneLeftGap": 18.771361607142858
+          }
+        },
+        {
+          "topology": "torus",
+          "previous": {
+            "cell": 44.39508928571428,
+            "bottom": 38.19754464285711,
+            "left": 38.19754464285714,
+            "heading": {
+              "x": 454.359375,
+              "y": 21,
+              "width": 115.25,
+              "height": 46,
+              "top": 21,
+              "right": 569.609375,
+              "bottom": 67,
+              "left": 454.359375
+            },
+            "glyph": {
+              "x": 454.359375,
+              "y": 21,
+              "width": 46,
+              "height": 46,
+              "top": 21,
+              "right": 500.359375,
+              "bottom": 67,
+              "left": 454.359375
+            },
+            "stoneBottomGap": 16.52136160714283,
+            "stoneLeftGap": 18.771361607142858
+          },
+          "current": {
+            "cell": 44.39508928571428,
+            "bottom": 38.19754464285711,
+            "left": 38.19754464285714,
+            "heading": {
+              "x": 454.359375,
+              "y": 21,
+              "width": 115.25,
+              "height": 46,
+              "top": 21,
+              "right": 569.609375,
+              "bottom": 67,
+              "left": 454.359375
+            },
+            "glyph": {
+              "x": 454.359375,
+              "y": 21,
+              "width": 46,
+              "height": 46,
+              "top": 21,
+              "right": 500.359375,
+              "bottom": 67,
+              "left": 454.359375
+            },
+            "stoneBottomGap": 16.52136160714283,
+            "stoneLeftGap": 18.771361607142858
+          }
+        }
+      ],
+      "homeAlignment": {
+        "content": [
+          {
+            "x": 599.046875,
+            "y": 113,
+            "width": 358,
+            "height": 44,
+            "top": 113,
+            "right": 957.046875,
+            "bottom": 157,
+            "left": 599.046875
+          },
+          {
+            "x": 599.046875,
+            "y": 171,
+            "width": 358,
+            "height": 46,
+            "top": 171,
+            "right": 957.046875,
+            "bottom": 217,
+            "left": 599.046875
+          },
+          {
+            "x": 599.046875,
+            "y": 231,
+            "width": 358,
+            "height": 144,
+            "top": 231,
+            "right": 957.046875,
+            "bottom": 375,
+            "left": 599.046875
+          },
+          {
+            "x": 599.046875,
+            "y": 389,
+            "width": 358,
+            "height": 35,
+            "top": 389,
+            "right": 957.046875,
+            "bottom": 424,
+            "left": 599.046875
+          },
+          {
+            "x": 599.046875,
+            "y": 471,
+            "width": 358,
+            "height": 58,
+            "top": 471,
+            "right": 957.046875,
+            "bottom": 529,
+            "left": 599.046875
+          },
+          {
+            "x": 599.046875,
+            "y": 543,
+            "width": 358,
+            "height": 48,
+            "top": 543,
+            "right": 957.046875,
+            "bottom": 591,
+            "left": 599.046875
+          },
+          {
+            "x": 599.046875,
+            "y": 607,
+            "width": 358,
+            "height": 48,
+            "top": 607,
+            "right": 957.046875,
+            "bottom": 655,
+            "left": 599.046875
+          }
+        ],
+        "labels": [
+          {
+            "x": 604.046875,
+            "y": 476,
+            "width": 84.75,
+            "height": 48,
+            "top": 476,
+            "right": 688.796875,
+            "bottom": 524,
+            "left": 604.046875
+          },
+          {
+            "x": 691.796875,
+            "y": 476,
+            "width": 84.75,
+            "height": 48,
+            "top": 476,
+            "right": 776.546875,
+            "bottom": 524,
+            "left": 691.796875
+          },
+          {
+            "x": 779.546875,
+            "y": 476,
+            "width": 84.75,
+            "height": 48,
+            "top": 476,
+            "right": 864.296875,
+            "bottom": 524,
+            "left": 779.546875
+          },
+          {
+            "x": 867.296875,
+            "y": 476,
+            "width": 84.75,
+            "height": 48,
+            "top": 476,
+            "right": 952.046875,
+            "bottom": 524,
+            "left": 867.296875
+          }
+        ]
+      },
+      "matchAlignment": {
+        "rows": [
+          {
+            "x": 328.609375,
+            "y": 614,
+            "width": 366.765625,
+            "height": 44,
+            "top": 614,
+            "right": 695.375,
+            "bottom": 658,
+            "left": 328.609375
+          },
+          {
+            "x": 328.609375,
+            "y": 662,
+            "width": 366.765625,
+            "height": 44,
+            "top": 662,
+            "right": 695.375,
+            "bottom": 706,
+            "left": 328.609375
+          },
+          {
+            "x": 328.609375,
+            "y": 710,
+            "width": 366.765625,
+            "height": 44,
+            "top": 710,
+            "right": 695.375,
+            "bottom": 754,
+            "left": 328.609375
+          }
+        ],
+        "ranges": [
+          {
+            "x": 384.609375,
+            "y": 662,
+            "width": 254.765625,
+            "height": 44,
+            "top": 662,
+            "right": 639.375,
+            "bottom": 706,
+            "left": 384.609375
+          },
+          {
+            "x": 384.609375,
+            "y": 710,
+            "width": 254.765625,
+            "height": 44,
+            "top": 710,
+            "right": 639.375,
+            "bottom": 754,
+            "left": 384.609375
+          }
+        ],
+        "icons": [
+          {
+            "x": 328.609375,
+            "y": 662,
+            "width": 44,
+            "height": 44,
+            "top": 662,
+            "right": 372.609375,
+            "bottom": 706,
+            "left": 328.609375
+          },
+          {
+            "x": 651.375,
+            "y": 662,
+            "width": 44,
+            "height": 44,
+            "top": 662,
+            "right": 695.375,
+            "bottom": 706,
+            "left": 651.375
+          },
+          {
+            "x": 328.609375,
+            "y": 710,
+            "width": 44,
+            "height": 44,
+            "top": 710,
+            "right": 372.609375,
+            "bottom": 754,
+            "left": 328.609375
+          },
+          {
+            "x": 651.375,
+            "y": 710,
+            "width": 44,
+            "height": 44,
+            "top": 710,
+            "right": 695.375,
+            "bottom": 754,
+            "left": 651.375
+          }
+        ],
+        "profiles": [
+          {
+            "x": 315,
+            "y": 366.5,
+            "width": 192,
+            "height": 112,
+            "top": 366.5,
+            "right": 507,
+            "bottom": 478.5,
+            "left": 315
+          },
+          {
+            "x": 517,
+            "y": 366.5,
+            "width": 192,
+            "height": 112,
+            "top": 366.5,
+            "right": 709,
+            "bottom": 478.5,
+            "left": 517
+          }
+        ],
+        "settings": [
+          {
+            "x": 315,
+            "y": 219.5,
+            "width": 192,
+            "height": 48,
+            "top": 219.5,
+            "right": 507,
+            "bottom": 267.5,
+            "left": 315
+          },
+          {
+            "x": 517,
+            "y": 219.5,
+            "width": 192,
+            "height": 48,
+            "top": 219.5,
+            "right": 709,
+            "bottom": 267.5,
+            "left": 517
+          }
+        ]
+      },
+      "nativeTooltips": 0,
+      "nativeSelects": 0,
+      "numericAppearance": "textfield",
+      "errors": []
+    },
+    {
+      "viewport": {
+        "width": 1440,
+        "height": 1080
+      },
+      "clockModes": [
+        "quick",
+        "standard",
+        "relaxed",
+        "untimed"
+      ],
+      "fixedClockLayout": true,
+      "preparationClockStopped": true,
+      "results": [
+        "black",
+        "white",
+        "draw",
+        "stopped"
+      ],
+      "axes": [
+        {
+          "topology": "plane",
+          "previous": {
+            "cell": 71.04241071428572,
+            "bottom": 51.52120535714289,
+            "left": 51.521205357142854,
+            "heading": {
+              "x": 652.96875,
+              "y": 33,
+              "width": 134.03125,
+              "height": 58,
+              "top": 33,
+              "right": 787,
+              "bottom": 91,
+              "left": 652.96875
+            },
+            "glyph": {
+              "x": 652.96875,
+              "y": 33,
+              "width": 58,
+              "height": 58,
+              "top": 33,
+              "right": 710.96875,
+              "bottom": 91,
+              "left": 652.96875
+            },
+            "stoneBottomGap": 19.98551339285717,
+            "stoneLeftGap": 22.235513392857136
+          },
+          "current": {
+            "cell": 71.04241071428572,
+            "bottom": 38.28569196428566,
+            "left": 38.28569196428571,
+            "heading": {
+              "x": 652.96875,
+              "y": 33,
+              "width": 134.03125,
+              "height": 58,
+              "top": 33,
+              "right": 787,
+              "bottom": 91,
+              "left": 652.96875
+            },
+            "glyph": {
+              "x": 652.96875,
+              "y": 33,
+              "width": 58,
+              "height": 58,
+              "top": 33,
+              "right": 710.96875,
+              "bottom": 91,
+              "left": 652.96875
+            },
+            "stoneBottomGap": 6.749999999999943,
+            "stoneLeftGap": 8.999999999999993
+          }
+        },
+        {
+          "topology": "mobius",
+          "previous": {
+            "cell": 71.04241071428572,
+            "bottom": 51.52120535714289,
+            "left": 51.521205357142854,
+            "heading": {
+              "x": 652.96875,
+              "y": 33,
+              "width": 134.03125,
+              "height": 58,
+              "top": 33,
+              "right": 787,
+              "bottom": 91,
+              "left": 652.96875
+            },
+            "glyph": {
+              "x": 652.96875,
+              "y": 33,
+              "width": 58,
+              "height": 58,
+              "top": 33,
+              "right": 710.96875,
+              "bottom": 91,
+              "left": 652.96875
+            },
+            "stoneBottomGap": 19.98551339285717,
+            "stoneLeftGap": 22.235513392857136
+          },
+          "current": {
+            "cell": 71.04241071428572,
+            "bottom": 38.28569196428566,
+            "left": 51.521205357142854,
+            "heading": {
+              "x": 652.96875,
+              "y": 33,
+              "width": 134.03125,
+              "height": 58,
+              "top": 33,
+              "right": 787,
+              "bottom": 91,
+              "left": 652.96875
+            },
+            "glyph": {
+              "x": 652.96875,
+              "y": 33,
+              "width": 58,
+              "height": 58,
+              "top": 33,
+              "right": 710.96875,
+              "bottom": 91,
+              "left": 652.96875
+            },
+            "stoneBottomGap": 6.749999999999943,
+            "stoneLeftGap": 22.235513392857136
+          }
+        },
+        {
+          "topology": "torus",
+          "previous": {
+            "cell": 71.04241071428572,
+            "bottom": 51.52120535714289,
+            "left": 51.521205357142854,
+            "heading": {
+              "x": 652.96875,
+              "y": 33,
+              "width": 134.03125,
+              "height": 58,
+              "top": 33,
+              "right": 787,
+              "bottom": 91,
+              "left": 652.96875
+            },
+            "glyph": {
+              "x": 652.96875,
+              "y": 33,
+              "width": 58,
+              "height": 58,
+              "top": 33,
+              "right": 710.96875,
+              "bottom": 91,
+              "left": 652.96875
+            },
+            "stoneBottomGap": 19.98551339285717,
+            "stoneLeftGap": 22.235513392857136
+          },
+          "current": {
+            "cell": 71.04241071428572,
+            "bottom": 51.52120535714289,
+            "left": 51.521205357142854,
+            "heading": {
+              "x": 652.96875,
+              "y": 33,
+              "width": 134.03125,
+              "height": 58,
+              "top": 33,
+              "right": 787,
+              "bottom": 91,
+              "left": 652.96875
+            },
+            "glyph": {
+              "x": 652.96875,
+              "y": 33,
+              "width": 58,
+              "height": 58,
+              "top": 33,
+              "right": 710.96875,
+              "bottom": 91,
+              "left": 652.96875
+            },
+            "stoneBottomGap": 19.98551339285717,
+            "stoneLeftGap": 22.235513392857136
+          }
+        }
+      ],
+      "homeAlignment": {
+        "content": [
+          {
+            "x": 835,
+            "y": 248,
+            "width": 380,
+            "height": 44,
+            "top": 248,
+            "right": 1215,
+            "bottom": 292,
+            "left": 835
+          },
+          {
+            "x": 835,
+            "y": 316,
+            "width": 380,
+            "height": 46,
+            "top": 316,
+            "right": 1215,
+            "bottom": 362,
+            "left": 835
+          },
+          {
+            "x": 835,
+            "y": 380,
+            "width": 380,
+            "height": 164,
+            "top": 380,
+            "right": 1215,
+            "bottom": 544,
+            "left": 835
+          },
+          {
+            "x": 835,
+            "y": 562,
+            "width": 380,
+            "height": 35,
+            "top": 562,
+            "right": 1215,
+            "bottom": 597,
+            "left": 835
+          },
+          {
+            "x": 835,
+            "y": 644,
+            "width": 380,
+            "height": 58,
+            "top": 644,
+            "right": 1215,
+            "bottom": 702,
+            "left": 835
+          },
+          {
+            "x": 835,
+            "y": 720,
+            "width": 380,
+            "height": 48,
+            "top": 720,
+            "right": 1215,
+            "bottom": 768,
+            "left": 835
+          },
+          {
+            "x": 835,
+            "y": 784,
+            "width": 380,
+            "height": 48,
+            "top": 784,
+            "right": 1215,
+            "bottom": 832,
+            "left": 835
+          }
+        ],
+        "labels": [
+          {
+            "x": 840,
+            "y": 649,
+            "width": 90.25,
+            "height": 48,
+            "top": 649,
+            "right": 930.25,
+            "bottom": 697,
+            "left": 840
+          },
+          {
+            "x": 933.25,
+            "y": 649,
+            "width": 90.25,
+            "height": 48,
+            "top": 649,
+            "right": 1023.5,
+            "bottom": 697,
+            "left": 933.25
+          },
+          {
+            "x": 1026.5,
+            "y": 649,
+            "width": 90.25,
+            "height": 48,
+            "top": 649,
+            "right": 1116.75,
+            "bottom": 697,
+            "left": 1026.5
+          },
+          {
+            "x": 1119.75,
+            "y": 649,
+            "width": 90.25,
+            "height": 48,
+            "top": 649,
+            "right": 1210,
+            "bottom": 697,
+            "left": 1119.75
+          }
+        ]
+      },
+      "matchAlignment": {
+        "rows": [
+          {
+            "x": 443.34375,
+            "y": 916,
+            "width": 553.296875,
+            "height": 44,
+            "top": 916,
+            "right": 996.640625,
+            "bottom": 960,
+            "left": 443.34375
+          },
+          {
+            "x": 443.34375,
+            "y": 964,
+            "width": 553.296875,
+            "height": 44,
+            "top": 964,
+            "right": 996.640625,
+            "bottom": 1008,
+            "left": 443.34375
+          },
+          {
+            "x": 443.34375,
+            "y": 1012,
+            "width": 553.296875,
+            "height": 44,
+            "top": 1012,
+            "right": 996.640625,
+            "bottom": 1056,
+            "left": 443.34375
+          }
+        ],
+        "ranges": [
+          {
+            "x": 499.34375,
+            "y": 964,
+            "width": 441.296875,
+            "height": 44,
+            "top": 964,
+            "right": 940.640625,
+            "bottom": 1008,
+            "left": 499.34375
+          },
+          {
+            "x": 499.34375,
+            "y": 1012,
+            "width": 441.296875,
+            "height": 44,
+            "top": 1012,
+            "right": 940.640625,
+            "bottom": 1056,
+            "left": 499.34375
+          }
+        ],
+        "icons": [
+          {
+            "x": 443.34375,
+            "y": 964,
+            "width": 44,
+            "height": 44,
+            "top": 964,
+            "right": 487.34375,
+            "bottom": 1008,
+            "left": 443.34375
+          },
+          {
+            "x": 952.640625,
+            "y": 964,
+            "width": 44,
+            "height": 44,
+            "top": 964,
+            "right": 996.640625,
+            "bottom": 1008,
+            "left": 952.640625
+          },
+          {
+            "x": 443.34375,
+            "y": 1012,
+            "width": 44,
+            "height": 44,
+            "top": 1012,
+            "right": 487.34375,
+            "bottom": 1056,
+            "left": 443.34375
+          },
+          {
+            "x": 952.640625,
+            "y": 1012,
+            "width": 44,
+            "height": 44,
+            "top": 1012,
+            "right": 996.640625,
+            "bottom": 1056,
+            "left": 952.640625
+          }
+        ],
+        "profiles": [
+          {
+            "x": 523,
+            "y": 522.5,
+            "width": 192,
+            "height": 112,
+            "top": 522.5,
+            "right": 715,
+            "bottom": 634.5,
+            "left": 523
+          },
+          {
+            "x": 725,
+            "y": 522.5,
+            "width": 192,
+            "height": 112,
+            "top": 522.5,
+            "right": 917,
+            "bottom": 634.5,
+            "left": 725
+          }
+        ],
+        "settings": [
+          {
+            "x": 523,
+            "y": 375.5,
+            "width": 192,
+            "height": 48,
+            "top": 375.5,
+            "right": 715,
+            "bottom": 423.5,
+            "left": 523
+          },
+          {
+            "x": 725,
+            "y": 375.5,
+            "width": 192,
+            "height": 48,
+            "top": 375.5,
+            "right": 917,
+            "bottom": 423.5,
+            "left": 725
+          }
+        ]
+      },
+      "nativeTooltips": 0,
+      "nativeSelects": 0,
+      "numericAppearance": "textfield",
+      "errors": []
+    }
+  ]
+}

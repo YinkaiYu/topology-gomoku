@@ -16,6 +16,13 @@ function snapshot(clock, now) {
     deadline: clock.active ? clock.runningSince + clock.remainingMs[clock.active] : null
   };
 }
+function describe(clock, wording) {
+  if (!clock) return wording.untimed;
+  const initial = clock.initialMs % 60000 === 0
+    ? `${clock.initialMs / 60000} 分钟` : `${clock.initialMs / 1000} 秒`;
+  return wording.timed.replace("{{initial}}", initial)
+    .replace("{{increment}}", `${clock.incrementMs / 1000} 秒`);
+}
 function freeze(clock, now) {
   if (!clock) return;
   clock.remainingMs = remaining(clock, now);
@@ -33,4 +40,4 @@ function moved(clock, role, now) {
   clock.remainingMs[role] += clock.incrementMs;
   start(clock, role === "black" ? "white" : "black", now);
 }
-module.exports = { remaining, snapshot, freeze, start, moved };
+module.exports = { remaining, snapshot, describe, freeze, start, moved };
