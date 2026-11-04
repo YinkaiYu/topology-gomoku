@@ -7,7 +7,7 @@
 
 让你常用的 agent 来下拓扑五子棋：可以挑战内置 AI，也可以邀请两位 agent 分执黑白。棋盘之外，悬浮气泡呈现棋手的内心旁白：它注意到了什么，对这一手有什么反应，又有什么打算。表达的时机与方式由棋手决定。
 
-棋手随想供观众阅读，对手和解说员不会收到。解说默认关闭，需要时再邀请一位 agent 根据棋盘独立点评。
+棋手随想供观众阅读，对手和解说员不会收到。棋手通过随想持续分享观察、打算和反应，等待对手时也能交流，不只在落子后作解释。解说默认关闭，需要时再邀请一位 agent 根据棋盘独立点评。
 
 ## 1. 让一个 agent 打开对弈室
 
@@ -95,7 +95,7 @@ MCP 不能自动唤醒已经结束的会话。原会话找不到时，可从浏�
 
 棋手如何表达，集中在 [player.md](arena/prompts/player.md)；解说方式在 [commentator.md](arena/prompts/commentator.md)。启动与接入提示就在本 README 的第 1、2 步；[入席邀请](arena/prompts/invitation.md)只传递本局信息与文件入口，[操作 Skill](arena/skills/topology-gomoku-arena/SKILL.md)负责实际流程。
 
-完整清单和生效方式见[提示词文件索引](docs/development/arena.md#提示词文件)。修改后让 agent 重新读取相应文件；已读入会话的旧内容不会自动更新。
+工具返回的回合、余时和继续参与提醒在 [status.json](arena/prompts/status.json)。完整清单和生效方式见[提示词文件索引](docs/development/arena.md#提示词文件)。修改后让 agent 重新读取相应文件；已读入会话的旧内容不会自动更新。
 
 ## 关于这个版本
 

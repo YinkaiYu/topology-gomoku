@@ -10,6 +10,7 @@ const { GameController } = require("../app/assets/game-controller.js");
 const { readPrompt } = require("./prompts.cjs");
 const Coordinates = require("./public/coordinates.js");
 const Clock = require("./clock.cjs");
+const { guidance } = require("./guidance.cjs");
 const { version: gameVersion } = require("../package.json");
 
 const ROLES = ["black", "white", "commentator"];
@@ -241,11 +242,13 @@ class Arena extends EventEmitter {
 
   _snapshot(match, role = null) {
     const game = match.controller.game;
+    const progress = this._progress(match), clock = Clock.snapshot(match.clock, this.now());
     return clone({
       schemaVersion: 1,
       gameVersion: match.gameVersion,
-      ...this._progress(match),
-      clock: Clock.snapshot(match.clock, this.now()),
+      ...progress,
+      guidance: guidance({ ...progress, clock }, role),
+      clock,
       title: match.title,
       mode: match.mode,
       difficulty: match.difficulty,
@@ -618,13 +621,15 @@ class Arena extends EventEmitter {
 
   _rules(args) {
     const match = this._match(args.gameId);
-    this._seat(match, args.token);
+    const role = this._seat(match, args.token);
     const game = match.controller.game;
     const promptRules = JSON.parse(readPrompt("rules.json"));
+    const progress = this._progress(match), clock = Clock.snapshot(match.clock, this.now());
     const result = {
+      guidance: guidance({ ...progress, clock }, role),
       ...promptRules.common,
-      state: this._progress(match),
-      clock: Clock.snapshot(match.clock, this.now()),
+      state: progress,
+      clock,
       topology: game.level.topology, width: game.rules.width, height: game.rules.height, target: game.rules.target,
       pieces: { black: 1, white: -1, empty: 0 },
       directions: Engine.DIRECTIONS.map((direction, index) => ({ index, ...direction })),

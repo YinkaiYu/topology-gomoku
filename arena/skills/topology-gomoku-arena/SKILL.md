@@ -32,7 +32,7 @@ description: Start a local Topology Gomoku Arena, join as a player, or provide l
 
 加入后调用 `arena_rules` 与 `arena_state`，以返回的坐标约定、尺寸、拓扑连接和当前局面为准。查接缝可给 `arena_rules` 附加 `cell`、`direction`、`length`；方向编号从规则返回值读取。
 
-`cell` 可直接用棋盘坐标（如 `A1`，左下角）或数字索引；路径与落子记录附带可读坐标。状态、规则、落子、随想和等待结果都带最新 `clock`；`remainingMs[role]` 是该方余时，`active` 表示正在走钟的一方，`serverNow` / `deadline` 是快照时间 / 截止时间（Unix 毫秒）。按余时安排思考，响应之后仍继续走钟；查规则和发随想也会计时，落子后才加秒并换钟。`clock: null` 表示不计时。
+`cell` 可直接用棋盘坐标（如 `A1`，左下角）或数字索引；路径与落子记录附带可读坐标。返回的 `guidance` 提醒当前该行动、继续跟进还是结束；`clock` 给出精确余时，`remainingMs[role]` 是该方余时，`active` 表示走钟方，`serverNow` / `deadline` 是快照时间 / 截止时间（Unix 毫秒）。响应之后仍继续走钟，成功落子才加秒并换钟；`clock: null` 表示不计时。长时间分析或准备后，先更新局面与余时，再决定行动。
 
 - 轮到自己且选择继续时，用 `arena_move` 提交 `cell`、当前 `expectedVersion` 与本次操作唯一的 `requestId`；落子以服务返回成功为准。
 - 认输用 `arena_resign`；提和用 `arena_draw` 的 `offer`。接受或拒绝时，以当前 `drawOffer.id` 作为 `offerId`，使用 `accept` / `decline`；提议方可 `withdraw`。这些操作同样携带当前 `expectedVersion` 与唯一 `requestId`。
@@ -44,7 +44,8 @@ description: Start a local Topology Gomoku Arena, join as a player, or provide l
 
 ## 等待与恢复
 
-- 等待开赛、对手、恢复或新事件时，用 `arena_wait`，`afterSeq` 取最近返回的 `eventSeq`，`timeoutMs` 不超过 25000。超时后继续等候。持续参与至终局、用户停止或无法恢复的问题，随后停止循环。
+- 入席后持续参与，直到终局、用户要求停止或遇到无法恢复的问题；不要用“我会等待／持续关注”作为结束会话的答复，也不要依赖用户再次催促。
+- 对手行棋的时间也可以分析局势、准备后续打算和发送随想；分析与获取新状态交替进行，以免错过换手。需要等候开赛、对手或恢复时，用 `arena_wait`，`afterSeq` 取最近返回的 `eventSeq`，`timeoutMs` 不超过 25000。等待返回后检查局面，轮到自己就行动；没有新事件则继续跟进，不代表任务完成。
 - 操作结果不确定时先查状态，重试须沿用完全相同的参数和 `requestId`，不能换 ID 盲下第二手。版本冲突、非己方回合、非法落点则重新读状态并调整。
 - 连接中断时读取 CLI `status`，做少量连接重试；持续失败报告具体错误。不擅自结束或重启他人的服务，也不替房主开局。
 - 会话必须结束时，保留比赛 ID、token 和最新事件序号，告知用户比赛仍保留。恢复后先查状态，再继续原席位；MCP 不能自动唤醒已经结束的会话。

@@ -1,0 +1,12 @@
+{
+  "act": "轮到你落子",
+  "wait": "对手行棋，继续分析并用 arena_wait 跟进，不要结束会话",
+  "waiting": "尚未开赛，准备后用 arena_wait 继续跟进",
+  "paused": "棋局已暂停，用 arena_wait 等待恢复",
+  "ended": "棋局已结束，停止对局循环",
+  "balance": "你剩余 {{self}} · 对手剩余 {{opponent}} · 落子加 {{increment}} 秒",
+  "running": "你的棋钟正在走",
+  "stopped": "你的棋钟已停",
+  "untimed": "本局不计时",
+  "low": "余时不足，请预留提交落子的时间"
+}

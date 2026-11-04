@@ -307,7 +307,8 @@ for (const transport of ["http", "stdio"]) {
     const timedWait = await client.callTool({ name: "arena_wait", arguments: { gameId, token: seats.white.token, afterSeq: state.structuredContent.eventSeq, timeoutMs: 30 } });
     assert.equal(timedWait.structuredContent.eventSeq, state.structuredContent.eventSeq);
     assert.equal(timedWait.structuredContent.clock.deadline, state.structuredContent.clock.deadline);
-    assert.ok(timedWait.structuredContent.clock.remainingMs.white < state.structuredContent.clock.remainingMs.white, "Even an event-free wait returns the current balance to the player");
+    assert.equal(timedWait.structuredContent.guidance.action, "act");
+    assert.ok(timedWait.structuredContent.clock.remainingMs.white <= state.structuredContent.clock.remainingMs.white, "An own-turn wait immediately returns a fresh balance");
     assert.equal(timedWait.structuredContent.clock.remainingMs.black, state.structuredContent.clock.remainingMs.black);
     const observer = await client.callTool({ name: "arena_state", arguments: { gameId, token: seats.commentator.token } });
     assert.ok(!observer.structuredContent.events.some((event) => event.type === "note"));
@@ -324,7 +325,7 @@ for (const transport of ["http", "stdio"]) {
     const baseline = app.arena.listenerCount("change");
     const pending = client.callTool({
       name: "arena_wait",
-      arguments: { gameId, token: seats.white.token, afterSeq: declined.structuredContent.eventSeq, timeoutMs: 25000 }
+      arguments: { gameId, token: seats.black.token, afterSeq: declined.structuredContent.eventSeq, timeoutMs: 25000 }
     }).catch((error) => error);
     const startedDeadline = Date.now() + 1000;
     while (app.arena.listenerCount("change") === baseline && Date.now() < startedDeadline) {
@@ -340,6 +341,27 @@ for (const transport of ["http", "stdio"]) {
     assert.equal(app.arena.listenerCount("change"), baseline, "Closing an MCP client cancels its server-side wait");
   });
 }
+
+test("waits keep following on timeout and return immediately once it is the caller's turn", { timeout: 3000 }, async t => {
+  const { app, rpc, gameId, seats } = await fixture(t);
+  const start = (await rpc("arena_control", { gameId, action: "start" }, true)).result;
+  const wait = (role, state, timeoutMs) => app.call("arena_wait", { gameId, token: seats[role].token, afterSeq: state.eventSeq, timeoutMs });
+  const baseline = app.arena.listenerCount("change");
+  const ownTurn = wait("black", start, 25000);
+  assert.equal(app.arena.listenerCount("change"), baseline, "Own-turn calls never install a long poll");
+  assert.equal((await ownTurn).guidance.action, "act");
+  const idle = await wait("white", start, 30);
+  assert.equal(idle.guidance.action, "wait");
+  assert.equal(idle.eventSeq, start.eventSeq);
+  assert.ok(idle.clock.remainingMs.black < start.clock.remainingMs.black);
+  assert.equal(idle.clock.remainingMs.white, start.clock.remainingMs.white);
+  const pending = wait("white", idle, 25000);
+  await rpc("arena_move", { gameId, token: seats.black.token, cell: "D4", expectedVersion: 0, requestId: "handover" });
+  const changed = await pending;
+  assert.equal(changed.guidance.action, "act"); assert.equal(changed.turn, "white");
+  assert.equal(app.arena.listenerCount("change"), baseline);
+  assert.equal((await rpc("arena_state", { gameId, token: seats.commentator.token })).result.guidance, null);
+});
 
 for (const transport of ["http", "stdio"]) {
   test(`real MCP ${transport} waits receive a clock timeout without any player action`, async t => {

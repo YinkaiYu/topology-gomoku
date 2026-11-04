@@ -122,3 +122,45 @@ test("clock configuration is bounded, and explicitly untimed games never expire"
   assert.equal(g.state().phase, "playing"); assert.equal(g.state().clock, null);
   g.move("A1"); assert.equal(g.state().moves[0].coordinate, "A1");
 });
+
+test("seat guidance tracks time, turn, pauses and termination without becoming a match event", () => {
+  const g = setup();
+  const seatState = role => g.arena.call("arena_state", { gameId: g.gameId, token: g.tokens[role] });
+  assert.equal(seatState("black").guidance.action, "wait");
+  assert.equal(g.state().guidance, null, "Spectators do not receive player instructions");
+  g.control("start"); g.advance(230001);
+  const black = seatState("black"), white = seatState("white");
+  assert.equal(black.guidance.action, "act");
+  assert.match(black.guidance.text, /你剩余 1分10秒/);
+  assert.match(black.guidance.text, /对手剩余 5分00秒/);
+  assert.match(black.guidance.text, /落子加 5 秒/);
+  assert.equal(white.guidance.action, "wait");
+  assert.match(white.guidance.text, /你剩余 5分00秒/);
+  const rules = g.arena.call("arena_rules", { gameId: g.gameId, token: g.tokens.black });
+  assert.deepEqual(rules.guidance, black.guidance);
+  g.advance(39999);
+  const note = g.arena.call("arena_note", { gameId: g.gameId, token: g.tokens.black, text: "时间得留一点。", ply: 0, requestId: "time-note" });
+  assert.match(note.state.guidance.text, /余时不足/);
+  assert.equal(note.state.clock.remainingMs.black, 30000);
+  g.control("pause");
+  assert.equal(seatState("black").guidance.action, "wait");
+  assert.doesNotMatch(seatState("black").guidance.text, /正在走|余时不足/);
+  g.control("resume");
+  g.move("D4");
+  assert.equal(seatState("black").guidance.action, "wait");
+  assert.equal(seatState("white").guidance.action, "act");
+  assert.match(seatState("black").guidance.text, /你剩余 0分35秒/);
+  g.advance(300000); g.arena.tick();
+  assert.equal(seatState("white").guidance.action, "stop");
+  assert.doesNotMatch(seatState("white").guidance.text, /正在走|余时不足/);
+  assert.equal(g.state().events.filter(e => e.type === "note").length, 1);
+  assert.equal(g.state().events.some(e => e.type === "guidance"), false);
+});
+
+test("untimed guidance preserves the participation loop without inventing a clock", () => {
+  const g = setup({}, { clock: null }); g.control("start");
+  const state = g.arena.call("arena_state", { gameId: g.gameId, token: g.tokens.black });
+  assert.equal(state.clock, null); assert.equal(state.guidance.action, "act");
+  assert.match(state.guidance.text, /不计时/);
+  assert.doesNotMatch(state.guidance.text, /余时不足|剩余|加.*秒/);
+});

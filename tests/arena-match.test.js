@@ -609,9 +609,11 @@ test("negotiation and terminal decisions survive restart without replaying an AI
     assert.equal(restored.call("arena_state", { gameId: g.gameId }).drawOffer.id, offerId);
     const decision = { gameId: g.gameId, token: g.white.token, expectedVersion: 1, requestId: "finish", action: "accept", offerId };
     const result = restored.call(ending === "resign" ? "arena_resign" : "arena_draw", decision);
+    const publicResult = restored.call("arena_state", { gameId: g.gameId });
     restored.close();
     const final = new Arena({ dataDir: directory });
-    assert.deepEqual(final.call("arena_state", { gameId: g.gameId }), result);
+    assert.deepEqual(final.call("arena_state", { gameId: g.gameId }), publicResult);
+    assert.deepEqual(final.call("arena_state", { gameId: g.gameId, token: g.white.token }).guidance, result.guidance);
     assert.equal(final.call(ending === "resign" ? "arena_resign" : "arena_draw", decision).duplicate, true);
     final.tick();
     assert.equal(final.call("arena_state", { gameId: g.gameId }).ply, 1);

@@ -130,7 +130,7 @@ async function startServer(options = {}) {
     }
     if (!args.token) throw problem("TOKEN_REQUIRED", "Join a role before waiting.", 401);
     const state = arena.call("arena_state", args, context);
-    if (state.eventSeq > args.afterSeq || state.phase === "ended" || args.timeoutMs === 0) return state;
+    if (state.eventSeq > args.afterSeq || state.phase === "ended" || state.guidance?.action === "act" || args.timeoutMs === 0) return state;
     if (waits.size >= 64) throw problem("BUSY", "Too many pending waits.", 429);
     return new Promise((resolve, reject) => {
       let timer;
