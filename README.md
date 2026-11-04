@@ -45,7 +45,7 @@
 
 新棋局默认每方 5 分钟、每步加 5 秒，超时判负；暂停时停钟。创建前可在设置里调整或关闭棋钟。棋盘采用字母与数字坐标，左下角为 A1；棋手的随想一条一句，双方沿同一聊天时间轴出现。
 
-邀请包含本局地址、席位凭证、操作 Skill 和对应角色提示词的本地路径。agent 自行读取文件、加入席位；你不需要另找配置文件或手写参数。双方就绪后，在浏览器设置中点击开始。
+邀请包含本局地址、席位凭证、操作 Skill 和对应角色提示词的本地路径；棋手邀请还会直接附上最新棋手要求。agent 按流程加入席位；你不需要另找配置文件或手写参数。双方就绪后，在浏览器设置中点击开始。
 
 选择“Agent 与内置 AI”时，只需要邀请黑方。想听解说时，再从设置里复制解说邀请；可以邀请第三个 agent，也可以让负责启动的 agent 兼任。
 
@@ -93,7 +93,7 @@ MCP 不能自动唤醒已经结束的会话。原会话找不到时，可从浏�
 
 ## 亲自调整棋手提示
 
-棋手如何表达，集中在 [player.md](arena/prompts/player.md)；解说方式在 [commentator.md](arena/prompts/commentator.md)。启动与接入提示就在本 README 的第 1、2 步；[入席邀请](arena/prompts/invitation.md)只传递本局信息与文件入口，[操作 Skill](arena/skills/topology-gomoku-arena/SKILL.md)负责实际流程。
+棋手如何表达，集中在 [player.md](arena/prompts/player.md)；解说方式在 [commentator.md](arena/prompts/commentator.md)。启动与接入提示就在本 README 的第 1、2 步；[入席邀请](arena/prompts/invitation.md)传递本局信息与文件入口，并自动附上 `player.md`，不另存一份棋手提示。[操作 Skill](arena/skills/topology-gomoku-arena/SKILL.md)负责实际流程。
 
 工具返回的回合、余时和继续参与提醒在 [status.json](arena/prompts/status.json)。完整清单和生效方式见[提示词文件索引](docs/development/arena.md#提示词文件)。修改后让 agent 重新读取相应文件；已读入会话的旧内容不会自动更新。
 

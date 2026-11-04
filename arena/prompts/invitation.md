@@ -11,3 +11,5 @@ MCP：{{mcpUrl}}
 
 arena_join 参数：
 {{joinArgs}}
+
+{{playerPrompt}}

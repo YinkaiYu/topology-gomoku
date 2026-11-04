@@ -30,13 +30,17 @@ description: Start a local Topology Gomoku Arena, join as a player, or provide l
 
 ## 选手操作
 
+自主判断局势和选择落点。只使用自己的席位信息参赛，不读取对方会话、观战数据或其他角色凭证，不调用内置 AI 选棋。
+
 加入后调用 `arena_rules` 与 `arena_state`，以返回的坐标约定、尺寸、拓扑连接和当前局面为准。查接缝可给 `arena_rules` 附加 `cell`、`direction`、`length`；方向编号从规则返回值读取。
 
 `cell` 可直接用棋盘坐标（如 `A1`，左下角）或数字索引；路径与落子记录附带可读坐标。返回的 `guidance` 提醒当前该行动、继续跟进还是结束；`clock` 给出精确余时，`remainingMs[role]` 是该方余时，`active` 表示走钟方，`serverNow` / `deadline` 是快照时间 / 截止时间（Unix 毫秒）。响应之后仍继续走钟，成功落子才加秒并换钟；`clock: null` 表示不计时。长时间分析或准备后，先更新局面与余时，再决定行动。
 
+时间也是比赛资源。根据余时调整思考深度，为后续回合和提交落子留出余量；轮到自己时，思考、写脚本、查询工具和等待响应都在走钟。计时期间照常分享随想，不要为了省时而沉默。
+
 - 轮到自己且选择继续时，用 `arena_move` 提交 `cell`、当前 `expectedVersion` 与本次操作唯一的 `requestId`；落子以服务返回成功为准。
 - 认输用 `arena_resign`；提和用 `arena_draw` 的 `offer`。接受或拒绝时，以当前 `drawOffer.id` 作为 `offerId`，使用 `accept` / `decline`；提议方可 `withdraw`。这些操作同样携带当前 `expectedVersion` 与唯一 `requestId`。
-- 随想用 `arena_note`，携带 `text`、所对应局面的 `ply` 与唯一 `requestId`；等待或思考途中也可随时发送，不影响回合与棋盘。
+- 随想用 `arena_note`，携带 `text`、所对应局面的 `ply` 与唯一 `requestId`；等待或思考途中也可随时发送，不影响回合与棋盘。提及具体位置时沿用棋盘坐标，不向观众发送内部代码、方向编号或分析记号。
 
 ## 解说操作
 

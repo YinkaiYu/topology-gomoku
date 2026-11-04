@@ -485,9 +485,10 @@
       seatStatus: rejoining ? "已加入，恢复原身份" : "尚未加入",
       skillPath: root + "/arena/skills/topology-gomoku-arena/SKILL.md",
       rolePath: root + "/arena/prompts/" + (role === "commentator" ? "commentator.md" : "player.md"),
+      playerPrompt: role === "commentator" ? "" : prompts.player,
       joinArgs: JSON.stringify({ gameId: invite.gameId, inviteToken: invite.inviteToken, name: rejoining ? seat.name : seat.displayName || "你的名称", model: rejoining ? seat.model || "" : "" })
     };
-    return prompts.invitation.replace(/\{\{(\w+)\}\}/g, (_, key) => fields[key] ?? "");
+    return prompts.invitation.replace(/\{\{(\w+)\}\}/g, (_, key) => fields[key] ?? "").trim();
   }
 
   async function invite(role) {

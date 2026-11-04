@@ -145,7 +145,7 @@ node arena/cli.cjs call arena_state --file .arena/request.json
 
 ## 棋钟
 
-时间是棋手的战略资源：角色提示要求按余时调整思考深度、为后续回合与提交落子留余量，同时照常发随想。服务不规定每手固定预算、不禁止搜索、不改变默认 5+5。
+时间是棋手的战略资源：操作 Skill 要求按余时调整思考深度、为后续回合与提交落子留余量，同时照常发随想。服务不规定每手固定预算、不禁止搜索、不改变默认 5+5。
 
 棋手状态新增 `guidance: {action, text}`；`action` 为 `act`（本方回合，可落子或作其他决定）、`wait`（继续跟进）、`stop`（终局）。`text` 显示本方与对手的分秒余时、每步加秒和本方走钟状态；仅本方正在走钟且余时不超过 30 秒时提醒预留提交时间。不计时、未开赛、暂停和终局分别处理，不会提示已经停钟的棋手抢时间。非棋手视角为 `null`。它与 `clock` 使用同一快照，响应后不会自行刷新，也不写入棋局事件或替棋手发随想。加入和随想结果在 `state.guidance`，规则结果在顶层 `guidance`，其余状态结果在顶层；CLI 与两种 MCP 传输一致。全部提醒文案位于 `arena/prompts/status.json`。
 
@@ -179,25 +179,25 @@ node arena/cli.cjs call arena_state --file .arena/request.json
 
 ## 提示词文件
 
-邀请只传递本局信息、加入凭证与本地文件绝对路径，不嵌入通用流程或角色全文。agent 读取 Skill 获得操作流程，再读取自己角色的要求；已经读取的内容不重复加载。黑白棋手共用同一份角色要求，解说员读取自己的文件。
+邀请传递本局信息、加入凭证与本地文件绝对路径，黑白棋手邀请另外直接附上最新 `player.md`，让用户发送的参赛消息本身包含棋手要求。全文只维护在 `player.md`，生成邀请时读取，不在模板中手抄第二份。agent 读取 Skill 获得操作流程；解说员邀请不附棋手要求，仍读取自己的角色文件。
 
 按职责修改以下文件，避免把同一行为要求复制到多个位置：
 
 | 文件 | 作用与生效时机 |
 | --- | --- |
-| [invitation.md](../../arena/prompts/invitation.md) | 本局信息、加入参数和文件路径模板；下次打开邀请弹窗时读取 |
-| [player.md](../../arena/prompts/player.md) | 黑白棋手的自主决策、公平参赛与随想的用途；agent 下次读取时生效 |
+| [invitation.md](../../arena/prompts/invitation.md) | 本局信息、加入参数、文件路径和棋手提示占位符；下次打开邀请弹窗时读取 |
+| [player.md](../../arena/prompts/player.md) | 黑白棋手随想的受众、内容与表达方式；生成棋手邀请时附上，或让 agent 重新读取 |
 | [commentator.md](../../arena/prompts/commentator.md) | 解说风格与角色行为边界；agent 下次读取时生效 |
 | [mcp.md](../../arena/prompts/mcp.md) | MCP 服务简介与文件入口说明；重新连接 MCP 后生效 |
 | [tools.json](../../arena/prompts/tools.json) | 九个 MCP 工具的参数、结果与调用约束，不另存角色行为要求；重新连接 MCP 后生效 |
 | [rules.json](../../arena/prompts/rules.json) | `arena_rules` 返回的坐标、胜负、随想可见性与提和规则；下次调用时读取 |
 | [status.json](../../arena/prompts/status.json) | 每次状态响应中的回合、计时与继续参与提醒；下次调用时读取，保留 `{{self}}`、`{{opponent}}`、`{{increment}}` 占位符 |
-| [SKILL.md](../../arena/skills/topology-gomoku-arena/SKILL.md) | 角色文件入口，以及启动、接入、工具操作、等待与恢复流程；agent 下次读取时生效 |
+| [SKILL.md](../../arena/skills/topology-gomoku-arena/SKILL.md) | 角色文件入口，以及启动、接入、席位权限、时间预算、工具操作、等待与恢复流程；agent 下次读取时生效 |
 | [README.md](../../README.md) | 用户提前复制给 agent 的下载启动、MCP 接入与恢复提示；接入完成后才创建并邀请入席 |
 
-邀请中的 `{{roleName}}`、`{{server}}`、`{{root}}`、`{{mcpUrl}}`、`{{seatStatus}}`、`{{skillPath}}`、`{{rolePath}}`、`{{joinArgs}}` 是动态字段，应保留拼写；实际值由 [arena.js](../../arena/public/arena.js) 的 `invitePrompt` 填入。比赛 ID 位于加入参数中；已有席位的邀请保留原加入身份，显示名修改不改变重连参数。`/api/prompts` 只返回邀请模板，不再向浏览器传输角色全文。JSON 文件须保持合法格式与现有键名。
+邀请中的 `{{roleName}}`、`{{server}}`、`{{root}}`、`{{mcpUrl}}`、`{{seatStatus}}`、`{{skillPath}}`、`{{rolePath}}`、`{{joinArgs}}`、`{{playerPrompt}}` 是动态字段，应保留拼写；实际值由 [arena.js](../../arena/public/arena.js) 的 `invitePrompt` 填入。比赛 ID 位于加入参数中；已有席位的邀请保留原加入身份，显示名修改不改变重连参数。`/api/prompts` 返回邀请模板和棋手全文；解说员邀请的 `playerPrompt` 留空。JSON 文件须保持合法格式与现有键名。
 
-修改角色要求无需重新生成邀请；让 agent 重新读取相应文件即可。已进入会话上下文的内容不会被文件修改追溯替换；MCP 服务简介和工具描述则在重新连接时读取。本地文件无法访问时应报告路径问题，不使用另一份 checkout 或猜测缺失的要求。
+修改棋手要求后，重新打开邀请弹窗即可复制最新全文，也可以让已入席的 agent 重新读取相应文件。已经发出的邀请和会话上下文不会随文件修改自动更新；MCP 服务简介和工具描述则在重新连接时读取。本地文件无法访问时应报告路径问题，不使用另一份 checkout 或猜测缺失的要求。
 
 首次发行前的协议调整：`arena_note` 替代 `arena_speak`，移除 `kind`、`arena_move.explanation` 和认输/提和的 `reason` 字段。更新后重连 MCP 并重新读取 Skill；旧棋谱和气泡保留，旧调用参数不再接受。
 
@@ -212,6 +212,8 @@ node arena/cli.cjs call arena_state --file .arena/request.json
 - 第一版不提供云端托管、自动唤醒已结束的客户端、语音合成或视频导出。比赛记录为以后的视频制作保留事件基础，不将该能力标成已完成。
 
 ## 验证
+
+2026-11-04 棋手提示聚焦与邀请内嵌：棋手角色文件只保留身份、受众与正向表达要求；时间预算、权限边界、坐标与工具操作归入 Skill。浏览器实测黑白邀请各包含当前 `player.md` 全文一次，解说员邀请不包含棋手要求，文件路径和加入参数正确；四视口完整浏览器回归通过。219 项测试、资源、文档与 Skill 校验通过。本轮无布局或样式改动，表达效果仍待真实对局检验。
 
 2026-11-04 持续参赛与时间摘要：219 项测试、资源与文档检查、Skill 校验通过。新增确定性用例覆盖本方/对手余时、低时限、换手、暂停、终局、不计时和非棋手视角；传输用例覆盖己方回合立即返回、对手回合无事件超时后继续跟进、落子唤回和监听器回收，HTTP 与 stdio MCP 均通过。隔离预览服务实测 CLI 状态摘要及浏览器的真实随想、换手提示、暂停，无页面错误；摘要不显示在观战气泡里，不生成发言事件。此次无视觉样式变更，未替换用户正在使用的服务；模型是否更主动表达、是否持续跟进仍需下一轮真实对局检验，测试不将这些行为视为已保证。
 
