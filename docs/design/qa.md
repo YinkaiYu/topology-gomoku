@@ -1,5 +1,20 @@
 # 视觉 QA
 
+## 2026-11-04：入席、准备与自动开赛
+
+本轮在任务分支预览，尚未合入 `arena`。准备状态使用既有底部状态行；设置只在开赛前显示各棋手是否入席、准备中或已就绪。移除手动开始按钮，双方通过客户端确认就绪后自动开始；暂停与继续保留。开赛不改变棋盘几何，也不把准备事件显示成棋手随想。
+
+以 `302ffff` 为前端基线，使用相同的空 7×7 莫比乌斯棋盘、相同已入席但未就绪的合成席位和同一视口截图；基线前端仅在隔离测试服务中拦截加载。运行 `NODE_PATH` 指向 Playwright 后执行 `node scripts/qa-arena-ready.cjs` 可重现。合成席位不代表真实模型行为。
+
+| 视口 | 准备状态之前 / 现在 | 设置内单方就绪 |
+| --- | --- | --- |
+| 1280×720 | [之前](../../artifacts/arena-ready/preparing-before-1280x720.png) / [现在](../../artifacts/arena-ready/preparing-1280x720.png) | [设置](../../artifacts/arena-ready/ready-settings-1280x720.png) |
+| 1920×1080 | [之前](../../artifacts/arena-ready/preparing-before-1920x1080.png) / [现在](../../artifacts/arena-ready/preparing-1920x1080.png) | [设置](../../artifacts/arena-ready/ready-settings-1920x1080.png) |
+| 1024×768 | [之前](../../artifacts/arena-ready/preparing-before-1024x768.png) / [现在](../../artifacts/arena-ready/preparing-1024x768.png) | [设置](../../artifacts/arena-ready/ready-settings-1024x768.png) |
+| 1440×1080 | [之前](../../artifacts/arena-ready/preparing-before-1440x1080.png) / [现在](../../artifacts/arena-ready/preparing-1440x1080.png) | [设置](../../artifacts/arena-ready/ready-settings-1440x1080.png) |
+
+[结构化结果](../../artifacts/arena-ready/results.json)覆盖入席后不走钟、单方就绪仍不走钟、双方就绪自动开赛、准备状态收起、时间线就绪事件、暂停继续、内置 AI 已就绪，无页面错误；[自动开赛](../../artifacts/arena-ready/automatic-start.png)展示现有行棋提示自然接续。实际模型阅读规则与准备耗时另待对局验证。
+
 Arena 发布状态：2026-11-04 用户已确认本轮预览并授权合并、推送，产品提交为 `a679944`；见[渠道发布记录](../development/arena.md#渠道发布记录)。以下各轮验收的待确认、未发布描述保留当时状态。
 
 ## 2026-11-04：气泡一体轮廓与回合反馈

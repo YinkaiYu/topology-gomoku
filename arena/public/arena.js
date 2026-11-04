@@ -33,7 +33,7 @@
   const turnActivity = element("div", "turn-activity");
   const rulesCache = new Map();
   const names = { black: "黑方", white: "白方", commentator: "解说员", host: "房主", system: "棋局" };
-  const phases = { waiting: "等待入席", playing: "正在对弈", paused: "暂歇片刻", ended: "本局已结束" };
+  const phases = { waiting: "准备中", playing: "正在对弈", paused: "暂歇片刻", ended: "本局已结束" };
 
   function text(id, value) { $(id).textContent = value == null ? "" : String(value); }
   function element(tag, className, value) {
@@ -222,6 +222,8 @@
     text(role+"-name",name);avatarInto($(role+"-avatar"),seat.avatar,role);
     $(role+"-name").title=name+(seat.model?" · "+seat.model:"");
     profileButton($("settings-"+role),{name,avatar:seat.avatar},role);
+    text("ready-"+role, !isJoined(seat) ? "未入席" : seat.ready ? "已就绪" : "准备中");
+    $("ready-"+role).hidden=state.phase!=="waiting";
     document.querySelector('[data-invite="'+role+'"]').hidden=state.phase==="ended" || (state.mode==="ai" && role==="white");
   }
   function renderClocks() {
@@ -296,15 +298,14 @@
     $("match").hidden = false;
     placeSettings("match");
     text("match-level", level.name);$("match-glyph").src="/assets/topologies/"+state.topology+".svg";
-    const status = state.phase === "ended" ? outcomeLabel() : state.phase === "playing" ? (names[state.turn] || "") + "行棋" : state.phase === "paused" ? "已暂停" : joined ? "已就绪" : "等待入席";
+    const preparing = !joined ? "等待入席" : state.seats.black.ready && state.seats.white.ready ? "准备就绪" : state.seats.black.ready ? "等待白方就绪" : state.seats.white.ready ? "等待黑方就绪" : "双方准备中";
+    const status = state.phase === "ended" ? outcomeLabel() : state.phase === "playing" ? (names[state.turn] || "") + "行棋" : state.phase === "paused" ? "已暂停" : preparing;
     const returnLabel = state.phase === "ended" ? "回到定局" : "回到当前棋局";
     const positionLabel = replayPly === null ? "第 " + state.ply + " 手 · " + status : "第 " + replayPly + " / " + state.ply + " 手 · " + returnLabel;
     text("turn-label", positionLabel);
     $("return-live").title = replayPly === null ? positionLabel : returnLabel;
     renderConversation(); renderSeat("black"); renderSeat("white"); renderCommentary(); renderClocks();
     $("match-settings").hidden = false;
-    $("start-button").hidden = state.phase !== "waiting";
-    $("start-button").disabled = !joined || pending;
     $("pause-button").hidden = state.phase !== "playing";
     $("resume-button").hidden = state.phase !== "paused";
     $("stop-button").hidden = state.phase === "ended";
@@ -520,6 +521,7 @@
   function eventDescription(event) {
     if (event.text) return event.text;
     if (event.type === "profile") return names[event.role]+"更新了棋手资料";
+    if (event.type === "ready") return names[event.role]+"准备就绪";
     if (event.type === "resign") return names[event.role] + "认输";
     if (event.type === "commentary") return event.enabled ? "开启解说" : "关闭解说";
     if (event.type === "draw") return names[event.role] + ({ offer: "提议和棋", accept: "接受和棋", decline: "拒绝和棋", withdraw: "撤回和棋提议" })[event.action];
@@ -620,7 +622,6 @@
   $("commentary-toggle").addEventListener("click", () => guarded(() => control(state.commentaryEnabled ? "commentary_off" : "commentary_on")));
   $("rooms-button").addEventListener("click", () => guarded(showRooms));
   $("new-button").addEventListener("click", showWelcome);
-  $("start-button").addEventListener("click", () => guarded(async () => {await control("start");closeSettings();}));
   $("pause-button").addEventListener("click", () => guarded(() => control("pause")));
   $("resume-button").addEventListener("click", () => guarded(async () => {await control("resume");closeSettings();}));
   $("stop-button").addEventListener("click", () => $("stop-dialog").showModal());

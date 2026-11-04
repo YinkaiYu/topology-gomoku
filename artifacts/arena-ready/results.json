@@ -1,0 +1,46 @@
+{
+  "baseline": "302ffff",
+  "fixture": "Same empty 7×7 mobius, two joined unready synthetic seats before/after",
+  "results": [
+    {
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "preparingClock": null,
+      "automaticStart": "black",
+      "boardShift": false,
+      "errors": []
+    },
+    {
+      "viewport": {
+        "width": 1920,
+        "height": 1080
+      },
+      "preparingClock": null,
+      "automaticStart": "black",
+      "boardShift": false,
+      "errors": []
+    },
+    {
+      "viewport": {
+        "width": 1024,
+        "height": 768
+      },
+      "preparingClock": null,
+      "automaticStart": "black",
+      "boardShift": false,
+      "errors": []
+    },
+    {
+      "viewport": {
+        "width": 1440,
+        "height": 1080
+      },
+      "preparingClock": null,
+      "automaticStart": "black",
+      "boardShift": false,
+      "errors": []
+    }
+  ]
+}

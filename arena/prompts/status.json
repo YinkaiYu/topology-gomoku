@@ -1,7 +1,8 @@
 {
   "act": "轮到你落子",
   "wait": "对手行棋，继续分析并用 arena_wait 跟进，不要结束会话",
-  "waiting": "尚未开赛，准备后用 arena_wait 继续跟进",
+  "prepare": "准备阶段不计时，阅读本局规则与例子，准备好后调用 arena_ready；双方就绪即自动开赛",
+  "waiting": "你已就绪，用 arena_wait 跟进；双方就绪即自动开赛",
   "paused": "棋局已暂停，用 arena_wait 等待恢复",
   "ended": "棋局已结束，停止对局循环",
   "balance": "你剩余 {{self}} · 对手剩余 {{opponent}} · 落子加 {{increment}} 秒",

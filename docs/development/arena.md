@@ -74,7 +74,7 @@ Skill 不要求预先安装到客户端。启动 prompt 和角色邀请可以要
 
 ## CLI 调用
 
-CLI 与 MCP 调用同一对局逻辑。九个 MCP 工具为 `arena_join`、`arena_state`、`arena_move`、`arena_resign`、`arena_draw`、`arena_note`、`arena_rules`、`arena_wait`、`arena_replay`。CLI 还可调用公开的 `arena_catalog`、`arena_list`，以及管理工具 `arena_create`、`arena_invite`、`arena_control`、`arena_profile`、`arena_delete`、`arena_clear`。房主工具会核对当前 checkout 的运行记录并附加房主凭证；选手调用仅传自己的席位 token。
+CLI 与 MCP 调用同一对局逻辑。十个 MCP 工具为 `arena_join`、`arena_ready`、`arena_state`、`arena_move`、`arena_resign`、`arena_draw`、`arena_note`、`arena_rules`、`arena_wait`、`arena_replay`。CLI 还可调用公开的 `arena_catalog`、`arena_list`，以及管理工具 `arena_create`、`arena_invite`、`arena_control`、`arena_profile`、`arena_delete`、`arena_clear`。房主工具会核对当前 checkout 的运行记录并附加房主凭证；选手调用仅传自己的席位 token。
 
 建议将请求保存为 `.arena/request.json`，再调用：
 
@@ -97,7 +97,7 @@ node arena/cli.cjs call arena_state --file .arena/request.json
 
 棋手入席后持续参与至终局、用户要求停止或无法恢复的错误，不以“我会等待”结束会话。对手行棋时可分析与发随想，并交替读取新状态；长时间准备后刷新局面，避免沿用旧落点。等待超时只是一次轮询结束，不代表比赛结束；误在自己的行棋回合调用 `arena_wait` 时立即返回，不挂起消耗余时。此改进不能唤醒已结束的客户端会话，也不替客户端执行后台分析。
 
-常用参数如下；加入结果为 `{token, role, state}`，后续状态包含 `version`（棋局版本）、`eventSeq`（所有事件序号）、`ply`（已落子手数）、`turn`、`phase`、`clock`、`legalCells` 与行优先的一维 `board`。观众坐标从左下角 A1 开始：横轴 A、B、C……向右递增（不跳过 I），纵轴 1、2、3……向上递增。工具的 `cell` 可直接传 `"A1"`；旧数字索引仍为从左上角开始的 `cell = y * width + x`，对应标号行数为 `height - y`。黑子为 1，白子为 -1，空位为 0，落子与路径结果附带可读坐标。
+常用参数如下；加入结果为 `{token, role, state, rules}`，后续状态包含 `version`（棋局版本）、`eventSeq`（所有事件序号）、`ply`（已落子手数）、`turn`、`phase`、`clock`、`legalCells` 与行优先的一维 `board`。观众坐标从左下角 A1 开始：横轴 A、B、C……向右递增（不跳过 I），纵轴 1、2、3……向上递增。工具的 `cell` 可直接传 `"A1"`；旧数字索引仍为从左上角开始的 `cell = y * width + x`，对应标号行数为 `height - y`。黑子为 1，白子为 -1，空位为 0，落子与路径结果附带可读坐标。
 
 | 操作 | 参数 |
 | --- | --- |
@@ -107,6 +107,7 @@ node arena/cli.cjs call arena_state --file .arena/request.json
 | `arena_clear` | 无参数；清空已结束棋局，保留等待/进行/暂停的棋局 |
 | `arena_invite` | `gameId`、`role: "black" / "white" / "commentator"` |
 | `arena_join` | `gameId`、`inviteToken`、`name`，可选 `model` |
+| `arena_ready` | `gameId`、自己的 `token`；准备完成后确认就绪，重复调用幂等 |
 | `arena_state` / `arena_replay` | `gameId`、自己的 `token` |
 | `arena_rules` | `gameId`、`token`；可选 `cell`、`direction`、`length` 查询路径 |
 | `arena_move` | `gameId`、`token`、`cell`、`expectedVersion`、`requestId` |
@@ -119,6 +120,10 @@ node arena/cli.cjs call arena_state --file .arena/request.json
 拓扑使用 `arena_catalog` 返回的标识；内置 AI 固定执白。棋手随想和解说统一通过 `arena_note` 发送，角色由席位 token 确定，不传 `kind`。消息可关联当前或历史局面，不限制己方回合，等待开赛、暂停与终局后也可发送；解说仍受开关控制。每条最多 1000 字符，不设每个局面的条数上限，让棋手将即时想法逐句发送。消息与落子共用 requestId 去重机制，重试不新增气泡，服务重启后仍有效。
 
 ### 规则与路径查询
+
+入席结果的 `rules` 与 `arena_rules` 都包含本局的 `briefing`：当前尺寸、边界连接、跨界后的方向、单步示例，以及一条由不同交点组成的连续线路。说明文字集中在 `arena/prompts/topology.json`；实际坐标、方向和线路由共享裁判引擎按当前棋盘生成，不维护第二份几何算法。
+
+例如 7×7 莫比乌斯棋盘，`G6` 向右接到 `A2`；`G6` 向右上接到 `A1`，接下来沿右下继续。`B7` 向上则返回 `to: null`，明确表示该步没有连接。棋手可直接依据说明理解棋盘，需要核对具体线路时再查询；这些示例只解释几何，不推荐落点。
 
 `arena_rules` 每次都返回精简的 `state: {gameId, phase, turn, ply, version, eventSeq}`，与同一时刻 `arena_state` 的相应字段一致。等待、暂停时的 `turn` 表示下一位棋手，只有 `phase: "playing"` 才能落子；终局后 `turn` 为 `null`。此摘要不含棋盘、事件或任何席位的随想，需要当前局面时调用 `arena_state`。
 
@@ -137,7 +142,9 @@ node arena/cli.cjs call arena_state --file .arena/request.json
 
 ## 比赛与棋手随想
 
-默认先按 README 完成服务启动与各客户端的 MCP 接入，再在浏览器创建比赛、从设置复制角色邀请、双方加入、从设置开始对弈。单 agent 对内置 AI 只有一个外部选手；双 agent 局分别邀请黑白双方。解说默认关闭，页面不显示解说区，也不为其保留空白。用户主动从设置面板取得解说邀请时开启；加入或离开不阻塞比赛。设置中可再次关闭或开启，关闭会阻止新的解说发言，但保留已有记录。解说 agent 看到 `commentaryEnabled: false` 后停止解说，等待用户再次邀请。
+默认先按 README 完成服务启动与各客户端的 MCP 接入，再在浏览器创建比赛、从设置复制角色邀请。双方入席后各自准备并确认就绪，随后自动开赛。单 agent 对内置 AI 只有一个外部选手，内置 AI 已就绪；双 agent 局分别邀请黑白双方。解说默认关闭，页面不显示解说区，也不为其保留空白。用户主动从设置面板取得解说邀请时开启；加入或离开不阻塞比赛。设置中可再次关闭或开启，关闭会阻止新的解说发言，但保留已有记录。解说 agent 看到 `commentaryEnabled: false` 后停止解说，等待用户再次邀请。
+
+入席与就绪分离：`seats.black/white.ready` 表示各自确认完成准备。准备期间保持 `phase: "waiting"`，棋钟 `active: null`，不消耗时间；可以读规则、研究局面并发随想。`arena_ready` 只接受自己的棋手凭证；第二位棋手确认时生成一次开赛事件，黑方开始计时。重复确认、重连及查看状态不重复开赛或加秒。管理接口的 `start` 也必须满足双方已就绪，浏览器不再提供手动开始按钮。未就绪旧等待局按未就绪恢复，已开赛旧局不会重新进入准备阶段；服务启动本身不触发自动开赛。
 
 棋手通过随想让用户跟上即时的观察、判断和反应，尚不成熟的念头也可随时发送。每条一句，用自然语言而非内部代码或分析记号，提及位置时用 A1 这样的坐标；不因计时而省掉随想，也不要求每手固定条数。落子、认输和提和工具只提交动作，文字通过 `arena_note` 独立发送。观战使用自下向上推进的悬浮气泡：双方按事件顺序交错，共用一个滚动位置，新消息从底部出现，旧消息一起上移；每条消息的头像与名称在气泡外侧，黑方居左、白方居右。气泡上方标记关联局面的手数，未落子时显示“开局”，实际发送时间放在悬停提示中；以事件的 ply 为准，不随当前棋盘手数改写。气泡自然撑开，无内部滚动条；旧长消息完整换行，查看历史时新消息不抢走阅读位置。聚焦棋局和真实发言，不显示重复状态、等待占位、操作注释或绿色连接/回合小圆点。连接异常才显示提示，恢复后自动撤去。只适配横屏桌面浏览器（16:9、4:3）；不提供窄屏/移动布局。随想由棋手通过工具发送，服务不自动读取外部客户端的过程消息或 reasoning。浏览器可读所有随想和解说；各席位的状态、等待、加入结果与复盘只返回自己的文字，解说员也不会收到棋手随想。旧棋谱中的 `speech` 事件继续显示，并适用同样的过滤。
 
@@ -147,7 +154,7 @@ node arena/cli.cjs call arena_state --file .arena/request.json
 
 时间是棋手的战略资源：操作 Skill 要求按余时调整思考深度、为后续回合与提交落子留余量，同时照常发随想。服务不规定每手固定预算、不禁止搜索、不改变默认 5+5。
 
-棋手状态新增 `guidance: {action, text}`；`action` 为 `act`（本方回合，可落子或作其他决定）、`wait`（继续跟进）、`stop`（终局）。`text` 显示本方与对手的分秒余时、每步加秒和本方走钟状态；仅本方正在走钟且余时不超过 30 秒时提醒预留提交时间。不计时、未开赛、暂停和终局分别处理，不会提示已经停钟的棋手抢时间。非棋手视角为 `null`。它与 `clock` 使用同一快照，响应后不会自行刷新，也不写入棋局事件或替棋手发随想。加入和随想结果在 `state.guidance`，规则结果在顶层 `guidance`，其余状态结果在顶层；CLI 与两种 MCP 传输一致。全部提醒文案位于 `arena/prompts/status.json`。
+棋手状态包含 `guidance: {action, text}`；`action` 为 `prepare`（阅读规则并准备就绪）、`act`（本方回合，可落子或作其他决定）、`wait`（继续跟进）、`stop`（终局）。`text` 显示本方与对手的分秒余时、每步加秒和本方走钟状态；仅本方正在走钟且余时不超过 30 秒时提醒预留提交时间。不计时、未开赛、暂停和终局分别处理，不会提示已经停钟的棋手抢时间。非棋手视角为 `null`。它与 `clock` 使用同一快照，响应后不会自行刷新，也不写入棋局事件或替棋手发随想。加入和随想结果在 `state.guidance`，规则结果在顶层 `guidance`，其余状态结果在顶层；CLI 与两种 MCP 传输一致。全部提醒文案位于 `arena/prompts/status.json`。
 
 新棋局默认每方 300000 毫秒、每次成功落子后增加 5000 毫秒；创建前可在首页设置调整或关闭。服务允许初始时间 1000–3600000 毫秒，加秒 0–60000 毫秒；浏览器按分钟/秒配置。棋钟在开赛后运行，仅扣当前行棋方时间；查规则、发送随想、等待工具和提和不暂停计时。落子只加一次秒，重复请求、非法落点与失败请求都不加秒。内置 AI 同样使用自己的棋钟。
 
@@ -157,7 +164,7 @@ node arena/cli.cjs call arena_state --file .arena/request.json
 
 ## 棋手资料、尺寸与记录管理
 
-首页复用原游戏大 logo，logo 在上、单行标题在下，整体垂直居中，不显示本地模式副标题或关卡大图案。对局顶部居中展示关卡名称与图案，不显示棋局名称。设置复用原游戏滑杆式图标：在首页的创建面板右上角，在对局的关卡名旁边；邀请、开赛/暂停/继续、结束、时间线、棋谱导出和记录都在设置中。底部将棋局状态与当前手数合为同一行，放在两条加长、对齐的滑块上方；暂停、行棋和终局结果直接显示在这里，不在设置中重复。复盘时同一位置显示回看手数与返回操作，不增减行高或推动棋盘。
+首页复用原游戏大 logo，logo 在上、单行标题在下，整体垂直居中，不显示本地模式副标题或关卡大图案。对局顶部居中展示关卡名称与图案，不显示棋局名称。设置复用原游戏滑杆式图标：在首页的创建面板右上角，在对局的关卡名旁边；邀请、准备进度、暂停/继续、结束、时间线、棋谱导出和记录都在设置中。底部将棋局状态与当前手数合为同一行，放在两条加长、对齐的滑块上方；准备、暂停、行棋和终局结果直接显示在这里，不在设置中重复。复盘时同一位置显示回看手数与返回操作，不增减行高或推动棋盘。
 
 创建前可点击双方头像配置显示名称和头像；对局中点击棋手身份或设置中的棋手资料继续编辑。默认头像为对应的黑棋或白棋，复用既有棋子材质。内置 DeepSeek、OpenAI、Claude、Gemini、Kimi、Qwen、Grok 七种标识，点击后将显示名称填为对应 AI 名称，用户可继续改成昵称；切回默认头像或上传图片不改当前名字。支持上传 PNG、JPEG、WebP（5 MB 以内），浏览器居中裁成方形并缩小为 PNG，保存在本机棋局记录。下一局沿用浏览器记住的资料。显示名与 agent 加入时的身份名分开保存，改名不会影响重新加入或撤销角色凭证。
 
@@ -189,8 +196,9 @@ node arena/cli.cjs call arena_state --file .arena/request.json
 | [player.md](../../arena/prompts/player.md) | 黑白棋手随想的受众、内容与表达方式；生成棋手邀请时附上，或让 agent 重新读取 |
 | [commentator.md](../../arena/prompts/commentator.md) | 解说风格与角色行为边界；agent 下次读取时生效 |
 | [mcp.md](../../arena/prompts/mcp.md) | MCP 服务简介与文件入口说明；重新连接 MCP 后生效 |
-| [tools.json](../../arena/prompts/tools.json) | 九个 MCP 工具的参数、结果与调用约束，不另存角色行为要求；重新连接 MCP 后生效 |
+| [tools.json](../../arena/prompts/tools.json) | MCP 工具的参数、结果与调用约束，不另存角色行为要求；重新连接 MCP 后生效 |
 | [rules.json](../../arena/prompts/rules.json) | `arena_rules` 返回的坐标、胜负、随想可见性与提和规则；下次调用时读取 |
+| [topology.json](../../arena/prompts/topology.json) | 入席与规则结果中的本局拓扑说明、示例说明文字；具体坐标和方向由裁判生成，下次调用时读取 |
 | [status.json](../../arena/prompts/status.json) | 每次状态响应中的回合、计时与继续参与提醒；下次调用时读取，保留 `{{self}}`、`{{opponent}}`、`{{increment}}` 占位符 |
 | [SKILL.md](../../arena/skills/topology-gomoku-arena/SKILL.md) | 角色文件入口，以及启动、接入、席位权限、时间预算、工具操作、等待与恢复流程；agent 下次读取时生效 |
 | [README.md](../../README.md) | 用户提前复制给 agent 的下载启动、MCP 接入与恢复提示；接入完成后才创建并邀请入席 |
@@ -212,6 +220,8 @@ node arena/cli.cjs call arena_state --file .arena/request.json
 - 第一版不提供云端托管、自动唤醒已结束的客户端、语音合成或视频导出。比赛记录为以后的视频制作保留事件基础，不将该能力标成已完成。
 
 ## 验证
+
+2026-11-04 准备就绪与拓扑说明：227 项测试、资源、文档与 Skill 校验通过。确定性用例覆盖入席与单方就绪不走钟、双方就绪自动开赛、内置 AI、权限、重复确认、重连、重启与旧局迁移；真实 HTTP MCP 和 stdio MCP 验证工具发现、入席规则和自动开赛。七种拓扑的示例与共享裁判逐项核对，包含不同尺寸、跨界转向、开放边界、重复交点和球面的完整边缘映射。四种桌面视口的准备流程、完整观战和操作回归通过，同状态前后证据见[视觉 QA](../design/qa.md)。此次保留用户修改的 `player.md`；新流程尚待真实客户端对局检验，隔离预览不替换正在使用的服务。
 
 2026-11-04 棋手提示聚焦与邀请内嵌：棋手角色文件只保留身份、受众与正向表达要求；时间预算、权限边界、坐标与工具操作归入 Skill。浏览器实测黑白邀请各包含当前 `player.md` 全文一次，解说员邀请不包含棋手要求，文件路径和加入参数正确；四视口完整浏览器回归通过。219 项测试、资源、文档与 Skill 校验通过。本轮无布局或样式改动，表达效果仍待真实对局检验。
 

@@ -13,7 +13,11 @@ function setup(options = {}, create = {}) {
     tokens[role] = arena.call("arena_join", { ...arena.call("arena_invite", { gameId, role }, HOST), name: role }).token;
   }
   const state = () => arena.call("arena_state", { gameId });
-  const control = action => arena.call("arena_control", { gameId, action }, HOST);
+  const control = action => {
+    if (action !== "start") return arena.call("arena_control", { gameId, action }, HOST);
+    for (const token of Object.values(tokens)) arena.call("arena_ready", { gameId, token });
+    return state();
+  };
   const move = (cell, role = state().turn, requestId = `move-${state().ply}`) => arena.call("arena_move", { gameId, token: tokens[role], cell, expectedVersion: state().version, requestId });
   return { arena, gameId, tokens, state, control, move, advance: ms => { now += ms; } };
 }
@@ -126,7 +130,7 @@ test("clock configuration is bounded, and explicitly untimed games never expire"
 test("seat guidance tracks time, turn, pauses and termination without becoming a match event", () => {
   const g = setup();
   const seatState = role => g.arena.call("arena_state", { gameId: g.gameId, token: g.tokens[role] });
-  assert.equal(seatState("black").guidance.action, "wait");
+  assert.equal(seatState("black").guidance.action, "prepare");
   assert.equal(g.state().guidance, null, "Spectators do not receive player instructions");
   g.control("start"); g.advance(230001);
   const black = seatState("black"), white = seatState("white");

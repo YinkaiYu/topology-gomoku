@@ -21,7 +21,7 @@ async function shot(page, name) {
     const { gameId } = call("arena_create", { topology: "mobius", mode: "duel", width: 7, height: 7, players: { black: { name: "黑方", avatar: "claude-color" }, white: { name: "白方", avatar: "deepseek-color" } }, ...extra });
     const tokens = {};
     for (const role of ["black", "white"]) tokens[role] = call("arena_join", { ...call("arena_invite", { gameId, role }), name: role }).token;
-    call("arena_control", { gameId, action: "start" });
+    for (const role of ["black", "white"]) { call("arena_rules", { gameId, token: tokens[role] }); call("arena_ready", { gameId, token: tokens[role] }); }
     return { gameId, tokens };
   };
   const results = [];

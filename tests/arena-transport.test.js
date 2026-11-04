@@ -37,6 +37,12 @@ async function fixture(t, create = {}) {
   return { app, rpc, gameId, seats, directory };
 }
 
+async function preparePlayers(rpc, gameId, seats) {
+  let result;
+  for (const role of ["black", "white"]) if (seats[role]) result = await rpc("arena_ready", { gameId, token: seats[role].token });
+  return result;
+}
+
 test("local origin validation accepts equivalent default HTTP ports without admitting other ports or hosts", () => {
   const request = (host, origin) => ({ headers: { host, ...(origin === undefined ? {} : { origin }) } });
   for (const host of ["127.0.0.1", "localhost", "[::1]"]) {
@@ -62,9 +68,10 @@ test("local origin validation accepts equivalent default HTTP ports without admi
 });
 
 test("HTTP enforces host scope, local origins, JSON input and private-file boundaries", async (t) => {
-  const { app, rpc, gameId } = await fixture(t);
+  const { app, rpc, gameId, seats } = await fixture(t);
   assert.equal((await rpc("arena_control", { gameId, action: "start" })).status, 403);
-  assert.equal((await rpc("arena_control", { gameId, action: "start" }, true)).result.phase, "playing");
+  assert.equal((await rpc("arena_control", { gameId, action: "start" }, true)).error.code, "SEATS_NOT_READY");
+  assert.equal((await preparePlayers(rpc, gameId, seats)).result.phase, "playing");
   const crossOrigin = await fetch(`${app.url}/api/health`, { headers: { Origin: "https://example.com" } });
   assert.equal(crossOrigin.status, 403);
   // Node fetch normalizes Host. Use a raw HTTP request to exercise the actual
@@ -150,7 +157,7 @@ test("shutdown closes incomplete requests and releases the lock even if final pe
 
 test("concurrent moves are serialized around the authoritative version", async (t) => {
   const { rpc, gameId, seats } = await fixture(t);
-  await rpc("arena_control", { gameId, action: "start" }, true);
+  await preparePlayers(rpc, gameId, seats);
   const attempts = await Promise.all([0, 1].map((cell) => rpc("arena_move", {
     gameId, token: seats.black.token, cell, expectedVersion: 0, requestId: `concurrent-${cell}`
   })));
@@ -164,7 +171,7 @@ test("concurrent moves are serialized around the authoritative version", async (
 
 test("SSE spectators see notes, while player and commentator waits and replays remain filtered", async (t) => {
   const { app, rpc, gameId, seats } = await fixture(t);
-  await rpc("arena_control", { gameId, action: "start" }, true);
+  await preparePlayers(rpc, gameId, seats);
   const streamAbort = new AbortController();
   const response = await fetch(`${app.url}/api/events?gameId=${gameId}`, { signal: streamAbort.signal });
   const reader = response.body.getReader();
@@ -251,7 +258,7 @@ for (const transport of ["http", "stdio", "cli"]) {
     assert.equal(diagonal.path.complete, true);
     assert.deepEqual(diagonal.path.cells, [6, 35, 29]);
     assert.deepEqual(diagonal.path.directions, [1, 7, 7]);
-    await rpc("arena_control", { gameId, action: "start" }, true);
+    await preparePlayers(rpc, gameId, seats);
     await rpc("arena_move", { gameId, token: seats.black.token, cell: "D4", expectedVersion: 0, requestId: "first" });
     const state = (await rpc("arena_note", { gameId, token: seats.white.token, text: "private-thought", ply: 1, requestId: "note" })).result.state;
     const current = await query({ cell: 24, direction: 0, length: 9 });
@@ -278,11 +285,17 @@ for (const transport of ["http", "stdio"]) {
     await client.connect(wire);
     const listed = await client.listTools();
     assert.deepEqual(listed.tools.map((tool) => tool.name).sort(), [
-      "arena_draw", "arena_join", "arena_move", "arena_note", "arena_replay", "arena_resign", "arena_rules", "arena_state", "arena_wait"
+      "arena_draw", "arena_join", "arena_move", "arena_note", "arena_ready", "arena_replay", "arena_resign", "arena_rules", "arena_state", "arena_wait"
     ]);
     assert.equal(listed.tools.find(tool => tool.name === "arena_move").inputSchema.properties.explanation, undefined);
     assert.equal(listed.tools.find(tool => tool.name === "arena_note").inputSchema.properties.kind, undefined);
-    await rpc("arena_control", { gameId, action: "start" }, true);
+    const firstReady = await client.callTool({ name: "arena_ready", arguments: { gameId, token: seats.white.token } });
+    assert.equal(firstReady.structuredContent.phase, "waiting");
+    assert.equal(firstReady.structuredContent.clock.active, null);
+    const lastReady = await client.callTool({ name: "arena_ready", arguments: { gameId, token: seats.black.token } });
+    assert.equal(lastReady.structuredContent.phase, "playing");
+    assert.equal(lastReady.structuredContent.clock.active, "black");
+    assert.equal((await client.callTool({ name: "arena_ready", arguments: { gameId, token: seats.black.token } })).structuredContent.eventSeq, lastReady.structuredContent.eventSeq);
     const moveArgs = { gameId, token: seats.black.token, cell: `A${seats.black.state.height}`, expectedVersion: 0, requestId: "first" };
     assert.equal((await client.callTool({ name: "arena_move", arguments: { ...moveArgs, explanation: "Old field" } })).isError, true);
     const move = await client.callTool({ name: "arena_move", arguments: moveArgs });
@@ -319,7 +332,15 @@ for (const transport of ["http", "stdio"]) {
     const other = await rpc("arena_create", { topology: "plane", mode: "ai" }, true);
     const otherInvite = await rpc("arena_invite", { gameId: other.result.gameId, role: "black" }, true);
     const joined = await client.callTool({ name: "arena_join", arguments: { ...otherInvite.result, name: "Conceding player" } });
-    await rpc("arena_control", { gameId: other.result.gameId, action: "start" }, true);
+    const joinedState = joined.structuredContent.state, briefing = joined.structuredContent.rules;
+    assert.equal(joinedState.phase, "waiting");
+    assert.equal(briefing.width, joinedState.width); assert.equal(briefing.height, joinedState.height);
+    assert.equal(briefing.topology, joinedState.topology); assert.equal(briefing.target, joinedState.target);
+    assert.ok(briefing.briefing.boundaryRules.length > 0);
+    assert.ok(briefing.briefing.examples.length > 0);
+    const reread = await client.callTool({ name: "arena_rules", arguments: { gameId: other.result.gameId, token: joined.structuredContent.token } });
+    assert.deepEqual(reread.structuredContent.briefing, briefing.briefing);
+    await client.callTool({ name: "arena_ready", arguments: { gameId: other.result.gameId, token: joined.structuredContent.token } });
     const conceded = await client.callTool({ name: "arena_resign", arguments: { gameId: other.result.gameId, token: joined.structuredContent.token, expectedVersion: 0, requestId: "resign" } });
     assert.equal(conceded.structuredContent.winReason, "resign");
     const baseline = app.arena.listenerCount("change");
@@ -344,7 +365,7 @@ for (const transport of ["http", "stdio"]) {
 
 test("waits keep following on timeout and return immediately once it is the caller's turn", { timeout: 3000 }, async t => {
   const { app, rpc, gameId, seats } = await fixture(t);
-  const start = (await rpc("arena_control", { gameId, action: "start" }, true)).result;
+  const start = (await preparePlayers(rpc, gameId, seats)).result;
   const wait = (role, state, timeoutMs) => app.call("arena_wait", { gameId, token: seats[role].token, afterSeq: state.eventSeq, timeoutMs });
   const baseline = app.arena.listenerCount("change");
   const ownTurn = wait("black", start, 25000);
@@ -370,7 +391,7 @@ for (const transport of ["http", "stdio"]) {
     t.after(() => client.close());
     await client.connect(transport === "http" ? new StreamableHTTPClientTransport(new URL(`${app.url}/mcp`))
       : new StdioClientTransport({ command: process.execPath, args: [path.resolve(__dirname, "../arena/mcp.cjs"), "--url", app.url], stderr: "pipe" }));
-    const state = (await rpc("arena_control", { gameId, action: "start" }, true)).result;
+    const state = (await preparePlayers(rpc, gameId, seats)).result;
     const result = await client.callTool({ name: "arena_wait", arguments: { gameId, token: seats.white.token, afterSeq: state.eventSeq, timeoutMs: 5000 } });
     assert.equal(result.isError, undefined);
     assert.equal(result.structuredContent.phase, "ended");

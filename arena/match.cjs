@@ -11,6 +11,7 @@ const { readPrompt } = require("./prompts.cjs");
 const Coordinates = require("./public/coordinates.js");
 const Clock = require("./clock.cjs");
 const { guidance } = require("./guidance.cjs");
+const { briefingFor } = require("./rules-briefing.cjs");
 const { version: gameVersion } = require("../package.json");
 
 const ROLES = ["black", "white", "commentator"];
@@ -150,6 +151,11 @@ class Arena extends EventEmitter {
       }
       controller.drainEvents();
       const match = { ...saved, ...size, controller, receipts: saved.receipts || {} };
+      for (const role of ROLES) {
+        const seat = match.seats[role];
+        seat.ready = role !== "commentator" && (typeof seat.ready === "boolean" ? seat.ready
+          : (saved.mode === "ai" && role === "white") || (saved.phase !== "waiting" && seat.joined));
+      }
       // Saved balances are checkpointed; downtime never consumes a player's time.
       match.clock = saved.clock ? { ...saved.clock, active: null, runningSince: null } : null;
       requireValue(match.version === match.moves.length
@@ -247,7 +253,7 @@ class Arena extends EventEmitter {
       schemaVersion: 1,
       gameVersion: match.gameVersion,
       ...progress,
-      guidance: guidance({ ...progress, clock }, role),
+      guidance: guidance({ ...progress, clock, seats: match.seats }, role),
       clock,
       title: match.title,
       mode: match.mode,
@@ -352,6 +358,7 @@ class Arena extends EventEmitter {
       }
       case "arena_invite": return this._invite(args, context);
       case "arena_join": return this._join(args);
+      case "arena_ready": return this._ready(args);
       case "arena_state": {
         const match = this._match(args.gameId);
         return this._snapshot(match, this._seat(match, args.token));
@@ -389,7 +396,8 @@ class Arena extends EventEmitter {
       createdAt, version: 0, eventSeq: 0, stopped: false, moves: [], events: [],
       seats: Object.fromEntries(ROLES.map((role) => [role, {
         name: role === "white" && args.mode === "ai" ? "Built-in AI" : "",
-        ...profiles[role], model: "", joined: role === "white" && args.mode === "ai", lastSeen: null
+        ...profiles[role], model: "", joined: role === "white" && args.mode === "ai",
+        ready: role === "white" && args.mode === "ai", lastSeen: null
       }])),
       credentials: {}, receipts: {},
       clock: clockFor(args.clock),
@@ -441,7 +449,35 @@ class Arena extends EventEmitter {
         "SEAT_CLAIMED", "This invitation already belongs to another identity. Reconnect using the original name and model.", 409);
       match.seats[role].lastSeen = this._at();
     }
-    return { token: credential.token, role, state: this._snapshot(match, role) };
+    return { token: credential.token, role, state: this._snapshot(match, role), rules: this._rules({ gameId: match.gameId, token: credential.token }) };
+  }
+
+  _begin(match, automatic = false) {
+    requireValue(match.seats.black.joined && match.seats.white.joined
+      && match.seats.black.ready && match.seats.white.ready,
+    "SEATS_NOT_READY", "Both players must finish preparation and call arena_ready before starting.", 409);
+    const now = this.now();
+    match.phase = "playing";
+    Clock.start(match.clock, match.controller.game.turn === Engine.HUMAN ? "black" : "white", now);
+    match.controller.resume(now);
+    if (match.mode === "ai" && match.controller.game.turn === Engine.AI) match.controller._scheduleAi(now);
+    this._event(match, "control", { action: "start", automatic, ply: match.moves.length });
+  }
+
+  _ready(args) {
+    const match = this._match(args.gameId);
+    const role = this._seat(match, args.token, true);
+    requireValue(PLAYERS[role], "PLAYER_REQUIRED", "Only a player can confirm readiness.", 403);
+    if (match.seats[role].ready) {
+      this._save(match);
+      return this._snapshot(match, role);
+    }
+    requireValue(match.phase === "waiting", "NOT_PREPARING", "Readiness can only be confirmed before the match starts.", 409);
+    match.seats[role].ready = true;
+    this._event(match, "ready", { role, ply: 0 });
+    if (match.seats.black.joined && match.seats.white.joined && match.seats.black.ready && match.seats.white.ready) this._begin(match, true);
+    this._changed(match);
+    return this._snapshot(match, role);
   }
 
   _move(args) {
@@ -595,7 +631,11 @@ class Arena extends EventEmitter {
       stop: match.phase !== "ended"
     };
     requireValue(allowed[args.action], "INVALID_PHASE", `Cannot ${args.action} a ${match.phase} game.`, 409);
-    if (args.action === "start" || args.action === "resume") {
+    if (args.action === "start") {
+      this._begin(match);
+      this._changed(match);
+      return this._snapshot(match);
+    } else if (args.action === "resume") {
       requireValue(match.seats.black.joined && match.seats.white.joined,
         "SEATS_NOT_READY", "Both player seats must be ready before starting.", 409);
       match.phase = "playing";
@@ -626,11 +666,12 @@ class Arena extends EventEmitter {
     const promptRules = JSON.parse(readPrompt("rules.json"));
     const progress = this._progress(match), clock = Clock.snapshot(match.clock, this.now());
     const result = {
-      guidance: guidance({ ...progress, clock }, role),
+      guidance: guidance({ ...progress, clock, seats: match.seats }, role),
       ...promptRules.common,
       state: progress,
       clock,
       topology: game.level.topology, width: game.rules.width, height: game.rules.height, target: game.rules.target,
+      briefing: briefingFor(game.rules),
       pieces: { black: 1, white: -1, empty: 0 },
       directions: Engine.DIRECTIONS.map((direction, index) => ({ index, ...direction })),
       edgeText: game.level.edgeText, ruleText: game.level.ruleText,

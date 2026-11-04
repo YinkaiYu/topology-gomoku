@@ -7,11 +7,12 @@ function duration(ms) {
 }
 
 // A seat-specific snapshot, never a timer or a persisted match event.
-function guidance({ phase, turn, clock }, role) {
+function guidance({ phase, turn, clock, seats }, role) {
   if (role !== "black" && role !== "white") return null;
   const text = JSON.parse(readPrompt("status.json"));
-  const action = phase === "ended" ? "stop" : phase === "playing" && turn === role ? "act" : "wait";
-  const parts = [text[phase === "playing" ? action : phase]];
+  const action = phase === "ended" ? "stop" : phase === "waiting" && !seats?.[role]?.ready ? "prepare"
+    : phase === "playing" && turn === role ? "act" : "wait";
+  const parts = [text[action === "prepare" ? "prepare" : phase === "playing" ? action : phase]];
   if (!clock) parts.push(text.untimed);
   else {
     parts.push(text.balance.replace("{{self}}", duration(clock.remainingMs[role]))

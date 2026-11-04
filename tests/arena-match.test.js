@@ -29,7 +29,11 @@ function setup(options = {}, create = {}) {
       cell, expectedVersion: current.version, requestId: `move-${current.version + 1}`, ...extra
     });
   };
-  const start = () => arena.call("arena_control", { gameId, action: "start" }, HOST);
+  const start = () => {
+    arena.call("arena_ready", { gameId, token: black.token });
+    if (white) arena.call("arena_ready", { gameId, token: white.token });
+    return state();
+  };
   return { arena, gameId, initial, black, white, join, state, move, start };
 }
 
@@ -675,7 +679,7 @@ test("custom board sizes use shared rules and survive restoration for every topo
     const width=9,height=level.topology==="sphere"?9:8;
     const state=arena.call("arena_create",{mode:"duel",topology:level.topology,width,height},HOST);
     const tokens={};for(const role of ["black","white"])tokens[role]=arena.call("arena_join",{...arena.call("arena_invite",{gameId:state.gameId,role},HOST),name:role}).token;
-    arena.call("arena_control",{gameId:state.gameId,action:"start"},HOST);
+    for(const token of Object.values(tokens))arena.call("arena_ready",{gameId:state.gameId,token});
     const sequence=[0,9,1,10,2,11,3,12,4];
     for(let i=0;i<sequence.length;i++)arena.call("arena_move",{gameId:state.gameId,token:tokens[i%2?"white":"black"],cell:sequence[i],expectedVersion:i,requestId:"size-"+i});
     assert.equal(arena.call("arena_state",{gameId:state.gameId}).winner,"black");
