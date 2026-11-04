@@ -13,7 +13,7 @@ const { Client } = require("../arena/node_modules/@modelcontextprotocol/sdk/dist
 const { StreamableHTTPClientTransport } = require("../arena/node_modules/@modelcontextprotocol/sdk/dist/cjs/client/streamableHttp.js");
 const { StdioClientTransport } = require("../arena/node_modules/@modelcontextprotocol/sdk/dist/cjs/client/stdio.js");
 
-async function fixture(t) {
+async function fixture(t, create = {}) {
   const directory = fs.mkdtempSync(path.join(os.tmpdir(), "arena-transport-"));
   const app = await startServer({ port: 0, dataDir: directory, writeRuntime: false });
   t.after(async () => {
@@ -27,7 +27,7 @@ async function fixture(t) {
     });
     return { status: response.status, ...await response.json() };
   };
-  const created = await rpc("arena_create", { topology: "torus", mode: "duel", title: "Transport test" }, true);
+  const created = await rpc("arena_create", { topology: "torus", mode: "duel", title: "Transport test", ...create }, true);
   const gameId = created.result.gameId;
   const seats = {};
   for (const role of ["black", "white", "commentator"]) {
@@ -206,6 +206,66 @@ test("README service discovery finds the Skill and real CLI notes preserve text 
   }
   assert.equal((await rpc("arena_state", { gameId })).result.events.filter(event => event.text === args.text).length, 1);
 });
+
+for (const transport of ["http", "stdio", "cli"]) {
+  test(`real ${transport} rule queries preserve partial paths and current progress`, async (t) => {
+    const { app, rpc, gameId, seats, directory } = await fixture(t, { topology: "mobius", width: 7, height: 7 });
+    let call;
+    if (transport === "cli") {
+      const file = path.join(directory, "rules-request.json");
+      call = async (args) => {
+        fs.writeFileSync(file, JSON.stringify(args));
+        const { stdout } = await promisify(execFile)(process.execPath, [path.resolve(__dirname, "../arena/cli.cjs"), "call", "arena_rules", "--url", app.url, "--file", file]);
+        const response = JSON.parse(stdout);
+        assert.equal(response.ok, true);
+        return response.result;
+      };
+    } else {
+      const client = new Client({ name: "arena-rules-test", version: "1.0.0" });
+      const wire = transport === "http"
+        ? new StreamableHTTPClientTransport(new URL(`${app.url}/mcp`))
+        : new StdioClientTransport({ command: process.execPath, args: [path.resolve(__dirname, "../arena/mcp.cjs"), "--url", app.url], stderr: "pipe" });
+      t.after(() => client.close());
+      await client.connect(wire);
+      call = async (args) => {
+        const response = await client.callTool({ name: "arena_rules", arguments: args });
+        assert.equal(response.isError, undefined);
+        assert.deepEqual(JSON.parse(response.content[0].text), response.structuredContent);
+        return response.structuredContent;
+      };
+    }
+    const query = (extra = {}) => call({ gameId, token: seats.black.token, ...extra });
+    const waiting = await query();
+    assert.equal(waiting.state.phase, "waiting");
+    const boundary = await query({ cell: 0, direction: 2, length: 8 });
+    assert.deepEqual(boundary.path.cells, [0, 7, 14, 21, 28, 35, 42]);
+    assert.equal(boundary.path.complete, false);
+    assert.equal(boundary.path.stop.reason, "boundary");
+    assert.equal(boundary.path.stop.next, null);
+    assert.equal(boundary.next.cell, 7);
+    const cycle = await query({ cell: 24, direction: 0, length: 9 });
+    assert.equal(cycle.path.complete, false);
+    assert.equal(cycle.path.stop.reason, "repeated_cell");
+    assert.equal(cycle.path.stop.next.cell, 24);
+    const diagonal = await query({ cell: 6, direction: 1, length: 3 });
+    assert.equal(diagonal.path.complete, true);
+    assert.deepEqual(diagonal.path.cells, [6, 35, 29]);
+    assert.deepEqual(diagonal.path.directions, [1, 7, 7]);
+    await rpc("arena_control", { gameId, action: "start" }, true);
+    await rpc("arena_move", { gameId, token: seats.black.token, cell: 24, expectedVersion: 0, requestId: "first" });
+    const state = (await rpc("arena_note", { gameId, token: seats.white.token, text: "private-thought", ply: 1, requestId: "note" })).result.state;
+    const current = await query({ cell: 24, direction: 0, length: 9 });
+    assert.deepEqual(current.state, { gameId, phase: "playing", turn: "white", ply: 1, version: 1, eventSeq: state.eventSeq });
+    assert.deepEqual(current.path, cycle.path, "Geometry is independent of occupancy");
+    assert.ok(!JSON.stringify(current).includes("private-thought"));
+    const large = (await rpc("arena_create", { topology: "mobius", mode: "duel", width: 9, height: 9 }, true)).result;
+    const invitation = (await rpc("arena_invite", { gameId: large.gameId, role: "black" }, true)).result;
+    const joined = (await rpc("arena_join", { ...invitation, name: "large-board-player" })).result;
+    const long = await call({ gameId: large.gameId, token: joined.token, cell: 0, direction: 2, length: 65 });
+    assert.equal(long.path.requestedLength, 65, "MCP and CLI accept lengths up to the board cell count");
+    assert.equal(long.path.stop.reason, "boundary");
+  });
+}
 
 for (const transport of ["http", "stdio"]) {
   test(`real MCP SDK ${transport} client discovers tools and plays on the shared server`, async (t) => {

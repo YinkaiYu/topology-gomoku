@@ -1,6 +1,7 @@
 {
   "common": {
     "coordinateSystem": "Zero-based, row-major: cell = y * width + x. x increases right; y increases down.",
+    "pathQuery": "length counts distinct cells including the start. path.complete means the requested length was reached, not that a winning line exists; occupancy is ignored. Otherwise path.stop identifies an open boundary or the next step revisiting a cell. cells/directions include only visited distinct cells; seams[i] connects cells[i] to cells[i+1]. next is one step from the input cell, not from the path end, so it may exist even when a longer path is incomplete.",
     "notes": "Notes are visible to browser spectators and their author only. Players do not receive opponent notes or commentary; commentators do not receive player notes.",
     "decisions": "Players may resign at any time after start. A draw requires both players to agree. Respond with the current drawOffer.id; any move withdraws or declines the pending offer. At most one offer per player per position.",
     "aiDrawPolicy": "Built-in AI accepts only after at least half the cells are occupied, neither player has an immediate winning move, and the larger number of available five-cell paths is at most twice the smaller. Otherwise it declines."

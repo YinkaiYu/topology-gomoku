@@ -329,9 +329,100 @@ test("arena rules trace twisted seams without providing strategy evaluation", ()
   assert.equal(rules.directions[0].name, "E");
   assert.ok(rules.path.seams.some((seam) => seam & Engine.SEAM_TWIST));
   assert.equal(rules.path.cells.length, 5);
+  assert.equal(rules.path.complete, true);
+  assert.equal(rules.path.stop, null);
   assert.equal(Object.hasOwn(rules, "bestMove"), false);
   assert.throws(() => game.arena.call("arena_rules", { gameId: game.gameId, cell: 0, direction: 1.5 }), errorCode("INVALID_DIRECTION"));
   assert.throws(() => game.arena.call("arena_rules", { gameId: game.gameId, cell: 0, direction: 0, length: 0 }), errorCode("INVALID_LENGTH"));
+});
+
+test("rule paths explain Mobius boundaries and repeated cells without discarding the traversed prefix", () => {
+  const game = setup({}, { topology: "mobius", width: 7, height: 7 });
+  const query = (cell, direction, length) => game.arena.call("arena_rules", { gameId: game.gameId, cell, direction, length });
+  const vertical = query(0, 2, 8);
+  assert.deepEqual(vertical.path, {
+    requestedLength: 8, cells: [0, 7, 14, 21, 28, 35, 42], seams: [0, 0, 0, 0, 0, 0], directions: [2, 2, 2, 2, 2, 2, 2],
+    complete: false, stop: { reason: "boundary", cell: 42, direction: 2, next: null }
+  });
+  assert.deepEqual(vertical.next, { cell: 7, direction: 2, seam: 0 });
+  const cycle = query(24, 0, 9);
+  assert.deepEqual(cycle.path, {
+    requestedLength: 9, cells: [24, 25, 26, 27, 21, 22, 23], seams: [0, 0, 0, 5, 0, 0], directions: [0, 0, 0, 0, 0, 0, 0],
+    complete: false, stop: { reason: "repeated_cell", cell: 23, direction: 0, next: { cell: 24, direction: 0, seam: 0 } }
+  });
+  assert.deepEqual(cycle.next, { cell: 25, direction: 0, seam: 0 });
+  assert.deepEqual(query(24, 0, 7).path, { ...cycle.path, requestedLength: 7, complete: true, stop: null });
+  const edge = query(44, 2, 3);
+  assert.deepEqual(edge.path, {
+    requestedLength: 3, cells: [44], seams: [], directions: [2], complete: false,
+    stop: { reason: "boundary", cell: 44, direction: 2, next: null }
+  });
+  assert.equal(edge.next, null);
+  assert.deepEqual(query(44, 2, 1).path, { ...edge.path, requestedLength: 1, complete: true, stop: null });
+  assert.deepEqual(query(6, 1, 3).path, {
+    requestedLength: 3, cells: [6, 35, 29], seams: [5, 0], directions: [1, 7, 7], complete: true, stop: null
+  });
+  assert.equal(query(0, 0).path.requestedLength, 5);
+  assert.throws(() => query(0, 0, 50), errorCode("INVALID_LENGTH"));
+});
+
+test("diagnostic rule paths agree with adjudication across all topologies and direction changes", () => {
+  for (const level of Content.LEVELS) {
+    const game = setup({}, { topology: level.topology });
+    const rules = Engine.createRules({ type: level.topology, width: level.width, height: level.height, target: 5 });
+    for (const cell of [0, rules.width - 1, Math.floor(rules.cellCount / 2), rules.cellCount - rules.width, rules.cellCount - 1]) {
+      for (let direction = 0; direction < 8; direction++) {
+        for (const length of [1, 5, 9, rules.cellCount]) {
+          const { path: traced, next } = game.arena.call("arena_rules", { gameId: game.gameId, cell, direction, length });
+          const expected = Engine.tracePath(rules, cell, direction, length);
+          const label = `${level.topology} cell=${cell} direction=${direction} length=${length}`;
+          assert.equal(traced.complete, expected !== null, label);
+          assert.deepEqual({ cells: traced.cells, seams: traced.seams, directions: traced.directions },
+            expected || Engine.tracePath(rules, cell, direction, traced.cells.length), label);
+          assert.deepEqual(next, Engine.step(rules, cell, direction), label);
+          if (!traced.complete) {
+            assert.ok(traced.cells.length < length, label);
+            assert.equal(traced.stop.cell, traced.cells.at(-1), label);
+            assert.equal(traced.stop.direction, traced.directions.at(-1), label);
+            const blocked = Engine.step(rules, traced.stop.cell, traced.stop.direction);
+            assert.deepEqual(traced.stop.next, blocked, label);
+            assert.equal(traced.stop.reason, blocked ? "repeated_cell" : "boundary", label);
+            if (blocked) assert.ok(traced.cells.includes(blocked.cell), label);
+          }
+        }
+      }
+    }
+  }
+});
+
+test("rules carry current progress through start, turns, pause and end without exposing seat notes", () => {
+  const game = setup();
+  const commentator = game.join("commentator");
+  const check = (phase, turn, ply) => {
+    const snapshot = game.state();
+    const expected = { gameId: game.gameId, phase, turn, ply, version: snapshot.version, eventSeq: snapshot.eventSeq };
+    for (const token of [undefined, game.black.token, game.white.token, commentator.token]) {
+      const rules = game.arena.call("arena_rules", { gameId: game.gameId, token });
+      assert.deepEqual(rules.state, expected);
+      for (const key of ["board", "events", "seats", "token", "credentials", "path", "next"]) assert.equal(Object.hasOwn(rules, key), false);
+      assert.ok(!JSON.stringify(rules).includes("private-thought"));
+    }
+    assert.equal(game.state().eventSeq, snapshot.eventSeq, "Rule reads do not create match events");
+  };
+  check("waiting", "black", 0);
+  game.start();
+  check("playing", "black", 0);
+  game.move(0);
+  game.arena.call("arena_note", { gameId: game.gameId, token: game.black.token, text: "private-thought", ply: 1, requestId: "note" });
+  check("playing", "white", 1);
+  game.arena.call("arena_control", { gameId: game.gameId, action: "pause" }, HOST);
+  check("paused", "white", 1);
+  game.arena.call("arena_control", { gameId: game.gameId, action: "resume" }, HOST);
+  game.move(1);
+  check("playing", "black", 2);
+  game.arena.call("arena_resign", { gameId: game.gameId, token: game.black.token, expectedVersion: 2, requestId: "resign" });
+  check("ended", null, 2);
+  assert.throws(() => game.arena.call("arena_rules", { gameId: game.gameId, token: "wrong" }), errorCode("INVALID_TOKEN"));
 });
 
 test("restart restores seats, board and receipts, pauses active games, and exports a credential-free replay", (t) => {

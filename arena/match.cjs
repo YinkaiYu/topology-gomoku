@@ -76,6 +76,28 @@ function controllerFor(levelIndex, mode, difficulty, now, random, size) {
   return controller;
 }
 
+// Use the shared engine's transitions, retaining the prefix that tracePath
+// discards when a requested number of distinct cells cannot be reached.
+function traceRulePath(rules, cell, direction, length) {
+  const path = { requestedLength: length, cells: [cell], seams: [], directions: [direction], complete: false, stop: null };
+  const visited = new Set(path.cells);
+  while (path.cells.length < length) {
+    const next = Engine.step(rules, cell, direction);
+    if (!next || visited.has(next.cell)) {
+      path.stop = { reason: next ? "repeated_cell" : "boundary", cell, direction, next };
+      return path;
+    }
+    path.seams.push(next.seam);
+    cell = next.cell;
+    direction = next.direction;
+    path.cells.push(cell);
+    path.directions.push(direction);
+    visited.add(cell);
+  }
+  path.complete = true;
+  return path;
+}
+
 class Arena extends EventEmitter {
   constructor({ dataDir, now = Date.now, random = Math.random } = {}) {
     super();
@@ -177,12 +199,23 @@ class Arena extends EventEmitter {
       !role || !["note", "speech"].includes(event.type) || event.role === role);
   }
 
+  _progress(match) {
+    return {
+      gameId: match.gameId,
+      phase: match.phase,
+      turn: match.phase === "ended" ? null : (match.controller.game.turn === Engine.HUMAN ? "black" : "white"),
+      ply: match.moves.length,
+      version: match.version,
+      eventSeq: match.eventSeq
+    };
+  }
+
   _snapshot(match, role = null) {
     const game = match.controller.game;
     return clone({
       schemaVersion: 1,
       gameVersion: match.gameVersion,
-      gameId: match.gameId,
+      ...this._progress(match),
       title: match.title,
       mode: match.mode,
       difficulty: match.difficulty,
@@ -192,11 +225,6 @@ class Arena extends EventEmitter {
       height: game.rules.height,
       target: game.rules.target,
       board: Array.from(game.board),
-      turn: match.phase === "ended" ? null : (game.turn === Engine.HUMAN ? "black" : "white"),
-      phase: match.phase,
-      version: match.version,
-      eventSeq: match.eventSeq,
-      ply: match.moves.length,
       moves: match.moves,
       events: this._visibleEvents(match, role),
       seats: match.seats,
@@ -558,6 +586,7 @@ class Arena extends EventEmitter {
     const promptRules = JSON.parse(readPrompt("rules.json"));
     const result = {
       ...promptRules.common,
+      state: this._progress(match),
       topology: game.level.topology, width: game.rules.width, height: game.rules.height, target: game.rules.target,
       pieces: { black: 1, white: -1, empty: 0 },
       directions: Engine.DIRECTIONS.map((direction, index) => ({ index, ...direction })),
@@ -573,7 +602,7 @@ class Arena extends EventEmitter {
       const length = args.length === undefined ? game.rules.target : args.length;
       requireValue(Number.isInteger(length) && length >= 1 && length <= game.board.length,
         "INVALID_LENGTH", "length must be between 1 and the board cell count.");
-      result.path = Engine.tracePath(game.rules, args.cell, args.direction, length);
+      result.path = traceRulePath(game.rules, args.cell, args.direction, length);
       result.next = Engine.step(game.rules, args.cell, args.direction);
     }
     return result;

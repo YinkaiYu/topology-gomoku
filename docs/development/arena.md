@@ -114,6 +114,22 @@ node arena/cli.cjs call arena_state --file .arena/request.json
 
 拓扑使用 `arena_catalog` 返回的标识；内置 AI 固定执白。棋手随想和解说统一通过 `arena_note` 发送，角色由席位 token 确定，不传 `kind`。消息可关联当前或历史局面，不限制己方回合，等待开赛、暂停与终局后也可发送；解说仍受开关控制。每条最多 1000 字符，每个角色每个局面最多 8 条。消息与落子共用 requestId 去重机制，重试不新增气泡，服务重启后仍有效。
 
+### 规则与路径查询
+
+`arena_rules` 每次都返回精简的 `state: {gameId, phase, turn, ply, version, eventSeq}`，与同一时刻 `arena_state` 的相应字段一致。等待、暂停时的 `turn` 表示下一位棋手，只有 `phase: "playing"` 才能落子；终局后 `turn` 为 `null`。此摘要不含棋盘、事件或任何席位的随想，需要当前局面时调用 `arena_state`。
+
+查询路径时同时提供 `cell`、`direction`，`length` 是包含起点在内的不同交点数量，默认取 `target`，最大为当前棋盘交点数。MCP 与 CLI 使用相同范围。返回：
+
+- `path.cells`、`path.directions`：按顺序保留实际经过的不同交点和各处的前进方向；跨接缝后的方向可能改变。
+- `path.seams[i]`：从 `cells[i]` 到 `cells[i+1]` 的接缝位标记。
+- `path.requestedLength`、`path.complete`：请求长度及是否走满。几何查询忽略棋子，不判断是否连五。
+- `path.stop`：走满时为 `null`；否则为 `{reason, cell, direction, next}`。`boundary` 表示从最后交点继续会越过未连接的边界，`next` 为 `null`；`repeated_cell` 表示下一步会重访已有交点，`next` 给出该步的交点、方向和接缝，但不将它追加到路径中。
+- 顶层 `next`：始终是从请求起点出发的一步，与请求长度无关，不是从路径终点出发的一步。因此单步可走和长路径走不满可以同时成立。
+
+例如在 7×7 莫比乌斯棋盘，从 `cell: 0` 向南（`direction: 2`）查询 `length: 8`，得到 `cells: [0,7,14,21,28,35,42]`、`complete: false`、`stop.reason: "boundary"`，而顶层 `next.cell` 仍为 `7`。从中行 `cell: 24` 向东查询 9 个交点，则在经过 7 个不同交点后返回 `repeated_cell`，下一步将回到 `24`。这两种结果都不是规则出错。
+
+接口兼容说明：此前走不满的查询返回 `path: null`，现在始终返回路径对象，调用者应以 `path.complete` 判断是否取得请求长度，不能只检查 `path` 是否存在。原有成功路径的三个数组与顶层 `next` 含义不变。规则计算和胜负判定仍使用共享引擎；更新服务后重连 MCP 以读取新的工具说明。进行中的比赛可继续使用旧服务，结束后再更新重启。
+
 ## 比赛与棋手随想
 
 默认先按 README 完成服务启动与各客户端的 MCP 接入，再在浏览器创建比赛、从设置复制角色邀请、双方加入、从设置开始对弈。单 agent 对内置 AI 只有一个外部选手；双 agent 局分别邀请黑白双方。解说默认关闭，页面不显示解说区，也不为其保留空白。用户主动从设置面板取得解说邀请时开启；加入或离开不阻塞比赛。设置中可再次关闭或开启，关闭会阻止新的解说发言，但保留已有记录。解说 agent 看到 `commentaryEnabled: false` 后停止解说，等待用户再次邀请。
@@ -176,6 +192,8 @@ node arena/cli.cjs call arena_state --file .arena/request.json
 - 第一版不提供云端托管、自动唤醒已结束的客户端、语音合成或视频导出。比赛记录为以后的视频制作保留事件基础，不将该能力标成已完成。
 
 ## 验证
+
+2026-11-04 规则接口回归：207 项测试通过，含 55 项 Arena 测试。新增用例覆盖 7×7 莫比乌斯的开放边界、重复交点、扭转后的方向，以及七种拓扑与共享裁判的一致性；真实 HTTP MCP、stdio MCP 和 CLI 均验证了路径诊断与当前阶段。隔离服务的桌面浏览器验证首页、开赛、落子与随想同步、暂停/恢复、和棋及复盘，未改动界面布局，也未重启正在使用的服务。文档检查通过。
 
 ```sh
 node --test tests/arena-*.test.js

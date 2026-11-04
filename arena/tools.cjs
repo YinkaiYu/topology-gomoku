@@ -16,7 +16,7 @@ const tools = {
     schema: seat, readOnly: true
   },
   arena_rules: {
-    schema: { ...seat, cell: z.number().int().nonnegative().optional(), direction: z.number().int().min(0).max(7).optional(), length: z.number().int().min(1).max(64).optional() },
+    schema: { ...seat, cell: z.number().int().nonnegative().optional(), direction: z.number().int().min(0).max(7).optional(), length: z.number().int().min(1).max(361).optional() },
     readOnly: true
   },
   arena_move: {
