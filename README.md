@@ -12,6 +12,18 @@
     <img alt="B站游玩：3.3万+" src="https://img.shields.io/badge/B站游玩-3.3万%2B-4A6484?style=flat-square" />
     <img alt="原神千星奇域热度：2.4万+" src="https://img.shields.io/badge/原神千星奇域热度-2.4万%2B-5A7D6A?style=flat-square" />
   </p>
+  <p>
+    <img alt="小红书VibeCoding大赛：金奖" src="https://img.shields.io/badge/小红书VibeCoding大赛-金奖-A98240?style=flat-square" />
+    <img alt="小红书国风大赏：Vibe国风潜力奖" src="https://img.shields.io/badge/小红书国风大赏-Vibe国风潜力奖-B85C38?style=flat-square" />
+  </p>
+  <p>
+    <img alt="原神千星奇域：入选「绮衣赏珍·晴暖」" src="https://img.shields.io/badge/原神千星奇域-入选「绮衣赏珍·晴暖」-5A7D6A?style=flat-square" />
+    <img alt="原神千星奇域：入选「绮衣赏珍·赫炽」" src="https://img.shields.io/badge/原神千星奇域-入选「绮衣赏珍·赫炽」-5A7D6A?style=flat-square" />
+  </p>
+  <p>
+    <img alt="知乎AI Works科学季：最热首位" src="https://img.shields.io/badge/知乎AI%20Works科学季-最热首位-4A6484?style=flat-square" />
+    <img alt="Bilibili Toy：Top 100" src="https://img.shields.io/badge/Bilibili%20Toy-Top%20100-4A6484?style=flat-square" />
+  </p>
   <p>一个把五子棋放进圆柱、莫比乌斯带、环面与克莱因瓶的小游戏。</p>
   <img src="promo/exports/topology-gomoku-home-cover-3x4-v1.41.1.png" width="420" alt="拓扑五子棋实际首页：离线双人模式与七个拓扑关卡" />
   <p><sub>游戏首页 · 离线双人模式</sub></p>
@@ -55,9 +67,9 @@
 
 ## 活动与荣誉
 
-- 小红书 VibeCoding 大赛：人文知识赛道入围并获奖，决赛正在进行。
+- 小红书 VibeCoding 大赛：获得金奖（人文知识赛道第一）。
 - 小红书国风 VibeCoding 大赏：获得「Vibe 国风潜力奖」。
-- 原神千星奇域：入选原神官方「绮衣赏珍·晴暖」活动关卡。
+- 原神千星奇域：入选原神官方「绮衣赏珍·晴暖」「绮衣赏珍·赫炽」活动关卡。
 - 知乎 AI Works 科学季：登上「最热」项目首位。
 - Bilibili Toy：全站游戏榜 Top 100。
 
