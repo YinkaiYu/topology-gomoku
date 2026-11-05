@@ -242,3 +242,22 @@
 ### 2026-10-20：1.41.0 预览确认
 
 用户确认当前离线双人预览，授权收尾与发布，版本指定为 1.41.0。此前各段候选状态由本次确认替代；渠道实际上传、审核与上线结果分别记录在 [1.41.0 发布记录](../releases/1.41.0.md)。
+
+## 2026-11-05：归圆形变中的邻边颜色
+
+- 分支：`codex/sphere-seam-colors`，从 `dev@76bef39` 建立；共享绘制修复，尚未合并或发行。
+- 原因：二维轨道按上 / 左、下 / 右分组，三维形变的彩色边线却按左右、上下分组，导致上边与右边在过渡中换色。现在球面两种绘制共用邻边分组；形变几何、透明度、线宽和非球面分组保持不变。
+- 条件：Chromium，1280 × 720，像素比 1；同一空 7 × 7 归圆棋盘、默认视角、固定绘制时间 2000 ms。独立预览直接调用共享 `drawBoard` / `drawCompletion`，使用游戏原有二维 / 三维图标、液态玻璃滑块及其交互模块。
+
+| 形变进度 | 修改前 | 修改后 |
+| --- | --- | --- |
+| 0 | [二维](../../artifacts/sphere-seam-colors/before-sphere-0-1280x720.png) | [二维](../../artifacts/sphere-seam-colors/after-sphere-0-1280x720.png) |
+| 0.25 | [过渡](../../artifacts/sphere-seam-colors/before-sphere-0-25-1280x720.png) | [过渡](../../artifacts/sphere-seam-colors/after-sphere-0-25-1280x720.png) |
+| 0.5 | [过渡](../../artifacts/sphere-seam-colors/before-sphere-0-5-1280x720.png) | [过渡](../../artifacts/sphere-seam-colors/after-sphere-0-5-1280x720.png) |
+| 0.7 | [过渡](../../artifacts/sphere-seam-colors/before-sphere-0-7-1280x720.png) | [过渡](../../artifacts/sphere-seam-colors/after-sphere-0-7-1280x720.png) |
+| 1 | [球面](../../artifacts/sphere-seam-colors/before-sphere-1-1280x720.png) | [球面](../../artifacts/sphere-seam-colors/after-sphere-1-1280x720.png) |
+
+- 可复现命令：让环境可解析 Playwright 后运行 `node scripts/qa-sphere-seam-colors.cjs`。脚本只读加载 Git 基线，不回退工作区；附加 `--serve --port=4328` 可启动独立交互预览，`?revision=before` 查看基线，`?progress=0.5` 固定初始进度。
+- 自动验证：10 张截图、球面二维与完整球面画布逐字节一致；平面、圆柱、环面、莫比乌斯带、克莱因瓶和射影平面在 0.5 进度的前后画布逐字节一致；二维 / 三维按钮动画和滑块拖至 0.5 通过。每对邻边各采样 129 点，球面上 / 左与下 / 右对应点最大距离为 `8.9e-16`。[完整结果](../../artifacts/sphere-seam-colors/results.json) 保存条件与画布摘要。
+- 视觉检查：过渡中上 / 左始终为绿色，下 / 右始终为黄色；外侧辅助轨道与曲面边线分组一致。未更改投影形状，也未改动对弈室独有界面。本轮为本地 Chromium 验证，未重复宿主真机验证。
+- 预览确认：待用户确认。
