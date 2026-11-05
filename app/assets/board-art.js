@@ -45,6 +45,11 @@
     sphere: { x: 0.42, y: -0.58, z: -0.08, scale: 1 }
   };
 
+  var SPHERE_BOUNDARY_SIDES = {
+    x: ["top", "left"],
+    y: ["bottom", "right"]
+  };
+
   function clamp01(value) {
     return Math.max(0, Math.min(1, value));
   }
@@ -274,8 +279,8 @@
   function drawSphereRails(ctx, game, layout, time, settings) {
     var offset = railOffset(layout, settings);
     var pairs = [
-      { color: TOKENS.teal, pulse: seamPulse(game, Engine.SEAM_X, time), sides: ["top", "left"] },
-      { color: TOKENS.gold, pulse: seamPulse(game, Engine.SEAM_Y, time), sides: ["bottom", "right"] }
+      { color: TOKENS.teal, pulse: seamPulse(game, Engine.SEAM_X, time), sides: SPHERE_BOUNDARY_SIDES.x },
+      { color: TOKENS.gold, pulse: seamPulse(game, Engine.SEAM_Y, time), sides: SPHERE_BOUNDARY_SIDES.y }
     ];
     pairs.forEach(function drawAdjacentPair(pair) {
       ctx.save();
@@ -840,7 +845,7 @@
     ctx.restore();
   }
 
-  function drawSurfaceBoundary(ctx, game, layout, width, height, orientation, axis, color) {
+  function drawSurfaceBoundary(ctx, game, layout, width, height, orientation, sides, color) {
     var samples = game.level.topology === "sphere" ? 64 : 42;
     ctx.save();
     ctx.strokeStyle = color;
@@ -848,11 +853,13 @@
     ctx.lineCap = "round";
     ctx.shadowColor = color;
     ctx.shadowBlur = effectPixels(ctx, 5);
-    [0, 1].forEach(function drawEdge(edge) {
+    sides.forEach(function drawEdge(side) {
+      var vertical = side === "left" || side === "right";
+      var edge = side === "right" || side === "bottom" ? 1 : 0;
       ctx.beginPath();
       for (var sample = 0; sample <= samples; sample += 1) {
         var amount = sample / samples;
-        var point = axis === "x"
+        var point = vertical
           ? surfacePoint(game, layout, width, height, edge, amount, orientation)
           : surfacePoint(game, layout, width, height, amount, edge, orientation);
         if (sample === 0) { ctx.moveTo(point.x, point.y); } else { ctx.lineTo(point.x, point.y); }
@@ -1029,10 +1036,12 @@
     ctx.save();
     ctx.globalAlpha *= (0.36 + morph * 0.5) * boundaryFade;
     if (game.level.xConnection || game.level.topology === "sphere") {
-      drawSurfaceBoundary(ctx, game, layout, layout.width, layout.height, orientation, "x", "rgba(63,140,135,0.78)");
+      var xSides = game.level.topology === "sphere" ? SPHERE_BOUNDARY_SIDES.x : ["left", "right"];
+      drawSurfaceBoundary(ctx, game, layout, layout.width, layout.height, orientation, xSides, "rgba(63,140,135,0.78)");
     }
     if (game.level.yConnection || game.level.topology === "sphere") {
-      drawSurfaceBoundary(ctx, game, layout, layout.width, layout.height, orientation, "y", "rgba(199,146,68,0.76)");
+      var ySides = game.level.topology === "sphere" ? SPHERE_BOUNDARY_SIDES.y : ["top", "bottom"];
+      drawSurfaceBoundary(ctx, game, layout, layout.width, layout.height, orientation, ySides, "rgba(199,146,68,0.76)");
     }
     ctx.restore();
     if (morph < 0.98) {
