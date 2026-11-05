@@ -18,6 +18,7 @@
   let levels = Content.LEVELS;
   let matches = [];
   let state = null;
+  let stateReceivedAt = 0;
   let source = null;
   let gameEpoch = 0;
   let replayPly = null;
@@ -337,6 +338,7 @@
     const winner = match.winner === 1 ? "black" : match.winner === -1 ? "white" : match.winner;
     if (match.winReason === "timeout") return [names[winner === "black" ? "white" : "black"] + "超时", names[winner] + "胜"];
     if (match.winReason === "resign") return [names[winner === "black" ? "white" : "black"] + "认输", names[winner] + "胜"];
+    if (match.winReason === "rule_violation") return [names[winner === "black" ? "white" : "black"] + "违规判负", names[winner] + "胜"];
     if (match.winReason === "draw_agreement") return ["双方和棋"];
     if (match.mode === "ai" && match.winReason === "settled") return ["定局"];
     if (match.mode === "ai" && match.winReason === "blocked") return winner ? [names[winner] + "获胜", "封锁"] : ["已封住白方连线"];
@@ -345,25 +347,39 @@
     if (match.outcome === "stopped" || match.winReason === "stopped") return ["房主结束"];
     return ["对弈结束"];
   }
+  function renderPosition() {
+    if (!state) return;
+    const joined = isJoined(state.seats?.black) && isJoined(state.seats?.white);
+    const preparing = !joined ? "等待入席" : state.seats.black.ready && state.seats.white.ready ? "准备就绪" : state.seats.black.ready ? "等待白方就绪" : state.seats.white.ready ? "等待黑方就绪" : "双方准备中";
+    const preparation = state.preparation;
+    const countdown = state.phase === "waiting" && joined && Number.isFinite(preparation?.deadline);
+    const remaining = countdown ? Math.max(0, preparation.remainingMs - (performance.now() - stateReceivedAt)) : 0;
+    const seconds = Math.ceil(remaining / 1000);
+    const status = state.phase === "ended" ? outcomeParts(state) : countdown ? ["准备中", Math.floor(seconds / 60) + ":" + String(seconds % 60).padStart(2, "0")] : [state.phase === "playing" ? (names[state.turn] || "") + "行棋" : state.phase === "paused" ? "已暂停" : preparing];
+    const returnLabel = state.phase === "ended" ? "回到定局" : "回到当前棋局";
+    const positionParts = replayPly === null ? ["第 " + state.ply + " 手", ...status] : ["第 " + replayPly + " / " + state.ply + " 手", returnLabel];
+    const node = $("turn-label"), key = JSON.stringify(positionParts);
+    if (node.dataset.position !== key) {
+      node.dataset.position = key;
+      spacedText(node, positionParts);
+      if (countdown && replayPly === null) node.lastElementChild.classList.add("preparation-countdown");
+    }
+  }
   function render() {
     if (!state) return;
     const level = levelFor(state.topology);
-    const joined = isJoined(state.seats?.black) && isJoined(state.seats?.white);
     $("welcome").hidden = true;
     $("match").hidden = false;
     placeSettings("match");
     text("match-level", level.name);$("match-glyph").src="/assets/topologies/"+state.topology+".svg";
-    const preparing = !joined ? "等待入席" : state.seats.black.ready && state.seats.white.ready ? "准备就绪" : state.seats.black.ready ? "等待白方就绪" : state.seats.white.ready ? "等待黑方就绪" : "双方准备中";
-    const status = state.phase === "ended" ? outcomeParts(state) : [state.phase === "playing" ? (names[state.turn] || "") + "行棋" : state.phase === "paused" ? "已暂停" : preparing];
-    const returnLabel = state.phase === "ended" ? "回到定局" : "回到当前棋局";
-    const positionParts = replayPly === null ? ["第 " + state.ply + " 手", ...status] : ["第 " + replayPly + " / " + state.ply + " 手", returnLabel];
-    spacedText($("turn-label"), positionParts);
+    renderPosition();
     renderConversation(); renderSeat("black"); renderSeat("white"); renderCommentary(); renderClocks();
     $("match-settings").hidden = false;
     $("pause-button").hidden = state.phase !== "playing";
     $("resume-button").hidden = state.phase !== "paused";
     $("stop-button").hidden = state.phase === "ended";
-    for(const id of ["pause-button","resume-button","stop-button","commentary-toggle"])$(id).disabled=pending;
+    $("adjudicate-button").hidden = state.phase === "ended";
+    for(const id of ["pause-button","resume-button","stop-button","commentary-toggle","adjudicate-button"])$(id).disabled=pending;
     const moves = state.moves || [];
     $("replay-range").disabled = !moves.length;
     $("replay-range").max = String(moves.length);
@@ -386,6 +402,7 @@
     if (!next || !Array.isArray(next.board)) return;
     if (state?.gameId === next.gameId && Number(next.eventSeq) < lastStateSequence) return;
     state = next;
+    stateReceivedAt = performance.now();
     lastStateSequence = Number(next.eventSeq) || 0;
     if (replayPly !== null) replayPly = Math.min(replayPly, next.moves?.length || 0);
     render();
@@ -529,12 +546,12 @@
     replayPly = Math.max(0, Math.min(Number(ply), state.moves.length));
     render();
   }
-  async function control(action) {
+  async function control(action, extra = {}) {
     if (!state || pending) return;
     pending = true;
     render();
     try {
-      const result = await call("arena_control", { gameId: state.gameId, action }, true);
+      const result = await call("arena_control", { gameId: state.gameId, action, ...extra }, true);
       applyState(result.state || result);
     } finally { pending = false; render(); }
   }
@@ -591,6 +608,7 @@
     if (event.text) return event.text;
     if (event.type === "profile") return names[event.role]+"更新了棋手资料";
     if (event.type === "ready") return names[event.role]+"准备就绪";
+    if (event.type === "preparation") return "开始准备";
     if (event.type === "resign") return names[event.role] + "认输";
     if (event.type === "commentary") return event.enabled ? "开启解说" : "关闭解说";
     if (event.type === "draw") return names[event.role] + ({ offer: "提议和棋", accept: "接受和棋", decline: "拒绝和棋", withdraw: "撤回和棋提议" })[event.action];
@@ -598,6 +616,7 @@
     if (event.type === "result" && event.winReason === "resign") return names[event.winner] + "获胜（对方认输）";
     if (event.type === "result" && event.winReason === "draw_agreement") return "双方同意和棋";
     if (event.type === "result" && event.winReason === "timeout") return names[event.winner] + "获胜（对方超时）";
+    if (event.type === "result" && event.winReason === "rule_violation") return names[event.winner] + "获胜（对方违规判负）";
     if (event.type === "result") return event.winReason === "settled" ? "定局" : event.winReason === "blocked" ? "已封住白方连线" : event.winner ? (names[event.winner] || "") + "获胜" : event.outcome === "draw" ? "和棋" : "棋局结束";
     if (event.type === "move" || event.kind === "move") {
       const move = (state.moves || []).find((item) => item.ply === event.ply);
@@ -694,6 +713,7 @@
         const height = readIntegerInput("board-height", "棋盘高度");
         const result = await call("arena_create", {
           topology, mode: document.querySelector('input[name="mode"]:checked').value,
+          playPolicy: document.querySelector('input[name="play-policy"]:checked').value,
           difficulty: document.querySelector('input[name="difficulty"]:checked').value,
           width, height, players: drafts, clock: selectedClock()
         }, true);
@@ -717,6 +737,16 @@
   $("pause-button").addEventListener("click", () => guarded(() => control("pause")));
   $("resume-button").addEventListener("click", () => guarded(async () => {await control("resume");closeSettings();}));
   $("stop-button").addEventListener("click", () => $("stop-dialog").showModal());
+  $("adjudicate-button").addEventListener("click", () => $("adjudicate-dialog").showModal());
+  document.querySelectorAll("[data-disqualify]").forEach(button => button.addEventListener("click", () => {
+    const role = button.dataset.disqualify, gameId = state.gameId, winner = role === "black" ? "white" : "black";
+    $("adjudicate-dialog").close();
+    confirmMutation(names[role] + "违规判负？", names[winner] + "获胜，棋局立即结束。", async () => {
+      if (state?.gameId !== gameId) throw new Error("棋局已切换，请重新确认。");
+      await control("disqualify", { role });
+      closeSettings();
+    });
+  }));
   $("confirm-stop").addEventListener("click", () => guarded(async () => { await control("stop"); $("stop-dialog").close(); }));
   $("timeline-button").addEventListener("click", () => { renderTimeline(); $("timeline-dialog").showModal(); });
   $("export-button").addEventListener("click", () => guarded(exportReplay));
@@ -734,7 +764,7 @@
   for(const role of ["black","white"])$("setup-"+role).addEventListener("click",()=>openProfile(role,true));
   document.addEventListener("click",event=>{const button=event.target.closest("[data-profile]");if(button)openProfile(button.dataset.profile);});
   document.querySelectorAll('input[type="number"]').forEach(input => input.addEventListener("input", () => input.removeAttribute("aria-invalid")));
-  setInterval(renderClocks, 200);
+  setInterval(() => { renderClocks(); if (streamConnected && state?.phase === "waiting") renderPosition(); }, 200);
   $("conversation").addEventListener("scroll", fadeConversation, { passive: true });
   $("conversation").addEventListener("wheel", interruptConversationMotion, { passive: true });
   $("conversation").addEventListener("pointerdown", interruptConversationMotion, { passive: true });

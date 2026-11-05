@@ -23,7 +23,7 @@ function setup(options = {}, create = {}) {
 }
 test("a 5+5 clock starts on play, charges only the active player and increments once per accepted move", () => {
   const g = setup();
-  g.advance(600000);
+  g.advance(10000);
   assert.equal(g.state().clock.active, null);
   assert.deepEqual(g.state().clock.remainingMs, { black: 300000, white: 300000 });
   g.control("start"); g.advance(12000);
@@ -224,6 +224,6 @@ test("untimed guidance preserves the participation loop without inventing a cloc
   const g = setup({}, { clock: null }); g.control("start");
   const state = g.arena.call("arena_state", { gameId: g.gameId, token: g.tokens.black });
   assert.equal(state.clock, null); assert.equal(state.guidance.action, "act");
-  assert.match(state.guidance.text, /不计时/);
+  assert.match(state.guidance.text, /行棋不限时/);
   assert.doesNotMatch(state.guidance.text, /余时不足|剩余|加.*秒/);
 });

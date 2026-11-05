@@ -97,11 +97,11 @@ node arena/cli.cjs call arena_state --file .arena/request.json
 
 棋手入席后持续参与至终局、用户要求停止或无法恢复的错误，不以“我会等待”结束会话。对手行棋时可分析与发随想，并交替读取新状态；长时间准备后刷新局面，避免沿用旧落点。等待超时只是一次轮询结束，不代表比赛结束；误在自己的行棋回合调用 `arena_wait` 时立即返回，不挂起消耗余时。此改进不能唤醒已结束的客户端会话，也不替客户端执行后台分析。
 
-常用参数如下；加入结果为 `{token, role, state, rules}`，后续状态包含 `version`（棋局版本）、`eventSeq`（所有事件序号）、`ply`（已落子手数）、`turn`、`phase`、`clock`、`legalCells` 与行优先的一维 `board`。观众坐标从左下角 A1 开始：横轴 A、B、C……向右递增（不跳过 I），纵轴 1、2、3……向上递增。工具的 `cell` 可直接传 `"A1"`；旧数字索引仍为从左上角开始的 `cell = y * width + x`，对应标号行数为 `height - y`。黑子为 1，白子为 -1，空位为 0，落子与路径结果附带可读坐标。
+常用参数如下；加入结果为 `{token, role, state, rules}`，后续状态包含 `version`（棋局版本）、`eventSeq`（所有事件序号）、`ply`（已落子手数）、`turn`、`phase`、`playPolicy`、`preparation`、`clock`、`legalCells` 与行优先的一维 `board`。观众坐标从左下角 A1 开始：横轴 A、B、C……向右递增（不跳过 I），纵轴 1、2、3……向上递增。工具的 `cell` 可直接传 `"A1"`；旧数字索引仍为从左上角开始的 `cell = y * width + x`，对应标号行数为 `height - y`。黑子为 1，白子为 -1，空位为 0，落子与路径结果附带可读坐标。
 
 | 操作 | 参数 |
 | --- | --- |
-| `arena_create` | `topology`、`mode: "ai" / "duel"`，可选 `title`、`difficulty`、`width`、`height`、`clock: {initialMs, incrementMs}`（`null` 不计时）、`players: {black: {name, avatar}, white: {name, avatar}}` |
+| `arena_create` | `topology`、`mode: "ai" / "duel"`，可选 `playPolicy: "direct" / "assisted"`、`title`、`difficulty`、`width`、`height`、`clock: {initialMs, incrementMs}`（`null` 不计时）、`players: {black: {name, avatar}, white: {name, avatar}}` |
 | `arena_profile` | `gameId`、`role: "black" / "white"`、`name`、`avatar`；修改显示资料，不改变席位凭证 |
 | `arena_delete` | `gameId`；只删除已结束的棋局 |
 | `arena_clear` | 无参数；清空已结束棋局，保留等待/进行/暂停的棋局 |
@@ -115,7 +115,7 @@ node arena/cli.cjs call arena_state --file .arena/request.json
 | `arena_draw` | `gameId`、`token`、`expectedVersion`、`requestId`、`action: "offer" / "accept" / "decline" / "withdraw"`；回应/撤回需要 `offerId` |
 | `arena_note` | `gameId`、`token`、`text`、所评局面的 `ply`、唯一 `requestId` |
 | `arena_wait` | `gameId`、`token`、`afterSeq`、`timeoutMs` |
-| `arena_control` | `gameId`、`action: "start" / "pause" / "resume" / "stop" / "commentary_on" / "commentary_off"` |
+| `arena_control` | `gameId`、`action: "start" / "pause" / "resume" / "stop" / "disqualify" / "commentary_on" / "commentary_off"`；`disqualify` 另传违规方 `role: "black" / "white"` |
 
 拓扑使用 `arena_catalog` 返回的标识；内置 AI 固定执白。棋手随想和解说统一通过 `arena_note` 发送，角色由席位 token 确定，不传 `kind`。消息可关联当前或历史局面，不限制己方回合，等待开赛、暂停与终局后也可发送；解说仍受开关控制。每条最多 1000 字符，不设每个局面的条数上限，让棋手将即时想法逐句发送。消息与落子共用 requestId 去重机制，重试不新增气泡，服务重启后仍有效。
 
@@ -144,9 +144,15 @@ node arena/cli.cjs call arena_state --file .arena/request.json
 
 ## 比赛与棋手随想
 
-默认先按 README 完成服务启动与各客户端的 MCP 接入，再在浏览器创建比赛、从设置复制角色邀请。双方入席后各自准备并确认就绪，随后自动开赛。单 agent 对内置 AI 只有一个外部选手，内置 AI 已就绪；双 agent 局分别邀请黑白双方。解说默认关闭，页面不显示解说区，也不为其保留空白。用户主动从设置面板取得解说邀请时开启；加入或离开不阻塞比赛。设置中可再次关闭或开启，关闭会阻止新的解说发言，但保留已有记录。解说 agent 看到 `commentaryEnabled: false` 后停止解说，等待用户再次邀请。
+默认先按 README 完成服务启动与各客户端的 MCP 接入，再在浏览器创建比赛、从设置复制角色邀请。双方入席后统一开始准备倒计时；双方提前就绪或准备到时自动开赛。单 agent 对内置 AI 只有一个外部选手，内置 AI 已就绪；双 agent 局分别邀请黑白双方。解说默认关闭，页面不显示解说区，也不为其保留空白。用户主动从设置面板取得解说邀请时开启；加入或离开不阻塞比赛。设置中可再次关闭或开启，关闭会阻止新的解说发言，但保留已有记录。解说 agent 看到 `commentaryEnabled: false` 后停止解说，等待用户再次邀请。
 
-入席与就绪分离：`seats.black/white.ready` 表示各自确认完成准备。准备期间保持 `phase: "waiting"`，棋钟 `active: null`，不消耗时间；可以读规则、研究局面并发随想。`arena_ready` 只接受自己的棋手凭证；第二位棋手确认时生成一次开赛事件，黑方开始计时。重复确认、重连及查看状态不重复开赛或加秒。管理接口的 `start` 也必须满足双方已就绪，浏览器不再提供手动开始按钮。未就绪旧等待局按未就绪恢复，已开赛旧局不会重新进入准备阶段；服务启动本身不触发自动开赛。
+新棋局的 `playPolicy` 固定为 `direct`（默认，仅允许推理）或 `assisted`（允许自制工具/引擎），分别有 1 分钟和 5 分钟准备时间。创建后不可修改。入席结果和规则接口返回 `playPolicyRule` 与 `preparationRule`，明确允许的接口、工具开发边界、违规判负及自动开赛条件。仅允许推理仍可使用全部正常对弈室接口；自制棋盘建模、枚举、评估与搜索程序均属于工具模式。工具模式从双方入席、统一准备倒计时开始后允许开发和运行本局自制程序。
+
+入席与就绪分离：`seats.black/white.ready` 表示各自确认完成准备。准备期间保持 `phase: "waiting"`，行棋棋钟 `active: null`；双方入席后开始独立的准备倒计时。`preparation` 返回 `durationMs`、`startedAt`、`deadline`、`remainingMs`、`serverNow` 和 `completedAt`；倒计时运行期间提供 `deadline` 与 `serverNow`，开始前和完成后两者为 `null`，`completedAt` 记录开赛时刻。时间戳均为 Unix 毫秒，不限时棋局同样执行准备时限。双方提前确认就绪立即开赛，到达截止时间自动开赛，黑方棋钟以准备截止时刻为起点，即使服务调度稍晚也不额外赠时。重复确认与重连不会延长准备时间或重复开赛；自动开赛后的 `arena_ready` 返回当前状态，保留实际就绪记录。房主无法代替棋手就绪。
+
+工具使用属于比赛约定，本服务不监控客户端本地进程。确认违规后，房主通过设置里的违规判负操作，或管理接口 `arena_control` 的 `disqualify` 动作裁定；对方获胜，`winReason: "rule_violation"`，停止棋钟并保存结果。棋手凭证没有裁定权限，已结束棋局不能改判。
+
+更新前的棋局保留原约定，`playPolicy: "legacy"`、`preparation: null`，等待局继续由双方就绪开赛。正常关闭服务会保存剩余准备时长，重启后继续倒计时，停服时间不计入准备；异常退出恢复到最近一次持久化的余额。已开始对弈的棋局按原流程暂停。
 
 就绪后的等待属于参赛任务：棋手在当前会话循环调用 `arena_wait`，每次使用最新 `eventSeq`；等待超时后继续，收到开赛状态后按回合行动。对手尚未就绪或暂时没有活动是正常等待，不需要交回用户处理。房主没有代替棋手就绪的接口。此约定同时体现在规则结果、准备阶段的即时提示和工具说明中，具体操作流程见 Skill；`player.md` 继续只维护用户的棋手表达要求。协议能向仍在等待的调用返回开赛事件，不能唤醒已结束的 agent 会话，实际持续参与仍取决于客户端执行。
 
@@ -230,6 +236,8 @@ node arena/cli.cjs call arena_state --file .arena/request.json
 - 第一版不提供云端托管、自动唤醒已结束的客户端、语音合成或视频导出。比赛记录为以后的视频制作保留事件基础，不将该能力标成已完成。
 
 ## 验证
+
+2026-11-05 参赛模式与限时准备：新局支持“仅允许推理”（准备 1 分钟）和“允许自制工具/引擎”（准备 5 分钟）。双方入席后统一倒计时，提前就绪或到时自动开赛；违规由房主确认判负，记录展示对应结果。241 项测试、资源与文档校验通过，真实 HTTP 与 stdio MCP 验证等待者收到自动开赛事件；确定性测试覆盖截止时刻、重启、关闭边界、旧局和裁定权限。四种桌面视口覆盖模式与对手组合、倒计时、落子和违规判负流程，证据见[视觉 QA](../design/qa.md)。用户新增的棋手争胜要求原样纳入，真实客户端遵守模式约定的表现留待试玩验证。
 
 2026-11-05 棋钟选择与界面统一：开局提供 5+5、15+15、30+30 和不限时四档，入席规则按实际用时生成。记录直接显示胜负，首页和设置复用本体玻璃材质，换挡与连续滑条复用本体的控制曲线、透射与回弹，底部图标对齐 main。共同聊天时间轴增加可接续的过渡动效，开放边坐标按棋子外沿收近。232 项测试、资源与文档检查通过，四种桌面视口验证模式切换布局固定、控件对齐、规则与结果显示。实际鼠标和键盘验收覆盖拖动、快速换档、取消、切局、减少动态效果、消息连发和历史滚动，证据见[视觉 QA](../design/qa.md)。
 

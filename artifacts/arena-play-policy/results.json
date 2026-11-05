@@ -1,0 +1,686 @@
+{
+  "baseline": "60f8de0",
+  "fixture": "Default home and same synthetic empty board with both players preparing",
+  "results": [
+    {
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "home": {
+        "panel": {
+          "x": 725,
+          "y": 42,
+          "width": 440,
+          "height": 636,
+          "top": 42,
+          "right": 1165,
+          "bottom": 678,
+          "left": 725
+        },
+        "controls": [
+          {
+            "x": 751,
+            "y": 62,
+            "width": 388,
+            "height": 44,
+            "top": 62,
+            "right": 1139,
+            "bottom": 106,
+            "left": 751
+          },
+          {
+            "x": 751,
+            "y": 120,
+            "width": 388,
+            "height": 46,
+            "top": 120,
+            "right": 1139,
+            "bottom": 166,
+            "left": 751
+          },
+          {
+            "x": 751,
+            "y": 248,
+            "width": 388,
+            "height": 144,
+            "top": 248,
+            "right": 1139,
+            "bottom": 392,
+            "left": 751
+          },
+          {
+            "x": 751,
+            "y": 404,
+            "width": 388,
+            "height": 35,
+            "top": 404,
+            "right": 1139,
+            "bottom": 439,
+            "left": 751
+          },
+          {
+            "x": 751,
+            "y": 178,
+            "width": 388,
+            "height": 58,
+            "top": 178,
+            "right": 1139,
+            "bottom": 236,
+            "left": 751
+          },
+          {
+            "x": 751,
+            "y": 480,
+            "width": 388,
+            "height": 58,
+            "top": 480,
+            "right": 1139,
+            "bottom": 538,
+            "left": 751
+          },
+          {
+            "x": 751,
+            "y": 610,
+            "width": 388,
+            "height": 48,
+            "top": 610,
+            "right": 1139,
+            "bottom": 658,
+            "left": 751
+          }
+        ],
+        "labels": [
+          {
+            "x": 756,
+            "y": 183,
+            "width": 187.5,
+            "height": 48,
+            "top": 183,
+            "right": 943.5,
+            "bottom": 231,
+            "left": 756
+          },
+          {
+            "x": 946.5,
+            "y": 183,
+            "width": 187.5,
+            "height": 48,
+            "top": 183,
+            "right": 1134,
+            "bottom": 231,
+            "left": 946.5
+          }
+        ],
+        "horizontalOverflow": false,
+        "verticalOverflow": false,
+        "material": true,
+        "labelsFit": true
+      },
+      "keyboardSelection": true,
+      "noFocusOutline": true,
+      "noNativeTooltips": true,
+      "fixedPolicyLayout": true,
+      "countdownUpdates": true,
+      "stableBoardAtStart": true,
+      "untimedPreparationDeadline": true,
+      "cases": [
+        {
+          "mode": "duel",
+          "playPolicy": "direct",
+          "durationMs": 60000,
+          "begins": "deadline",
+          "firstMove": true
+        },
+        {
+          "mode": "duel",
+          "playPolicy": "assisted",
+          "durationMs": 300000,
+          "begins": "bothReady",
+          "firstMove": true
+        },
+        {
+          "mode": "ai",
+          "playPolicy": "direct",
+          "durationMs": 60000,
+          "begins": "deadline",
+          "firstMove": true
+        },
+        {
+          "mode": "ai",
+          "playPolicy": "assisted",
+          "durationMs": 300000,
+          "begins": "bothReady",
+          "firstMove": true
+        }
+      ],
+      "adjudications": [
+        {
+          "role": "black",
+          "before": "playing",
+          "cancelledWithoutChange": true,
+          "winner": "white",
+          "winReason": "rule_violation"
+        },
+        {
+          "role": "white",
+          "before": "waiting",
+          "cancelledWithoutChange": true,
+          "winner": "black",
+          "winReason": "rule_violation"
+        }
+      ],
+      "errors": []
+    },
+    {
+      "viewport": {
+        "width": 1920,
+        "height": 1080
+      },
+      "home": {
+        "panel": {
+          "x": 1045,
+          "y": 184,
+          "width": 440,
+          "height": 712,
+          "top": 184,
+          "right": 1485,
+          "bottom": 896,
+          "left": 1045
+        },
+        "controls": [
+          {
+            "x": 1075,
+            "y": 210,
+            "width": 380,
+            "height": 44,
+            "top": 210,
+            "right": 1455,
+            "bottom": 254,
+            "left": 1075
+          },
+          {
+            "x": 1075,
+            "y": 278,
+            "width": 380,
+            "height": 46,
+            "top": 278,
+            "right": 1455,
+            "bottom": 324,
+            "left": 1075
+          },
+          {
+            "x": 1075,
+            "y": 418,
+            "width": 380,
+            "height": 164,
+            "top": 418,
+            "right": 1455,
+            "bottom": 582,
+            "left": 1075
+          },
+          {
+            "x": 1075,
+            "y": 600,
+            "width": 380,
+            "height": 35,
+            "top": 600,
+            "right": 1455,
+            "bottom": 635,
+            "left": 1075
+          },
+          {
+            "x": 1075,
+            "y": 342,
+            "width": 380,
+            "height": 58,
+            "top": 342,
+            "right": 1455,
+            "bottom": 400,
+            "left": 1075
+          },
+          {
+            "x": 1075,
+            "y": 682,
+            "width": 380,
+            "height": 58,
+            "top": 682,
+            "right": 1455,
+            "bottom": 740,
+            "left": 1075
+          },
+          {
+            "x": 1075,
+            "y": 822,
+            "width": 380,
+            "height": 48,
+            "top": 822,
+            "right": 1455,
+            "bottom": 870,
+            "left": 1075
+          }
+        ],
+        "labels": [
+          {
+            "x": 1080,
+            "y": 347,
+            "width": 183.5,
+            "height": 48,
+            "top": 347,
+            "right": 1263.5,
+            "bottom": 395,
+            "left": 1080
+          },
+          {
+            "x": 1266.5,
+            "y": 347,
+            "width": 183.5,
+            "height": 48,
+            "top": 347,
+            "right": 1450,
+            "bottom": 395,
+            "left": 1266.5
+          }
+        ],
+        "horizontalOverflow": false,
+        "verticalOverflow": false,
+        "material": true,
+        "labelsFit": true
+      },
+      "keyboardSelection": true,
+      "noFocusOutline": true,
+      "noNativeTooltips": true,
+      "fixedPolicyLayout": true,
+      "countdownUpdates": true,
+      "stableBoardAtStart": true,
+      "untimedPreparationDeadline": true,
+      "cases": [
+        {
+          "mode": "duel",
+          "playPolicy": "direct",
+          "durationMs": 60000,
+          "begins": "deadline",
+          "firstMove": true
+        },
+        {
+          "mode": "duel",
+          "playPolicy": "assisted",
+          "durationMs": 300000,
+          "begins": "bothReady",
+          "firstMove": true
+        },
+        {
+          "mode": "ai",
+          "playPolicy": "direct",
+          "durationMs": 60000,
+          "begins": "deadline",
+          "firstMove": true
+        },
+        {
+          "mode": "ai",
+          "playPolicy": "assisted",
+          "durationMs": 300000,
+          "begins": "bothReady",
+          "firstMove": true
+        }
+      ],
+      "adjudications": [
+        {
+          "role": "black",
+          "before": "playing",
+          "cancelledWithoutChange": true,
+          "winner": "white",
+          "winReason": "rule_violation"
+        },
+        {
+          "role": "white",
+          "before": "waiting",
+          "cancelledWithoutChange": true,
+          "winner": "black",
+          "winReason": "rule_violation"
+        }
+      ],
+      "errors": []
+    },
+    {
+      "viewport": {
+        "width": 1024,
+        "height": 768
+      },
+      "home": {
+        "panel": {
+          "x": 573.046875,
+          "y": 66,
+          "width": 410,
+          "height": 636,
+          "top": 66,
+          "right": 983.046875,
+          "bottom": 702,
+          "left": 573.046875
+        },
+        "controls": [
+          {
+            "x": 599.046875,
+            "y": 86,
+            "width": 358,
+            "height": 44,
+            "top": 86,
+            "right": 957.046875,
+            "bottom": 130,
+            "left": 599.046875
+          },
+          {
+            "x": 599.046875,
+            "y": 144,
+            "width": 358,
+            "height": 46,
+            "top": 144,
+            "right": 957.046875,
+            "bottom": 190,
+            "left": 599.046875
+          },
+          {
+            "x": 599.046875,
+            "y": 272,
+            "width": 358,
+            "height": 144,
+            "top": 272,
+            "right": 957.046875,
+            "bottom": 416,
+            "left": 599.046875
+          },
+          {
+            "x": 599.046875,
+            "y": 428,
+            "width": 358,
+            "height": 35,
+            "top": 428,
+            "right": 957.046875,
+            "bottom": 463,
+            "left": 599.046875
+          },
+          {
+            "x": 599.046875,
+            "y": 202,
+            "width": 358,
+            "height": 58,
+            "top": 202,
+            "right": 957.046875,
+            "bottom": 260,
+            "left": 599.046875
+          },
+          {
+            "x": 599.046875,
+            "y": 504,
+            "width": 358,
+            "height": 58,
+            "top": 504,
+            "right": 957.046875,
+            "bottom": 562,
+            "left": 599.046875
+          },
+          {
+            "x": 599.046875,
+            "y": 634,
+            "width": 358,
+            "height": 48,
+            "top": 634,
+            "right": 957.046875,
+            "bottom": 682,
+            "left": 599.046875
+          }
+        ],
+        "labels": [
+          {
+            "x": 604.046875,
+            "y": 207,
+            "width": 172.5,
+            "height": 48,
+            "top": 207,
+            "right": 776.546875,
+            "bottom": 255,
+            "left": 604.046875
+          },
+          {
+            "x": 779.546875,
+            "y": 207,
+            "width": 172.5,
+            "height": 48,
+            "top": 207,
+            "right": 952.046875,
+            "bottom": 255,
+            "left": 779.546875
+          }
+        ],
+        "horizontalOverflow": false,
+        "verticalOverflow": false,
+        "material": true,
+        "labelsFit": true
+      },
+      "keyboardSelection": true,
+      "noFocusOutline": true,
+      "noNativeTooltips": true,
+      "fixedPolicyLayout": true,
+      "countdownUpdates": true,
+      "stableBoardAtStart": true,
+      "untimedPreparationDeadline": true,
+      "cases": [
+        {
+          "mode": "duel",
+          "playPolicy": "direct",
+          "durationMs": 60000,
+          "begins": "deadline",
+          "firstMove": true
+        },
+        {
+          "mode": "duel",
+          "playPolicy": "assisted",
+          "durationMs": 300000,
+          "begins": "bothReady",
+          "firstMove": true
+        },
+        {
+          "mode": "ai",
+          "playPolicy": "direct",
+          "durationMs": 60000,
+          "begins": "deadline",
+          "firstMove": true
+        },
+        {
+          "mode": "ai",
+          "playPolicy": "assisted",
+          "durationMs": 300000,
+          "begins": "bothReady",
+          "firstMove": true
+        }
+      ],
+      "adjudications": [
+        {
+          "role": "black",
+          "before": "playing",
+          "cancelledWithoutChange": true,
+          "winner": "white",
+          "winReason": "rule_violation"
+        },
+        {
+          "role": "white",
+          "before": "waiting",
+          "cancelledWithoutChange": true,
+          "winner": "black",
+          "winReason": "rule_violation"
+        }
+      ],
+      "errors": []
+    },
+    {
+      "viewport": {
+        "width": 1440,
+        "height": 1080
+      },
+      "home": {
+        "panel": {
+          "x": 805,
+          "y": 184,
+          "width": 440,
+          "height": 712,
+          "top": 184,
+          "right": 1245,
+          "bottom": 896,
+          "left": 805
+        },
+        "controls": [
+          {
+            "x": 835,
+            "y": 210,
+            "width": 380,
+            "height": 44,
+            "top": 210,
+            "right": 1215,
+            "bottom": 254,
+            "left": 835
+          },
+          {
+            "x": 835,
+            "y": 278,
+            "width": 380,
+            "height": 46,
+            "top": 278,
+            "right": 1215,
+            "bottom": 324,
+            "left": 835
+          },
+          {
+            "x": 835,
+            "y": 418,
+            "width": 380,
+            "height": 164,
+            "top": 418,
+            "right": 1215,
+            "bottom": 582,
+            "left": 835
+          },
+          {
+            "x": 835,
+            "y": 600,
+            "width": 380,
+            "height": 35,
+            "top": 600,
+            "right": 1215,
+            "bottom": 635,
+            "left": 835
+          },
+          {
+            "x": 835,
+            "y": 342,
+            "width": 380,
+            "height": 58,
+            "top": 342,
+            "right": 1215,
+            "bottom": 400,
+            "left": 835
+          },
+          {
+            "x": 835,
+            "y": 682,
+            "width": 380,
+            "height": 58,
+            "top": 682,
+            "right": 1215,
+            "bottom": 740,
+            "left": 835
+          },
+          {
+            "x": 835,
+            "y": 822,
+            "width": 380,
+            "height": 48,
+            "top": 822,
+            "right": 1215,
+            "bottom": 870,
+            "left": 835
+          }
+        ],
+        "labels": [
+          {
+            "x": 840,
+            "y": 347,
+            "width": 183.5,
+            "height": 48,
+            "top": 347,
+            "right": 1023.5,
+            "bottom": 395,
+            "left": 840
+          },
+          {
+            "x": 1026.5,
+            "y": 347,
+            "width": 183.5,
+            "height": 48,
+            "top": 347,
+            "right": 1210,
+            "bottom": 395,
+            "left": 1026.5
+          }
+        ],
+        "horizontalOverflow": false,
+        "verticalOverflow": false,
+        "material": true,
+        "labelsFit": true
+      },
+      "keyboardSelection": true,
+      "noFocusOutline": true,
+      "noNativeTooltips": true,
+      "fixedPolicyLayout": true,
+      "countdownUpdates": true,
+      "stableBoardAtStart": true,
+      "untimedPreparationDeadline": true,
+      "cases": [
+        {
+          "mode": "duel",
+          "playPolicy": "direct",
+          "durationMs": 60000,
+          "begins": "deadline",
+          "firstMove": true
+        },
+        {
+          "mode": "duel",
+          "playPolicy": "assisted",
+          "durationMs": 300000,
+          "begins": "bothReady",
+          "firstMove": true
+        },
+        {
+          "mode": "ai",
+          "playPolicy": "direct",
+          "durationMs": 60000,
+          "begins": "deadline",
+          "firstMove": true
+        },
+        {
+          "mode": "ai",
+          "playPolicy": "assisted",
+          "durationMs": 300000,
+          "begins": "bothReady",
+          "firstMove": true
+        }
+      ],
+      "adjudications": [
+        {
+          "role": "black",
+          "before": "playing",
+          "cancelledWithoutChange": true,
+          "winner": "white",
+          "winReason": "rule_violation"
+        },
+        {
+          "role": "white",
+          "before": "waiting",
+          "cancelledWithoutChange": true,
+          "winner": "black",
+          "winReason": "rule_violation"
+        }
+      ],
+      "errors": []
+    }
+  ]
+}

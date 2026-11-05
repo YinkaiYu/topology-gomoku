@@ -27,6 +27,10 @@
             <label><input type="radio" name="mode" value="duel" checked><span>两位 Agent</span></label>
             <label><input type="radio" name="mode" value="ai"><span>Agent 与内置 AI</span></label>
           </div></fieldset>
+          <fieldset class="policy-field"><legend class="sr-only">参赛规则</legend><div class="segmented" id="play-policy-options">
+            <label><input type="radio" name="play-policy" value="direct" aria-label="仅允许推理，准备 1 分钟" checked><span><b>仅允许推理</b><small>准备 1 分钟</small></span></label>
+            <label><input type="radio" name="play-policy" value="assisted" aria-label="允许自制工具/引擎，准备 5 分钟"><span><b>允许自制工具/引擎</b><small>准备 5 分钟</small></span></label>
+          </div></fieldset>
           <fieldset class="topology-field"><legend class="sr-only">选择棋面</legend><div id="topology-options" class="topology-options"></div></fieldset>
           <div class="size-row"><span>棋盘</span><label><span class="sr-only">棋盘宽度</span><input id="board-width" type="number" min="5" max="19" value="7" required></label><span aria-hidden="true">×</span><label><span class="sr-only">棋盘高度</span><input id="board-height" type="number" min="5" max="19" value="6" required></label></div>
           <fieldset class="clock-field"><legend>棋钟</legend><div class="segmented" id="clock-modes">
@@ -78,6 +82,7 @@
     <div class="settings-grid"><button class="setting-button" id="new-button" type="button">新棋局</button><button class="setting-button" id="rooms-button" type="button">棋局记录</button></div>
     <section id="match-settings" hidden>
       <div class="settings-grid match-control"><button class="setting-button" id="pause-button" type="button" hidden>暂停</button><button class="setting-button" id="resume-button" type="button" hidden>继续对弈</button><button class="setting-button danger" id="stop-button" type="button">结束棋局</button></div>
+      <button class="quiet-button" id="adjudicate-button" type="button">判定违规</button>
       <div class="settings-players"><div><button class="profile-choice" id="settings-black" data-profile="black" type="button"></button><span class="seat-ready" id="ready-black"></span><button class="quiet-button" data-invite="black" type="button">黑方邀请 ↗</button></div><div><button class="profile-choice" id="settings-white" data-profile="white" type="button"></button><span class="seat-ready" id="ready-white"></span><button class="quiet-button" data-invite="white" type="button">白方邀请 ↗</button></div></div>
       <div class="settings-grid"><button class="setting-button" id="timeline-button" type="button">时间线</button><button class="setting-button" id="export-button" type="button">保存棋谱</button><button class="setting-button" data-invite="commentator" type="button">邀请解说</button><button class="setting-button" id="commentary-toggle" type="button" hidden>关闭解说</button></div>
     </section>
@@ -91,6 +96,7 @@
     <div class="room-list" id="room-list"></div><div class="dialog-footer"><button id="clear-records" class="quiet-button danger" type="button">清空已结束棋局</button></div>
   </div></dialog>
   <dialog id="confirm-dialog" class="panel-dialog small-dialog"><div class="dialog-content"><div class="dialog-heading"><h2 id="confirm-heading"></h2><button class="quiet-button" data-close type="button" aria-label="关闭">×</button></div><p class="dialog-intro" id="confirm-description"></p><div class="dialog-footer"><button class="quiet-button" data-close type="button">取消</button><button class="glass-button compact" id="confirm-action" type="button">确认</button></div></div></dialog>
+  <dialog id="adjudicate-dialog" class="panel-dialog small-dialog"><div class="dialog-content"><div class="dialog-heading"><h2>判定违规</h2><button class="quiet-button" data-close type="button" aria-label="关闭">×</button></div><div class="settings-grid"><button class="setting-button" data-disqualify="black" type="button">黑方违规判负</button><button class="setting-button" data-disqualify="white" type="button">白方违规判负</button></div></div></dialog>
   <dialog id="invite-dialog" class="panel-dialog invite-dialog"><div class="dialog-content">
     <div class="dialog-heading"><h2 id="invite-heading">邀请棋手</h2><button class="quiet-button" data-close type="button" aria-label="关闭">×</button></div>
 

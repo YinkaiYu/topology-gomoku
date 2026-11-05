@@ -16,6 +16,7 @@ const { version: gameVersion } = require("../package.json");
 
 const ROLES = ["black", "white", "commentator"];
 const PLAYERS = { black: Engine.HUMAN, white: Engine.AI };
+const PREPARATION_MS = { direct: 60000, assisted: 300000 };
 const clone = (value) => JSON.parse(JSON.stringify(value));
 
 class ArenaError extends Error {
@@ -151,6 +152,12 @@ class Arena extends EventEmitter {
       }
       controller.drainEvents();
       const match = { ...saved, ...size, controller, receipts: saved.receipts || {} };
+      match.playPolicy = saved.playPolicy || "legacy";
+      match.preparation = saved.preparation || null;
+      if (match.phase === "waiting" && match.preparation?.deadline != null) {
+        // Checkpointed preparation, like the game clock, excludes service downtime.
+        match.preparation.deadline = this.now() + match.preparation.remainingMs;
+      }
       for (const role of ROLES) {
         const seat = match.seats[role];
         seat.ready = role !== "commentator" && (typeof seat.ready === "boolean" ? seat.ready
@@ -175,6 +182,7 @@ class Arena extends EventEmitter {
     if (!this.dataDir) return;
     const { controller, ...saved } = match;
     if (match.clock) saved.clock = { ...match.clock, remainingMs: Clock.remaining(match.clock, this.now()), active: null, runningSince: null };
+    if (match.preparation) saved.preparation = this._preparation(match);
     const filename = path.join(this.dataDir, `match-${match.gameId}.json`);
     const temporary = `${filename}.${crypto.randomBytes(8).toString("hex")}.tmp`;
     try {
@@ -201,8 +209,33 @@ class Arena extends EventEmitter {
     requireValue(typeof gameId === "string" && this.matches.has(gameId),
       "GAME_NOT_FOUND", "This game does not exist.", 404);
     const match = this.matches.get(gameId);
+    this._expirePreparation(match);
     this._expireClock(match);
     return match;
+  }
+
+  _preparation(match, now = this.now()) {
+    if (!match.preparation) return null;
+    const preparation = match.preparation;
+    return { ...preparation, serverNow: preparation.deadline === null ? null : now,
+      remainingMs: preparation.deadline === null ? preparation.remainingMs : Math.max(0, preparation.deadline - now) };
+  }
+
+  _startPreparation(match) {
+    const preparation = match.preparation;
+    if (match.phase !== "waiting" || !preparation || preparation.startedAt !== null
+      || !match.seats.black.joined || !match.seats.white.joined) return;
+    preparation.startedAt = this.now();
+    preparation.deadline = preparation.startedAt + preparation.remainingMs;
+    this._event(match, "preparation", { action: "start", deadline: preparation.deadline, ply: 0 });
+  }
+
+  _expirePreparation(match, now = this.now()) {
+    const deadline = match.preparation?.deadline;
+    if (match.phase !== "waiting" || deadline == null || now < deadline) return false;
+    this._begin(match, true, deadline);
+    this._changed(match);
+    return true;
   }
 
   _expireClock(match, now = this.now()) {
@@ -248,13 +281,15 @@ class Arena extends EventEmitter {
 
   _snapshot(match, role = null) {
     const game = match.controller.game;
-    const progress = this._progress(match), clock = Clock.snapshot(match.clock, this.now());
+    const progress = this._progress(match), clock = Clock.snapshot(match.clock, this.now()), preparation = this._preparation(match);
     return clone({
       schemaVersion: 1,
       gameVersion: match.gameVersion,
       ...progress,
-      guidance: guidance({ ...progress, clock, seats: match.seats }, role),
+      guidance: guidance({ ...progress, clock, preparation, seats: match.seats }, role),
       clock,
+      playPolicy: match.playPolicy,
+      preparation,
       title: match.title,
       mode: match.mode,
       difficulty: match.difficulty,
@@ -322,10 +357,12 @@ class Arena extends EventEmitter {
       case "arena_list":
         return {
           matches: Array.from(this.matches.values()).reverse().map((match) => {
+            this._expirePreparation(match);
             this._expireClock(match);
             const state = this._snapshot(match);
             return {
               gameId: state.gameId, title: state.title, topology: state.topology, mode: state.mode,
+              playPolicy: state.playPolicy, preparation: state.preparation,
               phase: state.phase, ply: state.ply, turn: state.turn, seats: state.seats,
               winner: state.winner, outcome: state.outcome, winReason: state.winReason,
               createdAt: state.createdAt, updatedAt: state.updatedAt
@@ -383,6 +420,8 @@ class Arena extends EventEmitter {
     const levelIndex = Content.LEVELS.findIndex((level) => level.topology === args.topology);
     requireValue(levelIndex >= 0, "INVALID_TOPOLOGY", "Choose a topology from arena_catalog.");
     requireValue(["ai", "duel"].includes(args.mode), "INVALID_MODE", "mode must be ai or duel.");
+    const playPolicy = args.playPolicy === undefined ? "direct" : args.playPolicy;
+    requireValue(typeof playPolicy === "string" && Object.hasOwn(PREPARATION_MS, playPolicy), "INVALID_PLAY_POLICY", "playPolicy must be direct or assisted.");
     const difficulty = args.difficulty === undefined ? "normal" : args.difficulty;
     requireValue(typeof difficulty === "string" && Object.hasOwn(Content.DIFFICULTIES, difficulty),
       "INVALID_DIFFICULTY", "Choose a difficulty from arena_catalog.");
@@ -394,6 +433,8 @@ class Arena extends EventEmitter {
       gameId: crypto.randomUUID(),
       title: text(args.title, "title", 100, true) || "Topology Gomoku",
       levelIndex, ...size, mode: args.mode, difficulty, phase: "waiting", commentaryEnabled: false,
+      playPolicy,
+      preparation: { durationMs: PREPARATION_MS[playPolicy], remainingMs: PREPARATION_MS[playPolicy], startedAt: null, deadline: null, completedAt: null },
       createdAt, version: 0, eventSeq: 0, stopped: false, moves: [], events: [],
       seats: Object.fromEntries(ROLES.map((role) => [role, {
         name: role === "white" && args.mode === "ai" ? "Built-in AI" : "",
@@ -442,6 +483,7 @@ class Arena extends EventEmitter {
       credential.token = crypto.randomBytes(32).toString("hex");
       match.seats[role] = { ...match.seats[role], name, model, joined: true, lastSeen: this._at() };
       this._event(match, "joined", { role, name, model, ply: match.moves.length });
+      this._startPreparation(match);
       this._changed(match);
     } else {
       // A copied invitation reconnects its seat; changing identity silently
@@ -453,23 +495,29 @@ class Arena extends EventEmitter {
     return { token: credential.token, role, state: this._snapshot(match, role), rules: this._rules({ gameId: match.gameId, token: credential.token }) };
   }
 
-  _begin(match, automatic = false) {
+  _begin(match, automatic = false, deadline = null) {
     requireValue(match.seats.black.joined && match.seats.white.joined
-      && match.seats.black.ready && match.seats.white.ready,
+      && ((match.seats.black.ready && match.seats.white.ready)
+        || (deadline !== null && deadline === match.preparation?.deadline && this.now() >= deadline)),
     "SEATS_NOT_READY", "Both players must finish preparation and call arena_ready before starting.", 409);
-    const now = this.now();
+    const now = deadline ?? this.now();
     match.phase = "playing";
+    if (match.preparation) {
+      match.preparation.remainingMs = this._preparation(match, now).remainingMs;
+      match.preparation.deadline = null;
+      match.preparation.completedAt = now;
+    }
     Clock.start(match.clock, match.controller.game.turn === Engine.HUMAN ? "black" : "white", now);
     match.controller.resume(now);
     if (match.mode === "ai" && match.controller.game.turn === Engine.AI) match.controller._scheduleAi(now);
-    this._event(match, "control", { action: "start", automatic, ply: match.moves.length });
+    this._event(match, "control", { action: "start", automatic, reason: deadline === null ? "players_ready" : "preparation_timeout", startedAt: now, ply: match.moves.length });
   }
 
   _ready(args) {
     const match = this._match(args.gameId);
     const role = this._seat(match, args.token, true);
     requireValue(PLAYERS[role], "PLAYER_REQUIRED", "Only a player can confirm readiness.", 403);
-    if (match.seats[role].ready) {
+    if (match.seats[role].ready || match.preparation?.completedAt != null) {
       this._save(match);
       return this._snapshot(match, role);
     }
@@ -523,6 +571,10 @@ class Arena extends EventEmitter {
 
   _finish(match, outcome, winner, winReason) {
     Clock.freeze(match.clock, this.now());
+    if (match.preparation) {
+      match.preparation.remainingMs = this._preparation(match).remainingMs;
+      match.preparation.deadline = null;
+    }
     match.resolution = { outcome, winner, winReason };
     match.phase = "ended";
     match.drawOffer = null;
@@ -617,8 +669,16 @@ class Arena extends EventEmitter {
   _control(args, context) {
     this._host(context);
     const match = this._match(args.gameId);
-    requireValue(["start", "pause", "resume", "stop", "commentary_on", "commentary_off"].includes(args.action),
-      "INVALID_ACTION", "Choose start, pause, resume, stop, commentary_on or commentary_off.");
+    requireValue(["start", "pause", "resume", "stop", "disqualify", "commentary_on", "commentary_off"].includes(args.action),
+      "INVALID_ACTION", "Choose start, pause, resume, stop, disqualify, commentary_on or commentary_off.");
+    if (args.action === "disqualify") {
+      requireValue(args.role === "black" || args.role === "white", "INVALID_ROLE", "Choose black or white for disqualification.");
+      requireValue(match.phase !== "ended", "INVALID_PHASE", "Cannot change the verdict of an ended match.", 409);
+      this._event(match, "control", { action: "disqualify", role: args.role, ply: match.moves.length });
+      this._finish(match, "win", args.role === "black" ? "white" : "black", "rule_violation");
+      this._changed(match);
+      return this._snapshot(match);
+    }
     if (args.action.startsWith("commentary_")) {
       match.commentaryEnabled = args.action === "commentary_on";
       this._event(match, "commentary", { enabled: match.commentaryEnabled, ply: match.moves.length });
@@ -649,6 +709,10 @@ class Arena extends EventEmitter {
       match.controller.pause(this.now());
     } else {
       Clock.freeze(match.clock, this.now());
+      if (match.preparation) {
+        match.preparation.remainingMs = this._preparation(match).remainingMs;
+        match.preparation.deadline = null;
+      }
       match.phase = "ended";
       match.stopped = true;
       match.drawOffer = null;
@@ -665,12 +729,16 @@ class Arena extends EventEmitter {
     const role = this._seat(match, args.token);
     const game = match.controller.game;
     const promptRules = JSON.parse(readPrompt("rules.json"));
-    const progress = this._progress(match), clock = Clock.snapshot(match.clock, this.now());
+    const progress = this._progress(match), clock = Clock.snapshot(match.clock, this.now()), preparation = this._preparation(match);
     const result = {
-      guidance: guidance({ ...progress, clock, seats: match.seats }, role),
+      guidance: guidance({ ...progress, clock, preparation, seats: match.seats }, role),
       ...promptRules.common,
       state: progress,
       clock,
+      playPolicy: match.playPolicy,
+      preparation,
+      playPolicyRule: promptRules.playPolicies[match.playPolicy],
+      preparationRule: preparation ? promptRules.preparation.timed.replace("{{duration}}", `${preparation.durationMs / 60000} 分钟`) : promptRules.preparation.legacy,
       clockRule: Clock.describe(clock, promptRules.clock),
       topology: game.level.topology, width: game.rules.width, height: game.rules.height, target: game.rules.target,
       briefing: briefingFor(game.rules),
@@ -700,6 +768,7 @@ class Arena extends EventEmitter {
     if (this.closed) return false;
     let changed = false;
     for (const match of this.matches.values()) {
+      if (this._expirePreparation(match)) changed = true;
       if (match.phase !== "playing") continue;
       const now = this.now();
       if (this._expireClock(match, now)) { changed = true; continue; }
@@ -717,7 +786,12 @@ class Arena extends EventEmitter {
 
   close() {
     if (this.closed) return;
-    for (const match of this.matches.values()) this._save(match);
+    for (const match of this.matches.values()) {
+      // Settle elapsed deadlines even if shutdown falls between server ticks.
+      this._expirePreparation(match);
+      this._expireClock(match);
+      this._save(match);
+    }
     this.closed = true;
     this.removeAllListeners();
   }

@@ -7,12 +7,17 @@ function duration(ms) {
 }
 
 // A seat-specific snapshot, never a timer or a persisted match event.
-function guidance({ phase, turn, clock, seats }, role) {
+function guidance({ phase, turn, clock, preparation, seats }, role) {
   if (role !== "black" && role !== "white") return null;
   const text = JSON.parse(readPrompt("status.json"));
   const action = phase === "ended" ? "stop" : phase === "waiting" && !seats?.[role]?.ready ? "prepare"
     : phase === "playing" && turn === role ? "act" : "wait";
   const parts = [text[action === "prepare" ? "prepare" : phase === "playing" ? action : phase]];
+  if (phase === "waiting" && preparation) {
+    parts.push(preparation.deadline === null ? text.preparationWaiting : text.preparationRunning
+      .replace("{{remaining}}", duration(preparation.remainingMs))
+      .replace("{{deadline}}", new Date(preparation.deadline).toISOString()));
+  }
   if (!clock) parts.push(text.untimed);
   else {
     parts.push(text.balance.replace("{{self}}", duration(clock.remainingMs[role]))
@@ -21,7 +26,7 @@ function guidance({ phase, turn, clock, seats }, role) {
     parts.push(clock.active === role ? text.running : text.stopped);
     if (action === "act" && clock.active === role && clock.remainingMs[role] <= 30000) parts.push(text.low);
   }
-  return { action, text: parts.join(" · ") };
+  return { action, text: parts.join(" ") };
 }
 
 module.exports = { guidance };

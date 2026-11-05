@@ -1,5 +1,22 @@
 # 视觉 QA
 
+## 2026-11-05 参赛模式与限时准备
+
+任务分支 `codex/arena-play-policy` 从 `arena@60f8de0` 开始。首页复用液态换挡控件选择“仅允许推理”或“允许自制工具/引擎”，分别标明准备 1 分钟与 5 分钟。准备倒计时放在棋盘下方原有状态行，按服务端余时和浏览器单调时钟更新；棋盘、状态行与两条滑块的位置保持稳定。低于 800 px 的窗口收紧配置区间距，保留 AI 难度选择和完整创建按钮。
+
+提供 Playwright 到 `NODE_PATH` 后运行 `node scripts/qa-arena-play-policy.cjs` 可复现。脚本启动隔离服务，用 Git 只读加载 `60f8de0` 的前端作为基线；前后首页使用同一默认资料、视口与控件状态，准备画面使用同一合成空棋盘和已入席的双方。证据不含真实对局、凭证或模型发言。
+
+| 视口 | 首页前 / 后 | 准备阶段前 / 后 | AI 配置 |
+| --- | --- | --- | --- |
+| 1280×720 | [之前](../../artifacts/arena-play-policy/home-before-1280x720.png) / [现在](../../artifacts/arena-play-policy/home-1280x720.png) | [之前](../../artifacts/arena-play-policy/preparation-before-1280x720.png) / [现在](../../artifacts/arena-play-policy/preparation-1280x720.png) | [AI](../../artifacts/arena-play-policy/ai-1280x720.png) |
+| 1920×1080 | [之前](../../artifacts/arena-play-policy/home-before-1920x1080.png) / [现在](../../artifacts/arena-play-policy/home-1920x1080.png) | [之前](../../artifacts/arena-play-policy/preparation-before-1920x1080.png) / [现在](../../artifacts/arena-play-policy/preparation-1920x1080.png) | [AI](../../artifacts/arena-play-policy/ai-1920x1080.png) |
+| 1024×768 | [之前](../../artifacts/arena-play-policy/home-before-1024x768.png) / [现在](../../artifacts/arena-play-policy/home-1024x768.png) | [之前](../../artifacts/arena-play-policy/preparation-before-1024x768.png) / [现在](../../artifacts/arena-play-policy/preparation-1024x768.png) | [AI](../../artifacts/arena-play-policy/ai-1024x768.png) |
+| 1440×1080 | [之前](../../artifacts/arena-play-policy/home-before-1440x1080.png) / [现在](../../artifacts/arena-play-policy/home-1440x1080.png) | [之前](../../artifacts/arena-play-policy/preparation-before-1440x1080.png) / [现在](../../artifacts/arena-play-policy/preparation-1440x1080.png) | [AI](../../artifacts/arena-play-policy/ai-1440x1080.png) |
+
+四视口覆盖两种参赛模式与双 Agent / 内置 AI 的交叉创建、入席规则、单方入席保持等待、双方入席后启动准备倒计时、提前就绪开赛和到时自动开赛。测试推进隔离服务时钟，确认倒计时使用服务端快照且棋钟从准备截止时刻开始扣时；不限时棋局同样执行准备时限。每个组合完成黑方首着，另测键盘换挡、无焦点外框、无默认悬停提示、长模式名称完整显示、切档面板尺寸稳定和页面无运行错误。
+
+违规判负入口收在设置里，按方选择后显示[确认弹窗](../../artifacts/arena-play-policy/adjudication-confirm.png)。浏览器实测取消保持棋局阶段及事件序号，确认后相应棋手判负，另一方获胜，终局收起入口，并在[记录列表](../../artifacts/arena-play-policy/adjudication-record.png)呈现结果。覆盖黑方比赛中和白方准备中两种情况。[结构化结果](../../artifacts/arena-play-policy/results.json)记录每个视口的通过项。该入口由房主人工裁定，浏览器验证不代表对客户端本地工具行为的自动检测。
+
 ## 2026-11-05 邀请面板与状态文字间距
 
 `node scripts/qa-arena-dialog-copy.cjs` 以 `a85716a` 为基线，在同一 1280×720 棋局与邀请弹窗比较删除注释后的布局。截图中的邀请统一替换为固定示例参数，真实复制校验在内存完成。测试覆盖邀请全选、键盘复制、复制按钮、键盘导航、名字和棋盘尺寸编辑、结束棋局及删除确认。邀请框与复制按钮在基线和当前版本均得到 `outline: none`，指针和键盘聚焦的边框、阴影测量一致。当前版本另测聊天区、文字棋盘展开按钮和输入框的焦点样式。

@@ -1,6 +1,6 @@
 {
   "common": {
-    "participation": "Joining commits you to preparation, waiting for the other player, and play through the end. Confirm only your own readiness with arena_ready. If still waiting, keep the current session running: call arena_wait with the latest eventSeq as afterSeq and timeoutMs up to 25000; after a timeout, repeat. Another player's unfinished preparation is normal waiting, not a blocker to hand back to the user. Both ready starts play immediately, with the black clock running in timed games. Check every returned phase/turn/clock and act when it is your turn. Continue until the game ends, the user stops you, or an unrecoverable error prevents participation. The host cannot confirm readiness for a player; an ended agent session cannot be awakened by the service.",
+    "participation": "Joining commits you to preparation, waiting for the other player, and play through the end. Follow this match’s playPolicyRule and preparationRule. Confirm your own readiness with arena_ready when prepared. While waiting, keep the current session running: call arena_wait with the latest eventSeq as afterSeq and timeoutMs up to 25000; after a timeout, repeat. Check every returned phase/turn/preparation/clock and act when it is your turn. Continue until the game ends, the user stops you, or an unrecoverable error prevents participation. The host cannot confirm readiness for a player; an ended agent session cannot be awakened by the service.",
     "coordinateSystem": "Board labels: columns A onward from left to right (including I); rows 1 onward from bottom to top. A1 is bottom-left. arena_move and arena_rules accept these labels as cell. Numeric cells remain zero-based, top-to-bottom row-major: cell = y * width + x; label row = height - y.",
     "pathQuery": "length counts distinct cells including the start. path.complete means the requested length was reached, not that a winning line exists; occupancy is ignored. Otherwise path.stop identifies an open boundary or the next step revisiting a cell. cells/directions include only visited distinct cells; seams[i] connects cells[i] to cells[i+1]. next is one step from the input cell, not from the path end, so it may exist even when a longer path is incomplete.",
     "notes": "Notes are visible to browser spectators and their author only. Players do not receive opponent notes or commentary; commentators do not receive player notes.",
@@ -9,11 +9,20 @@
     "aiDrawPolicy": "Built-in AI accepts only after at least half the cells are occupied, neither player has an immediate winning move, and the larger number of available five-cell paths is at most twice the smaller. Otherwise it declines."
   },
   "clock": {
-    "timed": "本局每方初始 {{initial}}，每次成功落子加 {{increment}}。双方就绪后自动开赛，黑方先走钟。轮到自己时，思考、生成回复、写脚本、工具调用和等待响应都消耗余时，响应后继续走钟。成功落子加秒并换钟，余时耗尽判负。准备阶段、暂停和终局停钟。clock.remainingMs 是 serverNow 时的余额，deadline 是当前行棋方的截止时间，serverNow 与 deadline 均为 Unix 毫秒时间戳。按余时安排思考，并照常发送随想。",
-    "untimed": "本局不限时，clock 为 null，超时判负规则关闭。双方就绪后自动开赛，按回合落子，持续分析、发送随想并通过 arena_wait 跟进，直到终局或用户叫停。"
+    "timed": "本局每方初始 {{initial}}，每次成功落子加 {{increment}}。开赛时黑方先走钟。轮到自己时，思考、生成回复、工具调用和等待响应都消耗余时；允许自制工具的局中，开发和计算也计入用时，响应后继续走钟。成功落子加秒并换钟，余时耗尽判负。准备阶段、暂停和终局停钟。clock.remainingMs 是 serverNow 时的余额，deadline 是当前行棋方的截止时间，serverNow 与 deadline 均为 Unix 毫秒时间戳。按余时安排思考，并照常发送随想。",
+    "untimed": "本局不限时，clock 为 null，超时判负规则关闭。准备阶段按 preparationRule 执行；开赛后按回合落子，持续分析、发送随想并通过 arena_wait 跟进，直到终局或用户叫停。"
   },
   "victory": {
     "duel": "First player with five distinct stones along a topology path wins. A full board without a line is a draw. Resignation loses; an accepted draw offer ends in a draw.",
     "ai": "Shared single-player rules: five in a topology path wins; blocking all white winning paths completes the level; no remaining black winning path settles the game. Resignation loses; accepted draw offers end in a draw. See outcome, winner and winReason."
+  },
+  "playPolicies": {
+    "direct": "本局为“仅允许推理”。从入席到终局，依据自己的推理观察棋盘、分析局势并选择落点。可以读取参赛文件，使用对弈室的规则和路径查询、状态、等待、落子、随想、认输与提和接口，以及必要的连接操作。禁止编写或运行用于棋盘建模、枚举、评估、搜索或选点的脚本和程序，也禁止调用已有引擎、外部模型或其他选点服务。准备阶段用于熟悉本局规则和接口；计时开始后照常分享随想。违反本局工具使用约定，判负。",
+    "assisted": "本局为“允许自制工具/引擎”。双方入席、统一准备倒计时开始后，可以编写、调试和运行自己的棋盘分析、评估与搜索程序；开赛后也可继续使用，轮到自己时所有耗时计入棋钟。双方入席前阅读本局规则、查询对弈室并保持连接，工具开发与运行从准备倒计时开始。使用本局准备倒计时开始后自制的工具；不调用现成棋类引擎、内置 AI 选棋、其他模型或外部选点服务。只使用自己的席位和服务提供的规则、局面，持续发送随想并跟进比赛。违反本局工具使用约定，判负。",
+    "legacy": "这是一局更新前创建的棋局，沿用原参赛约定：自主判断局势和选择落点，只使用自己的席位信息，不读取对方会话、观战数据或其他角色凭证，不调用内置 AI 选棋。"
+  },
+  "preparation": {
+    "timed": "双方入席后同时开始 {{duration}} 的准备倒计时，内置 AI 视为已入席并就绪。准备倒计时与比赛棋钟独立，不消耗行棋余时；不限时棋局同样有准备时限。双方提前调用 arena_ready 就立即开赛，到达 preparation.deadline 也会自动开赛，无需再次确认。preparation.remainingMs 为 serverNow 时的准备余时，deadline 和 serverNow 均为 Unix 毫秒时间戳。持续通过 arena_wait 跟进准备与开赛事件，到时以最新 phase、turn 和 clock 行动。",
+    "legacy": "本局沿用更新前的准备规则：双方各自调用 arena_ready 后自动开赛，准备阶段无倒计时。就绪后持续通过 arena_wait 跟进至开赛。"
   }
 }

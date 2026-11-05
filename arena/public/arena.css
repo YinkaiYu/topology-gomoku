@@ -56,9 +56,9 @@ fieldset{padding:0;border:0;margin:0 0 18px;min-width:0}
 .difficulty-row{display:flex;align-items:center;justify-content:space-between;font-size:13px;margin:6px 0 14px}
 .difficulty-row .segmented{width:220px}
 .clock-field legend{font-size:13px;margin-bottom:10px}
-#clock-modes label>span{flex-direction:column;min-height:48px;gap:2px;white-space:nowrap}
-#clock-modes b{font-weight:400;font-size:12px}
-#clock-modes small{font-size:10px;color:var(--muted)}
+#clock-modes label>span,#play-policy-options label>span{flex-direction:column;min-height:48px;gap:2px;white-space:nowrap}
+#clock-modes b,#play-policy-options b{font-weight:400;font-size:12px}
+#clock-modes small,#play-policy-options small{font-size:10px;color:var(--muted)}
 .create-button{width:100%;display:flex;align-items:center;justify-content:space-between}
 .match{--arena-columns:minmax(240px,1fr) minmax(320px,1.55fr) minmax(240px,1fr);--arena-gap:clamp(16px,2vw,30px);flex:1;min-height:0;width:100%;max-width:1540px;margin:0 auto;display:flex;flex-direction:column}
 .match-heading{height:76px;flex-shrink:0;display:grid;grid-template-columns:var(--arena-columns);align-items:center;gap:var(--arena-gap)}
@@ -119,6 +119,7 @@ fieldset{padding:0;border:0;margin:0 0 18px;min-width:0}
 .position-summary{display:block;width:100%;height:44px;padding:0;font-size:15px;line-height:44px;color:var(--muted);white-space:nowrap}
 .position-summary:enabled{color:var(--teal)}
 .position-summary:disabled{opacity:1}
+.preparation-countdown{font-variant-numeric:tabular-nums;min-width:3.2em;text-align:left}
 .chess-clock{grid-row:1;justify-self:center;font-size:22px;font-variant-numeric:tabular-nums;display:flex;gap:11px;align-items:center;color:var(--muted)}
 .chess-clock>.stone{width:18px;height:18px}
 #black-clock{grid-column:1}
@@ -297,7 +298,10 @@ fieldset{padding:0;border:0;margin:0 0 18px;min-width:0}
 .voice-item p,.commentary-text{font-size:16px;line-height:1.8}
 .setup-panel{padding:20px 26px}
 .setup-heading{margin-bottom:14px}
-.setup-panel fieldset{margin-bottom:14px}
+.setup-panel fieldset{margin-bottom:12px}
+.size-row{margin:0 0 12px}
+.setup-players{margin:0 0 12px}
+.difficulty-row{margin-top:0}
 .topology-option>span{min-height:69px}
 .topology-option img{height:34px}
 .commentary{min-height:90px;max-height:120px;margin:8px 0;padding:14px 22px}}

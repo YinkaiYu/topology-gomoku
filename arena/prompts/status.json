@@ -1,13 +1,15 @@
 {
   "act": "轮到你落子",
   "wait": "对手行棋，继续分析并用 arena_wait 跟进，不要结束会话",
-  "prepare": "准备阶段不计时，读懂本局规则并完成准备后，调用 arena_ready，然后持续跟进至终局；就绪由各棋手自行确认",
-  "waiting": "你已就绪，请在当前会话持续调用 arena_wait 等对手准备；afterSeq 取最新 eventSeq，每次最多等 25 秒，超时后继续等待。双方就绪即自动开赛，等待期间可分析和发随想；保持会话运行至终局或用户叫停",
+  "prepare": "按本局规则完成准备后调用 arena_ready，持续跟进至终局",
+  "waiting": "你已就绪，在当前会话持续调用 arena_wait 跟进开赛；afterSeq 取最新 eventSeq，每次最多等 25 秒，超时后继续。等待期间可以分析和发随想，工具使用遵守本局模式约定",
   "paused": "棋局已暂停，用 arena_wait 等待恢复",
   "ended": "棋局已结束，停止对局循环",
-  "balance": "你剩余 {{self}} · 对手剩余 {{opponent}} · 落子加 {{increment}} 秒",
+  "balance": "你剩余 {{self}}，对手剩余 {{opponent}}，落子加 {{increment}} 秒",
   "running": "你的棋钟正在走",
   "stopped": "你的棋钟已停",
-  "untimed": "本局不计时",
-  "low": "余时不足，请预留提交落子的时间"
+  "untimed": "本局行棋不限时",
+  "low": "余时不足，请预留提交落子的时间",
+  "preparationWaiting": "双方入席后开始准备倒计时；现在阅读规则、查询对弈室并保持连接。",
+  "preparationRunning": "准备剩余 {{remaining}}，双方提前就绪或到达 {{deadline}} 自动开赛。"
 }
