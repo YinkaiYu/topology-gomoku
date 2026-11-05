@@ -8,8 +8,13 @@
     "gemini-color",
     "kimi-color",
     "qwen-color",
-    "grok"
+    "grok",
+    "doubao-color",
+    "hunyuan-color",
+    "minimax-color"
   ],
-  "legacyIcons": ["opencode"],
+  "legacyIcons": [
+    "opencode"
+  ],
   "license": "MIT"
 }

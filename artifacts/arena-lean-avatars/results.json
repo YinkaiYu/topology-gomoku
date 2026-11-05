@@ -1,0 +1,89 @@
+{
+  "baseline": "bd7b447",
+  "results": [
+    {
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "geometry": {
+        "x": 400,
+        "y": 86,
+        "right": 880,
+        "bottom": 634,
+        "options": 11,
+        "fit": true,
+        "images": true,
+        "overflow": false
+      },
+      "namesAutofill": true,
+      "profilesPersist": true,
+      "uploadRetainsName": true,
+      "spectatorNotesAndMoves": true,
+      "errors": []
+    },
+    {
+      "viewport": {
+        "width": 1920,
+        "height": 1080
+      },
+      "geometry": {
+        "x": 720,
+        "y": 266,
+        "right": 1200,
+        "bottom": 814,
+        "options": 11,
+        "fit": true,
+        "images": true,
+        "overflow": false
+      },
+      "namesAutofill": true,
+      "profilesPersist": true,
+      "uploadRetainsName": true,
+      "spectatorNotesAndMoves": true,
+      "errors": []
+    },
+    {
+      "viewport": {
+        "width": 1024,
+        "height": 768
+      },
+      "geometry": {
+        "x": 272,
+        "y": 110,
+        "right": 752,
+        "bottom": 658,
+        "options": 11,
+        "fit": true,
+        "images": true,
+        "overflow": false
+      },
+      "namesAutofill": true,
+      "profilesPersist": true,
+      "uploadRetainsName": true,
+      "spectatorNotesAndMoves": true,
+      "errors": []
+    },
+    {
+      "viewport": {
+        "width": 1440,
+        "height": 1080
+      },
+      "geometry": {
+        "x": 480,
+        "y": 266,
+        "right": 960,
+        "bottom": 814,
+        "options": 11,
+        "fit": true,
+        "images": true,
+        "overflow": false
+      },
+      "namesAutofill": true,
+      "profilesPersist": true,
+      "uploadRetainsName": true,
+      "spectatorNotesAndMoves": true,
+      "errors": []
+    }
+  ]
+}

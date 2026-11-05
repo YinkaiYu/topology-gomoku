@@ -40,8 +40,8 @@ test("joining and reading rules leave clocks stopped during preparation; both re
   assert.equal(last.clock.active, "black"); assert.equal(last.clock.remainingMs.black, 300000);
   assert.equal(last.guidance.action, "act");
   assert.equal(last.version, 0); assert.equal(last.ply, 0);
-  assert.equal(last.events.filter(e => e.type === "ready").length, 2);
-  assert.equal(last.events.filter(e => e.type === "control" && e.action === "start").length, 1);
+  assert.equal(g.state().events.filter(e => e.type === "ready").length, 2);
+  assert.equal(g.state().events.filter(e => e.type === "control" && e.action === "start").length, 1);
   g.advance(12345);
   const repeat = g.ready("black");
   assert.equal(repeat.clock.remainingMs.black, 287655);
@@ -225,7 +225,7 @@ test("historical ended games replay without a legacy rules contract; active save
   const rules = restored.call("arena_rules", { gameId: g.gameId, token: g.tokens.black });
   assert.equal(rules.playPolicyRule, undefined); assert.equal(rules.preparationRule, null);
   assert.equal(restored.call("arena_list").matches[0].phase, "ended");
-  assert.equal(restored.call("arena_replay", { gameId: g.gameId, token: g.tokens.black }).moves.length, 1);
+  assert.equal(restored.call("arena_replay", { gameId: g.gameId, token: g.tokens.black }).events.filter(e => e.type === "move").length, 1);
   restored.close();
   saved.phase = "waiting"; fs.writeFileSync(file, JSON.stringify(saved));
   assert.throws(() => new Arena({ dataDir }), { code: "INVALID_SAVE" });

@@ -1,0 +1,42 @@
+{
+  "baseline": "bd7b447",
+  "fixture": "7x7 Mobius; untimed; two valid uploaded PNG avatars; two moves; 30 synthetic notes per player; black perspective",
+  "units": "UTF-8 bytes of compact JSON result (not token estimates or transport envelopes)",
+  "measurements": {
+    "state": {
+      "before": 73016,
+      "after": 1189,
+      "reductionPercent": 98.37
+    },
+    "waitDelta": {
+      "before": 73016,
+      "after": 2833,
+      "reductionPercent": 96.12
+    },
+    "note": {
+      "before": 73270,
+      "after": 475,
+      "reductionPercent": 99.35
+    },
+    "move": {
+      "before": 73398,
+      "after": 1244,
+      "reductionPercent": 98.31
+    },
+    "path": {
+      "before": 8548,
+      "after": 1032,
+      "reductionPercent": 87.93
+    },
+    "fullRules": {
+      "before": 8322,
+      "after": 8470,
+      "reductionPercent": -1.78
+    },
+    "replayPage": {
+      "before": 73398,
+      "after": 7011,
+      "reductionPercent": 90.45
+    }
+  }
+}

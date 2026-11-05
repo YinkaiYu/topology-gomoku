@@ -204,12 +204,12 @@ test("README service discovery finds the Skill and real CLI notes preserve text 
   };
   const first = await run();
   assert.equal(first.ok, true);
-  assert.equal(first.result.event.text, args.text);
+  assert.equal(first.result.event.text, undefined, "The receipt does not repeat the submitted text");
   const retry = await run();
   assert.equal(retry.result.duplicate, true);
   assert.equal(retry.result.event.seq, first.result.event.seq);
   for (const seat of [seats.white, seats.commentator]) {
-    assert.ok(!(await rpc("arena_state", { gameId, token: seat.token })).result.events.some(event => event.text === args.text));
+    assert.equal((await rpc("arena_state", { gameId, token: seat.token })).result.events, undefined);
   }
   assert.equal((await rpc("arena_state", { gameId })).result.events.filter(event => event.text === args.text).length, 1);
 });
@@ -310,7 +310,7 @@ for (const transport of ["http", "stdio"]) {
     const noteArgs = { gameId, token: seats.black.token, ply: 1, text: "Occupy the seam.", requestId: "seam-note" };
     const note = await client.callTool({ name: "arena_note", arguments: noteArgs });
     assert.equal(note.isError, undefined);
-    assert.equal(note.structuredContent.event.text, noteArgs.text);
+    assert.equal(note.structuredContent.event.text, undefined);
     assert.equal(note.structuredContent.state.clock.deadline, move.structuredContent.clock.deadline);
     assert.ok(note.structuredContent.state.clock.remainingMs.white <= move.structuredContent.clock.remainingMs.white);
     assert.equal((await client.callTool({ name: "arena_note", arguments: noteArgs })).structuredContent.duplicate, true);
@@ -319,7 +319,7 @@ for (const transport of ["http", "stdio"]) {
     assert.equal(bad.isError, true);
     const state = await client.callTool({ name: "arena_state", arguments: { gameId, token: seats.white.token } });
     assert.equal(state.structuredContent.turn, "white");
-    assert.ok(!state.structuredContent.events.some((event) => event.type === "note"));
+    assert.equal(state.structuredContent.events, undefined);
     const timedWait = await client.callTool({ name: "arena_wait", arguments: { gameId, token: seats.white.token, afterSeq: state.structuredContent.eventSeq, timeoutMs: 30 } });
     assert.equal(timedWait.structuredContent.eventSeq, state.structuredContent.eventSeq);
     assert.equal(timedWait.structuredContent.clock.deadline, state.structuredContent.clock.deadline);
@@ -327,7 +327,7 @@ for (const transport of ["http", "stdio"]) {
     assert.ok(timedWait.structuredContent.clock.remainingMs.white <= state.structuredContent.clock.remainingMs.white, "An own-turn wait immediately returns a fresh balance");
     assert.equal(timedWait.structuredContent.clock.remainingMs.black, state.structuredContent.clock.remainingMs.black);
     const observer = await client.callTool({ name: "arena_state", arguments: { gameId, token: seats.commentator.token } });
-    assert.ok(!observer.structuredContent.events.some((event) => event.type === "note"));
+    assert.equal(observer.structuredContent.events, undefined);
     const offer = await client.callTool({ name: "arena_draw", arguments: { gameId, token: seats.black.token, action: "offer", expectedVersion: 1, requestId: "offer" } });
     assert.equal(offer.isError, undefined);
     const declined = await client.callTool({ name: "arena_draw", arguments: { gameId, token: seats.white.token, action: "decline", offerId: offer.structuredContent.drawOffer.id, expectedVersion: 1, requestId: "decline" } });

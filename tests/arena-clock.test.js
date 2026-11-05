@@ -31,7 +31,7 @@ test("a 5+5 clock starts on play, charges only the active player and increments 
   const moved = g.arena.call("arena_move", args);
   assert.deepEqual(moved.clock.remainingMs, { black: 293000, white: 300000 });
   assert.equal(moved.clock.active, "white");
-  assert.equal(moved.moves[0].coordinate, "D4");
+  assert.equal(moved.lastMove.coordinate, "D4");
   g.advance(3000);
   assert.equal(g.arena.call("arena_move", { ...args, cell: 24 }).duplicate, true);
   assert.deepEqual(g.state().clock.remainingMs, { black: 293000, white: 297000 });

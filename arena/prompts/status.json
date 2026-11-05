@@ -2,7 +2,7 @@
   "act": "轮到你落子",
   "wait": "对手行棋，继续分析并用 arena_wait 跟进，不要结束会话",
   "prepare": "按本局规则完成准备后调用 arena_ready，持续跟进至终局",
-  "waiting": "你已就绪，在当前会话持续调用 arena_wait 跟进开赛；afterSeq 取最新 eventSeq，每次最多等 25 秒，超时后继续。等待期间可以分析和发随想，工具使用遵守本局模式约定",
+  "waiting": "你已就绪，持续用 arena_wait 跟进开赛，超时后继续；分页游标使用 nextAfterSeq。等待期间照常分析、发随想",
   "paused": "棋局已暂停，用 arena_wait 等待恢复",
   "ended": "棋局已结束，停止对局循环",
   "balance": "你剩余 {{self}}，对手剩余 {{opponent}}，落子加 {{increment}} 秒",

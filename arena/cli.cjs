@@ -264,7 +264,7 @@ async function main(argv = process.argv.slice(2), dependencies = {}) {
       headers.Authorization = `Bearer ${runtime.hostToken}`;
     }
     const result = await jsonRequest(`${url}/api/call`, { method: 'POST', headers, body: JSON.stringify({ name, arguments: args }) }, fetchImpl, 35000);
-    stdout.write(`${JSON.stringify(result, null, 2)}\n`);
+    stdout.write(`${JSON.stringify(result)}\n`);
     return 0;
   } catch (error) {
     stderr.write(`${JSON.stringify({ ok: false, error: { code: error.code || 'CLI_ERROR', message: error.message } })}\n`);

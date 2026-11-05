@@ -1,5 +1,20 @@
 # 视觉 QA
 
+## 2026-11-05 追加棋手头像与精简接口的观战回归
+
+任务分支 `codex/arena-lean-protocol` 从 `arena@bd7b447` 开始。棋手资料新增 Doubao、Hy、MiniMax，继续使用既有四列头像网格与液态玻璃面板；新增图标沿用 Lobe Icons 的同一固定提交与 MIT 许可，来源见 `arena/public/avatars/source.json`。Hy 对应腾讯混元（Tencent HY），显示名称使用用户指定的 Hy。
+
+提供 Playwright 到 `NODE_PATH` 后运行 `node scripts/qa-arena-lean-avatars.cjs` 可复现。脚本读取 `bd7b447` 前端作为历史基线，在隔离服务中使用相同默认资料、同一视口和同一黑方资料弹窗状态比较；不会读取真实棋局。
+
+| 视口 | 头像选择前 / 后 | 观战回归 |
+| --- | --- | --- |
+| 1280×720 | [之前](../../artifacts/arena-lean-avatars/picker-before-1280x720.png) / [现在](../../artifacts/arena-lean-avatars/picker-1280x720.png) | [棋局](../../artifacts/arena-lean-avatars/match-1280x720.png) |
+| 1920×1080 | [之前](../../artifacts/arena-lean-avatars/picker-before-1920x1080.png) / [现在](../../artifacts/arena-lean-avatars/picker-1920x1080.png) | [棋局](../../artifacts/arena-lean-avatars/match-1920x1080.png) |
+| 1024×768 | [之前](../../artifacts/arena-lean-avatars/picker-before-1024x768.png) / [现在](../../artifacts/arena-lean-avatars/picker-1024x768.png) | [棋局](../../artifacts/arena-lean-avatars/match-1024x768.png) |
+| 1440×1080 | [之前](../../artifacts/arena-lean-avatars/picker-before-1440x1080.png) / [现在](../../artifacts/arena-lean-avatars/picker-1440x1080.png) | [棋局](../../artifacts/arena-lean-avatars/match-1440x1080.png) |
+
+四视口均验证 11 个头像选项完整显示、资源成功加载、面板不溢出、选择新头像自动填入对应名称、刷新后资料保留、创建棋局与赛中改名换头像保存成功。上传示例图片后保留用户填写的名称；正常入席、就绪、落子与随想仍同步到观战页面，气泡旁显示新头像。截图中的随想明确标注为界面验收示例。[结构化结果](../../artifacts/arena-lean-avatars/results.json)记录各项结果，页面无运行错误。
+
 ## 2026-11-05 参赛模式与限时准备
 
 任务分支 `codex/arena-play-policy` 从 `arena@60f8de0` 开始。首页复用液态换挡控件选择“仅允许推理”或“允许自制工具/引擎”，分别标明准备 1 分钟与 5 分钟。准备倒计时放在棋盘下方原有状态行，按服务端余时和浏览器单调时钟更新；棋盘、状态行与两条滑块的位置保持稳定。低于 800 px 的窗口收紧配置区间距，保留 AI 难度选择和完整创建按钮。

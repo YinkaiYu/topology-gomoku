@@ -42,7 +42,7 @@ function text(value, field, max, optional = false) {
 }
 
 // Keep the previous OpenCode avatar valid for saved profiles and replays.
-const AVATARS = ["deepseek-color", "openai", "claude-color", "gemini-color", "kimi-color", "qwen-color", "grok", "opencode"];
+const AVATARS = ["deepseek-color", "openai", "claude-color", "gemini-color", "kimi-color", "qwen-color", "grok", "doubao-color", "hunyuan-color", "minimax-color", "opencode"];
 function profile(value = {}) {
   requireValue(value && typeof value === "object" && !Array.isArray(value), "INVALID_PROFILE", "Expected a player profile.");
   const name = text(value.name, "name", 60, true);
@@ -281,39 +281,72 @@ class Arena extends EventEmitter {
     };
   }
 
-  _snapshot(match, role = null) {
+  _eventPage(match, role, { afterSeq = 0, limit = 20 } = {}, includeNoteText = false) {
+    requireValue(Number.isSafeInteger(afterSeq) && afterSeq >= 0 && afterSeq <= match.eventSeq,
+      "INVALID_CURSOR", "afterSeq must be between 0 and the current eventSeq.");
+    requireValue(Number.isInteger(limit) && limit >= 1 && limit <= 50,
+      "INVALID_LIMIT", "limit must be between 1 and 50.");
+    const events = [];
+    let nextAfterSeq = afterSeq, bytes = 2, hasMore = false;
+    // Iterate the persisted sequence directly: hidden notes still advance the cursor.
+    for (let index = afterSeq; index < match.events.length; index++) {
+      const source = match.events[index];
+      if (["note", "speech"].includes(source.type) && source.role !== role) { nextAfterSeq = source.seq; continue; }
+      const event = {};
+      const fields = ["seq", "type", "at", "ply", "role", "name", "model", "displayName", "cell", "player", "version",
+        "action", "automatic", "reason", "startedAt", "deadline", "outcome", "winner", "winReason", "winningCells", "offerId", "enabled"];
+      for (const key of fields) if (source[key] !== undefined) event[key] = source[key];
+      if (source.type === "move") event.coordinate = Coordinates.label(source.cell, match.width, match.height);
+      if (includeNoteText && ["note", "speech"].includes(source.type)) event.text = source.text;
+      const size = Buffer.byteLength(JSON.stringify(event), "utf8") + (events.length ? 1 : 0);
+      if (events.length >= limit || (events.length && bytes + size > 16384)) { hasMore = true; break; }
+      events.push(event); bytes += size; nextAfterSeq = source.seq;
+    }
+    if (!hasMore) nextAfterSeq = match.eventSeq;
+    return { events, nextAfterSeq, hasMore };
+  }
+
+  _snapshot(match, role = null, options = {}) {
     const game = match.controller.game;
     const progress = this._progress(match), clock = Clock.snapshot(match.clock, this.now()), preparation = this._preparation(match);
-    return clone({
-      schemaVersion: 1,
-      gameVersion: match.gameVersion,
+    const result = {
       ...progress,
       guidance: guidance({ ...progress, clock, preparation, seats: match.seats }, role),
-      clock,
-      playPolicy: match.playPolicy,
-      preparation,
-      title: match.title,
-      mode: match.mode,
-      difficulty: match.difficulty,
-      topology: game.level.topology,
-      levelIndex: match.levelIndex,
-      width: game.rules.width,
-      height: game.rules.height,
-      target: game.rules.target,
-      board: Array.from(game.board),
-      moves: match.moves.map(move => ({ ...move, coordinate: Coordinates.label(move.cell, game.rules.width, game.rules.height) })),
-      events: this._visibleEvents(match, role).map(event => event.type === "move" ? { ...event, coordinate: Coordinates.label(event.cell, game.rules.width, game.rules.height) } : event),
-      seats: match.seats,
+      clock, preparation,
       outcome: match.resolution?.outcome || (match.stopped ? "stopped" : game.outcome),
       winner: match.resolution ? match.resolution.winner : match.stopped ? null : (game.winner === Engine.HUMAN ? "black" : game.winner === Engine.AI ? "white" : null),
       winReason: match.resolution?.winReason || (match.stopped ? "host_stopped" : game.winReason),
+      drawOffer: match.drawOffer || null
+    };
+    if (options.summary) return clone(result);
+    Object.assign(result, {
+      playPolicy: match.playPolicy, mode: match.mode, topology: game.level.topology,
+      width: game.rules.width, height: game.rules.height, target: game.rules.target,
+      board: Array.from(game.board),
+      seats: role ? Object.fromEntries(Object.entries(match.seats).map(([key, seat]) => [key, {
+        name: seat.name, model: seat.model, displayName: seat.displayName, joined: seat.joined, ready: seat.ready
+      }])) : match.seats,
       winningCells: match.resolution ? [] : game.winningMask ? Array.from(game.winningMask.cells) : [],
-      drawOffer: match.drawOffer || null,
       commentaryEnabled: match.commentaryEnabled ?? Boolean(match.seats.commentator?.joined),
-      legalCells: match.phase === "playing" ? Array.from(game.board.keys()).filter((cell) => game.board[cell] === 0) : [],
-      createdAt: match.createdAt,
-      updatedAt: match.events.at(-1)?.at || match.createdAt
+      legalCells: match.phase === "playing" ? Array.from(game.board.keys()).filter((cell) => game.board[cell] === 0) : []
     });
+    if (role) {
+      const move = match.moves.at(-1);
+      result.lastMove = move ? { ...move, coordinate: Coordinates.label(move.cell, game.rules.width, game.rules.height) } : null;
+      if (options.afterSeq !== undefined) Object.assign(result, this._eventPage(match, role, options, options.replay));
+      else requireValue(options.limit === undefined, "INVALID_ARGUMENT", "limit requires afterSeq.");
+    } else Object.assign(result, {
+      schemaVersion: 1, gameVersion: match.gameVersion, title: match.title, difficulty: match.difficulty, levelIndex: match.levelIndex,
+      moves: match.moves.map(move => ({ ...move, coordinate: Coordinates.label(move.cell, game.rules.width, game.rules.height) })),
+      events: this._visibleEvents(match, role).map(event => event.type === "move" ? { ...event, coordinate: Coordinates.label(event.cell, game.rules.width, game.rules.height) } : event),
+      createdAt: match.createdAt, updatedAt: match.events.at(-1)?.at || match.createdAt
+    });
+    return clone(result);
+  }
+
+  _noteReceipt(match, role, event, duplicate = false) {
+    return { event: { seq: event.seq, type: event.type, role: event.role, ply: event.ply },
+      state: this._snapshot(match, role, { summary: true }), ...(duplicate ? { duplicate: true } : {}) };
   }
 
   _recordMoves(match, now = this.now()) {
@@ -401,7 +434,7 @@ class Arena extends EventEmitter {
       case "arena_ready": return this._ready(args);
       case "arena_state": {
         const match = this._match(args.gameId);
-        return this._snapshot(match, this._seat(match, args.token));
+        return this._snapshot(match, this._seat(match, args.token), { afterSeq: args.afterSeq, limit: args.limit });
       }
       case "arena_move": return this._move(args);
       case "arena_resign": return this._decision(args, "resign");
@@ -411,7 +444,7 @@ class Arena extends EventEmitter {
       case "arena_rules": return this._rules(args);
       case "arena_replay": {
         const match = this._match(args.gameId);
-        return this._snapshot(match, this._seat(match, args.token));
+        return this._snapshot(match, this._seat(match, args.token), { afterSeq: args.afterSeq ?? 0, limit: args.limit, replay: true });
       }
       default: throw new ArenaError("UNKNOWN_TOOL", `Unknown arena operation: ${name}`, 404);
     }
@@ -657,7 +690,7 @@ class Arena extends EventEmitter {
     if (receipt) {
       requireValue(receipt.fingerprint === fingerprint, "REQUEST_REUSED", "This requestId already belongs to another action.", 409);
       this._save(match);
-      return { event: clone(match.events.find(event => event.seq === receipt.eventSeq)), state: this._snapshot(match, role), duplicate: true };
+      return this._noteReceipt(match, role, match.events.find(event => event.seq === receipt.eventSeq), true);
     }
     if (role === "commentator") {
       requireValue(match.commentaryEnabled !== false, "COMMENTARY_DISABLED", "Commentary is off. Stop commentary until invited again.", 409);
@@ -665,7 +698,7 @@ class Arena extends EventEmitter {
     const event = this._event(match, "note", { role, text: message, ply: args.ply });
     match.receipts[key] = { fingerprint, eventSeq: event.seq };
     this._changed(match);
-    return { event: clone(event), state: this._snapshot(match, role) };
+    return this._noteReceipt(match, role, event);
   }
 
   _control(args, context) {
@@ -730,27 +763,28 @@ class Arena extends EventEmitter {
     const match = this._match(args.gameId);
     const role = this._seat(match, args.token);
     const game = match.controller.game;
-    const promptRules = JSON.parse(readPrompt("rules.json"));
     const progress = this._progress(match), clock = Clock.snapshot(match.clock, this.now()), preparation = this._preparation(match);
     const result = {
       guidance: guidance({ ...progress, clock, preparation, seats: match.seats }, role),
-      ...promptRules.common,
-      state: progress,
-      clock,
-      playPolicy: match.playPolicy,
-      preparation,
-      playPolicyRule: promptRules.playPolicies[match.playPolicy],
-      preparationRule: preparation ? promptRules.preparation.timed.replace("{{duration}}", `${preparation.durationMs / 60000} 分钟`) : null,
-      clockRule: Clock.describe(clock, promptRules.clock),
+      state: progress, clock, preparation,
       topology: game.level.topology, width: game.rules.width, height: game.rules.height, target: game.rules.target,
-      briefing: briefingFor(game.rules),
       pieces: { black: 1, white: -1, empty: 0 },
       directions: Engine.DIRECTIONS.map((direction, index) => ({ index, ...direction })),
-      edgeText: game.level.edgeText, ruleText: game.level.ruleText,
-      victory: promptRules.victory[match.mode],
       seamBits: { x: Engine.SEAM_X, y: Engine.SEAM_Y, twist: Engine.SEAM_TWIST }
     };
-    if (args.cell !== undefined || args.direction !== undefined || args.length !== undefined) {
+    const query = args.cell !== undefined || args.direction !== undefined || args.length !== undefined;
+    if (!query) {
+      const promptRules = JSON.parse(readPrompt("rules.json"));
+      Object.assign(result, promptRules.common, {
+        playPolicy: match.playPolicy,
+        playPolicyRule: promptRules.playPolicies[match.playPolicy],
+        preparationRule: preparation ? promptRules.preparation.timed.replace("{{duration}}", `${preparation.durationMs / 60000} 分钟`) : null,
+        clockRule: Clock.describe(clock, promptRules.clock),
+        briefing: briefingFor(game.rules),
+        edgeText: game.level.edgeText, ruleText: game.level.ruleText,
+        victory: promptRules.victory[match.mode]
+      });
+    } else {
       const cell = inputCell(args.cell, game.rules);
       requireValue(Number.isInteger(args.direction) && args.direction >= 0 && args.direction < 8,
         "INVALID_DIRECTION", "direction must be an integer from 0 to 7.");

@@ -10,7 +10,7 @@
   const gameKey = "topology-arena-game";
   if (location.hash) history.replaceState(null, "", location.pathname + location.search);
   sessionStorage.removeItem("topology-arena-host");
-  const avatarChoices = [{id:"",name:"默认"},{id:"deepseek-color",name:"DeepSeek"},{id:"openai",name:"OpenAI"},{id:"claude-color",name:"Claude"},{id:"gemini-color",name:"Gemini"},{id:"kimi-color",name:"Kimi"},{id:"qwen-color",name:"Qwen"},{id:"grok",name:"Grok"}];
+  const avatarChoices = [{id:"",name:"默认"},{id:"deepseek-color",name:"DeepSeek"},{id:"openai",name:"OpenAI"},{id:"claude-color",name:"Claude"},{id:"gemini-color",name:"Gemini"},{id:"kimi-color",name:"Kimi"},{id:"qwen-color",name:"Qwen"},{id:"grok",name:"Grok"},{id:"doubao-color",name:"Doubao"},{id:"hunyuan-color",name:"Hy"},{id:"minimax-color",name:"MiniMax"}];
   let drafts = {black:{name:"",avatar:""},white:{name:"",avatar:""}};
   try { const saved=JSON.parse(localStorage.getItem("arena-player-profiles"));if(saved?.black && saved?.white)drafts=saved; } catch {}
   let profileTarget = null, selectedAvatar = "", confirmAction = null, uploadEpoch = 0;

@@ -32,7 +32,7 @@ description: Start a local Topology Gomoku Arena, join as a player, or provide l
 
 自主判断局势和选择落点。只使用自己的席位信息参赛，不读取对方会话、观战数据或其他角色凭证，不调用内置 AI 选棋。
 
-加入返回的 `rules` 包含本局规则，`rules.briefing` 直接说明当前尺寸的边界连接、跨界后的方向和具体例子，示例来自裁判引擎。先读懂这些规则及 `rules.playPolicyRule`、`rules.preparationRule`，按本局模式完成准备；需要核对某条路径时，给 `arena_rules` 附加 `cell`、`direction`、`length`，方向编号从返回值读取。沿路径前进时使用跨界后返回的新方向。
+加入返回的 `rules` 包含本局规则，`rules.briefing` 直接说明当前尺寸的边界连接、跨界后的方向和具体例子，示例来自裁判引擎。先读懂这些规则及 `rules.playPolicyRule`、`rules.preparationRule`，按本局模式完成准备；需要核对某条路径时，给 `arena_rules` 附加 `cell`、`direction`、`length`，方向编号从返回值读取。路径查询只返回几何结果与当前进度、余时，沿路径前进时使用跨界后返回的新方向；重新阅读完整规则时不传路径参数。
 
 准备阶段也要勤发随想，让观众及时跟上你的观察、疑问和打算。
 
@@ -43,7 +43,7 @@ description: Start a local Topology Gomoku Arena, join as a player, or provide l
 
 双方入席后同时开始准备倒计时，内置 AI 已入席并就绪。准备倒计时独立于行棋棋钟，不限时棋局也有准备时限。准备完成，用 `arena_ready` 携带自己的 `gameId` 与 `token` 确认就绪；双方提前就绪立即开赛，准备到时也会自动开赛。查看 `preparation.remainingMs` 和 `deadline`，每次响应后检查阶段、回合和余时，并留在当前会话持续跟进。
 
-若返回 `phase: waiting`，在当前会话调用 `arena_wait`，`afterSeq` 取最新 `eventSeq`，`timeoutMs: 25000`。每次返回后更新状态；仍在等待就继续调用，直到开赛后按回合行动。对手尚未就绪属于正常等待，可以继续分析和发随想；等待超时、对手暂时没有活动都不意味着参赛任务结束。保持会话运行，才能及时接到自动开赛事件；以“对手就绪后我再落子”结束会话会错过开赛。重连后以 `state.seats` 和当前棋局为准，按下方“等待与恢复”继续参与。
+若返回 `phase: waiting`，在当前会话调用 `arena_wait`，`afterSeq` 初始取加入状态的 `eventSeq`，随后使用事件页返回的 `nextAfterSeq`，`timeoutMs: 25000`。每次返回后更新状态；仍在等待就继续调用，直到开赛后按回合行动。对手尚未就绪属于正常等待，可以继续分析和发随想；等待超时、对手暂时没有活动都不意味着参赛任务结束。保持会话运行，才能及时接到自动开赛事件；以“对手就绪后我再落子”结束会话会错过开赛。重连后以 `state.seats` 和当前棋局为准，按下方“等待与恢复”继续参与。
 
 `cell` 可直接用棋盘坐标（如 `A1`，左下角）或数字索引；路径与落子记录附带可读坐标。返回的 `guidance` 提醒当前该准备、行动、继续跟进还是结束；`clock` 给出精确余时，`remainingMs[role]` 是该方余时，`active` 表示走钟方，`serverNow` / `deadline` 是快照时间 / 截止时间（Unix 毫秒）。响应之后仍继续走钟，成功落子才加秒并换钟；`clock: null` 表示不计时。长时间分析或准备后，先更新局面与余时，再决定行动。
 
@@ -53,6 +53,14 @@ description: Start a local Topology Gomoku Arena, join as a player, or provide l
 - 认输用 `arena_resign`；提和用 `arena_draw` 的 `offer`。接受或拒绝时，以当前 `drawOffer.id` 作为 `offerId`，使用 `accept` / `decline`；提议方可 `withdraw`。这些操作同样携带当前 `expectedVersion` 与唯一 `requestId`。
 - 随想用 `arena_note`，携带 `text`、所对应局面的 `ply` 与唯一 `requestId`；等待或思考途中也可随时发送，不影响回合与棋盘。提及具体位置时沿用棋盘坐标，不向观众发送内部代码、方向编号或分析记号。
 
+## 精简状态与历史
+
+日常状态保留完整当前棋盘、合法落点、最新一手、回合和余时，不附头像、全部棋谱或历史随想。MCP 与棋手 CLI 使用同样的精简响应。
+
+`arena_wait` 返回游标之后的事件；`arena_state` 也可传 `afterSeq` 查询增量。分页使用 `nextAfterSeq`，`hasMore` 表示仍有后续事件，`limit` 默认 20、最大 50。当前棋盘与 `eventSeq` 始终是最新状态，可能晚于本页事件；先看回合，轮到自己及时落子。需要历史时再继续翻页。随想回执只确认事件并更新进度和余时，不返回棋盘或原文，也不推进已读事件游标。
+
+需要复盘或找回自己发过的文字时，用 `arena_replay` 从 `afterSeq: 0` 开始分页，沿 `nextAfterSeq` 读取。落子在事件中带坐标；其他角色的随想不可见。
+
 ## 解说操作
 
 用 `arena_state` 获取局面，用 `arena_note` 发送解说，携带 `text`、所点评局面的 `ply` 与唯一 `requestId`。`commentaryEnabled` 为 false 时等待再次开启。
@@ -60,7 +68,7 @@ description: Start a local Topology Gomoku Arena, join as a player, or provide l
 ## 等待与恢复
 
 - 入席后持续参与，直到终局、用户要求停止或遇到无法恢复的问题；不要用“我会等待／持续关注”作为结束会话的答复，也不要依赖用户再次催促。
-- 对手行棋的时间也可以分析局势、准备后续打算和发送随想；分析与获取新状态交替进行，以免错过换手。需要等候开赛、对手或恢复时，用 `arena_wait`，`afterSeq` 取最近返回的 `eventSeq`，`timeoutMs` 不超过 25000。等待返回后检查局面，轮到自己就行动；没有新事件则继续跟进，不代表任务完成。
+- 对手行棋的时间也可以分析局势、准备后续打算和发送随想；分析与获取新状态交替进行，以免错过换手。需要等候开赛、对手或恢复时，用 `arena_wait`，`afterSeq` 使用已读事件游标，按返回的 `nextAfterSeq` 推进，`timeoutMs` 不超过 25000。等待返回后检查局面，轮到自己就行动；没有新事件则继续跟进，不代表任务完成。
 - 操作结果不确定时先查状态，重试须沿用完全相同的参数和 `requestId`，不能换 ID 盲下第二手。版本冲突、非己方回合、非法落点则重新读状态并调整。
 - 连接中断时读取 CLI `status`，做少量连接重试；持续失败报告具体错误。不擅自结束或重启他人的服务，不代替对手确认就绪。
 - 会话必须结束时，保留比赛 ID、token 和最新事件序号，告知用户比赛仍保留。恢复后先查状态，再继续原席位；MCP 不能自动唤醒已经结束的会话。

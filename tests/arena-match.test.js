@@ -264,8 +264,9 @@ test("notes accompany any game phase and are visible only to their author and sp
   assert.deepEqual(notes.map(event => event.ply), [0, 0, 1, 1, 1, 0, 1]);
   for (const [role, token] of [["black", game.black.token], ["white", game.white.token], ["commentator", commentator.token]]) {
     for (const operation of ["arena_state", "arena_replay"]) {
-      const state = game.arena.call(operation, { gameId: game.gameId, token });
-      assert.deepEqual(state.events.filter((event) => event.type === "note"), notes.filter(event => event.role === role));
+      const state = game.arena.call(operation, { gameId: game.gameId, token, afterSeq: 0, limit: 50 });
+      const expected = notes.filter(event => event.role === role).map(event => { const copy = { ...event }; if (operation === "arena_state") delete copy.text; return copy; });
+      assert.deepEqual(state.events.filter((event) => event.type === "note"), expected);
       assert.ok(state.events.some(event => event.type === "resign"));
     }
   }
@@ -281,7 +282,7 @@ test("notes retry once, allow multiple short thoughts at one position and persis
   saved.mock.restore();
   const retried = game.arena.call("arena_note", args);
   assert.equal(retried.duplicate, true);
-  assert.equal(retried.state.events.filter(event => event.type === "note").length, 1);
+  assert.equal(game.state().events.filter(event => event.type === "note").length, 1);
   assert.throws(() => game.arena.call("arena_note", { ...args, text: "Changed" }), errorCode("REQUEST_REUSED"));
   for (let index = 1; index < 8; index++) game.arena.call("arena_note", { ...args, requestId: `note-${index}` });
   game.arena.call("arena_note", { ...args, requestId: "another-thought" });
@@ -318,11 +319,11 @@ test("legacy speech remains visible to spectators but not other seats after rest
   assert.equal(speech(restored.call("arena_replay", { gameId: game.gameId })).length, 3);
   for (const [role, token] of [["black", game.black.token], ["white", game.white.token], ["commentator", commentator.token]]) {
     for (const name of ["arena_state", "arena_replay"]) {
-      assert.deepEqual(speech(restored.call(name, { gameId: game.gameId, token })).map(event => event.text), [`Legacy ${role}`]);
+      assert.deepEqual(speech(restored.call(name, { gameId: game.gameId, token, afterSeq: 0, limit: 50 })).map(event => event.text), [name === "arena_replay" ? `Legacy ${role}` : undefined]);
     }
   }
   const rejoined = restored.call("arena_join", { ...invitation, name: "white" });
-  assert.deepEqual(speech(rejoined.state).map(event => event.text), ["Legacy white"]);
+  assert.equal(rejoined.state.events, undefined);
   assert.equal(rejoined.token, game.white.token);
 });
 
@@ -450,9 +451,9 @@ test("restart restores seats, board and receipts, pauses active games, and expor
   const before = game.state();
   game.arena.close();
   restored = new Arena({ dataDir, now: () => 5000 });
-  const state = restored.call("arena_state", { gameId: game.gameId, token: game.black.token });
+  const state = restored.call("arena_state", { gameId: game.gameId, token: game.black.token, afterSeq: before.eventSeq });
   assert.deepEqual(state.board, before.board);
-  assert.deepEqual(state.moves, before.moves);
+  assert.deepEqual(state.lastMove, before.moves.at(-1));
   assert.equal(state.phase, "paused");
   assert.equal(state.version, 2);
   assert.equal(state.eventSeq, before.eventSeq + 1);
@@ -630,7 +631,7 @@ test("built-in AI declines early draw offers and stops scheduled moves on resign
   const g = setup({ now: () => time }, { mode: "ai" }); g.start();
   const declined = g.arena.call("arena_draw", { gameId: g.gameId, token: g.black.token, action: "offer", expectedVersion: 0, requestId: "offer" });
   assert.equal(declined.drawOffer, null);
-  assert.ok(declined.events.some(e => e.type === "draw" && e.action === "decline" && e.role === "white"));
+  assert.ok(g.state().events.some(e => e.type === "draw" && e.action === "decline" && e.role === "white"));
   g.move(0);
   g.arena.call("arena_resign", { gameId: g.gameId, token: g.black.token, expectedVersion: 1, requestId: "concede" });
   time = 10000; g.arena.tick();
@@ -698,7 +699,8 @@ test("display profiles preserve role identity, credentials and moves, and reject
   const args={gameId:g.gameId,role:"black",name:"蓝色大肥鱼",avatar:"deepseek-color"};
   assert.throws(()=>g.arena.call("arena_profile",args),errorCode("HOST_REQUIRED"));
   const edited=g.arena.call("arena_profile",args,HOST);assert.equal(edited.seats.black.displayName,args.name);assert.equal(edited.seats.black.name,g.black.state.seats.black.name);assert.equal(edited.version,1);
-  assert.equal(g.arena.call("arena_state",{gameId:g.gameId,token:g.black.token}).seats.black.avatar,"deepseek-color");
+  assert.equal(g.arena.call("arena_state",{gameId:g.gameId,token:g.black.token}).seats.black.avatar,undefined);
+  assert.equal(g.state().seats.black.avatar,"deepseek-color");
   for(const avatar of ["https://example.com/avatar.png","data:image/svg+xml,<svg/>","data:image/png;base64,AAAA","../../secret"])assert.throws(()=>g.arena.call("arena_profile",{...args,avatar},HOST),errorCode("INVALID_AVATAR"));
   g.arena.close();const restored=new Arena({dataDir:directory});assert.equal(restored.call("arena_state",{gameId:g.gameId}).seats.black.displayName,args.name);restored.close();
   const created=new Arena().call("arena_create",{topology:"torus",mode:"duel",players:{black:{name:"DeepSeek",avatar:"deepseek-color"}}},HOST);assert.equal(created.seats.black.joined,false);assert.equal(created.seats.black.displayName,"DeepSeek");
@@ -714,4 +716,81 @@ test("record management deletes only ended games and never resurrects them on re
   assert.deepEqual(arena.call("arena_clear",{},HOST).deleted,[ended.gameId]);assert.equal(arena.call("arena_list").matches.length,1);
   assert.throws(()=>arena.call("arena_state",{gameId:ended.gameId}),errorCode("GAME_NOT_FOUND"));
   arena.close();const restored=new Arena({dataDir:directory});assert.deepEqual(restored.call("arena_list").matches.map(m=>m.gameId),[waiting.gameId]);restored.close();
+});
+
+test("role snapshots and note receipts stay small as history and uploaded avatars grow", () => {
+  const g = setup({}, { width: 19, height: 19 }); const commentator = g.join("commentator");
+  const match = g.arena.matches.get(g.gameId);
+  // Synthetic persisted image payload exercises the response boundary, independently of upload validation.
+  for (const seat of Object.values(match.seats)) seat.avatar = "data:image/png;base64," + "A".repeat(99000);
+  for (let i = 0; i < 100; i++) for (const token of [g.black.token, g.white.token, commentator.token]) {
+    g.arena.call("arena_note", { gameId: g.gameId, token, ply: 0, text: "想".repeat(1000), requestId: `size-${i}` });
+  }
+  g.start();
+  for (const token of [g.black.token, g.white.token, commentator.token]) {
+    const state = g.arena.call("arena_state", { gameId: g.gameId, token });
+    assert.equal(state.events, undefined); assert.equal(state.moves, undefined);
+    assert.equal(state.board.length, 361); assert.equal(state.legalCells.length, 361);
+    assert.ok(Buffer.byteLength(JSON.stringify(state)) < 8000);
+    assert.ok(!JSON.stringify(state).includes("data:image"));
+    assert.ok(Object.values(state.seats).every(seat => !Object.hasOwn(seat, "avatar")));
+    const args = { gameId: g.gameId, token, ply: 0, text: "SECRET OWN NOTE", requestId: "receipt" };
+    const receipt = g.arena.call("arena_note", args), retry = g.arena.call("arena_note", args);
+    assert.deepEqual(receipt.event, retry.event); assert.equal(retry.duplicate, true);
+    for (const response of [receipt, retry]) {
+      assert.equal(response.state.board, undefined); assert.equal(response.state.events, undefined);
+      assert.equal(response.event.text, undefined); assert.ok(!JSON.stringify(response).includes(args.text));
+      assert.equal(response.state.clock.active, "black");
+      assert.ok(Buffer.byteLength(JSON.stringify(response)) < 1800);
+    }
+  }
+  assert.ok(JSON.stringify(g.state()).includes("data:image"));
+  assert.equal(g.state().events.filter(e => e.type === "note").length, 303);
+});
+
+test("bounded event pages cross hidden sequences without losing or duplicating visible events", () => {
+  const g = setup(); const commentator = g.join("commentator");
+  for (let i = 0; i < 70; i++) for (const token of [g.black.token, g.white.token, commentator.token]) {
+    g.arena.call("arena_note", { gameId: g.gameId, token, ply: 0, text: "想".repeat(1000), requestId: `page-${i}` });
+  }
+  g.start(); g.move(0);
+  for (const [role, token] of [["black", g.black.token], ["white", g.white.token], ["commentator", commentator.token]]) {
+    const expected = g.state().events.filter(e => !["note", "speech"].includes(e.type) || e.role === role);
+    for (const operation of ["arena_state", "arena_replay"]) {
+      const seen = []; let afterSeq = 0, pages = 0;
+      do {
+        const page = g.arena.call(operation, { gameId: g.gameId, token, afterSeq, limit: 50 });
+        assert.ok(page.events.length <= 50);
+        assert.ok(Buffer.byteLength(JSON.stringify(page.events)) <= 16384);
+        assert.equal(page.eventSeq, g.state().eventSeq);
+        assert.equal(page.board[0], 1);
+        assert.ok(page.nextAfterSeq > afterSeq);
+        seen.push(...page.events); afterSeq = page.nextAfterSeq; pages++;
+        if (!page.hasMore) break;
+      } while (pages < 100);
+      assert.deepEqual(seen.map(e => e.seq), expected.map(e => e.seq));
+      assert.equal(afterSeq, g.state().eventSeq);
+      for (const event of seen.filter(e => e.type === "note")) {
+        assert.equal(event.role, role);
+        assert.equal(event.text, operation === "arena_replay" ? "想".repeat(1000) : undefined);
+      }
+      const empty = g.arena.call(operation, { gameId: g.gameId, token, afterSeq });
+      assert.deepEqual(empty.events, []); assert.equal(empty.nextAfterSeq, afterSeq); assert.equal(empty.hasMore, false);
+    }
+  }
+  for (const afterSeq of [-1, 0.5, g.state().eventSeq + 1, "0"]) assert.throws(() => g.arena.call("arena_state", { gameId: g.gameId, token: g.black.token, afterSeq }), errorCode("INVALID_CURSOR"));
+  for (const limit of [0, 51, 0.5, "1"]) assert.throws(() => g.arena.call("arena_replay", { gameId: g.gameId, token: g.black.token, limit }), errorCode("INVALID_LIMIT"));
+  assert.throws(() => g.arena.call("arena_state", { gameId: g.gameId, token: g.black.token, limit: 10 }), errorCode("INVALID_ARGUMENT"));
+});
+
+test("path probes carry interpretable geometry without repeating the rules briefing", () => {
+  const g = setup({}, { topology: "mobius" });
+  const args = { gameId: g.gameId, token: g.black.token };
+  const full = g.arena.call("arena_rules", args);
+  const path = g.arena.call("arena_rules", { ...args, cell: "A1", direction: 0, length: 5 });
+  assert.ok(full.briefing); assert.ok(full.playPolicyRule); assert.ok(full.clockRule);
+  for (const key of ["briefing", "playPolicyRule", "preparationRule", "clockRule", "participation", "coordinateSystem"]) assert.equal(path[key], undefined);
+  for (const key of ["width", "height", "directions", "pieces", "seamBits", "clock", "state"]) assert.deepEqual(path[key], full[key]);
+  assert.ok(path.path); assert.ok(path.next);
+  assert.ok(Buffer.byteLength(JSON.stringify(path)) < Buffer.byteLength(JSON.stringify(full)) / 2);
 });

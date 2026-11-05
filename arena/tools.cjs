@@ -8,13 +8,14 @@ const { readPrompt } = require("./prompts.cjs");
 const id = z.string().min(1).max(128);
 const game = { gameId: id };
 const seat = { ...game, token: id };
+const page = { afterSeq: z.number().int().nonnegative().optional(), limit: z.number().int().min(1).max(50).optional() };
 const cell = z.union([z.number().int().nonnegative(), z.string().regex(/^[A-S]([1-9]|1[0-9])$/i)]);
 const tools = {
   arena_join: {
     schema: { ...game, inviteToken: id, name: z.string().min(1).max(60), model: z.string().max(100).optional() }
   },
   arena_state: {
-    schema: seat, readOnly: true
+    schema: { ...seat, ...page }, readOnly: true
   },
   arena_ready: {
     schema: seat
@@ -36,11 +37,11 @@ const tools = {
     schema: { ...seat, action: z.enum(["offer", "accept", "decline", "withdraw"]), offerId: id.optional(), expectedVersion: z.number().int().nonnegative(), requestId: id }
   },
   arena_wait: {
-    schema: { ...seat, afterSeq: z.number().int().nonnegative(), timeoutMs: z.number().int().min(0).max(25000).default(20000) },
+    schema: { ...seat, limit: page.limit, afterSeq: z.number().int().nonnegative(), timeoutMs: z.number().int().min(0).max(25000).default(20000) },
     readOnly: true
   },
   arena_replay: {
-    schema: seat, readOnly: true
+    schema: { ...seat, ...page }, readOnly: true
   }
 };
 
