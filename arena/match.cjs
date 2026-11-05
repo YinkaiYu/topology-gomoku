@@ -152,16 +152,18 @@ class Arena extends EventEmitter {
       }
       controller.drainEvents();
       const match = { ...saved, ...size, controller, receipts: saved.receipts || {} };
-      match.playPolicy = saved.playPolicy || "legacy";
+      match.playPolicy = Object.hasOwn(PREPARATION_MS, saved.playPolicy) ? saved.playPolicy : null;
       match.preparation = saved.preparation || null;
+      requireValue(match.phase === "ended" || (match.playPolicy && match.preparation && Object.hasOwn(saved, "clock")
+        && ["black", "white"].every(role => typeof saved.seats[role].ready === "boolean")),
+        "INVALID_SAVE", `Active match ${filename} requires current play policy and preparation data.`, 500);
       if (match.phase === "waiting" && match.preparation?.deadline != null) {
         // Checkpointed preparation, like the game clock, excludes service downtime.
         match.preparation.deadline = this.now() + match.preparation.remainingMs;
       }
       for (const role of ROLES) {
         const seat = match.seats[role];
-        seat.ready = role !== "commentator" && (typeof seat.ready === "boolean" ? seat.ready
-          : (saved.mode === "ai" && role === "white") || (saved.phase !== "waiting" && seat.joined));
+        seat.ready = role !== "commentator" && seat.ready === true;
       }
       // Saved balances are checkpointed; downtime never consumes a player's time.
       match.clock = saved.clock ? { ...saved.clock, active: null, runningSince: null } : null;
@@ -738,7 +740,7 @@ class Arena extends EventEmitter {
       playPolicy: match.playPolicy,
       preparation,
       playPolicyRule: promptRules.playPolicies[match.playPolicy],
-      preparationRule: preparation ? promptRules.preparation.timed.replace("{{duration}}", `${preparation.durationMs / 60000} 分钟`) : promptRules.preparation.legacy,
+      preparationRule: preparation ? promptRules.preparation.timed.replace("{{duration}}", `${preparation.durationMs / 60000} 分钟`) : null,
       clockRule: Clock.describe(clock, promptRules.clock),
       topology: game.level.topology, width: game.rules.width, height: game.rules.height, target: game.rules.target,
       briefing: briefingFor(game.rules),

@@ -89,7 +89,7 @@ test("invalid moves do not stop or increment the clock; resignation and agreemen
     assert.deepEqual(g.state().clock.remainingMs, remaining); assert.equal(g.state().clock.active, null);
   }
 });
-test("clock checkpoints survive restart without charging downtime and legacy matches remain untimed", t => {
+test("clock checkpoints survive restart; ended archives do not invent missing clock records", t => {
   const dataDir = fs.mkdtempSync(path.join(os.tmpdir(), "arena-clock-"));
   const g = setup({ dataDir }); let restored;
   t.after(() => { restored?.close(); fs.rmSync(dataDir, { recursive: true, force: true }); });
@@ -105,6 +105,7 @@ test("clock checkpoints survive restart without charging downtime and legacy mat
   assert.equal(restored.call("arena_state", { gameId: g.gameId }).clock.remainingMs.black, 276544);
   restored.close();
   const file = path.join(dataDir, `match-${g.gameId}.json`), saved = JSON.parse(fs.readFileSync(file));
+  saved.phase = "ended"; saved.stopped = true;
   delete saved.clock; fs.writeFileSync(file, JSON.stringify(saved));
   restored = new Arena({ dataDir });
   assert.equal(restored.call("arena_state", { gameId: g.gameId }).clock, null);
@@ -136,8 +137,6 @@ test("clock configuration is bounded, and explicitly untimed games never expire"
 });
 
 test("joining discloses the selected clock exactly and keeps its initial allowance distinct from remaining time", () => {
-  const fallbackRule = JSON.parse(fs.readFileSync(path.resolve(__dirname, "../arena/prompts/rules.json"), "utf8")).common.clockRule;
-  assert.equal(typeof fallbackRule, "string", "Already-running services still read the generic rule until restart");
   const configurations = [
     { clock: { initialMs: 300000, incrementMs: 5000 }, initial: "5 分钟", increment: "5 秒" },
     { clock: { initialMs: 900000, incrementMs: 15000 }, initial: "15 分钟", increment: "15 秒" },
@@ -151,7 +150,6 @@ test("joining discloses the selected clock exactly and keeps its initial allowan
       ...g.arena.call("arena_invite", { gameId: g.gameId, role: "black" }, HOST), name: "black"
     });
     assert.ok(joined.rules.clockRule.includes(`每方初始 ${configuration.initial}`));
-    assert.notEqual(joined.rules.clockRule, fallbackRule, "New services return the current match's exact rule");
     assert.ok(joined.rules.clockRule.includes(`成功落子加 ${configuration.increment}`));
     assert.equal(joined.rules.clock.initialMs, configuration.clock.initialMs);
     assert.equal(joined.rules.clock.incrementMs, configuration.clock.incrementMs);

@@ -77,7 +77,7 @@ test("single-player preparation can finish early when the external player is rea
   assert.equal(g.state().clock.remainingMs.black, 300000);
 });
 
-test("preparation survives restart without auto-start; legacy waiting needs readiness while started games can resume", t => {
+test("preparation and explicit readiness survive restart; started games resume", t => {
   const dataDir = fs.mkdtempSync(path.join(os.tmpdir(), "arena-ready-"));
   let restored;
   t.after(() => { restored?.close(); fs.rmSync(dataDir, { recursive: true, force: true }); });
@@ -88,16 +88,13 @@ test("preparation survives restart without auto-start; legacy waiting needs read
   assert.equal(state.seats.black.ready, true); assert.equal(state.seats.white.ready, false);
   restored.close();
   const file = path.join(dataDir, `match-${g.gameId}.json`), saved = JSON.parse(fs.readFileSync(file, "utf8"));
-  delete saved.preparation; delete saved.playPolicy;
-  for (const seat of Object.values(saved.seats)) delete seat.ready;
   fs.writeFileSync(file, JSON.stringify(saved));
   restored = new Arena({ dataDir, now: () => 9000000 });
   state = restored.call("arena_state", { gameId: g.gameId });
-  assert.equal(state.seats.black.ready, false); assert.equal(state.seats.white.ready, false);
+  assert.equal(state.seats.black.ready, true); assert.equal(state.seats.white.ready, false);
   for (const token of Object.values(g.tokens)) restored.call("arena_ready", { gameId: g.gameId, token });
   restored.close();
   const playing = JSON.parse(fs.readFileSync(file, "utf8"));
-  for (const seat of Object.values(playing.seats)) delete seat.ready;
   fs.writeFileSync(file, JSON.stringify(playing));
   restored = new Arena({ dataDir, now: () => 99999999 });
   state = restored.call("arena_state", { gameId: g.gameId });
@@ -211,21 +208,27 @@ test("shutdown between ticks settles elapsed preparation before restart pauses t
   assert.equal(state.events.filter(event => event.type === "control" && event.action === "start").length, 1);
 });
 
-test("legacy waiting saves retain unlimited preparation and their original tool contract", t => {
-  const dataDir = fs.mkdtempSync(path.join(os.tmpdir(), "arena-legacy-policy-"));
+test("historical ended games replay without a legacy rules contract; active saves require current rules", t => {
+  const dataDir = fs.mkdtempSync(path.join(os.tmpdir(), "arena-archive-"));
   let restored;
   t.after(() => { restored?.close(); fs.rmSync(dataDir, { recursive: true, force: true }); });
-  const g = setup({ dataDir }); g.join("black"); g.join("white"); g.arena.close();
+  const g = setup({ dataDir }); g.join("black"); g.join("white"); g.ready("black"); g.ready("white");
+  g.arena.call("arena_move", { gameId: g.gameId, token: g.tokens.black, cell: "D4", expectedVersion: 0, requestId: "archive-move" });
+  g.control("stop"); g.arena.close();
   const file = path.join(dataDir, `match-${g.gameId}.json`), saved = JSON.parse(fs.readFileSync(file, "utf8"));
-  delete saved.playPolicy; delete saved.preparation; fs.writeFileSync(file, JSON.stringify(saved));
-  let now = 2000000;
-  restored = new Arena({ dataDir, now: () => now }); now += 900000; restored.tick();
+  delete saved.playPolicy; delete saved.preparation;
+  fs.writeFileSync(file, JSON.stringify(saved));
+  restored = new Arena({ dataDir });
   const state = restored.call("arena_state", { gameId: g.gameId });
-  assert.equal(state.phase, "waiting"); assert.equal(state.playPolicy, "legacy"); assert.equal(state.preparation, null);
+  assert.equal(state.phase, "ended"); assert.equal(state.playPolicy, null); assert.equal(state.preparation, null);
+  assert.equal(state.moves.length, 1);
   const rules = restored.call("arena_rules", { gameId: g.gameId, token: g.tokens.black });
-  assert.equal(typeof rules.playPolicyRule, "string"); assert.equal(typeof rules.preparationRule, "string");
-  for (const token of Object.values(g.tokens)) restored.call("arena_ready", { gameId: g.gameId, token });
-  assert.equal(restored.call("arena_state", { gameId: g.gameId }).phase, "playing");
+  assert.equal(rules.playPolicyRule, undefined); assert.equal(rules.preparationRule, null);
+  assert.equal(restored.call("arena_list").matches[0].phase, "ended");
+  assert.equal(restored.call("arena_replay", { gameId: g.gameId, token: g.tokens.black }).moves.length, 1);
+  restored.close();
+  saved.phase = "waiting"; fs.writeFileSync(file, JSON.stringify(saved));
+  assert.throws(() => new Arena({ dataDir }), { code: "INVALID_SAVE" });
 });
 
 test("only the host may disqualify a named side; verdict freezes clocks and preparation and cannot be overwritten", t => {
