@@ -35,7 +35,8 @@ config:
 - 侧栏图标“对弈室” → 主区面板，iframe 指向 `http://127.0.0.1:<port>/?game=<gameId>&embed=1`。
 - 面板每 5 秒刷新一次棋局目录；棋局切换、刷新和“在浏览器打开”都在面板头部。
 - 嵌入页隐藏了开局页、设置、棋手资料和邀请/结束入口；棋盘、棋钟、随想、解说、二维/三维、复盘都保留。
-- 服务端只为带 `embed` 的请求放开 `frame-ancestors http://127.0.0.1:* http://localhost:*`；普通页面仍然不可被嵌入。
+- 服务端只为带 `embed` 的请求放开 `frame-ancestors http://127.0.0.1:* http://localhost:* dsh-app:`；`dsh-app:` 是 DSH 桌面外壳的文档来源，普通浏览器里的 `dsh-app` 之外来源仍然不可嵌入。
+- 桌面外壳对 loopback 算跨站，因此服务只对 `embed` 页面导航放行 `Sec-Fetch-Site: cross-site`；观战页自己的 API 请求同源，其他页面的跨站 API 调用仍被拒。
 
 ## 更新上游
 

@@ -124,10 +124,7 @@ window.__ModuleLoader__.load({
     function ArenaPanel({ t }) {
       const { data, reload } = useView()
       const [chosen, setChosen] = React.useState('')
-      const [frameLoaded, setFrameLoaded] = React.useState(false)
       const [nonce, setNonce] = React.useState(0)
-      const rootRef = React.useRef(null)
-      const frameRef = React.useRef(null)
       const games = data && Array.isArray(data.games) ? data.games : []
       React.useEffect(() => {
         if (chosen && games.length && !games.some((game) => game.gameId === chosen)) setChosen('')
@@ -137,54 +134,6 @@ window.__ModuleLoader__.load({
       const base = data && data.url ? data.url : ''
       const src = base ? `${base}/?embed=1${active ? `&game=${encodeURIComponent(active)}` : ''}` : ''
       const browserHref = base ? `${base}/${active ? `?game=${encodeURIComponent(active)}` : ''}` : ''
-
-      React.useEffect(() => {
-        setFrameLoaded(false)
-      }, [src, nonce])
-
-      // Temporary layout probe: the operator reads it from /topology-arena/api/diag.
-      // Temporary diagnostics: report measured sizes and any CSP refusal that
-      // the surrounding page raises for the embedded frame.
-      const probe = React.useCallback((payload) => {
-        fetch('/topology-arena/api/diag', {
-          method: 'POST',
-          headers: { 'content-type': 'application/json' },
-          body: JSON.stringify({ at: Date.now(), href: location.href, ...payload }),
-        }).catch(() => {})
-      }, [])
-
-      React.useEffect(() => {
-        const onViolation = (event) => {
-          probe({
-            kind: 'violation',
-            directive: event.violatedDirective,
-            effective: event.effectiveDirective,
-            blocked: event.blockedURI,
-            sample: event.sample,
-          })
-        }
-        document.addEventListener('securitypolicyviolation', onViolation)
-        return () => document.removeEventListener('securitypolicyviolation', onViolation)
-      }, [probe])
-
-      React.useEffect(() => {
-        const timer = setTimeout(() => {
-          const root = rootRef.current
-          const frame = frameRef.current
-          const rect = root ? root.getBoundingClientRect() : null
-          const frameRect = frame ? frame.getBoundingClientRect() : null
-          probe({
-            kind: 'layout',
-            ua: navigator.userAgent,
-            viewport: { w: window.innerWidth, h: window.innerHeight },
-            panel: rect ? { w: Math.round(rect.width), h: Math.round(rect.height) } : null,
-            frame: frameRect ? { w: Math.round(frameRect.width), h: Math.round(frameRect.height) } : null,
-            loaded: frameLoaded,
-            src,
-          })
-        }, 2500)
-        return () => clearTimeout(timer)
-      }, [probe, src, nonce, frameLoaded])
 
       const header = h('header', {
         key: 'header',
@@ -265,11 +214,9 @@ window.__ModuleLoader__.load({
           ]),
           h('iframe', {
             key: `frame-${active}-${nonce}`,
-            ref: frameRef,
             src,
             title: t.panel,
             referrerPolicy: 'no-referrer',
-            onLoad: () => setFrameLoaded(true),
             style: {
               position: 'absolute', inset: 0, border: 0, width: '100%', height: '100%',
               display: 'block', background: 'transparent',
@@ -281,7 +228,6 @@ window.__ModuleLoader__.load({
       }
 
       return h('div', {
-        ref: rootRef,
         style: { height: '100%', minHeight: '60vh', display: 'flex', flexDirection: 'column', background: 'var(--dsw-alias-bg-base)' },
       }, [header, h('div', { key: 'body', style: { flex: 1, minHeight: 0, position: 'relative' } }, body)])
     }
