@@ -293,3 +293,11 @@
 - 跨边界实战检查：真实触屏操作在环游以黑方 `26 → 27 → 21 → 22 → 23` 跨左右边界连五，裁判判黑胜；[五连前一手](../../artifacts/shared-boundary-guides/after-torus-cross-boundary-1280x720.png)保留边缘棋子与半格间隔的可视证据。
 - 可复现命令：提供 Playwright 到 `NODE_PATH` 后运行 `node scripts/qa-shared-boundary-guides.cjs`。追加 `--serve --port=4329` 提供实际游戏预览，`/before/` 是只读 Git 基线；[完整结果](../../artifacts/shared-boundary-guides/results.json)保存各组布局、触屏落子、视角状态与证据路径。共保存 37 张截图。
 - 验证：160 项测试、资源与文档校验通过，浏览器检查无运行错误。目视检查桌面、手机和矮视口的彩轨、扩线、开放边及动画首段无裁切或明显错位。2026-11-06 用户确认预览无问题，授权合入 `dev`、关闭 Issue #8、提升 `main` 并完成各渠道发行；统一版本为 1.41.2，渠道结果见[发布记录](../releases/1.41.2.md)。
+
+## 2026-11-06：知乎 1.41.2 交付副本
+
+- 稳定来源 `main@ba8e3ab`，独立渠道整合 `5f6c594`；不修改共享游戏样式与逻辑。先复制最新静态应用并声明知乎平台，再用 Skill 1.2.0 生成平台交付输入；验收对象是这个实际交付副本。
+- Chromium、像素比 1、1280×900 与 390×844，各覆盖顶层与不同端口的跨源 iframe，共四组。真实触屏进入环游，在设置中关闭提示，以 `26 → 27 → 21 → 22 → 23` 跨左右缝连五；设置和进度在页面重载后保留。页面固定整屏、宿主顶部使用紧凑布局，无脚本和资源错误。
+- 目视检查：[桌面半格边界](../../artifacts/zhihu-1.41.2/top-1280x900-boundary.png)、[手机 iframe 首页](../../artifacts/zhihu-1.41.2/iframe-390x844-home.png)、[手机 iframe 设置](../../artifacts/zhihu-1.41.2/iframe-390x844-settings.png)、[手机 iframe 半格边界](../../artifacts/zhihu-1.41.2/iframe-390x844-boundary.png)。棋子落在原有交点，彩色辅助线位于半格端点，页面与控件无裁切。
+- 复现：`node scripts/qa-zhihu-release.cjs --app <本轮静态交付目录>`，Playwright 由环境提供；[完整结果](../../artifacts/zhihu-1.41.2/results.json)与 12 张截图保留。脚本隔离外网埋点，平台票据未物化时没有发送事件。
+- 这是本地浏览器验证，不是知乎真实宿主、Android/iOS 真机或线上发行验收。本轮 ZIP 已准备，尚未上传。
