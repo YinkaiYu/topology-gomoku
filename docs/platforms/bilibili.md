@@ -9,7 +9,7 @@
 - `npm run check` 通过：168 项测试、32 个包文件和 29 份文档；Toy 与 Web 构建通过，Toy doctor 无发现。
 - WebKit 首页九种窗口、对局七种窗口及两次单独缩短棋盘面板后的落子通过。使用 `scripts/qa-board-viewport.cjs` 的 `--home --card-sizes --duel` 和默认棋盘场景，均附加 `--label=bilibili-1.41.2 --webkit --offline-sdk`；该组验证覆盖 adapter 的无 SDK 回退。
 - [官方预览](https://www.bilibili.com/toy/preview/author_DwlGaFwM/index.html)在真实 Toy iframe 中通过桌面 1280×900、手机视口 390×844 的归圆双人键盘落子与五档形变往返，未拦截 SDK；`board-art.js`、`game.js`、`bilibili-adapter.js` 的远端 SHA-256 与上传源文件一致。[结果与资源摘要](../../artifacts/qa-toy-1.41.2-preview-results.json)，截图见[本轮视觉 QA](../design/qa.md)。手机视口模拟不等同于 B站 App 真机验收，未验证真机沉浸模式。
-- ZIP SHA-256：`CA2845A15177A79322E394343561362C860AC98BBC4D0ED004417C57E3E5F586`。用户已确认共享预览并明确授权各渠道发行；检查官方预览后更新原作品 `26525273613312`，标题、slug、封面和公开权限保持不变。平台返回 `auditing`，[提交后的预览](https://www.bilibili.com/toy/preview/author_jw2yXlnw/index.html)。
+- ZIP SHA-256：`CA2845A15177A79322E394343561362C860AC98BBC4D0ED004417C57E3E5F586`。用户已确认共享预览并明确授权各渠道发行；检查官方预览后更新原作品 `26525273613312`，标题、slug、封面和公开权限保持不变。提交后返回 `auditing`，2026-11-06 官方 CLI 复核已为 `published`；[提交后的预览](https://www.bilibili.com/toy/preview/author_jw2yXlnw/index.html)。
 
 下文保留早期适配与发行过程；本轮状态以本节为准。
 
