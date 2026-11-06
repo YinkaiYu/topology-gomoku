@@ -45,6 +45,11 @@
     sphere: { x: 0.42, y: -0.58, z: -0.08, scale: 1 }
   };
 
+  var SPHERE_BOUNDARY_SIDES = {
+    x: ["top", "left"],
+    y: ["bottom", "right"]
+  };
+
   function clamp01(value) {
     return Math.max(0, Math.min(1, value));
   }
@@ -81,7 +86,7 @@
     var margin = Math.max(minimumMargin, shortSide * marginRatio);
     if (settings.minimumMargin === undefined && settings.marginRatio === undefined) {
       // Short panels should not spend a third of their height on fixed padding.
-      // Keep room for the 15px rail offset and 4.5px arrow; blend back to the
+      // Keep room for boundary guides; blend back to the
       // established proportions as the panel grows, without a breakpoint jump.
       margin = Math.min(margin, 22 + Math.max(0, shortSide - 220) * 0.14);
     }
@@ -91,6 +96,14 @@
       availableWidth / Math.max(1, rules.width - 1),
       availableHeight / Math.max(1, rules.height - 1)
     );
+    var type = rules.type || rules.topology || "plane";
+    var railPadding = 6;
+    if (Morph.isPeriodicX(type)) {
+      cell = Math.min(cell, Math.max(1, width - railPadding * 2) / rules.width);
+    }
+    if (Morph.isPeriodicY(type)) {
+      cell = Math.min(cell, Math.max(1, height - railPadding * 2) / rules.height);
+    }
     var boardWidth = cell * (rules.width - 1);
     var boardHeight = cell * (rules.height - 1);
     return {
@@ -109,6 +122,32 @@
     return {
       x: layout.left + point.x * layout.cell,
       y: layout.top + point.y * layout.cell
+    };
+  }
+
+  function boundaryGeometry(rules, layout) {
+    var type = rules.type || rules.topology || "plane";
+    var x = Morph.isPeriodicX(type) ? layout.cell * 0.5 : 0;
+    var y = Morph.isPeriodicY(type) ? layout.cell * 0.5 : 0;
+    return { left: layout.left - x, right: layout.right + x, top: layout.top - y, bottom: layout.bottom + y };
+  }
+
+  function flatPointFromUV(rules, layout, u, v) {
+    var first = Morph.stoneUV(rules, 0);
+    var last = Morph.stoneUV(rules, rules.width * rules.height - 1);
+    var bounds = boundaryGeometry(rules, layout);
+    function coordinate(value, firstUV, lastUV, start, end, outerStart, outerEnd) {
+      if (value < firstUV && firstUV > 0) {
+        return outerStart + value / firstUV * (start - outerStart);
+      }
+      if (value > lastUV && lastUV < 1) {
+        return end + (value - lastUV) / (1 - lastUV) * (outerEnd - end);
+      }
+      return start + (value - firstUV) / (lastUV - firstUV) * (end - start);
+    }
+    return {
+      x: coordinate(u, first.u, last.u, layout.left, layout.right, bounds.left, bounds.right),
+      y: coordinate(v, first.v, last.v, layout.top, layout.bottom, bounds.top, bounds.bottom)
     };
   }
 
@@ -149,21 +188,22 @@
   function drawGrid(ctx, game, layout) {
     var x;
     var y;
+    var bounds = boundaryGeometry(game.rules, layout);
     ctx.save();
     ctx.strokeStyle = "rgba(108, 103, 94, 0.5)";
     ctx.lineWidth = Math.max(0.7, layout.cell * 0.025);
     for (x = 0; x < game.rules.width; x += 1) {
       var px = layout.left + x * layout.cell;
       ctx.beginPath();
-      ctx.moveTo(px, layout.top);
-      ctx.lineTo(px, layout.bottom);
+      ctx.moveTo(px, bounds.top);
+      ctx.lineTo(px, bounds.bottom);
       ctx.stroke();
     }
     for (y = 0; y < game.rules.height; y += 1) {
       var py = layout.top + y * layout.cell;
       ctx.beginPath();
-      ctx.moveTo(layout.left, py);
-      ctx.lineTo(layout.right, py);
+      ctx.moveTo(bounds.left, py);
+      ctx.lineTo(bounds.right, py);
       ctx.stroke();
     }
     ctx.fillStyle = "rgba(72, 71, 65, 0.48)";
@@ -228,7 +268,7 @@
   }
 
   function drawRailPair(ctx, layout, orientation, color, twisted, pulse) {
-    var offset = Math.min(15, layout.cell * 0.4);
+    var offset = layout.cell * 0.5;
     ctx.save();
     ctx.strokeStyle = color;
     ctx.fillStyle = color;
@@ -265,10 +305,10 @@
   }
 
   function drawSphereRails(ctx, game, layout, time) {
-    var offset = Math.min(15, layout.cell * 0.4);
+    var offset = layout.cell * 0.5;
     var pairs = [
-      { color: TOKENS.teal, pulse: seamPulse(game, Engine.SEAM_X, time), sides: ["top", "left"] },
-      { color: TOKENS.gold, pulse: seamPulse(game, Engine.SEAM_Y, time), sides: ["bottom", "right"] }
+      { color: TOKENS.teal, pulse: seamPulse(game, Engine.SEAM_X, time), sides: SPHERE_BOUNDARY_SIDES.x },
+      { color: TOKENS.gold, pulse: seamPulse(game, Engine.SEAM_Y, time), sides: SPHERE_BOUNDARY_SIDES.y }
     ];
     pairs.forEach(function drawAdjacentPair(pair) {
       ctx.save();
@@ -749,10 +789,7 @@
   }
 
   function surfacePoint(game, layout, width, height, u, v, orientation) {
-    var flat = {
-      x: layout.left + u * (layout.right - layout.left),
-      y: layout.top + v * (layout.bottom - layout.top)
-    };
+    var flat = flatPointFromUV(game.rules, layout, u, v);
     var projected = Morph.project(game.level.topology, u, v, width, height, orientation);
     var morph = orientation && Number.isFinite(orientation.morph)
       ? clamp01(orientation.morph)
@@ -833,7 +870,7 @@
     ctx.restore();
   }
 
-  function drawSurfaceBoundary(ctx, game, layout, width, height, orientation, axis, color) {
+  function drawSurfaceBoundary(ctx, game, layout, width, height, orientation, sides, color) {
     var samples = game.level.topology === "sphere" ? 64 : 42;
     ctx.save();
     ctx.strokeStyle = color;
@@ -841,11 +878,13 @@
     ctx.lineCap = "round";
     ctx.shadowColor = color;
     ctx.shadowBlur = effectPixels(ctx, 5);
-    [0, 1].forEach(function drawEdge(edge) {
+    sides.forEach(function drawEdge(side) {
+      var vertical = side === "left" || side === "right";
+      var edge = side === "right" || side === "bottom" ? 1 : 0;
       ctx.beginPath();
       for (var sample = 0; sample <= samples; sample += 1) {
         var amount = sample / samples;
-        var point = axis === "x"
+        var point = vertical
           ? surfacePoint(game, layout, width, height, edge, amount, orientation)
           : surfacePoint(game, layout, width, height, amount, edge, orientation);
         if (sample === 0) { ctx.moveTo(point.x, point.y); } else { ctx.lineTo(point.x, point.y); }
@@ -856,16 +895,7 @@
   }
 
   function completionFlatPointFromUV(game, layout, u, v) {
-    var xRatio = Morph.isPeriodicX(game.rules.type)
-      ? (u * game.rules.width - 0.5) / Math.max(1, game.rules.width - 1)
-      : u;
-    var yRatio = Morph.isPeriodicY(game.rules.type)
-      ? (v * game.rules.height - 0.5) / Math.max(1, game.rules.height - 1)
-      : v;
-    return {
-      x: layout.left + clamp01(xRatio) * (layout.right - layout.left),
-      y: layout.top + clamp01(yRatio) * (layout.bottom - layout.top)
-    };
+    return flatPointFromUV(game.rules, layout, u, v);
   }
 
   function mappedCompletionPoint(game, layout, flat, uv, orientation) {
@@ -1022,10 +1052,12 @@
     ctx.save();
     ctx.globalAlpha *= (0.36 + morph * 0.5) * boundaryFade;
     if (game.level.xConnection || game.level.topology === "sphere") {
-      drawSurfaceBoundary(ctx, game, layout, layout.width, layout.height, orientation, "x", "rgba(63,140,135,0.78)");
+      var xSides = game.level.topology === "sphere" ? SPHERE_BOUNDARY_SIDES.x : ["left", "right"];
+      drawSurfaceBoundary(ctx, game, layout, layout.width, layout.height, orientation, xSides, "rgba(63,140,135,0.78)");
     }
     if (game.level.yConnection || game.level.topology === "sphere") {
-      drawSurfaceBoundary(ctx, game, layout, layout.width, layout.height, orientation, "y", "rgba(199,146,68,0.76)");
+      var ySides = game.level.topology === "sphere" ? SPHERE_BOUNDARY_SIDES.y : ["top", "bottom"];
+      drawSurfaceBoundary(ctx, game, layout, layout.width, layout.height, orientation, ySides, "rgba(199,146,68,0.76)");
     }
     ctx.restore();
     if (morph < 0.98) {
@@ -1160,6 +1192,8 @@
     TOKENS: TOKENS,
     setContextPixelRatio: setContextPixelRatio,
     computeLayout: computeLayout,
+    boundaryGeometry: boundaryGeometry,
+    flatPointFromUV: flatPointFromUV,
     cellCenter: cellCenter,
     hitTestCell: hitTestCell,
     pointInsideBoard: pointInsideBoard,

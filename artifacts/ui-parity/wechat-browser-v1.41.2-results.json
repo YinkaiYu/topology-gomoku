@@ -1,0 +1,229 @@
+{
+  "version": "1.41.2",
+  "main": "ba8e3abce800e64c28ac76160690d0a5b1483c19",
+  "runtime": "Chromium native Canvas calibration; not WeChat simulator",
+  "viewport": {
+    "width": 390,
+    "height": 844
+  },
+  "errors": [],
+  "results": [
+    {
+      "level": 0,
+      "type": "plane",
+      "width": 7,
+      "height": 7,
+      "cells": [
+        0,
+        6,
+        42,
+        48
+      ],
+      "moves": [
+        {
+          "cell": 0,
+          "player": 1
+        },
+        {
+          "cell": 6,
+          "player": -1
+        },
+        {
+          "cell": 42,
+          "player": 1
+        },
+        {
+          "cell": 48,
+          "player": -1
+        }
+      ],
+      "morphVerified": false
+    },
+    {
+      "level": 1,
+      "type": "cylinder",
+      "width": 7,
+      "height": 6,
+      "cells": [
+        0,
+        6,
+        35,
+        41
+      ],
+      "moves": [
+        {
+          "cell": 0,
+          "player": 1
+        },
+        {
+          "cell": 6,
+          "player": -1
+        },
+        {
+          "cell": 35,
+          "player": 1
+        },
+        {
+          "cell": 41,
+          "player": -1
+        }
+      ],
+      "morphVerified": true
+    },
+    {
+      "level": 2,
+      "type": "torus",
+      "width": 7,
+      "height": 6,
+      "cells": [
+        0,
+        6,
+        35,
+        41
+      ],
+      "moves": [
+        {
+          "cell": 0,
+          "player": 1
+        },
+        {
+          "cell": 6,
+          "player": -1
+        },
+        {
+          "cell": 35,
+          "player": 1
+        },
+        {
+          "cell": 41,
+          "player": -1
+        }
+      ],
+      "morphVerified": true
+    },
+    {
+      "level": 3,
+      "type": "mobius",
+      "width": 8,
+      "height": 6,
+      "cells": [
+        0,
+        7,
+        40,
+        47
+      ],
+      "moves": [
+        {
+          "cell": 0,
+          "player": 1
+        },
+        {
+          "cell": 7,
+          "player": -1
+        },
+        {
+          "cell": 40,
+          "player": 1
+        },
+        {
+          "cell": 47,
+          "player": -1
+        }
+      ],
+      "morphVerified": true
+    },
+    {
+      "level": 4,
+      "type": "klein",
+      "width": 7,
+      "height": 6,
+      "cells": [
+        0,
+        6,
+        35,
+        41
+      ],
+      "moves": [
+        {
+          "cell": 0,
+          "player": 1
+        },
+        {
+          "cell": 6,
+          "player": -1
+        },
+        {
+          "cell": 35,
+          "player": 1
+        },
+        {
+          "cell": 41,
+          "player": -1
+        }
+      ],
+      "morphVerified": true
+    },
+    {
+      "level": 5,
+      "type": "projective",
+      "width": 8,
+      "height": 8,
+      "cells": [
+        0,
+        7,
+        56,
+        63
+      ],
+      "moves": [
+        {
+          "cell": 0,
+          "player": 1
+        },
+        {
+          "cell": 7,
+          "player": -1
+        },
+        {
+          "cell": 56,
+          "player": 1
+        },
+        {
+          "cell": 63,
+          "player": -1
+        }
+      ],
+      "morphVerified": true
+    },
+    {
+      "level": 6,
+      "type": "sphere",
+      "width": 7,
+      "height": 7,
+      "cells": [
+        0,
+        6,
+        42,
+        48
+      ],
+      "moves": [
+        {
+          "cell": 0,
+          "player": 1
+        },
+        {
+          "cell": 6,
+          "player": -1
+        },
+        {
+          "cell": 42,
+          "player": 1
+        },
+        {
+          "cell": 48,
+          "player": -1
+        }
+      ],
+      "morphVerified": true
+    }
+  ]
+}
