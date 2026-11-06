@@ -25,6 +25,9 @@ window.__ModuleLoader__.load({
         refresh: '刷新',
         open: '在浏览器打开',
         select: '选择棋局',
+        startService: '启动服务',
+        stopService: '结束服务',
+        stopConfirm: '结束本地对弈服务？进行中的棋局会保留，棋手与观战会断开。',
         offline: '对弈服务未运行',
         offlineHint: '在对话里让 agent 用 arena_service start 启动本地服务。',
         start: '启动服务',
@@ -40,6 +43,9 @@ window.__ModuleLoader__.load({
         refresh: 'Refresh',
         open: 'Open in browser',
         select: 'Select match',
+        startService: 'Start service',
+        stopService: 'Stop service',
+        stopConfirm: 'Stop the local arena service? Matches are kept, but players and spectators disconnect.',
         offline: 'The arena service is not running',
         offlineHint: 'Ask the agent to run arena_service start in the conversation.',
         start: 'Start service',
@@ -116,13 +122,26 @@ window.__ModuleLoader__.load({
       const [nonce, setNonce] = React.useState(0)
       const games = data && Array.isArray(data.games) ? data.games : []
       const active = (data && data.selected) || (games[0] && games[0].gameId) || ''
-      const game = games.find((item) => item.gameId === active) || null
       const base = data && data.url ? data.url : ''
       // The fragment carries the host credential into the frame without a
       // server round trip; the arena page consumes and clears it on boot.
       const hostSuffix = data && data.hostToken ? `#host=${encodeURIComponent(data.hostToken)}` : ''
       const src = base ? `${base}/?embed=1${active ? `&game=${encodeURIComponent(active)}` : ''}${hostSuffix}` : ''
       const browserHref = base ? `${base}/${active ? `?game=${encodeURIComponent(active)}` : ''}` : ''
+      const running = Boolean(data && data.running)
+
+      /** Start or stop the local service and remount the frame. */
+      const toggleService = async () => {
+        if (running && typeof window !== 'undefined' && typeof window.confirm === 'function'
+          && !window.confirm(t.stopConfirm)) return
+        try {
+          await fetch(`/topology-arena/api/${running ? 'stop' : 'start'}`, { method: 'POST' })
+        } catch {
+          /* the reload below reports the real state */
+        }
+        setNonce((value) => value + 1)
+        reload()
+      }
 
       const header = h('header', {
         key: 'header',
@@ -132,17 +151,8 @@ window.__ModuleLoader__.load({
           background: 'var(--dsw-alias-bg-layer-1)', flex: '0 0 auto', flexWrap: 'wrap',
         },
       }, [
-        h('span', { key: 'title', style: { fontSize: 13, fontWeight: 600, color: 'var(--dsw-alias-label-primary)' } }, t.panel),
-        game
-          ? h('span', {
-              key: 'chip',
-              style: {
-                fontSize: 11, padding: '2px 8px', borderRadius: 999,
-                background: 'var(--dsw-alias-bg-layer-2)', color: 'var(--dsw-alias-label-secondary)',
-              },
-            }, `${t.topology[game.topology] || game.topology} · ${t.phase[game.phase] || game.phase} · ${t.ply.replace('{n}', String(game.ply ?? 0))}`)
-          : null,
         h('div', { key: 'spacer', style: { flex: 1 } }),
+        headerButton(running ? t.stopService : t.startService, toggleService),
         headerButton(t.refresh, () => {
           setNonce((value) => value + 1)
           reload()
@@ -167,14 +177,6 @@ window.__ModuleLoader__.load({
         body = h('div', { key: 'offline', style: hintStyle }, [
           h('div', { key: 'a', style: { fontSize: 13, color: 'var(--dsw-alias-label-primary)' } }, t.offline),
           h('div', { key: 'b' }, t.offlineHint),
-          h('div', { key: 'c', style: { marginTop: 6 } }, headerButton(t.start, async () => {
-            try {
-              await fetch('/topology-arena/api/start', { method: 'POST' })
-            } catch {
-              /* reload reports the failure */
-            }
-            reload()
-          })),
         ])
       } else if (!games.length) {
         body = h('div', { key: 'empty', style: hintStyle }, [

@@ -1103,10 +1103,15 @@ function createViewRoute(bridge, catalog) {
         sendJSON(response, 200, { ...view, hostToken: bridge.readRuntime()?.hostToken || null })
         return
       }
-      if (request.method === 'POST' && tail === '/api/start') {
-        await bridge.start()
-        await catalog.refresh()
-        sendJSON(response, 200, await bridge.view())
+      if (request.method === 'POST' && (tail === '/api/start' || tail === '/api/stop')) {
+        if (tail === '/api/start') {
+          await bridge.start()
+          await catalog.refresh()
+        } else {
+          await bridge.stop()
+        }
+        const view = await bridge.view()
+        sendJSON(response, 200, { ...view, hostToken: bridge.readRuntime()?.hostToken || null })
         return
       }
       sendJSON(response, 404, { ok: false, error: { code: 'NOT_FOUND', message: 'Unknown route.' } })

@@ -1,6 +1,6 @@
 {
   "name": "@local/topology-gomoku-arena",
-  "version": "0.7.4",
+  "version": "0.7.5",
   "private": true,
   "type": "module",
   "description": "DeepSeek Harness integration for the topology gomoku arena: mirrored match tools, host tools, service lifecycle and an embedded spectator panel.",
