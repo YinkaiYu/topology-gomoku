@@ -178,17 +178,23 @@ async function startServer(options = {}) {
 
   server = http.createServer(async (request, response) => {
     // The spectator page accepts `?embed=1` so a local host application can frame
-    // it; every other page stays unframeable. Parsing the flag before the routing
-    // block keeps the header decision and the served document consistent.
+    // it; every other page stays unframeable. `dsh-app:` is the DeepSeek Harness
+    // desktop shell, whose document origin is a custom scheme, so the loopback
+    // sources alone would not admit it. Parsing the flag before the routing block
+    // keeps the header decision and the served document consistent.
     let embed = false;
     try { embed = new URL(request.url, "http://127.0.0.1").searchParams.has("embed"); } catch { embed = false; }
+    const embedNavigation = embed && (request.method === "GET" || request.method === "HEAD");
     response.setHeader("X-Content-Type-Options", "nosniff");
     response.setHeader("Referrer-Policy", "no-referrer");
-    response.setHeader("Content-Security-Policy", `default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self'; frame-ancestors ${embed ? "http://127.0.0.1:* http://localhost:*" : "'none'"}; base-uri 'none'; form-action 'self'`);
+    response.setHeader("Content-Security-Policy", `default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self'; frame-ancestors ${embed ? "http://127.0.0.1:* http://localhost:* dsh-app:" : "'none'"}; base-uri 'none'; form-action 'self'`);
     try {
       if (closed) throw problem("SHUTDOWN", "Arena is stopping.", 503);
       if (!validLocalRequest(request, server.address()?.port)) throw problem("LOCAL_ONLY", "Use this arena's local origin.", 403);
-      if (request.headers["sec-fetch-site"] === "cross-site") throw problem("LOCAL_ONLY", "Open the local arena directly.", 403);
+      // A desktop host's custom-scheme origin is cross-site to loopback, yet the
+      // embed page is a plain spectator document; its own API calls stay
+      // same-origin, so admitting the navigation does not widen the API surface.
+      if (request.headers["sec-fetch-site"] === "cross-site" && !embedNavigation) throw problem("LOCAL_ONLY", "Open the local arena directly.", 403);
       const parsed = new URL(request.url, url);
       const pathname = decodeURIComponent(parsed.pathname);
       const bearer = request.headers.authorization?.replace(/^Bearer /, "");

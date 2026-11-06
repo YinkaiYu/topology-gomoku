@@ -526,7 +526,7 @@ test("deleting a record closes its spectator stream with a deletion event",async
   assert.equal(app.arena.listenerCount("deleted"),0);assert.equal((await rpc("arena_state",{gameId})).status,404);
 });
 
-test("the spectator embed surface may be framed locally while every other page stays unframeable",async(t)=>{
+test("the spectator embed surface may be framed by a local host while every other page stays unframeable",async(t)=>{
   const directory=fs.mkdtempSync(path.join(os.tmpdir(),"arena-embed-"));
   const app=await startServer({port:0,dataDir:directory,writeRuntime:false});
   t.after(async()=>{await app.close();fs.rmSync(directory,{recursive:true,force:true});});
@@ -534,7 +534,13 @@ test("the spectator embed surface may be framed locally while every other page s
   assert.match(normal.headers.get("content-security-policy")||"",/frame-ancestors 'none'/);
   const embed=await fetch(app.url+"/?embed=1");
   const policy=embed.headers.get("content-security-policy")||"";
-  assert.match(policy,/frame-ancestors http:\/\/127\.0\.0\.1:\* http:\/\/localhost:\*/);
+  assert.match(policy,/frame-ancestors http:\/\/127\.0\.0\.1:\* http:\/\/localhost:\* dsh-app:/);
   assert.doesNotMatch(policy,/frame-ancestors 'none'/);
   assert.match(await embed.text(),/id="embed-empty"/);
+  // A desktop host document is cross-site to loopback; the embed navigation is
+  // admitted, while every API request keeps the cross-site rejection.
+  const crossSiteEmbed=await fetch(app.url+"/?embed=1",{headers:{"Sec-Fetch-Site":"cross-site"}});
+  assert.equal(crossSiteEmbed.status,200);
+  const crossSiteApi=await fetch(app.url+"/api/bootstrap",{headers:{"Sec-Fetch-Site":"cross-site"}});
+  assert.equal(crossSiteApi.status,403);
 });

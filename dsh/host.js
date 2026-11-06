@@ -1081,8 +1081,22 @@ function sendJSON(response, status, value) {
   response.end(body)
 }
 
+/** Read a small JSON body; the layout probe is the only writer today. */
+async function readSmallJSON(request, limit = 8192) {
+  const chunks = []
+  let size = 0
+  for await (const chunk of request) {
+    size += chunk.length
+    if (size > limit) throw failure('BODY_TOO_LARGE', 'Request body is too large.')
+    chunks.push(chunk)
+  }
+  if (!chunks.length) return {}
+  return JSON.parse(Buffer.concat(chunks).toString('utf8'))
+}
+
 /** Serve the panel read model; the page itself is the arena's own embed view. */
 function createViewRoute(bridge, catalog) {
+  let probes = []
   return async (request, response) => {
     let pathname = ''
     try {
@@ -1104,6 +1118,21 @@ function createViewRoute(bridge, catalog) {
         await bridge.start()
         await catalog.refresh()
         sendJSON(response, 200, await bridge.view())
+        return
+      }
+      // Temporary layout probe used while validating the embedded panel; the
+      // client posts its measured sizes here and the operator reads them back.
+      if (request.method === 'POST' && tail === '/api/diag') {
+        try {
+          probes = [...probes.slice(-7), await readSmallJSON(request)]
+        } catch (error) {
+          probes = [...probes.slice(-7), { error: error.message }]
+        }
+        sendJSON(response, 200, { ok: true })
+        return
+      }
+      if (request.method === 'GET' && tail === '/api/diag') {
+        sendJSON(response, 200, { probes })
         return
       }
       sendJSON(response, 404, { ok: false, error: { code: 'NOT_FOUND', message: 'Unknown route.' } })

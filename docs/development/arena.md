@@ -256,7 +256,8 @@ CLI、stdio MCP 和 HTTP MCP 使用相同的棋手数据投影。CLI 的 `call` 
 
 - 地址：`http://127.0.0.1:4318/?game=<gameId>&embed=1`。`game` 选择棋局，`embed` 声明这是被嵌入的观战页。
 - 嵌入模式隐藏开局的欢迎页、设置按钮、棋手资料编辑与邀请/结束/判定入口；保留棋盘、棋钟、随想与解说、二维/三维切换、复盘和“回到当前棋局”。没有可显示的棋局时展示“等待棋局…”占位页，而不是回到开局界面。
-- 响应头只为带 `embed` 的请求放开 `frame-ancestors http://127.0.0.1:* http://localhost:*`；普通页面仍是 `frame-ancestors 'none'`。服务同时拒绝 `Sec-Fetch-Site: cross-site` 的请求，因此宿主应使用 `127.0.0.1` 打开观战页，和 `localhost` 混用会被当成跨站。
+- 响应头只为带 `embed` 的请求放开 `frame-ancestors http://127.0.0.1:* http://localhost:* dsh-app:`；普通页面仍是 `frame-ancestors 'none'`。`dsh-app:` 是 DeepSeek Harness 桌面外壳的文档来源，它的页面来源不是 loopback，只靠端口白名单会被浏览器拦掉。
+- 服务继续拒绝 `Sec-Fetch-Site: cross-site` 的 API 请求；只有带 `embed` 的页面导航（GET/HEAD）例外，因为桌面外壳的文档来源本身就算跨站。观战页自己的 `/api/*` 请求是同源请求，不受影响，其他页面的跨站 API 调用也仍然被拒。
 - 嵌入页是纯观战视角：`SameSite=Strict` 的房主 cookie 在第三方框架里不会被发送，房主操作仍需在原页面完成。棋局数据来自无需房主凭证的 `/api/state` 与 `/api/events`。
 
 ## 运行边界与恢复
