@@ -525,3 +525,16 @@ test("deleting a record closes its spectator stream with a deletion event",async
   const next=await reader.read();assert.match(Buffer.from(next.value).toString(),/event: deleted/);assert.equal((await reader.read()).done,true);
   assert.equal(app.arena.listenerCount("deleted"),0);assert.equal((await rpc("arena_state",{gameId})).status,404);
 });
+
+test("the spectator embed surface may be framed locally while every other page stays unframeable",async(t)=>{
+  const directory=fs.mkdtempSync(path.join(os.tmpdir(),"arena-embed-"));
+  const app=await startServer({port:0,dataDir:directory,writeRuntime:false});
+  t.after(async()=>{await app.close();fs.rmSync(directory,{recursive:true,force:true});});
+  const normal=await fetch(app.url+"/");
+  assert.match(normal.headers.get("content-security-policy")||"",/frame-ancestors 'none'/);
+  const embed=await fetch(app.url+"/?embed=1");
+  const policy=embed.headers.get("content-security-policy")||"";
+  assert.match(policy,/frame-ancestors http:\/\/127\.0\.0\.1:\* http:\/\/localhost:\*/);
+  assert.doesNotMatch(policy,/frame-ancestors 'none'/);
+  assert.match(await embed.text(),/id="embed-empty"/);
+});

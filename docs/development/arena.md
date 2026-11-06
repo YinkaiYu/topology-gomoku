@@ -72,6 +72,16 @@ Agent 获得用户的配置请求后，应读取当前客户端实际加载的�
 
 Skill 不要求预先安装到客户端。启动 prompt 和角色邀请可以要求 agent 直接读取仓库里的 [Skill](../../arena/skills/topology-gomoku-arena/SKILL.md)。用户希望长期安装时，再按各客户端支持的 Skill 位置安装；不为一次对局自动改所有客户端。
 
+## DeepSeek Harness 插件
+
+仓库自带的 DSH 接入层位于 [dsh/](../../dsh)，通过 `plugin_manager install_bundle` 安装到当前 profile。它和 MCP 服务同一个 `arena/server.cjs`，只是换了一种客户端形态；其他客户端继续按上一节使用 MCP。
+
+- 对局工具在插件启动和 `arena_service refresh` 时从服务端 `POST /mcp` 的 `tools/list` 同步，因此 `arena` 更新工具后不需要改插件代码。
+- `arena_join` 之后，`gameId`、席位 token、`ply` 与 `requestId` 由插件从会话席位补全；席位 token 只写在本机 `~/.dsh/topology-gomoku-arena/seats.json`，不进入模型上下文。
+- 侧栏“对弈室”面板内嵌服务端的 [观战嵌入](#观战嵌入embed1) 页面，和浏览器使用同一个渲染器与 SSE，不复制棋盘实现。
+- 插件不生成或采样随想；随想仍由棋手按角色要求调用 `arena_note`。
+- 插件包在 `<checkout>/dsh`，`repoPath` 默认取它所在的 checkout；移动 checkout 或改端口后重装或覆盖配置即可。
+
 ## CLI 调用
 
 CLI 与 MCP 调用同一对局逻辑。十个 MCP 工具为 `arena_join`、`arena_ready`、`arena_state`、`arena_move`、`arena_resign`、`arena_draw`、`arena_note`、`arena_rules`、`arena_wait`、`arena_replay`。CLI 还可调用公开的 `arena_catalog`、`arena_list`，以及管理工具 `arena_create`、`arena_invite`、`arena_control`、`arena_profile`、`arena_delete`、`arena_clear`。房主工具会核对当前 checkout 的运行记录并附加房主凭证；选手调用仅传自己的席位 token。
@@ -239,6 +249,15 @@ CLI、stdio MCP 和 HTTP MCP 使用相同的棋手数据投影。CLI 的 `call` 
 首次发行前的协议调整：`arena_note` 替代 `arena_speak`，移除 `kind`、`arena_move.explanation` 和认输/提和的 `reason` 字段。更新后重连 MCP 并重新读取 Skill；旧棋谱和气泡保留，旧调用参数不再接受。
 
 这些文件改变的是说明，不改变裁判规则、参数校验或权限。MCP 参数 schema 位于 [tools.cjs](../../arena/tools.cjs)；状态、错误与结构化规则由 [match.cjs](../../arena/match.cjs) 产生，其中拓扑的 `edgeText`、`ruleText` 沿用共享 [level-config.js](../../app/assets/level-config.js)。它们也会出现在 agent 的工具结果中，不应与角色行为提示混淆。
+
+## 观战嵌入（`?embed=1`）
+
+观战页可以嵌入到同一台电脑上的宿主界面（例如 DSH 的插件面板），使用同一套页面与渲染，不复制棋盘实现。
+
+- 地址：`http://127.0.0.1:4318/?game=<gameId>&embed=1`。`game` 选择棋局，`embed` 声明这是被嵌入的观战页。
+- 嵌入模式隐藏开局的欢迎页、设置按钮、棋手资料编辑与邀请/结束/判定入口；保留棋盘、棋钟、随想与解说、二维/三维切换、复盘和“回到当前棋局”。没有可显示的棋局时展示“等待棋局…”占位页，而不是回到开局界面。
+- 响应头只为带 `embed` 的请求放开 `frame-ancestors http://127.0.0.1:* http://localhost:*`；普通页面仍是 `frame-ancestors 'none'`。服务同时拒绝 `Sec-Fetch-Site: cross-site` 的请求，因此宿主应使用 `127.0.0.1` 打开观战页，和 `localhost` 混用会被当成跨站。
+- 嵌入页是纯观战视角：`SameSite=Strict` 的房主 cookie 在第三方框架里不会被发送，房主操作仍需在原页面完成。棋局数据来自无需房主凭证的 `/api/state` 与 `/api/events`。
 
 ## 运行边界与恢复
 

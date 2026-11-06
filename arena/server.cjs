@@ -177,9 +177,14 @@ async function startServer(options = {}) {
   }
 
   server = http.createServer(async (request, response) => {
+    // The spectator page accepts `?embed=1` so a local host application can frame
+    // it; every other page stays unframeable. Parsing the flag before the routing
+    // block keeps the header decision and the served document consistent.
+    let embed = false;
+    try { embed = new URL(request.url, "http://127.0.0.1").searchParams.has("embed"); } catch { embed = false; }
     response.setHeader("X-Content-Type-Options", "nosniff");
     response.setHeader("Referrer-Policy", "no-referrer");
-    response.setHeader("Content-Security-Policy", "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self'; frame-ancestors 'none'; base-uri 'none'; form-action 'self'");
+    response.setHeader("Content-Security-Policy", `default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self'; frame-ancestors ${embed ? "http://127.0.0.1:* http://localhost:*" : "'none'"}; base-uri 'none'; form-action 'self'`);
     try {
       if (closed) throw problem("SHUTDOWN", "Arena is stopping.", 503);
       if (!validLocalRequest(request, server.address()?.port)) throw problem("LOCAL_ONLY", "Use this arena's local origin.", 403);

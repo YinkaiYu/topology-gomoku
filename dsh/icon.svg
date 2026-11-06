@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" role="img" aria-label="Topology Gomoku Arena">
+  <rect x="2" y="2" width="60" height="60" rx="14" fill="#0f1720"/>
+  <g stroke="#3d5366" stroke-width="1.2" stroke-linecap="round" opacity="0.9">
+    <path d="M14 20h36M14 32h36M14 44h36M20 14v36M32 14v36M44 14v36"/>
+  </g>
+  <g stroke="#5d7f9a" stroke-width="1.6" stroke-linecap="round" opacity="0.75">
+    <path d="M14 14h6M44 14h6M14 50h6M44 50h6"/>
+  </g>
+  <circle cx="32" cy="32" r="7.4" fill="#0b0f14" stroke="#8fa6b8" stroke-width="1.2"/>
+  <circle cx="44" cy="20" r="6.4" fill="#f4f7fa" stroke="#b9c8d4" stroke-width="1"/>
+  <circle cx="20" cy="44" r="5.2" fill="#d8b46a"/>
+</svg>

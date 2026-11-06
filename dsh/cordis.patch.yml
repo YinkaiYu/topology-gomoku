@@ -1,0 +1,10 @@
+# DeepSeek Harness integration for the topology gomoku arena.
+#
+# The plugin lives in the arena checkout (`dsh/`), so `repoPath` defaults to the
+# checkout that owns this package; set it only to point at a different checkout.
+- insert:
+    - id: topology-arena-native
+      name: '@local/topology-gomoku-arena'
+      config:
+        port: 4318
+        autoStart: true
