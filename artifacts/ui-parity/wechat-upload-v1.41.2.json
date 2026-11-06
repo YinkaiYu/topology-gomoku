@@ -1,0 +1,14 @@
+{
+  "version": "1.41.2",
+  "main": "ba8e3abce800e64c28ac76160690d0a5b1483c19",
+  "manifestSha256": "57eab0b76d2f17dc26b55018f404f4a972035c620c288f2b180ea44dbb979154",
+  "tool": "wechatide polling_task_result",
+  "taskType": "confirmation_upload",
+  "status": "success",
+  "detail": "execution_success",
+  "success": true,
+  "sizeBytes": 1008800,
+  "completedAt": "2026-11-06T12:55:17.917Z",
+  "reviewSubmitted": false,
+  "published": false
+}
