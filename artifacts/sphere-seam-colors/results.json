@@ -1,0 +1,121 @@
+{
+  "baseline": "76bef39",
+  "viewport": {
+    "width": 1280,
+    "height": 720,
+    "deviceScaleFactor": 1
+  },
+  "board": {
+    "width": 7,
+    "height": 7,
+    "empty": true,
+    "time": 2000
+  },
+  "frames": [
+    {
+      "revision": "before",
+      "progress": 0,
+      "file": "artifacts/sphere-seam-colors/before-sphere-0-1280x720.png",
+      "canvasSha256": "d32c2a99c30d0304600e0d218532f47e30465bbf6404df833d3f6863186f6ac3"
+    },
+    {
+      "revision": "after",
+      "progress": 0,
+      "file": "artifacts/sphere-seam-colors/after-sphere-0-1280x720.png",
+      "canvasSha256": "d32c2a99c30d0304600e0d218532f47e30465bbf6404df833d3f6863186f6ac3"
+    },
+    {
+      "revision": "before",
+      "progress": 0.25,
+      "file": "artifacts/sphere-seam-colors/before-sphere-0-25-1280x720.png",
+      "canvasSha256": "955a1c32c085ab8e0299ca0f659017d6e0017cf652001fb3bcf4f34ad16c850c"
+    },
+    {
+      "revision": "after",
+      "progress": 0.25,
+      "file": "artifacts/sphere-seam-colors/after-sphere-0-25-1280x720.png",
+      "canvasSha256": "782d3189706a78ff76f3622b73e58d9b7da60c44276e8c679d92044781f3c9af"
+    },
+    {
+      "revision": "before",
+      "progress": 0.5,
+      "file": "artifacts/sphere-seam-colors/before-sphere-0-5-1280x720.png",
+      "canvasSha256": "5790cb6fbed0d24c6a674d81a957ee4928207837bbff9d9a0efbfeccf81f52c3"
+    },
+    {
+      "revision": "after",
+      "progress": 0.5,
+      "file": "artifacts/sphere-seam-colors/after-sphere-0-5-1280x720.png",
+      "canvasSha256": "7373efffad66827923657995089188ca3f14ed056372666cf2890c9519779331"
+    },
+    {
+      "revision": "before",
+      "progress": 0.7,
+      "file": "artifacts/sphere-seam-colors/before-sphere-0-7-1280x720.png",
+      "canvasSha256": "6759796a659b717a2ca1e3b2f8c2e43b2e218f32c3d44d3d818ecf4a699d1c78"
+    },
+    {
+      "revision": "after",
+      "progress": 0.7,
+      "file": "artifacts/sphere-seam-colors/after-sphere-0-7-1280x720.png",
+      "canvasSha256": "dccb4a1166e693184acf255cb341abdb23263f6fa2a7935905f085c7eea2f21b"
+    },
+    {
+      "revision": "before",
+      "progress": 1,
+      "file": "artifacts/sphere-seam-colors/before-sphere-1-1280x720.png",
+      "canvasSha256": "9ca9c4bf8b69203d4b4d8a6cba207bfdf4577e850d1e989b1c6f4e14fd640579"
+    },
+    {
+      "revision": "after",
+      "progress": 1,
+      "file": "artifacts/sphere-seam-colors/after-sphere-1-1280x720.png",
+      "canvasSha256": "9ca9c4bf8b69203d4b4d8a6cba207bfdf4577e850d1e989b1c6f4e14fd640579"
+    }
+  ],
+  "unchanged": [
+    {
+      "type": "plane",
+      "progress": 0.5,
+      "sha256": "3e5d701c8c66c9e62aab1e1aa886ceedb285d56706492088f038473300922ed5"
+    },
+    {
+      "type": "cylinder",
+      "progress": 0.5,
+      "sha256": "fb1d439dd015db25672727f56029eb970881609894c2a8a1399b62ef1d9f1791"
+    },
+    {
+      "type": "torus",
+      "progress": 0.5,
+      "sha256": "f168e57c532e08604338ba86039551542bdb29bcaa0a2adb7506f472e7cb612d"
+    },
+    {
+      "type": "mobius",
+      "progress": 0.5,
+      "sha256": "0ed26466bc91d556464503374a79846cdfd8c16235c8eaec2584566ae5483b36"
+    },
+    {
+      "type": "klein",
+      "progress": 0.5,
+      "sha256": "8a34c621365f09875375e5fafebb1303b5d99a6e9d2bbd7ede86a3d5dddd80a2"
+    },
+    {
+      "type": "projective",
+      "progress": 0.5,
+      "sha256": "d4aed9f73b953a22f8991536ad37387757354a539d23230037a25339b7f5106e"
+    }
+  ],
+  "interaction": {
+    "flatButton": true,
+    "spatialButton": true,
+    "sliderDragProgress": 0.5
+  },
+  "geometry": {
+    "samplesPerPair": 129,
+    "pairs": [
+      "top-left",
+      "bottom-right"
+    ],
+    "maximumDistance": 8.88453488168119e-16
+  }
+}
