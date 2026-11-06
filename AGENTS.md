@@ -4,8 +4,8 @@
 
 ## 先确认工作位置
 
-- 开始前运行 `git status --short --branch` 和 `git worktree list`，确认当前分支与 worktree。
-- 共享功能、修复、设计、测试、文档及外部贡献从最新 `dev` 新建独立的 `codex/<task>` 分支与 worktree；不要直接在 `dev`、`main` 或长期发行 worktree 中修改。
+- 开始前完整阅读本文件与 `CONTRIBUTING.md`，运行 `git status --short --branch` 和 `git worktree list`，确认当前分支与 worktree。开发流程由 Agent 按仓库约定执行，不依赖用户在 prompt 中重复技术步骤。
+- 共享功能、修复、设计、测试、文档及外部贡献从最新 `dev` 新建独立的任务分支与 worktree；分支名应描述任务，不限定 Agent 工具或前缀。不要直接在 `dev`、`main` 或长期发行 worktree 中修改。
 - 共享任务固定流程是：**从 `dev` 建独立分支/worktree → 实现与自动验证 → 本地预览 → 用户明确确认 → 合回 `dev`**。预览或评审阶段不得提前合并。
 - 只有维护者执行纯平台原生适配时，才可以从对应发行分支建立独立任务分支/worktree；具体边界见“平台专属适配”。
 - 不要删除、覆盖或清理其他 worktree 中的未提交改动。

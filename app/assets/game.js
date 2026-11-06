@@ -3044,9 +3044,8 @@
   }
 
   function completionPoint(u, v, morph, spin) {
-    var flatX = renderState.layout.left + u * (renderState.layout.right - renderState.layout.left);
-    var flatY = renderState.layout.top + v * (renderState.layout.bottom - renderState.layout.top);
-    return completionMappedPoint(flatX, flatY, u, v, morph, spin);
+    var flat = BoardArt.flatPointFromUV(game.rules, renderState.layout, u, v);
+    return completionMappedPoint(flat.x, flat.y, u, v, morph, spin);
   }
 
   function completionCellPoint(cell, morph, spin) {
@@ -3140,16 +3139,7 @@
   }
 
   function completionFlatPointFromUV(u, v) {
-    var xRatio = Morph.isPeriodicX(game.rules.type)
-      ? (u * game.rules.width - 0.5) / Math.max(1, game.rules.width - 1)
-      : u;
-    var yRatio = Morph.isPeriodicY(game.rules.type)
-      ? (v * game.rules.height - 0.5) / Math.max(1, game.rules.height - 1)
-      : v;
-    return {
-      x: renderState.layout.left + clamp01(xRatio) * (renderState.layout.right - renderState.layout.left),
-      y: renderState.layout.top + clamp01(yRatio) * (renderState.layout.bottom - renderState.layout.top)
-    };
+    return BoardArt.flatPointFromUV(game.rules, renderState.layout, u, v);
   }
 
   function completionGridEdgePoints(cell, step, direction, morph, spin) {
@@ -3280,18 +3270,7 @@
   }
 
   function completionSphereRailPoint(u, v, morph, spin) {
-    var firstUV = Morph.stoneUV(game.rules, 0);
-    var lastUV = Morph.stoneUV(game.rules, game.rules.cellCount - 1);
-    var xRatio = (u - firstUV.u) / Math.max(1e-6, lastUV.u - firstUV.u);
-    var yRatio = (v - firstUV.v) / Math.max(1e-6, lastUV.v - firstUV.v);
-    return completionMappedPoint(
-      renderState.layout.left + xRatio * (renderState.layout.right - renderState.layout.left),
-      renderState.layout.top + yRatio * (renderState.layout.bottom - renderState.layout.top),
-      u,
-      v,
-      morph,
-      spin
-    );
+    return completionPoint(u, v, morph, spin);
   }
 
   function drawCompletionSphereGrid(ctx, morph, spin) {
@@ -3300,10 +3279,10 @@
     var depthThreshold = -0.012 * morph;
     var firstGridUV = Morph.stoneUV(game.rules, 0);
     var lastGridUV = Morph.stoneUV(game.rules, game.rules.cellCount - 1);
-    var firstU = firstGridUV.u;
-    var lastU = lastGridUV.u;
-    var firstV = firstGridUV.v;
-    var lastV = lastGridUV.v;
+    var firstU = firstGridUV.u * morph;
+    var lastU = 1 - (1 - lastGridUV.u) * morph;
+    var firstV = firstGridUV.v * morph;
+    var lastV = 1 - (1 - lastGridUV.v) * morph;
     for (var x = 0; x < game.rules.width; x += 1) {
       var u = Morph.stoneUV(game.rules, x).u;
       var vertical = [];
@@ -3373,8 +3352,19 @@
         if (!step) {
           return;
         }
-        ctx.globalAlpha = step.seam ? Morph.smooth((morph - 0.16) / 0.66) : 1;
         var points = completionGridEdgePoints(cell, step, direction, morph, spin);
+        if (step.seam && points.length > 1) {
+          // Each edge reaches its own half-cell boundary even in the flat view.
+          // Only the bridge between the two separate chart edges fades in.
+          var split = (points.length - 2) / 2;
+          ctx.globalAlpha = 1;
+          strokeSmoothCompletionPath(ctx, points.slice(0, split + 1));
+          strokeSmoothCompletionPath(ctx, points.slice(split + 1));
+          ctx.globalAlpha = Morph.smooth((morph - 0.16) / 0.66);
+          strokeSmoothCompletionPath(ctx, [points[split], points[split + 1]]);
+          return;
+        }
+        ctx.globalAlpha = 1;
         if (points.length > 1) {
           strokeSmoothCompletionPath(ctx, points);
         }
@@ -3697,21 +3687,22 @@
   function drawGrid(ctx, layout) {
     var x;
     var y;
+    var bounds = BoardArt.boundaryGeometry(game.rules, layout);
     ctx.save();
     ctx.strokeStyle = "rgba(108, 103, 94, 0.5)";
     ctx.lineWidth = Math.max(0.7, layout.cell * 0.025);
     for (x = 0; x < game.rules.width; x += 1) {
       var px = layout.left + x * layout.cell;
       ctx.beginPath();
-      ctx.moveTo(px, layout.top);
-      ctx.lineTo(px, layout.bottom);
+      ctx.moveTo(px, bounds.top);
+      ctx.lineTo(px, bounds.bottom);
       ctx.stroke();
     }
     for (y = 0; y < game.rules.height; y += 1) {
       var py = layout.top + y * layout.cell;
       ctx.beginPath();
-      ctx.moveTo(layout.left, py);
-      ctx.lineTo(layout.right, py);
+      ctx.moveTo(bounds.left, py);
+      ctx.lineTo(bounds.right, py);
       ctx.stroke();
     }
     ctx.fillStyle = "rgba(72, 71, 65, 0.48)";
@@ -3863,7 +3854,7 @@
 
   function drawSphereRails(ctx, time) {
     var layout = renderState.layout;
-    var offset = Math.min(15, layout.cell * 0.4);
+    var offset = layout.cell * 0.5;
     var pairs = [
       { color: "#3f8c87", pulse: seamPulseFor(Engine.SEAM_X, time), sides: ["top", "left"] },
       { color: "#c79244", pulse: seamPulseFor(Engine.SEAM_Y, time), sides: ["bottom", "right"] }
@@ -3896,7 +3887,7 @@
 
   function drawRailPair(ctx, orientation, color, twisted, pulse) {
     var layout = renderState.layout;
-    var offset = Math.min(15, layout.cell * 0.4);
+    var offset = layout.cell * 0.5;
     var alpha = 0.58 + pulse * 0.4;
     ctx.save();
     ctx.strokeStyle = color;

@@ -1,0 +1,79 @@
+{
+  "url": "https://www.bilibili.com/toy/preview/author_DwlGaFwM/index.html",
+  "results": [
+    {
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "frameUrl": "https://www.bilibilitoy.com/toy/preview/author_DwlGaFwM/index.html",
+      "hashes": {
+        "board-art.js": "bc2b9d06c2f8f10cb73fde99ba8da0cdfea42ead4628580486847ab5d3124d12",
+        "game.js": "108a8a333cade12e9a9b709976a440b864ed1ab4219a7c8c2fe8d043a04a1449",
+        "bilibili-adapter.js": "4f6a8e4f471c16f751b0c78c819e4a7aa1290fa6f75fb129e5c57a35552ac797"
+      },
+      "geometry": {
+        "layout": {
+          "cell": 62.370000000000005,
+          "left": 55.889999999999986,
+          "top": 55.889999999999986,
+          "right": 430.11,
+          "bottom": 430.11,
+          "width": 486,
+          "height": 486
+        },
+        "canvas": {
+          "width": 486,
+          "height": 486
+        },
+        "host": "compact"
+      },
+      "keyboardDuel": true,
+      "morph": [
+        0.002,
+        0.25,
+        0.5,
+        1,
+        0
+      ],
+      "errors": []
+    },
+    {
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "frameUrl": "https://www.bilibilitoy.com/toy/preview/author_DwlGaFwM/index.html",
+      "hashes": {
+        "board-art.js": "bc2b9d06c2f8f10cb73fde99ba8da0cdfea42ead4628580486847ab5d3124d12",
+        "game.js": "108a8a333cade12e9a9b709976a440b864ed1ab4219a7c8c2fe8d043a04a1449",
+        "bilibili-adapter.js": "4f6a8e4f471c16f751b0c78c819e4a7aa1290fa6f75fb129e5c57a35552ac797"
+      },
+      "geometry": {
+        "layout": {
+          "cell": 44.93333333333334,
+          "left": 40.19999999999999,
+          "top": 40.19999999999999,
+          "right": 309.8,
+          "bottom": 309.8,
+          "width": 350,
+          "height": 350
+        },
+        "canvas": {
+          "width": 350,
+          "height": 350
+        },
+        "host": "compact"
+      },
+      "keyboardDuel": true,
+      "morph": [
+        0.002,
+        0.25,
+        0.5,
+        1,
+        0
+      ],
+      "errors": []
+    }
+  ]
+}

@@ -1,6 +1,19 @@
 # Bilibili Toy 原生适配与响应式审视
 
-全平台游戏版本：1.39.0
+全平台游戏版本：1.41.2
+
+## 2026-11-06：1.41.2 发行
+
+从稳定 `main@ba8e3ab` 整合半格拓扑边界与归圆邻边配色，保留 Toy SDK、沉浸模式、动态视口、安全区与双人键盘落子。共享几何以 `main` 为准；唯一合并冲突是视觉 QA 的历史记录，已保留两侧内容。
+
+- `npm run check` 通过：168 项测试、32 个包文件和 29 份文档；Toy 与 Web 构建通过，Toy doctor 无发现。
+- WebKit 首页九种窗口、对局七种窗口及两次单独缩短棋盘面板后的落子通过。使用 `scripts/qa-board-viewport.cjs` 的 `--home --card-sizes --duel` 和默认棋盘场景，均附加 `--label=bilibili-1.41.2 --webkit --offline-sdk`；该组验证覆盖 adapter 的无 SDK 回退。
+- [官方预览](https://www.bilibili.com/toy/preview/author_DwlGaFwM/index.html)在真实 Toy iframe 中通过桌面 1280×900、手机视口 390×844 的归圆双人键盘落子与五档形变往返，未拦截 SDK；`board-art.js`、`game.js`、`bilibili-adapter.js` 的远端 SHA-256 与上传源文件一致。[结果与资源摘要](../../artifacts/qa-toy-1.41.2-preview-results.json)，截图见[本轮视觉 QA](../design/qa.md)。手机视口模拟不等同于 B站 App 真机验收，未验证真机沉浸模式。
+- ZIP SHA-256：`CA2845A15177A79322E394343561362C860AC98BBC4D0ED004417C57E3E5F586`。用户已确认共享预览并明确授权各渠道发行；检查官方预览后更新原作品 `26525273613312`，标题、slug、封面和公开权限保持不变。平台返回 `auditing`，[提交后的预览](https://www.bilibili.com/toy/preview/author_jw2yXlnw/index.html)。
+
+下文保留早期适配与发行过程；本轮状态以本节为准。
+
+## 历史适配记录
 
 2026-09-05 分支发行：从稳定 `main` 的共享运行时接收连续视角，保留 Toy SDK、沉浸模式、动态视口、键盘与平台字体边界。126 项测试、31 个包文件、25 份文档和 ZIP 构建通过。维护者明确批准先完成 Git 分支发行；本次未调用 Toy 上传或提交审核，真机与宿主预览仍待完成。下文 2026-09-01 数据是 1.38.0 的历史基线，不作为本轮实机验收证据。
 
@@ -42,7 +55,7 @@
 - 非沉浸状态继承共享基线的宿主顶栏避让；进入沉浸状态后，Toy 宿主状态会把顶部间距收敛为安全区加小幅留白。左右安全区与宿主报告的动态视口高度始终保留。
 - Web 或不支持 SDK 的环境自动回退到浏览器视口、CSS media query 和标准 `env(safe-area-inset-*)`。
 
-## 验证结果
+## 1.38.0 验证结果
 
 - `npm test`：89/89 通过，其中包含 Toy adapter、沉浸模式、动态视口、复盘和内嵌字体覆盖。
 - `npm run validate`：通过，25 个包内文件，约 1.89 MB 未压缩。
@@ -52,7 +65,7 @@
 - Toy SDK 外部资源白名单只允许官方 `//s1.hdslb.com/bfs/seed/toy/app/sdk/toy-sdk.js`。
 - 自动化测试覆盖三档断点、`100dvh`、四向安全区、短横屏、hover/pointer、键盘和容器变化重排。
 
-## 仍需在发布预览中确认
+## 1.38.0 的真机验收限制
 
 1.38.0 没有可用真机设备，以下项目未执行真机验收；发布后由玩家回归验证，结果回填到发布记录。
 
