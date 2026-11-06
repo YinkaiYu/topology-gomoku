@@ -11,6 +11,17 @@
   // `?embed=1` only authorises a local host application to frame this page; the
   // interface stays the full arena, including settings and the new-match flow.
   const embedMode = new URLSearchParams(location.search).has("embed");
+  // A local host may pass its host credential in the frame's URL fragment. That
+  // keeps host actions working where a third-party `SameSite=Strict` cookie is
+  // unavailable; the fragment never reaches a server and is cleared on read.
+  const hostToken = (() => {
+    const match = /(?:^|[#&])host=([^&]+)/.exec(location.hash || "");
+    if (match) {
+      try { return decodeURIComponent(match[1]); } catch { return ""; }
+    }
+    try { return sessionStorage.getItem("arena-host-token") || ""; } catch { return ""; }
+  })();
+  if (hostToken) { try { sessionStorage.setItem("arena-host-token", hostToken); } catch {} }
   if (location.hash) history.replaceState(null, "", location.pathname + location.search);
   sessionStorage.removeItem("topology-arena-host");
   const avatarChoices = [{id:"",name:"默认"},{id:"deepseek-color",name:"DeepSeek"},{id:"openai",name:"OpenAI"},{id:"claude-color",name:"Claude"},{id:"gemini-color",name:"Gemini"},{id:"kimi-color",name:"Kimi"},{id:"qwen-color",name:"Qwen"},{id:"grok",name:"Grok"},{id:"doubao-color",name:"Doubao"},{id:"hunyuan-color",name:"Hy"},{id:"minimax-color",name:"MiniMax"}];
@@ -77,7 +88,7 @@
   }
 
   async function call(name, args = {}, admin = false) {
-    const headers = { "Content-Type": "application/json" };
+    const headers = { "Content-Type": "application/json", ...(admin && hostToken ? { Authorization: `Bearer ${hostToken}` } : {}) };
 
     const response = await fetch("/api/call", { method: "POST", headers, body: JSON.stringify({ name, arguments: args }) });
     const data = await response.json();

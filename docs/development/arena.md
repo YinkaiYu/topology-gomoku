@@ -258,7 +258,8 @@ CLI、stdio MCP 和 HTTP MCP 使用相同的棋手数据投影。CLI 的 `call` 
 - 嵌入页保留完整界面：设置按钮、棋局记录、新棋局、邀请、暂停/继续、结束棋局、判定、时间线、保存棋谱和棋手资料编辑都在；棋盘、棋钟、随想与解说、二维/三维切换、复盘也都在。宿主不必自己再做一套菜单。
 - 响应头只为带 `embed` 的请求放开 `frame-ancestors http://127.0.0.1:* http://localhost:* dsh-app:`；普通页面仍是 `frame-ancestors 'none'`。`dsh-app:` 是 DeepSeek Harness 桌面外壳的文档来源，它的页面来源不是 loopback，只靠端口白名单会被浏览器拦掉。
 - 服务继续拒绝 `Sec-Fetch-Site: cross-site` 的 API 请求；只有带 `embed` 的页面导航（GET/HEAD）例外，因为桌面外壳的文档来源本身就算跨站。观战页自己的 `/api/*` 请求是同源请求，不受影响，其他页面的跨站 API 调用也仍然被拒。
-- 房主操作依赖 `/api/bootstrap` 种下的 `SameSite=Strict` 房主 cookie。在第三方框架里部分浏览器会拦截它；被拦截时页面还能观战，但建房、邀请、结束等房主操作会返回 `HOST_REQUIRED`，需要在浏览器里完成。
+- 房主操作依赖 `/api/bootstrap` 种下的 `SameSite=Strict` 房主 cookie。第三方框架里浏览器可能拦截它；此时页面仍能观战，但建房、邀请、结束等房主操作会返回 `HOST_REQUIRED`。
+- 为了在这种情况下保留房主操作，宿主可以在框架地址的**片段**里带上房主凭证：`?embed=1&game=…&host=<hostToken>`。页面启动时读取 `#host`、存进本标签页的 `sessionStorage` 并清掉片段；之后 `call(..., true)` 的房主调用改用 `Authorization: Bearer <hostToken>`。片段不会进入请求行、日志或 Referer，只有本机宿主自己知道该凭证。
 
 ## 运行边界与恢复
 

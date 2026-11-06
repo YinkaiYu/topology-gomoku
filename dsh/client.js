@@ -118,7 +118,10 @@ window.__ModuleLoader__.load({
       const active = (data && data.selected) || (games[0] && games[0].gameId) || ''
       const game = games.find((item) => item.gameId === active) || null
       const base = data && data.url ? data.url : ''
-      const src = base ? `${base}/?embed=1${active ? `&game=${encodeURIComponent(active)}` : ''}` : ''
+      // The fragment carries the host credential into the frame without a
+      // server round trip; the arena page consumes and clears it on boot.
+      const hostSuffix = data && data.hostToken ? `#host=${encodeURIComponent(data.hostToken)}` : ''
+      const src = base ? `${base}/?embed=1${active ? `&game=${encodeURIComponent(active)}` : ''}${hostSuffix}` : ''
       const browserHref = base ? `${base}/${active ? `?game=${encodeURIComponent(active)}` : ''}` : ''
 
       const header = h('header', {

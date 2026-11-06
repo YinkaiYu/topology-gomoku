@@ -37,7 +37,7 @@ config:
 - 面板头部只保留“刷新”（重新挂载 iframe）和“在浏览器打开”；面板打开时读取一次当前棋局作为入口，之后由页面自己导航。
 - 服务端只为带 `embed` 的请求放开 `frame-ancestors http://127.0.0.1:* http://localhost:* dsh-app:`；`dsh-app:` 是 DSH 桌面外壳的文档来源，其他来源仍然不可嵌入。
 - 桌面外壳对 loopback 算跨站，因此服务只对 `embed` 页面导航放行 `Sec-Fetch-Site: cross-site`；观战页自己的 API 请求同源，其他页面的跨站 API 调用仍被拒。
-- 房主操作依赖 `SameSite=Strict` 的房主 cookie；如果嵌入框架里被浏览器拦截，页面仍能观战，但建房/邀请会返回 `HOST_REQUIRED`，这时用“在浏览器打开”完成房主操作。
+- 房主操作依赖 `SameSite=Strict` 的房主 cookie；嵌入框架里浏览器可能拦截它。插件因此把宿主凭证放在 iframe 地址的片段里（`#host=…`），页面启动时读取并改用 `Authorization: Bearer`，所以面板里的建房、邀请、结束等房主操作仍然可用。片段不进入请求、日志或 Referer。
 
 ## 更新上游
 

@@ -1097,7 +1097,10 @@ function createViewRoute(bridge, catalog) {
     const tail = pathname.slice(ROUTE.length)
     try {
       if (request.method === 'GET' && tail === '/api/view') {
-        sendJSON(response, 200, await bridge.view())
+        const view = await bridge.view()
+        // The panel is the local host's own surface; it hands the frame a host
+        // credential so host actions survive a blocked third-party cookie.
+        sendJSON(response, 200, { ...view, hostToken: bridge.readRuntime()?.hostToken || null })
         return
       }
       if (request.method === 'POST' && tail === '/api/start') {
