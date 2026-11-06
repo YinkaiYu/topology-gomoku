@@ -86,7 +86,7 @@
     var margin = Math.max(minimumMargin, shortSide * marginRatio);
     if (settings.minimumMargin === undefined && settings.marginRatio === undefined) {
       // Short panels should not spend a third of their height on fixed padding.
-      // Keep room for the 15px rail offset and 4.5px arrow; blend back to the
+      // Keep room for boundary guides; blend back to the
       // established proportions as the panel grows, without a breakpoint jump.
       margin = Math.min(margin, 22 + Math.max(0, shortSide - 220) * 0.14);
     }
@@ -96,6 +96,14 @@
       availableWidth / Math.max(1, rules.width - 1),
       availableHeight / Math.max(1, rules.height - 1)
     );
+    var type = rules.type || rules.topology || "plane";
+    var railPadding = 6;
+    if (Morph.isPeriodicX(type)) {
+      cell = Math.min(cell, Math.max(1, width - railPadding * 2) / rules.width);
+    }
+    if (Morph.isPeriodicY(type)) {
+      cell = Math.min(cell, Math.max(1, height - railPadding * 2) / rules.height);
+    }
     var boardWidth = cell * (rules.width - 1);
     var boardHeight = cell * (rules.height - 1);
     return {
@@ -114,6 +122,32 @@
     return {
       x: layout.left + point.x * layout.cell,
       y: layout.top + point.y * layout.cell
+    };
+  }
+
+  function boundaryGeometry(rules, layout) {
+    var type = rules.type || rules.topology || "plane";
+    var x = Morph.isPeriodicX(type) ? layout.cell * 0.5 : 0;
+    var y = Morph.isPeriodicY(type) ? layout.cell * 0.5 : 0;
+    return { left: layout.left - x, right: layout.right + x, top: layout.top - y, bottom: layout.bottom + y };
+  }
+
+  function flatPointFromUV(rules, layout, u, v) {
+    var first = Morph.stoneUV(rules, 0);
+    var last = Morph.stoneUV(rules, rules.width * rules.height - 1);
+    var bounds = boundaryGeometry(rules, layout);
+    function coordinate(value, firstUV, lastUV, start, end, outerStart, outerEnd) {
+      if (value < firstUV && firstUV > 0) {
+        return outerStart + value / firstUV * (start - outerStart);
+      }
+      if (value > lastUV && lastUV < 1) {
+        return end + (value - lastUV) / (1 - lastUV) * (outerEnd - end);
+      }
+      return start + (value - firstUV) / (lastUV - firstUV) * (end - start);
+    }
+    return {
+      x: coordinate(u, first.u, last.u, layout.left, layout.right, bounds.left, bounds.right),
+      y: coordinate(v, first.v, last.v, layout.top, layout.bottom, bounds.top, bounds.bottom)
     };
   }
 
@@ -151,31 +185,25 @@
     ctx.restore();
   }
 
-  function railOffset(layout, settings) {
-    return settings && settings.extendGridToRails ? layout.cell * 0.5 : Math.min(15, layout.cell * 0.4);
-  }
-
-  function drawGrid(ctx, game, layout, settings) {
+  function drawGrid(ctx, game, layout) {
     var x;
     var y;
-    var offset = settings && settings.extendGridToRails ? railOffset(layout, settings) : 0;
-    var horizontalExtension = game.level.xConnection || game.level.topology === "sphere" ? offset : 0;
-    var verticalExtension = game.level.yConnection || game.level.topology === "sphere" ? offset : 0;
+    var bounds = boundaryGeometry(game.rules, layout);
     ctx.save();
     ctx.strokeStyle = "rgba(108, 103, 94, 0.5)";
     ctx.lineWidth = Math.max(0.7, layout.cell * 0.025);
     for (x = 0; x < game.rules.width; x += 1) {
       var px = layout.left + x * layout.cell;
       ctx.beginPath();
-      ctx.moveTo(px, layout.top - verticalExtension);
-      ctx.lineTo(px, layout.bottom + verticalExtension);
+      ctx.moveTo(px, bounds.top);
+      ctx.lineTo(px, bounds.bottom);
       ctx.stroke();
     }
     for (y = 0; y < game.rules.height; y += 1) {
       var py = layout.top + y * layout.cell;
       ctx.beginPath();
-      ctx.moveTo(layout.left - horizontalExtension, py);
-      ctx.lineTo(layout.right + horizontalExtension, py);
+      ctx.moveTo(bounds.left, py);
+      ctx.lineTo(bounds.right, py);
       ctx.stroke();
     }
     ctx.fillStyle = "rgba(72, 71, 65, 0.48)";
@@ -239,8 +267,8 @@
     return pulse;
   }
 
-  function drawRailPair(ctx, layout, orientation, color, twisted, pulse, settings) {
-    var offset = railOffset(layout, settings);
+  function drawRailPair(ctx, layout, orientation, color, twisted, pulse) {
+    var offset = layout.cell * 0.5;
     ctx.save();
     ctx.strokeStyle = color;
     ctx.fillStyle = color;
@@ -276,8 +304,8 @@
     ctx.restore();
   }
 
-  function drawSphereRails(ctx, game, layout, time, settings) {
-    var offset = railOffset(layout, settings);
+  function drawSphereRails(ctx, game, layout, time) {
+    var offset = layout.cell * 0.5;
     var pairs = [
       { color: TOKENS.teal, pulse: seamPulse(game, Engine.SEAM_X, time), sides: SPHERE_BOUNDARY_SIDES.x },
       { color: TOKENS.gold, pulse: seamPulse(game, Engine.SEAM_Y, time), sides: SPHERE_BOUNDARY_SIDES.y }
@@ -308,16 +336,16 @@
     });
   }
 
-  function drawTopologyRails(ctx, game, layout, time, settings) {
+  function drawTopologyRails(ctx, game, layout, time) {
     if (game.level.topology === "sphere") {
-      drawSphereRails(ctx, game, layout, time, settings);
+      drawSphereRails(ctx, game, layout, time);
       return;
     }
     if (game.level.xConnection) {
-      drawRailPair(ctx, layout, "vertical", TOKENS.teal, game.level.xConnection === "twist", seamPulse(game, Engine.SEAM_X, time), settings);
+      drawRailPair(ctx, layout, "vertical", TOKENS.teal, game.level.xConnection === "twist", seamPulse(game, Engine.SEAM_X, time));
     }
     if (game.level.yConnection) {
-      drawRailPair(ctx, layout, "horizontal", TOKENS.gold, game.level.yConnection === "twist", seamPulse(game, Engine.SEAM_Y, time), settings);
+      drawRailPair(ctx, layout, "horizontal", TOKENS.gold, game.level.yConnection === "twist", seamPulse(game, Engine.SEAM_Y, time));
     }
     if (!game.level.xConnection && !game.level.yConnection) {
       ctx.save();
@@ -749,8 +777,8 @@
       return;
     }
     drawPaperTexture(ctx, layout.width, layout.height);
-    drawTopologyRails(ctx, game, layout, time, settings);
-    drawGrid(ctx, game, layout, settings);
+    drawTopologyRails(ctx, game, layout, time);
+    drawGrid(ctx, game, layout);
     drawLessonConnections(ctx, game, layout, time);
     drawLessonGuide(ctx, game, layout, time, settings.fontFamily);
     drawDemo(ctx, game, layout, time);
@@ -761,10 +789,7 @@
   }
 
   function surfacePoint(game, layout, width, height, u, v, orientation) {
-    var flat = {
-      x: layout.left + u * (layout.right - layout.left),
-      y: layout.top + v * (layout.bottom - layout.top)
-    };
+    var flat = flatPointFromUV(game.rules, layout, u, v);
     var projected = Morph.project(game.level.topology, u, v, width, height, orientation);
     var morph = orientation && Number.isFinite(orientation.morph)
       ? clamp01(orientation.morph)
@@ -870,16 +895,7 @@
   }
 
   function completionFlatPointFromUV(game, layout, u, v) {
-    var xRatio = Morph.isPeriodicX(game.rules.type)
-      ? (u * game.rules.width - 0.5) / Math.max(1, game.rules.width - 1)
-      : u;
-    var yRatio = Morph.isPeriodicY(game.rules.type)
-      ? (v * game.rules.height - 0.5) / Math.max(1, game.rules.height - 1)
-      : v;
-    return {
-      x: layout.left + clamp01(xRatio) * (layout.right - layout.left),
-      y: layout.top + clamp01(yRatio) * (layout.bottom - layout.top)
-    };
+    return flatPointFromUV(game.rules, layout, u, v);
   }
 
   function mappedCompletionPoint(game, layout, flat, uv, orientation) {
@@ -1047,7 +1063,7 @@
     if (morph < 0.98) {
       ctx.save();
       ctx.globalAlpha *= 1 - morph;
-      drawTopologyRails(ctx, game, layout, Number(settings.time) || 0, settings);
+      drawTopologyRails(ctx, game, layout, Number(settings.time) || 0);
       ctx.restore();
     }
     var winnerSet = winningCellSet(game);
@@ -1176,6 +1192,8 @@
     TOKENS: TOKENS,
     setContextPixelRatio: setContextPixelRatio,
     computeLayout: computeLayout,
+    boundaryGeometry: boundaryGeometry,
+    flatPointFromUV: flatPointFromUV,
     cellCenter: cellCenter,
     hitTestCell: hitTestCell,
     pointInsideBoard: pointInsideBoard,

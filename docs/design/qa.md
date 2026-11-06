@@ -138,7 +138,7 @@ Arena 发布状态：2026-11-04 用户已确认本轮预览并授权合并、推
 - [上端透明度](../../artifacts/arena-flow/fade-top-1280x720.png)、[下端透明度](../../artifacts/arena-flow/fade-bottom-1280x720.png)、[棋钟设置](../../artifacts/arena-flow/settings-1280x720.png)、[超时后棋盘](../../artifacts/arena-flow/timeout-1280x720.png)、[设置内结果](../../artifacts/arena-flow/result-1280x720.png)。
 - [结构化结果](../../artifacts/arena-flow/results.json)：四视口均通过单一时间轴、共同位移、历史阅读锚点、长消息完整换行、上下两端整条透明度、坐标、复盘几何、重复头像编辑、棋钟输入校验、服务超时及结果入口检查，无页面溢出或浏览器错误。
 - 以 `ARENA_QA_BASE=38b9a8d`、`ARENA_QA_EVIDENCE=.tmp/arena-regression` 运行原有 `npm run arena:qa`，四视口的首页、资料、邀请、棋局管理、SSE、暂停恢复、2D/3D、和棋、复盘与导出回归通过。临时回归产物不作为本轮长期证据。
-- 半格网格延伸复用下文独立共享任务的可选渲染能力，默认关闭，Arena 主动开启；不改裁判连接规则。隔离验收不改写原棋谱；用户确认后已重启原服务，旧棋局仍不计时。真实客户端的完整限时对局仍待用户试玩。
+- 当时半格网格延伸由 Arena 主动开启共享绘图的可选能力；1.41.2 已推广为共享默认行为，并移除调用选项，当前验证见本页末尾。此处保留历史验收：不改裁判连接规则，隔离验收不改写原棋谱；用户确认后曾重启原服务，旧棋局仍不计时。当时真实客户端的完整限时对局仍待用户试玩。
 
 ## 2026-10-22：棋子默认头像与 AI 名称联动
 
@@ -221,7 +221,7 @@ Arena 发布状态：2026-11-04 用户已确认本轮预览并授权合并、推
 
 ## 2026-11-04：可选的半格拓扑辅助线
 
-共享绘图新增 `extendGridToRails` 选项，默认不启用；已有调用方保持原样。启用后，已连接边的网格延伸半格至辅助线，开放边不延伸。以下均为同一 800×600 视口、7×7 棋盘、相同两颗棋子，旧绘图基线为 `76bef39`：
+此阶段共享绘图通过 `extendGridToRails` 选项启用半格延伸；1.41.2 已改为共享默认行为并移除调用选项，当前验证见本页末尾 Issue #8 记录。以下保留初期同一 800×600 视口、7×7 棋盘、相同两颗棋子的历史对照，旧绘图基线为 `76bef39`：
 
 - 莫比乌斯：[之前](../../artifacts/boundary-guides/mobius-before.png) / [之后](../../artifacts/boundary-guides/mobius-after.png)，只有左右网格延长，保留扭转箭头。
 - 环面：[之前](../../artifacts/boundary-guides/torus-before.png) / [之后](../../artifacts/boundary-guides/torus-after.png)，两组连接边均延长。
@@ -486,7 +486,36 @@ Arena 发布状态：2026-11-04 用户已确认本轮预览并授权合并、推
 | 0.7 | [过渡](../../artifacts/sphere-seam-colors/before-sphere-0-7-1280x720.png) | [过渡](../../artifacts/sphere-seam-colors/after-sphere-0-7-1280x720.png) |
 | 1 | [球面](../../artifacts/sphere-seam-colors/before-sphere-1-1280x720.png) | [球面](../../artifacts/sphere-seam-colors/after-sphere-1-1280x720.png) |
 
-- 可复现命令：让环境可解析 Playwright 后运行 `node scripts/qa-sphere-seam-colors.cjs`。脚本只读加载 Git 基线，不回退工作区；附加 `--serve --port=4328` 可启动独立交互预览，`?revision=before` 查看基线，`?progress=0.5` 固定初始进度。
+- 可复现命令：让环境可解析 Playwright 后运行 `node scripts/qa-sphere-seam-colors.cjs`。脚本固定重放配色前 `76bef39` 与配色后 `9eaf057`，不回退工作区，也不把后续几何更新混入历史对照；附加 `--serve --port=4328` 可启动独立交互预览，`?revision=before` 查看基线，`?progress=0.5` 固定初始进度。当前半格边界行为用下文 `qa-shared-boundary-guides.cjs` 复验。
 - 自动验证：10 张截图、球面二维与完整球面画布逐字节一致；平面、圆柱、环面、莫比乌斯带、克莱因瓶和射影平面在 0.5 进度的前后画布逐字节一致；二维 / 三维按钮动画和滑块拖至 0.5 通过。每对邻边各采样 129 点，球面上 / 左与下 / 右对应点最大距离为 `8.9e-16`。[完整结果](../../artifacts/sphere-seam-colors/results.json) 保存条件与画布摘要。
 - 视觉检查：过渡中上 / 左始终为绿色，下 / 右始终为黄色；外侧辅助轨道与曲面边线分组一致。未更改投影形状，也未改动对弈室独有界面。本轮为本地 Chromium 验证，未重复宿主真机验证。
 - 预览确认：2026-11-06 用户确认预览无问题，授权将共享修复合入并推送 `dev`，同时同步到 `arena`。154 项测试、资源与文档检查通过。
+
+## 2026-11-06：共享棋盘的半格拓扑边界（Issue #8）
+
+- 任务分支：`codex/shared-boundary-guides`，从 `dev@b234185` 建立。将对弈室中的半格延伸推广到共享绘制模块和游戏本体入口；有拓扑连接的边延伸半格到彩色辅助线，开放边保留原有终点。归圆保持上 / 左青绿、下 / 右金黄。
+- 同状态条件：Chromium，像素比 1，桌面 1280×720、手机视口 390×844 和矮视口 390×560；前后均从真实首页进入离线双人同一关卡，依次在四角落黑白棋，等待落子效果稳定。七关共 42 组前后页面检查，记录真实 Canvas 绘制路径；不是为截图重画一套棋盘。移动结果是浏览器触屏与视口模拟，未作真机宿主验证。
+- 自动检查：最外排落子点与辅助线相距严格半格，延伸网格的端点与辅助线重合，所有默认关卡前后的落子点布局完全相同；每个页面四角触屏落子均到达正确格点，辅助线和箭头完整位于画布中。六种曲面在 `0.002 / 0.25 / 0.5 / 1 / 0` 各进度往返，共 180 个状态检查，回到二维后网格与辅助线重新对齐。固定进度截图用减少动态效果获得一致状态，不把这些检查当作逐帧性能测量。
+
+| 同一棋局与视口 | 修改前 | 修改后 |
+| --- | --- | --- |
+| 环游，1280×720 | [四角落子](../../artifacts/shared-boundary-guides/before-torus-edges-1280x720.png) | [半格延伸](../../artifacts/shared-boundary-guides/after-torus-edges-1280x720.png) |
+| 环游，390×844 | [四角落子](../../artifacts/shared-boundary-guides/before-torus-edges-390x844.png) | [半格延伸](../../artifacts/shared-boundary-guides/after-torus-edges-390x844.png) |
+| 扭带，390×560 | [开放边与接合边](../../artifacts/shared-boundary-guides/before-mobius-edges-390x560.png) | [只延伸接合边](../../artifacts/shared-boundary-guides/after-mobius-edges-390x560.png) |
+| 归圆，390×560 | [四角落子](../../artifacts/shared-boundary-guides/before-sphere-edges-390x560.png) | [相邻同色边](../../artifacts/shared-boundary-guides/after-sphere-edges-390x560.png) |
+| 方庭，390×844 | [平面](../../artifacts/shared-boundary-guides/before-plane-edges-390x844.png) | [开放边保持](../../artifacts/shared-boundary-guides/after-plane-edges-390x844.png) |
+| 环游，形变 0.25 | [原来的网格起点](../../artifacts/shared-boundary-guides/before-torus-morph-0.25-1280x720.png) | [与棋子对齐的起点](../../artifacts/shared-boundary-guides/after-torus-morph-0.25-1280x720.png) |
+| 归圆，形变 0.002 | [原来的边界起点](../../artifacts/shared-boundary-guides/before-sphere-morph-0.002-1280x720.png) | [接续半格边界](../../artifacts/shared-boundary-guides/after-sphere-morph-0.002-1280x720.png) |
+
+- 共享模块单独验证七拓扑 × 5 / 7 / 19 路 × 800×600 / 300×220 画布，共 42 组。全部交点中心点击返回原格点，网格与彩轨对齐且留有箭头空间；只有空间不足时才缩小网格，默认七关的上述真实页面未改变棋子间距。
+- 跨边界实战检查：真实触屏操作在环游以黑方 `26 → 27 → 21 → 22 → 23` 跨左右边界连五，裁判判黑胜；[五连前一手](../../artifacts/shared-boundary-guides/after-torus-cross-boundary-1280x720.png)保留边缘棋子与半格间隔的可视证据。
+- 可复现命令：提供 Playwright 到 `NODE_PATH` 后运行 `node scripts/qa-shared-boundary-guides.cjs`。追加 `--serve --port=4329` 提供实际游戏预览，`/before/` 是只读 Git 基线；[完整结果](../../artifacts/shared-boundary-guides/results.json)保存各组布局、触屏落子、视角状态与证据路径。共保存 37 张截图。
+- 验证：160 项测试、资源与文档校验通过，浏览器检查无运行错误。目视检查桌面、手机和矮视口的彩轨、扩线、开放边及动画首段无裁切或明显错位。2026-11-06 用户确认预览无问题，授权合入 `dev`、关闭 Issue #8、提升 `main` 并完成各渠道发行；统一版本为 1.41.2，渠道结果见[发布记录](../releases/1.41.2.md)。
+
+## 2026-11-06：Arena 采用共享默认半格边界
+
+- 基线 `arena@7a191cd`，整合 `main@ba8e3ab`，游戏版本 1.41.2。观战入口移除旧的显式开关，直接使用共享棋盘默认行为；二维视觉保持原样，曲面形变接收已确认的共享网格修复。
+- 同状态条件：Chromium、像素比 1、1280×720 与 1024×768，覆盖 16:9 和 4:3；相同暂停的 7×7 棋局、四角四手、无样例发言。基线仅从 Git 读取页面脚本与共享棋盘模块，不回退工作区。平面、莫比乌斯、球面共六组，每组前后二维画布逐字节一致；非平面检查 `0 → 0.002 → 0.25 → 1 → 0` 往返后画布恢复一致，复盘与设置前后棋盘位置不变。
+- 目视检查：[莫比乌斯之前](../../artifacts/arena-shared-1.41.2/before-mobius-0-1024x768.png) / [之后](../../artifacts/arena-shared-1.41.2/after-mobius-0-1024x768.png)、[球面形变之前](../../artifacts/arena-shared-1.41.2/before-sphere-25-1280x720.png) / [之后](../../artifacts/arena-shared-1.41.2/after-sphere-25-1280x720.png)。开放边不延伸、接合边保留半格；归圆上 / 左青绿，下 / 右金黄，棋子与网格贴合，无裁切或页面溢出。
+- 复现：提供 Playwright 到 `NODE_PATH` 后运行 `node scripts/qa-arena-shared-boundaries.cjs`；[专项结果](../../artifacts/arena-shared-1.41.2/results.json)与 16 张截图保存。另以 `ARENA_QA_BASE=7a191cd`、`ARENA_QA_EVIDENCE=.tmp/arena-1.41.2-regression` 运行 `node scripts/qa-arena.cjs`，四种桌面视口的首页、资料与头像、邀请、SSE 落子/随想、2D/3D、暂停/恢复、和棋、复盘、导出和记录管理通过，[回归摘要](../../artifacts/arena-shared-1.41.2/regression-verification.json)保留。
+- 255 项测试、资源和文档校验通过；棋手提示未修改。所有检查都在随机端口与临时棋局完成，未连接或重启原服务，也不作为真实模型参赛表现的证据。

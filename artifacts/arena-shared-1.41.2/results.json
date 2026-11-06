@@ -1,0 +1,109 @@
+{
+  "baseline": "7a191cd",
+  "sharedMain": "ba8e3abce800e64c28ac76160690d0a5b1483c19",
+  "fixture": "Synthetic paused 7x7 match, four corner moves, no player dialogue or real service data",
+  "cases": [
+    {
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "topology": "plane",
+      "flatCanvasIdentical": true,
+      "edgeMoves": [
+        0,
+        6,
+        42,
+        48
+      ],
+      "morphRoundTrip": false,
+      "fixedReplayAndSettingsGeometry": true,
+      "errors": []
+    },
+    {
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "topology": "mobius",
+      "flatCanvasIdentical": true,
+      "edgeMoves": [
+        0,
+        6,
+        42,
+        48
+      ],
+      "morphRoundTrip": true,
+      "fixedReplayAndSettingsGeometry": true,
+      "errors": []
+    },
+    {
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "topology": "sphere",
+      "flatCanvasIdentical": true,
+      "edgeMoves": [
+        0,
+        6,
+        42,
+        48
+      ],
+      "morphRoundTrip": true,
+      "fixedReplayAndSettingsGeometry": true,
+      "errors": []
+    },
+    {
+      "viewport": {
+        "width": 1024,
+        "height": 768
+      },
+      "topology": "plane",
+      "flatCanvasIdentical": true,
+      "edgeMoves": [
+        0,
+        6,
+        42,
+        48
+      ],
+      "morphRoundTrip": false,
+      "fixedReplayAndSettingsGeometry": true,
+      "errors": []
+    },
+    {
+      "viewport": {
+        "width": 1024,
+        "height": 768
+      },
+      "topology": "mobius",
+      "flatCanvasIdentical": true,
+      "edgeMoves": [
+        0,
+        6,
+        42,
+        48
+      ],
+      "morphRoundTrip": true,
+      "fixedReplayAndSettingsGeometry": true,
+      "errors": []
+    },
+    {
+      "viewport": {
+        "width": 1024,
+        "height": 768
+      },
+      "topology": "sphere",
+      "flatCanvasIdentical": true,
+      "edgeMoves": [
+        0,
+        6,
+        42,
+        48
+      ],
+      "morphRoundTrip": true,
+      "fixedReplayAndSettingsGeometry": true,
+      "errors": []
+    }
+  ]
+}

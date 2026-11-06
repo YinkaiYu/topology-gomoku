@@ -1,0 +1,94 @@
+{
+  "baseline": "7a191cd",
+  "fixture": "Same four-move 7x6 torus and scripted speech before/after, not model dialogue.",
+  "checks": [
+    "16:9 and 4:3 desktops",
+    "unified browser entry",
+    "upward chat bubbles",
+    "black and white stone defaults",
+    "all seven model avatars autofill names",
+    "default and uploaded avatars preserve custom names",
+    "Grok replaces OpenCode in picker",
+    "Grok profile survives save and reload",
+    "built-in and uploaded avatars",
+    "display names survive refresh",
+    "custom 9x8 board and square sphere control",
+    "fixed replay geometry",
+    "centered chapter glyph/name",
+    "settings-only management",
+    "dated records",
+    "stop/delete/clear with active games preserved",
+    "default commentary off",
+    "SSE",
+    "2D/3D",
+    "pause/resume",
+    "draw/replay/export",
+    "no overflow or browser errors"
+  ],
+  "results": [
+    {
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "board": {
+        "x": 394.078125,
+        "y": 82,
+        "width": 491.828125,
+        "height": 484
+      },
+      "bubbleDirection": "up",
+      "replayShift": 0,
+      "errors": [],
+      "result": "passed"
+    },
+    {
+      "viewport": {
+        "width": 1920,
+        "height": 1080
+      },
+      "board": {
+        "x": 636.890625,
+        "y": 114,
+        "width": 646.203125,
+        "height": 802
+      },
+      "bubbleDirection": "up",
+      "replayShift": 0,
+      "errors": [],
+      "result": "passed"
+    },
+    {
+      "viewport": {
+        "width": 1024,
+        "height": 768
+      },
+      "board": {
+        "x": 328.609375,
+        "y": 82,
+        "width": 366.765625,
+        "height": 532
+      },
+      "bubbleDirection": "up",
+      "replayShift": 0,
+      "errors": [],
+      "result": "passed"
+    },
+    {
+      "viewport": {
+        "width": 1440,
+        "height": 1080
+      },
+      "board": {
+        "x": 443.34375,
+        "y": 114,
+        "width": 553.296875,
+        "height": 802
+      },
+      "bubbleDirection": "up",
+      "replayShift": 0,
+      "errors": [],
+      "result": "passed"
+    }
+  ]
+}

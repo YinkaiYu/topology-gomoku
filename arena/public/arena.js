@@ -506,8 +506,8 @@
     const cellSize = Math.min((rect.width - 56) / state.width, (rect.height - 56) / state.height);
     const layout = { cell: cellSize, left: (rect.width-cellSize*(state.width-1))/2, right: (rect.width+cellSize*(state.width-1))/2,
       top: (rect.height-cellSize*(state.height-1))/2, bottom: (rect.height+cellSize*(state.height-1))/2, width: rect.width, height: rect.height };
-    if (morph > .001 && state.topology !== "plane") Art.drawCompletion(ctx, { game, layout, time: 2000, morph, rotation, extendGridToRails: true });
-    else Art.drawBoard(ctx, { game, layout, time: 2000, fontFamily: '"Topo Serif",serif', extendGridToRails: true });
+    if (morph > .001 && state.topology !== "plane") Art.drawCompletion(ctx, { game, layout, time: 2000, morph, rotation });
+    else Art.drawBoard(ctx, { game, layout, time: 2000, fontFamily: '"Topo Serif",serif' });
     if (morph < .1) {
       ctx.save(); ctx.fillStyle = "#65665e"; ctx.font = Math.min(16, Math.max(14, layout.cell * .65)) + 'px "Topo Serif",serif'; ctx.textAlign = "center"; ctx.textBaseline = "middle";
       // Open edges need only stone clearance (the radius used by Art.drawStones).
