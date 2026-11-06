@@ -8,10 +8,9 @@
   const Coordinates = window.ArenaCoordinates;
   const seatIdentities = { black: $("black-identity"), white: $("white-identity") };
   const gameKey = "topology-arena-game";
-  // `?embed=1` is the spectator surface a local host application may frame: no
-  // host lobby, no settings, no profile editing, just the board and the table.
+  // `?embed=1` only authorises a local host application to frame this page; the
+  // interface stays the full arena, including settings and the new-match flow.
   const embedMode = new URLSearchParams(location.search).has("embed");
-  if (embedMode) document.documentElement.classList.add("arena-embed");
   if (location.hash) history.replaceState(null, "", location.pathname + location.search);
   sessionStorage.removeItem("topology-arena-host");
   const avatarChoices = [{id:"",name:"默认"},{id:"deepseek-color",name:"DeepSeek"},{id:"openai",name:"OpenAI"},{id:"claude-color",name:"Claude"},{id:"gemini-color",name:"Gemini"},{id:"kimi-color",name:"Kimi"},{id:"qwen-color",name:"Qwen"},{id:"grok",name:"Grok"},{id:"doubao-color",name:"Doubao"},{id:"hunyuan-color",name:"Hy"},{id:"minimax-color",name:"MiniMax"}];
@@ -373,7 +372,6 @@
     if (!state) return;
     const level = levelFor(state.topology);
     $("welcome").hidden = true;
-    $("embed-empty").hidden = true;
     $("match").hidden = false;
     placeSettings("match");
     text("match-level", level.name);$("match-glyph").src="/assets/topologies/"+state.topology+".svg";
@@ -446,16 +444,6 @@
     if (source) source.close();
     source = null;
     state = null;
-    if (embedMode) {
-      // The host lobby is not part of the spectator surface; keep the frame
-      // open with a quiet placeholder instead of dropping back to the setup UI.
-      $("welcome").hidden = true;
-      $("match").hidden = true;
-      $("embed-empty").hidden = false;
-      $("match-settings").hidden = true;
-      closeSettings();
-      return;
-    }
     $("welcome").hidden = false;
     $("match").hidden = true;
     placeSettings("home");

@@ -536,7 +536,7 @@ test("the spectator embed surface may be framed by a local host while every othe
   const policy=embed.headers.get("content-security-policy")||"";
   assert.match(policy,/frame-ancestors http:\/\/127\.0\.0\.1:\* http:\/\/localhost:\* dsh-app:/);
   assert.doesNotMatch(policy,/frame-ancestors 'none'/);
-  assert.match(await embed.text(),/id="embed-empty"/);
+  const document=await embed.text();assert.match(document,/id="settings-dialog"/);assert.match(document,/id="welcome"/);
   // A desktop host document is cross-site to loopback; the embed navigation is
   // admitted, while every API request keeps the cross-site rejection.
   const crossSiteEmbed=await fetch(app.url+"/?embed=1",{headers:{"Sec-Fetch-Site":"cross-site"}});

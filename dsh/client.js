@@ -64,7 +64,7 @@ window.__ModuleLoader__.load({
       return TEXT.en
     }
 
-    /** Poll the Host read model while the panel is visible. */
+    /** Read the Host once; the embedded page owns its own navigation afterwards. */
     function useView() {
       const [state, setState] = React.useState({ loading: true, data: null })
       const load = React.useCallback(async () => {
@@ -78,17 +78,7 @@ window.__ModuleLoader__.load({
         }
       }, [])
       React.useEffect(() => {
-        let alive = true
-        const tick = () => {
-          if (!alive || document.hidden) return
-          load()
-        }
         load()
-        const timer = setInterval(tick, 5000)
-        return () => {
-          alive = false
-          clearInterval(timer)
-        }
       }, [load])
       return { ...state, reload: load }
     }
@@ -120,16 +110,12 @@ window.__ModuleLoader__.load({
       }, label)
     }
 
-    /** The embedded spectator page, framed exactly as the browser renders it. */
+    /** The embedded arena page, framed exactly as the browser renders it. */
     function ArenaPanel({ t }) {
       const { data, reload } = useView()
-      const [chosen, setChosen] = React.useState('')
       const [nonce, setNonce] = React.useState(0)
       const games = data && Array.isArray(data.games) ? data.games : []
-      React.useEffect(() => {
-        if (chosen && games.length && !games.some((game) => game.gameId === chosen)) setChosen('')
-      }, [chosen, games])
-      const active = chosen || (data && data.selected) || (games[0] && games[0].gameId) || ''
+      const active = (data && data.selected) || (games[0] && games[0].gameId) || ''
       const game = games.find((item) => item.gameId === active) || null
       const base = data && data.url ? data.url : ''
       const src = base ? `${base}/?embed=1${active ? `&game=${encodeURIComponent(active)}` : ''}` : ''
@@ -154,20 +140,6 @@ window.__ModuleLoader__.load({
             }, `${t.topology[game.topology] || game.topology} · ${t.phase[game.phase] || game.phase} · ${t.ply.replace('{n}', String(game.ply ?? 0))}`)
           : null,
         h('div', { key: 'spacer', style: { flex: 1 } }),
-        games.length > 1
-          ? h('select', {
-              key: 'select',
-              'aria-label': t.select,
-              value: active,
-              onChange: (event) => setChosen(event.target.value),
-              style: {
-                fontSize: 12, padding: '4px 8px', borderRadius: 8,
-                border: '1px solid var(--dsw-alias-border-l1)',
-                background: 'var(--dsw-alias-bg-layer-2)', color: 'var(--dsw-alias-label-primary)', maxWidth: 260,
-              },
-            }, games.map((item) => h('option', { key: item.gameId, value: item.gameId },
-              `${t.topology[item.topology] || item.topology} · ${t.phase[item.phase] || item.phase} · ${item.ply}`)))
-          : null,
         headerButton(t.refresh, () => {
           setNonce((value) => value + 1)
           reload()
