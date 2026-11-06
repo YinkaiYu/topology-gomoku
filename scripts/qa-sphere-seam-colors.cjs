@@ -1,3 +1,4 @@
+// Replays the isolated color fix; current boundary geometry has a separate QA.
 // Requires an existing Playwright installation; --serve keeps the preview open.
 const http = require('node:http');
 const fs = require('node:fs');
@@ -9,14 +10,15 @@ const { execFileSync } = require('node:child_process');
 const root = path.resolve(__dirname, '..');
 const args = process.argv.slice(2);
 const baseline = args.find(arg => arg.startsWith('--baseline='))?.slice(11) || '76bef39';
+const corrected = '9eaf057';
 const port = Number(args.find(arg => arg.startsWith('--port='))?.slice(7)) || 4328;
 const output = path.join(root, 'artifacts', 'sphere-seam-colors');
 const cache = new Map();
 
 function source(file, before) {
-  if (!before) return fs.readFileSync(path.join(root, file));
-  if (!cache.has(file)) cache.set(file, execFileSync('git', ['show', baseline + ':' + file], { cwd: root, maxBuffer: 8 * 1024 * 1024 }));
-  return cache.get(file);
+  const key = (before ? baseline : corrected) + ':' + file;
+  if (!cache.has(key)) cache.set(key, execFileSync('git', ['show', key], { cwd: root, maxBuffer: 8 * 1024 * 1024 }));
+  return cache.get(key);
 }
 
 function preview(before) {

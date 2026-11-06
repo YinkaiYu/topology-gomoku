@@ -46,7 +46,7 @@ function draw(topology, morph) {
   const orientation = { x: 0.42, y: -0.58, z: -0.08, scale: 1, morph };
   const { ctx, strokes } = recordingContext();
   Art.drawCompletion(ctx, { game, layout, morph, orientation });
-  return { strokes, layout, orientation };
+  return { strokes, layout, orientation, rules };
 }
 
 function assertPoint(actual, expected, message) {
@@ -59,7 +59,7 @@ function assertSide(stroke, side, topology, drawing) {
   assert.ok(stroke.points.length > 2, `${topology} ${side} follows the curved surface`);
   stroke.points.forEach((point, index) => {
     const [u, v] = SIDE_UV[side](index / (stroke.points.length - 1));
-    const flat = { x: layout.left + u * (layout.right - layout.left), y: layout.top + v * (layout.bottom - layout.top) };
+    const flat = Art.flatPointFromUV(drawing.rules, layout, u, v);
     const projected = Morph.project(topology, u, v, layout.width, layout.height, orientation);
     assertPoint(point, {
       x: flat.x * (1 - orientation.morph) + projected.x * orientation.morph,
@@ -87,7 +87,7 @@ test("归圆变形全过程：上边与左边同为绿色，下边与右边同�
 test("归圆二维辅助线与变形边界使用相同的邻边配色", () => {
   const drawing = draw("sphere", 0);
   const { layout } = drawing;
-  const offset = Math.min(15, layout.cell * 0.4);
+  const offset = layout.cell * 0.5;
   const expected = new Map([
     [Art.TOKENS.teal, [
       [{ x: layout.left, y: layout.top - offset }, { x: layout.right, y: layout.top - offset }],
