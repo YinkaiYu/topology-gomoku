@@ -1,0 +1,4484 @@
+{
+  "baseline": "b234185",
+  "viewports": [
+    {
+      "width": 1280,
+      "height": 720
+    },
+    {
+      "width": 390,
+      "height": 844
+    },
+    {
+      "width": 390,
+      "height": 560
+    }
+  ],
+  "realGame": [
+    {
+      "revision": "before",
+      "type": "plane",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "geometry": {
+        "cell": 53.38666666666666,
+        "gridLines": 14,
+        "rails": 0,
+        "center": [
+          71.84,
+          47.84,
+          392.15999999999997,
+          368.15999999999997
+        ],
+        "canvas": [
+          464,
+          416
+        ]
+      },
+      "edgeMoves": [
+        {
+          "cell": 0,
+          "player": 1,
+          "won": false
+        },
+        {
+          "cell": 6,
+          "player": -1,
+          "won": false
+        },
+        {
+          "cell": 42,
+          "player": 1,
+          "won": false
+        },
+        {
+          "cell": 48,
+          "player": -1,
+          "won": false
+        }
+      ],
+      "file": "artifacts/shared-boundary-guides/before-plane-edges-1280x720.png"
+    },
+    {
+      "revision": "after",
+      "type": "plane",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "geometry": {
+        "cell": 53.38666666666666,
+        "gridLines": 14,
+        "rails": 0,
+        "center": [
+          71.84,
+          47.84,
+          392.15999999999997,
+          368.15999999999997
+        ],
+        "canvas": [
+          464,
+          416
+        ]
+      },
+      "edgeMoves": [
+        {
+          "cell": 0,
+          "player": 1,
+          "won": false
+        },
+        {
+          "cell": 6,
+          "player": -1,
+          "won": false
+        },
+        {
+          "cell": 42,
+          "player": 1,
+          "won": false
+        },
+        {
+          "cell": 48,
+          "player": -1,
+          "won": false
+        }
+      ],
+      "file": "artifacts/shared-boundary-guides/after-plane-edges-1280x720.png"
+    },
+    {
+      "revision": "before",
+      "type": "cylinder",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "geometry": {
+        "cell": 55.748000000000005,
+        "gridLines": 13,
+        "rails": 2,
+        "center": [
+          64.75599999999997,
+          41.629999999999995,
+          399.244,
+          320.37
+        ],
+        "canvas": [
+          464,
+          362
+        ]
+      },
+      "edgeMoves": [
+        {
+          "cell": 0,
+          "player": 1,
+          "won": false
+        },
+        {
+          "cell": 6,
+          "player": -1,
+          "won": false
+        },
+        {
+          "cell": 35,
+          "player": 1,
+          "won": false
+        },
+        {
+          "cell": 41,
+          "player": -1,
+          "won": false
+        }
+      ],
+      "file": null
+    },
+    {
+      "revision": "after",
+      "type": "cylinder",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "geometry": {
+        "cell": 55.748000000000005,
+        "gridLines": 13,
+        "rails": 2,
+        "center": [
+          64.75599999999997,
+          41.629999999999995,
+          399.244,
+          320.37
+        ],
+        "canvas": [
+          464,
+          362
+        ]
+      },
+      "edgeMoves": [
+        {
+          "cell": 0,
+          "player": 1,
+          "won": false
+        },
+        {
+          "cell": 6,
+          "player": -1,
+          "won": false
+        },
+        {
+          "cell": 35,
+          "player": 1,
+          "won": false
+        },
+        {
+          "cell": 41,
+          "player": -1,
+          "won": false
+        }
+      ],
+      "file": null
+    },
+    {
+      "revision": "before",
+      "type": "torus",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "geometry": {
+        "cell": 55.748000000000005,
+        "gridLines": 13,
+        "rails": 4,
+        "center": [
+          64.75599999999997,
+          41.629999999999995,
+          399.244,
+          320.37
+        ],
+        "canvas": [
+          464,
+          362
+        ]
+      },
+      "edgeMoves": [
+        {
+          "cell": 0,
+          "player": 1,
+          "won": false
+        },
+        {
+          "cell": 6,
+          "player": -1,
+          "won": false
+        },
+        {
+          "cell": 35,
+          "player": 1,
+          "won": false
+        },
+        {
+          "cell": 41,
+          "player": -1,
+          "won": false
+        }
+      ],
+      "file": "artifacts/shared-boundary-guides/before-torus-edges-1280x720.png"
+    },
+    {
+      "revision": "after",
+      "type": "torus",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "geometry": {
+        "cell": 55.748000000000005,
+        "gridLines": 13,
+        "rails": 4,
+        "center": [
+          64.75599999999997,
+          41.629999999999995,
+          399.244,
+          320.37
+        ],
+        "canvas": [
+          464,
+          362
+        ]
+      },
+      "edgeMoves": [
+        {
+          "cell": 0,
+          "player": 1,
+          "won": false
+        },
+        {
+          "cell": 6,
+          "player": -1,
+          "won": false
+        },
+        {
+          "cell": 35,
+          "player": 1,
+          "won": false
+        },
+        {
+          "cell": 41,
+          "player": -1,
+          "won": false
+        }
+      ],
+      "file": "artifacts/shared-boundary-guides/after-torus-edges-1280x720.png"
+    },
+    {
+      "revision": "before",
+      "type": "mobius",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "geometry": {
+        "cell": 54.39142857142857,
+        "gridLines": 14,
+        "rails": 2,
+        "center": [
+          41.629999999999995,
+          45.02142857142857,
+          422.37,
+          316.9785714285714
+        ],
+        "canvas": [
+          464,
+          362
+        ]
+      },
+      "edgeMoves": [
+        {
+          "cell": 0,
+          "player": 1,
+          "won": false
+        },
+        {
+          "cell": 7,
+          "player": -1,
+          "won": false
+        },
+        {
+          "cell": 40,
+          "player": 1,
+          "won": false
+        },
+        {
+          "cell": 47,
+          "player": -1,
+          "won": false
+        }
+      ],
+      "file": "artifacts/shared-boundary-guides/before-mobius-edges-1280x720.png"
+    },
+    {
+      "revision": "after",
+      "type": "mobius",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "geometry": {
+        "cell": 54.39142857142857,
+        "gridLines": 14,
+        "rails": 2,
+        "center": [
+          41.629999999999995,
+          45.02142857142857,
+          422.37,
+          316.9785714285714
+        ],
+        "canvas": [
+          464,
+          362
+        ]
+      },
+      "edgeMoves": [
+        {
+          "cell": 0,
+          "player": 1,
+          "won": false
+        },
+        {
+          "cell": 7,
+          "player": -1,
+          "won": false
+        },
+        {
+          "cell": 40,
+          "player": 1,
+          "won": false
+        },
+        {
+          "cell": 47,
+          "player": -1,
+          "won": false
+        }
+      ],
+      "file": "artifacts/shared-boundary-guides/after-mobius-edges-1280x720.png"
+    },
+    {
+      "revision": "before",
+      "type": "klein",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "geometry": {
+        "cell": 55.748000000000005,
+        "gridLines": 13,
+        "rails": 4,
+        "center": [
+          64.75599999999997,
+          41.629999999999995,
+          399.244,
+          320.37
+        ],
+        "canvas": [
+          464,
+          362
+        ]
+      },
+      "edgeMoves": [
+        {
+          "cell": 0,
+          "player": 1,
+          "won": false
+        },
+        {
+          "cell": 6,
+          "player": -1,
+          "won": false
+        },
+        {
+          "cell": 35,
+          "player": 1,
+          "won": false
+        },
+        {
+          "cell": 41,
+          "player": -1,
+          "won": false
+        }
+      ],
+      "file": null
+    },
+    {
+      "revision": "after",
+      "type": "klein",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "geometry": {
+        "cell": 55.748000000000005,
+        "gridLines": 13,
+        "rails": 4,
+        "center": [
+          64.75599999999997,
+          41.629999999999995,
+          399.244,
+          320.37
+        ],
+        "canvas": [
+          464,
+          362
+        ]
+      },
+      "edgeMoves": [
+        {
+          "cell": 0,
+          "player": 1,
+          "won": false
+        },
+        {
+          "cell": 6,
+          "player": -1,
+          "won": false
+        },
+        {
+          "cell": 35,
+          "player": 1,
+          "won": false
+        },
+        {
+          "cell": 41,
+          "player": -1,
+          "won": false
+        }
+      ],
+      "file": null
+    },
+    {
+      "revision": "before",
+      "type": "projective",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "geometry": {
+        "cell": 39.82,
+        "gridLines": 16,
+        "rails": 4,
+        "center": [
+          92.63,
+          41.629999999999995,
+          371.37,
+          320.37
+        ],
+        "canvas": [
+          464,
+          362
+        ]
+      },
+      "edgeMoves": [
+        {
+          "cell": 0,
+          "player": 1,
+          "won": false
+        },
+        {
+          "cell": 7,
+          "player": -1,
+          "won": false
+        },
+        {
+          "cell": 56,
+          "player": 1,
+          "won": false
+        },
+        {
+          "cell": 63,
+          "player": -1,
+          "won": false
+        }
+      ],
+      "file": null
+    },
+    {
+      "revision": "after",
+      "type": "projective",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "geometry": {
+        "cell": 39.82,
+        "gridLines": 16,
+        "rails": 4,
+        "center": [
+          92.63,
+          41.629999999999995,
+          371.37,
+          320.37
+        ],
+        "canvas": [
+          464,
+          362
+        ]
+      },
+      "edgeMoves": [
+        {
+          "cell": 0,
+          "player": 1,
+          "won": false
+        },
+        {
+          "cell": 7,
+          "player": -1,
+          "won": false
+        },
+        {
+          "cell": 56,
+          "player": 1,
+          "won": false
+        },
+        {
+          "cell": 63,
+          "player": -1,
+          "won": false
+        }
+      ],
+      "file": null
+    },
+    {
+      "revision": "before",
+      "type": "sphere",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "geometry": {
+        "cell": 46.45666666666667,
+        "gridLines": 14,
+        "rails": 4,
+        "center": [
+          92.63,
+          41.629999999999995,
+          371.37,
+          320.37
+        ],
+        "canvas": [
+          464,
+          362
+        ]
+      },
+      "edgeMoves": [
+        {
+          "cell": 0,
+          "player": 1,
+          "won": false
+        },
+        {
+          "cell": 6,
+          "player": -1,
+          "won": false
+        },
+        {
+          "cell": 42,
+          "player": 1,
+          "won": false
+        },
+        {
+          "cell": 48,
+          "player": -1,
+          "won": false
+        }
+      ],
+      "file": "artifacts/shared-boundary-guides/before-sphere-edges-1280x720.png"
+    },
+    {
+      "revision": "after",
+      "type": "sphere",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "geometry": {
+        "cell": 46.45666666666667,
+        "gridLines": 14,
+        "rails": 4,
+        "center": [
+          92.63,
+          41.629999999999995,
+          371.37,
+          320.37
+        ],
+        "canvas": [
+          464,
+          362
+        ]
+      },
+      "edgeMoves": [
+        {
+          "cell": 0,
+          "player": 1,
+          "won": false
+        },
+        {
+          "cell": 6,
+          "player": -1,
+          "won": false
+        },
+        {
+          "cell": 42,
+          "player": 1,
+          "won": false
+        },
+        {
+          "cell": 48,
+          "player": -1,
+          "won": false
+        }
+      ],
+      "file": "artifacts/shared-boundary-guides/after-sphere-edges-1280x720.png"
+    },
+    {
+      "revision": "before",
+      "type": "plane",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "geometry": {
+        "cell": 45.68666666666667,
+        "gridLines": 14,
+        "rails": 0,
+        "center": [
+          40.94,
+          40.94,
+          315.06,
+          315.06
+        ],
+        "canvas": [
+          356,
+          356
+        ]
+      },
+      "edgeMoves": [
+        {
+          "cell": 0,
+          "player": 1,
+          "won": false
+        },
+        {
+          "cell": 6,
+          "player": -1,
+          "won": false
+        },
+        {
+          "cell": 42,
+          "player": 1,
+          "won": false
+        },
+        {
+          "cell": 48,
+          "player": -1,
+          "won": false
+        }
+      ],
+      "file": "artifacts/shared-boundary-guides/before-plane-edges-390x844.png"
+    },
+    {
+      "revision": "after",
+      "type": "plane",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "geometry": {
+        "cell": 45.68666666666667,
+        "gridLines": 14,
+        "rails": 0,
+        "center": [
+          40.94,
+          40.94,
+          315.06,
+          315.06
+        ],
+        "canvas": [
+          356,
+          356
+        ]
+      },
+      "edgeMoves": [
+        {
+          "cell": 0,
+          "player": 1,
+          "won": false
+        },
+        {
+          "cell": 6,
+          "player": -1,
+          "won": false
+        },
+        {
+          "cell": 42,
+          "player": 1,
+          "won": false
+        },
+        {
+          "cell": 48,
+          "player": -1,
+          "won": false
+        }
+      ],
+      "file": "artifacts/shared-boundary-guides/after-plane-edges-390x844.png"
+    },
+    {
+      "revision": "before",
+      "type": "cylinder",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "geometry": {
+        "cell": 45.68666666666667,
+        "gridLines": 13,
+        "rails": 2,
+        "center": [
+          40.94,
+          63.78333333333333,
+          315.06,
+          292.2166666666667
+        ],
+        "canvas": [
+          356,
+          356
+        ]
+      },
+      "edgeMoves": [
+        {
+          "cell": 0,
+          "player": 1,
+          "won": false
+        },
+        {
+          "cell": 6,
+          "player": -1,
+          "won": false
+        },
+        {
+          "cell": 35,
+          "player": 1,
+          "won": false
+        },
+        {
+          "cell": 41,
+          "player": -1,
+          "won": false
+        }
+      ],
+      "file": null
+    },
+    {
+      "revision": "after",
+      "type": "cylinder",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "geometry": {
+        "cell": 45.68666666666667,
+        "gridLines": 13,
+        "rails": 2,
+        "center": [
+          40.94,
+          63.78333333333333,
+          315.06,
+          292.2166666666667
+        ],
+        "canvas": [
+          356,
+          356
+        ]
+      },
+      "edgeMoves": [
+        {
+          "cell": 0,
+          "player": 1,
+          "won": false
+        },
+        {
+          "cell": 6,
+          "player": -1,
+          "won": false
+        },
+        {
+          "cell": 35,
+          "player": 1,
+          "won": false
+        },
+        {
+          "cell": 41,
+          "player": -1,
+          "won": false
+        }
+      ],
+      "file": null
+    },
+    {
+      "revision": "before",
+      "type": "torus",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "geometry": {
+        "cell": 45.68666666666667,
+        "gridLines": 13,
+        "rails": 4,
+        "center": [
+          40.94,
+          63.78333333333333,
+          315.06,
+          292.2166666666667
+        ],
+        "canvas": [
+          356,
+          356
+        ]
+      },
+      "edgeMoves": [
+        {
+          "cell": 0,
+          "player": 1,
+          "won": false
+        },
+        {
+          "cell": 6,
+          "player": -1,
+          "won": false
+        },
+        {
+          "cell": 35,
+          "player": 1,
+          "won": false
+        },
+        {
+          "cell": 41,
+          "player": -1,
+          "won": false
+        }
+      ],
+      "file": "artifacts/shared-boundary-guides/before-torus-edges-390x844.png"
+    },
+    {
+      "revision": "after",
+      "type": "torus",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "geometry": {
+        "cell": 45.68666666666667,
+        "gridLines": 13,
+        "rails": 4,
+        "center": [
+          40.94,
+          63.78333333333333,
+          315.06,
+          292.2166666666667
+        ],
+        "canvas": [
+          356,
+          356
+        ]
+      },
+      "edgeMoves": [
+        {
+          "cell": 0,
+          "player": 1,
+          "won": false
+        },
+        {
+          "cell": 6,
+          "player": -1,
+          "won": false
+        },
+        {
+          "cell": 35,
+          "player": 1,
+          "won": false
+        },
+        {
+          "cell": 41,
+          "player": -1,
+          "won": false
+        }
+      ],
+      "file": "artifacts/shared-boundary-guides/after-torus-edges-390x844.png"
+    },
+    {
+      "revision": "before",
+      "type": "mobius",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "geometry": {
+        "cell": 39.160000000000004,
+        "gridLines": 14,
+        "rails": 2,
+        "center": [
+          40.94,
+          80.1,
+          315.06,
+          275.9
+        ],
+        "canvas": [
+          356,
+          356
+        ]
+      },
+      "edgeMoves": [
+        {
+          "cell": 0,
+          "player": 1,
+          "won": false
+        },
+        {
+          "cell": 7,
+          "player": -1,
+          "won": false
+        },
+        {
+          "cell": 40,
+          "player": 1,
+          "won": false
+        },
+        {
+          "cell": 47,
+          "player": -1,
+          "won": false
+        }
+      ],
+      "file": "artifacts/shared-boundary-guides/before-mobius-edges-390x844.png"
+    },
+    {
+      "revision": "after",
+      "type": "mobius",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "geometry": {
+        "cell": 39.160000000000004,
+        "gridLines": 14,
+        "rails": 2,
+        "center": [
+          40.94,
+          80.1,
+          315.06,
+          275.9
+        ],
+        "canvas": [
+          356,
+          356
+        ]
+      },
+      "edgeMoves": [
+        {
+          "cell": 0,
+          "player": 1,
+          "won": false
+        },
+        {
+          "cell": 7,
+          "player": -1,
+          "won": false
+        },
+        {
+          "cell": 40,
+          "player": 1,
+          "won": false
+        },
+        {
+          "cell": 47,
+          "player": -1,
+          "won": false
+        }
+      ],
+      "file": "artifacts/shared-boundary-guides/after-mobius-edges-390x844.png"
+    },
+    {
+      "revision": "before",
+      "type": "klein",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "geometry": {
+        "cell": 45.68666666666667,
+        "gridLines": 13,
+        "rails": 4,
+        "center": [
+          40.94,
+          63.78333333333333,
+          315.06,
+          292.2166666666667
+        ],
+        "canvas": [
+          356,
+          356
+        ]
+      },
+      "edgeMoves": [
+        {
+          "cell": 0,
+          "player": 1,
+          "won": false
+        },
+        {
+          "cell": 6,
+          "player": -1,
+          "won": false
+        },
+        {
+          "cell": 35,
+          "player": 1,
+          "won": false
+        },
+        {
+          "cell": 41,
+          "player": -1,
+          "won": false
+        }
+      ],
+      "file": null
+    },
+    {
+      "revision": "after",
+      "type": "klein",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "geometry": {
+        "cell": 45.68666666666667,
+        "gridLines": 13,
+        "rails": 4,
+        "center": [
+          40.94,
+          63.78333333333333,
+          315.06,
+          292.2166666666667
+        ],
+        "canvas": [
+          356,
+          356
+        ]
+      },
+      "edgeMoves": [
+        {
+          "cell": 0,
+          "player": 1,
+          "won": false
+        },
+        {
+          "cell": 6,
+          "player": -1,
+          "won": false
+        },
+        {
+          "cell": 35,
+          "player": 1,
+          "won": false
+        },
+        {
+          "cell": 41,
+          "player": -1,
+          "won": false
+        }
+      ],
+      "file": null
+    },
+    {
+      "revision": "before",
+      "type": "projective",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "geometry": {
+        "cell": 39.160000000000004,
+        "gridLines": 16,
+        "rails": 4,
+        "center": [
+          40.94,
+          40.94,
+          315.06,
+          315.06
+        ],
+        "canvas": [
+          356,
+          356
+        ]
+      },
+      "edgeMoves": [
+        {
+          "cell": 0,
+          "player": 1,
+          "won": false
+        },
+        {
+          "cell": 7,
+          "player": -1,
+          "won": false
+        },
+        {
+          "cell": 56,
+          "player": 1,
+          "won": false
+        },
+        {
+          "cell": 63,
+          "player": -1,
+          "won": false
+        }
+      ],
+      "file": null
+    },
+    {
+      "revision": "after",
+      "type": "projective",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "geometry": {
+        "cell": 39.160000000000004,
+        "gridLines": 16,
+        "rails": 4,
+        "center": [
+          40.94,
+          40.94,
+          315.06,
+          315.06
+        ],
+        "canvas": [
+          356,
+          356
+        ]
+      },
+      "edgeMoves": [
+        {
+          "cell": 0,
+          "player": 1,
+          "won": false
+        },
+        {
+          "cell": 7,
+          "player": -1,
+          "won": false
+        },
+        {
+          "cell": 56,
+          "player": 1,
+          "won": false
+        },
+        {
+          "cell": 63,
+          "player": -1,
+          "won": false
+        }
+      ],
+      "file": null
+    },
+    {
+      "revision": "before",
+      "type": "sphere",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "geometry": {
+        "cell": 45.68666666666667,
+        "gridLines": 14,
+        "rails": 4,
+        "center": [
+          40.94,
+          40.94,
+          315.06,
+          315.06
+        ],
+        "canvas": [
+          356,
+          356
+        ]
+      },
+      "edgeMoves": [
+        {
+          "cell": 0,
+          "player": 1,
+          "won": false
+        },
+        {
+          "cell": 6,
+          "player": -1,
+          "won": false
+        },
+        {
+          "cell": 42,
+          "player": 1,
+          "won": false
+        },
+        {
+          "cell": 48,
+          "player": -1,
+          "won": false
+        }
+      ],
+      "file": "artifacts/shared-boundary-guides/before-sphere-edges-390x844.png"
+    },
+    {
+      "revision": "after",
+      "type": "sphere",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "geometry": {
+        "cell": 45.68666666666667,
+        "gridLines": 14,
+        "rails": 4,
+        "center": [
+          40.94,
+          40.94,
+          315.06,
+          315.06
+        ],
+        "canvas": [
+          356,
+          356
+        ]
+      },
+      "edgeMoves": [
+        {
+          "cell": 0,
+          "player": 1,
+          "won": false
+        },
+        {
+          "cell": 6,
+          "player": -1,
+          "won": false
+        },
+        {
+          "cell": 42,
+          "player": 1,
+          "won": false
+        },
+        {
+          "cell": 48,
+          "player": -1,
+          "won": false
+        }
+      ],
+      "file": "artifacts/shared-boundary-guides/after-sphere-edges-390x844.png"
+    },
+    {
+      "revision": "before",
+      "type": "plane",
+      "viewport": {
+        "width": 390,
+        "height": 560
+      },
+      "geometry": {
+        "cell": 33.653333333333336,
+        "gridLines": 14,
+        "rails": 0,
+        "center": [
+          51.03999999999999,
+          27.039999999999992,
+          252.96,
+          228.96
+        ],
+        "canvas": [
+          304,
+          256
+        ]
+      },
+      "edgeMoves": [
+        {
+          "cell": 0,
+          "player": 1,
+          "won": false
+        },
+        {
+          "cell": 6,
+          "player": -1,
+          "won": false
+        },
+        {
+          "cell": 42,
+          "player": 1,
+          "won": false
+        },
+        {
+          "cell": 48,
+          "player": -1,
+          "won": false
+        }
+      ],
+      "file": "artifacts/shared-boundary-guides/before-plane-edges-390x560.png"
+    },
+    {
+      "revision": "after",
+      "type": "plane",
+      "viewport": {
+        "width": 390,
+        "height": 560
+      },
+      "geometry": {
+        "cell": 33.653333333333336,
+        "gridLines": 14,
+        "rails": 0,
+        "center": [
+          51.03999999999999,
+          27.039999999999992,
+          252.96,
+          228.96
+        ],
+        "canvas": [
+          304,
+          256
+        ]
+      },
+      "edgeMoves": [
+        {
+          "cell": 0,
+          "player": 1,
+          "won": false
+        },
+        {
+          "cell": 6,
+          "player": -1,
+          "won": false
+        },
+        {
+          "cell": 42,
+          "player": 1,
+          "won": false
+        },
+        {
+          "cell": 48,
+          "player": -1,
+          "won": false
+        }
+      ],
+      "file": "artifacts/shared-boundary-guides/after-plane-edges-390x560.png"
+    },
+    {
+      "revision": "before",
+      "type": "cylinder",
+      "viewport": {
+        "width": 390,
+        "height": 560
+      },
+      "geometry": {
+        "cell": 31.6,
+        "gridLines": 13,
+        "rails": 2,
+        "center": [
+          57.19999999999999,
+          22,
+          246.8,
+          180
+        ],
+        "canvas": [
+          304,
+          202
+        ]
+      },
+      "edgeMoves": [
+        {
+          "cell": 0,
+          "player": 1,
+          "won": false
+        },
+        {
+          "cell": 6,
+          "player": -1,
+          "won": false
+        },
+        {
+          "cell": 35,
+          "player": 1,
+          "won": false
+        },
+        {
+          "cell": 41,
+          "player": -1,
+          "won": false
+        }
+      ],
+      "file": null
+    },
+    {
+      "revision": "after",
+      "type": "cylinder",
+      "viewport": {
+        "width": 390,
+        "height": 560
+      },
+      "geometry": {
+        "cell": 31.6,
+        "gridLines": 13,
+        "rails": 2,
+        "center": [
+          57.19999999999999,
+          22,
+          246.8,
+          180
+        ],
+        "canvas": [
+          304,
+          202
+        ]
+      },
+      "edgeMoves": [
+        {
+          "cell": 0,
+          "player": 1,
+          "won": false
+        },
+        {
+          "cell": 6,
+          "player": -1,
+          "won": false
+        },
+        {
+          "cell": 35,
+          "player": 1,
+          "won": false
+        },
+        {
+          "cell": 41,
+          "player": -1,
+          "won": false
+        }
+      ],
+      "file": null
+    },
+    {
+      "revision": "before",
+      "type": "torus",
+      "viewport": {
+        "width": 390,
+        "height": 560
+      },
+      "geometry": {
+        "cell": 31.6,
+        "gridLines": 13,
+        "rails": 4,
+        "center": [
+          57.19999999999999,
+          22,
+          246.8,
+          180
+        ],
+        "canvas": [
+          304,
+          202
+        ]
+      },
+      "edgeMoves": [
+        {
+          "cell": 0,
+          "player": 1,
+          "won": false
+        },
+        {
+          "cell": 6,
+          "player": -1,
+          "won": false
+        },
+        {
+          "cell": 35,
+          "player": 1,
+          "won": false
+        },
+        {
+          "cell": 41,
+          "player": -1,
+          "won": false
+        }
+      ],
+      "file": "artifacts/shared-boundary-guides/before-torus-edges-390x560.png"
+    },
+    {
+      "revision": "after",
+      "type": "torus",
+      "viewport": {
+        "width": 390,
+        "height": 560
+      },
+      "geometry": {
+        "cell": 31.6,
+        "gridLines": 13,
+        "rails": 4,
+        "center": [
+          57.19999999999999,
+          22,
+          246.8,
+          180
+        ],
+        "canvas": [
+          304,
+          202
+        ]
+      },
+      "edgeMoves": [
+        {
+          "cell": 0,
+          "player": 1,
+          "won": false
+        },
+        {
+          "cell": 6,
+          "player": -1,
+          "won": false
+        },
+        {
+          "cell": 35,
+          "player": 1,
+          "won": false
+        },
+        {
+          "cell": 41,
+          "player": -1,
+          "won": false
+        }
+      ],
+      "file": "artifacts/shared-boundary-guides/after-torus-edges-390x560.png"
+    },
+    {
+      "revision": "before",
+      "type": "mobius",
+      "viewport": {
+        "width": 390,
+        "height": 560
+      },
+      "geometry": {
+        "cell": 31.6,
+        "gridLines": 14,
+        "rails": 2,
+        "center": [
+          41.39999999999999,
+          22,
+          262.6,
+          180
+        ],
+        "canvas": [
+          304,
+          202
+        ]
+      },
+      "edgeMoves": [
+        {
+          "cell": 0,
+          "player": 1,
+          "won": false
+        },
+        {
+          "cell": 7,
+          "player": -1,
+          "won": false
+        },
+        {
+          "cell": 40,
+          "player": 1,
+          "won": false
+        },
+        {
+          "cell": 47,
+          "player": -1,
+          "won": false
+        }
+      ],
+      "file": "artifacts/shared-boundary-guides/before-mobius-edges-390x560.png"
+    },
+    {
+      "revision": "after",
+      "type": "mobius",
+      "viewport": {
+        "width": 390,
+        "height": 560
+      },
+      "geometry": {
+        "cell": 31.6,
+        "gridLines": 14,
+        "rails": 2,
+        "center": [
+          41.39999999999999,
+          22,
+          262.6,
+          180
+        ],
+        "canvas": [
+          304,
+          202
+        ]
+      },
+      "edgeMoves": [
+        {
+          "cell": 0,
+          "player": 1,
+          "won": false
+        },
+        {
+          "cell": 7,
+          "player": -1,
+          "won": false
+        },
+        {
+          "cell": 40,
+          "player": 1,
+          "won": false
+        },
+        {
+          "cell": 47,
+          "player": -1,
+          "won": false
+        }
+      ],
+      "file": "artifacts/shared-boundary-guides/after-mobius-edges-390x560.png"
+    },
+    {
+      "revision": "before",
+      "type": "klein",
+      "viewport": {
+        "width": 390,
+        "height": 560
+      },
+      "geometry": {
+        "cell": 31.6,
+        "gridLines": 13,
+        "rails": 4,
+        "center": [
+          57.19999999999999,
+          22,
+          246.8,
+          180
+        ],
+        "canvas": [
+          304,
+          202
+        ]
+      },
+      "edgeMoves": [
+        {
+          "cell": 0,
+          "player": 1,
+          "won": false
+        },
+        {
+          "cell": 6,
+          "player": -1,
+          "won": false
+        },
+        {
+          "cell": 35,
+          "player": 1,
+          "won": false
+        },
+        {
+          "cell": 41,
+          "player": -1,
+          "won": false
+        }
+      ],
+      "file": null
+    },
+    {
+      "revision": "after",
+      "type": "klein",
+      "viewport": {
+        "width": 390,
+        "height": 560
+      },
+      "geometry": {
+        "cell": 31.6,
+        "gridLines": 13,
+        "rails": 4,
+        "center": [
+          57.19999999999999,
+          22,
+          246.8,
+          180
+        ],
+        "canvas": [
+          304,
+          202
+        ]
+      },
+      "edgeMoves": [
+        {
+          "cell": 0,
+          "player": 1,
+          "won": false
+        },
+        {
+          "cell": 6,
+          "player": -1,
+          "won": false
+        },
+        {
+          "cell": 35,
+          "player": 1,
+          "won": false
+        },
+        {
+          "cell": 41,
+          "player": -1,
+          "won": false
+        }
+      ],
+      "file": null
+    },
+    {
+      "revision": "before",
+      "type": "projective",
+      "viewport": {
+        "width": 390,
+        "height": 560
+      },
+      "geometry": {
+        "cell": 22.571428571428573,
+        "gridLines": 16,
+        "rails": 4,
+        "center": [
+          73,
+          22,
+          231,
+          180
+        ],
+        "canvas": [
+          304,
+          202
+        ]
+      },
+      "edgeMoves": [
+        {
+          "cell": 0,
+          "player": 1,
+          "won": false
+        },
+        {
+          "cell": 7,
+          "player": -1,
+          "won": false
+        },
+        {
+          "cell": 56,
+          "player": 1,
+          "won": false
+        },
+        {
+          "cell": 63,
+          "player": -1,
+          "won": false
+        }
+      ],
+      "file": null
+    },
+    {
+      "revision": "after",
+      "type": "projective",
+      "viewport": {
+        "width": 390,
+        "height": 560
+      },
+      "geometry": {
+        "cell": 22.571428571428573,
+        "gridLines": 16,
+        "rails": 4,
+        "center": [
+          73,
+          22,
+          231,
+          180
+        ],
+        "canvas": [
+          304,
+          202
+        ]
+      },
+      "edgeMoves": [
+        {
+          "cell": 0,
+          "player": 1,
+          "won": false
+        },
+        {
+          "cell": 7,
+          "player": -1,
+          "won": false
+        },
+        {
+          "cell": 56,
+          "player": 1,
+          "won": false
+        },
+        {
+          "cell": 63,
+          "player": -1,
+          "won": false
+        }
+      ],
+      "file": null
+    },
+    {
+      "revision": "before",
+      "type": "sphere",
+      "viewport": {
+        "width": 390,
+        "height": 560
+      },
+      "geometry": {
+        "cell": 26.333333333333332,
+        "gridLines": 14,
+        "rails": 4,
+        "center": [
+          73,
+          22,
+          231,
+          180
+        ],
+        "canvas": [
+          304,
+          202
+        ]
+      },
+      "edgeMoves": [
+        {
+          "cell": 0,
+          "player": 1,
+          "won": false
+        },
+        {
+          "cell": 6,
+          "player": -1,
+          "won": false
+        },
+        {
+          "cell": 42,
+          "player": 1,
+          "won": false
+        },
+        {
+          "cell": 48,
+          "player": -1,
+          "won": false
+        }
+      ],
+      "file": "artifacts/shared-boundary-guides/before-sphere-edges-390x560.png"
+    },
+    {
+      "revision": "after",
+      "type": "sphere",
+      "viewport": {
+        "width": 390,
+        "height": 560
+      },
+      "geometry": {
+        "cell": 26.333333333333332,
+        "gridLines": 14,
+        "rails": 4,
+        "center": [
+          73,
+          22,
+          231,
+          180
+        ],
+        "canvas": [
+          304,
+          202
+        ]
+      },
+      "edgeMoves": [
+        {
+          "cell": 0,
+          "player": 1,
+          "won": false
+        },
+        {
+          "cell": 6,
+          "player": -1,
+          "won": false
+        },
+        {
+          "cell": 42,
+          "player": 1,
+          "won": false
+        },
+        {
+          "cell": 48,
+          "player": -1,
+          "won": false
+        }
+      ],
+      "file": "artifacts/shared-boundary-guides/after-sphere-edges-390x560.png"
+    }
+  ],
+  "morph": [
+    {
+      "revision": "before",
+      "type": "cylinder",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "progress": 0.002,
+      "file": null
+    },
+    {
+      "revision": "before",
+      "type": "cylinder",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "progress": 0.25,
+      "file": null
+    },
+    {
+      "revision": "before",
+      "type": "cylinder",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "progress": 0.5,
+      "file": null
+    },
+    {
+      "revision": "before",
+      "type": "cylinder",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "progress": 1,
+      "file": null
+    },
+    {
+      "revision": "before",
+      "type": "cylinder",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "progress": 0,
+      "file": null
+    },
+    {
+      "revision": "after",
+      "type": "cylinder",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "progress": 0.002,
+      "file": null
+    },
+    {
+      "revision": "after",
+      "type": "cylinder",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "progress": 0.25,
+      "file": null
+    },
+    {
+      "revision": "after",
+      "type": "cylinder",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "progress": 0.5,
+      "file": null
+    },
+    {
+      "revision": "after",
+      "type": "cylinder",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "progress": 1,
+      "file": null
+    },
+    {
+      "revision": "after",
+      "type": "cylinder",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "progress": 0,
+      "file": null
+    },
+    {
+      "revision": "before",
+      "type": "torus",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "progress": 0.002,
+      "file": "artifacts/shared-boundary-guides/before-torus-morph-0.002-1280x720.png"
+    },
+    {
+      "revision": "before",
+      "type": "torus",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "progress": 0.25,
+      "file": "artifacts/shared-boundary-guides/before-torus-morph-0.25-1280x720.png"
+    },
+    {
+      "revision": "before",
+      "type": "torus",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "progress": 0.5,
+      "file": "artifacts/shared-boundary-guides/before-torus-morph-0.5-1280x720.png"
+    },
+    {
+      "revision": "before",
+      "type": "torus",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "progress": 1,
+      "file": null
+    },
+    {
+      "revision": "before",
+      "type": "torus",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "progress": 0,
+      "file": null
+    },
+    {
+      "revision": "after",
+      "type": "torus",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "progress": 0.002,
+      "file": "artifacts/shared-boundary-guides/after-torus-morph-0.002-1280x720.png"
+    },
+    {
+      "revision": "after",
+      "type": "torus",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "progress": 0.25,
+      "file": "artifacts/shared-boundary-guides/after-torus-morph-0.25-1280x720.png"
+    },
+    {
+      "revision": "after",
+      "type": "torus",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "progress": 0.5,
+      "file": "artifacts/shared-boundary-guides/after-torus-morph-0.5-1280x720.png"
+    },
+    {
+      "revision": "after",
+      "type": "torus",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "progress": 1,
+      "file": null
+    },
+    {
+      "revision": "after",
+      "type": "torus",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "progress": 0,
+      "file": null
+    },
+    {
+      "revision": "before",
+      "type": "mobius",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "progress": 0.002,
+      "file": null
+    },
+    {
+      "revision": "before",
+      "type": "mobius",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "progress": 0.25,
+      "file": null
+    },
+    {
+      "revision": "before",
+      "type": "mobius",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "progress": 0.5,
+      "file": null
+    },
+    {
+      "revision": "before",
+      "type": "mobius",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "progress": 1,
+      "file": null
+    },
+    {
+      "revision": "before",
+      "type": "mobius",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "progress": 0,
+      "file": null
+    },
+    {
+      "revision": "after",
+      "type": "mobius",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "progress": 0.002,
+      "file": null
+    },
+    {
+      "revision": "after",
+      "type": "mobius",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "progress": 0.25,
+      "file": null
+    },
+    {
+      "revision": "after",
+      "type": "mobius",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "progress": 0.5,
+      "file": null
+    },
+    {
+      "revision": "after",
+      "type": "mobius",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "progress": 1,
+      "file": null
+    },
+    {
+      "revision": "after",
+      "type": "mobius",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "progress": 0,
+      "file": null
+    },
+    {
+      "revision": "before",
+      "type": "klein",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "progress": 0.002,
+      "file": null
+    },
+    {
+      "revision": "before",
+      "type": "klein",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "progress": 0.25,
+      "file": null
+    },
+    {
+      "revision": "before",
+      "type": "klein",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "progress": 0.5,
+      "file": null
+    },
+    {
+      "revision": "before",
+      "type": "klein",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "progress": 1,
+      "file": null
+    },
+    {
+      "revision": "before",
+      "type": "klein",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "progress": 0,
+      "file": null
+    },
+    {
+      "revision": "after",
+      "type": "klein",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "progress": 0.002,
+      "file": null
+    },
+    {
+      "revision": "after",
+      "type": "klein",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "progress": 0.25,
+      "file": null
+    },
+    {
+      "revision": "after",
+      "type": "klein",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "progress": 0.5,
+      "file": null
+    },
+    {
+      "revision": "after",
+      "type": "klein",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "progress": 1,
+      "file": null
+    },
+    {
+      "revision": "after",
+      "type": "klein",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "progress": 0,
+      "file": null
+    },
+    {
+      "revision": "before",
+      "type": "projective",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "progress": 0.002,
+      "file": null
+    },
+    {
+      "revision": "before",
+      "type": "projective",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "progress": 0.25,
+      "file": null
+    },
+    {
+      "revision": "before",
+      "type": "projective",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "progress": 0.5,
+      "file": null
+    },
+    {
+      "revision": "before",
+      "type": "projective",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "progress": 1,
+      "file": null
+    },
+    {
+      "revision": "before",
+      "type": "projective",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "progress": 0,
+      "file": null
+    },
+    {
+      "revision": "after",
+      "type": "projective",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "progress": 0.002,
+      "file": null
+    },
+    {
+      "revision": "after",
+      "type": "projective",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "progress": 0.25,
+      "file": null
+    },
+    {
+      "revision": "after",
+      "type": "projective",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "progress": 0.5,
+      "file": null
+    },
+    {
+      "revision": "after",
+      "type": "projective",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "progress": 1,
+      "file": null
+    },
+    {
+      "revision": "after",
+      "type": "projective",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "progress": 0,
+      "file": null
+    },
+    {
+      "revision": "before",
+      "type": "sphere",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "progress": 0.002,
+      "file": "artifacts/shared-boundary-guides/before-sphere-morph-0.002-1280x720.png"
+    },
+    {
+      "revision": "before",
+      "type": "sphere",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "progress": 0.25,
+      "file": "artifacts/shared-boundary-guides/before-sphere-morph-0.25-1280x720.png"
+    },
+    {
+      "revision": "before",
+      "type": "sphere",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "progress": 0.5,
+      "file": "artifacts/shared-boundary-guides/before-sphere-morph-0.5-1280x720.png"
+    },
+    {
+      "revision": "before",
+      "type": "sphere",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "progress": 1,
+      "file": null
+    },
+    {
+      "revision": "before",
+      "type": "sphere",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "progress": 0,
+      "file": null
+    },
+    {
+      "revision": "after",
+      "type": "sphere",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "progress": 0.002,
+      "file": "artifacts/shared-boundary-guides/after-sphere-morph-0.002-1280x720.png"
+    },
+    {
+      "revision": "after",
+      "type": "sphere",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "progress": 0.25,
+      "file": "artifacts/shared-boundary-guides/after-sphere-morph-0.25-1280x720.png"
+    },
+    {
+      "revision": "after",
+      "type": "sphere",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "progress": 0.5,
+      "file": "artifacts/shared-boundary-guides/after-sphere-morph-0.5-1280x720.png"
+    },
+    {
+      "revision": "after",
+      "type": "sphere",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "progress": 1,
+      "file": null
+    },
+    {
+      "revision": "after",
+      "type": "sphere",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "progress": 0,
+      "file": null
+    },
+    {
+      "revision": "before",
+      "type": "cylinder",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "progress": 0.002,
+      "file": null
+    },
+    {
+      "revision": "before",
+      "type": "cylinder",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "progress": 0.25,
+      "file": null
+    },
+    {
+      "revision": "before",
+      "type": "cylinder",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "progress": 0.5,
+      "file": null
+    },
+    {
+      "revision": "before",
+      "type": "cylinder",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "progress": 1,
+      "file": null
+    },
+    {
+      "revision": "before",
+      "type": "cylinder",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "progress": 0,
+      "file": null
+    },
+    {
+      "revision": "after",
+      "type": "cylinder",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "progress": 0.002,
+      "file": null
+    },
+    {
+      "revision": "after",
+      "type": "cylinder",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "progress": 0.25,
+      "file": null
+    },
+    {
+      "revision": "after",
+      "type": "cylinder",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "progress": 0.5,
+      "file": null
+    },
+    {
+      "revision": "after",
+      "type": "cylinder",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "progress": 1,
+      "file": null
+    },
+    {
+      "revision": "after",
+      "type": "cylinder",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "progress": 0,
+      "file": null
+    },
+    {
+      "revision": "before",
+      "type": "torus",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "progress": 0.002,
+      "file": null
+    },
+    {
+      "revision": "before",
+      "type": "torus",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "progress": 0.25,
+      "file": null
+    },
+    {
+      "revision": "before",
+      "type": "torus",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "progress": 0.5,
+      "file": null
+    },
+    {
+      "revision": "before",
+      "type": "torus",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "progress": 1,
+      "file": null
+    },
+    {
+      "revision": "before",
+      "type": "torus",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "progress": 0,
+      "file": null
+    },
+    {
+      "revision": "after",
+      "type": "torus",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "progress": 0.002,
+      "file": null
+    },
+    {
+      "revision": "after",
+      "type": "torus",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "progress": 0.25,
+      "file": null
+    },
+    {
+      "revision": "after",
+      "type": "torus",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "progress": 0.5,
+      "file": null
+    },
+    {
+      "revision": "after",
+      "type": "torus",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "progress": 1,
+      "file": null
+    },
+    {
+      "revision": "after",
+      "type": "torus",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "progress": 0,
+      "file": null
+    },
+    {
+      "revision": "before",
+      "type": "mobius",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "progress": 0.002,
+      "file": null
+    },
+    {
+      "revision": "before",
+      "type": "mobius",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "progress": 0.25,
+      "file": null
+    },
+    {
+      "revision": "before",
+      "type": "mobius",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "progress": 0.5,
+      "file": null
+    },
+    {
+      "revision": "before",
+      "type": "mobius",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "progress": 1,
+      "file": null
+    },
+    {
+      "revision": "before",
+      "type": "mobius",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "progress": 0,
+      "file": null
+    },
+    {
+      "revision": "after",
+      "type": "mobius",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "progress": 0.002,
+      "file": null
+    },
+    {
+      "revision": "after",
+      "type": "mobius",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "progress": 0.25,
+      "file": null
+    },
+    {
+      "revision": "after",
+      "type": "mobius",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "progress": 0.5,
+      "file": null
+    },
+    {
+      "revision": "after",
+      "type": "mobius",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "progress": 1,
+      "file": null
+    },
+    {
+      "revision": "after",
+      "type": "mobius",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "progress": 0,
+      "file": null
+    },
+    {
+      "revision": "before",
+      "type": "klein",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "progress": 0.002,
+      "file": null
+    },
+    {
+      "revision": "before",
+      "type": "klein",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "progress": 0.25,
+      "file": null
+    },
+    {
+      "revision": "before",
+      "type": "klein",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "progress": 0.5,
+      "file": null
+    },
+    {
+      "revision": "before",
+      "type": "klein",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "progress": 1,
+      "file": null
+    },
+    {
+      "revision": "before",
+      "type": "klein",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "progress": 0,
+      "file": null
+    },
+    {
+      "revision": "after",
+      "type": "klein",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "progress": 0.002,
+      "file": null
+    },
+    {
+      "revision": "after",
+      "type": "klein",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "progress": 0.25,
+      "file": null
+    },
+    {
+      "revision": "after",
+      "type": "klein",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "progress": 0.5,
+      "file": null
+    },
+    {
+      "revision": "after",
+      "type": "klein",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "progress": 1,
+      "file": null
+    },
+    {
+      "revision": "after",
+      "type": "klein",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "progress": 0,
+      "file": null
+    },
+    {
+      "revision": "before",
+      "type": "projective",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "progress": 0.002,
+      "file": null
+    },
+    {
+      "revision": "before",
+      "type": "projective",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "progress": 0.25,
+      "file": null
+    },
+    {
+      "revision": "before",
+      "type": "projective",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "progress": 0.5,
+      "file": null
+    },
+    {
+      "revision": "before",
+      "type": "projective",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "progress": 1,
+      "file": null
+    },
+    {
+      "revision": "before",
+      "type": "projective",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "progress": 0,
+      "file": null
+    },
+    {
+      "revision": "after",
+      "type": "projective",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "progress": 0.002,
+      "file": null
+    },
+    {
+      "revision": "after",
+      "type": "projective",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "progress": 0.25,
+      "file": null
+    },
+    {
+      "revision": "after",
+      "type": "projective",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "progress": 0.5,
+      "file": null
+    },
+    {
+      "revision": "after",
+      "type": "projective",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "progress": 1,
+      "file": null
+    },
+    {
+      "revision": "after",
+      "type": "projective",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "progress": 0,
+      "file": null
+    },
+    {
+      "revision": "before",
+      "type": "sphere",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "progress": 0.002,
+      "file": null
+    },
+    {
+      "revision": "before",
+      "type": "sphere",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "progress": 0.25,
+      "file": null
+    },
+    {
+      "revision": "before",
+      "type": "sphere",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "progress": 0.5,
+      "file": null
+    },
+    {
+      "revision": "before",
+      "type": "sphere",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "progress": 1,
+      "file": null
+    },
+    {
+      "revision": "before",
+      "type": "sphere",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "progress": 0,
+      "file": null
+    },
+    {
+      "revision": "after",
+      "type": "sphere",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "progress": 0.002,
+      "file": null
+    },
+    {
+      "revision": "after",
+      "type": "sphere",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "progress": 0.25,
+      "file": null
+    },
+    {
+      "revision": "after",
+      "type": "sphere",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "progress": 0.5,
+      "file": null
+    },
+    {
+      "revision": "after",
+      "type": "sphere",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "progress": 1,
+      "file": null
+    },
+    {
+      "revision": "after",
+      "type": "sphere",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "progress": 0,
+      "file": null
+    },
+    {
+      "revision": "before",
+      "type": "cylinder",
+      "viewport": {
+        "width": 390,
+        "height": 560
+      },
+      "progress": 0.002,
+      "file": null
+    },
+    {
+      "revision": "before",
+      "type": "cylinder",
+      "viewport": {
+        "width": 390,
+        "height": 560
+      },
+      "progress": 0.25,
+      "file": null
+    },
+    {
+      "revision": "before",
+      "type": "cylinder",
+      "viewport": {
+        "width": 390,
+        "height": 560
+      },
+      "progress": 0.5,
+      "file": null
+    },
+    {
+      "revision": "before",
+      "type": "cylinder",
+      "viewport": {
+        "width": 390,
+        "height": 560
+      },
+      "progress": 1,
+      "file": null
+    },
+    {
+      "revision": "before",
+      "type": "cylinder",
+      "viewport": {
+        "width": 390,
+        "height": 560
+      },
+      "progress": 0,
+      "file": null
+    },
+    {
+      "revision": "after",
+      "type": "cylinder",
+      "viewport": {
+        "width": 390,
+        "height": 560
+      },
+      "progress": 0.002,
+      "file": null
+    },
+    {
+      "revision": "after",
+      "type": "cylinder",
+      "viewport": {
+        "width": 390,
+        "height": 560
+      },
+      "progress": 0.25,
+      "file": null
+    },
+    {
+      "revision": "after",
+      "type": "cylinder",
+      "viewport": {
+        "width": 390,
+        "height": 560
+      },
+      "progress": 0.5,
+      "file": null
+    },
+    {
+      "revision": "after",
+      "type": "cylinder",
+      "viewport": {
+        "width": 390,
+        "height": 560
+      },
+      "progress": 1,
+      "file": null
+    },
+    {
+      "revision": "after",
+      "type": "cylinder",
+      "viewport": {
+        "width": 390,
+        "height": 560
+      },
+      "progress": 0,
+      "file": null
+    },
+    {
+      "revision": "before",
+      "type": "torus",
+      "viewport": {
+        "width": 390,
+        "height": 560
+      },
+      "progress": 0.002,
+      "file": null
+    },
+    {
+      "revision": "before",
+      "type": "torus",
+      "viewport": {
+        "width": 390,
+        "height": 560
+      },
+      "progress": 0.25,
+      "file": null
+    },
+    {
+      "revision": "before",
+      "type": "torus",
+      "viewport": {
+        "width": 390,
+        "height": 560
+      },
+      "progress": 0.5,
+      "file": null
+    },
+    {
+      "revision": "before",
+      "type": "torus",
+      "viewport": {
+        "width": 390,
+        "height": 560
+      },
+      "progress": 1,
+      "file": null
+    },
+    {
+      "revision": "before",
+      "type": "torus",
+      "viewport": {
+        "width": 390,
+        "height": 560
+      },
+      "progress": 0,
+      "file": null
+    },
+    {
+      "revision": "after",
+      "type": "torus",
+      "viewport": {
+        "width": 390,
+        "height": 560
+      },
+      "progress": 0.002,
+      "file": null
+    },
+    {
+      "revision": "after",
+      "type": "torus",
+      "viewport": {
+        "width": 390,
+        "height": 560
+      },
+      "progress": 0.25,
+      "file": null
+    },
+    {
+      "revision": "after",
+      "type": "torus",
+      "viewport": {
+        "width": 390,
+        "height": 560
+      },
+      "progress": 0.5,
+      "file": null
+    },
+    {
+      "revision": "after",
+      "type": "torus",
+      "viewport": {
+        "width": 390,
+        "height": 560
+      },
+      "progress": 1,
+      "file": null
+    },
+    {
+      "revision": "after",
+      "type": "torus",
+      "viewport": {
+        "width": 390,
+        "height": 560
+      },
+      "progress": 0,
+      "file": null
+    },
+    {
+      "revision": "before",
+      "type": "mobius",
+      "viewport": {
+        "width": 390,
+        "height": 560
+      },
+      "progress": 0.002,
+      "file": null
+    },
+    {
+      "revision": "before",
+      "type": "mobius",
+      "viewport": {
+        "width": 390,
+        "height": 560
+      },
+      "progress": 0.25,
+      "file": null
+    },
+    {
+      "revision": "before",
+      "type": "mobius",
+      "viewport": {
+        "width": 390,
+        "height": 560
+      },
+      "progress": 0.5,
+      "file": null
+    },
+    {
+      "revision": "before",
+      "type": "mobius",
+      "viewport": {
+        "width": 390,
+        "height": 560
+      },
+      "progress": 1,
+      "file": null
+    },
+    {
+      "revision": "before",
+      "type": "mobius",
+      "viewport": {
+        "width": 390,
+        "height": 560
+      },
+      "progress": 0,
+      "file": null
+    },
+    {
+      "revision": "after",
+      "type": "mobius",
+      "viewport": {
+        "width": 390,
+        "height": 560
+      },
+      "progress": 0.002,
+      "file": null
+    },
+    {
+      "revision": "after",
+      "type": "mobius",
+      "viewport": {
+        "width": 390,
+        "height": 560
+      },
+      "progress": 0.25,
+      "file": null
+    },
+    {
+      "revision": "after",
+      "type": "mobius",
+      "viewport": {
+        "width": 390,
+        "height": 560
+      },
+      "progress": 0.5,
+      "file": null
+    },
+    {
+      "revision": "after",
+      "type": "mobius",
+      "viewport": {
+        "width": 390,
+        "height": 560
+      },
+      "progress": 1,
+      "file": null
+    },
+    {
+      "revision": "after",
+      "type": "mobius",
+      "viewport": {
+        "width": 390,
+        "height": 560
+      },
+      "progress": 0,
+      "file": null
+    },
+    {
+      "revision": "before",
+      "type": "klein",
+      "viewport": {
+        "width": 390,
+        "height": 560
+      },
+      "progress": 0.002,
+      "file": null
+    },
+    {
+      "revision": "before",
+      "type": "klein",
+      "viewport": {
+        "width": 390,
+        "height": 560
+      },
+      "progress": 0.25,
+      "file": null
+    },
+    {
+      "revision": "before",
+      "type": "klein",
+      "viewport": {
+        "width": 390,
+        "height": 560
+      },
+      "progress": 0.5,
+      "file": null
+    },
+    {
+      "revision": "before",
+      "type": "klein",
+      "viewport": {
+        "width": 390,
+        "height": 560
+      },
+      "progress": 1,
+      "file": null
+    },
+    {
+      "revision": "before",
+      "type": "klein",
+      "viewport": {
+        "width": 390,
+        "height": 560
+      },
+      "progress": 0,
+      "file": null
+    },
+    {
+      "revision": "after",
+      "type": "klein",
+      "viewport": {
+        "width": 390,
+        "height": 560
+      },
+      "progress": 0.002,
+      "file": null
+    },
+    {
+      "revision": "after",
+      "type": "klein",
+      "viewport": {
+        "width": 390,
+        "height": 560
+      },
+      "progress": 0.25,
+      "file": null
+    },
+    {
+      "revision": "after",
+      "type": "klein",
+      "viewport": {
+        "width": 390,
+        "height": 560
+      },
+      "progress": 0.5,
+      "file": null
+    },
+    {
+      "revision": "after",
+      "type": "klein",
+      "viewport": {
+        "width": 390,
+        "height": 560
+      },
+      "progress": 1,
+      "file": null
+    },
+    {
+      "revision": "after",
+      "type": "klein",
+      "viewport": {
+        "width": 390,
+        "height": 560
+      },
+      "progress": 0,
+      "file": null
+    },
+    {
+      "revision": "before",
+      "type": "projective",
+      "viewport": {
+        "width": 390,
+        "height": 560
+      },
+      "progress": 0.002,
+      "file": null
+    },
+    {
+      "revision": "before",
+      "type": "projective",
+      "viewport": {
+        "width": 390,
+        "height": 560
+      },
+      "progress": 0.25,
+      "file": null
+    },
+    {
+      "revision": "before",
+      "type": "projective",
+      "viewport": {
+        "width": 390,
+        "height": 560
+      },
+      "progress": 0.5,
+      "file": null
+    },
+    {
+      "revision": "before",
+      "type": "projective",
+      "viewport": {
+        "width": 390,
+        "height": 560
+      },
+      "progress": 1,
+      "file": null
+    },
+    {
+      "revision": "before",
+      "type": "projective",
+      "viewport": {
+        "width": 390,
+        "height": 560
+      },
+      "progress": 0,
+      "file": null
+    },
+    {
+      "revision": "after",
+      "type": "projective",
+      "viewport": {
+        "width": 390,
+        "height": 560
+      },
+      "progress": 0.002,
+      "file": null
+    },
+    {
+      "revision": "after",
+      "type": "projective",
+      "viewport": {
+        "width": 390,
+        "height": 560
+      },
+      "progress": 0.25,
+      "file": null
+    },
+    {
+      "revision": "after",
+      "type": "projective",
+      "viewport": {
+        "width": 390,
+        "height": 560
+      },
+      "progress": 0.5,
+      "file": null
+    },
+    {
+      "revision": "after",
+      "type": "projective",
+      "viewport": {
+        "width": 390,
+        "height": 560
+      },
+      "progress": 1,
+      "file": null
+    },
+    {
+      "revision": "after",
+      "type": "projective",
+      "viewport": {
+        "width": 390,
+        "height": 560
+      },
+      "progress": 0,
+      "file": null
+    },
+    {
+      "revision": "before",
+      "type": "sphere",
+      "viewport": {
+        "width": 390,
+        "height": 560
+      },
+      "progress": 0.002,
+      "file": null
+    },
+    {
+      "revision": "before",
+      "type": "sphere",
+      "viewport": {
+        "width": 390,
+        "height": 560
+      },
+      "progress": 0.25,
+      "file": null
+    },
+    {
+      "revision": "before",
+      "type": "sphere",
+      "viewport": {
+        "width": 390,
+        "height": 560
+      },
+      "progress": 0.5,
+      "file": null
+    },
+    {
+      "revision": "before",
+      "type": "sphere",
+      "viewport": {
+        "width": 390,
+        "height": 560
+      },
+      "progress": 1,
+      "file": null
+    },
+    {
+      "revision": "before",
+      "type": "sphere",
+      "viewport": {
+        "width": 390,
+        "height": 560
+      },
+      "progress": 0,
+      "file": null
+    },
+    {
+      "revision": "after",
+      "type": "sphere",
+      "viewport": {
+        "width": 390,
+        "height": 560
+      },
+      "progress": 0.002,
+      "file": null
+    },
+    {
+      "revision": "after",
+      "type": "sphere",
+      "viewport": {
+        "width": 390,
+        "height": 560
+      },
+      "progress": 0.25,
+      "file": null
+    },
+    {
+      "revision": "after",
+      "type": "sphere",
+      "viewport": {
+        "width": 390,
+        "height": 560
+      },
+      "progress": 0.5,
+      "file": null
+    },
+    {
+      "revision": "after",
+      "type": "sphere",
+      "viewport": {
+        "width": 390,
+        "height": 560
+      },
+      "progress": 1,
+      "file": null
+    },
+    {
+      "revision": "after",
+      "type": "sphere",
+      "viewport": {
+        "width": 390,
+        "height": 560
+      },
+      "progress": 0,
+      "file": null
+    }
+  ],
+  "sharedRenderer": [
+    {
+      "type": "plane",
+      "size": 5,
+      "canvas": [
+        800,
+        600
+      ],
+      "cell": 115.5,
+      "gridLines": 10,
+      "rails": 0,
+      "center": [
+        169,
+        69,
+        631,
+        531
+      ]
+    },
+    {
+      "type": "plane",
+      "size": 5,
+      "canvas": [
+        300,
+        220
+      ],
+      "cell": 44,
+      "gridLines": 10,
+      "rails": 0,
+      "center": [
+        62,
+        22,
+        238,
+        198
+      ]
+    },
+    {
+      "type": "plane",
+      "size": 7,
+      "canvas": [
+        800,
+        600
+      ],
+      "cell": 77,
+      "gridLines": 14,
+      "rails": 0,
+      "center": [
+        169,
+        69,
+        631,
+        531
+      ]
+    },
+    {
+      "type": "plane",
+      "size": 7,
+      "canvas": [
+        300,
+        220
+      ],
+      "cell": 29.333333333333332,
+      "gridLines": 14,
+      "rails": 0,
+      "center": [
+        62,
+        22,
+        238,
+        198
+      ]
+    },
+    {
+      "type": "plane",
+      "size": 19,
+      "canvas": [
+        800,
+        600
+      ],
+      "cell": 25.666666666666668,
+      "gridLines": 38,
+      "rails": 0,
+      "center": [
+        169,
+        69,
+        631,
+        531
+      ]
+    },
+    {
+      "type": "plane",
+      "size": 19,
+      "canvas": [
+        300,
+        220
+      ],
+      "cell": 9.777777777777779,
+      "gridLines": 38,
+      "rails": 0,
+      "center": [
+        62,
+        22,
+        238,
+        198
+      ]
+    },
+    {
+      "type": "cylinder",
+      "size": 5,
+      "canvas": [
+        800,
+        600
+      ],
+      "cell": 115.5,
+      "gridLines": 10,
+      "rails": 2,
+      "center": [
+        169,
+        69,
+        631,
+        531
+      ]
+    },
+    {
+      "type": "cylinder",
+      "size": 5,
+      "canvas": [
+        300,
+        220
+      ],
+      "cell": 44,
+      "gridLines": 10,
+      "rails": 2,
+      "center": [
+        62,
+        22,
+        238,
+        198
+      ]
+    },
+    {
+      "type": "cylinder",
+      "size": 7,
+      "canvas": [
+        800,
+        600
+      ],
+      "cell": 77,
+      "gridLines": 14,
+      "rails": 2,
+      "center": [
+        169,
+        69,
+        631,
+        531
+      ]
+    },
+    {
+      "type": "cylinder",
+      "size": 7,
+      "canvas": [
+        300,
+        220
+      ],
+      "cell": 29.333333333333332,
+      "gridLines": 14,
+      "rails": 2,
+      "center": [
+        62,
+        22,
+        238,
+        198
+      ]
+    },
+    {
+      "type": "cylinder",
+      "size": 19,
+      "canvas": [
+        800,
+        600
+      ],
+      "cell": 25.666666666666668,
+      "gridLines": 38,
+      "rails": 2,
+      "center": [
+        169,
+        69,
+        631,
+        531
+      ]
+    },
+    {
+      "type": "cylinder",
+      "size": 19,
+      "canvas": [
+        300,
+        220
+      ],
+      "cell": 9.777777777777779,
+      "gridLines": 38,
+      "rails": 2,
+      "center": [
+        62,
+        22,
+        238,
+        198
+      ]
+    },
+    {
+      "type": "torus",
+      "size": 5,
+      "canvas": [
+        800,
+        600
+      ],
+      "cell": 115.5,
+      "gridLines": 10,
+      "rails": 4,
+      "center": [
+        169,
+        69,
+        631,
+        531
+      ]
+    },
+    {
+      "type": "torus",
+      "size": 5,
+      "canvas": [
+        300,
+        220
+      ],
+      "cell": 41.6,
+      "gridLines": 10,
+      "rails": 4,
+      "center": [
+        66.8,
+        26.799999999999997,
+        233.2,
+        193.2
+      ]
+    },
+    {
+      "type": "torus",
+      "size": 7,
+      "canvas": [
+        800,
+        600
+      ],
+      "cell": 77,
+      "gridLines": 14,
+      "rails": 4,
+      "center": [
+        169,
+        69,
+        631,
+        531
+      ]
+    },
+    {
+      "type": "torus",
+      "size": 7,
+      "canvas": [
+        300,
+        220
+      ],
+      "cell": 29.333333333333332,
+      "gridLines": 14,
+      "rails": 4,
+      "center": [
+        62,
+        22,
+        238,
+        198
+      ]
+    },
+    {
+      "type": "torus",
+      "size": 19,
+      "canvas": [
+        800,
+        600
+      ],
+      "cell": 25.666666666666668,
+      "gridLines": 38,
+      "rails": 4,
+      "center": [
+        169,
+        69,
+        631,
+        531
+      ]
+    },
+    {
+      "type": "torus",
+      "size": 19,
+      "canvas": [
+        300,
+        220
+      ],
+      "cell": 9.777777777777779,
+      "gridLines": 38,
+      "rails": 4,
+      "center": [
+        62,
+        22,
+        238,
+        198
+      ]
+    },
+    {
+      "type": "mobius",
+      "size": 5,
+      "canvas": [
+        800,
+        600
+      ],
+      "cell": 115.5,
+      "gridLines": 10,
+      "rails": 2,
+      "center": [
+        169,
+        69,
+        631,
+        531
+      ]
+    },
+    {
+      "type": "mobius",
+      "size": 5,
+      "canvas": [
+        300,
+        220
+      ],
+      "cell": 44,
+      "gridLines": 10,
+      "rails": 2,
+      "center": [
+        62,
+        22,
+        238,
+        198
+      ]
+    },
+    {
+      "type": "mobius",
+      "size": 7,
+      "canvas": [
+        800,
+        600
+      ],
+      "cell": 77,
+      "gridLines": 14,
+      "rails": 2,
+      "center": [
+        169,
+        69,
+        631,
+        531
+      ]
+    },
+    {
+      "type": "mobius",
+      "size": 7,
+      "canvas": [
+        300,
+        220
+      ],
+      "cell": 29.333333333333332,
+      "gridLines": 14,
+      "rails": 2,
+      "center": [
+        62,
+        22,
+        238,
+        198
+      ]
+    },
+    {
+      "type": "mobius",
+      "size": 19,
+      "canvas": [
+        800,
+        600
+      ],
+      "cell": 25.666666666666668,
+      "gridLines": 38,
+      "rails": 2,
+      "center": [
+        169,
+        69,
+        631,
+        531
+      ]
+    },
+    {
+      "type": "mobius",
+      "size": 19,
+      "canvas": [
+        300,
+        220
+      ],
+      "cell": 9.777777777777779,
+      "gridLines": 38,
+      "rails": 2,
+      "center": [
+        62,
+        22,
+        238,
+        198
+      ]
+    },
+    {
+      "type": "klein",
+      "size": 5,
+      "canvas": [
+        800,
+        600
+      ],
+      "cell": 115.5,
+      "gridLines": 10,
+      "rails": 4,
+      "center": [
+        169,
+        69,
+        631,
+        531
+      ]
+    },
+    {
+      "type": "klein",
+      "size": 5,
+      "canvas": [
+        300,
+        220
+      ],
+      "cell": 41.6,
+      "gridLines": 10,
+      "rails": 4,
+      "center": [
+        66.8,
+        26.799999999999997,
+        233.2,
+        193.2
+      ]
+    },
+    {
+      "type": "klein",
+      "size": 7,
+      "canvas": [
+        800,
+        600
+      ],
+      "cell": 77,
+      "gridLines": 14,
+      "rails": 4,
+      "center": [
+        169,
+        69,
+        631,
+        531
+      ]
+    },
+    {
+      "type": "klein",
+      "size": 7,
+      "canvas": [
+        300,
+        220
+      ],
+      "cell": 29.333333333333332,
+      "gridLines": 14,
+      "rails": 4,
+      "center": [
+        62,
+        22,
+        238,
+        198
+      ]
+    },
+    {
+      "type": "klein",
+      "size": 19,
+      "canvas": [
+        800,
+        600
+      ],
+      "cell": 25.666666666666668,
+      "gridLines": 38,
+      "rails": 4,
+      "center": [
+        169,
+        69,
+        631,
+        531
+      ]
+    },
+    {
+      "type": "klein",
+      "size": 19,
+      "canvas": [
+        300,
+        220
+      ],
+      "cell": 9.777777777777779,
+      "gridLines": 38,
+      "rails": 4,
+      "center": [
+        62,
+        22,
+        238,
+        198
+      ]
+    },
+    {
+      "type": "projective",
+      "size": 5,
+      "canvas": [
+        800,
+        600
+      ],
+      "cell": 115.5,
+      "gridLines": 10,
+      "rails": 4,
+      "center": [
+        169,
+        69,
+        631,
+        531
+      ]
+    },
+    {
+      "type": "projective",
+      "size": 5,
+      "canvas": [
+        300,
+        220
+      ],
+      "cell": 41.6,
+      "gridLines": 10,
+      "rails": 4,
+      "center": [
+        66.8,
+        26.799999999999997,
+        233.2,
+        193.2
+      ]
+    },
+    {
+      "type": "projective",
+      "size": 7,
+      "canvas": [
+        800,
+        600
+      ],
+      "cell": 77,
+      "gridLines": 14,
+      "rails": 4,
+      "center": [
+        169,
+        69,
+        631,
+        531
+      ]
+    },
+    {
+      "type": "projective",
+      "size": 7,
+      "canvas": [
+        300,
+        220
+      ],
+      "cell": 29.333333333333332,
+      "gridLines": 14,
+      "rails": 4,
+      "center": [
+        62,
+        22,
+        238,
+        198
+      ]
+    },
+    {
+      "type": "projective",
+      "size": 19,
+      "canvas": [
+        800,
+        600
+      ],
+      "cell": 25.666666666666668,
+      "gridLines": 38,
+      "rails": 4,
+      "center": [
+        169,
+        69,
+        631,
+        531
+      ]
+    },
+    {
+      "type": "projective",
+      "size": 19,
+      "canvas": [
+        300,
+        220
+      ],
+      "cell": 9.777777777777779,
+      "gridLines": 38,
+      "rails": 4,
+      "center": [
+        62,
+        22,
+        238,
+        198
+      ]
+    },
+    {
+      "type": "sphere",
+      "size": 5,
+      "canvas": [
+        800,
+        600
+      ],
+      "cell": 115.5,
+      "gridLines": 10,
+      "rails": 4,
+      "center": [
+        169,
+        69,
+        631,
+        531
+      ]
+    },
+    {
+      "type": "sphere",
+      "size": 5,
+      "canvas": [
+        300,
+        220
+      ],
+      "cell": 41.6,
+      "gridLines": 10,
+      "rails": 4,
+      "center": [
+        66.8,
+        26.799999999999997,
+        233.2,
+        193.2
+      ]
+    },
+    {
+      "type": "sphere",
+      "size": 7,
+      "canvas": [
+        800,
+        600
+      ],
+      "cell": 77,
+      "gridLines": 14,
+      "rails": 4,
+      "center": [
+        169,
+        69,
+        631,
+        531
+      ]
+    },
+    {
+      "type": "sphere",
+      "size": 7,
+      "canvas": [
+        300,
+        220
+      ],
+      "cell": 29.333333333333332,
+      "gridLines": 14,
+      "rails": 4,
+      "center": [
+        62,
+        22,
+        238,
+        198
+      ]
+    },
+    {
+      "type": "sphere",
+      "size": 19,
+      "canvas": [
+        800,
+        600
+      ],
+      "cell": 25.666666666666668,
+      "gridLines": 38,
+      "rails": 4,
+      "center": [
+        169,
+        69,
+        631,
+        531
+      ]
+    },
+    {
+      "type": "sphere",
+      "size": 19,
+      "canvas": [
+        300,
+        220
+      ],
+      "cell": 9.777777777777779,
+      "gridLines": 38,
+      "rails": 4,
+      "center": [
+        62,
+        22,
+        238,
+        198
+      ]
+    }
+  ],
+  "crossBoundaryWin": {
+    "sequence": [
+      26,
+      0,
+      27,
+      2,
+      21,
+      4,
+      22,
+      6,
+      23
+    ],
+    "winner": "black",
+    "file": "artifacts/shared-boundary-guides/after-torus-cross-boundary-1280x720.png"
+  }
+}
