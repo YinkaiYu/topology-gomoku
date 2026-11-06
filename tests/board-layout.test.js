@@ -10,7 +10,7 @@ test("矮面板放大网格，所有拓扑仍居中且边界箭头留在面板�
       const layout = Art.computeLayout(width, height, level);
       assert.ok(Math.abs(layout.left + layout.right - width) < 1e-8);
       assert.ok(Math.abs(layout.top + layout.bottom - height) < 1e-8);
-      const railExtent = Math.min(15, layout.cell * 0.4) + 4.5;
+      const railExtent = layout.cell * 0.5 + 4.5;
       assert.ok(layout.left > railExtent && layout.top > railExtent);
       assert.ok(layout.right + railExtent < width && layout.bottom + railExtent < height);
       const last = Art.cellCenter({width:level.width}, layout, level.width * level.height - 1);
