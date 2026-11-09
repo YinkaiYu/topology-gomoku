@@ -14,12 +14,12 @@
   var TAU = Math.PI * 2;
 
   var CAMERAS = {
-    cylinder: { rotation: [0.34, -0.56, -0.12], scale: 0.27 },
-    torus: { rotation: [0.72, -0.12, -0.24], scale: 0.235 },
-    mobius: { rotation: [0.96, -0.08, -0.12], scale: 0.245 },
-    klein: { rotation: [0.18, -0.2, -0.08], scale: 0.29 },
-    projective: { rotation: [0.66, -0.52, 0.12], scale: 0.285 },
-    sphere: { rotation: [0.42, -0.58, -0.08], scale: 0.315 }
+    cylinder: { rotation: [0.34, -0.56, -0.12], scale: 0.27, radius: 1.51 },
+    torus: { rotation: [0.72, -0.12, -0.24], scale: 0.235, radius: 1.78 },
+    mobius: { rotation: [0.96, -0.08, -0.12], scale: 0.245, radius: 1.905 },
+    klein: { rotation: [0.18, -0.2, -0.08], scale: 0.29, radius: 1.46 },
+    projective: { rotation: [0.66, -0.52, 0.12], scale: 0.285, radius: 1.415 },
+    sphere: { rotation: [0.42, -0.58, -0.08], scale: 0.315, radius: 1 }
   };
 
   function clamp01(value) {
@@ -484,6 +484,11 @@
     // Board views opt in; small topology glyphs keep their original framing.
     var perspective = orientation && typeof orientation === "object" ? clamp01(Number(orientation.perspective) || 0) : 0;
     var magnification = 4.8 / Math.max(1.2, 4.8 - point[2] * perspective);
+    // Reserve room for stones using a rotation-independent bounding sphere.
+    // This prevents the near edge cropping without zooming during a drag.
+    var extent = camera.radius / Math.sqrt(1 - Math.pow(camera.radius / 4.8, 2));
+    var framing = 1 + (Math.min(1, 0.39 / (extent * camera.scale)) - 1) * perspective;
+    magnification *= framing;
     return {
       x: width * 0.5 + point[0] * scale * magnification,
       y: height * 0.5 - point[1] * scale * magnification,
