@@ -67,16 +67,8 @@ function frontBoundaries(drawing, color) {
 
 function assertSide(stroke, side, topology, drawing) {
   const { layout, orientation } = drawing;
-  const samples = Array.from({ length: 97 }, (_, index) => {
-    const [u, v] = SIDE_UV[side](index / 96);
-    const flat = Art.flatPointFromUV(drawing.rules, layout, u, v);
-    const projected = Morph.project(topology, u, v, layout.width, layout.height, orientation);
-    return {
-      x: flat.x * (1 - orientation.morph) + projected.x * orientation.morph,
-      y: flat.y * (1 - orientation.morph) + projected.y * orientation.morph,
-      depth: projected.depth * orientation.morph
-    };
-  });
+  const from = SIDE_UV[side](0), to = SIDE_UV[side](1);
+  const samples = drawing.depth.mesh.path({ u: from[0], v: from[1] }, { u: to[0], v: to[1] });
   if (orientation.morph === 0) {
     assertPoint(stroke.points[0], samples[0], `${topology} ${side} flat start`);
     assertPoint(stroke.points.at(-1), samples.at(-1), `${topology} ${side} flat end`);

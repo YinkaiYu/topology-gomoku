@@ -498,6 +498,66 @@
     };
   }
 
+  function createSurfaceMesh(vertices) {
+    var rows = vertices.length - 1, columns = vertices[0].length - 1;
+    function point(u, v) {
+      u = clamp01(u); v = clamp01(v);
+      var column = Math.min(columns - 1, Math.floor(u * columns));
+      var row = Math.min(rows - 1, Math.floor(v * rows));
+      var x = u * columns - column, y = v * rows - row;
+      var a = vertices[row][column], b, c, wa, wb, wc;
+      // Every quad uses the same top-left to bottom-right diagonal as the
+      // painted surface and its depth index.
+      if (y <= x) {
+        b = vertices[row][column + 1]; c = vertices[row + 1][column + 1];
+        wa = 1 - x; wb = x - y; wc = y;
+      } else {
+        b = vertices[row + 1][column + 1]; c = vertices[row + 1][column];
+        wa = 1 - y; wb = x; wc = y - x;
+      }
+      var mapped = { x: a.x * wa + b.x * wb + c.x * wc,
+        y: a.y * wa + b.y * wb + c.y * wc,
+        depth: a.depth * wa + b.depth * wb + c.depth * wc, u: u, v: v };
+      if (Number.isFinite(a.scale) && Number.isFinite(b.scale) && Number.isFinite(c.scale)) {
+        mapped.scale = a.scale * wa + b.scale * wb + c.scale * wc;
+      }
+      if (Number.isFinite(a.depthScale) && Number.isFinite(b.depthScale) && Number.isFinite(c.depthScale)) {
+        mapped.depthScale = a.depthScale * wa + b.depthScale * wb + c.depthScale * wc;
+      }
+      return mapped;
+    }
+    function path(from, to) {
+      var fromU = clamp01(from.u), fromV = clamp01(from.v);
+      var du = clamp01(to.u) - fromU, dv = clamp01(to.v) - fromV;
+      if (Math.abs(du) + Math.abs(dv) < 1e-12) { return [point(fromU, fromV)]; }
+      var stops = [0, 1];
+      function crossIntegers(start, change) {
+        if (Math.abs(change) < 1e-12) { return; }
+        var low = Math.min(start, start + change), high = Math.max(start, start + change);
+        for (var boundary = Math.ceil(low); boundary <= Math.floor(high); boundary += 1) {
+          var amount = (boundary - start) / change;
+          if (amount > 1e-10 && amount < 1 - 1e-10) { stops.push(amount); }
+        }
+      }
+      crossIntegers(fromU * columns, du * columns);
+      crossIntegers(fromV * rows, dv * rows);
+      // Within a cell its diagonal is localX=localY, equivalently
+      // columns*u-rows*v is an integer. These crossings matter even when
+      // both ends remain inside the same quad.
+      crossIntegers(fromU * columns - fromV * rows, du * columns - dv * rows);
+      stops.sort(function alongPath(a, b) { return a - b; });
+      var points = [], previous = -1;
+      for (var index = 0; index < stops.length; index += 1) {
+        var amount = stops[index];
+        if (amount - previous < 1e-10) { continue; }
+        points.push(point(fromU + du * amount, fromV + dv * amount));
+        previous = amount;
+      }
+      return points;
+    }
+    return { point: point, path: path, columns: columns, rows: rows };
+  }
+
   // A DOM-free spatial index shared by H5 and Canvas hosts. Query the exact
   // projected triangles: filtering sampled depths across a silhouette mixes
   // unrelated sheets and makes grazing lines shimmer as the board rotates.
@@ -601,6 +661,20 @@
     }
     function strokePath(ctx, points) {
       if (points.length < 2) { return; }
+      if (buffer.mesh && points.every(function hasUV(p) { return Number.isFinite(p.u) && Number.isFinite(p.v); })) {
+        var mapped = [buffer.mesh.point(points[0].u, points[0].v)];
+        for (var route = 1; route < points.length; route += 1) {
+          var start = points[route - 1], finish = points[route];
+          // A discontinuous chart jump is the explicit bridge between glued
+          // edges. Preserve that bridge instead of tracing across the chart.
+          if (Math.abs(start.u - finish.u) > 0.25 || Math.abs(start.v - finish.v) > 0.25) {
+            mapped.push(buffer.mesh.point(finish.u, finish.v));
+          } else {
+            mapped.push.apply(mapped, buffer.mesh.path(start, finish).slice(1));
+          }
+        }
+        points = mapped;
+      }
       if (buffer.translucency) {
         ctx.save();
         ctx.globalAlpha *= buffer.translucency;
@@ -1090,6 +1164,7 @@
     project: project,
     projectPoint: projectPoint,
     createDepthBuffer: createDepthBuffer,
+    createSurfaceMesh: createSurfaceMesh,
     stoneContours: stoneContours,
     stoneOutline: stoneOutline,
     paintStone: paintStone,

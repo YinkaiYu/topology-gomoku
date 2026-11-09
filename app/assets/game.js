@@ -3016,7 +3016,8 @@
       y: flatY + (projected.y - flatY) * morph,
       depth: projected.depth * morph,
       scale: 1 + (projected.scale - 1) * morph,
-      depthScale: projected.depthScale
+      depthScale: projected.depthScale,
+      u: u, v: v
     };
   }
 
@@ -3072,6 +3073,7 @@
     }
     patches.sort(function sortPatches(a, b) { return a.depth - b.depth; });
     renderState.depthBuffer = Morph.createDepthBuffer(renderState.width, renderState.height, patches);
+    renderState.depthBuffer.mesh = Morph.createSurfaceMesh(points);
     renderState.depthBuffer.translucency = 0.16 * morph;
 
     var surfaceGradient = ctx.createLinearGradient(
