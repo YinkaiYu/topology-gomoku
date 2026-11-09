@@ -534,3 +534,21 @@ Arena 发布状态：2026-11-04 用户已确认本轮预览并授权合并、推
 - 目视检查：[莫比乌斯之前](../../artifacts/arena-shared-1.41.2/before-mobius-0-1024x768.png) / [之后](../../artifacts/arena-shared-1.41.2/after-mobius-0-1024x768.png)、[球面形变之前](../../artifacts/arena-shared-1.41.2/before-sphere-25-1280x720.png) / [之后](../../artifacts/arena-shared-1.41.2/after-sphere-25-1280x720.png)。开放边不延伸、接合边保留半格；归圆上 / 左青绿，下 / 右金黄，棋子与网格贴合，无裁切或页面溢出。
 - 复现：提供 Playwright 到 `NODE_PATH` 后运行 `node scripts/qa-arena-shared-boundaries.cjs`；[专项结果](../../artifacts/arena-shared-1.41.2/results.json)与 16 张截图保存。另以 `ARENA_QA_BASE=7a191cd`、`ARENA_QA_EVIDENCE=.tmp/arena-1.41.2-regression` 运行 `node scripts/qa-arena.cjs`，四种桌面视口的首页、资料与头像、邀请、SSE 落子/随想、2D/3D、暂停/恢复、和棋、复盘、导出和记录管理通过，[回归摘要](../../artifacts/arena-shared-1.41.2/regression-verification.json)保留。
 - 255 项测试、资源和文档校验通过；棋手提示未修改。所有检查都在随机端口与临时棋局完成，未连接或重启原服务，也不作为真实模型参赛表现的证据。
+
+## 2026-11-10：三维透视、半透明层次与等价旋转（待预览确认）
+
+- 从 `dev@1d6a488` 建立独立任务；共享投影、H5 与 Canvas renderer 同步调整。棋盘和棋子一起表现近大远小，正面清晰、背面淡显；二维及目录图案保持原样。视角切换消去整圈，保留最终朝向与中途反向的连续性。
+- 曲面填充、深度判断和网格共用精细几何。填充前消去内部共享边，仅将轮廓和折叠边交给 Canvas，避免降低精度造成贴合偏差，也避免重复填充使透明度累加。棋子使用完整圆面和平滑透明度，不使用像素切块遮罩。透视取景按固定包围范围预留棋子空间，旋转时不自动缩放。
+- 同状态证据采用 Chromium、DPR 1、固定八手棋谱与帧时钟；桌面 1280×720、移动 H5 390×844。六种曲面覆盖二维、半展开及完整三维，共 72 个实际页面状态；12 组二维像素完全一致，12 次三维可见交点实际点击正确。
+
+| 同一内容 | 修改前 | 修改后 |
+| --- | --- | --- |
+| 环游，桌面三维 | [基线](../../artifacts/board-perspective/before-game-torus-1-1280x720.png) | [透视与完整棋子](../../artifacts/board-perspective/after-game-torus-1-1280x720.png) |
+| 扭带，桌面三维 | [基线](../../artifacts/board-perspective/before-game-mobius-1-1280x720.png) | [曲面与网格贴合](../../artifacts/board-perspective/after-game-mobius-1-1280x720.png) |
+| 六曲面，同一朝向 | [基线](../../artifacts/board-perspective/before-module-gallery-1.png) | [正反面层次](../../artifacts/board-perspective/after-module-gallery-1.png) |
+| 六曲面，拖动后朝向 | [基线](../../artifacts/board-perspective/before-module-gallery-1-rotated.png) | [背面与自交结构](../../artifacts/board-perspective/after-module-gallery-1-rotated.png) |
+
+- 轮廓回归逐点比较原始密集三角形覆盖与合并轮廓，包含孔洞、自交、退化面及反向重叠。浏览器再以实际 Canvas 路径核对六曲面三组姿态，共 63,500 个非退化三角形中心，零缺失。单元测试还覆盖三轴整圈旋转、半展开跨越 ±π、命中排除背面以及棋子透明度的连续变化。
+- 画布边界回归采用真实绘制圆弧及当前变换，覆盖六曲面 × 5 / 7 / 19 路 × 三种画布尺寸 × 两组朝向，共 108 组。15,660 颗棋子的完整圆面和描边均在画布内，最小留白 15.49px；特别复查了扭带近侧棋子和双生自交处。
+- 性能使用 600×600 画布，分别记录绘制调用、强制像素读回和实际动画帧间隔；典型 7 路八子与 19 路满盘分别测量，不以调用耗时代替帧率。[完整结果](../../artifacts/board-perspective/results.json)保存本机测量值；这不是所有设备的帧率保证。未做原生小游戏宿主或真机验收。
+- 复现：提供 Playwright 到 `NODE_PATH` 后运行 `node scripts/qa-board-perspective.cjs`；`--module-only` 只更新共享 renderer 图库和性能，`--serve --port=4330` 提供实际游戏，`/before/` 为只读基线。182 项测试、资源与文档校验通过。此任务尚未合入长期分支，游戏版本未变。
