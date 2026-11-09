@@ -69,6 +69,10 @@
     return node;
   }
   function toast(message) {
+    // Modal dialogs paint above the page, regardless of the toast's z-index.
+    // Keep feedback in the active modal so it stays visible and accessible.
+    const surface = document.activeElement?.closest("dialog[open]") || document.body;
+    surface.append($("toast"));
     text("toast", message);
     $("toast").hidden = false;
     clearTimeout(toastTimer);

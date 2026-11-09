@@ -1,5 +1,12 @@
 # 视觉 QA
 
+## 2026-11-10：Arena 复制反馈的模态层级
+
+- 基线 `3221f53`。设置及邀请面板通过 `showModal()` 进入浏览器顶层，原页面中的 toast 会被面板和 backdrop 覆盖，普通 `z-index` 无法跨越这一层级。
+- 反馈显示前将同一个 toast 节点移入当前焦点所在的已打开 dialog；无面板时放回 body。保留既有位置、尺寸、材质、文案与 3.2 秒消失时间，反馈也留在当前模态的可访问子树中。
+- [复现脚本](../../scripts/qa-arena-toast-layer.cjs)启动独立服务和临时棋局，在 1280×720、1024×768 下以相同内容和状态对比。`elementFromPoint` 确认旧提示被遮挡、修复后提示位于最前，边界矩形保持一致；点击/键盘重复复制、拒绝剪贴板后的选中文本与提示、自动消失、设置中的导出反馈及回到页面后的删除反馈均通过，无页面异常。
+- [检查结果](../../artifacts/arena-toast-layer/results.json)、[修复前](../../artifacts/arena-toast-layer/before-1280x720.png)、[修复后](../../artifacts/arena-toast-layer/after-1280x720.png)。截图邀请词是固定示例，不含实际比赛凭证。260 项测试通过；未修改服务、MCP、棋局规则或棋手提示。
+
 ## 2026-11-05 追加棋手头像与精简接口的观战回归
 
 任务分支 `codex/arena-lean-protocol` 从 `arena@bd7b447` 开始。棋手资料新增 Doubao、Hy、MiniMax，继续使用既有四列头像网格与液态玻璃面板；新增图标沿用 Lobe Icons 的同一固定提交与 MIT 许可，来源见 `arena/public/avatars/source.json`。Hy 对应腾讯混元（Tencent HY），显示名称使用用户指定的 Hy。
