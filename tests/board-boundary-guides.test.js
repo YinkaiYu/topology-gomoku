@@ -128,7 +128,7 @@ test("主游戏跨缝网格在动画零点保留半格，两端与远距桥分�
   }
 });
 
-test("共享曲面网格从完整半格边界连续起步，透视终态只描绘可见曲面", () => {
+test("共享曲面网格从完整半格边界连续起步，透视终态强调可见曲面", () => {
   for (const type of ["cylinder", "torus", "mobius", "klein", "projective", "sphere"]) {
     const { game, layout } = scene(type);
     let previous;
@@ -136,7 +136,7 @@ test("共享曲面网格从完整半格边界连续起步，透视终态只描�
       const { ctx, strokes } = recorder();
       const orientation = { x: 0.42, y: -0.58, z: -0.08, morph, perspective: morph };
       const depth = Art.drawCompletion(ctx, { game, layout, morph, orientation });
-      const grid = strokes.filter(stroke => stroke.color === "rgba(92, 88, 80, 0.31)");
+      const grid = strokes.filter(stroke => stroke.color === "rgba(92, 88, 80, 0.31)" && stroke.alpha > 0.5);
       assert.equal(grid.length, game.rules.width + game.rules.height);
       for (let i = 0; i < grid.length; i++) {
         const vertical = i < game.rules.width;

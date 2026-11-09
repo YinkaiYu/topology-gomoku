@@ -3071,6 +3071,7 @@
     }
     patches.sort(function sortPatches(a, b) { return a.depth - b.depth; });
     renderState.depthBuffer = Morph.createDepthBuffer(renderState.width, renderState.height, patches);
+    renderState.depthBuffer.translucency = 0.16 * morph;
 
     var surfaceGradient = ctx.createLinearGradient(
       0,
@@ -3083,21 +3084,12 @@
     surfaceGradient.addColorStop(1, "#d5d2c9");
 
     ctx.save();
-    ctx.globalAlpha = 0.3 + morph * 0.7;
+    ctx.globalAlpha = 0.3 + morph * 0.54;
     ctx.fillStyle = surfaceGradient;
     ctx.strokeStyle = surfaceGradient;
     ctx.lineWidth = 0.82;
     ctx.lineJoin = "round";
-    patches.forEach(function drawPatch(patch) {
-      ctx.beginPath();
-      ctx.moveTo(patch.points[0].x, patch.points[0].y);
-      for (var index = 1; index < patch.points.length; index += 1) {
-        ctx.lineTo(patch.points[index].x, patch.points[index].y);
-      }
-      ctx.closePath();
-      ctx.fill();
-      ctx.stroke();
-    });
+    Morph.fillSurface(ctx, patches);
     ctx.restore();
   }
 
@@ -3431,8 +3423,8 @@
 
   function drawCompletionStone(ctx, item, radius, dimmed) {
     ctx.save();
-    if (renderState.depthBuffer) { renderState.depthBuffer.clipDisk(ctx, item.point, radius); }
-    ctx.globalAlpha = dimmed ? 0.5 : 1;
+    var depth = renderState.depthBuffer;
+    ctx.globalAlpha = (dimmed ? 0.5 : 1) * (depth ? depth.translucency + (1 - depth.translucency) * depth.stoneVisibility(item.point) : 1);
     ctx.translate(item.point.x, item.point.y);
     ctx.shadowColor = item.player === HUMAN ? "rgba(24, 31, 29, 0.3)" : "rgba(65, 58, 48, 0.2)";
     ctx.shadowBlur = radius * 0.48;
@@ -4022,7 +4014,6 @@
       : projected;
     var radius = renderState.layout.cell * (0.34 - morph * 0.05) * projected.scale;
     ctx.save();
-    if (renderState.depthBuffer) { renderState.depthBuffer.clipDisk(ctx, projected, radius); }
     if (!pressed) {
       ctx.globalAlpha = 0.16;
       ctx.fillStyle = currentInputPlayer() === HUMAN ? "#21302c" : "#f8f4e9";
