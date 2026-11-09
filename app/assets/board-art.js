@@ -805,6 +805,7 @@
       y: flat.y + (projected.y - flat.y) * morph,
       depth: projected.depth * morph,
       scale: 1 + ((projected.scale || 1) - 1) * morph,
+      u: u, v: v,
       flat: flat
     };
   }
@@ -846,7 +847,9 @@
     ctx.globalAlpha *= 0.84;
     Morph.fillSurface(ctx, patches);
     ctx.restore();
-    return Morph.createDepthBuffer(width, height, patches);
+    var depth = Morph.createDepthBuffer(width, height, patches);
+    depth.mesh = Morph.createSurfaceMesh(vertices);
+    return depth;
   }
 
   function drawSurfaceGrid(ctx, game, layout, width, height, orientation, depth) {
@@ -919,7 +922,8 @@
       y: flat.y + (projected.y - flat.y) * morph,
       depth: projected.depth * morph,
       scale: 1 + ((projected.scale || 1) - 1) * morph,
-      depthScale: projected.depthScale
+      depthScale: projected.depthScale,
+      u: uv.u, v: uv.v
     };
   }
 

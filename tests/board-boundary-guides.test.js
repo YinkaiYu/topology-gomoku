@@ -141,10 +141,9 @@ test("共享曲面网格从完整半格边界连续起步，透视终态强调�
       for (let i = 0; i < grid.length; i++) {
         const vertical = i < game.rules.width;
         const uv = Morph.stoneUV(game.rules, vertical ? i : (i - game.rules.width) * game.rules.width);
-        const fullPath = Array.from({ length: 97 }, (_, j) => {
-          const u = vertical ? uv.u : j / 96, v = vertical ? j / 96 : uv.v;
-          return Art.mappedCompletionPoint(game, layout, Art.flatPointFromUV(game.rules, layout, u, v), { u, v }, orientation);
-        });
+        const fullPath = depth.mesh.path(
+          { u: vertical ? uv.u : 0, v: vertical ? 0 : uv.v },
+          { u: vertical ? uv.u : 1, v: vertical ? 1 : uv.v });
         if (morph === 0) {
           close(grid[i].points[0], fullPath[0]);
           close(grid[i].points.at(-1), fullPath.at(-1));
