@@ -544,6 +544,7 @@
     $("surface-view").classList.toggle("active", morph >= .5);
   }
   function setMorph(value, direct = false) {
+    if (state) Art.prepareMorphRotation(state.topology, rotation, morph);
     morphTarget = Math.max(0, Math.min(1, value));
     cancelAnimationFrame(morphFrame);
     if (direct || matchMedia("(prefers-reduced-motion: reduce)").matches) { morph = morphTarget; drawBoard(); return; }
