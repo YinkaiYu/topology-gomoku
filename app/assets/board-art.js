@@ -843,16 +843,8 @@
     ctx.strokeStyle = gradient;
     ctx.lineWidth = 0.82;
     ctx.lineJoin = "round";
-    patches.forEach(function drawPatch(patch) {
-      ctx.beginPath();
-      ctx.moveTo(patch.points[0].x, patch.points[0].y);
-      for (var index = 1; index < patch.points.length; index += 1) {
-        ctx.lineTo(patch.points[index].x, patch.points[index].y);
-      }
-      ctx.closePath();
-      ctx.fill();
-      ctx.stroke();
-    });
+    ctx.globalAlpha *= 0.84;
+    Morph.fillSurface(ctx, patches);
     ctx.restore();
     return Morph.createDepthBuffer(width, height, patches);
   }
@@ -1059,6 +1051,7 @@
     // Use the same camera and deformation for the sheet, lines and stones.
     orientation = Object.assign({}, orientation, { morph: morph, perspective: morph });
     var depth = drawSurface(ctx, game, layout, layout.width, layout.height, orientation);
+    depth.translucency = 0.16 * morph;
     drawSurfaceGrid(ctx, game, layout, layout.width, layout.height, orientation, depth);
     var boundaryFade = 1 - Morph.smooth((morph - 0.72) / 0.28);
     ctx.save();
@@ -1099,17 +1092,20 @@
     }
     stones.sort(function sortStones(a, b) { return a.point.depth - b.point.depth; });
     var radius = layout.cell * (0.37 - morph * 0.07);
-    stones.forEach(function drawSurfaceStone(item) {
+    function drawSurfaceStone(item) {
       ctx.save();
       var stoneRadius = radius * item.point.scale;
-      depth.clipDisk(ctx, item.point, stoneRadius);
       ctx.globalAlpha *= game.winningMask && !winnerSet[item.cell] ? 0.5 : 1;
+      ctx.globalAlpha *= depth.translucency + (1 - depth.translucency) * depth.stoneVisibility(item.point);
       ctx.translate(item.point.x, item.point.y);
       ctx.shadowColor = item.player === Engine.HUMAN ? "rgba(24, 31, 29, 0.3)" : "rgba(65, 58, 48, 0.2)";
       ctx.shadowBlur = effectPixels(ctx, stoneRadius * 0.48);
       ctx.shadowOffsetY = effectPixels(ctx, stoneRadius * 0.2);
       drawStoneFace(ctx, item.player, stoneRadius, item.cell === game.lastMove, 0);
       ctx.restore();
+    }
+    stones.forEach(function drawStoneLayers(item) {
+      drawSurfaceStone(item);
     });
     drawCompletionWinningLine(ctx, game, layout, orientation, Number(settings.time) || 0, depth);
     return depth;

@@ -548,8 +548,21 @@
     function visible(point, bias) {
       return point.depth + (bias === undefined ? 0.035 : bias) >= depthAt(point.x, point.y);
     }
+    function stoneVisibility(point) {
+      var gap = depthAt(point.x, point.y) - point.depth;
+      return 1 - smooth((gap - 0.025) / 0.16);
+    }
     function strokePath(ctx, points) {
       if (points.length < 2) { return; }
+      if (buffer.translucency) {
+        ctx.save();
+        ctx.globalAlpha *= buffer.translucency;
+        ctx.beginPath();
+        ctx.moveTo(points[0].x, points[0].y);
+        for (var back = 1; back < points.length; back += 1) { ctx.lineTo(points[back].x, points[back].y); }
+        ctx.stroke();
+        ctx.restore();
+      }
       ctx.beginPath();
       var connected = false;
       for (var index = 1; index < points.length; index += 1) {
@@ -566,26 +579,61 @@
       }
       ctx.stroke();
     }
-    function clipDisk(ctx, point, radius) {
-      // Clip the stone and its shadow together, retaining the visible part at
-      // a silhouette instead of popping the entire stone in or out.
-      var extent = Math.ceil(radius * 1.6);
-      ctx.beginPath();
-      for (var y = -extent; y < extent; y += 1) {
-        var run = null;
-        for (var x = -extent; x <= extent; x += 1) {
-          var relief = 0.045 * Math.sqrt(Math.max(0, 1 - (x * x + y * y) / (radius * radius)));
-          var shown = x < extent && point.depth + relief + 0.035 >= depthAt(point.x + x + 0.5, point.y + y + 0.5);
-          if (shown && run === null) { run = x; }
-          if (!shown && run !== null) {
-            ctx.rect(point.x + run, point.y + y, x - run, 1);
-            run = null;
-          }
-        }
-      }
-      ctx.clip();
+    var buffer = { visible: visible, depthAt: depthAt, strokePath: strokePath, stoneVisibility: stoneVisibility, translucency: 0 };
+    return buffer;
+  }
+
+  function fillSurface(ctx, patches) {
+    // Cancel interior triangle edges before asking Canvas to tessellate the
+    // path. The remaining contours retain the full mesh's nonzero winding,
+    // including silhouettes, holes and folds, without thousands of overlaps.
+    var vertices = [], ids = new Map(), edges = new Map();
+    function vertexId(point) {
+      if (!ids.has(point)) { ids.set(point, vertices.length); vertices.push(point); }
+      return ids.get(point);
     }
-    return { visible: visible, depthAt: depthAt, strokePath: strokePath, clipDisk: clipDisk };
+    function addEdge(from, to) {
+      if (from === to) { return; }
+      var low = Math.min(from, to), high = Math.max(from, to);
+      var key = low + ":" + high;
+      var edge = edges.get(key);
+      if (!edge) { edge = { low: low, high: high, count: 0 }; edges.set(key, edge); }
+      edge.count += from === low ? 1 : -1;
+    }
+    patches.forEach(function addPatch(patch) {
+      for (var index = 1; index < patch.points.length - 1; index += 1) {
+        var a = patch.points[0], b = patch.points[index], c = patch.points[index + 1];
+        var area = (b.x - a.x) * (c.y - a.y) - (b.y - a.y) * (c.x - a.x);
+        if (!Number.isFinite(area) || Math.abs(area) < 1e-10) { continue; }
+        if (area < 0) { var swap = b; b = c; c = swap; }
+        var ai = vertexId(a), bi = vertexId(b), ci = vertexId(c);
+        addEdge(ai, bi); addEdge(bi, ci); addEdge(ci, ai);
+      }
+    });
+    var outgoing = vertices.map(function emptyEdges() { return []; });
+    edges.forEach(function retainEdge(edge) {
+      if (!edge.count) { return; }
+      var from = edge.count > 0 ? edge.low : edge.high;
+      var to = edge.count > 0 ? edge.high : edge.low;
+      outgoing[from].push({ to: to, count: Math.abs(edge.count) });
+    });
+    ctx.beginPath();
+    outgoing.forEach(function traceContours(available, first) {
+      while (available.length) {
+        var current = first;
+        ctx.moveTo(vertices[first].x, vertices[first].y);
+        do {
+          var choices = outgoing[current];
+          var next = choices[choices.length - 1];
+          next.count -= 1;
+          if (!next.count) { choices.pop(); }
+          current = next.to;
+          ctx.lineTo(vertices[current].x, vertices[current].y);
+        } while (current !== first);
+        ctx.closePath();
+      }
+    });
+    ctx.fill();
   }
 
   function project(type, u, v, width, height, orientation) {
@@ -734,6 +782,7 @@
     project: project,
     projectPoint: projectPoint,
     createDepthBuffer: createDepthBuffer,
+    fillSurface: fillSurface,
     stoneUV: stoneUV,
     isPeriodicX: isPeriodicX,
     isPeriodicY: isPeriodicY,

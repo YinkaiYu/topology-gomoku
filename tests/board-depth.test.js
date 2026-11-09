@@ -2,7 +2,12 @@
 
 const test = require("node:test");
 const assert = require("node:assert/strict");
+const fs = require("node:fs");
+const vm = require("node:vm");
 const Morph = require("../app/assets/topology-morph.js");
+const Art = require("../app/assets/board-art.js");
+const Engine = require("../app/assets/topology.js");
+const ViewLogic = require("../app/assets/board-view-logic.js");
 
 const TOPOLOGIES = ["cylinder", "torus", "mobius", "klein", "projective", "sphere"];
 
@@ -11,6 +16,22 @@ function quad(left, top, right, bottom, depth) {
     { x: left, y: top, depth }, { x: right, y: top, depth },
     { x: right, y: bottom, depth }, { x: left, y: bottom, depth }
   ] };
+}
+
+function h5HitHarness(game, layout) {
+  const source = fs.readFileSync(require.resolve("../app/assets/game.js"), "utf8");
+  const renderState = { layout, width: layout.width, height: layout.height, depthBuffer: null };
+  const context = vm.createContext({ Engine, Morph, ViewLogic, BoardArt: Art, game, renderState,
+    clamp01: Morph.clamp01, performance: { now: () => 0 },
+    cellCenter: cell => Art.cellCenter(game.rules, layout, cell),
+    dom: { boardCanvas: { getBoundingClientRect: () => ({ left: 17, top: 29 }) } } });
+  for (const name of ["completionMappedPoint", "completionPoint", "completionCellPoint", "interactiveViewOrientation", "eventToCell"]) {
+    const start = source.indexOf("  function " + name + "(");
+    const end = source.indexOf("\n  function ", start + 1);
+    assert.ok(start >= 0 && end > start, `${name} is exercised from production`);
+    vm.runInContext(source.slice(start, end), context);
+  }
+  return context;
 }
 
 test("棋盘透视使近处位置与棋子同步放大，图案默认投影保持原样", () => {
@@ -103,21 +124,67 @@ test("跨遮挡路径分成可见片段，不会连接穿过前方曲面", () =>
   assert.ok(segments.every(([a, b]) => b.x < 42 || a.x > 78), "no drawn segment crosses the occluder");
 });
 
-test("棋子及阴影采用局部遮挡，越过轮廓时保留仍可见的部分", () => {
-  const buffer = Morph.createDepthBuffer(128, 128, [quad(20, 20, 64, 110, 1)]);
-  function clippedRects(point) {
-    const rects = [];
-    let clips = 0;
-    buffer.clipDisk({ beginPath() {}, rect(x, y, width, height) { rects.push({ x, y, width, height }); },
-      clip() { clips += 1; } }, point, 8);
-    assert.equal(clips, 1);
-    return rects;
+test("通透曲面的背面线条淡显，正面线条单独清晰绘制且命中仍受遮挡约束", () => {
+  const buffer = Morph.createDepthBuffer(128, 128, [quad(40, 20, 80, 100, 1)]);
+  buffer.translucency = 0.16;
+  const strokes = [], stack = [];
+  let points = [];
+  const ctx = { globalAlpha: 0.8,
+    save() { stack.push(this.globalAlpha); }, restore() { this.globalAlpha = stack.pop(); },
+    beginPath() { points = []; }, moveTo(x, y) { points.push({ x, y, start: true }); },
+    lineTo(x, y) { points.push({ x, y }); }, stroke() { strokes.push({ alpha: this.globalAlpha, points: points.slice() }); } };
+  buffer.strokePath(ctx, [{ x: 10, y: 60, depth: 0 }, { x: 110, y: 60, depth: 0 }]);
+  assert.equal(strokes.length, 2);
+  assert.equal(strokes[0].alpha, 0.8 * 0.16);
+  assert.deepEqual(strokes[0].points.map(point => point.x), [10, 110], "faint layer preserves the entire route");
+  assert.equal(strokes[1].alpha, 0.8);
+  assert.ok(strokes[1].points.every(point => point.x < 42 || point.x > 78), "sharp layer excludes the occluded interval");
+  assert.equal(buffer.visible({ x: 60, y: 60, depth: 0 }), false, "faint visibility never makes a rear cell selectable");
+  assert.equal(ctx.globalAlpha, 0.8, "drawing leaves the caller's opacity unchanged");
+});
+
+test("半透明曲面统一填充一次，反向面片不抵消且真实孔洞保持开放", () => {
+  const ring = [quad(20, 20, 100, 40, 1), quad(20, 80, 100, 100, 1),
+    quad(20, 40, 40, 80, 1), quad(80, 40, 100, 80, 1)];
+  // Duplicate one patch with reversed winding, as overlapping folded sheets do.
+  const patches = [...ring, { points: [...ring[0].points].reverse() }];
+  let begins = 0, fills = 0;
+  const contours = [];
+  let points = [];
+  const ctx = { globalAlpha: 0.84, beginPath() { begins += 1; },
+    moveTo(x, y) { points = [{ x, y }]; }, lineTo(x, y) { points.push({ x, y }); },
+    closePath() { contours.push(points); }, fill() { fills += 1; } };
+  Morph.fillSurface(ctx, patches);
+  assert.equal(begins, 1);
+  assert.equal(fills, 1, "overlap does not repeatedly darken the translucent material");
+  assert.equal(ctx.globalAlpha, 0.84);
+  assert.ok(contours.length > 0, "the material has closed contours");
+  function cross(a, b, c) { return (b.x - a.x) * (c.y - a.y) - (b.y - a.y) * (c.x - a.x); }
+  const filled = point => contours.reduce((winding, contour) => {
+    for (let i = 0; i < contour.length; i++) {
+      const a = contour[i], b = contour[(i + 1) % contour.length];
+      if (a.y <= point.y && b.y > point.y && cross(a, b, point) > 0) winding++;
+      if (a.y > point.y && b.y <= point.y && cross(a, b, point) < 0) winding--;
+    }
+    return winding;
+  }, 0) !== 0;
+  assert.equal(filled({ x: 30, y: 30 }), true, "reversed overlapping facets remain filled");
+  assert.equal(filled({ x: 60, y: 60 }), false, "the topology's central hole is not filled");
+  assert.equal(filled({ x: 10, y: 60 }), false, "outside the surface stays empty");
+});
+
+test("棋子可见度随遮挡深度连续变化，保留完整轮廓所需的统一透明度", () => {
+  const buffer = Morph.createDepthBuffer(128, 128, [quad(20, 20, 110, 110, 1)]);
+  assert.equal(buffer.stoneVisibility({ x: 64, y: 64, depth: 1 }), 1, "a stone on the front surface is fully visible");
+  assert.equal(buffer.stoneVisibility({ x: 64, y: 64, depth: 0 }), 0, "a deeply hidden stone uses only the faint material layer");
+  assert.equal(buffer.stoneVisibility({ x: 10, y: 10, depth: -100 }), 1, "open space does not hide a stone");
+  const values = Array.from({ length: 501 }, (_, i) => buffer.stoneVisibility({ x: 64, y: 64, depth: 1.1 - i / 1000 }));
+  assert.ok(values.every(value => Number.isFinite(value) && value >= 0 && value <= 1));
+  assert.ok(values.some(value => value > 0 && value < 1), "the transition is gradual instead of a binary switch");
+  for (let i = 1; i < values.length; i++) {
+    assert.ok(values[i] <= values[i - 1] + 1e-10, "increasing occlusion never brightens a stone");
+    assert.ok(Math.abs(values[i] - values[i - 1]) < 0.03, "small depth changes do not pop the whole stone");
   }
-  assert.equal(clippedRects({ x: 40, y: 60, depth: 0 }).length, 0, "fully hidden stone and shadow are clipped away");
-  const edge = clippedRects({ x: 64, y: 60, depth: 0 });
-  assert.ok(edge.length > 0, "stone's exposed half remains visible");
-  assert.ok(edge.every(rect => rect.x >= 62), "no clipping region reaches the deeply occluded half");
-  assert.ok(clippedRects({ x: 40, y: 60, depth: 1 }).length > 0, "a stone on the front surface remains visible");
 });
 
 test("真实归圆网格遮住背面交点，朝向观众的交点保持可见", () => {
@@ -143,11 +210,67 @@ test("真实归圆网格遮住背面交点，朝向观众的交点保持可见",
       if (point.depth > 0.4) {
         frontCount += 1;
         assert.equal(buffer.visible(point), true, `front intersection ${column},${row}`);
+        assert.equal(buffer.stoneVisibility(point), 1, `front stone ${column},${row} keeps its full face`);
       } else if (point.depth < -0.2) {
         backCount += 1;
         assert.equal(buffer.visible(point), false, `rear intersection ${column},${row}`);
+        assert.equal(buffer.stoneVisibility(point), 0, `rear stone ${column},${row} stays in the faint layer`);
       }
     }
   }
   assert.ok(frontCount > 80 && backCount > 80, "exercise substantial portions of both hemispheres");
+});
+
+test("H5 实际落子命中跳过归圆背面交点，并命中可见的正面交点", () => {
+  const rules = Engine.createRules({ type: "sphere", width: 19, height: 19 });
+  const layout = Art.computeLayout(480, 480, rules);
+  const game = { level: { topology: "sphere" }, rules,
+    view: { progress: 1, rotation: { x: -0.42, y: 0.58, z: 0.08 }, elastic: { x: 0, y: 0 } } };
+  const h5 = h5HitHarness(game, layout);
+  const orientation = h5.interactiveViewOrientation(0);
+  const count = 48;
+  const vertices = Array.from({ length: count + 1 }, (_, row) =>
+    Array.from({ length: count + 1 }, (_, column) => h5.completionPoint(column / count, row / count, 1, orientation)));
+  const patches = [];
+  for (let row = 0; row < count; row += 1) {
+    for (let column = 0; column < count; column += 1) {
+      patches.push({ points: [vertices[row][column], vertices[row][column + 1],
+        vertices[row + 1][column + 1], vertices[row + 1][column]] });
+    }
+  }
+  h5.renderState.depthBuffer = Morph.createDepthBuffer(480, 480, patches);
+  let visible = 0;
+  let hidden = 0;
+  for (let cell = 0; cell < rules.cellCount; cell += 1) {
+    const point = h5.completionCellPoint(cell, 1, orientation);
+    const hit = h5.eventToCell({ clientX: point.x + 17, clientY: point.y + 29 });
+    if (point.depth > 0.4) {
+      visible += 1;
+      assert.equal(hit, cell, `visible cell ${cell} is selectable at its drawn center`);
+    } else if (point.depth < -0.2) {
+      hidden += 1;
+      assert.notEqual(hit, cell, `hidden cell ${cell} never wins the hit test`);
+      if (hit >= 0) {
+        assert.equal(h5.renderState.depthBuffer.visible(h5.completionCellPoint(hit, 1, orientation)), true);
+      }
+    }
+  }
+  assert.ok(visible > 60 && hidden > 60);
+});
+
+test("H5 落子半径跟随透视比例，隐藏所有候选时不落子", () => {
+  const rules = Engine.createRules({ type: "sphere", width: 5, height: 5 });
+  const layout = Art.computeLayout(480, 480, rules);
+  const game = { level: { topology: "sphere" }, rules: { ...rules, cellCount: 1 },
+    view: { progress: 1, rotation: { x: 0, y: 0, z: 0 }, elastic: { x: 0, y: 0 } } };
+  const h5 = h5HitHarness(game, layout);
+  h5.completionCellPoint = () => ({ x: 180, y: 180, depth: 1, scale: 0.6 });
+  h5.renderState.depthBuffer = { visible: () => true };
+  const event = distance => ({ clientX: 180 + 17 + distance, clientY: 180 + 29 });
+  assert.equal(h5.eventToCell(event(layout.cell * 0.3)), 0);
+  assert.equal(h5.eventToCell(event(layout.cell * 0.4)), -1, "far grid point uses a smaller hit radius");
+  h5.completionCellPoint = () => ({ x: 180, y: 180, depth: 1, scale: 1.4 });
+  assert.equal(h5.eventToCell(event(layout.cell * 0.6)), 0, "near grid point uses a larger hit radius");
+  h5.renderState.depthBuffer = { visible: () => false };
+  assert.equal(h5.eventToCell(event(0)), -1);
 });

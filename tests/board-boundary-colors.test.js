@@ -54,6 +54,17 @@ function assertPoint(actual, expected, message) {
     `${message}: (${actual.x}, ${actual.y}) != (${expected.x}, ${expected.y})`);
 }
 
+function frontBoundaries(drawing, color) {
+  const strokes = drawing.strokes.filter(stroke => stroke.color === color);
+  if (!drawing.orientation.morph) { return strokes; }
+  assert.equal(strokes.length % 2, 0, "each seam has a faint path followed by a depth-clipped path");
+  for (let index = 0; index < strokes.length; index += 2) {
+    assert.ok(strokes[index].alpha <= strokes[index + 1].alpha * 0.16 + 1e-10,
+      "rear seam is quieter than its front counterpart");
+  }
+  return strokes.filter((_, index) => index % 2 === 1);
+}
+
 function assertSide(stroke, side, topology, drawing) {
   const { layout, orientation } = drawing;
   const samples = Array.from({ length: 97 }, (_, index) => {
@@ -90,7 +101,7 @@ test("归圆变形全过程：上边与左边同为绿色，下边与右边同�
   for (const morph of [0, 0.001, 0.25, 0.5, 0.7, 0.95, 1]) {
     const drawing = draw("sphere", morph);
     for (const [color, sides] of [[TEAL, ["top", "left"]], [GOLD, ["bottom", "right"]]]) {
-      const boundaries = drawing.strokes.filter(stroke => stroke.color === color);
+      const boundaries = frontBoundaries(drawing, color);
       assert.equal(boundaries.length, 2);
       sides.forEach((side, index) => assertSide(boundaries[index], side, "sphere", drawing));
       if (morph === 1) {
@@ -131,7 +142,7 @@ test("其他拓扑保持左右绿色、上下金色，未接合的边不绘制�
         [TEAL, level.xConnection ? ["left", "right"] : []],
         [GOLD, level.yConnection ? ["top", "bottom"] : []]
       ]) {
-        const boundaries = drawing.strokes.filter(stroke => stroke.color === color);
+        const boundaries = frontBoundaries(drawing, color);
         assert.equal(boundaries.length, sides.length, `${level.topology} ${color}`);
         sides.forEach((side, index) => assertSide(boundaries[index], side, level.topology, drawing));
       }
