@@ -3015,7 +3015,8 @@
       x: flatX + (projected.x - flatX) * morph,
       y: flatY + (projected.y - flatY) * morph,
       depth: projected.depth * morph,
-      scale: 1 + (projected.scale - 1) * morph
+      scale: 1 + (projected.scale - 1) * morph,
+      depthScale: projected.depthScale
     };
   }
 
@@ -3232,7 +3233,7 @@
   function drawCompletionGrid(ctx, morph, spin) {
     ctx.save();
     ctx.strokeStyle = "rgba(92, 88, 80," + (0.48 - morph * 0.17) + ")";
-    ctx.lineWidth = Math.max(0.7, renderState.layout.cell * (0.025 - morph * 0.006));
+    ctx.lineWidth = Math.max(0.7 + morph * 0.35, renderState.layout.cell * (0.025 - morph * 0.002));
     ctx.lineCap = "round";
     ctx.lineJoin = "round";
     if (game.level.topology === "sphere") {
@@ -3424,31 +3425,35 @@
   function drawCompletionStone(ctx, item, radius, dimmed) {
     ctx.save();
     var depth = renderState.depthBuffer;
-    ctx.globalAlpha = (dimmed ? 0.5 : 1) * (depth ? depth.translucency + (1 - depth.translucency) * depth.stoneVisibility(item.point) : 1);
-    ctx.translate(item.point.x, item.point.y);
-    ctx.shadowColor = item.player === HUMAN ? "rgba(24, 31, 29, 0.3)" : "rgba(65, 58, 48, 0.2)";
-    ctx.shadowBlur = radius * 0.48;
-    ctx.shadowOffsetY = radius * 0.2;
-    var gradient = ctx.createRadialGradient(-radius * 0.3, -radius * 0.34, radius * 0.07, 0, 0, radius);
-    if (item.player === HUMAN) {
-      gradient.addColorStop(0, "#6d7b76");
-      gradient.addColorStop(0.38, "#2b3935");
-      gradient.addColorStop(1, "#14201d");
-    } else {
-      gradient.addColorStop(0, "#ffffff");
-      gradient.addColorStop(0.48, "#f8f4e9");
-      gradient.addColorStop(1, "#d5cec1");
-    }
-    ctx.fillStyle = gradient;
-    ctx.beginPath();
-    ctx.arc(0, 0, radius, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.shadowColor = "transparent";
-    if (item.player === AI) {
-      ctx.strokeStyle = "rgba(94, 88, 78, 0.36)";
-      ctx.lineWidth = 1;
-      ctx.stroke();
-    }
+    ctx.globalAlpha = dimmed ? 0.5 : 1;
+    Morph.paintStone(ctx, depth, item.point, radius, function paintFace(withShadow) {
+      ctx.save();
+      ctx.translate(item.point.x, item.point.y);
+      ctx.shadowColor = withShadow === false ? "transparent" : item.player === HUMAN ? "rgba(24, 31, 29, 0.3)" : "rgba(65, 58, 48, 0.2)";
+      ctx.shadowBlur = radius * 0.48;
+      ctx.shadowOffsetY = radius * 0.2;
+      var gradient = ctx.createRadialGradient(-radius * 0.3, -radius * 0.34, radius * 0.07, 0, 0, radius);
+      if (item.player === HUMAN) {
+        gradient.addColorStop(0, "#6d7b76");
+        gradient.addColorStop(0.38, "#2b3935");
+        gradient.addColorStop(1, "#14201d");
+      } else {
+        gradient.addColorStop(0, "#ffffff");
+        gradient.addColorStop(0.48, "#f8f4e9");
+        gradient.addColorStop(1, "#d5cec1");
+      }
+      ctx.fillStyle = gradient;
+      ctx.beginPath();
+      ctx.arc(0, 0, radius, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.shadowColor = "transparent";
+      if (item.player === AI) {
+        ctx.strokeStyle = "rgba(94, 88, 78, 0.36)";
+        ctx.lineWidth = 1;
+        ctx.stroke();
+      }
+      ctx.restore();
+    });
     ctx.restore();
   }
 

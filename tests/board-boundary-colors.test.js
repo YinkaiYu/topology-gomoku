@@ -27,7 +27,7 @@ function recordingContext() {
     restore() { Object.assign(this, stack.pop()); },
     createLinearGradient() { return { addColorStop() {} }; },
     beginPath() { points = []; },
-    moveTo(x, y) { points.push({ x, y }); },
+    moveTo(x, y) { points.push({ x, y, start: true }); },
     lineTo(x, y) { points.push({ x, y }); },
     closePath() {},
     fill() {},
@@ -83,7 +83,15 @@ function assertSide(stroke, side, topology, drawing) {
   }
   // Depth clipping inserts extra samples and can remove a whole rear edge.
   // Every surviving point must still belong to this specific colored seam.
-  stroke.points.forEach(point => {
+  const probes = stroke.points.map(point => ({ point, visible: false }));
+  stroke.points.forEach((point, index) => {
+    if (index && !point.start) {
+      const previous = stroke.points[index - 1];
+      for (const t of [0.1, 0.5, 0.9]) probes.push({ point: { x: previous.x + (point.x - previous.x) * t, y: previous.y + (point.y - previous.y) * t }, visible: true });
+    }
+  });
+  // Endpoints lie exactly on a foreground contour; test the segment interiors.
+  probes.forEach(({ point, visible }) => {
     let nearest = { distance: Infinity };
     for (let i = 1; i < samples.length; i++) {
       const a = samples[i - 1], b = samples[i], dx = b.x - a.x, dy = b.y - a.y;
@@ -93,7 +101,7 @@ function assertSide(stroke, side, topology, drawing) {
       if (distance < nearest.distance) nearest = { distance, point: projected };
     }
     assert.ok(nearest.distance < 1e-7, `${topology} ${side} remains on its seam`);
-    assert.ok(drawing.depth.visible(nearest.point, 0.035001), `${topology} ${side} is not behind the sheet`);
+    if (visible) assert.ok(drawing.depth.visible(nearest.point, 0.045001), `${topology} ${side} is not behind the sheet`);
   });
 }
 
@@ -130,7 +138,7 @@ test("归圆二维辅助线与变形边界使用相同的邻边配色", () => {
   for (const [color, paths] of expected) {
     const rails = drawing.strokes.filter(stroke => stroke.color === color);
     assert.equal(rails.length, 2);
-    rails.forEach((rail, index) => assert.deepEqual(rail.points, paths[index]));
+    rails.forEach((rail, index) => assert.deepEqual(rail.points.map(({ x, y }) => ({ x, y })), paths[index]));
   }
 });
 

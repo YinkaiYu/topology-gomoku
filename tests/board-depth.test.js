@@ -173,20 +173,6 @@ test("半透明曲面统一填充一次，反向面片不抵消且真实孔洞�
   assert.equal(filled({ x: 10, y: 60 }), false, "outside the surface stays empty");
 });
 
-test("棋子可见度随遮挡深度连续变化，保留完整轮廓所需的统一透明度", () => {
-  const buffer = Morph.createDepthBuffer(128, 128, [quad(20, 20, 110, 110, 1)]);
-  assert.equal(buffer.stoneVisibility({ x: 64, y: 64, depth: 1 }), 1, "a stone on the front surface is fully visible");
-  assert.equal(buffer.stoneVisibility({ x: 64, y: 64, depth: 0 }), 0, "a deeply hidden stone uses only the faint material layer");
-  assert.equal(buffer.stoneVisibility({ x: 10, y: 10, depth: -100 }), 1, "open space does not hide a stone");
-  const values = Array.from({ length: 501 }, (_, i) => buffer.stoneVisibility({ x: 64, y: 64, depth: 1.1 - i / 1000 }));
-  assert.ok(values.every(value => Number.isFinite(value) && value >= 0 && value <= 1));
-  assert.ok(values.some(value => value > 0 && value < 1), "the transition is gradual instead of a binary switch");
-  for (let i = 1; i < values.length; i++) {
-    assert.ok(values[i] <= values[i - 1] + 1e-10, "increasing occlusion never brightens a stone");
-    assert.ok(Math.abs(values[i] - values[i - 1]) < 0.03, "small depth changes do not pop the whole stone");
-  }
-});
-
 test("真实归圆网格遮住背面交点，朝向观众的交点保持可见", () => {
   const view = { x: -0.42, y: 0.58, z: 0.08, perspective: 1 };
   const count = 48;
@@ -210,11 +196,9 @@ test("真实归圆网格遮住背面交点，朝向观众的交点保持可见",
       if (point.depth > 0.4) {
         frontCount += 1;
         assert.equal(buffer.visible(point), true, `front intersection ${column},${row}`);
-        assert.equal(buffer.stoneVisibility(point), 1, `front stone ${column},${row} keeps its full face`);
       } else if (point.depth < -0.2) {
         backCount += 1;
         assert.equal(buffer.visible(point), false, `rear intersection ${column},${row}`);
-        assert.equal(buffer.stoneVisibility(point), 0, `rear stone ${column},${row} stays in the faint layer`);
       }
     }
   }
