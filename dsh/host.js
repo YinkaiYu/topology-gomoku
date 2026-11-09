@@ -234,32 +234,13 @@ class ArenaBridge {
   }
 
   /**
-   * Read model for the embedded spectator panel: the local arena origin and a
-   * small match directory. The panel frames the arena's own `?embed=1` page, so
-   * the renderer, SSE stream and motion stay entirely upstream.
+   * Read model for the embedded panel: the local arena origin and liveness. The
+   * panel always opens the arena's own home page, so it never has to mirror the
+   * match directory or decide which game to show.
    */
   async view() {
     const health = await this.health()
-    const result = { url: this.url, running: Boolean(health), games: [], selected: null, error: null }
-    if (!health) return result
-    try {
-      const list = await this.hostCall('arena_list', {})
-      const matches = Array.isArray(list?.matches) ? list.matches : []
-      result.games = matches.map((match) => ({
-        gameId: match.gameId,
-        title: match.title,
-        topology: match.topology,
-        phase: match.phase,
-        ply: match.ply,
-        turn: match.turn,
-        updatedAt: match.updatedAt || null,
-      }))
-      const live = matches.find((match) => match.phase !== 'ended') || matches[0]
-      result.selected = live ? live.gameId : null
-    } catch (error) {
-      result.error = arenaFailure(error).message
-    }
-    return result
+    return { url: this.url, running: Boolean(health), error: null }
   }
 
   /** Return a running service, starting one when allowed. */

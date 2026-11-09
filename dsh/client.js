@@ -24,15 +24,11 @@ window.__ModuleLoader__.load({
         panel: '对弈室',
         refresh: '刷新',
         open: '在浏览器打开',
-        select: '选择棋局',
         startService: '启动服务',
         stopService: '结束服务',
         stopConfirm: '结束本地对弈服务？进行中的棋局会保留，棋手与观战会断开。',
         offline: '对弈服务未运行',
         offlineHint: '在对话里让 agent 用 arena_service start 启动本地服务。',
-        start: '启动服务',
-        empty: '还没有可看的棋局',
-        emptyHint: '让 agent 用 arena_host 开一局，或在这里刷新。',
         frameHint: '如果这段提示一直显示，说明画面没有加载成功；请用右上角“在浏览器打开”。',
         phase: { waiting: '等待入席', playing: '对局中', paused: '暂停', ended: '已结束' },
         topology: { plane: '平面', cylinder: '圆柱', torus: '环面', mobius: '莫比乌斯环', klein: '克莱因瓶', projective: '实射影平面', sphere: '球面' },
@@ -42,15 +38,11 @@ window.__ModuleLoader__.load({
         panel: 'Arena',
         refresh: 'Refresh',
         open: 'Open in browser',
-        select: 'Select match',
         startService: 'Start service',
         stopService: 'Stop service',
         stopConfirm: 'Stop the local arena service? Matches are kept, but players and spectators disconnect.',
         offline: 'The arena service is not running',
         offlineHint: 'Ask the agent to run arena_service start in the conversation.',
-        start: 'Start service',
-        empty: 'No match to watch yet',
-        emptyHint: 'Ask the agent to create one with arena_host, or refresh here.',
         frameHint: 'If this note stays visible, the page did not load; use “Open in browser”.',
         phase: { waiting: 'Lobby', playing: 'Playing', paused: 'Paused', ended: 'Finished' },
         topology: { plane: 'Plane', cylinder: 'Cylinder', torus: 'Torus', mobius: 'Möbius strip', klein: 'Klein bottle', projective: 'Projective plane', sphere: 'Sphere' },
@@ -80,7 +72,7 @@ window.__ModuleLoader__.load({
           const data = await response.json()
           setState({ loading: false, data })
         } catch (error) {
-          setState({ loading: false, data: { url: '', running: false, games: [], selected: null, error: String(error && error.message ? error.message : error) } })
+          setState({ loading: false, data: { url: '', running: false, error: String(error && error.message ? error.message : error) } })
         }
       }, [])
       React.useEffect(() => {
@@ -120,14 +112,14 @@ window.__ModuleLoader__.load({
     function ArenaPanel({ t }) {
       const { data, reload } = useView()
       const [nonce, setNonce] = React.useState(0)
-      const games = data && Array.isArray(data.games) ? data.games : []
-      const active = (data && data.selected) || (games[0] && games[0].gameId) || ''
       const base = data && data.url ? data.url : ''
       // The fragment carries the host credential into the frame without a
       // server round trip; the arena page consumes and clears it on boot.
       const hostSuffix = data && data.hostToken ? `#host=${encodeURIComponent(data.hostToken)}` : ''
-      const src = base ? `${base}/?embed=1${active ? `&game=${encodeURIComponent(active)}` : ''}${hostSuffix}` : ''
-      const browserHref = base ? `${base}/${active ? `?game=${encodeURIComponent(active)}` : ''}` : ''
+      // Always open the arena home; the page's own settings/records dialog is
+      // how a match is chosen, so the panel never deep-links into a stale game.
+      const src = base ? `${base}/?embed=1${hostSuffix}` : ''
+      const browserHref = base ? `${base}/` : ''
       const running = Boolean(data && data.running)
 
       /** Start or stop the local service and remount the frame. */
@@ -178,11 +170,6 @@ window.__ModuleLoader__.load({
           h('div', { key: 'a', style: { fontSize: 13, color: 'var(--dsw-alias-label-primary)' } }, t.offline),
           h('div', { key: 'b' }, t.offlineHint),
         ])
-      } else if (!games.length) {
-        body = h('div', { key: 'empty', style: hintStyle }, [
-          h('div', { key: 'a', style: { fontSize: 13, color: 'var(--dsw-alias-label-primary)' } }, t.empty),
-          h('div', { key: 'b' }, t.emptyHint),
-        ])
       } else if (src) {
         body = [
           h('div', { key: 'hint', style: frameHintStyle }, [
@@ -190,7 +177,7 @@ window.__ModuleLoader__.load({
             h('div', { key: 'b' }, t.frameHint),
           ]),
           h('iframe', {
-            key: `frame-${active}-${nonce}`,
+            key: `frame-${nonce}`,
             src,
             title: t.panel,
             referrerPolicy: 'no-referrer',
