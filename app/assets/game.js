@@ -3447,7 +3447,7 @@
       ctx.arc(0, 0, radius, 0, Math.PI * 2);
       ctx.fill();
       ctx.shadowColor = "transparent";
-      if (item.player === AI) {
+      if (item.player === AI && withShadow !== "shadow") {
         ctx.strokeStyle = "rgba(94, 88, 78, 0.36)";
         ctx.lineWidth = 1;
         ctx.stroke();

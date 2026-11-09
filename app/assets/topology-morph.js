@@ -872,9 +872,9 @@
     ctx.globalAlpha *= depth.translucency + (1 - depth.translucency) * clamp01(area / (4 * Math.pow(radius + 1, 2)));
     ctx.beginPath();
     ctx.rect(point.x - radius * 3, point.y - radius * 3, radius * 6, radius * 6);
-    ctx.arc(point.x, point.y, radius + 1, 0, TAU, true);
+    ctx.arc(point.x, point.y, radius, 0, TAU, true);
     ctx.clip("evenodd");
-    paint();
+    paint("shadow");
     ctx.restore();
     if (depth.translucency) {
       ctx.save(); ctx.globalAlpha *= depth.translucency; paint(false); ctx.restore();

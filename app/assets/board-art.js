@@ -362,7 +362,7 @@
     }
   }
 
-  function drawStoneFace(ctx, player, radius, markLastMove, compression) {
+  function drawStoneFace(ctx, player, radius, markLastMove, compression, shadowOnly) {
     var pressedDepth = compression || 0;
     var highlightX = -radius * (0.28 - pressedDepth * 0.055);
     var highlightY = -radius * (0.34 - pressedDepth * 0.12);
@@ -381,7 +381,7 @@
     ctx.arc(0, 0, radius, 0, Math.PI * 2);
     ctx.fill();
     ctx.shadowColor = "transparent";
-    if (player === Engine.AI) {
+    if (player === Engine.AI && !shadowOnly) {
       ctx.strokeStyle = "rgba(94, 88, 78, 0.28)";
       ctx.lineWidth = 1;
       ctx.stroke();
@@ -1103,7 +1103,7 @@
       ctx.shadowColor = withShadow === false ? "transparent" : item.player === Engine.HUMAN ? "rgba(24, 31, 29, 0.3)" : "rgba(65, 58, 48, 0.2)";
         ctx.shadowBlur = effectPixels(ctx, stoneRadius * 0.48);
         ctx.shadowOffsetY = effectPixels(ctx, stoneRadius * 0.2);
-        drawStoneFace(ctx, item.player, stoneRadius, item.cell === game.lastMove, 0);
+      drawStoneFace(ctx, item.player, stoneRadius, item.cell === game.lastMove && withShadow !== "shadow", 0, withShadow === "shadow");
         ctx.restore();
       });
       ctx.restore();
