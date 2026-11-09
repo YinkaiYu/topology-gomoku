@@ -40,7 +40,7 @@ function mainRenderer(game, layout) {
     cellCenter: cell => Art.cellCenter(game.rules, layout, cell), seamPulseFor: () => 0 });
   for (const name of ["drawGrid", "drawTopologyRails", "drawSphereRails", "drawRailPair", "drawRailLine", "drawArrow",
     "completionMappedPoint", "completionPoint", "completionFlatPointFromUV", "completionGridEdgePoints", "appendCompletionSegment",
-    "strokeSmoothCompletionPath", "completionDepthIntersection", "strokeFrontFacingCompletionPath", "completionSphereRailPoint",
+    "strokeSmoothCompletionPath", "completionSphereRailPoint",
     "drawCompletionSphereGrid", "drawCompletionGrid"]) {
     const start = source.indexOf("  function " + name + "(");
     const end = source.indexOf("\n  function ", start + 1);
@@ -128,24 +128,39 @@ test("主游戏跨缝网格在动画零点保留半格，两端与远距桥分�
   }
 });
 
-test("共享曲面网格从完整半格边界连续起步，完整曲面投影不受二维调整影响", () => {
+test("共享曲面网格从完整半格边界连续起步，透视终态只描绘可见曲面", () => {
   for (const type of ["cylinder", "torus", "mobius", "klein", "projective", "sphere"]) {
     const { game, layout } = scene(type);
     let previous;
     for (const morph of [0, 0.00001, 1]) {
       const { ctx, strokes } = recorder();
-      const orientation = { x: 0.42, y: -0.58, z: -0.08, morph };
-      Art.drawCompletion(ctx, { game, layout, morph, orientation });
+      const orientation = { x: 0.42, y: -0.58, z: -0.08, morph, perspective: morph };
+      const depth = Art.drawCompletion(ctx, { game, layout, morph, orientation });
       const grid = strokes.filter(stroke => stroke.color === "rgba(92, 88, 80, 0.31)");
       assert.equal(grid.length, game.rules.width + game.rules.height);
       for (let i = 0; i < grid.length; i++) {
         const vertical = i < game.rules.width;
         const uv = Morph.stoneUV(game.rules, vertical ? i : (i - game.rules.width) * game.rules.width);
+        const fullPath = Array.from({ length: 97 }, (_, j) => {
+          const u = vertical ? uv.u : j / 96, v = vertical ? j / 96 : uv.v;
+          return Art.mappedCompletionPoint(game, layout, Art.flatPointFromUV(game.rules, layout, u, v), { u, v }, orientation);
+        });
+        if (morph === 0) {
+          close(grid[i].points[0], fullPath[0]);
+          close(grid[i].points.at(-1), fullPath.at(-1));
+        }
         grid[i].points.forEach((point, sample) => {
-          const t = sample / (grid[i].points.length - 1), u = vertical ? uv.u : t, v = vertical ? t : uv.v;
-          if (morph === 0) close(point, Art.flatPointFromUV(game.rules, layout, u, v));
-          if (morph === 1) close(point, Morph.project(type, u, v, layout.width, layout.height, orientation));
           if (morph === 0.00001) assert.ok(Math.hypot(point.x - previous[i].points[sample].x, point.y - previous[i].points[sample].y) < 0.02);
+          let nearest = { distance: Infinity };
+          for (let j = 1; j < fullPath.length; j++) {
+            const a = fullPath[j - 1], b = fullPath[j], dx = b.x - a.x, dy = b.y - a.y;
+            const t = Math.max(0, Math.min(1, ((point.x - a.x) * dx + (point.y - a.y) * dy) / (dx * dx + dy * dy || 1)));
+            const p = { x: a.x + dx * t, y: a.y + dy * t, depth: a.depth + (b.depth - a.depth) * t };
+            const distance = Math.hypot(point.x - p.x, point.y - p.y);
+            if (distance < nearest.distance) nearest = { distance, point: p };
+          }
+          assert.ok(nearest.distance < 1e-7, type + " grid follows the projected curve");
+          assert.ok(depth.visible(nearest.point, 0.035001), type + " rear grid is hidden");
         });
       }
       previous = grid;

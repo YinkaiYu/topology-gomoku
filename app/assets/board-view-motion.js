@@ -22,6 +22,7 @@
 
   function setProgress(view, value, time, animate, touch) {
     var target = Morph.clamp01(Number(value) || 0);
+    Logic.prepareMorphRotation(view.rotation, null, view.progress);
     view.startProgress = view.progress;
     view.target = target;
     view.startedAt = time;
