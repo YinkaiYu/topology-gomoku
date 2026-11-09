@@ -43,10 +43,10 @@ function draw(topology, morph) {
   const rules = Engine.createRules({ type: topology, width: level.width, height: level.height });
   const game = { level, rules, board: new Int8Array(rules.cellCount) };
   const layout = Art.computeLayout(520, 480, level);
-  const orientation = { x: 0.42, y: -0.58, z: -0.08, scale: 1, morph };
+  const orientation = { x: 0.42, y: -0.58, z: -0.08, scale: 1, morph, perspective: morph };
   const { ctx, strokes } = recordingContext();
-  Art.drawCompletion(ctx, { game, layout, morph, orientation });
-  return { strokes, layout, orientation, rules };
+  const depth = Art.drawCompletion(ctx, { game, layout, morph, orientation });
+  return { strokes, layout, orientation, rules, depth };
 }
 
 function assertPoint(actual, expected, message) {
@@ -56,15 +56,33 @@ function assertPoint(actual, expected, message) {
 
 function assertSide(stroke, side, topology, drawing) {
   const { layout, orientation } = drawing;
-  assert.ok(stroke.points.length > 2, `${topology} ${side} follows the curved surface`);
-  stroke.points.forEach((point, index) => {
-    const [u, v] = SIDE_UV[side](index / (stroke.points.length - 1));
+  const samples = Array.from({ length: 97 }, (_, index) => {
+    const [u, v] = SIDE_UV[side](index / 96);
     const flat = Art.flatPointFromUV(drawing.rules, layout, u, v);
     const projected = Morph.project(topology, u, v, layout.width, layout.height, orientation);
-    assertPoint(point, {
+    return {
       x: flat.x * (1 - orientation.morph) + projected.x * orientation.morph,
-      y: flat.y * (1 - orientation.morph) + projected.y * orientation.morph
-    }, `${topology} ${side} at morph ${orientation.morph}, sample ${index}`);
+      y: flat.y * (1 - orientation.morph) + projected.y * orientation.morph,
+      depth: projected.depth * orientation.morph
+    };
+  });
+  if (orientation.morph === 0) {
+    assertPoint(stroke.points[0], samples[0], `${topology} ${side} flat start`);
+    assertPoint(stroke.points.at(-1), samples.at(-1), `${topology} ${side} flat end`);
+  }
+  // Depth clipping inserts extra samples and can remove a whole rear edge.
+  // Every surviving point must still belong to this specific colored seam.
+  stroke.points.forEach(point => {
+    let nearest = { distance: Infinity };
+    for (let i = 1; i < samples.length; i++) {
+      const a = samples[i - 1], b = samples[i], dx = b.x - a.x, dy = b.y - a.y;
+      const t = Math.max(0, Math.min(1, ((point.x - a.x) * dx + (point.y - a.y) * dy) / (dx * dx + dy * dy || 1)));
+      const projected = { x: a.x + dx * t, y: a.y + dy * t, depth: a.depth + (b.depth - a.depth) * t };
+      const distance = Math.hypot(point.x - projected.x, point.y - projected.y);
+      if (distance < nearest.distance) nearest = { distance, point: projected };
+    }
+    assert.ok(nearest.distance < 1e-7, `${topology} ${side} remains on its seam`);
+    assert.ok(drawing.depth.visible(nearest.point, 0.035001), `${topology} ${side} is not behind the sheet`);
   });
 }
 

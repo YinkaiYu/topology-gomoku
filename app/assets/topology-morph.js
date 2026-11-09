@@ -481,11 +481,111 @@
     var softZ = surface[2] * (1 - wobbleY * (0.35 - localFlex * 0.08)) - surface[0] * wobbleX * 0.19;
     var point = rotate([softX, softY, softZ], angles);
     var scale = Math.min(width, height) * camera.scale * scaleFactor;
+    // Board views opt in; small topology glyphs keep their original framing.
+    var perspective = orientation && typeof orientation === "object" ? clamp01(Number(orientation.perspective) || 0) : 0;
+    var magnification = 4.8 / Math.max(1.2, 4.8 - point[2] * perspective);
     return {
-      x: width * 0.5 + point[0] * scale,
-      y: height * 0.5 - point[1] * scale,
-      depth: point[2]
+      x: width * 0.5 + point[0] * scale * magnification,
+      y: height * 0.5 - point[1] * scale * magnification,
+      depth: point[2],
+      scale: magnification
     };
+  }
+
+  // A small, DOM-free depth buffer shared by H5 and Canvas hosts. All overlays
+  // query the actual folded surface, including holes and self-intersections.
+  function createDepthBuffer(width, height, patches) {
+    var pixel = 1.5;
+    var columns = Math.max(1, Math.ceil(width / pixel));
+    var rows = Math.max(1, Math.ceil(height / pixel));
+    var depths = new Float32Array(columns * rows);
+    depths.fill(-Infinity);
+    function triangle(a, b, c) {
+      var ax = a.x / pixel, ay = a.y / pixel;
+      var bx = b.x / pixel, by = b.y / pixel;
+      var cx = c.x / pixel, cy = c.y / pixel;
+      var denominator = (by - cy) * (ax - cx) + (cx - bx) * (ay - cy);
+      if (Math.abs(denominator) < 1e-8) { return; }
+      var left = Math.max(0, Math.floor(Math.min(ax, bx, cx)));
+      var right = Math.min(columns - 1, Math.ceil(Math.max(ax, bx, cx)));
+      var top = Math.max(0, Math.floor(Math.min(ay, by, cy)));
+      var bottom = Math.min(rows - 1, Math.ceil(Math.max(ay, by, cy)));
+      for (var y = top; y <= bottom; y += 1) {
+        for (var x = left; x <= right; x += 1) {
+          var wa = ((by - cy) * (x + 0.5 - cx) + (cx - bx) * (y + 0.5 - cy)) / denominator;
+          var wb = ((cy - ay) * (x + 0.5 - cx) + (ax - cx) * (y + 0.5 - cy)) / denominator;
+          var wc = 1 - wa - wb;
+          if (wa < -1e-6 || wb < -1e-6 || wc < -1e-6) { continue; }
+          var depth = wa * a.depth + wb * b.depth + wc * c.depth;
+          var index = y * columns + x;
+          if (depth > depths[index]) { depths[index] = depth; }
+        }
+      }
+    }
+    patches.forEach(function rasterPatch(patch) {
+      for (var index = 1; index < patch.points.length - 1; index += 1) {
+        triangle(patch.points[0], patch.points[index], patch.points[index + 1]);
+      }
+    });
+    function depthAt(x, y) {
+      var px = x / pixel - 0.5, py = y / pixel - 0.5;
+      var left = Math.floor(px), top = Math.floor(py);
+      var fx = px - left, fy = py - top;
+      var total = 0, weight = 0;
+      for (var dy = 0; dy < 2; dy += 1) {
+        for (var dx = 0; dx < 2; dx += 1) {
+          var ix = left + dx, iy = top + dy;
+          if (ix < 0 || iy < 0 || ix >= columns || iy >= rows) { continue; }
+          var value = depths[iy * columns + ix];
+          var amount = (dx ? fx : 1 - fx) * (dy ? fy : 1 - fy);
+          if (!Number.isFinite(value)) { continue; }
+          total += value * amount;
+          weight += amount;
+        }
+      }
+      return weight > 1e-8 ? total / weight : -Infinity;
+    }
+    function visible(point, bias) {
+      return point.depth + (bias === undefined ? 0.035 : bias) >= depthAt(point.x, point.y);
+    }
+    function strokePath(ctx, points) {
+      if (points.length < 2) { return; }
+      ctx.beginPath();
+      var connected = false;
+      for (var index = 1; index < points.length; index += 1) {
+        var from = points[index - 1], to = points[index];
+        var steps = Math.max(1, Math.ceil(Math.hypot(to.x - from.x, to.y - from.y) / 1.5));
+        for (var step = index === 1 ? 0 : 1; step <= steps; step += 1) {
+          var t = step / steps;
+          var point = { x: from.x + (to.x - from.x) * t, y: from.y + (to.y - from.y) * t, depth: from.depth + (to.depth - from.depth) * t };
+          if (visible(point)) {
+            if (connected) { ctx.lineTo(point.x, point.y); } else { ctx.moveTo(point.x, point.y); }
+            connected = true;
+          } else { connected = false; }
+        }
+      }
+      ctx.stroke();
+    }
+    function clipDisk(ctx, point, radius) {
+      // Clip the stone and its shadow together, retaining the visible part at
+      // a silhouette instead of popping the entire stone in or out.
+      var extent = Math.ceil(radius * 1.6);
+      ctx.beginPath();
+      for (var y = -extent; y < extent; y += 1) {
+        var run = null;
+        for (var x = -extent; x <= extent; x += 1) {
+          var relief = 0.045 * Math.sqrt(Math.max(0, 1 - (x * x + y * y) / (radius * radius)));
+          var shown = x < extent && point.depth + relief + 0.035 >= depthAt(point.x + x + 0.5, point.y + y + 0.5);
+          if (shown && run === null) { run = x; }
+          if (!shown && run !== null) {
+            ctx.rect(point.x + run, point.y + y, x - run, 1);
+            run = null;
+          }
+        }
+      }
+      ctx.clip();
+    }
+    return { visible: visible, depthAt: depthAt, strokePath: strokePath, clipDisk: clipDisk };
   }
 
   function project(type, u, v, width, height, orientation) {
@@ -633,6 +733,7 @@
     surfacePoint: surfacePoint,
     project: project,
     projectPoint: projectPoint,
+    createDepthBuffer: createDepthBuffer,
     stoneUV: stoneUV,
     isPeriodicX: isPeriodicX,
     isPeriodicY: isPeriodicY,
