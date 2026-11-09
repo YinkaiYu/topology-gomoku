@@ -853,7 +853,7 @@
     var samples = 96;
     ctx.save();
     ctx.strokeStyle = "rgba(92, 88, 80, 0.31)";
-    ctx.lineWidth = 0.8;
+    ctx.lineWidth = 1.05;
     ctx.lineCap = "round";
     for (var x = 0; x < game.rules.width; x += 1) {
       var u = Morph.stoneUV(game.rules, x).u;
@@ -918,7 +918,8 @@
       x: flat.x + (projected.x - flat.x) * morph,
       y: flat.y + (projected.y - flat.y) * morph,
       depth: projected.depth * morph,
-      scale: 1 + ((projected.scale || 1) - 1) * morph
+      scale: 1 + ((projected.scale || 1) - 1) * morph,
+      depthScale: projected.depthScale
     };
   }
 
@@ -1096,12 +1097,15 @@
       ctx.save();
       var stoneRadius = radius * item.point.scale;
       ctx.globalAlpha *= game.winningMask && !winnerSet[item.cell] ? 0.5 : 1;
-      ctx.globalAlpha *= depth.translucency + (1 - depth.translucency) * depth.stoneVisibility(item.point);
-      ctx.translate(item.point.x, item.point.y);
-      ctx.shadowColor = item.player === Engine.HUMAN ? "rgba(24, 31, 29, 0.3)" : "rgba(65, 58, 48, 0.2)";
-      ctx.shadowBlur = effectPixels(ctx, stoneRadius * 0.48);
-      ctx.shadowOffsetY = effectPixels(ctx, stoneRadius * 0.2);
-      drawStoneFace(ctx, item.player, stoneRadius, item.cell === game.lastMove, 0);
+      Morph.paintStone(ctx, depth, item.point, stoneRadius, function paintFace(withShadow) {
+        ctx.save();
+        ctx.translate(item.point.x, item.point.y);
+      ctx.shadowColor = withShadow === false ? "transparent" : item.player === Engine.HUMAN ? "rgba(24, 31, 29, 0.3)" : "rgba(65, 58, 48, 0.2)";
+        ctx.shadowBlur = effectPixels(ctx, stoneRadius * 0.48);
+        ctx.shadowOffsetY = effectPixels(ctx, stoneRadius * 0.2);
+        drawStoneFace(ctx, item.player, stoneRadius, item.cell === game.lastMove, 0);
+        ctx.restore();
+      });
       ctx.restore();
     }
     stones.forEach(function drawStoneLayers(item) {

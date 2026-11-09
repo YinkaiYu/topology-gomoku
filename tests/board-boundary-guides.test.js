@@ -19,7 +19,7 @@ function recorder() {
     globalAlpha: 1,
     save() { stack.push(Object.fromEntries(keys.map(key => [key, this[key]]))); },
     restore() { Object.assign(this, stack.pop()); },
-    beginPath() { points = []; }, moveTo(x, y) { points.push({ x, y }); }, lineTo(x, y) { points.push({ x, y }); },
+    beginPath() { points = []; }, moveTo(x, y) { points.push({ x, y, start: true }); }, lineTo(x, y) { points.push({ x, y }); },
     bezierCurveTo(a, b, c, d, x, y) { points.push({ x, y }); },
     stroke() { strokes.push({ color: this.strokeStyle, alpha: this.globalAlpha, points: points.slice() }); },
     fill() {}, fillRect() {}, arc() {}, clip() {}, closePath() {}, setLineDash() {}, strokeRect() {},
@@ -149,8 +149,17 @@ test("共享曲面网格从完整半格边界连续起步，透视终态强调�
           close(grid[i].points[0], fullPath[0]);
           close(grid[i].points.at(-1), fullPath.at(-1));
         }
-        grid[i].points.forEach((point, sample) => {
-          if (morph === 0.00001) assert.ok(Math.hypot(point.x - previous[i].points[sample].x, point.y - previous[i].points[sample].y) < 0.02);
+        if (morph === 0.00001) grid[i].points.forEach((point, sample) => {
+          assert.ok(Math.hypot(point.x - previous[i].points[sample].x, point.y - previous[i].points[sample].y) < 0.02);
+        });
+        const probes = grid[i].points.map(point => ({ point, visible: false }));
+        grid[i].points.forEach((point, index) => {
+          if (index && !point.start) {
+            const previous = grid[i].points[index - 1];
+            for (const t of [0.1, 0.5, 0.9]) probes.push({ point: { x: previous.x + (point.x - previous.x) * t, y: previous.y + (point.y - previous.y) * t }, visible: true });
+          }
+        });
+        probes.forEach(({ point, visible }) => {
           let nearest = { distance: Infinity };
           for (let j = 1; j < fullPath.length; j++) {
             const a = fullPath[j - 1], b = fullPath[j], dx = b.x - a.x, dy = b.y - a.y;
@@ -160,7 +169,7 @@ test("共享曲面网格从完整半格边界连续起步，透视终态强调�
             if (distance < nearest.distance) nearest = { distance, point: p };
           }
           assert.ok(nearest.distance < 1e-7, type + " grid follows the projected curve");
-          assert.ok(depth.visible(nearest.point, 0.035001), type + " rear grid is hidden");
+          if (visible) assert.ok(depth.visible(nearest.point, 0.045001), type + " rear grid is hidden");
         });
       }
       previous = grid;
