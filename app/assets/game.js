@@ -1480,6 +1480,7 @@
                 x: pitch,
                 y: yaw,
                 z: roll,
+                perspective: 1,
                 shapeX: shape.x,
                 shapeY: shape.y,
                 shapeZ: shape.z,
@@ -1544,6 +1545,7 @@
                 x: pitch,
                 y: yaw,
                 z: roll,
+                perspective: 1,
                 shapeX: 1,
                 shapeY: 1,
                 shapeZ: 1,
@@ -2851,6 +2853,7 @@
       drawInteractiveMorph(ctx, time);
       return;
     }
+    renderState.depthBuffer = null;
     drawTopologyRails(ctx, time);
     drawGrid(ctx, layout);
     drawLessonConnections(ctx, time);
@@ -3011,7 +3014,10 @@
     return {
       x: flatX + (projected.x - flatX) * morph,
       y: flatY + (projected.y - flatY) * morph,
-      depth: projected.depth * morph
+      depth: projected.depth * morph,
+      scale: 1 + (projected.scale - 1) * morph,
+      depthScale: projected.depthScale,
+      u: u, v: v
     };
   }
 
@@ -3066,6 +3072,9 @@
       }
     }
     patches.sort(function sortPatches(a, b) { return a.depth - b.depth; });
+    renderState.depthBuffer = Morph.createDepthBuffer(renderState.width, renderState.height, patches);
+    renderState.depthBuffer.mesh = Morph.createSurfaceMesh(points);
+    renderState.depthBuffer.translucency = 0.16 * morph;
 
     var surfaceGradient = ctx.createLinearGradient(
       0,
@@ -3073,26 +3082,17 @@
       0,
       renderState.height * 0.82
     );
-    surfaceGradient.addColorStop(0, "rgba(251,249,243,0.98)");
-    surfaceGradient.addColorStop(0.48, "rgba(238,235,226,0.98)");
-    surfaceGradient.addColorStop(1, "rgba(213,210,201,0.98)");
+    surfaceGradient.addColorStop(0, "#fbf9f3");
+    surfaceGradient.addColorStop(0.48, "#eeebe2");
+    surfaceGradient.addColorStop(1, "#d5d2c9");
 
     ctx.save();
-    ctx.globalAlpha = 0.3 + morph * 0.66;
+    ctx.globalAlpha = 0.3 + morph * 0.54;
     ctx.fillStyle = surfaceGradient;
     ctx.strokeStyle = surfaceGradient;
     ctx.lineWidth = 0.82;
     ctx.lineJoin = "round";
-    patches.forEach(function drawPatch(patch) {
-      ctx.beginPath();
-      ctx.moveTo(patch.points[0].x, patch.points[0].y);
-      for (var index = 1; index < patch.points.length; index += 1) {
-        ctx.lineTo(patch.points[index].x, patch.points[index].y);
-      }
-      ctx.closePath();
-      ctx.fill();
-      ctx.stroke();
-    });
+    Morph.fillSurface(ctx, patches);
     ctx.restore();
   }
 
@@ -3169,6 +3169,10 @@
     if (!points.length) {
       return;
     }
+    if (renderState.depthBuffer) {
+      renderState.depthBuffer.strokePath(ctx, points);
+      return;
+    }
     ctx.beginPath();
     ctx.moveTo(points[0].x, points[0].y);
     if (points.length === 2) {
@@ -3196,59 +3200,12 @@
     ctx.stroke();
   }
 
-  function completionDepthIntersection(from, to, threshold) {
-    var span = to.depth - from.depth;
-    var amount = Math.abs(span) < 1e-8 ? 0.5 : (threshold - from.depth) / span;
-    amount = clamp01(amount);
-    return {
-      x: from.x + (to.x - from.x) * amount,
-      y: from.y + (to.y - from.y) * amount,
-      depth: threshold
-    };
-  }
-
-  function strokeFrontFacingCompletionPath(ctx, points, threshold) {
-    var visible = [];
-    function finishVisibleRun() {
-      if (visible.length > 1) {
-        strokeSmoothCompletionPath(ctx, visible);
-      }
-      visible = [];
-    }
-    for (var index = 1; index < points.length; index += 1) {
-      var from = points[index - 1];
-      var to = points[index];
-      var fromVisible = from.depth >= threshold;
-      var toVisible = to.depth >= threshold;
-      if (fromVisible && toVisible) {
-        if (!visible.length) {
-          visible.push(from);
-        }
-        visible.push(to);
-      } else if (fromVisible) {
-        if (!visible.length) {
-          visible.push(from);
-        }
-        visible.push(completionDepthIntersection(from, to, threshold));
-        finishVisibleRun();
-      } else if (toVisible) {
-        visible.push(completionDepthIntersection(from, to, threshold));
-        visible.push(to);
-      } else {
-        finishVisibleRun();
-      }
-    }
-    finishVisibleRun();
-  }
-
   function completionSphereRailPoint(u, v, morph, spin) {
     return completionPoint(u, v, morph, spin);
   }
 
   function drawCompletionSphereGrid(ctx, morph, spin) {
     var samples = 72;
-    var frontBlend = Morph.smooth((morph - 0.46) / 0.42);
-    var depthThreshold = -0.012 * morph;
     var firstGridUV = Morph.stoneUV(game.rules, 0);
     var lastGridUV = Morph.stoneUV(game.rules, game.rules.cellCount - 1);
     var firstU = firstGridUV.u * morph;
@@ -3262,16 +3219,7 @@
         var verticalAmount = verticalSample / samples;
         vertical.push(completionSphereRailPoint(u, firstV + (lastV - firstV) * verticalAmount, morph, spin));
       }
-      ctx.save();
-      ctx.globalAlpha *= 1 - frontBlend * 0.84;
       strokeSmoothCompletionPath(ctx, vertical);
-      ctx.restore();
-      if (frontBlend > 0) {
-        ctx.save();
-        ctx.globalAlpha *= frontBlend * 0.84;
-        strokeFrontFacingCompletionPath(ctx, vertical, depthThreshold);
-        ctx.restore();
-      }
     }
     for (var y = 0; y < game.rules.height; y += 1) {
       var v = Morph.stoneUV(game.rules, y * game.rules.width).v;
@@ -3280,39 +3228,17 @@
         var horizontalAmount = horizontalSample / samples;
         horizontal.push(completionSphereRailPoint(firstU + (lastU - firstU) * horizontalAmount, v, morph, spin));
       }
-      ctx.save();
-      ctx.globalAlpha *= 1 - frontBlend * 0.84;
       strokeSmoothCompletionPath(ctx, horizontal);
-      ctx.restore();
-      if (frontBlend > 0) {
-        ctx.save();
-        ctx.globalAlpha *= frontBlend * 0.84;
-        strokeFrontFacingCompletionPath(ctx, horizontal, depthThreshold);
-        ctx.restore();
-      }
     }
   }
 
   function drawCompletionGrid(ctx, morph, spin) {
     ctx.save();
     ctx.strokeStyle = "rgba(92, 88, 80," + (0.48 - morph * 0.17) + ")";
-    ctx.lineWidth = Math.max(0.7, renderState.layout.cell * (0.025 - morph * 0.006));
+    ctx.lineWidth = Math.max(0.7 + morph * 0.35, renderState.layout.cell * (0.025 - morph * 0.002));
     ctx.lineCap = "round";
     ctx.lineJoin = "round";
     if (game.level.topology === "sphere") {
-      var sphereRound = morph > 0.9 && Math.abs(spin.wobbleX || 0) + Math.abs(spin.wobbleY || 0) < 0.012;
-      if (sphereRound) {
-        var clipScale = Number(spin.scale) || 1;
-        ctx.beginPath();
-        ctx.arc(
-          renderState.width * 0.5,
-          renderState.height * 0.5,
-          Math.min(renderState.width, renderState.height) * 0.315 * clipScale,
-          0,
-          Math.PI * 2
-        );
-        ctx.clip();
-      }
       drawCompletionSphereGrid(ctx, morph, spin);
       ctx.restore();
       return;
@@ -3354,19 +3280,15 @@
     ctx.lineWidth = 2.4;
     ctx.lineCap = "round";
     [0, 1].forEach(function drawSide(side) {
-      ctx.beginPath();
+      var points = [];
       for (var index = 0; index <= samples; index += 1) {
         var along = index / samples;
         var point = axis === "x"
           ? completionPoint(side, along, morph, spin)
           : completionPoint(along, side, morph, spin);
-        if (index === 0) {
-          ctx.moveTo(point.x, point.y);
-        } else {
-          ctx.lineTo(point.x, point.y);
-        }
+        points.push(point);
       }
-      ctx.stroke();
+      strokeSmoothCompletionPath(ctx, points);
     });
     ctx.restore();
   }
@@ -3383,16 +3305,12 @@
     ctx.lineWidth = 2.4;
     ctx.lineCap = "round";
     sides.forEach(function drawSphereSide(pointAt) {
-      ctx.beginPath();
+      var points = [];
       for (var index = 0; index <= samples; index += 1) {
         var point = pointAt(index / samples);
-        if (index === 0) {
-          ctx.moveTo(point.x, point.y);
-        } else {
-          ctx.lineTo(point.x, point.y);
-        }
+        points.push(point);
       }
-      ctx.stroke();
+      strokeSmoothCompletionPath(ctx, points);
     });
     ctx.restore();
   }
@@ -3446,6 +3364,18 @@
     return curve;
   }
 
+  function strokeRevealedCompletionPath(ctx, points, amount) {
+    var end = (points.length - 1) * amount;
+    var whole = Math.floor(end), fraction = end - whole;
+    var revealed = points.slice(0, whole + 1);
+    if (whole < points.length - 1) {
+      var from = points[whole], to = points[whole + 1];
+      revealed.push({ x: from.x + (to.x - from.x) * fraction,
+        y: from.y + (to.y - from.y) * fraction, depth: from.depth + (to.depth - from.depth) * fraction });
+    }
+    strokeSmoothCompletionPath(ctx, revealed);
+  }
+
   function drawCompletionWinningLine(ctx, time, morph, spin) {
     var winningMask = activeWinningMask();
     if (!winningMask) {
@@ -3463,21 +3393,7 @@
     ctx.lineWidth = Math.max(3.4, renderState.layout.cell * 0.12);
     if (game.level.topology === "sphere") {
       var sphereCurve = completionSphereWinningCurve(cells, morph, spin);
-      var visibleEnd = (sphereCurve.length - 1) * reveal;
-      ctx.beginPath();
-      ctx.moveTo(sphereCurve[0].x, sphereCurve[0].y);
-      for (var sphereIndex = 1; sphereIndex <= Math.floor(visibleEnd); sphereIndex += 1) {
-        ctx.lineTo(sphereCurve[sphereIndex].x, sphereCurve[sphereIndex].y);
-      }
-      if (visibleEnd < sphereCurve.length - 1) {
-        var sphereWhole = Math.floor(visibleEnd);
-        var sphereFraction = visibleEnd - sphereWhole;
-        ctx.lineTo(
-          sphereCurve[sphereWhole].x + (sphereCurve[sphereWhole + 1].x - sphereCurve[sphereWhole].x) * sphereFraction,
-          sphereCurve[sphereWhole].y + (sphereCurve[sphereWhole + 1].y - sphereCurve[sphereWhole].y) * sphereFraction
-        );
-      }
-      ctx.stroke();
+      strokeRevealedCompletionPath(ctx, sphereCurve, reveal);
       ctx.restore();
       return;
     }
@@ -3502,23 +3418,7 @@
         continue;
       }
       var points = completionGridEdgePoints(cells[index], step, direction, morph, spin);
-      var lastPointIndex = (points.length - 1) * segmentProgress;
-      ctx.beginPath();
-      ctx.moveTo(points[0].x, points[0].y);
-      for (var pointIndex = 1; pointIndex <= Math.floor(lastPointIndex); pointIndex += 1) {
-        ctx.lineTo(points[pointIndex].x, points[pointIndex].y);
-      }
-      if (lastPointIndex < points.length - 1) {
-        var wholeIndex = Math.floor(lastPointIndex);
-        var fraction = lastPointIndex - wholeIndex;
-        var fromPoint = points[wholeIndex];
-        var toPoint = points[wholeIndex + 1];
-        ctx.lineTo(
-          fromPoint.x + (toPoint.x - fromPoint.x) * fraction,
-          fromPoint.y + (toPoint.y - fromPoint.y) * fraction
-        );
-      }
-      ctx.stroke();
+      strokeRevealedCompletionPath(ctx, points, segmentProgress);
       direction = step.direction;
     }
     ctx.restore();
@@ -3526,31 +3426,36 @@
 
   function drawCompletionStone(ctx, item, radius, dimmed) {
     ctx.save();
+    var depth = renderState.depthBuffer;
     ctx.globalAlpha = dimmed ? 0.5 : 1;
-    ctx.translate(item.point.x, item.point.y);
-    ctx.shadowColor = item.player === HUMAN ? "rgba(24, 31, 29, 0.3)" : "rgba(65, 58, 48, 0.2)";
-    ctx.shadowBlur = radius * 0.48;
-    ctx.shadowOffsetY = radius * 0.2;
-    var gradient = ctx.createRadialGradient(-radius * 0.3, -radius * 0.34, radius * 0.07, 0, 0, radius);
-    if (item.player === HUMAN) {
-      gradient.addColorStop(0, "#6d7b76");
-      gradient.addColorStop(0.38, "#2b3935");
-      gradient.addColorStop(1, "#14201d");
-    } else {
-      gradient.addColorStop(0, "#ffffff");
-      gradient.addColorStop(0.48, "#f8f4e9");
-      gradient.addColorStop(1, "#d5cec1");
-    }
-    ctx.fillStyle = gradient;
-    ctx.beginPath();
-    ctx.arc(0, 0, radius, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.shadowColor = "transparent";
-    if (item.player === AI) {
-      ctx.strokeStyle = "rgba(94, 88, 78, 0.36)";
-      ctx.lineWidth = 1;
-      ctx.stroke();
-    }
+    Morph.paintStone(ctx, depth, item.point, radius, function paintFace(withShadow) {
+      ctx.save();
+      ctx.translate(item.point.x, item.point.y);
+      ctx.shadowColor = withShadow === false ? "transparent" : item.player === HUMAN ? "rgba(24, 31, 29, 0.3)" : "rgba(65, 58, 48, 0.2)";
+      ctx.shadowBlur = radius * 0.48;
+      ctx.shadowOffsetY = radius * 0.2;
+      var gradient = ctx.createRadialGradient(-radius * 0.3, -radius * 0.34, radius * 0.07, 0, 0, radius);
+      if (item.player === HUMAN) {
+        gradient.addColorStop(0, "#6d7b76");
+        gradient.addColorStop(0.38, "#2b3935");
+        gradient.addColorStop(1, "#14201d");
+      } else {
+        gradient.addColorStop(0, "#ffffff");
+        gradient.addColorStop(0.48, "#f8f4e9");
+        gradient.addColorStop(1, "#d5cec1");
+      }
+      ctx.fillStyle = gradient;
+      ctx.beginPath();
+      ctx.arc(0, 0, radius, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.shadowColor = "transparent";
+      if (item.player === AI && withShadow !== "shadow") {
+        ctx.strokeStyle = "rgba(94, 88, 78, 0.36)";
+        ctx.lineWidth = 1;
+        ctx.stroke();
+      }
+      ctx.restore();
+    });
     ctx.restore();
   }
 
@@ -3571,7 +3476,7 @@
     items.sort(function sortStones(a, b) { return a.point.depth - b.point.depth; });
     var radius = renderState.layout.cell * (0.37 - morph * 0.07);
     items.forEach(function drawItem(item) {
-      drawCompletionStone(ctx, item, radius, Boolean(winningMask && !winnerSet[item.cell]));
+      drawCompletionStone(ctx, item, radius * item.point.scale, Boolean(winningMask && !winnerSet[item.cell]));
     });
   }
 
@@ -3599,6 +3504,7 @@
     var orientation = ViewLogic.completionOrientation(
       game.completion, viewBlend, jellyScale, restingBounce, sphereCompletion, Morph, time
     );
+    orientation.perspective = morph;
 
     drawCompletionSurface(ctx, morph, orientation);
     drawCompletionGrid(ctx, morph, orientation);
@@ -3618,7 +3524,9 @@
   }
 
   function interactiveViewOrientation(time) {
-    return ViewLogic.interactiveOrientation(game.view, time);
+    var orientation = ViewLogic.interactiveOrientation(game.view, time);
+    orientation.perspective = clamp01(game.view.progress);
+    return orientation;
   }
 
   function drawInteractiveMorph(ctx, time) {
@@ -4070,7 +3978,8 @@
         return;
       }
       var center = resolveCell ? resolveCell(hint.cell) : cellCenter(hint.cell);
-      var radius = cellSize * (0.27 - (morph || 0) * 0.035);
+      if (resolveCell && renderState.depthBuffer && !renderState.depthBuffer.visible(center)) { return; }
+      var radius = cellSize * (0.27 - (morph || 0) * 0.035) * (center.scale || 1);
       var urgent = hint.kind === "four";
       var defensive = hint.player !== (game.mode === "duel" ? game.turn : HUMAN);
       ctx.save();
@@ -4106,10 +4015,11 @@
     }
     var pressed = renderState.pressedCell >= 0;
     var projected = completionCellPoint(cell, morph, orientation);
+    if (renderState.depthBuffer && !renderState.depthBuffer.visible(projected)) { return; }
     var center = pressed && renderState.pressedMotionReady
       ? { x: renderState.pressedX, y: renderState.pressedY }
       : projected;
-    var radius = renderState.layout.cell * (0.34 - morph * 0.05);
+    var radius = renderState.layout.cell * (0.34 - morph * 0.05) * projected.scale;
     ctx.save();
     if (!pressed) {
       ctx.globalAlpha = 0.16;
@@ -4287,15 +4197,18 @@
       var orientation = interactiveViewOrientation(performance.now());
       var bestCell = -1;
       var bestDistance = Infinity;
+      var bestScale = 1;
       for (var spatialCell = 0; spatialCell < game.rules.cellCount; spatialCell += 1) {
         var spatialPoint = completionCellPoint(spatialCell, game.view.progress, orientation);
+        if (renderState.depthBuffer && !renderState.depthBuffer.visible(spatialPoint)) { continue; }
         var spatialDistance = Math.hypot(localX - spatialPoint.x, localY - spatialPoint.y);
         if (spatialDistance < bestDistance) {
           bestDistance = spatialDistance;
           bestCell = spatialCell;
+          bestScale = spatialPoint.scale;
         }
       }
-      return bestDistance <= renderState.layout.cell * 0.52 ? bestCell : -1;
+      return bestDistance <= renderState.layout.cell * 0.52 * bestScale ? bestCell : -1;
     }
     var gridX = Math.round((localX - renderState.layout.left) / renderState.layout.cell);
     var gridY = Math.round((localY - renderState.layout.top) / renderState.layout.cell);

@@ -11,7 +11,30 @@
     return Math.max(0, Math.min(1, Number(value) || 0));
   }
 
+  function shortestAngle(value) {
+    var angle = (Number(value) || 0) % (Math.PI * 2);
+    if (angle > Math.PI) { angle -= Math.PI * 2; }
+    if (angle < -Math.PI) { angle += Math.PI * 2; }
+    return angle === 0 ? 0 : angle;
+  }
+
+  function interpolateAngle(from, to, amount) {
+    return from + shortestAngle(to - from) * amount;
+  }
+
+  function prepareMorphRotation(rotation, base, progress) {
+    // Rebase only at an endpoint. Wrapping during a partly unfolded drag
+    // would change the interpolated pose when the angle crosses +/- PI.
+    if (!rotation || (progress !== 0 && progress !== 1)) { return; }
+    ["x", "y", "z"].forEach(function rebase(axis) {
+      var offset = Number(base && base[axis]) || 0;
+      rotation[axis] = shortestAngle(offset + (Number(rotation[axis]) || 0)) - offset;
+    });
+  }
+
   return {
+    shortestAngle: shortestAngle,
+    prepareMorphRotation: prepareMorphRotation,
     hitProjectedCell: function hitProjectedCell(count, pointAt, x, y, radius) {
       var cell = -1;
       var distance = Infinity;
@@ -24,9 +47,9 @@
     },
     completionOrientation: function completionOrientation(completion, viewBlend, jellyScale, restingBounce, sphereCompletion, Morph, time) {
       return {
-      x: completion.startRotation.x * (1 - viewBlend) + completion.view.x * viewBlend + completion.rotation.x,
-      y: completion.startRotation.y * (1 - viewBlend) + completion.view.y * viewBlend + completion.rotation.y,
-      z: completion.startRotation.z * (1 - viewBlend) + completion.view.z * viewBlend + completion.rotation.z,
+      x: interpolateAngle(completion.startRotation.x, completion.view.x, viewBlend) + completion.rotation.x,
+      y: interpolateAngle(completion.startRotation.y, completion.view.y, viewBlend) + completion.rotation.y,
+      z: interpolateAngle(completion.startRotation.z, completion.view.z, viewBlend) + completion.rotation.z,
       scale: jellyScale,
       shapeX: sphereCompletion ? 1 : 1 + ((Number(completion.view.shapeX) || 1) - 1) * viewBlend,
       shapeY: sphereCompletion ? 1 : 1 + ((Number(completion.view.shapeY) || 1) - 1) * viewBlend,
