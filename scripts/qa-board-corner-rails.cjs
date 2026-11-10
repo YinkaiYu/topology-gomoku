@@ -83,7 +83,10 @@ async function main() {
       for (const dimensions of [[7, 6], [5, 5], [19, 19]]) for (const type of TYPES) for (const progress of [0, .00001]) {
         const row = await page.evaluate(({ type, dimensions, progress }) => qa.draw(type, ...dimensions, progress).data, { type, dimensions, progress });
         const imageSha256 = hash(row.image); delete row.image;
-        results.cases.push({ revision, ...row, imageSha256, cornerDistancePx: verify(row, revision === "after") });
+        const cornerDistancePx = verify(row, revision === "after");
+        row.rails = row.rails.map(rail => ({ color: rail.color, pointCount: rail.points.length,
+          firstPoint: rail.points[0], lastPoint: rail.points[rail.points.length - 1] }));
+        results.cases.push({ revision, ...row, imageSha256, cornerDistancePx });
       }
       for (const [label, types] of [["paired", TYPES.slice(0, 4)], ["open", TYPES.slice(4)]]) {
         await page.evaluate(types => {
