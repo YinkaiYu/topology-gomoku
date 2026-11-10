@@ -1,0 +1,3446 @@
+{
+  "baseline": "81b7b0b71192f785c2b337042d722d8ace027ddc",
+  "viewport": {
+    "width": 1200,
+    "height": 1800,
+    "dpr": 1
+  },
+  "canvas": [
+    600,
+    600
+  ],
+  "moves": [
+    0,
+    6,
+    42,
+    48,
+    24,
+    25,
+    17,
+    31
+  ],
+  "evidence": [
+    {
+      "revision": "before",
+      "kind": "six-surfaces",
+      "rotated": false,
+      "file": "artifacts/board-intersections/before-six-surfaces.png"
+    },
+    {
+      "revision": "before",
+      "kind": "six-surfaces",
+      "rotated": true,
+      "file": "artifacts/board-intersections/before-six-surfaces-rotated.png"
+    },
+    {
+      "revision": "before",
+      "type": "torus",
+      "kind": "morph",
+      "progress": [
+        0.25,
+        0.5,
+        0.75,
+        1
+      ],
+      "counts": [
+        null,
+        null,
+        null,
+        null
+      ],
+      "file": "artifacts/board-intersections/before-torus-morph.png"
+    },
+    {
+      "revision": "before",
+      "type": "klein",
+      "kind": "morph",
+      "progress": [
+        0.25,
+        0.5,
+        0.75,
+        1
+      ],
+      "counts": [
+        null,
+        null,
+        null,
+        null
+      ],
+      "file": "artifacts/board-intersections/before-klein-morph.png"
+    },
+    {
+      "revision": "before",
+      "type": "projective",
+      "kind": "morph",
+      "progress": [
+        0.25,
+        0.5,
+        0.75,
+        1
+      ],
+      "counts": [
+        null,
+        null,
+        null,
+        null
+      ],
+      "file": "artifacts/board-intersections/before-projective-morph.png"
+    },
+    {
+      "revision": "before",
+      "type": "sphere",
+      "kind": "morph",
+      "progress": [
+        0.25,
+        0.5,
+        0.75,
+        1
+      ],
+      "counts": [
+        null,
+        null,
+        null,
+        null
+      ],
+      "file": "artifacts/board-intersections/before-sphere-morph.png"
+    },
+    {
+      "revision": "before",
+      "kind": "stone-contact",
+      "type": "torus",
+      "rotation": {
+        "x": 0.6,
+        "y": 0.75,
+        "z": -0.15
+      },
+      "partialStones": [
+        {
+          "radius": 16.83018224616639,
+          "ratio": 0.3505433466988518
+        },
+        {
+          "radius": 18.786243677273717,
+          "ratio": 0.4811557365732066
+        },
+        {
+          "radius": 21.918680967905008,
+          "ratio": 0.329992410043535
+        },
+        {
+          "radius": 22.468949361792514,
+          "ratio": 0.2997931560394711
+        },
+        {
+          "radius": 23.908255945907335,
+          "ratio": 0.735357551697345
+        }
+      ],
+      "file": "artifacts/board-intersections/before-torus-stone-contact.png"
+    },
+    {
+      "revision": "before",
+      "kind": "stone-contact",
+      "type": "klein",
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "partialStones": [
+        {
+          "radius": 17.804834353184265,
+          "ratio": 0.6346176940400794
+        },
+        {
+          "radius": 21.44511227558152,
+          "ratio": 0.6164665299085491
+        },
+        {
+          "radius": 23.67281556581524,
+          "ratio": 0.8629290872017232
+        }
+      ],
+      "file": "artifacts/board-intersections/before-klein-stone-contact.png"
+    },
+    {
+      "revision": "before",
+      "kind": "stone-contact",
+      "type": "projective",
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "partialStones": [
+        {
+          "radius": 19.713853683188344,
+          "ratio": 0.3173697985031148
+        },
+        {
+          "radius": 21.346857583073064,
+          "ratio": 0.2672169526700726
+        },
+        {
+          "radius": 22.137694763744577,
+          "ratio": 0.5565156212917282
+        },
+        {
+          "radius": 22.91746322148793,
+          "ratio": 0.5611928741696415
+        },
+        {
+          "radius": 24.27226379757958,
+          "ratio": 0.4478350934529839
+        },
+        {
+          "radius": 28.05529873779299,
+          "ratio": 0.8683711603079036
+        }
+      ],
+      "file": "artifacts/board-intersections/before-projective-stone-contact.png"
+    },
+    {
+      "revision": "after",
+      "kind": "six-surfaces",
+      "rotated": false,
+      "file": "artifacts/board-intersections/after-six-surfaces.png"
+    },
+    {
+      "revision": "after",
+      "kind": "six-surfaces",
+      "rotated": true,
+      "file": "artifacts/board-intersections/after-six-surfaces-rotated.png"
+    },
+    {
+      "revision": "after",
+      "type": "torus",
+      "kind": "morph",
+      "progress": [
+        0.25,
+        0.5,
+        0.75,
+        1
+      ],
+      "counts": [
+        2,
+        3,
+        0,
+        0
+      ],
+      "file": "artifacts/board-intersections/after-torus-morph.png"
+    },
+    {
+      "revision": "after",
+      "type": "klein",
+      "kind": "morph",
+      "progress": [
+        0.25,
+        0.5,
+        0.75,
+        1
+      ],
+      "counts": [
+        2,
+        4,
+        4,
+        1
+      ],
+      "file": "artifacts/board-intersections/after-klein-morph.png"
+    },
+    {
+      "revision": "after",
+      "type": "projective",
+      "kind": "morph",
+      "progress": [
+        0.25,
+        0.5,
+        0.75,
+        1
+      ],
+      "counts": [
+        2,
+        9,
+        7,
+        6
+      ],
+      "file": "artifacts/board-intersections/after-projective-morph.png"
+    },
+    {
+      "revision": "after",
+      "type": "sphere",
+      "kind": "morph",
+      "progress": [
+        0.25,
+        0.5,
+        0.75,
+        1
+      ],
+      "counts": [
+        1,
+        2,
+        3,
+        0
+      ],
+      "file": "artifacts/board-intersections/after-sphere-morph.png"
+    },
+    {
+      "revision": "after",
+      "kind": "stone-contact",
+      "type": "torus",
+      "rotation": {
+        "x": 0.6,
+        "y": 0.75,
+        "z": -0.15
+      },
+      "partialStones": [
+        {
+          "radius": 16.83018224616639,
+          "ratio": 0.3505433466988518
+        },
+        {
+          "radius": 18.786243677273717,
+          "ratio": 0.4811557365732066
+        },
+        {
+          "radius": 21.918680967905008,
+          "ratio": 0.329992410043535
+        },
+        {
+          "radius": 22.468949361792514,
+          "ratio": 0.2997931560394711
+        },
+        {
+          "radius": 23.908255945907335,
+          "ratio": 0.735357551697345
+        }
+      ],
+      "file": "artifacts/board-intersections/after-torus-stone-contact.png"
+    },
+    {
+      "revision": "after",
+      "kind": "stone-contact",
+      "type": "klein",
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "partialStones": [
+        {
+          "radius": 17.804834353184265,
+          "ratio": 0.6346176940400794
+        },
+        {
+          "radius": 21.44511227558152,
+          "ratio": 0.6164665299085491
+        },
+        {
+          "radius": 23.67281556581524,
+          "ratio": 0.8629290872017232
+        }
+      ],
+      "file": "artifacts/board-intersections/after-klein-stone-contact.png"
+    },
+    {
+      "revision": "after",
+      "kind": "stone-contact",
+      "type": "projective",
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "partialStones": [
+        {
+          "radius": 19.713853683188344,
+          "ratio": 0.3173697985031148
+        },
+        {
+          "radius": 21.346857583073064,
+          "ratio": 0.2672169526700726
+        },
+        {
+          "radius": 22.137694763744577,
+          "ratio": 0.5565156212917282
+        },
+        {
+          "radius": 22.91746322148793,
+          "ratio": 0.5611928741696415
+        },
+        {
+          "radius": 24.27226379757958,
+          "ratio": 0.4478350934529839
+        },
+        {
+          "radius": 28.05529873779299,
+          "ratio": 0.8683711603079036
+        }
+      ],
+      "file": "artifacts/board-intersections/after-projective-stone-contact.png"
+    }
+  ],
+  "surfaces": [
+    {
+      "revision": "before",
+      "rotated": false,
+      "type": "cylinder",
+      "intersections": null,
+      "sha256": "f5609b45919f35ec36ffe9c7cc4dbcab43ae70e8163f77c156810da46474fcfe"
+    },
+    {
+      "revision": "before",
+      "rotated": false,
+      "type": "torus",
+      "intersections": null,
+      "sha256": "7189fd435787a24f79e7d5c204eb5cee704960cad15f34336fc64ddf9a95cc55"
+    },
+    {
+      "revision": "before",
+      "rotated": false,
+      "type": "mobius",
+      "intersections": null,
+      "sha256": "07c0585afe95ce99ba36e3ced88dab17003ad1a5173d961368bc4ea01434fb54"
+    },
+    {
+      "revision": "before",
+      "rotated": false,
+      "type": "klein",
+      "intersections": null,
+      "sha256": "6732ba7e6569529586723dd2f5e1546e595d452e5ea7bf3b713340e2f0a90af2"
+    },
+    {
+      "revision": "before",
+      "rotated": false,
+      "type": "projective",
+      "intersections": null,
+      "sha256": "a8414089caf1ba5501d9b100f34ccc9f4903fc38e15c4df336d2c2d26a57af9f"
+    },
+    {
+      "revision": "before",
+      "rotated": false,
+      "type": "sphere",
+      "intersections": null,
+      "sha256": "68570d10797b8c6d18fb058db6640ebc3ad9055b146afd051355761413cf17e7"
+    },
+    {
+      "revision": "before",
+      "rotated": true,
+      "type": "cylinder",
+      "intersections": null,
+      "sha256": "003148588cf0ab3b7fe3296c4b8cd2fcc15a8c4b3e44d0e355eb6762fc28b824"
+    },
+    {
+      "revision": "before",
+      "rotated": true,
+      "type": "torus",
+      "intersections": null,
+      "sha256": "91f685bdfad929a8ffed4344bde2239594f810cb74cd1f36a0a2a8d55d0b2f5c"
+    },
+    {
+      "revision": "before",
+      "rotated": true,
+      "type": "mobius",
+      "intersections": null,
+      "sha256": "1db3e19c23ef5adbec2a75a472e4f9f3a85adaa16beb2577cdfa68dc086cb1ad"
+    },
+    {
+      "revision": "before",
+      "rotated": true,
+      "type": "klein",
+      "intersections": null,
+      "sha256": "ce40db9ac3e3e73d85236ac148a15178315144c22a32f3a7252081b59081f1ce"
+    },
+    {
+      "revision": "before",
+      "rotated": true,
+      "type": "projective",
+      "intersections": null,
+      "sha256": "433def085ec69c40a48ccf5567747233ee1baeb6f45b86d08fc4d54b6faabfae"
+    },
+    {
+      "revision": "before",
+      "rotated": true,
+      "type": "sphere",
+      "intersections": null,
+      "sha256": "181cf8165f1ad777ece4c7110e001f85d54c0a689ef89867e33203d11a26c1c8"
+    },
+    {
+      "revision": "after",
+      "rotated": false,
+      "type": "cylinder",
+      "intersections": 0,
+      "sha256": "9b616a45c962d8b2088cf6b7df18b5cf0f035aa6103c0b4811430a74fa17afb4"
+    },
+    {
+      "revision": "after",
+      "rotated": false,
+      "type": "torus",
+      "intersections": 0,
+      "sha256": "8d2e60764df08751557c11aafa19c2c6eb00668b4e86383d7364cc73bb70b52b"
+    },
+    {
+      "revision": "after",
+      "rotated": false,
+      "type": "mobius",
+      "intersections": 0,
+      "sha256": "d1e28f8a6a2d81dfa6aa1076a6548ce6b3656122ca913c02f1cbd82347f95c2e"
+    },
+    {
+      "revision": "after",
+      "rotated": false,
+      "type": "klein",
+      "intersections": 1,
+      "sha256": "6604c1e5f2a5f36efb68573301cedd109cfab49c7e30b5de11c644770fe2ce9e"
+    },
+    {
+      "revision": "after",
+      "rotated": false,
+      "type": "projective",
+      "intersections": 6,
+      "sha256": "dc5d684e0ecb89619ba13e4ffd4cb8f672236e7634d646f30a0fb4060f18a0f9"
+    },
+    {
+      "revision": "after",
+      "rotated": false,
+      "type": "sphere",
+      "intersections": 0,
+      "sha256": "d70f4fa68d49157c5706dd3493ea66b63cf6d9c7b3def982b653144cb41067ca"
+    },
+    {
+      "revision": "after",
+      "rotated": true,
+      "type": "cylinder",
+      "intersections": 0,
+      "sha256": "69cde9e5bf7d5a38d16bf128910affb9f2ba82d685bc62dacbd02b522f3a6f13"
+    },
+    {
+      "revision": "after",
+      "rotated": true,
+      "type": "torus",
+      "intersections": 0,
+      "sha256": "62e9aa61694a4fbf511beb0564f7e9ea8721fd032b105feefc6c1c3f95eab2b5"
+    },
+    {
+      "revision": "after",
+      "rotated": true,
+      "type": "mobius",
+      "intersections": 0,
+      "sha256": "8cbcc79d9a510a99f051098c497b9e9ee27c632073a4ba5ae6c278f8e5911801"
+    },
+    {
+      "revision": "after",
+      "rotated": true,
+      "type": "klein",
+      "intersections": 1,
+      "sha256": "961542c454de96dd0466f15fe66d1e59b53571d0207bd57bc824bc2984eb9bd6"
+    },
+    {
+      "revision": "after",
+      "rotated": true,
+      "type": "projective",
+      "intersections": 6,
+      "sha256": "15a1de5a3be4d23c6df64cf3080c712a19a6d8f831b5266ba61457aeb13b437c"
+    },
+    {
+      "revision": "after",
+      "rotated": true,
+      "type": "sphere",
+      "intersections": 0,
+      "sha256": "49c0e5fb93f826838f6aeb7782a9b29a70eaf8145892f189654153b4528b4255"
+    }
+  ],
+  "flat": [
+    {
+      "revision": "before",
+      "type": "cylinder",
+      "sha256": "a60821cddad66a8268fcddb3c753a3c567aa9af71fb3976e0ebe867ff8101305"
+    },
+    {
+      "revision": "before",
+      "type": "torus",
+      "sha256": "d7009a23df5da13ccf81f5ddfcb9ca37c0ee7d0659ec4959014dd1fa49651b08"
+    },
+    {
+      "revision": "before",
+      "type": "mobius",
+      "sha256": "0cfa103cd8a39051e2820838ade7ec0f3b9c8cff35dad67ef0f074a47c7d1696"
+    },
+    {
+      "revision": "before",
+      "type": "klein",
+      "sha256": "944a7eb67e99dc8195669f2cd1b152ac045a57de72b608f8586c9be4ea7108a2"
+    },
+    {
+      "revision": "before",
+      "type": "projective",
+      "sha256": "1bfe92a59a08853dadc764921db2cf92c01c5d3049c2140ec968d36e415378cd"
+    },
+    {
+      "revision": "before",
+      "type": "sphere",
+      "sha256": "19bd6a258e48654f835818fdfb5c259af4da13628005e7d6ef227d81f1cf26d4"
+    },
+    {
+      "revision": "after",
+      "type": "cylinder",
+      "sha256": "a60821cddad66a8268fcddb3c753a3c567aa9af71fb3976e0ebe867ff8101305"
+    },
+    {
+      "revision": "after",
+      "type": "torus",
+      "sha256": "d7009a23df5da13ccf81f5ddfcb9ca37c0ee7d0659ec4959014dd1fa49651b08"
+    },
+    {
+      "revision": "after",
+      "type": "mobius",
+      "sha256": "0cfa103cd8a39051e2820838ade7ec0f3b9c8cff35dad67ef0f074a47c7d1696"
+    },
+    {
+      "revision": "after",
+      "type": "klein",
+      "sha256": "944a7eb67e99dc8195669f2cd1b152ac045a57de72b608f8586c9be4ea7108a2"
+    },
+    {
+      "revision": "after",
+      "type": "projective",
+      "sha256": "1bfe92a59a08853dadc764921db2cf92c01c5d3049c2140ec968d36e415378cd"
+    },
+    {
+      "revision": "after",
+      "type": "sphere",
+      "sha256": "19bd6a258e48654f835818fdfb5c259af4da13628005e7d6ef227d81f1cf26d4"
+    }
+  ],
+  "performance": [
+    {
+      "revision": "before",
+      "type": "torus",
+      "size": 7,
+      "stones": 8,
+      "drawMs": {
+        "median": 7.200000017881393,
+        "p95": 7.800000011920929
+      },
+      "drawAndReadbackMs": {
+        "median": 11.299999982118607,
+        "p95": 12.300000011920929
+      },
+      "frameMs": {
+        "median": 16.700000000000045,
+        "p95": 16.700000000000045
+      }
+    },
+    {
+      "revision": "before",
+      "type": "torus",
+      "size": 19,
+      "stones": 361,
+      "drawMs": {
+        "median": 37.20000001788139,
+        "p95": 42.29999998211861
+      },
+      "drawAndReadbackMs": {
+        "median": 51.19999998807907,
+        "p95": 56.79999998211861
+      },
+      "frameMs": {
+        "median": 50,
+        "p95": 66.69999999999982
+      }
+    },
+    {
+      "revision": "before",
+      "type": "klein",
+      "size": 7,
+      "stones": 8,
+      "drawMs": {
+        "median": 9.400000005960464,
+        "p95": 19.69999998807907
+      },
+      "drawAndReadbackMs": {
+        "median": 12.599999994039536,
+        "p95": 22.799999982118607
+      },
+      "frameMs": {
+        "median": 16.699999999999818,
+        "p95": 16.800000000000182
+      }
+    },
+    {
+      "revision": "before",
+      "type": "klein",
+      "size": 19,
+      "stones": 361,
+      "drawMs": {
+        "median": 30.799999982118607,
+        "p95": 39.19999998807907
+      },
+      "drawAndReadbackMs": {
+        "median": 41.400000005960464,
+        "p95": 50.099999994039536
+      },
+      "frameMs": {
+        "median": 33.399999999999636,
+        "p95": 50.099999999999454
+      }
+    },
+    {
+      "revision": "before",
+      "type": "projective",
+      "size": 7,
+      "stones": 8,
+      "drawMs": {
+        "median": 9.699999988079071,
+        "p95": 9.900000005960464
+      },
+      "drawAndReadbackMs": {
+        "median": 13.300000011920929,
+        "p95": 13.599999994039536
+      },
+      "frameMs": {
+        "median": 16.699999999999818,
+        "p95": 16.700000000000728
+      }
+    },
+    {
+      "revision": "before",
+      "type": "projective",
+      "size": 19,
+      "stones": 361,
+      "drawMs": {
+        "median": 45.89999997615814,
+        "p95": 61.400000005960464
+      },
+      "drawAndReadbackMs": {
+        "median": 59.19999998807907,
+        "p95": 74.5
+      },
+      "frameMs": {
+        "median": 66.60000000000036,
+        "p95": 66.70000000000073
+      }
+    },
+    {
+      "revision": "before",
+      "type": "sphere",
+      "size": 7,
+      "stones": 8,
+      "drawMs": {
+        "median": 8.599999994039536,
+        "p95": 9.699999988079071
+      },
+      "drawAndReadbackMs": {
+        "median": 11.800000011920929,
+        "p95": 13.400000005960464
+      },
+      "frameMs": {
+        "median": 16.69999999999891,
+        "p95": 16.700000000000728
+      }
+    },
+    {
+      "revision": "before",
+      "type": "sphere",
+      "size": 19,
+      "stones": 361,
+      "drawMs": {
+        "median": 40.900000005960464,
+        "p95": 50.80000001192093
+      },
+      "drawAndReadbackMs": {
+        "median": 56.099999994039536,
+        "p95": 64.5
+      },
+      "frameMs": {
+        "median": 50,
+        "p95": 66.70000000000073
+      }
+    },
+    {
+      "revision": "after",
+      "type": "torus",
+      "size": 7,
+      "stones": 8,
+      "drawMs": {
+        "median": 8,
+        "p95": 8.599999994039536
+      },
+      "drawAndReadbackMs": {
+        "median": 12.299999982118607,
+        "p95": 13
+      },
+      "frameMs": {
+        "median": 16.699999999999818,
+        "p95": 16.700000000000728
+      }
+    },
+    {
+      "revision": "after",
+      "type": "torus",
+      "size": 19,
+      "stones": 361,
+      "drawMs": {
+        "median": 44.30000001192093,
+        "p95": 49
+      },
+      "drawAndReadbackMs": {
+        "median": 61.30000001192093,
+        "p95": 65.7000000178814
+      },
+      "frameMs": {
+        "median": 66.59999999999945,
+        "p95": 66.70000000000073
+      }
+    },
+    {
+      "revision": "after",
+      "type": "klein",
+      "size": 7,
+      "stones": 8,
+      "drawMs": {
+        "median": 13.099999994039536,
+        "p95": 13.800000011920929
+      },
+      "drawAndReadbackMs": {
+        "median": 16.400000005960464,
+        "p95": 17.299999982118607
+      },
+      "frameMs": {
+        "median": 16.69999999999891,
+        "p95": 16.799999999999272
+      }
+    },
+    {
+      "revision": "after",
+      "type": "klein",
+      "size": 19,
+      "stones": 361,
+      "drawMs": {
+        "median": 38.69999998807907,
+        "p95": 56.5
+      },
+      "drawAndReadbackMs": {
+        "median": 50.599999994039536,
+        "p95": 68
+      },
+      "frameMs": {
+        "median": 50,
+        "p95": 50.100000000000364
+      }
+    },
+    {
+      "revision": "after",
+      "type": "projective",
+      "size": 7,
+      "stones": 8,
+      "drawMs": {
+        "median": 15.900000005960464,
+        "p95": 18.80000001192093
+      },
+      "drawAndReadbackMs": {
+        "median": 20.5,
+        "p95": 23.5
+      },
+      "frameMs": {
+        "median": 16.700000000000728,
+        "p95": 33.399999999999636
+      }
+    },
+    {
+      "revision": "after",
+      "type": "projective",
+      "size": 19,
+      "stones": 361,
+      "drawMs": {
+        "median": 57.900000005960464,
+        "p95": 65.40000000596046
+      },
+      "drawAndReadbackMs": {
+        "median": 73.30000001192093,
+        "p95": 82.30000001192093
+      },
+      "frameMs": {
+        "median": 66.70000000000073,
+        "p95": 83.39999999999964
+      }
+    },
+    {
+      "revision": "after",
+      "type": "sphere",
+      "size": 7,
+      "stones": 8,
+      "drawMs": {
+        "median": 9.599999994039536,
+        "p95": 20.80000001192093
+      },
+      "drawAndReadbackMs": {
+        "median": 13.099999994039536,
+        "p95": 24.400000005960464
+      },
+      "frameMs": {
+        "median": 16.69999999999891,
+        "p95": 16.799999999999272
+      }
+    },
+    {
+      "revision": "after",
+      "type": "sphere",
+      "size": 19,
+      "stones": 361,
+      "drawMs": {
+        "median": 46.400000005960464,
+        "p95": 56.70000001788139
+      },
+      "drawAndReadbackMs": {
+        "median": 61.599999994039536,
+        "p95": 72.30000001192093
+      },
+      "frameMs": {
+        "median": 66.60000000000218,
+        "p95": 66.70000000000073
+      }
+    }
+  ],
+  "continuity": [
+    {
+      "type": "torus",
+      "progress": 0.5,
+      "frame": 0,
+      "paths": 3,
+      "vertices": 123,
+      "finite": true,
+      "lengthPx": 221.0635566633109,
+      "shortestPx": 43.68904837238774
+    },
+    {
+      "type": "torus",
+      "progress": 0.5,
+      "frame": 1,
+      "paths": 3,
+      "vertices": 123,
+      "finite": true,
+      "lengthPx": 221.21421496216456,
+      "shortestPx": 43.61620974902414
+    },
+    {
+      "type": "torus",
+      "progress": 0.5,
+      "frame": 2,
+      "paths": 3,
+      "vertices": 123,
+      "finite": true,
+      "lengthPx": 221.33423244823467,
+      "shortestPx": 43.51251910762195
+    },
+    {
+      "type": "torus",
+      "progress": 0.5,
+      "frame": 3,
+      "paths": 3,
+      "vertices": 123,
+      "finite": true,
+      "lengthPx": 221.42816694464884,
+      "shortestPx": 43.38183535199035
+    },
+    {
+      "type": "torus",
+      "progress": 0.5,
+      "frame": 4,
+      "paths": 3,
+      "vertices": 123,
+      "finite": true,
+      "lengthPx": 221.4986747731278,
+      "shortestPx": 43.226929904576494
+    },
+    {
+      "type": "torus",
+      "progress": 0.5,
+      "frame": 5,
+      "paths": 3,
+      "vertices": 123,
+      "finite": true,
+      "lengthPx": 221.54689029902286,
+      "shortestPx": 43.049719728433544
+    },
+    {
+      "type": "torus",
+      "progress": 0.5,
+      "frame": 6,
+      "paths": 3,
+      "vertices": 123,
+      "finite": true,
+      "lengthPx": 221.579497377036,
+      "shortestPx": 42.85740168749022
+    },
+    {
+      "type": "torus",
+      "progress": 0.5,
+      "frame": 7,
+      "paths": 3,
+      "vertices": 125,
+      "finite": true,
+      "lengthPx": 221.5891761399743,
+      "shortestPx": 42.64115943792807
+    },
+    {
+      "type": "torus",
+      "progress": 0.5,
+      "frame": 8,
+      "paths": 3,
+      "vertices": 123,
+      "finite": true,
+      "lengthPx": 221.5648660097329,
+      "shortestPx": 42.39176692370974
+    },
+    {
+      "type": "torus",
+      "progress": 0.5,
+      "frame": 9,
+      "paths": 3,
+      "vertices": 123,
+      "finite": true,
+      "lengthPx": 221.53816685297102,
+      "shortestPx": 42.17099737429163
+    },
+    {
+      "type": "torus",
+      "progress": 0.5,
+      "frame": 10,
+      "paths": 3,
+      "vertices": 123,
+      "finite": true,
+      "lengthPx": 221.53852980009157,
+      "shortestPx": 42.0374411078064
+    },
+    {
+      "type": "torus",
+      "progress": 0.5,
+      "frame": 11,
+      "paths": 3,
+      "vertices": 125,
+      "finite": true,
+      "lengthPx": 221.509945399085,
+      "shortestPx": 41.87245574409643
+    },
+    {
+      "type": "torus",
+      "progress": 0.5,
+      "frame": 12,
+      "paths": 3,
+      "vertices": 125,
+      "finite": true,
+      "lengthPx": 221.73490119668043,
+      "shortestPx": 41.96116848245681
+    },
+    {
+      "type": "torus",
+      "progress": 0.5,
+      "frame": 13,
+      "paths": 3,
+      "vertices": 124,
+      "finite": true,
+      "lengthPx": 221.847829757799,
+      "shortestPx": 41.928082796616394
+    },
+    {
+      "type": "torus",
+      "progress": 0.5,
+      "frame": 14,
+      "paths": 3,
+      "vertices": 125,
+      "finite": true,
+      "lengthPx": 222.06356908573588,
+      "shortestPx": 41.996060761356034
+    },
+    {
+      "type": "torus",
+      "progress": 0.5,
+      "frame": 15,
+      "paths": 3,
+      "vertices": 125,
+      "finite": true,
+      "lengthPx": 222.37506823351663,
+      "shortestPx": 42.16017504022932
+    },
+    {
+      "type": "torus",
+      "progress": 0.5,
+      "frame": 16,
+      "paths": 3,
+      "vertices": 126,
+      "finite": true,
+      "lengthPx": 222.75557324643256,
+      "shortestPx": 42.393980304779326
+    },
+    {
+      "type": "torus",
+      "progress": 0.5,
+      "frame": 17,
+      "paths": 3,
+      "vertices": 126,
+      "finite": true,
+      "lengthPx": 223.22064149164802,
+      "shortestPx": 42.71331682836299
+    },
+    {
+      "type": "torus",
+      "progress": 0.5,
+      "frame": 18,
+      "paths": 3,
+      "vertices": 126,
+      "finite": true,
+      "lengthPx": 223.694314385959,
+      "shortestPx": 43.04145869350544
+    },
+    {
+      "type": "torus",
+      "progress": 0.5,
+      "frame": 19,
+      "paths": 3,
+      "vertices": 125,
+      "finite": true,
+      "lengthPx": 224.21837594648508,
+      "shortestPx": 43.41981988644071
+    },
+    {
+      "type": "torus",
+      "progress": 0.5,
+      "frame": 20,
+      "paths": 3,
+      "vertices": 125,
+      "finite": true,
+      "lengthPx": 224.12304266341624,
+      "shortestPx": 43.745779868398756
+    },
+    {
+      "type": "torus",
+      "progress": 0.75,
+      "frame": 0,
+      "paths": 0,
+      "vertices": 0,
+      "finite": true,
+      "lengthPx": 0,
+      "shortestPx": null
+    },
+    {
+      "type": "torus",
+      "progress": 0.75,
+      "frame": 1,
+      "paths": 0,
+      "vertices": 0,
+      "finite": true,
+      "lengthPx": 0,
+      "shortestPx": null
+    },
+    {
+      "type": "torus",
+      "progress": 0.75,
+      "frame": 2,
+      "paths": 0,
+      "vertices": 0,
+      "finite": true,
+      "lengthPx": 0,
+      "shortestPx": null
+    },
+    {
+      "type": "torus",
+      "progress": 0.75,
+      "frame": 3,
+      "paths": 0,
+      "vertices": 0,
+      "finite": true,
+      "lengthPx": 0,
+      "shortestPx": null
+    },
+    {
+      "type": "torus",
+      "progress": 0.75,
+      "frame": 4,
+      "paths": 0,
+      "vertices": 0,
+      "finite": true,
+      "lengthPx": 0,
+      "shortestPx": null
+    },
+    {
+      "type": "torus",
+      "progress": 0.75,
+      "frame": 5,
+      "paths": 0,
+      "vertices": 0,
+      "finite": true,
+      "lengthPx": 0,
+      "shortestPx": null
+    },
+    {
+      "type": "torus",
+      "progress": 0.75,
+      "frame": 6,
+      "paths": 0,
+      "vertices": 0,
+      "finite": true,
+      "lengthPx": 0,
+      "shortestPx": null
+    },
+    {
+      "type": "torus",
+      "progress": 0.75,
+      "frame": 7,
+      "paths": 0,
+      "vertices": 0,
+      "finite": true,
+      "lengthPx": 0,
+      "shortestPx": null
+    },
+    {
+      "type": "torus",
+      "progress": 0.75,
+      "frame": 8,
+      "paths": 0,
+      "vertices": 0,
+      "finite": true,
+      "lengthPx": 0,
+      "shortestPx": null
+    },
+    {
+      "type": "torus",
+      "progress": 0.75,
+      "frame": 9,
+      "paths": 0,
+      "vertices": 0,
+      "finite": true,
+      "lengthPx": 0,
+      "shortestPx": null
+    },
+    {
+      "type": "torus",
+      "progress": 0.75,
+      "frame": 10,
+      "paths": 0,
+      "vertices": 0,
+      "finite": true,
+      "lengthPx": 0,
+      "shortestPx": null
+    },
+    {
+      "type": "torus",
+      "progress": 0.75,
+      "frame": 11,
+      "paths": 0,
+      "vertices": 0,
+      "finite": true,
+      "lengthPx": 0,
+      "shortestPx": null
+    },
+    {
+      "type": "torus",
+      "progress": 0.75,
+      "frame": 12,
+      "paths": 0,
+      "vertices": 0,
+      "finite": true,
+      "lengthPx": 0,
+      "shortestPx": null
+    },
+    {
+      "type": "torus",
+      "progress": 0.75,
+      "frame": 13,
+      "paths": 0,
+      "vertices": 0,
+      "finite": true,
+      "lengthPx": 0,
+      "shortestPx": null
+    },
+    {
+      "type": "torus",
+      "progress": 0.75,
+      "frame": 14,
+      "paths": 0,
+      "vertices": 0,
+      "finite": true,
+      "lengthPx": 0,
+      "shortestPx": null
+    },
+    {
+      "type": "torus",
+      "progress": 0.75,
+      "frame": 15,
+      "paths": 0,
+      "vertices": 0,
+      "finite": true,
+      "lengthPx": 0,
+      "shortestPx": null
+    },
+    {
+      "type": "torus",
+      "progress": 0.75,
+      "frame": 16,
+      "paths": 0,
+      "vertices": 0,
+      "finite": true,
+      "lengthPx": 0,
+      "shortestPx": null
+    },
+    {
+      "type": "torus",
+      "progress": 0.75,
+      "frame": 17,
+      "paths": 0,
+      "vertices": 0,
+      "finite": true,
+      "lengthPx": 0,
+      "shortestPx": null
+    },
+    {
+      "type": "torus",
+      "progress": 0.75,
+      "frame": 18,
+      "paths": 0,
+      "vertices": 0,
+      "finite": true,
+      "lengthPx": 0,
+      "shortestPx": null
+    },
+    {
+      "type": "torus",
+      "progress": 0.75,
+      "frame": 19,
+      "paths": 0,
+      "vertices": 0,
+      "finite": true,
+      "lengthPx": 0,
+      "shortestPx": null
+    },
+    {
+      "type": "torus",
+      "progress": 0.75,
+      "frame": 20,
+      "paths": 0,
+      "vertices": 0,
+      "finite": true,
+      "lengthPx": 0,
+      "shortestPx": null
+    },
+    {
+      "type": "torus",
+      "progress": 1,
+      "frame": 0,
+      "paths": 0,
+      "vertices": 0,
+      "finite": true,
+      "lengthPx": 0,
+      "shortestPx": null
+    },
+    {
+      "type": "torus",
+      "progress": 1,
+      "frame": 1,
+      "paths": 0,
+      "vertices": 0,
+      "finite": true,
+      "lengthPx": 0,
+      "shortestPx": null
+    },
+    {
+      "type": "torus",
+      "progress": 1,
+      "frame": 2,
+      "paths": 0,
+      "vertices": 0,
+      "finite": true,
+      "lengthPx": 0,
+      "shortestPx": null
+    },
+    {
+      "type": "torus",
+      "progress": 1,
+      "frame": 3,
+      "paths": 0,
+      "vertices": 0,
+      "finite": true,
+      "lengthPx": 0,
+      "shortestPx": null
+    },
+    {
+      "type": "torus",
+      "progress": 1,
+      "frame": 4,
+      "paths": 0,
+      "vertices": 0,
+      "finite": true,
+      "lengthPx": 0,
+      "shortestPx": null
+    },
+    {
+      "type": "torus",
+      "progress": 1,
+      "frame": 5,
+      "paths": 0,
+      "vertices": 0,
+      "finite": true,
+      "lengthPx": 0,
+      "shortestPx": null
+    },
+    {
+      "type": "torus",
+      "progress": 1,
+      "frame": 6,
+      "paths": 0,
+      "vertices": 0,
+      "finite": true,
+      "lengthPx": 0,
+      "shortestPx": null
+    },
+    {
+      "type": "torus",
+      "progress": 1,
+      "frame": 7,
+      "paths": 0,
+      "vertices": 0,
+      "finite": true,
+      "lengthPx": 0,
+      "shortestPx": null
+    },
+    {
+      "type": "torus",
+      "progress": 1,
+      "frame": 8,
+      "paths": 0,
+      "vertices": 0,
+      "finite": true,
+      "lengthPx": 0,
+      "shortestPx": null
+    },
+    {
+      "type": "torus",
+      "progress": 1,
+      "frame": 9,
+      "paths": 0,
+      "vertices": 0,
+      "finite": true,
+      "lengthPx": 0,
+      "shortestPx": null
+    },
+    {
+      "type": "torus",
+      "progress": 1,
+      "frame": 10,
+      "paths": 0,
+      "vertices": 0,
+      "finite": true,
+      "lengthPx": 0,
+      "shortestPx": null
+    },
+    {
+      "type": "torus",
+      "progress": 1,
+      "frame": 11,
+      "paths": 0,
+      "vertices": 0,
+      "finite": true,
+      "lengthPx": 0,
+      "shortestPx": null
+    },
+    {
+      "type": "torus",
+      "progress": 1,
+      "frame": 12,
+      "paths": 0,
+      "vertices": 0,
+      "finite": true,
+      "lengthPx": 0,
+      "shortestPx": null
+    },
+    {
+      "type": "torus",
+      "progress": 1,
+      "frame": 13,
+      "paths": 0,
+      "vertices": 0,
+      "finite": true,
+      "lengthPx": 0,
+      "shortestPx": null
+    },
+    {
+      "type": "torus",
+      "progress": 1,
+      "frame": 14,
+      "paths": 0,
+      "vertices": 0,
+      "finite": true,
+      "lengthPx": 0,
+      "shortestPx": null
+    },
+    {
+      "type": "torus",
+      "progress": 1,
+      "frame": 15,
+      "paths": 0,
+      "vertices": 0,
+      "finite": true,
+      "lengthPx": 0,
+      "shortestPx": null
+    },
+    {
+      "type": "torus",
+      "progress": 1,
+      "frame": 16,
+      "paths": 0,
+      "vertices": 0,
+      "finite": true,
+      "lengthPx": 0,
+      "shortestPx": null
+    },
+    {
+      "type": "torus",
+      "progress": 1,
+      "frame": 17,
+      "paths": 0,
+      "vertices": 0,
+      "finite": true,
+      "lengthPx": 0,
+      "shortestPx": null
+    },
+    {
+      "type": "torus",
+      "progress": 1,
+      "frame": 18,
+      "paths": 0,
+      "vertices": 0,
+      "finite": true,
+      "lengthPx": 0,
+      "shortestPx": null
+    },
+    {
+      "type": "torus",
+      "progress": 1,
+      "frame": 19,
+      "paths": 0,
+      "vertices": 0,
+      "finite": true,
+      "lengthPx": 0,
+      "shortestPx": null
+    },
+    {
+      "type": "torus",
+      "progress": 1,
+      "frame": 20,
+      "paths": 0,
+      "vertices": 0,
+      "finite": true,
+      "lengthPx": 0,
+      "shortestPx": null
+    },
+    {
+      "type": "klein",
+      "progress": 0.5,
+      "frame": 0,
+      "paths": 4,
+      "vertices": 175,
+      "finite": true,
+      "lengthPx": 349.53404471975165,
+      "shortestPx": 20.43646396750019
+    },
+    {
+      "type": "klein",
+      "progress": 0.5,
+      "frame": 1,
+      "paths": 4,
+      "vertices": 175,
+      "finite": true,
+      "lengthPx": 349.30962016961684,
+      "shortestPx": 20.425676671948143
+    },
+    {
+      "type": "klein",
+      "progress": 0.5,
+      "frame": 2,
+      "paths": 4,
+      "vertices": 174,
+      "finite": true,
+      "lengthPx": 349.0924779199339,
+      "shortestPx": 20.414761566213244
+    },
+    {
+      "type": "klein",
+      "progress": 0.5,
+      "frame": 3,
+      "paths": 4,
+      "vertices": 174,
+      "finite": true,
+      "lengthPx": 348.87965222048655,
+      "shortestPx": 20.403715827313025
+    },
+    {
+      "type": "klein",
+      "progress": 0.5,
+      "frame": 4,
+      "paths": 4,
+      "vertices": 174,
+      "finite": true,
+      "lengthPx": 348.6574002799017,
+      "shortestPx": 20.39253658028495
+    },
+    {
+      "type": "klein",
+      "progress": 0.5,
+      "frame": 5,
+      "paths": 4,
+      "vertices": 174,
+      "finite": true,
+      "lengthPx": 348.43671124861095,
+      "shortestPx": 20.38122090057046
+    },
+    {
+      "type": "klein",
+      "progress": 0.5,
+      "frame": 6,
+      "paths": 4,
+      "vertices": 171,
+      "finite": true,
+      "lengthPx": 348.2103066342925,
+      "shortestPx": 20.369765817223715
+    },
+    {
+      "type": "klein",
+      "progress": 0.5,
+      "frame": 7,
+      "paths": 4,
+      "vertices": 172,
+      "finite": true,
+      "lengthPx": 347.9659857046893,
+      "shortestPx": 20.358212485704094
+    },
+    {
+      "type": "klein",
+      "progress": 0.5,
+      "frame": 8,
+      "paths": 4,
+      "vertices": 172,
+      "finite": true,
+      "lengthPx": 347.72022951994484,
+      "shortestPx": 20.34651881389859
+    },
+    {
+      "type": "klein",
+      "progress": 0.5,
+      "frame": 9,
+      "paths": 4,
+      "vertices": 174,
+      "finite": true,
+      "lengthPx": 347.4818734818621,
+      "shortestPx": 20.334817460534698
+    },
+    {
+      "type": "klein",
+      "progress": 0.5,
+      "frame": 10,
+      "paths": 4,
+      "vertices": 174,
+      "finite": true,
+      "lengthPx": 347.24864775848255,
+      "shortestPx": 20.323267801853437
+    },
+    {
+      "type": "klein",
+      "progress": 0.5,
+      "frame": 11,
+      "paths": 4,
+      "vertices": 174,
+      "finite": true,
+      "lengthPx": 347.03195242953745,
+      "shortestPx": 20.311560948598306
+    },
+    {
+      "type": "klein",
+      "progress": 0.5,
+      "frame": 12,
+      "paths": 4,
+      "vertices": 174,
+      "finite": true,
+      "lengthPx": 346.8151632842772,
+      "shortestPx": 20.299693784450806
+    },
+    {
+      "type": "klein",
+      "progress": 0.5,
+      "frame": 13,
+      "paths": 4,
+      "vertices": 175,
+      "finite": true,
+      "lengthPx": 346.58891434074485,
+      "shortestPx": 20.288455170696444
+    },
+    {
+      "type": "klein",
+      "progress": 0.5,
+      "frame": 14,
+      "paths": 4,
+      "vertices": 175,
+      "finite": true,
+      "lengthPx": 346.370491114375,
+      "shortestPx": 20.27753571702538
+    },
+    {
+      "type": "klein",
+      "progress": 0.5,
+      "frame": 15,
+      "paths": 4,
+      "vertices": 174,
+      "finite": true,
+      "lengthPx": 346.14892880441096,
+      "shortestPx": 20.266401260485537
+    },
+    {
+      "type": "klein",
+      "progress": 0.5,
+      "frame": 16,
+      "paths": 4,
+      "vertices": 174,
+      "finite": true,
+      "lengthPx": 345.9228591281104,
+      "shortestPx": 20.254834090849318
+    },
+    {
+      "type": "klein",
+      "progress": 0.5,
+      "frame": 17,
+      "paths": 4,
+      "vertices": 173,
+      "finite": true,
+      "lengthPx": 345.69605427133627,
+      "shortestPx": 20.24309956349158
+    },
+    {
+      "type": "klein",
+      "progress": 0.5,
+      "frame": 18,
+      "paths": 4,
+      "vertices": 171,
+      "finite": true,
+      "lengthPx": 345.4706350929228,
+      "shortestPx": 20.231194721455548
+    },
+    {
+      "type": "klein",
+      "progress": 0.5,
+      "frame": 19,
+      "paths": 4,
+      "vertices": 170,
+      "finite": true,
+      "lengthPx": 345.24113208491895,
+      "shortestPx": 20.219116686352994
+    },
+    {
+      "type": "klein",
+      "progress": 0.5,
+      "frame": 20,
+      "paths": 4,
+      "vertices": 170,
+      "finite": true,
+      "lengthPx": 345.0027906896742,
+      "shortestPx": 20.208331965333898
+    },
+    {
+      "type": "klein",
+      "progress": 0.75,
+      "frame": 0,
+      "paths": 4,
+      "vertices": 292,
+      "finite": true,
+      "lengthPx": 492.4334114184378,
+      "shortestPx": 13.971732428941635
+    },
+    {
+      "type": "klein",
+      "progress": 0.75,
+      "frame": 1,
+      "paths": 4,
+      "vertices": 292,
+      "finite": true,
+      "lengthPx": 492.237862952949,
+      "shortestPx": 13.972195125692242
+    },
+    {
+      "type": "klein",
+      "progress": 0.75,
+      "frame": 2,
+      "paths": 4,
+      "vertices": 292,
+      "finite": true,
+      "lengthPx": 492.04609736299494,
+      "shortestPx": 13.97312447445522
+    },
+    {
+      "type": "klein",
+      "progress": 0.75,
+      "frame": 3,
+      "paths": 4,
+      "vertices": 292,
+      "finite": true,
+      "lengthPx": 491.8571776098017,
+      "shortestPx": 13.974539536776124
+    },
+    {
+      "type": "klein",
+      "progress": 0.75,
+      "frame": 4,
+      "paths": 4,
+      "vertices": 292,
+      "finite": true,
+      "lengthPx": 491.6713762590548,
+      "shortestPx": 13.976469120895679
+    },
+    {
+      "type": "klein",
+      "progress": 0.75,
+      "frame": 5,
+      "paths": 4,
+      "vertices": 292,
+      "finite": true,
+      "lengthPx": 491.4906890315885,
+      "shortestPx": 13.979320461458016
+    },
+    {
+      "type": "klein",
+      "progress": 0.75,
+      "frame": 6,
+      "paths": 4,
+      "vertices": 292,
+      "finite": true,
+      "lengthPx": 491.31411820095866,
+      "shortestPx": 13.983237247568912
+    },
+    {
+      "type": "klein",
+      "progress": 0.75,
+      "frame": 7,
+      "paths": 4,
+      "vertices": 292,
+      "finite": true,
+      "lengthPx": 491.1406833382409,
+      "shortestPx": 13.988687039592927
+    },
+    {
+      "type": "klein",
+      "progress": 0.75,
+      "frame": 8,
+      "paths": 4,
+      "vertices": 292,
+      "finite": true,
+      "lengthPx": 490.97643254045346,
+      "shortestPx": 13.996288315045431
+    },
+    {
+      "type": "klein",
+      "progress": 0.75,
+      "frame": 9,
+      "paths": 4,
+      "vertices": 292,
+      "finite": true,
+      "lengthPx": 483.3112109183449,
+      "shortestPx": 14.00700628557165
+    },
+    {
+      "type": "klein",
+      "progress": 0.75,
+      "frame": 10,
+      "paths": 4,
+      "vertices": 292,
+      "finite": true,
+      "lengthPx": 483.14027995287137,
+      "shortestPx": 14.015724526763305
+    },
+    {
+      "type": "klein",
+      "progress": 0.75,
+      "frame": 11,
+      "paths": 4,
+      "vertices": 291,
+      "finite": true,
+      "lengthPx": 481.4538270145207,
+      "shortestPx": 14.011140268559775
+    },
+    {
+      "type": "klein",
+      "progress": 0.75,
+      "frame": 12,
+      "paths": 4,
+      "vertices": 289,
+      "finite": true,
+      "lengthPx": 481.3077909835701,
+      "shortestPx": 14.007967211440556
+    },
+    {
+      "type": "klein",
+      "progress": 0.75,
+      "frame": 13,
+      "paths": 4,
+      "vertices": 289,
+      "finite": true,
+      "lengthPx": 481.17750498019126,
+      "shortestPx": 14.006501461061392
+    },
+    {
+      "type": "klein",
+      "progress": 0.75,
+      "frame": 14,
+      "paths": 4,
+      "vertices": 287,
+      "finite": true,
+      "lengthPx": 481.05178150805244,
+      "shortestPx": 14.007439064527633
+    },
+    {
+      "type": "klein",
+      "progress": 0.75,
+      "frame": 15,
+      "paths": 4,
+      "vertices": 286,
+      "finite": true,
+      "lengthPx": 480.9473411806394,
+      "shortestPx": 14.028476375160462
+    },
+    {
+      "type": "klein",
+      "progress": 0.75,
+      "frame": 16,
+      "paths": 4,
+      "vertices": 286,
+      "finite": true,
+      "lengthPx": 480.84558105038576,
+      "shortestPx": 14.051133546973126
+    },
+    {
+      "type": "klein",
+      "progress": 0.75,
+      "frame": 17,
+      "paths": 4,
+      "vertices": 286,
+      "finite": true,
+      "lengthPx": 480.74972357561177,
+      "shortestPx": 14.075484213841182
+    },
+    {
+      "type": "klein",
+      "progress": 0.75,
+      "frame": 18,
+      "paths": 4,
+      "vertices": 286,
+      "finite": true,
+      "lengthPx": 480.6576465584139,
+      "shortestPx": 14.101459855690866
+    },
+    {
+      "type": "klein",
+      "progress": 0.75,
+      "frame": 19,
+      "paths": 4,
+      "vertices": 286,
+      "finite": true,
+      "lengthPx": 480.5730528494042,
+      "shortestPx": 14.129151487454504
+    },
+    {
+      "type": "klein",
+      "progress": 0.75,
+      "frame": 20,
+      "paths": 4,
+      "vertices": 286,
+      "finite": true,
+      "lengthPx": 480.48700228578434,
+      "shortestPx": 14.1583244060093
+    },
+    {
+      "type": "klein",
+      "progress": 1,
+      "frame": 0,
+      "paths": 1,
+      "vertices": 105,
+      "finite": true,
+      "lengthPx": 204.89328628572818,
+      "shortestPx": 204.89328628572818
+    },
+    {
+      "type": "klein",
+      "progress": 1,
+      "frame": 1,
+      "paths": 1,
+      "vertices": 105,
+      "finite": true,
+      "lengthPx": 204.6618288314659,
+      "shortestPx": 204.6618288314659
+    },
+    {
+      "type": "klein",
+      "progress": 1,
+      "frame": 2,
+      "paths": 1,
+      "vertices": 105,
+      "finite": true,
+      "lengthPx": 204.43306377274652,
+      "shortestPx": 204.43306377274652
+    },
+    {
+      "type": "klein",
+      "progress": 1,
+      "frame": 3,
+      "paths": 1,
+      "vertices": 105,
+      "finite": true,
+      "lengthPx": 204.2069956112862,
+      "shortestPx": 204.2069956112862
+    },
+    {
+      "type": "klein",
+      "progress": 1,
+      "frame": 4,
+      "paths": 1,
+      "vertices": 105,
+      "finite": true,
+      "lengthPx": 203.98362861905304,
+      "shortestPx": 203.98362861905304
+    },
+    {
+      "type": "klein",
+      "progress": 1,
+      "frame": 5,
+      "paths": 1,
+      "vertices": 105,
+      "finite": true,
+      "lengthPx": 203.76296683883945,
+      "shortestPx": 203.76296683883945
+    },
+    {
+      "type": "klein",
+      "progress": 1,
+      "frame": 6,
+      "paths": 1,
+      "vertices": 105,
+      "finite": true,
+      "lengthPx": 203.54501408487468,
+      "shortestPx": 203.54501408487468
+    },
+    {
+      "type": "klein",
+      "progress": 1,
+      "frame": 7,
+      "paths": 1,
+      "vertices": 105,
+      "finite": true,
+      "lengthPx": 203.32977394349084,
+      "shortestPx": 203.32977394349084
+    },
+    {
+      "type": "klein",
+      "progress": 1,
+      "frame": 8,
+      "paths": 1,
+      "vertices": 105,
+      "finite": true,
+      "lengthPx": 203.11724977382383,
+      "shortestPx": 203.11724977382383
+    },
+    {
+      "type": "klein",
+      "progress": 1,
+      "frame": 9,
+      "paths": 1,
+      "vertices": 105,
+      "finite": true,
+      "lengthPx": 202.90744470856262,
+      "shortestPx": 202.90744470856262
+    },
+    {
+      "type": "klein",
+      "progress": 1,
+      "frame": 10,
+      "paths": 1,
+      "vertices": 105,
+      "finite": true,
+      "lengthPx": 202.70036165472584,
+      "shortestPx": 202.70036165472584
+    },
+    {
+      "type": "klein",
+      "progress": 1,
+      "frame": 11,
+      "paths": 1,
+      "vertices": 105,
+      "finite": true,
+      "lengthPx": 202.4960032945752,
+      "shortestPx": 202.4960032945752
+    },
+    {
+      "type": "klein",
+      "progress": 1,
+      "frame": 12,
+      "paths": 1,
+      "vertices": 105,
+      "finite": true,
+      "lengthPx": 202.2943720863226,
+      "shortestPx": 202.2943720863226
+    },
+    {
+      "type": "klein",
+      "progress": 1,
+      "frame": 13,
+      "paths": 1,
+      "vertices": 105,
+      "finite": true,
+      "lengthPx": 202.09547026520934,
+      "shortestPx": 202.09547026520934
+    },
+    {
+      "type": "klein",
+      "progress": 1,
+      "frame": 14,
+      "paths": 1,
+      "vertices": 105,
+      "finite": true,
+      "lengthPx": 201.89929984436984,
+      "shortestPx": 201.89929984436984
+    },
+    {
+      "type": "klein",
+      "progress": 1,
+      "frame": 15,
+      "paths": 1,
+      "vertices": 105,
+      "finite": true,
+      "lengthPx": 201.70586261583915,
+      "shortestPx": 201.70586261583915
+    },
+    {
+      "type": "klein",
+      "progress": 1,
+      "frame": 16,
+      "paths": 1,
+      "vertices": 105,
+      "finite": true,
+      "lengthPx": 201.51516015157077,
+      "shortestPx": 201.51516015157077
+    },
+    {
+      "type": "klein",
+      "progress": 1,
+      "frame": 17,
+      "paths": 1,
+      "vertices": 105,
+      "finite": true,
+      "lengthPx": 201.32719380449075,
+      "shortestPx": 201.32719380449075
+    },
+    {
+      "type": "klein",
+      "progress": 1,
+      "frame": 18,
+      "paths": 1,
+      "vertices": 105,
+      "finite": true,
+      "lengthPx": 201.1419647095844,
+      "shortestPx": 201.1419647095844
+    },
+    {
+      "type": "klein",
+      "progress": 1,
+      "frame": 19,
+      "paths": 1,
+      "vertices": 105,
+      "finite": true,
+      "lengthPx": 200.95947378500895,
+      "shortestPx": 200.95947378500895
+    },
+    {
+      "type": "klein",
+      "progress": 1,
+      "frame": 20,
+      "paths": 1,
+      "vertices": 105,
+      "finite": true,
+      "lengthPx": 200.779721733236,
+      "shortestPx": 200.779721733236
+    },
+    {
+      "type": "projective",
+      "progress": 0.5,
+      "frame": 0,
+      "paths": 9,
+      "vertices": 427,
+      "finite": true,
+      "lengthPx": 707.0311398410327,
+      "shortestPx": 15.05520883070155
+    },
+    {
+      "type": "projective",
+      "progress": 0.5,
+      "frame": 1,
+      "paths": 9,
+      "vertices": 424,
+      "finite": true,
+      "lengthPx": 707.3749636526452,
+      "shortestPx": 14.477059926508009
+    },
+    {
+      "type": "projective",
+      "progress": 0.5,
+      "frame": 2,
+      "paths": 9,
+      "vertices": 426,
+      "finite": true,
+      "lengthPx": 707.6113770204254,
+      "shortestPx": 13.90648495583608
+    },
+    {
+      "type": "projective",
+      "progress": 0.5,
+      "frame": 3,
+      "paths": 9,
+      "vertices": 424,
+      "finite": true,
+      "lengthPx": 711.1661836496069,
+      "shortestPx": 13.394749731982387
+    },
+    {
+      "type": "projective",
+      "progress": 0.5,
+      "frame": 4,
+      "paths": 9,
+      "vertices": 426,
+      "finite": true,
+      "lengthPx": 712.9014249127038,
+      "shortestPx": 12.923035387254568
+    },
+    {
+      "type": "projective",
+      "progress": 0.5,
+      "frame": 5,
+      "paths": 11,
+      "vertices": 440,
+      "finite": true,
+      "lengthPx": 714.8062006699447,
+      "shortestPx": 0.3213984933875348
+    },
+    {
+      "type": "projective",
+      "progress": 0.5,
+      "frame": 6,
+      "paths": 10,
+      "vertices": 439,
+      "finite": true,
+      "lengthPx": 715.1145450512223,
+      "shortestPx": 0.9919253268446868
+    },
+    {
+      "type": "projective",
+      "progress": 0.5,
+      "frame": 7,
+      "paths": 10,
+      "vertices": 439,
+      "finite": true,
+      "lengthPx": 715.3364261656598,
+      "shortestPx": 1.6692690229540872
+    },
+    {
+      "type": "projective",
+      "progress": 0.5,
+      "frame": 8,
+      "paths": 10,
+      "vertices": 438,
+      "finite": true,
+      "lengthPx": 716.3894114112957,
+      "shortestPx": 2.3540248772153016
+    },
+    {
+      "type": "projective",
+      "progress": 0.5,
+      "frame": 9,
+      "paths": 10,
+      "vertices": 442,
+      "finite": true,
+      "lengthPx": 718.9178720650808,
+      "shortestPx": 3.0468320717491304
+    },
+    {
+      "type": "projective",
+      "progress": 0.5,
+      "frame": 10,
+      "paths": 9,
+      "vertices": 434,
+      "finite": true,
+      "lengthPx": 716.783690540987,
+      "shortestPx": 10.175861083797205
+    },
+    {
+      "type": "projective",
+      "progress": 0.5,
+      "frame": 11,
+      "paths": 9,
+      "vertices": 434,
+      "finite": true,
+      "lengthPx": 717.0471103446758,
+      "shortestPx": 9.731819625145498
+    },
+    {
+      "type": "projective",
+      "progress": 0.5,
+      "frame": 12,
+      "paths": 9,
+      "vertices": 436,
+      "finite": true,
+      "lengthPx": 717.2437137650902,
+      "shortestPx": 9.291696408448345
+    },
+    {
+      "type": "projective",
+      "progress": 0.5,
+      "frame": 13,
+      "paths": 9,
+      "vertices": 440,
+      "finite": true,
+      "lengthPx": 718.0287029113387,
+      "shortestPx": 8.855473802718784
+    },
+    {
+      "type": "projective",
+      "progress": 0.5,
+      "frame": 14,
+      "paths": 9,
+      "vertices": 446,
+      "finite": true,
+      "lengthPx": 718.0465691915821,
+      "shortestPx": 8.423132224926341
+    },
+    {
+      "type": "projective",
+      "progress": 0.5,
+      "frame": 15,
+      "paths": 9,
+      "vertices": 441,
+      "finite": true,
+      "lengthPx": 719.0517099769971,
+      "shortestPx": 7.994650504140315
+    },
+    {
+      "type": "projective",
+      "progress": 0.5,
+      "frame": 16,
+      "paths": 9,
+      "vertices": 439,
+      "finite": true,
+      "lengthPx": 719.3372210845167,
+      "shortestPx": 7.5700062432127195
+    },
+    {
+      "type": "projective",
+      "progress": 0.5,
+      "frame": 17,
+      "paths": 10,
+      "vertices": 442,
+      "finite": true,
+      "lengthPx": 720.1987056620482,
+      "shortestPx": 0.33590049725210935
+    },
+    {
+      "type": "projective",
+      "progress": 0.5,
+      "frame": 18,
+      "paths": 11,
+      "vertices": 442,
+      "finite": true,
+      "lengthPx": 722.1713072567384,
+      "shortestPx": 0.6924915852050879
+    },
+    {
+      "type": "projective",
+      "progress": 0.5,
+      "frame": 19,
+      "paths": 12,
+      "vertices": 443,
+      "finite": true,
+      "lengthPx": 728.5777715460529,
+      "shortestPx": 1.5408928377340243
+    },
+    {
+      "type": "projective",
+      "progress": 0.5,
+      "frame": 20,
+      "paths": 12,
+      "vertices": 439,
+      "finite": true,
+      "lengthPx": 729.3418628545113,
+      "shortestPx": 0.4079671550979385
+    },
+    {
+      "type": "projective",
+      "progress": 0.75,
+      "frame": 0,
+      "paths": 7,
+      "vertices": 656,
+      "finite": true,
+      "lengthPx": 1393.0816139348835,
+      "shortestPx": 91.26522497106363
+    },
+    {
+      "type": "projective",
+      "progress": 0.75,
+      "frame": 1,
+      "paths": 7,
+      "vertices": 654,
+      "finite": true,
+      "lengthPx": 1392.906426211042,
+      "shortestPx": 91.5887270766863
+    },
+    {
+      "type": "projective",
+      "progress": 0.75,
+      "frame": 2,
+      "paths": 7,
+      "vertices": 656,
+      "finite": true,
+      "lengthPx": 1395.630417133937,
+      "shortestPx": 91.91204893505869
+    },
+    {
+      "type": "projective",
+      "progress": 0.75,
+      "frame": 3,
+      "paths": 7,
+      "vertices": 655,
+      "finite": true,
+      "lengthPx": 1398.0882838486236,
+      "shortestPx": 92.2351860998829
+    },
+    {
+      "type": "projective",
+      "progress": 0.75,
+      "frame": 4,
+      "paths": 7,
+      "vertices": 655,
+      "finite": true,
+      "lengthPx": 1400.2720236204436,
+      "shortestPx": 92.55813415016601
+    },
+    {
+      "type": "projective",
+      "progress": 0.75,
+      "frame": 5,
+      "paths": 7,
+      "vertices": 657,
+      "finite": true,
+      "lengthPx": 1402.7596985594487,
+      "shortestPx": 92.88088868952468
+    },
+    {
+      "type": "projective",
+      "progress": 0.75,
+      "frame": 6,
+      "paths": 7,
+      "vertices": 653,
+      "finite": true,
+      "lengthPx": 1405.7024001153693,
+      "shortestPx": 93.20344534553882
+    },
+    {
+      "type": "projective",
+      "progress": 0.75,
+      "frame": 7,
+      "paths": 7,
+      "vertices": 651,
+      "finite": true,
+      "lengthPx": 1408.6773107085066,
+      "shortestPx": 93.52579976911868
+    },
+    {
+      "type": "projective",
+      "progress": 0.75,
+      "frame": 8,
+      "paths": 7,
+      "vertices": 651,
+      "finite": true,
+      "lengthPx": 1411.0520849571599,
+      "shortestPx": 93.84794763388177
+    },
+    {
+      "type": "projective",
+      "progress": 0.75,
+      "frame": 9,
+      "paths": 7,
+      "vertices": 657,
+      "finite": true,
+      "lengthPx": 1413.4199695960322,
+      "shortestPx": 94.16988463556062
+    },
+    {
+      "type": "projective",
+      "progress": 0.75,
+      "frame": 10,
+      "paths": 8,
+      "vertices": 653,
+      "finite": true,
+      "lengthPx": 1415.5336124370822,
+      "shortestPx": 0.8446118514523491
+    },
+    {
+      "type": "projective",
+      "progress": 0.75,
+      "frame": 11,
+      "paths": 7,
+      "vertices": 650,
+      "finite": true,
+      "lengthPx": 1416.8265587342767,
+      "shortestPx": 94.8131089397275
+    },
+    {
+      "type": "projective",
+      "progress": 0.75,
+      "frame": 12,
+      "paths": 7,
+      "vertices": 649,
+      "finite": true,
+      "lengthPx": 1418.8514537252017,
+      "shortestPx": 95.13438773916029
+    },
+    {
+      "type": "projective",
+      "progress": 0.75,
+      "frame": 13,
+      "paths": 8,
+      "vertices": 651,
+      "finite": true,
+      "lengthPx": 1418.2060794964152,
+      "shortestPx": 1.2201551799233308
+    },
+    {
+      "type": "projective",
+      "progress": 0.75,
+      "frame": 14,
+      "paths": 7,
+      "vertices": 646,
+      "finite": true,
+      "lengthPx": 1419.1686723419311,
+      "shortestPx": 95.77625752527548
+    },
+    {
+      "type": "projective",
+      "progress": 0.75,
+      "frame": 15,
+      "paths": 7,
+      "vertices": 644,
+      "finite": true,
+      "lengthPx": 1420.830395915561,
+      "shortestPx": 96.09684012694288
+    },
+    {
+      "type": "projective",
+      "progress": 0.75,
+      "frame": 16,
+      "paths": 7,
+      "vertices": 644,
+      "finite": true,
+      "lengthPx": 1421.8669234892932,
+      "shortestPx": 96.41718230875556
+    },
+    {
+      "type": "projective",
+      "progress": 0.75,
+      "frame": 17,
+      "paths": 7,
+      "vertices": 644,
+      "finite": true,
+      "lengthPx": 1422.7932668555509,
+      "shortestPx": 96.73727992413545
+    },
+    {
+      "type": "projective",
+      "progress": 0.75,
+      "frame": 18,
+      "paths": 7,
+      "vertices": 642,
+      "finite": true,
+      "lengthPx": 1423.349785491678,
+      "shortestPx": 97.05720243113495
+    },
+    {
+      "type": "projective",
+      "progress": 0.75,
+      "frame": 19,
+      "paths": 9,
+      "vertices": 646,
+      "finite": true,
+      "lengthPx": 1422.0011610791028,
+      "shortestPx": 0.17226891627353608
+    },
+    {
+      "type": "projective",
+      "progress": 0.75,
+      "frame": 20,
+      "paths": 9,
+      "vertices": 643,
+      "finite": true,
+      "lengthPx": 1420.1071426976596,
+      "shortestPx": 0.8108595571989333
+    },
+    {
+      "type": "projective",
+      "progress": 1,
+      "frame": 0,
+      "paths": 6,
+      "vertices": 360,
+      "finite": true,
+      "lengthPx": 1276.9933645630467,
+      "shortestPx": 80.30037552600857
+    },
+    {
+      "type": "projective",
+      "progress": 1,
+      "frame": 1,
+      "paths": 6,
+      "vertices": 360,
+      "finite": true,
+      "lengthPx": 1277.5479970216352,
+      "shortestPx": 80.73563496297095
+    },
+    {
+      "type": "projective",
+      "progress": 1,
+      "frame": 2,
+      "paths": 6,
+      "vertices": 360,
+      "finite": true,
+      "lengthPx": 1278.0977466434958,
+      "shortestPx": 81.17057485461882
+    },
+    {
+      "type": "projective",
+      "progress": 1,
+      "frame": 3,
+      "paths": 6,
+      "vertices": 360,
+      "finite": true,
+      "lengthPx": 1278.6427199470684,
+      "shortestPx": 81.60519315347597
+    },
+    {
+      "type": "projective",
+      "progress": 1,
+      "frame": 4,
+      "paths": 6,
+      "vertices": 360,
+      "finite": true,
+      "lengthPx": 1279.1828711834155,
+      "shortestPx": 82.03948780634961
+    },
+    {
+      "type": "projective",
+      "progress": 1,
+      "frame": 5,
+      "paths": 6,
+      "vertices": 360,
+      "finite": true,
+      "lengthPx": 1279.7182382794763,
+      "shortestPx": 82.47345675419217
+    },
+    {
+      "type": "projective",
+      "progress": 1,
+      "frame": 6,
+      "paths": 6,
+      "vertices": 360,
+      "finite": true,
+      "lengthPx": 1280.2488873478353,
+      "shortestPx": 82.9070979324404
+    },
+    {
+      "type": "projective",
+      "progress": 1,
+      "frame": 7,
+      "paths": 6,
+      "vertices": 359,
+      "finite": true,
+      "lengthPx": 1280.7748434993773,
+      "shortestPx": 83.34040926936991
+    },
+    {
+      "type": "projective",
+      "progress": 1,
+      "frame": 8,
+      "paths": 6,
+      "vertices": 359,
+      "finite": true,
+      "lengthPx": 1281.2961106444616,
+      "shortestPx": 83.7733886892081
+    },
+    {
+      "type": "projective",
+      "progress": 1,
+      "frame": 9,
+      "paths": 6,
+      "vertices": 359,
+      "finite": true,
+      "lengthPx": 1281.8127160408324,
+      "shortestPx": 84.20603410891174
+    },
+    {
+      "type": "projective",
+      "progress": 1,
+      "frame": 10,
+      "paths": 6,
+      "vertices": 359,
+      "finite": true,
+      "lengthPx": 1282.3247487896297,
+      "shortestPx": 84.63834343973664
+    },
+    {
+      "type": "projective",
+      "progress": 1,
+      "frame": 11,
+      "paths": 6,
+      "vertices": 359,
+      "finite": true,
+      "lengthPx": 1282.8321636480869,
+      "shortestPx": 85.0703145869607
+    },
+    {
+      "type": "projective",
+      "progress": 1,
+      "frame": 12,
+      "paths": 6,
+      "vertices": 359,
+      "finite": true,
+      "lengthPx": 1283.3350369568273,
+      "shortestPx": 85.50194544929525
+    },
+    {
+      "type": "projective",
+      "progress": 1,
+      "frame": 13,
+      "paths": 6,
+      "vertices": 359,
+      "finite": true,
+      "lengthPx": 1283.8334083229536,
+      "shortestPx": 85.93323391995389
+    },
+    {
+      "type": "projective",
+      "progress": 1,
+      "frame": 14,
+      "paths": 6,
+      "vertices": 359,
+      "finite": true,
+      "lengthPx": 1284.3272389299802,
+      "shortestPx": 86.36417788548711
+    },
+    {
+      "type": "projective",
+      "progress": 1,
+      "frame": 15,
+      "paths": 6,
+      "vertices": 358,
+      "finite": true,
+      "lengthPx": 1284.8166677291113,
+      "shortestPx": 86.79477522632892
+    },
+    {
+      "type": "projective",
+      "progress": 1,
+      "frame": 16,
+      "paths": 6,
+      "vertices": 358,
+      "finite": true,
+      "lengthPx": 1285.3015940166376,
+      "shortestPx": 87.2250238168267
+    },
+    {
+      "type": "projective",
+      "progress": 1,
+      "frame": 17,
+      "paths": 6,
+      "vertices": 358,
+      "finite": true,
+      "lengthPx": 1285.7822067193138,
+      "shortestPx": 87.65492152430954
+    },
+    {
+      "type": "projective",
+      "progress": 1,
+      "frame": 18,
+      "paths": 6,
+      "vertices": 358,
+      "finite": true,
+      "lengthPx": 1286.258403764623,
+      "shortestPx": 88.0844662100488
+    },
+    {
+      "type": "projective",
+      "progress": 1,
+      "frame": 19,
+      "paths": 6,
+      "vertices": 358,
+      "finite": true,
+      "lengthPx": 1286.7302395159816,
+      "shortestPx": 88.5136557301917
+    },
+    {
+      "type": "projective",
+      "progress": 1,
+      "frame": 20,
+      "paths": 6,
+      "vertices": 358,
+      "finite": true,
+      "lengthPx": 1287.1978112617294,
+      "shortestPx": 88.9424879317041
+    },
+    {
+      "type": "sphere",
+      "progress": 0.5,
+      "frame": 0,
+      "paths": 2,
+      "vertices": 184,
+      "finite": true,
+      "lengthPx": 193.46739446462152,
+      "shortestPx": 8.469918588625719
+    },
+    {
+      "type": "sphere",
+      "progress": 0.5,
+      "frame": 1,
+      "paths": 2,
+      "vertices": 183,
+      "finite": true,
+      "lengthPx": 192.98639889809428,
+      "shortestPx": 8.44753961210783
+    },
+    {
+      "type": "sphere",
+      "progress": 0.5,
+      "frame": 2,
+      "paths": 2,
+      "vertices": 182,
+      "finite": true,
+      "lengthPx": 192.82296390406273,
+      "shortestPx": 8.425095552111271
+    },
+    {
+      "type": "sphere",
+      "progress": 0.5,
+      "frame": 3,
+      "paths": 2,
+      "vertices": 183,
+      "finite": true,
+      "lengthPx": 192.290745297262,
+      "shortestPx": 8.402608110903682
+    },
+    {
+      "type": "sphere",
+      "progress": 0.5,
+      "frame": 4,
+      "paths": 2,
+      "vertices": 183,
+      "finite": true,
+      "lengthPx": 191.76551998235996,
+      "shortestPx": 8.380077801180894
+    },
+    {
+      "type": "sphere",
+      "progress": 0.5,
+      "frame": 5,
+      "paths": 2,
+      "vertices": 183,
+      "finite": true,
+      "lengthPx": 191.50522856557404,
+      "shortestPx": 8.357505138774737
+    },
+    {
+      "type": "sphere",
+      "progress": 0.5,
+      "frame": 6,
+      "paths": 2,
+      "vertices": 183,
+      "finite": true,
+      "lengthPx": 191.1537950685149,
+      "shortestPx": 8.334890642984332
+    },
+    {
+      "type": "sphere",
+      "progress": 0.5,
+      "frame": 7,
+      "paths": 2,
+      "vertices": 185,
+      "finite": true,
+      "lengthPx": 190.81163057416845,
+      "shortestPx": 8.312234836387237
+    },
+    {
+      "type": "sphere",
+      "progress": 0.5,
+      "frame": 8,
+      "paths": 2,
+      "vertices": 185,
+      "finite": true,
+      "lengthPx": 190.55482023887708,
+      "shortestPx": 8.28953824498521
+    },
+    {
+      "type": "sphere",
+      "progress": 0.5,
+      "frame": 9,
+      "paths": 2,
+      "vertices": 182,
+      "finite": true,
+      "lengthPx": 190.57654393622266,
+      "shortestPx": 8.266801398075424
+    },
+    {
+      "type": "sphere",
+      "progress": 0.5,
+      "frame": 10,
+      "paths": 2,
+      "vertices": 182,
+      "finite": true,
+      "lengthPx": 190.4197659950525,
+      "shortestPx": 8.244024828361317
+    },
+    {
+      "type": "sphere",
+      "progress": 0.5,
+      "frame": 11,
+      "paths": 2,
+      "vertices": 182,
+      "finite": true,
+      "lengthPx": 189.8714226759364,
+      "shortestPx": 8.221209071950502
+    },
+    {
+      "type": "sphere",
+      "progress": 0.5,
+      "frame": 12,
+      "paths": 2,
+      "vertices": 182,
+      "finite": true,
+      "lengthPx": 189.33034375331732,
+      "shortestPx": 8.198354668288081
+    },
+    {
+      "type": "sphere",
+      "progress": 0.5,
+      "frame": 13,
+      "paths": 2,
+      "vertices": 182,
+      "finite": true,
+      "lengthPx": 195.45289371306487,
+      "shortestPx": 8.175462160249417
+    },
+    {
+      "type": "sphere",
+      "progress": 0.5,
+      "frame": 14,
+      "paths": 2,
+      "vertices": 182,
+      "finite": true,
+      "lengthPx": 195.04387600821335,
+      "shortestPx": 8.152532094113866
+    },
+    {
+      "type": "sphere",
+      "progress": 0.5,
+      "frame": 15,
+      "paths": 2,
+      "vertices": 182,
+      "finite": true,
+      "lengthPx": 194.57211502486913,
+      "shortestPx": 8.129565019569485
+    },
+    {
+      "type": "sphere",
+      "progress": 0.5,
+      "frame": 16,
+      "paths": 2,
+      "vertices": 182,
+      "finite": true,
+      "lengthPx": 194.08965856042204,
+      "shortestPx": 8.106561489749469
+    },
+    {
+      "type": "sphere",
+      "progress": 0.5,
+      "frame": 17,
+      "paths": 2,
+      "vertices": 182,
+      "finite": true,
+      "lengthPx": 193.61469763030584,
+      "shortestPx": 8.083522061205642
+    },
+    {
+      "type": "sphere",
+      "progress": 0.5,
+      "frame": 18,
+      "paths": 2,
+      "vertices": 182,
+      "finite": true,
+      "lengthPx": 192.25236964201036,
+      "shortestPx": 8.060447293956175
+    },
+    {
+      "type": "sphere",
+      "progress": 0.5,
+      "frame": 19,
+      "paths": 2,
+      "vertices": 184,
+      "finite": true,
+      "lengthPx": 190.59181145173827,
+      "shortestPx": 8.037331190325009
+    },
+    {
+      "type": "sphere",
+      "progress": 0.5,
+      "frame": 20,
+      "paths": 2,
+      "vertices": 184,
+      "finite": true,
+      "lengthPx": 188.86512046012695,
+      "shortestPx": 8.014179942738053
+    },
+    {
+      "type": "sphere",
+      "progress": 0.75,
+      "frame": 0,
+      "paths": 3,
+      "vertices": 209,
+      "finite": true,
+      "lengthPx": 168.26105480676677,
+      "shortestPx": 1.8671608165324707
+    },
+    {
+      "type": "sphere",
+      "progress": 0.75,
+      "frame": 1,
+      "paths": 3,
+      "vertices": 207,
+      "finite": true,
+      "lengthPx": 167.38507105329037,
+      "shortestPx": 1.8701752333572546
+    },
+    {
+      "type": "sphere",
+      "progress": 0.75,
+      "frame": 2,
+      "paths": 3,
+      "vertices": 206,
+      "finite": true,
+      "lengthPx": 166.4915989105767,
+      "shortestPx": 1.873174907587722
+    },
+    {
+      "type": "sphere",
+      "progress": 0.75,
+      "frame": 3,
+      "paths": 3,
+      "vertices": 206,
+      "finite": true,
+      "lengthPx": 165.60964845011236,
+      "shortestPx": 1.8761595647979452
+    },
+    {
+      "type": "sphere",
+      "progress": 0.75,
+      "frame": 4,
+      "paths": 3,
+      "vertices": 206,
+      "finite": true,
+      "lengthPx": 164.7403033451541,
+      "shortestPx": 1.8791289325784075
+    },
+    {
+      "type": "sphere",
+      "progress": 0.75,
+      "frame": 5,
+      "paths": 3,
+      "vertices": 206,
+      "finite": true,
+      "lengthPx": 163.8528538132848,
+      "shortestPx": 1.8820827405898406
+    },
+    {
+      "type": "sphere",
+      "progress": 0.75,
+      "frame": 6,
+      "paths": 3,
+      "vertices": 206,
+      "finite": true,
+      "lengthPx": 162.95190986519682,
+      "shortestPx": 1.8850207206081229
+    },
+    {
+      "type": "sphere",
+      "progress": 0.75,
+      "frame": 7,
+      "paths": 3,
+      "vertices": 208,
+      "finite": true,
+      "lengthPx": 162.05011432214195,
+      "shortestPx": 1.887942606580221
+    },
+    {
+      "type": "sphere",
+      "progress": 0.75,
+      "frame": 8,
+      "paths": 3,
+      "vertices": 207,
+      "finite": true,
+      "lengthPx": 161.1688204879378,
+      "shortestPx": 1.890848134664906
+    },
+    {
+      "type": "sphere",
+      "progress": 0.75,
+      "frame": 9,
+      "paths": 3,
+      "vertices": 205,
+      "finite": true,
+      "lengthPx": 160.41287730145166,
+      "shortestPx": 1.893737043287259
+    },
+    {
+      "type": "sphere",
+      "progress": 0.75,
+      "frame": 10,
+      "paths": 3,
+      "vertices": 205,
+      "finite": true,
+      "lengthPx": 159.57110830652041,
+      "shortestPx": 1.8966090731788983
+    },
+    {
+      "type": "sphere",
+      "progress": 0.75,
+      "frame": 11,
+      "paths": 3,
+      "vertices": 202,
+      "finite": true,
+      "lengthPx": 158.7866924081292,
+      "shortestPx": 1.8994639674275355
+    },
+    {
+      "type": "sphere",
+      "progress": 0.75,
+      "frame": 12,
+      "paths": 3,
+      "vertices": 201,
+      "finite": true,
+      "lengthPx": 157.9772378821195,
+      "shortestPx": 1.902301471521771
+    },
+    {
+      "type": "sphere",
+      "progress": 0.75,
+      "frame": 13,
+      "paths": 3,
+      "vertices": 201,
+      "finite": true,
+      "lengthPx": 157.1647777535566,
+      "shortestPx": 1.9051213333902561
+    },
+    {
+      "type": "sphere",
+      "progress": 0.75,
+      "frame": 14,
+      "paths": 3,
+      "vertices": 199,
+      "finite": true,
+      "lengthPx": 156.35284976993032,
+      "shortestPx": 1.9079233034525727
+    },
+    {
+      "type": "sphere",
+      "progress": 0.75,
+      "frame": 15,
+      "paths": 3,
+      "vertices": 199,
+      "finite": true,
+      "lengthPx": 155.53793453159147,
+      "shortestPx": 1.9107071346523536
+    },
+    {
+      "type": "sphere",
+      "progress": 0.75,
+      "frame": 16,
+      "paths": 3,
+      "vertices": 199,
+      "finite": true,
+      "lengthPx": 154.7119580382366,
+      "shortestPx": 1.913472582505075
+    },
+    {
+      "type": "sphere",
+      "progress": 0.75,
+      "frame": 17,
+      "paths": 3,
+      "vertices": 201,
+      "finite": true,
+      "lengthPx": 153.8945836152981,
+      "shortestPx": 1.9162194051355796
+    },
+    {
+      "type": "sphere",
+      "progress": 0.75,
+      "frame": 18,
+      "paths": 3,
+      "vertices": 202,
+      "finite": true,
+      "lengthPx": 153.08238450171115,
+      "shortestPx": 1.9189473633168252
+    },
+    {
+      "type": "sphere",
+      "progress": 0.75,
+      "frame": 19,
+      "paths": 3,
+      "vertices": 198,
+      "finite": true,
+      "lengthPx": 152.28849788313437,
+      "shortestPx": 1.9216562205113608
+    },
+    {
+      "type": "sphere",
+      "progress": 0.75,
+      "frame": 20,
+      "paths": 3,
+      "vertices": 200,
+      "finite": true,
+      "lengthPx": 151.49286839479848,
+      "shortestPx": 1.924345742903863
+    },
+    {
+      "type": "sphere",
+      "progress": 1,
+      "frame": 0,
+      "paths": 0,
+      "vertices": 0,
+      "finite": true,
+      "lengthPx": 0,
+      "shortestPx": null
+    },
+    {
+      "type": "sphere",
+      "progress": 1,
+      "frame": 1,
+      "paths": 0,
+      "vertices": 0,
+      "finite": true,
+      "lengthPx": 0,
+      "shortestPx": null
+    },
+    {
+      "type": "sphere",
+      "progress": 1,
+      "frame": 2,
+      "paths": 0,
+      "vertices": 0,
+      "finite": true,
+      "lengthPx": 0,
+      "shortestPx": null
+    },
+    {
+      "type": "sphere",
+      "progress": 1,
+      "frame": 3,
+      "paths": 0,
+      "vertices": 0,
+      "finite": true,
+      "lengthPx": 0,
+      "shortestPx": null
+    },
+    {
+      "type": "sphere",
+      "progress": 1,
+      "frame": 4,
+      "paths": 0,
+      "vertices": 0,
+      "finite": true,
+      "lengthPx": 0,
+      "shortestPx": null
+    },
+    {
+      "type": "sphere",
+      "progress": 1,
+      "frame": 5,
+      "paths": 0,
+      "vertices": 0,
+      "finite": true,
+      "lengthPx": 0,
+      "shortestPx": null
+    },
+    {
+      "type": "sphere",
+      "progress": 1,
+      "frame": 6,
+      "paths": 0,
+      "vertices": 0,
+      "finite": true,
+      "lengthPx": 0,
+      "shortestPx": null
+    },
+    {
+      "type": "sphere",
+      "progress": 1,
+      "frame": 7,
+      "paths": 0,
+      "vertices": 0,
+      "finite": true,
+      "lengthPx": 0,
+      "shortestPx": null
+    },
+    {
+      "type": "sphere",
+      "progress": 1,
+      "frame": 8,
+      "paths": 0,
+      "vertices": 0,
+      "finite": true,
+      "lengthPx": 0,
+      "shortestPx": null
+    },
+    {
+      "type": "sphere",
+      "progress": 1,
+      "frame": 9,
+      "paths": 0,
+      "vertices": 0,
+      "finite": true,
+      "lengthPx": 0,
+      "shortestPx": null
+    },
+    {
+      "type": "sphere",
+      "progress": 1,
+      "frame": 10,
+      "paths": 0,
+      "vertices": 0,
+      "finite": true,
+      "lengthPx": 0,
+      "shortestPx": null
+    },
+    {
+      "type": "sphere",
+      "progress": 1,
+      "frame": 11,
+      "paths": 0,
+      "vertices": 0,
+      "finite": true,
+      "lengthPx": 0,
+      "shortestPx": null
+    },
+    {
+      "type": "sphere",
+      "progress": 1,
+      "frame": 12,
+      "paths": 0,
+      "vertices": 0,
+      "finite": true,
+      "lengthPx": 0,
+      "shortestPx": null
+    },
+    {
+      "type": "sphere",
+      "progress": 1,
+      "frame": 13,
+      "paths": 0,
+      "vertices": 0,
+      "finite": true,
+      "lengthPx": 0,
+      "shortestPx": null
+    },
+    {
+      "type": "sphere",
+      "progress": 1,
+      "frame": 14,
+      "paths": 0,
+      "vertices": 0,
+      "finite": true,
+      "lengthPx": 0,
+      "shortestPx": null
+    },
+    {
+      "type": "sphere",
+      "progress": 1,
+      "frame": 15,
+      "paths": 0,
+      "vertices": 0,
+      "finite": true,
+      "lengthPx": 0,
+      "shortestPx": null
+    },
+    {
+      "type": "sphere",
+      "progress": 1,
+      "frame": 16,
+      "paths": 0,
+      "vertices": 0,
+      "finite": true,
+      "lengthPx": 0,
+      "shortestPx": null
+    },
+    {
+      "type": "sphere",
+      "progress": 1,
+      "frame": 17,
+      "paths": 0,
+      "vertices": 0,
+      "finite": true,
+      "lengthPx": 0,
+      "shortestPx": null
+    },
+    {
+      "type": "sphere",
+      "progress": 1,
+      "frame": 18,
+      "paths": 0,
+      "vertices": 0,
+      "finite": true,
+      "lengthPx": 0,
+      "shortestPx": null
+    },
+    {
+      "type": "sphere",
+      "progress": 1,
+      "frame": 19,
+      "paths": 0,
+      "vertices": 0,
+      "finite": true,
+      "lengthPx": 0,
+      "shortestPx": null
+    },
+    {
+      "type": "sphere",
+      "progress": 1,
+      "frame": 20,
+      "paths": 0,
+      "vertices": 0,
+      "finite": true,
+      "lengthPx": 0,
+      "shortestPx": null
+    }
+  ],
+  "sources": {
+    "before": {
+      "app/assets/topology.js": "b41b99bef6f966d54f4abc47610fdcd242770d2da751a02aa06e0a8c3004e06b",
+      "app/assets/topology-morph.js": "d52bfae6124a63e286308a7d8235e286a51acacc16dbb8a890a0a5683ef98a5b",
+      "app/assets/board-view-logic.js": "8d3d6f09f7c2037d8fc8ab56a19fa4389ec3cdc6559442c4e7a638ca801efb6c",
+      "app/assets/level-config.js": "25af6c24758b53ae24c5bfe29019f38357166293935bf660a2c0ba56c04f954c",
+      "app/assets/board-art.js": "ec05c831d341e20a905c75161820cbcf1f26b637d0b5ba92f936f021d2a11853"
+    },
+    "after": {
+      "app/assets/topology.js": "b41b99bef6f966d54f4abc47610fdcd242770d2da751a02aa06e0a8c3004e06b",
+      "app/assets/topology-morph.js": "29f0266954714092a61c65346fac771eee53a200892a7650c40692e04fc6becd",
+      "app/assets/board-view-logic.js": "8d3d6f09f7c2037d8fc8ab56a19fa4389ec3cdc6559442c4e7a638ca801efb6c",
+      "app/assets/level-config.js": "25af6c24758b53ae24c5bfe29019f38357166293935bf660a2c0ba56c04f954c",
+      "app/assets/board-art.js": "387350acde3416ccc4d2b73e00d0dd6664e53493df7f44293c6e6ec7aa3f7a04"
+    }
+  },
+  "notes": [
+    "Shared Canvas renderer; fixed synthetic game; desktop Chromium. Actual H5/Arena tested separately.",
+    "Each morph contact sheet shows progress .25, .5, .75, 1 from left to right. Timings include the production contour code."
+  ]
+}

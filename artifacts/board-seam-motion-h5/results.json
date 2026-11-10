@@ -1,0 +1,3790 @@
+{
+  "baseline": "0d6a981",
+  "viewports": [
+    {
+      "width": 1280,
+      "height": 720
+    },
+    {
+      "width": 390,
+      "height": 844
+    }
+  ],
+  "actualGame": [
+    {
+      "revision": "before",
+      "type": "cylinder",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "progress": 0,
+      "moves": [
+        0,
+        8,
+        2,
+        10,
+        14,
+        23,
+        18,
+        31
+      ],
+      "canvasSha256": "558bf85bc2ba4432be5f14ed45ffc20870ba64276e2b7a25a1e7d10655134b92",
+      "file": null
+    },
+    {
+      "revision": "before",
+      "type": "cylinder",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "progress": 0.12,
+      "moves": [
+        0,
+        8,
+        2,
+        10,
+        14,
+        23,
+        18,
+        31
+      ],
+      "canvasSha256": "3fe3585be794e83e523a990894e85d0ad93fb37bafab99dcad95c2db162091db",
+      "file": null
+    },
+    {
+      "revision": "before",
+      "type": "cylinder",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "progress": 0.3,
+      "moves": [
+        0,
+        8,
+        2,
+        10,
+        14,
+        23,
+        18,
+        31
+      ],
+      "canvasSha256": "fa0b83adeed94cf964393f295080727a2ab8013bc89b68ebecfefbf985ec55f5",
+      "file": null
+    },
+    {
+      "revision": "before",
+      "type": "cylinder",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "progress": 0.5,
+      "moves": [
+        0,
+        8,
+        2,
+        10,
+        14,
+        23,
+        18,
+        31
+      ],
+      "canvasSha256": "9bffb91060265bffd425078ddebc8b79722c7b830a5fa138f3f639493c1bd5e7",
+      "file": null
+    },
+    {
+      "revision": "before",
+      "type": "cylinder",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "progress": 0.72,
+      "moves": [
+        0,
+        8,
+        2,
+        10,
+        14,
+        23,
+        18,
+        31
+      ],
+      "canvasSha256": "e2702042dacfbbfad1ee88f3cf4781de63f479595a560eba62ab54dc7244d4c0",
+      "file": null
+    },
+    {
+      "revision": "before",
+      "type": "cylinder",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "progress": 0.9,
+      "moves": [
+        0,
+        8,
+        2,
+        10,
+        14,
+        23,
+        18,
+        31
+      ],
+      "canvasSha256": "ddca1c772155f08e8a772e00480b3a42269402be8c8b912881515e568a2ad537",
+      "file": null
+    },
+    {
+      "revision": "before",
+      "type": "cylinder",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "progress": 1,
+      "moves": [
+        0,
+        8,
+        2,
+        10,
+        14,
+        23,
+        18,
+        31
+      ],
+      "canvasSha256": "6bb89c7da2a4bf8605c550120ce0c7fa7260ae5bacbc4fcf97e0b6cdc41d872a",
+      "file": null
+    },
+    {
+      "revision": "after",
+      "type": "cylinder",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "progress": 0,
+      "moves": [
+        0,
+        8,
+        2,
+        10,
+        14,
+        23,
+        18,
+        31
+      ],
+      "canvasSha256": "558bf85bc2ba4432be5f14ed45ffc20870ba64276e2b7a25a1e7d10655134b92",
+      "file": null
+    },
+    {
+      "revision": "after",
+      "type": "cylinder",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "progress": 0.12,
+      "moves": [
+        0,
+        8,
+        2,
+        10,
+        14,
+        23,
+        18,
+        31
+      ],
+      "canvasSha256": "02e7add18f0617943f856cf02f1135a56487829c60b4bf91086a02396eb220d1",
+      "file": null
+    },
+    {
+      "revision": "after",
+      "type": "cylinder",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "progress": 0.3,
+      "moves": [
+        0,
+        8,
+        2,
+        10,
+        14,
+        23,
+        18,
+        31
+      ],
+      "canvasSha256": "97de5fe9d146711c82a20acad3e2ec4c7d9c8fc192621f4ca8d357b6031f2ed9",
+      "file": null
+    },
+    {
+      "revision": "after",
+      "type": "cylinder",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "progress": 0.5,
+      "moves": [
+        0,
+        8,
+        2,
+        10,
+        14,
+        23,
+        18,
+        31
+      ],
+      "canvasSha256": "edd6c8b7f8ffb267c8d6d7a888efbab9a23599370518222e8a123777e5e9cdb0",
+      "file": null
+    },
+    {
+      "revision": "after",
+      "type": "cylinder",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "progress": 0.72,
+      "moves": [
+        0,
+        8,
+        2,
+        10,
+        14,
+        23,
+        18,
+        31
+      ],
+      "canvasSha256": "af77f22550dbafbf3e450ab0689e7516cc7b188ed168e5d3dde5bd0775adf69c",
+      "file": null
+    },
+    {
+      "revision": "after",
+      "type": "cylinder",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "progress": 0.9,
+      "moves": [
+        0,
+        8,
+        2,
+        10,
+        14,
+        23,
+        18,
+        31
+      ],
+      "canvasSha256": "1737e5f9e94c4bf011f8e081b75e9be9b974498f20442f64efce9b040c9ca4c3",
+      "file": null
+    },
+    {
+      "revision": "after",
+      "type": "cylinder",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "progress": 1,
+      "moves": [
+        0,
+        8,
+        2,
+        10,
+        14,
+        23,
+        18,
+        31
+      ],
+      "canvasSha256": "9e0583cd2661cf44a17ebd56f4f2d93ef60d9d209d4e638bcde29b98ea999cc7",
+      "file": null
+    },
+    {
+      "revision": "before",
+      "type": "torus",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "progress": 0,
+      "moves": [
+        0,
+        8,
+        2,
+        10,
+        14,
+        23,
+        18,
+        31
+      ],
+      "canvasSha256": "52ed899ea7526380ce5bd69a54bf7eb34e46ac5ca9c9644e7579c415cbfed511",
+      "file": null
+    },
+    {
+      "revision": "before",
+      "type": "torus",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "progress": 0.12,
+      "moves": [
+        0,
+        8,
+        2,
+        10,
+        14,
+        23,
+        18,
+        31
+      ],
+      "canvasSha256": "e53fe3a310b7dadb8954cbd67c6ab25f30fdb4a89c3415fa21da1faeb3cd1a03",
+      "file": null
+    },
+    {
+      "revision": "before",
+      "type": "torus",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "progress": 0.3,
+      "moves": [
+        0,
+        8,
+        2,
+        10,
+        14,
+        23,
+        18,
+        31
+      ],
+      "canvasSha256": "d5faea39cae4a767272f6ead93be7da1a5d451b79a945935fce7222a6b5ffe16",
+      "file": null
+    },
+    {
+      "revision": "before",
+      "type": "torus",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "progress": 0.5,
+      "moves": [
+        0,
+        8,
+        2,
+        10,
+        14,
+        23,
+        18,
+        31
+      ],
+      "canvasSha256": "92ffa4937f4af63bc09a7e7d211df7ab81939b1e9e4e9b2e30f1c6ffedecedda",
+      "file": null
+    },
+    {
+      "revision": "before",
+      "type": "torus",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "progress": 0.72,
+      "moves": [
+        0,
+        8,
+        2,
+        10,
+        14,
+        23,
+        18,
+        31
+      ],
+      "canvasSha256": "7c8b98cb3bc777ceda9942bdf85083948eac85673a022cca07104ed549f23f42",
+      "file": null
+    },
+    {
+      "revision": "before",
+      "type": "torus",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "progress": 0.9,
+      "moves": [
+        0,
+        8,
+        2,
+        10,
+        14,
+        23,
+        18,
+        31
+      ],
+      "canvasSha256": "6383f5f889b258b1aefb8023c3049ead4d0f3189a4cfea41d1bad9e5ed10adc1",
+      "file": null
+    },
+    {
+      "revision": "before",
+      "type": "torus",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "progress": 1,
+      "moves": [
+        0,
+        8,
+        2,
+        10,
+        14,
+        23,
+        18,
+        31
+      ],
+      "canvasSha256": "7835dae1327a9d8c0e7c80a20d19d72a194e7461705d22f63103e704444a30fe",
+      "file": null
+    },
+    {
+      "revision": "after",
+      "type": "torus",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "progress": 0,
+      "moves": [
+        0,
+        8,
+        2,
+        10,
+        14,
+        23,
+        18,
+        31
+      ],
+      "canvasSha256": "52ed899ea7526380ce5bd69a54bf7eb34e46ac5ca9c9644e7579c415cbfed511",
+      "file": null
+    },
+    {
+      "revision": "after",
+      "type": "torus",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "progress": 0.12,
+      "moves": [
+        0,
+        8,
+        2,
+        10,
+        14,
+        23,
+        18,
+        31
+      ],
+      "canvasSha256": "8c729cef4530c038e95eda1718cd8648e33a45b3cfddfcd3e0a137849a4324ce",
+      "file": null
+    },
+    {
+      "revision": "after",
+      "type": "torus",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "progress": 0.3,
+      "moves": [
+        0,
+        8,
+        2,
+        10,
+        14,
+        23,
+        18,
+        31
+      ],
+      "canvasSha256": "03ac933cefba5568fc61b7637eb7b43deaf656a2aed7fccdb4a08759c7df2270",
+      "file": null
+    },
+    {
+      "revision": "after",
+      "type": "torus",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "progress": 0.5,
+      "moves": [
+        0,
+        8,
+        2,
+        10,
+        14,
+        23,
+        18,
+        31
+      ],
+      "canvasSha256": "cc12c3170b63942be08c98f0e24937fd125e2adcd5d688b34eecbcbe15beb39b",
+      "file": null
+    },
+    {
+      "revision": "after",
+      "type": "torus",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "progress": 0.72,
+      "moves": [
+        0,
+        8,
+        2,
+        10,
+        14,
+        23,
+        18,
+        31
+      ],
+      "canvasSha256": "2b198fb119e7c81cdfcb5d1dbdb3277969d20f13052d4b29bc494b552d044533",
+      "file": null
+    },
+    {
+      "revision": "after",
+      "type": "torus",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "progress": 0.9,
+      "moves": [
+        0,
+        8,
+        2,
+        10,
+        14,
+        23,
+        18,
+        31
+      ],
+      "canvasSha256": "4bbde196adad1af2fa43608a72a5e4aeb6cbfd0ab355b6921c34efb1bd2cf138",
+      "file": null
+    },
+    {
+      "revision": "after",
+      "type": "torus",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "progress": 1,
+      "moves": [
+        0,
+        8,
+        2,
+        10,
+        14,
+        23,
+        18,
+        31
+      ],
+      "canvasSha256": "bbf59cb769cd1504fe30b63abe66cb58868aad21bb9d8d632d74f0c22818aeaa",
+      "file": null
+    },
+    {
+      "revision": "before",
+      "type": "mobius",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "progress": 0,
+      "moves": [
+        0,
+        9,
+        2,
+        11,
+        16,
+        26,
+        20,
+        35
+      ],
+      "canvasSha256": "9f1540e09d3c88b09108fa7a6176549817b4db1fc21fd1d89bcd2d2b9a46a16c",
+      "file": null
+    },
+    {
+      "revision": "before",
+      "type": "mobius",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "progress": 0.12,
+      "moves": [
+        0,
+        9,
+        2,
+        11,
+        16,
+        26,
+        20,
+        35
+      ],
+      "canvasSha256": "1e8287efe9b4b06fa6a7930d9cfcbf9d39d0f6c45b1c4f05526039c5eaf8349a",
+      "file": null
+    },
+    {
+      "revision": "before",
+      "type": "mobius",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "progress": 0.3,
+      "moves": [
+        0,
+        9,
+        2,
+        11,
+        16,
+        26,
+        20,
+        35
+      ],
+      "canvasSha256": "3ace947a68bf1712e9c0415d1c3dce1095221e6d32bf77666392535ce847a002",
+      "file": null
+    },
+    {
+      "revision": "before",
+      "type": "mobius",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "progress": 0.5,
+      "moves": [
+        0,
+        9,
+        2,
+        11,
+        16,
+        26,
+        20,
+        35
+      ],
+      "canvasSha256": "126694510b3062a4bb1dabf52827fa38f481eca73d7dc519b179e3962681b841",
+      "file": null
+    },
+    {
+      "revision": "before",
+      "type": "mobius",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "progress": 0.72,
+      "moves": [
+        0,
+        9,
+        2,
+        11,
+        16,
+        26,
+        20,
+        35
+      ],
+      "canvasSha256": "9df67cb95f88cca7f2e140c3dae244cfc21311f6eedbae62a776530f615cd15d",
+      "file": null
+    },
+    {
+      "revision": "before",
+      "type": "mobius",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "progress": 0.9,
+      "moves": [
+        0,
+        9,
+        2,
+        11,
+        16,
+        26,
+        20,
+        35
+      ],
+      "canvasSha256": "a978fe4987174e498115de8cf00d4e0db12fbc98b8e7929cc673d0569159887b",
+      "file": null
+    },
+    {
+      "revision": "before",
+      "type": "mobius",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "progress": 1,
+      "moves": [
+        0,
+        9,
+        2,
+        11,
+        16,
+        26,
+        20,
+        35
+      ],
+      "canvasSha256": "b041a375a428495be28af5dc5841a85f430edfef9493576972df22f7692ee84c",
+      "file": null
+    },
+    {
+      "revision": "after",
+      "type": "mobius",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "progress": 0,
+      "moves": [
+        0,
+        9,
+        2,
+        11,
+        16,
+        26,
+        20,
+        35
+      ],
+      "canvasSha256": "9f1540e09d3c88b09108fa7a6176549817b4db1fc21fd1d89bcd2d2b9a46a16c",
+      "file": null
+    },
+    {
+      "revision": "after",
+      "type": "mobius",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "progress": 0.12,
+      "moves": [
+        0,
+        9,
+        2,
+        11,
+        16,
+        26,
+        20,
+        35
+      ],
+      "canvasSha256": "097ac2607e6e66faaba3dc5b0cb37504ed7849ef1afde0d2f7f8ba91a9dd259d",
+      "file": null
+    },
+    {
+      "revision": "after",
+      "type": "mobius",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "progress": 0.3,
+      "moves": [
+        0,
+        9,
+        2,
+        11,
+        16,
+        26,
+        20,
+        35
+      ],
+      "canvasSha256": "fa22fb0a0d713721b92592be1b2f3e65ed9b8a956029a567f52e2a6f2f3688a8",
+      "file": null
+    },
+    {
+      "revision": "after",
+      "type": "mobius",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "progress": 0.5,
+      "moves": [
+        0,
+        9,
+        2,
+        11,
+        16,
+        26,
+        20,
+        35
+      ],
+      "canvasSha256": "7f61f55e7c615100f400d4d7bb7186ee9470d680946d73c7e5ba7eacbf20852c",
+      "file": null
+    },
+    {
+      "revision": "after",
+      "type": "mobius",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "progress": 0.72,
+      "moves": [
+        0,
+        9,
+        2,
+        11,
+        16,
+        26,
+        20,
+        35
+      ],
+      "canvasSha256": "883868b431d6b9e9b397f017064407ec2b236e364d2777765f75fb19c12c0c9a",
+      "file": null
+    },
+    {
+      "revision": "after",
+      "type": "mobius",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "progress": 0.9,
+      "moves": [
+        0,
+        9,
+        2,
+        11,
+        16,
+        26,
+        20,
+        35
+      ],
+      "canvasSha256": "bf77441f665183c810be668fb7a9af2df646e065382cebb7f8100545d208df14",
+      "file": null
+    },
+    {
+      "revision": "after",
+      "type": "mobius",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "progress": 1,
+      "moves": [
+        0,
+        9,
+        2,
+        11,
+        16,
+        26,
+        20,
+        35
+      ],
+      "canvasSha256": "974e2fe4feb84a511a7dac723a668e7510f774e7fe942e7a0a9991eeca105860",
+      "file": null
+    },
+    {
+      "revision": "before",
+      "type": "klein",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "progress": 0,
+      "moves": [
+        0,
+        8,
+        2,
+        10,
+        14,
+        23,
+        18,
+        31
+      ],
+      "canvasSha256": "136345205eb67a75a44e5d7fa3ae0068dd35cb83bb751ed1d4ce9cfdeeea732e",
+      "file": null
+    },
+    {
+      "revision": "before",
+      "type": "klein",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "progress": 0.12,
+      "moves": [
+        0,
+        8,
+        2,
+        10,
+        14,
+        23,
+        18,
+        31
+      ],
+      "canvasSha256": "599e660d2ada48d3a49c3d3694e81095c825163b51c39f88d38d3c2b97f5e765",
+      "file": null
+    },
+    {
+      "revision": "before",
+      "type": "klein",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "progress": 0.3,
+      "moves": [
+        0,
+        8,
+        2,
+        10,
+        14,
+        23,
+        18,
+        31
+      ],
+      "canvasSha256": "0d411c2d229624b3ececb9a51ea531e398c18bc92155ec8fa4aaaf0b664ced35",
+      "file": null
+    },
+    {
+      "revision": "before",
+      "type": "klein",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "progress": 0.5,
+      "moves": [
+        0,
+        8,
+        2,
+        10,
+        14,
+        23,
+        18,
+        31
+      ],
+      "canvasSha256": "b93874681a6b05760f7e9b13b823ac3e9858c4dd767ae44bc463384b83a434d9",
+      "file": "artifacts/board-seam-motion-h5/before-game-klein-0.5-1280x720.png"
+    },
+    {
+      "revision": "before",
+      "type": "klein",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "progress": 0.72,
+      "moves": [
+        0,
+        8,
+        2,
+        10,
+        14,
+        23,
+        18,
+        31
+      ],
+      "canvasSha256": "c4609892f0d8e813e8a8983ac53b95a8346646244dbbdd33b9e242a47c934369",
+      "file": null
+    },
+    {
+      "revision": "before",
+      "type": "klein",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "progress": 0.9,
+      "moves": [
+        0,
+        8,
+        2,
+        10,
+        14,
+        23,
+        18,
+        31
+      ],
+      "canvasSha256": "cdaa970cf4a9664114d11606b508cb88a6a40668f15b65b219046f04e3495ead",
+      "file": null
+    },
+    {
+      "revision": "before",
+      "type": "klein",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "progress": 1,
+      "moves": [
+        0,
+        8,
+        2,
+        10,
+        14,
+        23,
+        18,
+        31
+      ],
+      "canvasSha256": "b379a57f2f8c0257b7a647d2f8cc13efa31da8d8102f6ec05df4adedb727b900",
+      "file": "artifacts/board-seam-motion-h5/before-game-klein-1-1280x720.png"
+    },
+    {
+      "revision": "after",
+      "type": "klein",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "progress": 0,
+      "moves": [
+        0,
+        8,
+        2,
+        10,
+        14,
+        23,
+        18,
+        31
+      ],
+      "canvasSha256": "136345205eb67a75a44e5d7fa3ae0068dd35cb83bb751ed1d4ce9cfdeeea732e",
+      "file": null
+    },
+    {
+      "revision": "after",
+      "type": "klein",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "progress": 0.12,
+      "moves": [
+        0,
+        8,
+        2,
+        10,
+        14,
+        23,
+        18,
+        31
+      ],
+      "canvasSha256": "e5851150352c8a1905c31cad8ce3bdefe894aae03bd4d1ffdae0eba460601e85",
+      "file": null
+    },
+    {
+      "revision": "after",
+      "type": "klein",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "progress": 0.3,
+      "moves": [
+        0,
+        8,
+        2,
+        10,
+        14,
+        23,
+        18,
+        31
+      ],
+      "canvasSha256": "d46a8827ee846fae6fe4be4b53d787c8f81ed710539bdda02347e88fd070d85f",
+      "file": null
+    },
+    {
+      "revision": "after",
+      "type": "klein",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "progress": 0.5,
+      "moves": [
+        0,
+        8,
+        2,
+        10,
+        14,
+        23,
+        18,
+        31
+      ],
+      "canvasSha256": "0fd105e1d57022c61a01fb4e0a5eb831e188aa91707937cc28ece373c3e8c40b",
+      "file": "artifacts/board-seam-motion-h5/after-game-klein-0.5-1280x720.png"
+    },
+    {
+      "revision": "after",
+      "type": "klein",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "progress": 0.72,
+      "moves": [
+        0,
+        8,
+        2,
+        10,
+        14,
+        23,
+        18,
+        31
+      ],
+      "canvasSha256": "7c61ee4706d63328241116620ecc6575cebc084dc6f65cecde5400269ab42256",
+      "file": null
+    },
+    {
+      "revision": "after",
+      "type": "klein",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "progress": 0.9,
+      "moves": [
+        0,
+        8,
+        2,
+        10,
+        14,
+        23,
+        18,
+        31
+      ],
+      "canvasSha256": "0af9d80b16a9625704e0bd93a862319dbcdc2ce76c9944f5bfc414b4f4d0de3a",
+      "file": null
+    },
+    {
+      "revision": "after",
+      "type": "klein",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "progress": 1,
+      "moves": [
+        0,
+        8,
+        2,
+        10,
+        14,
+        23,
+        18,
+        31
+      ],
+      "canvasSha256": "922d8cf86a13bf93fabb09b212afeebd2381dc58cac7f8906643395b17bd271e",
+      "file": "artifacts/board-seam-motion-h5/after-game-klein-1-1280x720.png"
+    },
+    {
+      "revision": "before",
+      "type": "projective",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "progress": 0,
+      "moves": [
+        0,
+        9,
+        2,
+        11,
+        16,
+        26,
+        20,
+        35
+      ],
+      "canvasSha256": "18a9f631901d382b92199fb840b5d5205b733be84e1b1941dc8bf11346ae5c97",
+      "file": null
+    },
+    {
+      "revision": "before",
+      "type": "projective",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "progress": 0.12,
+      "moves": [
+        0,
+        9,
+        2,
+        11,
+        16,
+        26,
+        20,
+        35
+      ],
+      "canvasSha256": "89171b7df7ef9a4db65c234f529cd2a0b94db9101f5349dfc0ce5cb0ef194300",
+      "file": null
+    },
+    {
+      "revision": "before",
+      "type": "projective",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "progress": 0.3,
+      "moves": [
+        0,
+        9,
+        2,
+        11,
+        16,
+        26,
+        20,
+        35
+      ],
+      "canvasSha256": "942fd849d3e9e827cb154f7246b765056beb512ac1af48cb21a36c2a78b1f553",
+      "file": null
+    },
+    {
+      "revision": "before",
+      "type": "projective",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "progress": 0.5,
+      "moves": [
+        0,
+        9,
+        2,
+        11,
+        16,
+        26,
+        20,
+        35
+      ],
+      "canvasSha256": "de0b0659f7f3e6ab9022e157029ef97ab4e4571d3de40cdd258b58ceff99ad46",
+      "file": "artifacts/board-seam-motion-h5/before-game-projective-0.5-1280x720.png"
+    },
+    {
+      "revision": "before",
+      "type": "projective",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "progress": 0.72,
+      "moves": [
+        0,
+        9,
+        2,
+        11,
+        16,
+        26,
+        20,
+        35
+      ],
+      "canvasSha256": "88df01914d926647117ad13c43f78563fefabd5ca12bfc58713ddcc08f481dd7",
+      "file": null
+    },
+    {
+      "revision": "before",
+      "type": "projective",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "progress": 0.9,
+      "moves": [
+        0,
+        9,
+        2,
+        11,
+        16,
+        26,
+        20,
+        35
+      ],
+      "canvasSha256": "c37461d616b1edf1e995b3c40e7ff3ad21d0b56c3fffcb61dc9a0c80415ab6c6",
+      "file": null
+    },
+    {
+      "revision": "before",
+      "type": "projective",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "progress": 1,
+      "moves": [
+        0,
+        9,
+        2,
+        11,
+        16,
+        26,
+        20,
+        35
+      ],
+      "canvasSha256": "d47d05c2f72fd48b2aa25629dc16c05c1f97452e64b63db88397417faf43ed46",
+      "file": "artifacts/board-seam-motion-h5/before-game-projective-1-1280x720.png"
+    },
+    {
+      "revision": "after",
+      "type": "projective",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "progress": 0,
+      "moves": [
+        0,
+        9,
+        2,
+        11,
+        16,
+        26,
+        20,
+        35
+      ],
+      "canvasSha256": "18a9f631901d382b92199fb840b5d5205b733be84e1b1941dc8bf11346ae5c97",
+      "file": null
+    },
+    {
+      "revision": "after",
+      "type": "projective",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "progress": 0.12,
+      "moves": [
+        0,
+        9,
+        2,
+        11,
+        16,
+        26,
+        20,
+        35
+      ],
+      "canvasSha256": "a4c79f0d818f8d8475a1774d361b9eecb21442cadb0f48aae7b6d991d9305257",
+      "file": null
+    },
+    {
+      "revision": "after",
+      "type": "projective",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "progress": 0.3,
+      "moves": [
+        0,
+        9,
+        2,
+        11,
+        16,
+        26,
+        20,
+        35
+      ],
+      "canvasSha256": "354e20a76ea6b079b3eaa7ce18bd68120f267a1f88cb01311af419aa646442f3",
+      "file": null
+    },
+    {
+      "revision": "after",
+      "type": "projective",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "progress": 0.5,
+      "moves": [
+        0,
+        9,
+        2,
+        11,
+        16,
+        26,
+        20,
+        35
+      ],
+      "canvasSha256": "beb70ccf5a37c32b89a78dfdba64b21afce2a34bf04af3b5084bafc71f4d1249",
+      "file": "artifacts/board-seam-motion-h5/after-game-projective-0.5-1280x720.png"
+    },
+    {
+      "revision": "after",
+      "type": "projective",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "progress": 0.72,
+      "moves": [
+        0,
+        9,
+        2,
+        11,
+        16,
+        26,
+        20,
+        35
+      ],
+      "canvasSha256": "ecc19a78dcea8759c222acf3cbcb06cee83a7dbf0ae6644dbc54d4d4101c325e",
+      "file": null
+    },
+    {
+      "revision": "after",
+      "type": "projective",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "progress": 0.9,
+      "moves": [
+        0,
+        9,
+        2,
+        11,
+        16,
+        26,
+        20,
+        35
+      ],
+      "canvasSha256": "aa926b31d140fdb39627ee03decec0d6d98040b2c98fb70bc76637c4a65ccbb6",
+      "file": null
+    },
+    {
+      "revision": "after",
+      "type": "projective",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "progress": 1,
+      "moves": [
+        0,
+        9,
+        2,
+        11,
+        16,
+        26,
+        20,
+        35
+      ],
+      "canvasSha256": "1914f3c01d4657ffd2a4ec65fec4d1982547eddcd7d51afa02e21edef9a0808d",
+      "file": "artifacts/board-seam-motion-h5/after-game-projective-1-1280x720.png"
+    },
+    {
+      "revision": "before",
+      "type": "sphere",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "progress": 0,
+      "moves": [
+        0,
+        8,
+        2,
+        10,
+        14,
+        23,
+        18,
+        31
+      ],
+      "canvasSha256": "e18e3c52779c13e48c5996b7ce3f44929299ffd515fa8baca3a7ff2599918928",
+      "file": "artifacts/board-seam-motion-h5/before-game-sphere-0-1280x720.png"
+    },
+    {
+      "revision": "before",
+      "type": "sphere",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "progress": 0.12,
+      "moves": [
+        0,
+        8,
+        2,
+        10,
+        14,
+        23,
+        18,
+        31
+      ],
+      "canvasSha256": "e13349011c8fe21b5f5e521253103c2f031ac1dfc403c0c0cf2dca08b0c17f41",
+      "file": null
+    },
+    {
+      "revision": "before",
+      "type": "sphere",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "progress": 0.3,
+      "moves": [
+        0,
+        8,
+        2,
+        10,
+        14,
+        23,
+        18,
+        31
+      ],
+      "canvasSha256": "0bf2d33acb8e198432b217826c903bfb416d147474b0991e18fd6a2d406327ef",
+      "file": "artifacts/board-seam-motion-h5/before-game-sphere-0.3-1280x720.png"
+    },
+    {
+      "revision": "before",
+      "type": "sphere",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "progress": 0.5,
+      "moves": [
+        0,
+        8,
+        2,
+        10,
+        14,
+        23,
+        18,
+        31
+      ],
+      "canvasSha256": "66503cb39aa9012f51208dcb286f06dc42fe8042b954f890b6d23f2f668e75a1",
+      "file": "artifacts/board-seam-motion-h5/before-game-sphere-0.5-1280x720.png"
+    },
+    {
+      "revision": "before",
+      "type": "sphere",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "progress": 0.72,
+      "moves": [
+        0,
+        8,
+        2,
+        10,
+        14,
+        23,
+        18,
+        31
+      ],
+      "canvasSha256": "35fbfa8f2479f672744342b8533abb659f28ce55ae216b7d474350178ed2ad95",
+      "file": "artifacts/board-seam-motion-h5/before-game-sphere-0.72-1280x720.png"
+    },
+    {
+      "revision": "before",
+      "type": "sphere",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "progress": 0.9,
+      "moves": [
+        0,
+        8,
+        2,
+        10,
+        14,
+        23,
+        18,
+        31
+      ],
+      "canvasSha256": "985c7c5c53d2e59df999b6249dc4dc83efcf67c11b7803d9619d307c27a2527b",
+      "file": "artifacts/board-seam-motion-h5/before-game-sphere-0.9-1280x720.png"
+    },
+    {
+      "revision": "before",
+      "type": "sphere",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "progress": 1,
+      "moves": [
+        0,
+        8,
+        2,
+        10,
+        14,
+        23,
+        18,
+        31
+      ],
+      "canvasSha256": "7dc681c67679c4d5ab162c14871d90effe62c0fe07df2ffe0e09c40ff10fbb12",
+      "file": "artifacts/board-seam-motion-h5/before-game-sphere-1-1280x720.png"
+    },
+    {
+      "revision": "after",
+      "type": "sphere",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "progress": 0,
+      "moves": [
+        0,
+        8,
+        2,
+        10,
+        14,
+        23,
+        18,
+        31
+      ],
+      "canvasSha256": "e18e3c52779c13e48c5996b7ce3f44929299ffd515fa8baca3a7ff2599918928",
+      "file": "artifacts/board-seam-motion-h5/after-game-sphere-0-1280x720.png"
+    },
+    {
+      "revision": "after",
+      "type": "sphere",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "progress": 0.12,
+      "moves": [
+        0,
+        8,
+        2,
+        10,
+        14,
+        23,
+        18,
+        31
+      ],
+      "canvasSha256": "90779cc24f45064e4cd71ba3f22f6f2d5d578a55d73c0f95770c35c8d598c740",
+      "file": null
+    },
+    {
+      "revision": "after",
+      "type": "sphere",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "progress": 0.3,
+      "moves": [
+        0,
+        8,
+        2,
+        10,
+        14,
+        23,
+        18,
+        31
+      ],
+      "canvasSha256": "c7b4dd66e10468607d665bc15b222a70866a7c5913eefa052728e20c61acde81",
+      "file": "artifacts/board-seam-motion-h5/after-game-sphere-0.3-1280x720.png"
+    },
+    {
+      "revision": "after",
+      "type": "sphere",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "progress": 0.5,
+      "moves": [
+        0,
+        8,
+        2,
+        10,
+        14,
+        23,
+        18,
+        31
+      ],
+      "canvasSha256": "2c3e85d1c9d041e6dc813d45807ff2c4eca66394b3d5c52c6f6f27b6d6bb0b1d",
+      "file": "artifacts/board-seam-motion-h5/after-game-sphere-0.5-1280x720.png"
+    },
+    {
+      "revision": "after",
+      "type": "sphere",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "progress": 0.72,
+      "moves": [
+        0,
+        8,
+        2,
+        10,
+        14,
+        23,
+        18,
+        31
+      ],
+      "canvasSha256": "d5873def6f1451ebd5c225b703402dced539f3bddea4836c69915965e75ff3e2",
+      "file": "artifacts/board-seam-motion-h5/after-game-sphere-0.72-1280x720.png"
+    },
+    {
+      "revision": "after",
+      "type": "sphere",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "progress": 0.9,
+      "moves": [
+        0,
+        8,
+        2,
+        10,
+        14,
+        23,
+        18,
+        31
+      ],
+      "canvasSha256": "8b4faa1eab504dd166da9c92dd9c0fb179335e64a8ce0f57dc1f09c903d3e7d8",
+      "file": "artifacts/board-seam-motion-h5/after-game-sphere-0.9-1280x720.png"
+    },
+    {
+      "revision": "after",
+      "type": "sphere",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "progress": 1,
+      "moves": [
+        0,
+        8,
+        2,
+        10,
+        14,
+        23,
+        18,
+        31
+      ],
+      "canvasSha256": "7a8b7077114bcc684ea349a051cbecd475a9a43c6270d39a8541ab4567664f16",
+      "file": "artifacts/board-seam-motion-h5/after-game-sphere-1-1280x720.png"
+    },
+    {
+      "revision": "before",
+      "type": "cylinder",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "progress": 0,
+      "moves": [
+        0,
+        8,
+        2,
+        10,
+        14,
+        23,
+        18,
+        31
+      ],
+      "canvasSha256": "c7c938468e835e5c404d50d8698da21edc005898ca5646b0df065fb654327697",
+      "file": null
+    },
+    {
+      "revision": "before",
+      "type": "cylinder",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "progress": 0.12,
+      "moves": [
+        0,
+        8,
+        2,
+        10,
+        14,
+        23,
+        18,
+        31
+      ],
+      "canvasSha256": "416c25240cc334ff82e4e9745409c6609517e745526345837793fcb4f05385c8",
+      "file": null
+    },
+    {
+      "revision": "before",
+      "type": "cylinder",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "progress": 0.3,
+      "moves": [
+        0,
+        8,
+        2,
+        10,
+        14,
+        23,
+        18,
+        31
+      ],
+      "canvasSha256": "9d2c828d0b9f9a4be6c7dc16f7180d9c6a08b30062888cd9fb4fd511b5a02cd0",
+      "file": null
+    },
+    {
+      "revision": "before",
+      "type": "cylinder",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "progress": 0.5,
+      "moves": [
+        0,
+        8,
+        2,
+        10,
+        14,
+        23,
+        18,
+        31
+      ],
+      "canvasSha256": "6b2b824a0c68085cd71e70ef915a40e1dbb5fc7ec25c2eea3768ed5c5a8befc7",
+      "file": null
+    },
+    {
+      "revision": "before",
+      "type": "cylinder",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "progress": 0.72,
+      "moves": [
+        0,
+        8,
+        2,
+        10,
+        14,
+        23,
+        18,
+        31
+      ],
+      "canvasSha256": "da57673888b7ab3ca81b27405ccf35cb6d19fb3860f4a418c8095ad99b295b41",
+      "file": null
+    },
+    {
+      "revision": "before",
+      "type": "cylinder",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "progress": 0.9,
+      "moves": [
+        0,
+        8,
+        2,
+        10,
+        14,
+        23,
+        18,
+        31
+      ],
+      "canvasSha256": "da556d5307c0e111bdaff76ed3dfccd42124ef3cddbba4c79faf5f2b2e5664be",
+      "file": null
+    },
+    {
+      "revision": "before",
+      "type": "cylinder",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "progress": 1,
+      "moves": [
+        0,
+        8,
+        2,
+        10,
+        14,
+        23,
+        18,
+        31
+      ],
+      "canvasSha256": "c658bd8cff87bf37ba11401ec0518c8c9c034f38a2b80e8d561be2415d427763",
+      "file": null
+    },
+    {
+      "revision": "after",
+      "type": "cylinder",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "progress": 0,
+      "moves": [
+        0,
+        8,
+        2,
+        10,
+        14,
+        23,
+        18,
+        31
+      ],
+      "canvasSha256": "c7c938468e835e5c404d50d8698da21edc005898ca5646b0df065fb654327697",
+      "file": null
+    },
+    {
+      "revision": "after",
+      "type": "cylinder",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "progress": 0.12,
+      "moves": [
+        0,
+        8,
+        2,
+        10,
+        14,
+        23,
+        18,
+        31
+      ],
+      "canvasSha256": "be4bc4451d03c00525f2d6f9c5ca948d2aa958681d10b673c5b9508f7b39018a",
+      "file": null
+    },
+    {
+      "revision": "after",
+      "type": "cylinder",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "progress": 0.3,
+      "moves": [
+        0,
+        8,
+        2,
+        10,
+        14,
+        23,
+        18,
+        31
+      ],
+      "canvasSha256": "1141c63b274dcf372e0c2252db6241ca14c326e1f17ba5c6a1c8ca229428b24a",
+      "file": null
+    },
+    {
+      "revision": "after",
+      "type": "cylinder",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "progress": 0.5,
+      "moves": [
+        0,
+        8,
+        2,
+        10,
+        14,
+        23,
+        18,
+        31
+      ],
+      "canvasSha256": "7b89f6b7ebb2cd007f460c571c64a1a283dd7202dc4280a1739c44e6d259f0af",
+      "file": null
+    },
+    {
+      "revision": "after",
+      "type": "cylinder",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "progress": 0.72,
+      "moves": [
+        0,
+        8,
+        2,
+        10,
+        14,
+        23,
+        18,
+        31
+      ],
+      "canvasSha256": "8a02b9c9f6b8fa6e7cc4747c3de9cab83e20fe798ecd8eafe3e1b5d91a746ac4",
+      "file": null
+    },
+    {
+      "revision": "after",
+      "type": "cylinder",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "progress": 0.9,
+      "moves": [
+        0,
+        8,
+        2,
+        10,
+        14,
+        23,
+        18,
+        31
+      ],
+      "canvasSha256": "87f7f225ccedeac341fbc163603cfa773f3b19718f0bf753a38fda332d808c62",
+      "file": null
+    },
+    {
+      "revision": "after",
+      "type": "cylinder",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "progress": 1,
+      "moves": [
+        0,
+        8,
+        2,
+        10,
+        14,
+        23,
+        18,
+        31
+      ],
+      "canvasSha256": "94ffb4da4b2d0699ace8611e8827727166edf7f7ae4e224d441fa846cb1b2380",
+      "file": null
+    },
+    {
+      "revision": "before",
+      "type": "torus",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "progress": 0,
+      "moves": [
+        0,
+        8,
+        2,
+        10,
+        14,
+        23,
+        18,
+        31
+      ],
+      "canvasSha256": "4763c06649b823693e1203ac7eeb67c28004be7e99be26425194b47154e23182",
+      "file": null
+    },
+    {
+      "revision": "before",
+      "type": "torus",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "progress": 0.12,
+      "moves": [
+        0,
+        8,
+        2,
+        10,
+        14,
+        23,
+        18,
+        31
+      ],
+      "canvasSha256": "e92aebc957a8a8baccc7411c18b860bff8b6f60c5f29d472d5482b4466584563",
+      "file": null
+    },
+    {
+      "revision": "before",
+      "type": "torus",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "progress": 0.3,
+      "moves": [
+        0,
+        8,
+        2,
+        10,
+        14,
+        23,
+        18,
+        31
+      ],
+      "canvasSha256": "f82e217c919239f88825e7b3666f517dee85a9d05f29af31b467d6bfeb5059ce",
+      "file": null
+    },
+    {
+      "revision": "before",
+      "type": "torus",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "progress": 0.5,
+      "moves": [
+        0,
+        8,
+        2,
+        10,
+        14,
+        23,
+        18,
+        31
+      ],
+      "canvasSha256": "7b9a7a028415da06c63dabab40fdbcddb85ffffd7c281264c1e4062eb492f58a",
+      "file": null
+    },
+    {
+      "revision": "before",
+      "type": "torus",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "progress": 0.72,
+      "moves": [
+        0,
+        8,
+        2,
+        10,
+        14,
+        23,
+        18,
+        31
+      ],
+      "canvasSha256": "85e9d2eb7586dc738fa88400e0215c7f4dd163db4cef37198d48a4198723b64b",
+      "file": null
+    },
+    {
+      "revision": "before",
+      "type": "torus",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "progress": 0.9,
+      "moves": [
+        0,
+        8,
+        2,
+        10,
+        14,
+        23,
+        18,
+        31
+      ],
+      "canvasSha256": "b663d0c308c282e7d55c67a4382d9598ff469fee4a0c2ba4edb5151ef869da39",
+      "file": null
+    },
+    {
+      "revision": "before",
+      "type": "torus",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "progress": 1,
+      "moves": [
+        0,
+        8,
+        2,
+        10,
+        14,
+        23,
+        18,
+        31
+      ],
+      "canvasSha256": "6b94b202698460a538dd38598f49295eadc7d980bcfe609cd5f35da16ce182f0",
+      "file": null
+    },
+    {
+      "revision": "after",
+      "type": "torus",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "progress": 0,
+      "moves": [
+        0,
+        8,
+        2,
+        10,
+        14,
+        23,
+        18,
+        31
+      ],
+      "canvasSha256": "4763c06649b823693e1203ac7eeb67c28004be7e99be26425194b47154e23182",
+      "file": null
+    },
+    {
+      "revision": "after",
+      "type": "torus",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "progress": 0.12,
+      "moves": [
+        0,
+        8,
+        2,
+        10,
+        14,
+        23,
+        18,
+        31
+      ],
+      "canvasSha256": "e503c0cf29883cbc6c483c4f2ea0eed88d07b2e947bca4c0f4f1ba90b049041d",
+      "file": null
+    },
+    {
+      "revision": "after",
+      "type": "torus",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "progress": 0.3,
+      "moves": [
+        0,
+        8,
+        2,
+        10,
+        14,
+        23,
+        18,
+        31
+      ],
+      "canvasSha256": "1ecaf504d230ffc5484fb5f176e1d3f76442ce7b3320f7d220fba2a9d53789fe",
+      "file": null
+    },
+    {
+      "revision": "after",
+      "type": "torus",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "progress": 0.5,
+      "moves": [
+        0,
+        8,
+        2,
+        10,
+        14,
+        23,
+        18,
+        31
+      ],
+      "canvasSha256": "4b0ce9e833fe45f64d2898ef09a7699b4791443b948ff04c6b115b11632b2eb2",
+      "file": null
+    },
+    {
+      "revision": "after",
+      "type": "torus",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "progress": 0.72,
+      "moves": [
+        0,
+        8,
+        2,
+        10,
+        14,
+        23,
+        18,
+        31
+      ],
+      "canvasSha256": "e95300612ea3e3657d32ca0599ba3e21410fb34438c5be81748bd43184e88c5d",
+      "file": null
+    },
+    {
+      "revision": "after",
+      "type": "torus",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "progress": 0.9,
+      "moves": [
+        0,
+        8,
+        2,
+        10,
+        14,
+        23,
+        18,
+        31
+      ],
+      "canvasSha256": "ffb0fa97e2587f13a3bcdec1095d9380c13468eb1d03a88e54a1921e75e571db",
+      "file": null
+    },
+    {
+      "revision": "after",
+      "type": "torus",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "progress": 1,
+      "moves": [
+        0,
+        8,
+        2,
+        10,
+        14,
+        23,
+        18,
+        31
+      ],
+      "canvasSha256": "1912c20b2387e23f5fcc116bec5bd2abec235837186eab976d070ed8b735ecd4",
+      "file": null
+    },
+    {
+      "revision": "before",
+      "type": "mobius",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "progress": 0,
+      "moves": [
+        0,
+        9,
+        2,
+        11,
+        16,
+        26,
+        20,
+        35
+      ],
+      "canvasSha256": "12310b77671c3e16ecc0d70479ce11acfcad56b9b68f463e88e2e7faebd45f39",
+      "file": null
+    },
+    {
+      "revision": "before",
+      "type": "mobius",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "progress": 0.12,
+      "moves": [
+        0,
+        9,
+        2,
+        11,
+        16,
+        26,
+        20,
+        35
+      ],
+      "canvasSha256": "ddf692924d2c3126c8929eac560ca664a518f7902bdf8171d48563517c4a296a",
+      "file": null
+    },
+    {
+      "revision": "before",
+      "type": "mobius",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "progress": 0.3,
+      "moves": [
+        0,
+        9,
+        2,
+        11,
+        16,
+        26,
+        20,
+        35
+      ],
+      "canvasSha256": "d1d96a290f553f91bb23da5ba1ac8acefe9e43475adf1e0e2c620bca17ce7b9a",
+      "file": null
+    },
+    {
+      "revision": "before",
+      "type": "mobius",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "progress": 0.5,
+      "moves": [
+        0,
+        9,
+        2,
+        11,
+        16,
+        26,
+        20,
+        35
+      ],
+      "canvasSha256": "0e1382453b9cfe088834dfda879bab5be50185314ff58a6e356d21d767b03513",
+      "file": null
+    },
+    {
+      "revision": "before",
+      "type": "mobius",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "progress": 0.72,
+      "moves": [
+        0,
+        9,
+        2,
+        11,
+        16,
+        26,
+        20,
+        35
+      ],
+      "canvasSha256": "112f716f44aac848ad56491cbb85ce2a29486a4fa7233fb7aa8eef79ccb82ac4",
+      "file": null
+    },
+    {
+      "revision": "before",
+      "type": "mobius",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "progress": 0.9,
+      "moves": [
+        0,
+        9,
+        2,
+        11,
+        16,
+        26,
+        20,
+        35
+      ],
+      "canvasSha256": "60f2ea2891773c89b524b47b2a07c8f61c3878882a986f3fced22da5e2e2ad96",
+      "file": null
+    },
+    {
+      "revision": "before",
+      "type": "mobius",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "progress": 1,
+      "moves": [
+        0,
+        9,
+        2,
+        11,
+        16,
+        26,
+        20,
+        35
+      ],
+      "canvasSha256": "3bead9429bbfedace9fd2128f3504735a39e843258729be8c4b22279eddb16b3",
+      "file": null
+    },
+    {
+      "revision": "after",
+      "type": "mobius",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "progress": 0,
+      "moves": [
+        0,
+        9,
+        2,
+        11,
+        16,
+        26,
+        20,
+        35
+      ],
+      "canvasSha256": "12310b77671c3e16ecc0d70479ce11acfcad56b9b68f463e88e2e7faebd45f39",
+      "file": null
+    },
+    {
+      "revision": "after",
+      "type": "mobius",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "progress": 0.12,
+      "moves": [
+        0,
+        9,
+        2,
+        11,
+        16,
+        26,
+        20,
+        35
+      ],
+      "canvasSha256": "2c6543846169d9c4ab238164b4f21d5e9051d674b3682bed2669878d2e5f3065",
+      "file": null
+    },
+    {
+      "revision": "after",
+      "type": "mobius",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "progress": 0.3,
+      "moves": [
+        0,
+        9,
+        2,
+        11,
+        16,
+        26,
+        20,
+        35
+      ],
+      "canvasSha256": "09ab6c189818ee393339c31013861752d921dd175f455b95e924b122222ebc58",
+      "file": null
+    },
+    {
+      "revision": "after",
+      "type": "mobius",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "progress": 0.5,
+      "moves": [
+        0,
+        9,
+        2,
+        11,
+        16,
+        26,
+        20,
+        35
+      ],
+      "canvasSha256": "f4179d0d3a4d772d2cbe69c5af44ab58b370f49c1de2f48ac0a274b80473473f",
+      "file": null
+    },
+    {
+      "revision": "after",
+      "type": "mobius",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "progress": 0.72,
+      "moves": [
+        0,
+        9,
+        2,
+        11,
+        16,
+        26,
+        20,
+        35
+      ],
+      "canvasSha256": "4d12bd60aafc6a705fc959b35bb43a32063b6ff2c59a964b6ffaedeb39593832",
+      "file": null
+    },
+    {
+      "revision": "after",
+      "type": "mobius",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "progress": 0.9,
+      "moves": [
+        0,
+        9,
+        2,
+        11,
+        16,
+        26,
+        20,
+        35
+      ],
+      "canvasSha256": "faa437a44801d4622f0be3f6be1696e5a2f6ee2f548015c0fed95e32d12dece3",
+      "file": null
+    },
+    {
+      "revision": "after",
+      "type": "mobius",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "progress": 1,
+      "moves": [
+        0,
+        9,
+        2,
+        11,
+        16,
+        26,
+        20,
+        35
+      ],
+      "canvasSha256": "8aa59dfc5eb81841eeba8281f579a0ee1d5e6a70675abd53845936d5067b59a2",
+      "file": null
+    },
+    {
+      "revision": "before",
+      "type": "klein",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "progress": 0,
+      "moves": [
+        0,
+        8,
+        2,
+        10,
+        14,
+        23,
+        18,
+        31
+      ],
+      "canvasSha256": "59f2c5582571154f9cf8fb781b444822b7cd55ccb0e5ae5246427209d1ee7e03",
+      "file": null
+    },
+    {
+      "revision": "before",
+      "type": "klein",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "progress": 0.12,
+      "moves": [
+        0,
+        8,
+        2,
+        10,
+        14,
+        23,
+        18,
+        31
+      ],
+      "canvasSha256": "44d33a9bc0f6fdf7d68e650a335de8cb450621866ab4697df6e80e7ed2edb220",
+      "file": null
+    },
+    {
+      "revision": "before",
+      "type": "klein",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "progress": 0.3,
+      "moves": [
+        0,
+        8,
+        2,
+        10,
+        14,
+        23,
+        18,
+        31
+      ],
+      "canvasSha256": "b5177b1f092ff1c9aae2ac9c548fe1582820d0945d7e70b322efe0316b73e7da",
+      "file": null
+    },
+    {
+      "revision": "before",
+      "type": "klein",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "progress": 0.5,
+      "moves": [
+        0,
+        8,
+        2,
+        10,
+        14,
+        23,
+        18,
+        31
+      ],
+      "canvasSha256": "4f1f262c1d11c801e31a05585e9a74d3eb15acd69e0865bcde6a43a435bc8816",
+      "file": null
+    },
+    {
+      "revision": "before",
+      "type": "klein",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "progress": 0.72,
+      "moves": [
+        0,
+        8,
+        2,
+        10,
+        14,
+        23,
+        18,
+        31
+      ],
+      "canvasSha256": "3de0f50f57fa95c198078155283bc0231a0738c4842e45a208d7600807d95935",
+      "file": null
+    },
+    {
+      "revision": "before",
+      "type": "klein",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "progress": 0.9,
+      "moves": [
+        0,
+        8,
+        2,
+        10,
+        14,
+        23,
+        18,
+        31
+      ],
+      "canvasSha256": "081ff46e9d26a691ac7b607505495ae838d991230ff31c4176dd08ba50df37c5",
+      "file": null
+    },
+    {
+      "revision": "before",
+      "type": "klein",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "progress": 1,
+      "moves": [
+        0,
+        8,
+        2,
+        10,
+        14,
+        23,
+        18,
+        31
+      ],
+      "canvasSha256": "b2bd925b1236bcc570810dc8b48dfc0a3a9a868b53df35dcee6d4ac372c9f7a0",
+      "file": null
+    },
+    {
+      "revision": "after",
+      "type": "klein",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "progress": 0,
+      "moves": [
+        0,
+        8,
+        2,
+        10,
+        14,
+        23,
+        18,
+        31
+      ],
+      "canvasSha256": "59f2c5582571154f9cf8fb781b444822b7cd55ccb0e5ae5246427209d1ee7e03",
+      "file": null
+    },
+    {
+      "revision": "after",
+      "type": "klein",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "progress": 0.12,
+      "moves": [
+        0,
+        8,
+        2,
+        10,
+        14,
+        23,
+        18,
+        31
+      ],
+      "canvasSha256": "3ab2e9b1a53595f60e58f52b9b61ba39fb9f3a9a289c654407d70a10ce53e38d",
+      "file": null
+    },
+    {
+      "revision": "after",
+      "type": "klein",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "progress": 0.3,
+      "moves": [
+        0,
+        8,
+        2,
+        10,
+        14,
+        23,
+        18,
+        31
+      ],
+      "canvasSha256": "6e17873b641d69aa5a5201576db3fe410eeb8665d281f8f65ee9fcd7573d7218",
+      "file": null
+    },
+    {
+      "revision": "after",
+      "type": "klein",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "progress": 0.5,
+      "moves": [
+        0,
+        8,
+        2,
+        10,
+        14,
+        23,
+        18,
+        31
+      ],
+      "canvasSha256": "23a219c5fa80389baab041e29dc38abfa8940ecb2f1898fb1b779bbdb1117619",
+      "file": null
+    },
+    {
+      "revision": "after",
+      "type": "klein",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "progress": 0.72,
+      "moves": [
+        0,
+        8,
+        2,
+        10,
+        14,
+        23,
+        18,
+        31
+      ],
+      "canvasSha256": "5b846539a09ab7de404f29222b3dd12f7573e89e270e0c88cb01d40df3de31d4",
+      "file": null
+    },
+    {
+      "revision": "after",
+      "type": "klein",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "progress": 0.9,
+      "moves": [
+        0,
+        8,
+        2,
+        10,
+        14,
+        23,
+        18,
+        31
+      ],
+      "canvasSha256": "c8e0b22e55e000c5e665c756a3c2541fd65a34b80d3afd72cb50612e081bcead",
+      "file": null
+    },
+    {
+      "revision": "after",
+      "type": "klein",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "progress": 1,
+      "moves": [
+        0,
+        8,
+        2,
+        10,
+        14,
+        23,
+        18,
+        31
+      ],
+      "canvasSha256": "233ac77fe2aa51de2f31937c126f71cd627c10211b2c73c0b88b7fab2ad8cde0",
+      "file": null
+    },
+    {
+      "revision": "before",
+      "type": "projective",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "progress": 0,
+      "moves": [
+        0,
+        9,
+        2,
+        11,
+        16,
+        26,
+        20,
+        35
+      ],
+      "canvasSha256": "32ba980f9421c9c0be4e04d4b94adc85ef28bc17579b8fe77554bc59854d857b",
+      "file": null
+    },
+    {
+      "revision": "before",
+      "type": "projective",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "progress": 0.12,
+      "moves": [
+        0,
+        9,
+        2,
+        11,
+        16,
+        26,
+        20,
+        35
+      ],
+      "canvasSha256": "5db44fcd8b5981f70d0f21218082be340373532ee6e694401a3f5fbff8657820",
+      "file": null
+    },
+    {
+      "revision": "before",
+      "type": "projective",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "progress": 0.3,
+      "moves": [
+        0,
+        9,
+        2,
+        11,
+        16,
+        26,
+        20,
+        35
+      ],
+      "canvasSha256": "be19900f74bdf275782ac695abf705e9a52ee8dd3ebb70b14040c171fc6eaadc",
+      "file": null
+    },
+    {
+      "revision": "before",
+      "type": "projective",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "progress": 0.5,
+      "moves": [
+        0,
+        9,
+        2,
+        11,
+        16,
+        26,
+        20,
+        35
+      ],
+      "canvasSha256": "eee052a07e514ffeb6f3be2b4fd57a17f5b729b5f6b2ace0b63f7c2563a1473a",
+      "file": null
+    },
+    {
+      "revision": "before",
+      "type": "projective",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "progress": 0.72,
+      "moves": [
+        0,
+        9,
+        2,
+        11,
+        16,
+        26,
+        20,
+        35
+      ],
+      "canvasSha256": "133a0734875adfbeceb6d3759e0d29babf0b0414d900be17395414a141654a7c",
+      "file": null
+    },
+    {
+      "revision": "before",
+      "type": "projective",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "progress": 0.9,
+      "moves": [
+        0,
+        9,
+        2,
+        11,
+        16,
+        26,
+        20,
+        35
+      ],
+      "canvasSha256": "8af820ac40196387a3b7b043fcca9931b63216810c4003633af9a111b67ab74b",
+      "file": null
+    },
+    {
+      "revision": "before",
+      "type": "projective",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "progress": 1,
+      "moves": [
+        0,
+        9,
+        2,
+        11,
+        16,
+        26,
+        20,
+        35
+      ],
+      "canvasSha256": "f8fc0b26991ba3b6c201b295d24373b588a179bc5e2eff81c6d4751cfe84058b",
+      "file": null
+    },
+    {
+      "revision": "after",
+      "type": "projective",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "progress": 0,
+      "moves": [
+        0,
+        9,
+        2,
+        11,
+        16,
+        26,
+        20,
+        35
+      ],
+      "canvasSha256": "32ba980f9421c9c0be4e04d4b94adc85ef28bc17579b8fe77554bc59854d857b",
+      "file": null
+    },
+    {
+      "revision": "after",
+      "type": "projective",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "progress": 0.12,
+      "moves": [
+        0,
+        9,
+        2,
+        11,
+        16,
+        26,
+        20,
+        35
+      ],
+      "canvasSha256": "2c3ac6ab85aaca2a0e42a45107600c338b54f9de71c380f1b5cd9b6db50278c0",
+      "file": null
+    },
+    {
+      "revision": "after",
+      "type": "projective",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "progress": 0.3,
+      "moves": [
+        0,
+        9,
+        2,
+        11,
+        16,
+        26,
+        20,
+        35
+      ],
+      "canvasSha256": "4083f2ce95daf3415137fb9f5cc31a79abd192010103bae0c23e47b68657173f",
+      "file": null
+    },
+    {
+      "revision": "after",
+      "type": "projective",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "progress": 0.5,
+      "moves": [
+        0,
+        9,
+        2,
+        11,
+        16,
+        26,
+        20,
+        35
+      ],
+      "canvasSha256": "267f801552decb50f0510f669b22ca4e906b82a49fdc2da2d16e6f115d834029",
+      "file": null
+    },
+    {
+      "revision": "after",
+      "type": "projective",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "progress": 0.72,
+      "moves": [
+        0,
+        9,
+        2,
+        11,
+        16,
+        26,
+        20,
+        35
+      ],
+      "canvasSha256": "d5bf7aa12d6f18d242373b155adb7aeffcfd481534b34f6a5ae3262f7ba31337",
+      "file": null
+    },
+    {
+      "revision": "after",
+      "type": "projective",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "progress": 0.9,
+      "moves": [
+        0,
+        9,
+        2,
+        11,
+        16,
+        26,
+        20,
+        35
+      ],
+      "canvasSha256": "5c67f3374fa1e43aa36a29fa7a57cf66bf066fa1ea4dcc97991853509c457139",
+      "file": null
+    },
+    {
+      "revision": "after",
+      "type": "projective",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "progress": 1,
+      "moves": [
+        0,
+        9,
+        2,
+        11,
+        16,
+        26,
+        20,
+        35
+      ],
+      "canvasSha256": "c2f2addbdaa285e3e4622e081afb1ea0152b969818f50900470e44e0e80cd7fe",
+      "file": null
+    },
+    {
+      "revision": "before",
+      "type": "sphere",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "progress": 0,
+      "moves": [
+        0,
+        8,
+        2,
+        10,
+        14,
+        23,
+        18,
+        31
+      ],
+      "canvasSha256": "85ff6d0047ab2eebdf72c65d8d18d91ec54beffaa654f5e71f99dac2223c5dff",
+      "file": "artifacts/board-seam-motion-h5/before-game-sphere-0-390x844.png"
+    },
+    {
+      "revision": "before",
+      "type": "sphere",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "progress": 0.12,
+      "moves": [
+        0,
+        8,
+        2,
+        10,
+        14,
+        23,
+        18,
+        31
+      ],
+      "canvasSha256": "8ba1437540860883654b5169a5e6f23e8ec4dc24233a320c1500a6ab381cd832",
+      "file": null
+    },
+    {
+      "revision": "before",
+      "type": "sphere",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "progress": 0.3,
+      "moves": [
+        0,
+        8,
+        2,
+        10,
+        14,
+        23,
+        18,
+        31
+      ],
+      "canvasSha256": "fc613ed8530137b39c7227d654c6854f511eef56cc6e0846f63efe8beae95d21",
+      "file": "artifacts/board-seam-motion-h5/before-game-sphere-0.3-390x844.png"
+    },
+    {
+      "revision": "before",
+      "type": "sphere",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "progress": 0.5,
+      "moves": [
+        0,
+        8,
+        2,
+        10,
+        14,
+        23,
+        18,
+        31
+      ],
+      "canvasSha256": "7c0593c622b5d58dddae3696b9f89e77af09816e7c6a1233997cc9521d6fdf53",
+      "file": "artifacts/board-seam-motion-h5/before-game-sphere-0.5-390x844.png"
+    },
+    {
+      "revision": "before",
+      "type": "sphere",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "progress": 0.72,
+      "moves": [
+        0,
+        8,
+        2,
+        10,
+        14,
+        23,
+        18,
+        31
+      ],
+      "canvasSha256": "5f6d01ada6d48762b7234f296411ee5da9e370b1b95480765493ca4c6de50b85",
+      "file": "artifacts/board-seam-motion-h5/before-game-sphere-0.72-390x844.png"
+    },
+    {
+      "revision": "before",
+      "type": "sphere",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "progress": 0.9,
+      "moves": [
+        0,
+        8,
+        2,
+        10,
+        14,
+        23,
+        18,
+        31
+      ],
+      "canvasSha256": "1346808675f5820d69b20c2f57cf2ce3c09377b033b4cfeb62d061ff42c16e80",
+      "file": "artifacts/board-seam-motion-h5/before-game-sphere-0.9-390x844.png"
+    },
+    {
+      "revision": "before",
+      "type": "sphere",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "progress": 1,
+      "moves": [
+        0,
+        8,
+        2,
+        10,
+        14,
+        23,
+        18,
+        31
+      ],
+      "canvasSha256": "f0cc616b5b7203c3a42d2ccc22483ec4cf780a6e95bb09f464ce5291a89da6a6",
+      "file": "artifacts/board-seam-motion-h5/before-game-sphere-1-390x844.png"
+    },
+    {
+      "revision": "after",
+      "type": "sphere",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "progress": 0,
+      "moves": [
+        0,
+        8,
+        2,
+        10,
+        14,
+        23,
+        18,
+        31
+      ],
+      "canvasSha256": "85ff6d0047ab2eebdf72c65d8d18d91ec54beffaa654f5e71f99dac2223c5dff",
+      "file": "artifacts/board-seam-motion-h5/after-game-sphere-0-390x844.png"
+    },
+    {
+      "revision": "after",
+      "type": "sphere",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "progress": 0.12,
+      "moves": [
+        0,
+        8,
+        2,
+        10,
+        14,
+        23,
+        18,
+        31
+      ],
+      "canvasSha256": "d90a4b07a3318d9919e50bec80c2e53917b216a3b9cc5e7006606be2b49b5255",
+      "file": null
+    },
+    {
+      "revision": "after",
+      "type": "sphere",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "progress": 0.3,
+      "moves": [
+        0,
+        8,
+        2,
+        10,
+        14,
+        23,
+        18,
+        31
+      ],
+      "canvasSha256": "a93ba0cd706dae1edf20fa84e76bf876d1481ba411e1c93242d924ebde88a54a",
+      "file": "artifacts/board-seam-motion-h5/after-game-sphere-0.3-390x844.png"
+    },
+    {
+      "revision": "after",
+      "type": "sphere",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "progress": 0.5,
+      "moves": [
+        0,
+        8,
+        2,
+        10,
+        14,
+        23,
+        18,
+        31
+      ],
+      "canvasSha256": "92ee9df073c05345d306d812830d4ca2eac30abce26cfe501408d8212930b710",
+      "file": "artifacts/board-seam-motion-h5/after-game-sphere-0.5-390x844.png"
+    },
+    {
+      "revision": "after",
+      "type": "sphere",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "progress": 0.72,
+      "moves": [
+        0,
+        8,
+        2,
+        10,
+        14,
+        23,
+        18,
+        31
+      ],
+      "canvasSha256": "efd0b8f73ac86ebc79f885e239f42915c4d01d190d25806b35ec85772ee4aa34",
+      "file": "artifacts/board-seam-motion-h5/after-game-sphere-0.72-390x844.png"
+    },
+    {
+      "revision": "after",
+      "type": "sphere",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "progress": 0.9,
+      "moves": [
+        0,
+        8,
+        2,
+        10,
+        14,
+        23,
+        18,
+        31
+      ],
+      "canvasSha256": "207e0d1e6ef4e7068caaf5f67ab27e8b93d475396d183a5d7bfc94acb8808c39",
+      "file": "artifacts/board-seam-motion-h5/after-game-sphere-0.9-390x844.png"
+    },
+    {
+      "revision": "after",
+      "type": "sphere",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "progress": 1,
+      "moves": [
+        0,
+        8,
+        2,
+        10,
+        14,
+        23,
+        18,
+        31
+      ],
+      "canvasSha256": "5dac2924fb8c62280295935e0d8c6d1c959b1077af858bf4c3583278e5727fc2",
+      "file": "artifacts/board-seam-motion-h5/after-game-sphere-1-390x844.png"
+    }
+  ],
+  "flatUnchanged": [
+    {
+      "type": "cylinder",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "sha256": "558bf85bc2ba4432be5f14ed45ffc20870ba64276e2b7a25a1e7d10655134b92"
+    },
+    {
+      "type": "torus",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "sha256": "52ed899ea7526380ce5bd69a54bf7eb34e46ac5ca9c9644e7579c415cbfed511"
+    },
+    {
+      "type": "mobius",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "sha256": "9f1540e09d3c88b09108fa7a6176549817b4db1fc21fd1d89bcd2d2b9a46a16c"
+    },
+    {
+      "type": "klein",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "sha256": "136345205eb67a75a44e5d7fa3ae0068dd35cb83bb751ed1d4ce9cfdeeea732e"
+    },
+    {
+      "type": "projective",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "sha256": "18a9f631901d382b92199fb840b5d5205b733be84e1b1941dc8bf11346ae5c97"
+    },
+    {
+      "type": "sphere",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "sha256": "e18e3c52779c13e48c5996b7ce3f44929299ffd515fa8baca3a7ff2599918928"
+    },
+    {
+      "type": "cylinder",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "sha256": "c7c938468e835e5c404d50d8698da21edc005898ca5646b0df065fb654327697"
+    },
+    {
+      "type": "torus",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "sha256": "4763c06649b823693e1203ac7eeb67c28004be7e99be26425194b47154e23182"
+    },
+    {
+      "type": "mobius",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "sha256": "12310b77671c3e16ecc0d70479ce11acfcad56b9b68f463e88e2e7faebd45f39"
+    },
+    {
+      "type": "klein",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "sha256": "59f2c5582571154f9cf8fb781b444822b7cd55ccb0e5ae5246427209d1ee7e03"
+    },
+    {
+      "type": "projective",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "sha256": "32ba980f9421c9c0be4e04d4b94adc85ef28bc17579b8fe77554bc59854d857b"
+    },
+    {
+      "type": "sphere",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "sha256": "85ff6d0047ab2eebdf72c65d8d18d91ec54beffaa654f5e71f99dac2223c5dff"
+    }
+  ],
+  "spatialHits": [
+    {
+      "type": "cylinder",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "cell": 36,
+      "x": 589.6232162463903,
+      "y": 278.849954175656,
+      "visibleCells": 22,
+      "hiddenCells": 20
+    },
+    {
+      "type": "torus",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "cell": 1,
+      "x": 638.310588669326,
+      "y": 466.66324546276985,
+      "visibleCells": 20,
+      "hiddenCells": 22
+    },
+    {
+      "type": "mobius",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "cell": 41,
+      "x": 681.4122688521368,
+      "y": 479.85691791756886,
+      "visibleCells": 48,
+      "hiddenCells": 0
+    },
+    {
+      "type": "klein",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "cell": 3,
+      "x": 587.2319588806788,
+      "y": 382.1632301884961,
+      "visibleCells": 16,
+      "hiddenCells": 26
+    },
+    {
+      "type": "projective",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "cell": 63,
+      "x": 646.1359466938678,
+      "y": 364.627871271707,
+      "visibleCells": 33,
+      "hiddenCells": 31
+    },
+    {
+      "type": "sphere",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "cell": 11,
+      "x": 582.7122701551534,
+      "y": 337.68695085918824,
+      "visibleCells": 21,
+      "hiddenCells": 28
+    },
+    {
+      "type": "cylinder",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "cell": 36,
+      "x": 145.4581905627484,
+      "y": 297.2944300732971,
+      "visibleCells": 22,
+      "hiddenCells": 20
+    },
+    {
+      "type": "torus",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "cell": 1,
+      "x": 193.33858996209958,
+      "y": 481.994793880514,
+      "visibleCells": 20,
+      "hiddenCells": 22
+    },
+    {
+      "type": "mobius",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "cell": 41,
+      "x": 235.7258776556925,
+      "y": 494.9697866813661,
+      "visibleCells": 48,
+      "hiddenCells": 0
+    },
+    {
+      "type": "klein",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "cell": 3,
+      "x": 143.10656729702117,
+      "y": 398.8953313455928,
+      "visibleCells": 16,
+      "hiddenCells": 26
+    },
+    {
+      "type": "projective",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "cell": 63,
+      "x": 201.03424591993632,
+      "y": 381.6506137368169,
+      "visibleCells": 33,
+      "hiddenCells": 31
+    },
+    {
+      "type": "sphere",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "cell": 11,
+      "x": 138.6617905393222,
+      "y": 355.1562279167707,
+      "visibleCells": 21,
+      "hiddenCells": 28
+    }
+  ],
+  "sharedGallery": [],
+  "performance": [],
+  "animationFrames": []
+}
