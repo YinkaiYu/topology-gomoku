@@ -693,6 +693,30 @@ test("custom board sizes use shared rules and survive restoration for every topo
   const large=empty.call("arena_create",{mode:"ai",topology:"plane",width:19,height:19},HOST);assert.equal(large.board.length,361);
 });
 
+test("match records sort newest first and preserve that order after restarting the service", (t) => {
+  const directory = fs.mkdtempSync(path.join(os.tmpdir(), "arena-record-order-"));
+  let now = 3000;
+  const arena = new Arena({ dataDir: directory, now: () => now });
+  t.after(() => { arena.close(); fs.rmSync(directory, { recursive: true, force: true }); });
+  const created = [3000, 1000, 2000, 2000].map(time => {
+    now = time;
+    return arena.call("arena_create", { topology: "plane", mode: "duel", clock: null }, HOST);
+  });
+  now = 4000;
+  arena.call("arena_profile", { gameId: created[1].gameId, role: "black", name: "Edited" }, HOST);
+  const listed = arena.call("arena_list").matches;
+  assert.deepEqual(listed.map(match => Date.parse(match.createdAt)), [3000, 2000, 2000, 1000]);
+  assert.equal(listed.at(-1).updatedAt, new Date(4000).toISOString(), "activity does not reorder creation dates");
+  const ids = listed.map(match => match.gameId);
+  arena.close();
+  const restored = new Arena({ dataDir: directory, now: () => now });
+  try {
+    assert.deepEqual(restored.call("arena_list").matches.map(match => match.gameId), ids);
+    restored.matches = new Map(Array.from(restored.matches.entries()).reverse());
+    assert.deepEqual(restored.call("arena_list").matches.map(match => match.gameId), ids, "load order and tied timestamps do not shuffle rows");
+  } finally { restored.close(); }
+});
+
 test("display profiles preserve role identity, credentials and moves, and reject unsafe avatars", (t) => {
   const directory=fs.mkdtempSync(path.join(os.tmpdir(),"arena-profiles-"));t.after(()=>fs.rmSync(directory,{recursive:true,force:true}));
   const g=setup({dataDir:directory});g.start();g.move(0);
