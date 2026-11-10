@@ -596,14 +596,16 @@ Arena 发布状态：2026-11-04 用户已确认本轮预览并授权合并、推
 
 ### Arena 观战接入（待确认）
 
-- 独立 `codex/arena-intersections` 从 `arena@b308922` 建立，整合共享任务 `0d6a981`，未更新长期 Arena 分支或真实对局服务。观战直接复用共享绘制方法，CLI/MCP 与参赛规则不变。
-- 隔离八子暂停对局，1280×720、1024×768，六拓扑共 120 个前后状态；12 组二维像素相同，无页面错误。六拓扑的整圈旋转与中途反转通过，整圈后再展开的最大位置偏差低于 0.0002px。
-- 瓶界与双生终态分别保有一条与六条连续分支；其余四种曲面终态没有自交线。316 项测试、资源与文档校验通过。
+- 独立 `codex/arena-intersections` 从 `arena@b308922` 建立，整合共享任务 `a2f05bd`；同状态基线为上轮 Arena 预览 `6937a37`，未更新长期 Arena 分支或真实对局服务。观战直接复用共享绘制和切换时长，CLI/MCP 与参赛规则不变。
+- 隔离八子暂停对局，Chromium / DPR 1、1280×720 与 1024×768，六拓扑共 128 个前后状态；12 组二维像素相同，无页面错误或整页溢出。六拓扑的整圈旋转与中途反转通过，整圈后再展开的最大位置偏差为 0.000194px。
+- 归圆在两个视口检查 12%、30%、50%、72%、90%、100% 进度，全部没有自交线；相同基线在两组中段各有四帧穿插。瓶界与双生终态分别保有一条与六条连续分支，其余四种曲面终态没有自交线。333 项测试、资源与文档校验通过。
+- 棋局记录由服务端按 `createdAt` 从新到旧排序，同一时间以稳定键排序，重启不改变次序；自动测试包含乱序载入与同时间记录。实际浏览器检查了棋局列表、瓶界完整三维和归圆半展开；重启隔离预览后保留六局暂停棋谱与原链接。预览已备好，仍待用户确认合并。
 
 | 场景 | 修改前 | 修改后 |
 | --- | --- | --- |
-| 双生，1280×720 | [基线](../../artifacts/arena-intersections/before-projective-100-1280x720.png) | [暖白相交线](../../artifacts/arena-intersections/after-projective-100-1280x720.png) |
-| 瓶界，1024×768 | [基线](../../artifacts/arena-intersections/before-klein-100-1024x768.png) | [穿插轮廓](../../artifacts/arena-intersections/after-klein-100-1024x768.png) |
-| 环游半展开，1280×720 | [基线](../../artifacts/arena-intersections/before-torus-50-1280x720.png) | [错峰粘合](../../artifacts/arena-intersections/after-torus-50-1280x720.png) |
+| 双生，1280×720 | [基线](../../artifacts/arena-seam-motion/before-projective-100-1280x720.png) | [暖白相交线](../../artifacts/arena-seam-motion/after-projective-100-1280x720.png) |
+| 瓶界，1024×768 | [基线](../../artifacts/arena-seam-motion/before-klein-100-1024x768.png) | [穿插轮廓](../../artifacts/arena-seam-motion/after-klein-100-1024x768.png) |
+| 环游半展开，1280×720 | [基线](../../artifacts/arena-seam-motion/before-torus-50-1280x720.png) | [先卷筒再成环](../../artifacts/arena-seam-motion/after-torus-50-1280x720.png) |
+| 归圆半展开，1280×720 | [中途穿插](../../artifacts/arena-seam-motion/before-sphere-50-1280x720.png) | [分开闭合](../../artifacts/arena-seam-motion/after-sphere-50-1280x720.png) |
 
-- [完整结果](../../artifacts/arena-intersections/results.json)。复现：提供 Playwright 后运行 `node scripts/qa-arena-intersections.cjs`；追加 `--serve --port=4321` 启动仅含合成棋局的可操作预览，地址记录在忽略目录 `.arena/intersections-preview/preview-fixtures.json`。
+- 36 张同状态截图与[完整结果](../../artifacts/arena-seam-motion/results.json)保存。复现：提供 Playwright 后运行 `node scripts/qa-arena-intersections.cjs --baseline=6937a37 --out=artifacts/arena-seam-motion`；追加 `--serve --port=4321` 启动仅含合成棋局的可操作预览，地址记录在忽略目录 `.arena/intersections-preview/preview-fixtures.json`，再次启动复用已有合成棋局。

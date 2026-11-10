@@ -550,7 +550,7 @@
     if (direct || matchMedia("(prefers-reduced-motion: reduce)").matches) { morph = morphTarget; drawBoard(); return; }
     const from = morph;
     const start = performance.now();
-    const duration = window.TopologyLiquidRange.duration(morphTarget - from, false);
+    const duration = window.TopologyLiquidRange.surfaceDuration(morphTarget - from, false);
     function frame(now) {
       const amount = Math.min(1, (now - start) / duration);
       const ease = window.TopologyLiquidRange.glide(amount);

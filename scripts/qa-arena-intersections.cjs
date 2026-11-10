@@ -4,7 +4,10 @@ const assert = require("node:assert/strict");
 const fs = require("node:fs"), path = require("node:path"), os = require("node:os");
 const { execFileSync } = require("node:child_process"), { createHash } = require("node:crypto");
 const { startServer } = require("../arena/server.cjs");
-const ROOT = path.resolve(__dirname, ".."), BASE = "b308922", OUT = path.join(ROOT, "artifacts/arena-intersections");
+const args = process.argv.slice(2);
+const ROOT = path.resolve(__dirname, "..");
+const BASE = args.find(value => value.startsWith("--baseline="))?.slice(11) || "b308922";
+const OUT = path.join(ROOT, args.find(value => value.startsWith("--out="))?.slice(6) || "artifacts/arena-intersections");
 const TYPES = ["torus", "cylinder", "mobius", "klein", "projective", "sphere"];
 const VIEWS = [{ width: 1280, height: 720 }, { width: 1024, height: 768 }];
 const MOVES = [0, 6, 42, 48, 24, 25, 17, 31];
@@ -105,9 +108,12 @@ function seed(app) {
 (async () => {
   const directory = serve ? path.join(ROOT, ".arena/intersections-preview") : fs.mkdtempSync(path.join(os.tmpdir(), "arena-intersections-"));
   const app = await startServer({ port: requestedPort, dataDir: directory, writeRuntime: false });
-  const fixtures = seed(app);
+  const fixtureFile = path.join(directory, "preview-fixtures.json");
+  const previous = serve && fs.existsSync(fixtureFile) ? JSON.parse(fs.readFileSync(fixtureFile, "utf8")) : null;
+  const retained = previous && TYPES.every(type => previous[type] && app.arena.matches.has(new URL(previous[type]).searchParams.get("game")));
+  const fixtures = retained ? Object.fromEntries(TYPES.map(type => [type, app.url + new URL(previous[type]).search])) : seed(app);
   if (serve) {
-    fs.writeFileSync(path.join(directory, "preview-fixtures.json"), JSON.stringify(fixtures, null, 2) + "\n");
+    fs.writeFileSync(fixtureFile, JSON.stringify(fixtures, null, 2) + "\n");
     console.log(JSON.stringify({ url: app.url, fixtures }, null, 2));
     for (const signal of ["SIGINT", "SIGTERM"]) process.on(signal, async () => { await app.close(); process.exit(0); });
     return;
@@ -140,17 +146,18 @@ function seed(app) {
           await settled(page); await setView(page, 0); hashes[revision] = await hash(page);
           assert.equal(await page.evaluate(() => document.documentElement.scrollWidth > innerWidth || document.documentElement.scrollHeight > innerHeight), false);
           frames[revision] = [];
-          for (const progress of [25, 50, 75, 100]) {
+          for (const progress of (topology === "sphere" ? [12, 30, 50, 72, 90, 100] : [25, 50, 75, 100])) {
             await setView(page, progress);
             const current = await frame(page);
             assert.ok(current.samples.every(point => [point.x, point.y, point.depth].every(Number.isFinite)));
             frames[revision].push(current);
-            if ((["klein", "projective"].includes(topology) && progress === 100) || (topology === "torus" && progress === 50)) {
+            if ((["klein", "projective"].includes(topology) && progress === 100) || (topology === "torus" && progress === 50) || topology === "sphere") {
               const file = `${revision}-${topology}-${progress}-${viewport.width}x${viewport.height}.png`;
               await page.screenshot({ path: path.join(OUT, file), animations: "disabled" }); screenshots.push(file);
             }
           }
           if (revision === "after") {
+            if (topology === "sphere") assert.ok(frames.after.every(item => item.intersectionLength === 0), "sphere: the closing surface never crosses itself");
             const last = frames.after.at(-1);
             if (["klein", "projective"].includes(topology)) assert.ok(last.intersectionLength > 20, topology + ": inherent crossings are drawn");
             else assert.equal(last.intersectionLength, 0, topology + ": ordinary embedded endpoints have no false cut");
