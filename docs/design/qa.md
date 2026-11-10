@@ -569,3 +569,61 @@ Arena 发布状态：2026-11-04 用户已确认本轮预览并授权合并、推
 - 自动检查六种棋子的 126 帧微旋转：单颗棋子同时出现清晰与淡显像素；连续帧无整颗跳变，内部孤立白缝为零。小环游另检查 41 帧旋转，外圈最多两个可见区间、没有短于 5px 的碎岛。几何回归覆盖精确深度、重叠面片、孔洞、T 形接点、局部遮挡、三角面路径和拓扑接缝。
 - 性能记录包含真实动画帧与强制读回。八子场景约 16.7ms/帧；19 路满盘的精确局部遮挡仍有明显开销，约 50–83ms/帧，不能据八子结果声称所有盘面都流畅。未进行原生宿主或低性能设备验证。
 - 复现：提供 Playwright 到 NODE_PATH 后运行 node scripts/qa-board-occlusion.cjs；--after-only 仅更新修改后证据，--profile 分析满盘耗时。图片与源码摘要、连续性和性能数据见[完整结果](../../artifacts/board-occlusion/results.json)。
+
+## 2026-11-10：曲面相交线与两组边界错峰粘合（待确认）
+
+- 独立任务 `codex/board-intersections` 从 `dev@81b7b0b` 开始，当前对照为上轮预览 `0d6a981`。维持 1.42.0，等待用户确认，不合入长期分支。
+- 曲面自交处采用更清楚的暖白亮芯和宽光晕，棋子接触线则保留清晰亮度、适度收敛线宽与光晕，取消深色描边与阴影。轮廓仍来自真实三角面片与圆润棋子体积，遵循遮挡，不把普通接缝或投影重叠画成相交线。
+- 边界先向外舒展，再沿较长的弧线收拢。环游先把金黄边卷成筒，再弯曲长轴、粘合青绿边；圆筒沿单弧卷合，扭带逐步完成半扭转。归圆的两个图册分开弯曲闭合，避免中途穿插。瓶界与双生保留本身需要的自交结构。
+- 方向箭头跟随真实边界移动，扭转边保留原有虚线；已闭合的一组淡出时，另一组仍可追踪。自动切换为两段动作多留观察时间，手动滑动保持直接跟手，半展开拖动与中途反向连续。
+- 归圆额外检查角点和终局展示形变：细分六个全边界三角片，网格插值、路径分段、曲面填充和遮挡共用同一细分。独立三维检测同时区分真实穿越、共面面积重叠和仅沿边相接，避免靠终态特判漏掉几何问题。
+- 对比条件：桌面 Chromium、DPR 1、固定八子、600×600 Canvas；粘合序列按从左到右、从上到下排列，进度为 0%、12%、30%、50%、72%、90%、100%。H5 使用相同内容、状态和 1280×720 / 390×844 视口。
+
+| 场景 | 修改前 | 修改后 |
+| --- | --- | --- |
+| 六曲面默认姿态 | [上轮预览](../../artifacts/board-seam-motion/before-six-surfaces.png) | [更清楚的相交光线](../../artifacts/board-seam-motion/after-six-surfaces.png) |
+| 环游展开 | [上轮预览](../../artifacts/board-seam-motion/before-torus-morph.png) | [先卷筒再成环](../../artifacts/board-seam-motion/after-torus-morph.png) |
+| 扭带展开 | [上轮预览](../../artifacts/board-seam-motion/before-mobius-morph.png) | [方向随半扭转移动](../../artifacts/board-seam-motion/after-mobius-morph.png) |
+| 归圆展开 | [中途穿插](../../artifacts/board-seam-motion/before-sphere-morph.png) | [分开弯曲、逐步闭合](../../artifacts/board-seam-motion/after-sphere-morph.png) |
+| 双生与棋子相交 | [上轮预览](../../artifacts/board-seam-motion/before-projective-stone-contact.png) | [加宽光晕](../../artifacts/board-seam-motion/after-projective-stone-contact.png) |
+| H5 双生三维对局 | [上轮预览](../../artifacts/board-seam-motion-h5/before-game-projective-1-1280x720.png) | [结果](../../artifacts/board-seam-motion-h5/after-game-projective-1-1280x720.png) |
+
+- 共享 Canvas 检查 378 个旋转与中间状态、162 个画布边界状态；六类二维棋盘像素不变，归圆以外五类的完整三维棋子位置不变。归圆的六种姿态合计 600 帧中，旧预览 426 帧存在交线，新路线为零；正式独立三维检测另覆盖 72 个归圆状态与 126 个圆筒、环游、扭带状态，均无穿越或共面面积重叠。
+- 归圆保留原网格质量门禁：八个面积样点范围由 8.03–14.81 收敛为 11.41–13.83，最大格线转角 0.575→0.583 弧度（门槛 0.65 不变）。600px 曲面采样平均移动 0.142px，最大 9.85px 位于原先折返的角部；七路棋子平均移动 0.48px，规则与命中始终共用修正后的曲面。
+- H5 实际页面覆盖 168 个前后状态，12 组二维棋盘像素一致，12 次三维点击落子命中正确；归圆另保存两个视口的全过程截图。共享代码通过 232 项自动测试、包规范校验和文档校验。
+- 完整绘制数据、源码摘要、二维一致性、画布边界与性能记录见[共享 Canvas 结果](../../artifacts/board-seam-motion/results.json)；实际页面与三维点击命中见[H5 结果](../../artifacts/board-seam-motion-h5/results.json)。本机普通复杂八子场景约 30–60fps；361 子双生约 83ms/帧（约 12fps），高密度满盘仍有明显开销，不能把八子结果推广到所有盘面。
+- 复现共享绘制：`node scripts/qa-board-intersections.cjs --baseline=0d6a981 --out=artifacts/board-seam-motion --seam-motion`。H5：`node scripts/qa-board-perspective.cjs --h5-only --seam-motion --baseline=0d6a981 --out=artifacts/board-seam-motion-h5`。环境需提供 Playwright；桌面浏览器检查不能替代原生宿主或真机验收。
+
+### Arena 观战接入（待确认）
+
+- 独立 `codex/arena-intersections` 从 `arena@b308922` 建立，整合共享任务 `a2f05bd`；同状态基线为上轮 Arena 预览 `6937a37`，未更新长期 Arena 分支或真实对局服务。观战直接复用共享绘制和切换时长，CLI/MCP 与参赛规则不变。
+- 隔离八子暂停对局，Chromium / DPR 1、1280×720 与 1024×768，六拓扑共 128 个前后状态；12 组二维像素相同，无页面错误或整页溢出。六拓扑的整圈旋转与中途反转通过，整圈后再展开的最大位置偏差为 0.000194px。
+- 归圆在两个视口检查 12%、30%、50%、72%、90%、100% 进度，全部没有自交线；相同基线在两组中段各有四帧穿插。瓶界与双生终态分别保有一条与六条连续分支，其余四种曲面终态没有自交线。333 项测试、资源与文档校验通过。
+- 棋局记录由服务端按 `createdAt` 从新到旧排序，同一时间以稳定键排序，重启不改变次序；自动测试包含乱序载入与同时间记录。实际浏览器检查了棋局列表、瓶界完整三维和归圆半展开；重启隔离预览后保留六局暂停棋谱与原链接。预览已备好，仍待用户确认合并。
+
+| 场景 | 修改前 | 修改后 |
+| --- | --- | --- |
+| 双生，1280×720 | [基线](../../artifacts/arena-seam-motion/before-projective-100-1280x720.png) | [暖白相交线](../../artifacts/arena-seam-motion/after-projective-100-1280x720.png) |
+| 瓶界，1024×768 | [基线](../../artifacts/arena-seam-motion/before-klein-100-1024x768.png) | [穿插轮廓](../../artifacts/arena-seam-motion/after-klein-100-1024x768.png) |
+| 环游半展开，1280×720 | [基线](../../artifacts/arena-seam-motion/before-torus-50-1280x720.png) | [先卷筒再成环](../../artifacts/arena-seam-motion/after-torus-50-1280x720.png) |
+| 归圆半展开，1280×720 | [中途穿插](../../artifacts/arena-seam-motion/before-sphere-50-1280x720.png) | [分开闭合](../../artifacts/arena-seam-motion/after-sphere-50-1280x720.png) |
+
+- 36 张同状态截图与[完整结果](../../artifacts/arena-seam-motion/results.json)保存。复现：提供 Playwright 后运行 `node scripts/qa-arena-intersections.cjs --baseline=6937a37 --out=artifacts/arena-seam-motion`；追加 `--serve --port=4321` 启动仅含合成棋局的可操作预览，地址记录在忽略目录 `.arena/intersections-preview/preview-fixtures.json`，再次启动复用已有合成棋局。
+
+### 二维边界四角补齐
+
+- 以上轮预览 `a2f05bd` 为基线。环游、瓶界、双生和归圆的二维辅助线延伸到共同角点，消除切换首帧才补齐半格缺口的跳变。箭头、网格、落点及规则保持原位，圆筒、扭带的开放边与平面不增加彩色外框。
+- 同内容、同时间、DPR 1，每块 Canvas 为 480×360；对照图从左到右为归圆、环游、瓶界、双生，上行为二维，下行为动画进度 0.00001：[修改前](../../artifacts/board-corner-rails/before-paired-first-frame.png)、[修改后](../../artifacts/board-corner-rails/after-paired-first-frame.png)。开放边对照：[修改前](../../artifacts/board-corner-rails/before-open-first-frame.png)、[修改后](../../artifacts/board-corner-rails/after-open-first-frame.png)。
+- 84 个前后状态覆盖七类拓扑及 5×5、7×6、19×19 棋盘（归圆中间尺寸为 7×7）。新辅助线与动画首帧角点误差小于 0.01px；圆筒、扭带、平面的九组二维画面像素不变，落子命中全部通过。H5 与共享 Canvas 的实际绘制入口均通过端点回归检查；共享 232 项测试、包规范和文档校验通过。
+- 对弈室任务预览已刷新，并目视核对归圆二维四角完整；等待用户确认。复现：提供 Playwright 到 NODE_PATH 后运行 `node scripts/qa-board-corner-rails.cjs`。源码摘要和逐状态数据见[完整结果](../../artifacts/board-corner-rails/results.json)。
+
+### 二维与展开首帧一致
+
+- 基线为四角补齐后的 `50fdb3b`。零进度复用二维画面，近零进度直接绘制真实曲面；曲面材质和边缘光从透明渐入，网格墨色、线宽及棋子样式连续接续。网格点随曲面移动后淡出，最近落子标记保留，反向收回时恢复二维画面。
+- 归圆的曲面采样在展开初段对齐二维映射的分段位置，消除首末排网格约 1.56px 的首帧偏移。点插值、路径分段、填充与深度检测共用非均匀参数轴，完整三维恢复原采样；没有用切换阈值隐藏几何误差。
+- Canvas 对照使用 DPR 1、360×360、固定八子与最近落点，六类曲面各检查空盘和含子盘。从左到右为二维、动画进度 0、0.00000001、0.001、0.01，上排空盘，下排含子：[归圆修改前](../../artifacts/board-first-frame/before-sphere-first-frame.png)、[修改后](../../artifacts/board-first-frame/after-sphere-first-frame.png)；[环游修改前](../../artifacts/board-first-frame/before-torus-first-frame.png)、[修改后](../../artifacts/board-first-frame/after-torus-first-frame.png)。
+- 12 组零进度画面与二维严格逐像素相同，原二维画面与基线也全部相同；极近零的网格点、格内材质、最近落点采样区域没有像素差异。48 次反向检查与相同进度的正向画面一致，误差随进度趋零而收敛。正式回归同时覆盖 5/7/19 路、落子命中、方向箭头与非均匀网格的真实面片贴合。
+- 复现：提供 Playwright 到 NODE_PATH 后运行 `node scripts/qa-board-first-frame.cjs`；`--after-only` 保留既有基线、只复验当前代码。源码摘要、区域像素误差和正反向记录见[完整结果](../../artifacts/board-first-frame/results.json)。
+- 实际 H5 页面另覆盖六曲面、1280×720 / 390×844、空盘／静止棋子／正在落子／按压回弹，共 48 组。原二维与往返二维画面全部逐像素一致；进度 0.0000001 的 42 组无像素差，其余仅 1–8 个像素出现约一级色阶差，最大平均 RGB 差 0.000052/255。旧切换阈值附近的最大平均差从 8.07 降到 0.055 以下。网格路径只精简真正共线的绘制分段，保留深度转折、回折和真实遮挡。
+- H5 复现：`node scripts/qa-board-first-frame-h5.cjs`。保留[桌面首步画面](../../artifacts/board-first-frame-h5/after-sphere-first-step-1280x720.png)、[手机首步画面](../../artifacts/board-first-frame-h5/after-sphere-first-step-390x844.png)和[逐状态结果](../../artifacts/board-first-frame-h5/results.json)。此处手机检查针对共享游戏页面，对弈室仍按桌面横屏设计；尚未进行原生宿主真机检查。
+- Arena 预览接入同一修复，视图从任意正进度直接进入连续绘制，坐标标签随展开渐隐；不再等到固定阈值整批隐藏。实际浏览器在刷新后检查归圆 1% 进度，交点、棋子与末手标记保持，材质没有突然切换。整合通过 340 项测试、资源与文档校验，仍待用户确认合并。

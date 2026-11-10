@@ -9,6 +9,12 @@ const Morph = require("../app/assets/topology-morph.js");
 
 const TEAL = "rgba(63,140,135,0.78)";
 const GOLD = "rgba(199,146,68,0.76)";
+function sameHue(actual, expected) {
+  const rgb = value => /^#[0-9a-f]{6}$/i.test(value)
+    ? [1, 3, 5].map(index => parseInt(value.slice(index, index + 2), 16)).join(",")
+    : String(value).match(/[\d.]+/g)?.slice(0, 3).join(",");
+  return rgb(actual) === rgb(expected);
+}
 const SIDE_UV = {
   top: amount => [amount, 0],
   left: amount => [0, amount],
@@ -33,7 +39,7 @@ function recordingContext() {
     fill() {},
     stroke() { strokes.push({ color: this.strokeStyle, alpha: this.globalAlpha, points: points.slice() }); },
     strokeRect() {},
-    setLineDash() {}
+    setLineDash() {}, fillRect() {}, arc() {}
   };
   return { ctx, strokes };
 }
@@ -55,7 +61,7 @@ function assertPoint(actual, expected, message) {
 }
 
 function frontBoundaries(drawing, color) {
-  const strokes = drawing.strokes.filter(stroke => stroke.color === color);
+  const strokes = drawing.strokes.filter(stroke => sameHue(stroke.color, color));
   if (!drawing.orientation.morph) { return strokes; }
   assert.equal(strokes.length % 2, 0, "each seam has a faint path followed by a depth-clipped path");
   for (let index = 0; index < strokes.length; index += 2) {
@@ -119,12 +125,12 @@ test("归圆二维辅助线与变形边界使用相同的邻边配色", () => {
   const offset = layout.cell * 0.5;
   const expected = new Map([
     [Art.TOKENS.teal, [
-      [{ x: layout.left, y: layout.top - offset }, { x: layout.right, y: layout.top - offset }],
-      [{ x: layout.left - offset, y: layout.top }, { x: layout.left - offset, y: layout.bottom }]
+      [{ x: layout.left - offset, y: layout.top - offset }, { x: layout.right + offset, y: layout.top - offset }],
+      [{ x: layout.left - offset, y: layout.top - offset }, { x: layout.left - offset, y: layout.bottom + offset }]
     ]],
     [Art.TOKENS.gold, [
-      [{ x: layout.left, y: layout.bottom + offset }, { x: layout.right, y: layout.bottom + offset }],
-      [{ x: layout.right + offset, y: layout.top }, { x: layout.right + offset, y: layout.bottom }]
+      [{ x: layout.left - offset, y: layout.bottom + offset }, { x: layout.right + offset, y: layout.bottom + offset }],
+      [{ x: layout.right + offset, y: layout.top - offset }, { x: layout.right + offset, y: layout.bottom + offset }]
     ]]
   ]);
   for (const [color, paths] of expected) {

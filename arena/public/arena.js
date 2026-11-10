@@ -537,10 +537,11 @@
     const cellSize = Math.min((rect.width - 56) / state.width, (rect.height - 56) / state.height);
     const layout = { cell: cellSize, left: (rect.width-cellSize*(state.width-1))/2, right: (rect.width+cellSize*(state.width-1))/2,
       top: (rect.height-cellSize*(state.height-1))/2, bottom: (rect.height+cellSize*(state.height-1))/2, width: rect.width, height: rect.height };
-    if (morph > .001 && state.topology !== "plane") Art.drawCompletion(ctx, { game, layout, time: 2000, morph, rotation });
+    if (morph > 0 && state.topology !== "plane") Art.drawCompletion(ctx, { game, layout, time: 2000, morph, rotation });
     else Art.drawBoard(ctx, { game, layout, time: 2000, fontFamily: '"Topo Serif",serif' });
     if (morph < .1) {
-      ctx.save(); ctx.fillStyle = "#65665e"; ctx.font = Math.min(16, Math.max(14, layout.cell * .65)) + 'px "Topo Serif",serif'; ctx.textAlign = "center"; ctx.textBaseline = "middle";
+      ctx.save(); ctx.globalAlpha *= 1 - window.TopologyMorph.smooth(morph / .1);
+      ctx.fillStyle = "#65665e"; ctx.font = Math.min(16, Math.max(14, layout.cell * .65)) + 'px "Topo Serif",serif'; ctx.textAlign = "center"; ctx.textBaseline = "middle";
       // Open edges need only stone clearance (the radius used by Art.drawStones).
       const openOffset = layout.cell * .37 + 12;
       const railOffset = layout.cell * .5 + 16;
@@ -563,7 +564,7 @@
     if (direct || matchMedia("(prefers-reduced-motion: reduce)").matches) { morph = morphTarget; drawBoard(); return; }
     const from = morph;
     const start = performance.now();
-    const duration = window.TopologyLiquidRange.duration(morphTarget - from, false);
+    const duration = window.TopologyLiquidRange.surfaceDuration(morphTarget - from, false);
     function frame(now) {
       const amount = Math.min(1, (now - start) / duration);
       const ease = window.TopologyLiquidRange.glide(amount);

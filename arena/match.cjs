@@ -391,7 +391,8 @@ class Arena extends EventEmitter {
         };
       case "arena_list":
         return {
-          matches: Array.from(this.matches.values()).reverse().map((match) => {
+          matches: Array.from(this.matches.values()).sort((a, b) =>
+            Date.parse(b.createdAt) - Date.parse(a.createdAt) || b.gameId.localeCompare(a.gameId)).map((match) => {
             this._expirePreparation(match);
             this._expireClock(match);
             const state = this._snapshot(match);
