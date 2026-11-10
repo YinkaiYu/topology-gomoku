@@ -10,7 +10,7 @@
 - WebKit 首页九种窗口、棋盘七种窗口及两次元素单独缩短后的底行落子通过。复现：`node scripts/qa-board-viewport.cjs --home --card-sizes --duel --label=bilibili-1.42.0 --webkit --offline-sdk`，棋盘场景去掉 `--home --card-sizes --duel`。
 - [官方预览](https://www.bilibili.com/toy/preview/author_NnP4A5U9/index.html)在真实跨源 Toy iframe 内通过 1280×900 和 390×844 两种视口的环游、扭带、双生与归圆双人落子及三档形变往返。未拦截 SDK；四份共享/平台脚本的远端 SHA-256 与本地上传源一致，无脚本异常。[结果与摘要](../../artifacts/qa-toy-1.42.0-preview-results.json)。复现：提供 Playwright 到 `NODE_PATH` 后运行 `node scripts/qa-toy-release.cjs <preview-url> 1.42.0`。
 - 官方 Toy Skill 已核对并更新至 `bilibili/toy@faee502`；CLI 从 v0.4.0 更新至 v0.6.5，安装二进制通过官方 SHA-256 校验。Windows 自更新无法替换正在执行的文件，因此下载同一官方发行二进制，在旧进程退出后替换；没有改动账号或平台登录信息。
-- ZIP SHA-256：`38C97AC999168043FD532BE1DF2A91704FF51CAD82E0103F9C8A283B47864D58`。依据本轮已确认的共享预览与全平台发行授权，更新原作品 `26525273613312`；标题、slug、封面、图标、分类、主题及可见性均保持。提交结果为 `auditing`，[提交后预览](https://www.bilibili.com/toy/preview/author_jF83mHCJ/index.html)。
+- ZIP SHA-256：`38C97AC999168043FD532BE1DF2A91704FF51CAD82E0103F9C8A283B47864D58`。依据本轮已确认的共享预览与全平台发行授权，更新原作品 `26525273613312`；标题、slug、封面、图标、分类、主题及可见性均保持。提交后为 `auditing`，2026-11-10 官方 CLI 复核已为 `published`，同时核实原封面和图标保持。[提交后预览](https://www.bilibili.com/toy/preview/author_jF83mHCJ/index.html)、[正式作品](https://www.bilibili.com/toy/topology-gomoku/index.html)。
 
 本轮未进行 B站 App 手机真机、真机沉浸或低性能设备验收；桌面浏览器手机视口模拟不替代真机。满盘三维绘制的已知性能限制沿用共享发布记录。
 
