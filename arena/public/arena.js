@@ -103,12 +103,25 @@
     try { return await action(); } catch (err) { error(err.message || "连接未完成，请重试。"); return null; }
   }
   async function copy(value) {
-    try { await navigator.clipboard.writeText(value); toast("已复制"); }
-    catch (_) {
-      $("invite-text").focus();
-      $("invite-text").select();
-      toast("请复制已选中的邀请词。");
-    }
+    try { await navigator.clipboard.writeText(value); toast("已复制"); return; } catch (_) {}
+    // An embedding host grants clipboard-write through the frame's `allow`
+    // attribute; when that permission is still missing, the legacy command
+    // works inside the same click gesture.
+    try {
+      const field = document.createElement("textarea");
+      field.value = value;
+      field.setAttribute("readonly", "");
+      field.style.position = "fixed";
+      field.style.opacity = "0";
+      document.body.append(field);
+      field.select();
+      const copied = document.execCommand("copy");
+      field.remove();
+      if (copied) { toast("已复制"); return; }
+    } catch (_) {}
+    $("invite-text").focus();
+    $("invite-text").select();
+    toast("请复制已选中的邀请词。");
   }
   function levelFor(topology) {
     const shared = Content.LEVELS.find((item) => item.topology === topology);

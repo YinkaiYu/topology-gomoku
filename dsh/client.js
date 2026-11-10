@@ -181,6 +181,7 @@ window.__ModuleLoader__.load({
             src,
             title: t.panel,
             referrerPolicy: 'no-referrer',
+            allow: 'clipboard-write',
             style: {
               position: 'absolute', inset: 0, border: 0, width: '100%', height: '100%',
               display: 'block', background: 'transparent',
