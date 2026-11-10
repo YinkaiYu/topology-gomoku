@@ -3752,6 +3752,7 @@
   function drawSphereRails(ctx, time) {
     var layout = renderState.layout;
     var offset = layout.cell * 0.5;
+    var bounds = BoardArt.boundaryGeometry(game.rules, layout);
     var pairs = [
       { color: "#3f8c87", pulse: seamPulseFor(Engine.SEAM_X, time), sides: ["top", "left"] },
       { color: "#c79244", pulse: seamPulseFor(Engine.SEAM_Y, time), sides: ["bottom", "right"] }
@@ -3768,12 +3769,12 @@
       pair.sides.forEach(function drawAdjacentSide(side) {
         if (side === "top" || side === "bottom") {
           var y = side === "top" ? layout.top - offset : layout.bottom + offset;
-          drawRailLine(ctx, layout.left, y, layout.right, y);
+          drawRailLine(ctx, bounds.left, y, bounds.right, y);
           drawArrow(ctx, layout.left + (layout.right - layout.left) * 0.36, y, "horizontal", 1);
           drawArrow(ctx, layout.left + (layout.right - layout.left) * 0.7, y, "horizontal", 1);
         } else {
           var x = side === "left" ? layout.left - offset : layout.right + offset;
-          drawRailLine(ctx, x, layout.top, x, layout.bottom);
+          drawRailLine(ctx, x, bounds.top, x, bounds.bottom);
           drawArrow(ctx, x, layout.top + (layout.bottom - layout.top) * 0.36, "vertical", 1);
           drawArrow(ctx, x, layout.top + (layout.bottom - layout.top) * 0.7, "vertical", 1);
         }
@@ -3785,6 +3786,7 @@
   function drawRailPair(ctx, orientation, color, twisted, pulse) {
     var layout = renderState.layout;
     var offset = layout.cell * 0.5;
+    var bounds = BoardArt.boundaryGeometry(game.rules, layout);
     var alpha = 0.58 + pulse * 0.4;
     ctx.save();
     ctx.strokeStyle = color;
@@ -3801,8 +3803,8 @@
     if (orientation === "vertical") {
       var leftX = layout.left - offset;
       var rightX = layout.right + offset;
-      drawRailLine(ctx, leftX, layout.top, leftX, layout.bottom);
-      drawRailLine(ctx, rightX, layout.top, rightX, layout.bottom);
+      drawRailLine(ctx, leftX, bounds.top, leftX, bounds.bottom);
+      drawRailLine(ctx, rightX, bounds.top, rightX, bounds.bottom);
       ctx.setLineDash([]);
       drawArrow(ctx, leftX, layout.top + (layout.bottom - layout.top) * 0.34, "vertical", 1);
       drawArrow(ctx, leftX, layout.top + (layout.bottom - layout.top) * 0.7, "vertical", 1);
@@ -3811,8 +3813,8 @@
     } else {
       var topY = layout.top - offset;
       var bottomY = layout.bottom + offset;
-      drawRailLine(ctx, layout.left, topY, layout.right, topY);
-      drawRailLine(ctx, layout.left, bottomY, layout.right, bottomY);
+      drawRailLine(ctx, bounds.left, topY, bounds.right, topY);
+      drawRailLine(ctx, bounds.left, bottomY, bounds.right, bottomY);
       ctx.setLineDash([]);
       drawArrow(ctx, layout.left + (layout.right - layout.left) * 0.34, topY, "horizontal", 1);
       drawArrow(ctx, layout.left + (layout.right - layout.left) * 0.7, topY, "horizontal", 1);

@@ -71,11 +71,20 @@ test("两个真实绘制入口默认将拓扑边延伸半格，开放边和落�
           close(grid[size + i].points[0], { x: layout.left - (joinedX ? layout.cell / 2 : 0), y: layout.top + i * layout.cell });
           close(grid[size + i].points[1], { x: layout.right + (joinedX ? layout.cell / 2 : 0), y: layout.top + i * layout.cell });
         }
-        for (const rail of strokes.filter(stroke => stroke.points.length === 2 && stroke.color !== GRID)) {
-          for (const point of rail.points) {
-            const onRail = [layout.left - layout.cell / 2, layout.right + layout.cell / 2].some(x => Math.abs(point.x - x) < 1e-7)
-              || [layout.top - layout.cell / 2, layout.bottom + layout.cell / 2].some(y => Math.abs(point.y - y) < 1e-7);
-            assert.equal(onRail, true, "colored guide meets half-cell extensions");
+        const rails = strokes.filter(stroke => stroke.points.length === 2 && stroke.color !== GRID);
+        assert.equal(rails.length, (joinedX ? 2 : 0) + (joinedY ? 2 : 0));
+        const bounds = { left: layout.left - (joinedX ? layout.cell / 2 : 0), right: layout.right + (joinedX ? layout.cell / 2 : 0),
+          top: layout.top - (joinedY ? layout.cell / 2 : 0), bottom: layout.bottom + (joinedY ? layout.cell / 2 : 0) };
+        for (const rail of rails) {
+          const [from, to] = rail.points, vertical = from.x === to.x;
+          if (vertical) {
+            assert.ok(from.x === bounds.left || from.x === bounds.right);
+            close(from, { x: from.x, y: bounds.top }, "rail begins at the actual corner");
+            close(to, { x: from.x, y: bounds.bottom }, "rail reaches the actual corner");
+          } else {
+            assert.ok(from.y === bounds.top || from.y === bounds.bottom);
+            close(from, { x: bounds.left, y: from.y }, "rail begins at the actual corner");
+            close(to, { x: bounds.right, y: from.y }, "rail reaches the actual corner");
           }
         }
       }

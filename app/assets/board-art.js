@@ -273,8 +273,9 @@
     return pulse;
   }
 
-  function drawRailPair(ctx, layout, orientation, color, twisted, pulse) {
+  function drawRailPair(ctx, game, layout, orientation, color, twisted, pulse) {
     var offset = layout.cell * 0.5;
+    var bounds = boundaryGeometry(game.rules, layout);
     ctx.save();
     ctx.strokeStyle = color;
     ctx.fillStyle = color;
@@ -289,8 +290,8 @@
     if (orientation === "vertical") {
       var leftX = layout.left - offset;
       var rightX = layout.right + offset;
-      drawRailLine(ctx, leftX, layout.top, leftX, layout.bottom);
-      drawRailLine(ctx, rightX, layout.top, rightX, layout.bottom);
+      drawRailLine(ctx, leftX, bounds.top, leftX, bounds.bottom);
+      drawRailLine(ctx, rightX, bounds.top, rightX, bounds.bottom);
       if (ctx.setLineDash) { ctx.setLineDash([]); }
       drawArrow(ctx, leftX, layout.top + (layout.bottom - layout.top) * 0.34, "vertical", 1);
       drawArrow(ctx, leftX, layout.top + (layout.bottom - layout.top) * 0.7, "vertical", 1);
@@ -299,8 +300,8 @@
     } else {
       var topY = layout.top - offset;
       var bottomY = layout.bottom + offset;
-      drawRailLine(ctx, layout.left, topY, layout.right, topY);
-      drawRailLine(ctx, layout.left, bottomY, layout.right, bottomY);
+      drawRailLine(ctx, bounds.left, topY, bounds.right, topY);
+      drawRailLine(ctx, bounds.left, bottomY, bounds.right, bottomY);
       if (ctx.setLineDash) { ctx.setLineDash([]); }
       drawArrow(ctx, layout.left + (layout.right - layout.left) * 0.34, topY, "horizontal", 1);
       drawArrow(ctx, layout.left + (layout.right - layout.left) * 0.7, topY, "horizontal", 1);
@@ -312,6 +313,7 @@
 
   function drawSphereRails(ctx, game, layout, time) {
     var offset = layout.cell * 0.5;
+    var bounds = boundaryGeometry(game.rules, layout);
     var pairs = [
       { color: TOKENS.teal, pulse: seamPulse(game, Engine.SEAM_X, time), sides: SPHERE_BOUNDARY_SIDES.x },
       { color: TOKENS.gold, pulse: seamPulse(game, Engine.SEAM_Y, time), sides: SPHERE_BOUNDARY_SIDES.y }
@@ -328,12 +330,12 @@
       pair.sides.forEach(function drawSide(side) {
         if (side === "top" || side === "bottom") {
           var y = side === "top" ? layout.top - offset : layout.bottom + offset;
-          drawRailLine(ctx, layout.left, y, layout.right, y);
+          drawRailLine(ctx, bounds.left, y, bounds.right, y);
           drawArrow(ctx, layout.left + (layout.right - layout.left) * 0.36, y, "horizontal", 1);
           drawArrow(ctx, layout.left + (layout.right - layout.left) * 0.7, y, "horizontal", 1);
         } else {
           var x = side === "left" ? layout.left - offset : layout.right + offset;
-          drawRailLine(ctx, x, layout.top, x, layout.bottom);
+          drawRailLine(ctx, x, bounds.top, x, bounds.bottom);
           drawArrow(ctx, x, layout.top + (layout.bottom - layout.top) * 0.36, "vertical", 1);
           drawArrow(ctx, x, layout.top + (layout.bottom - layout.top) * 0.7, "vertical", 1);
         }
@@ -348,10 +350,10 @@
       return;
     }
     if (game.level.xConnection) {
-      drawRailPair(ctx, layout, "vertical", TOKENS.teal, game.level.xConnection === "twist", seamPulse(game, Engine.SEAM_X, time));
+      drawRailPair(ctx, game, layout, "vertical", TOKENS.teal, game.level.xConnection === "twist", seamPulse(game, Engine.SEAM_X, time));
     }
     if (game.level.yConnection) {
-      drawRailPair(ctx, layout, "horizontal", TOKENS.gold, game.level.yConnection === "twist", seamPulse(game, Engine.SEAM_Y, time));
+      drawRailPair(ctx, game, layout, "horizontal", TOKENS.gold, game.level.yConnection === "twist", seamPulse(game, Engine.SEAM_Y, time));
     }
     if (!game.level.xConnection && !game.level.yConnection) {
       ctx.save();
