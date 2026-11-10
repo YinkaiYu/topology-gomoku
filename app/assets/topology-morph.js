@@ -165,6 +165,39 @@
   // exact while leaving enough resolution for a smooth low-bend solve.
   var SPHERE_LATTICE_SIZE = 42;
   var sphereLattice = null;
+  var sphereChartLattice = null;
+
+  function sphereChartPoint(point, upper) {
+    var sector = ((Math.atan2(point[1], point[0]) + TAU) % TAU) / (TAU / 3);
+    var a = sector < 1 ? 1 - sector : sector < 2 ? 0 : sector - 2;
+    var c = sector < 1 ? 0 : sector < 2 ? sector - 1 : 3 - sector;
+    var radius = Math.sqrt(Math.max(0, 1 - Math.abs(point[2])));
+    a = (1 - radius) / 3 + a * radius;
+    c = (1 - radius) / 3 + c * radius;
+    return upper ? [1 - a, c] : [c, 1 - a];
+  }
+
+  function preserveSphereDiagonal(points, size) {
+    var step = TAU / 3 / size * 0.2;
+    var limit = TAU / 3 - size * step;
+    var blocks = [];
+    for (var index = 0; index <= size; index += 1) {
+      var p = points[index][index];
+      var value = Math.max(0, Math.min(limit, -Math.atan2(p[1], p[0]) - index * step));
+      blocks.push({ start: index, end: index, sum: value, count: 1 });
+      while (blocks.length > 1) {
+        var a = blocks[blocks.length - 2], b = blocks[blocks.length - 1];
+        if (a.sum / a.count <= b.sum / b.count) { break; }
+        blocks.splice(blocks.length - 2, 2, { start: a.start, end: b.end, sum: a.sum + b.sum, count: a.count + b.count });
+      }
+    }
+    blocks.forEach(function monotoneArc(block) {
+      for (var index = block.start; index <= block.end; index += 1) {
+        var angle = -(block.sum / block.count + index * step);
+        points[index][index] = [Math.cos(angle), Math.sin(angle), 0];
+      }
+    });
+  }
 
   function buildSphereLattice() {
     var size = SPHERE_LATTICE_SIZE;
@@ -218,8 +251,17 @@
           ]);
         }
       }
+      // Preserve the optimized spacing while preventing the shared equator
+      // from doubling back near its ends. A small minimum interval keeps
+      // neighboring cells distinct instead of clamping them to one point.
+      preserveSphereDiagonal(next, size);
       points = next;
     }
+    sphereChartLattice = points.map(function chartRow(pointRow, row) {
+      return pointRow.map(function chartVertex(point, column) {
+        return sphereChartPoint(point, row <= column);
+      });
+    });
     return points;
   }
 
@@ -244,14 +286,31 @@
     var topRight = sphereLattice[top][left + 1];
     var bottomLeft = sphereLattice[top + 1][left];
     var bottomRight = sphereLattice[top + 1][left + 1];
-    return normalize3([
-      topLeft[0] * (1 - amountU) * (1 - amountV) + topRight[0] * amountU * (1 - amountV) +
-        bottomLeft[0] * (1 - amountU) * amountV + bottomRight[0] * amountU * amountV,
-      topLeft[1] * (1 - amountU) * (1 - amountV) + topRight[1] * amountU * (1 - amountV) +
-        bottomLeft[1] * (1 - amountU) * amountV + bottomRight[1] * amountU * amountV,
-      topLeft[2] * (1 - amountU) * (1 - amountV) + topRight[2] * amountU * (1 - amountV) +
-        bottomLeft[2] * (1 - amountU) * amountV + bottomRight[2] * amountU * amountV
-    ]);
+    // The two hemispheres meet on the square diagonal. Interpolate inside
+    // each triangular chart; a bilinear mix crosses that diagonal and can
+    // reverse its optimized equator near the two ends.
+    function interpolate(a, b, c, d, axis) {
+      return amountU >= amountV
+        ? a[axis] * (1 - amountU) + b[axis] * (amountU - amountV) + d[axis] * amountV
+        : a[axis] * (1 - amountV) + c[axis] * (amountV - amountU) + d[axis] * amountU;
+    }
+    var relaxed = normalize3([0, 1, 2].map(function interpolateSphere(axis) {
+      return interpolate(topLeft, topRight, bottomLeft, bottomRight, axis);
+    }));
+    var cornerDistance = Math.min(Math.hypot(u, v), Math.hypot(1 - u, v), Math.hypot(u, 1 - v), Math.hypot(1 - u, 1 - v));
+    var curvature = 0.2 * (1 - smooth((cornerDistance - 0.02) / 0.03));
+    if (!curvature) { return relaxed; }
+    var chartA = sphereChartLattice[top][left], chartB = sphereChartLattice[top][left + 1];
+    var chartC = sphereChartLattice[top + 1][left], chartD = sphereChartLattice[top + 1][left + 1];
+    var chartU = interpolate(chartA, chartB, chartC, chartD, 0);
+    var chartV = interpolate(chartA, chartB, chartC, chartD, 1);
+    var analytic = sphereBase(chartU, chartV);
+    // Corner triangles have three equator vertices. Recover a small amount
+    // of their chart's true curvature so the two opposite sheets do not
+    // collapse onto the same flat face; preserve the relaxed grid elsewhere.
+    return normalize3(relaxed.map(function restoreCurvature(value, axis) {
+      return value + (analytic[axis] - value) * curvature;
+    }));
   }
 
   function prepareSphere() {
@@ -443,6 +502,7 @@
   }
 
   function projectPoint(type, surface, width, height, orientation) {
+    var sourceSurface = surface;
     var camera = CAMERAS[type] || CAMERAS.cylinder;
     var offsetX = 0;
     var offsetY = 0;
@@ -489,13 +549,19 @@
     var extent = camera.radius / Math.sqrt(1 - Math.pow(camera.radius / 4.8, 2));
     var framing = 1 + (Math.min(1, 0.39 / (extent * camera.scale)) - 1) * perspective;
     magnification *= framing;
-    return {
+    var projected = {
       x: width * 0.5 + point[0] * scale * magnification,
       y: height * 0.5 - point[1] * scale * magnification,
       depth: point[2],
       scale: magnification,
       depthScale: scale * magnification
     };
+    if (type === "sphere" || type === "torus" || type === "cylinder" || type === "mobius") {
+      projected.sourceSurface = sourceSurface;
+      projected.orientation = orientation;
+      projected.width = width; projected.height = height;
+    }
+    return projected;
   }
 
   function seamProgress(type, u, v, progress) {
@@ -504,18 +570,235 @@
     if (type === "sphere") {
       // The top/left pair is green; bottom/right is gold. A symmetric
       // weight gives both ends of each diagonal identification one clock.
-      weight = u + v - 1;
+      weight = Math.sin(Math.PI * 0.5 * Math.max(-1, Math.min(1, (u + v - 1) * 2)));
     } else if (type === "torus" || type === "klein" || type === "projective") {
       // Opposite edges share a clock even when their pairing reverses.
       // At corners the two clocks meet continuously at the base progress.
       weight = Math.pow(2 * v - 1, 2) - Math.pow(2 * u - 1, 2);
+      weight = Math.sin(Math.PI * 0.5 * Math.max(-1, Math.min(1, weight * 1.5)));
+    } else {
+      return type === "cylinder" || type === "mobius" ? smooth((t - 0.04) / 0.96) : t;
     }
-    return t + 0.9 * t * (1 - t) * weight;
+    var gold = smooth((t - 0.02) / 0.63);
+    var green = smooth((t - 0.34) / 0.66);
+    return green + (gold - green) * (weight + 1) * 0.5;
   }
 
-  function morphPoint(type, flat, u, v, projected, progress) {
+  function quaternionFromMatrix(m) {
+    var trace = m[0] + m[4] + m[8], q, s;
+    if (trace > 0) {
+      s = Math.sqrt(trace + 1) * 2;
+      q = [(m[7] - m[5]) / s, (m[2] - m[6]) / s, (m[3] - m[1]) / s, s / 4];
+    } else if (m[0] > m[4] && m[0] > m[8]) {
+      s = Math.sqrt(1 + m[0] - m[4] - m[8]) * 2;
+      q = [s / 4, (m[1] + m[3]) / s, (m[2] + m[6]) / s, (m[7] - m[5]) / s];
+    } else if (m[4] > m[8]) {
+      s = Math.sqrt(1 + m[4] - m[0] - m[8]) * 2;
+      q = [(m[1] + m[3]) / s, s / 4, (m[5] + m[7]) / s, (m[2] - m[6]) / s];
+    } else {
+      s = Math.sqrt(1 + m[8] - m[0] - m[4]) * 2;
+      q = [(m[2] + m[6]) / s, (m[5] + m[7]) / s, s / 4, (m[3] - m[1]) / s];
+    }
+    return q;
+  }
+
+  function blendQuaternion(from, to, amount) {
+    var dot = from[0] * to[0] + from[1] * to[1] + from[2] * to[2] + from[3] * to[3];
+    if (dot < 0) { to = to.map(function negate(value) { return -value; }); dot = -dot; }
+    var a = 1 - amount, b = amount;
+    if (dot < 0.9995) {
+      var angle = Math.acos(Math.min(1, dot)), sine = Math.sin(angle);
+      a = Math.sin((1 - amount) * angle) / sine; b = Math.sin(amount * angle) / sine;
+    }
+    var q = from.map(function blend(value, index) { return value * a + to[index] * b; });
+    var length = Math.hypot(q[0], q[1], q[2], q[3]);
+    return q.map(function normalize(value) { return value / length; });
+  }
+
+  function rotateQuaternion(point, q) {
+    var x = point[0], y = point[1], z = point[2];
+    var tx = 2 * (q[1] * z - q[2] * y), ty = 2 * (q[2] * x - q[0] * z), tz = 2 * (q[0] * y - q[1] * x);
+    return [x + q[3] * tx + q[1] * tz - q[2] * ty,
+      y + q[3] * ty + q[2] * tx - q[0] * tz,
+      z + q[3] * tz + q[0] * ty - q[1] * tx];
+  }
+
+  // The ball Mobius map extends the spherical presentation to the surrounding
+  // volume. Unlike normalization, this is one-to-one for the opening charts.
+  function presentVolume(point, presentation, amount) {
+    if (!presentation || presentation.type !== "sphere-path") { return point; }
+    var boost = presentation.boost.map(function scaled(value) { return value * amount; });
+    var length2 = dot3(point, point), boost2 = dot3(boost, boost), product = dot3(point, boost);
+    var denominator = 1 + 2 * product + boost2 * length2;
+    return point.map(function transform(value, axis) {
+      return ((1 - boost2) * value + (1 + 2 * product + length2) * boost[axis]) / denominator;
+    });
+  }
+
+  var sphereMorphCamera = null;
+  function sphereMorphPoint(flat, u, v, projected, progress, frame) {
+    var t = clamp01(progress), amount = seamProgress("sphere", u, v, t);
+    var width = frame && frame.width || projected.width, height = frame && frame.height || projected.height;
+    if (!width || !height || !projected.sourceSurface) { return null; }
+    var orientation = projected.orientation || {}, b = smooth(t), shortSide = Math.min(width, height);
+    var source = projected.sourceSurface, c = Math.sqrt(3) / 2;
+    var sx = (flat.x - width / 2 + flat.y - height / 2) / shortSide;
+    var sy = (flat.x - width / 2 - flat.y + height / 2) / shortSide;
+    var stretch = 1 + 0.05 * smooth(t / 0.1) * (1 - b);
+    var canonical = [(1 - b) * sx * stretch + b * (-c * source[0] - 0.5 * source[1]),
+      (1 - amount) * sy * stretch + amount * source[2], b * (-0.5 * source[0] + c * source[1])];
+    // Each chart remains on its own side of canonical Y=0. Both chart
+    // interiors project injectively onto XZ; only the intended seams meet.
+    var surface = [-c * canonical[0] - 0.5 * canonical[2],
+      -0.5 * canonical[0] + c * canonical[2], canonical[1]];
+    surface = presentVolume(surface, orientation.presentation, b);
+    var shapeX = 1 + ((Number(orientation.shapeX) || 1) - 1) * b;
+    var shapeY = 1 + ((Number(orientation.shapeY) || 1) - 1) * b;
+    var shapeZ = 1 + ((Number(orientation.shapeZ) || 1) - 1) * b;
+    surface = [surface[0] * shapeX, surface[1] * shapeY, surface[2] * shapeZ];
+    var wobbleX = (Number(orientation.wobbleX) || 0) * b, wobbleY = (Number(orientation.wobbleY) || 0) * b;
+    var flex = Math.sin(surface[0] * 1.35 + surface[2] * 0.72);
+    var soft = [surface[0] * (1 + wobbleY * (0.82 + flex * 0.12)) + surface[1] * wobbleX * 0.38,
+      surface[1] * (1 - wobbleY * 0.31) + surface[2] * wobbleX * (0.25 + flex * 0.05),
+      surface[2] * (1 - wobbleY * (0.35 - flex * 0.08)) - surface[0] * wobbleX * 0.19];
+    canonical = [-c * soft[0] - 0.5 * soft[1], soft[2], -0.5 * soft[0] + c * soft[1]];
+    var rx = Number(orientation.x) || 0, ry = typeof orientation === "number" ? orientation : Number(orientation.y) || 0, rz = Number(orientation.z) || 0;
+    var cache = sphereMorphCamera;
+    var pose = smooth((t - 0.12) / 0.88);
+    if (!cache || cache.t !== t) {
+      var target = quaternionFromMatrix([-c, 0, -0.5, -0.5, 0, c, 0, 1, 0]);
+      cache = { t: t, q: blendQuaternion([0, 0, -Math.sin(Math.PI / 8), Math.cos(Math.PI / 8)], target, pose) };
+      sphereMorphCamera = cache;
+    }
+    // Blend only the fixed chart basis as a quaternion. User Euler angles
+    // keep their continuous branch while dragging a partly closed board.
+    var point = rotate(rotateQuaternion(canonical, cache.q), [
+      (CAMERAS.sphere.rotation[0] + rx) * pose,
+      (CAMERAS.sphere.rotation[1] + ry) * pose,
+      (CAMERAS.sphere.rotation[2] + rz) * pose]);
+    var scaleFactor = Number(orientation.scale) || 1;
+    var scale = shortSide * (Math.SQRT1_2 + (CAMERAS.sphere.scale * scaleFactor - Math.SQRT1_2) * smooth(t / 0.75));
+    var perspective = clamp01(Number(orientation.perspective) || 0) * b;
+    var magnification = 4.8 / Math.max(1.2, 4.8 - point[2] * perspective);
+    var extent = CAMERAS.sphere.radius / Math.sqrt(1 - Math.pow(CAMERAS.sphere.radius / 4.8, 2));
+    magnification *= 1 + (Math.min(1, 0.39 / (extent * CAMERAS.sphere.scale)) - 1) * perspective;
+    return { x: width / 2 + point[0] * scale * magnification, y: height / 2 - point[1] * scale * magnification,
+      depth: point[2], scale: 1 + (magnification - 1) * b, depthScale: scale * magnification, u: u, v: v };
+  }
+
+  function sinc(angle) {
+    return Math.abs(angle) < 1e-5 ? 1 - angle * angle / 6 : Math.sin(angle) / angle;
+  }
+
+  function cosc(angle) {
+    return Math.abs(angle) < 1e-5 ? angle / 2 - angle * angle * angle / 24 : 2 * Math.pow(Math.sin(angle / 2), 2) / angle;
+  }
+
+  var rolledMorphCameras = {};
+  var rolledMorphFits = {};
+  function rolledMorphPoint(type, flat, u, v, projected, progress, frame) {
+    var width = frame && frame.width || projected.width, height = frame && frame.height || projected.height;
+    if (!width || !height || !projected.sourceSurface) { return null; }
+    var t = clamp01(progress), b = smooth(t), shortSide = Math.min(width, height);
+    var orientation = projected.orientation || {}, camera = CAMERAS[type];
+    var initialScale = shortSide * 0.4;
+    var flatX = (flat.x - width / 2) / initialScale, flatY = (flat.y - height / 2) / initialScale;
+    var around = type === "torus" ? smooth((t - 0.34) / 0.66) : smooth((t - 0.04) / 0.96);
+    var angle = TAU * around * (u - 0.5), radius = type === "torus" ? 1.32 : type === "mobius" ? 1.28 : 1.05;
+    var along = (1 - around) * flatX + around * TAU * radius * (u - 0.5);
+    var across = 0, vertical = 0;
+    if (type === "torus") {
+      var tube = smooth((t - 0.02) / 0.63), tubeAngle = TAU * tube * (v - 0.5);
+      var tubeAlong = (1 - tube) * flatY + tube * TAU * 0.46 * (v - 0.5);
+      across = tubeAlong * cosc(tubeAngle) - 0.46 * tube;
+      vertical = -tubeAlong * sinc(tubeAngle);
+    } else if (type === "mobius") {
+      var ribbon = (1 - b) * flatY + b * 1.25 * (v - 0.5);
+      var twist = Math.PI * around * u;
+      across = ribbon * Math.cos(twist);
+      vertical = ribbon * Math.sin(twist);
+    } else {
+      vertical = (1 - b) * flatY + b * 2.15 * (v - 0.5);
+    }
+    // Bend an open arc rather than moving its vertices through the final
+    // surface. Its radial coordinate stays positive; each partial azimuth is
+    // unique. The torus closes its cross-section before bending the long axis.
+    var canonical = [along * sinc(angle) + across * Math.sin(angle), vertical,
+      along * cosc(angle) - across * Math.cos(angle) - radius * around];
+    var stretch = 1 + 0.06 * smooth(t / 0.1) * (1 - b);
+    canonical = canonical.map(function stretchOpening(value) { return value * stretch; });
+    // This fixed quarter-turn is precisely the existing endpoint chart.
+    var surface = [canonical[2], canonical[1], -canonical[0]];
+    var shapeX = 1 + ((Number(orientation.shapeX) || 1) - 1) * b;
+    var shapeY = 1 + ((Number(orientation.shapeY) || 1) - 1) * b;
+    var shapeZ = 1 + ((Number(orientation.shapeZ) || 1) - 1) * b;
+    surface = [surface[0] * shapeX, surface[1] * shapeY, surface[2] * shapeZ];
+    var wobbleX = (Number(orientation.wobbleX) || 0) * b, wobbleY = (Number(orientation.wobbleY) || 0) * b;
+    var flex = Math.sin(surface[0] * 1.35 + surface[2] * 0.72);
+    var soft = [surface[0] * (1 + wobbleY * (0.82 + flex * 0.12)) + surface[1] * wobbleX * 0.38,
+      surface[1] * (1 - wobbleY * 0.31) + surface[2] * wobbleX * (0.25 + flex * 0.05),
+      surface[2] * (1 - wobbleY * (0.35 - flex * 0.08)) - surface[0] * wobbleX * 0.19];
+    canonical = [-soft[2], soft[1], soft[0]];
+    var pose = smooth((t - 0.12) / 0.88), cache = rolledMorphCameras[type];
+    if (!cache || cache.t !== t) {
+      var start = type === "mobius" ? [-Math.SQRT1_2, 0, 0, Math.SQRT1_2] : type === "cylinder" ? [1, 0, 0, 0] : [0, 0, 0, 1];
+      cache = { t: t, q: blendQuaternion(start, [0, Math.SQRT1_2, 0, Math.SQRT1_2], pose) };
+      rolledMorphCameras[type] = cache;
+    }
+    var point = rotateQuaternion(canonical, cache.q);
+    var rx = Number(orientation.x) || 0, ry = typeof orientation === "number" ? orientation : Number(orientation.y) || 0, rz = Number(orientation.z) || 0;
+    point = rotate(point, [(camera.rotation[0] + rx) * pose, (camera.rotation[1] + ry) * pose, (camera.rotation[2] + rz) * pose]);
+    var scaleFactor = Number(orientation.scale) || 1;
+    var scale = initialScale + (shortSide * camera.scale * scaleFactor - initialScale) * smooth(t / 0.6);
+    // An open rolled arc reaches farther than its closed endpoint. Give that
+    // intermediate volume room as one object, without clipping its vertices.
+    var openingRoom = type === "mobius" ? 0.34 : type === "cylinder" ? 0.2 : 0.08;
+    scale *= 1 - openingRoom * Math.pow(Math.sin(Math.PI * t), 2);
+    var perspective = clamp01(Number(orientation.perspective) || 0) * b;
+    var magnification = 4.8 / Math.max(1.2, 4.8 - point[2] * perspective);
+    var extent = camera.radius / Math.sqrt(1 - Math.pow(camera.radius / 4.8, 2));
+    magnification *= 1 + (Math.min(1, 0.39 / (extent * camera.scale)) - 1) * perspective;
+    if (!(frame && frame.rolledFitSample)) {
+      var layout = frame && (frame.layout || frame), fit = rolledMorphFits[type];
+      var cell = Number(layout && layout.cell) || shortSide * 0.08;
+      var spanX = layout && Number.isFinite(layout.left) ? layout.right - layout.left + (isPeriodicX(type) ? Number(layout.cell) || 0 : 0) :
+        Math.abs(u - 0.5) > 1e-6 ? (flat.x - width / 2) / (u - 0.5) : fit && fit.width === width ? fit.spanX : shortSide * 0.9;
+      var spanY = layout && Number.isFinite(layout.top) ? layout.bottom - layout.top + (isPeriodicY(type) ? Number(layout.cell) || 0 : 0) :
+        Math.abs(v - 0.5) > 1e-6 ? (flat.y - height / 2) / (v - 0.5) : fit && fit.height === height ? fit.spanY : spanX;
+      var poseValues = [rx, ry, rz, orientation.shapeX, orientation.shapeY, orientation.shapeZ,
+        orientation.wobbleX, orientation.wobbleY, orientation.scale, orientation.perspective];
+      if (!fit || fit.t !== t || fit.width !== width || fit.height !== height || Math.abs(fit.spanX - spanX) > 1e-6 ||
+          Math.abs(fit.spanY - spanY) > 1e-6 || fit.cell !== cell || poseValues.some(function changed(value, index) { return value !== fit.pose[index]; })) {
+        var maxX = 0, maxY = 0, stoneX = 0, stoneY = 0, sampleFrame = { width: width, height: height, rolledFitSample: true };
+        var insetU = layout && Number.isFinite(layout.left) && isPeriodicX(type) ? cell / (2 * spanX) : 0;
+        var insetV = layout && Number.isFinite(layout.top) && isPeriodicY(type) ? cell / (2 * spanY) : 0;
+        for (var row = 0; row <= 10; row += 1) {
+          for (var column = 0; column <= 10; column += 1) {
+            var su = column / 10, sv = row / 10;
+            var sample = rolledMorphPoint(type, { x: width / 2 + (su - 0.5) * spanX, y: height / 2 + (sv - 0.5) * spanY },
+              su, sv, projected, t, sampleFrame);
+            maxX = Math.max(maxX, Math.abs(sample.x - width / 2)); maxY = Math.max(maxY, Math.abs(sample.y - height / 2));
+            su = insetU + su * (1 - 2 * insetU); sv = insetV + sv * (1 - 2 * insetV);
+            sample = rolledMorphPoint(type, { x: width / 2 + (su - 0.5) * spanX, y: height / 2 + (sv - 0.5) * spanY },
+              su, sv, projected, t, sampleFrame);
+            stoneX = Math.max(stoneX, Math.abs(sample.x - width / 2)); stoneY = Math.max(stoneY, Math.abs(sample.y - height / 2));
+          }
+        }
+        var margin = cell * 0.52 + 3;
+        fit = { t: t, width: width, height: height, spanX: spanX, spanY: spanY, cell: cell, pose: poseValues,
+          scale: Math.min(1, (width / 2 - 5) / Math.max(1, maxX), (height / 2 - 5) / Math.max(1, maxY),
+            (width / 2 - margin) / Math.max(1, stoneX), (height / 2 - margin) / Math.max(1, stoneY)) };
+        rolledMorphFits[type] = fit;
+      }
+      scale *= Math.max(0.1, fit.scale);
+    }
+    return { x: width / 2 + point[0] * scale * magnification, y: height / 2 - point[1] * scale * magnification,
+      depth: point[2], scale: 1 + (magnification - 1) * b, depthScale: scale * magnification, u: u, v: v };
+  }
+
+  function morphPoint(type, flat, u, v, projected, progress, frame) {
     var amount = seamProgress(type, u, v, progress);
-    return {
+    var mapped = {
       x: flat.x + (projected.x - flat.x) * amount,
       y: flat.y + (projected.y - flat.y) * amount,
       depth: projected.depth * amount,
@@ -523,10 +806,69 @@
       depthScale: projected.depthScale,
       u: u, v: v
     };
+    if (progress <= 0 || progress >= 1 || type === "plane") { return mapped; }
+    if (type === "sphere") {
+      var sphereMapped = sphereMorphPoint(flat, u, v, projected, progress, frame);
+      if (sphereMapped) { return sphereMapped; }
+    }
+    if (type === "torus" || type === "cylinder" || type === "mobius") {
+      var rolled = rolledMorphPoint(type, flat, u, v, projected, progress, frame);
+      if (rolled) { return rolled; }
+    }
+    if (amount === 1) { return mapped; }
+    var width = frame && frame.width, height = frame && frame.height;
+    var span = width && height ? Math.min(width, height) : (projected.depthScale || 120) * 3.5;
+    var pull = smooth(clamp01(progress) / 0.1);
+    var outX = (u * 2 - 1) * span * 0.035;
+    var outY = (v * 2 - 1) * span * 0.035;
+    var dx = projected.x - flat.x, dy = projected.y - flat.y;
+    var length = Math.sqrt(dx * dx + dy * dy + span * span * 0.04);
+    var arcX = -dy / length * span * 0.11;
+    var arcY = dx / length * span * 0.11;
+    var startX = flat.x + outX * pull, startY = flat.y + outY * pull;
+    var control1X = startX + (projected.x - startX) / 3 + outX * 0.6 + arcX * 0.35;
+    var control1Y = startY + (projected.y - startY) / 3 + outY * 0.6 + arcY * 0.35;
+    var control2X = startX + (projected.x - startX) * 2 / 3 + arcX;
+    var control2Y = startY + (projected.y - startY) * 2 / 3 + arcY;
+    // Control points stay in the frame; their convex hull also contains the
+    // entire curved route. Keep a flat endpoint already near the edge intact.
+    if (width && height) {
+      var padding = span * 0.025;
+      var left = Math.min(padding, flat.x, projected.x), right = Math.max(width - padding, flat.x, projected.x);
+      var top = Math.min(padding, flat.y, projected.y), bottom = Math.max(height - padding, flat.y, projected.y);
+      startX = Math.max(left, Math.min(right, startX)); startY = Math.max(top, Math.min(bottom, startY));
+      control1X = Math.max(left, Math.min(right, control1X)); control1Y = Math.max(top, Math.min(bottom, control1Y));
+      control2X = Math.max(left, Math.min(right, control2X)); control2Y = Math.max(top, Math.min(bottom, control2Y));
+    }
+    var remain = 1 - amount, first = 3 * remain * remain * amount, second = 3 * remain * amount * amount;
+    mapped.x = remain * remain * remain * startX + first * control1X + second * control2X + amount * amount * amount * projected.x;
+    mapped.y = remain * remain * remain * startY + first * control1Y + second * control2Y + amount * amount * amount * projected.y;
+    mapped.depth += 3 * remain * amount * 0.28;
+    return mapped;
   }
 
-  function createSurfaceMesh(vertices) {
+  function createSurfaceMesh(vertices, options) {
     var rows = vertices.length - 1, columns = vertices[0].length - 1;
+    var fans = Object.create(null), fanEdges = [];
+    function faceKey(row, column, half) { return (row * columns + column) * 2 + half; }
+    // At six sphere-chart corner triangles every original vertex lies on
+    // the equator. Sample the interior too, so opposite hemispheres cannot
+    // collapse onto the same flat triangle when their boundary closes.
+    if (options && options.topology === "sphere" && typeof options.pointAt === "function") {
+      [[0, 0, 0], [0, 0, 1], [0, columns - 1, 0],
+        [rows - 1, 0, 1], [rows - 1, columns - 1, 0], [rows - 1, columns - 1, 1]].forEach(function addFan(cell) {
+        var row = cell[0], column = cell[1], half = cell[2], key = faceKey(row, column, half);
+        if (fans[key]) { return; }
+        var corners = half ? [vertices[row][column], vertices[row + 1][column + 1], vertices[row + 1][column]]
+          : [vertices[row][column], vertices[row][column + 1], vertices[row + 1][column + 1]];
+        var u = (column + (half ? 1 : 2) / 3) / columns;
+        var v = (row + (half ? 2 : 1) / 3) / rows;
+        var center = options.pointAt(u, v);
+        center.u = u; center.v = v;
+        fans[key] = { corners: corners, center: center };
+        corners.forEach(function edge(corner) { fanEdges.push([center, corner]); });
+      });
+    }
     function point(u, v) {
       u = clamp01(u); v = clamp01(v);
       var column = Math.min(columns - 1, Math.floor(u * columns));
@@ -551,6 +893,17 @@
       if (Number.isFinite(a.depthScale) && Number.isFinite(b.depthScale) && Number.isFinite(c.depthScale)) {
         mapped.depthScale = a.depthScale * wa + b.depthScale * wb + c.depthScale * wc;
       }
+      var fan = fans[faceKey(row, column, y <= x ? 0 : 1)];
+      if (fan) {
+        // The smallest original barycentric weight selects a fan sector.
+        // This correction is exactly its piecewise-linear interpolation.
+        var weight = Math.max(0, Math.min(wa, wb, wc));
+        ["x", "y", "depth", "scale", "depthScale"].forEach(function refine(key) {
+          if (Number.isFinite(mapped[key]) && Number.isFinite(fan.center[key])) {
+            mapped[key] += weight * (3 * fan.center[key] - a[key] - b[key] - c[key]);
+          }
+        });
+      }
       return mapped;
     }
     function path(from, to) {
@@ -572,6 +925,15 @@
       // columns*u-rows*v is an integer. These crossings matter even when
       // both ends remain inside the same quad.
       crossIntegers(fromU * columns - fromV * rows, du * columns - dv * rows);
+      fanEdges.forEach(function crossFan(edge) {
+        var a = edge[0], b = edge[1], eu = b.u - a.u, ev = b.v - a.v;
+        var denominator = du * ev - dv * eu;
+        if (Math.abs(denominator) < 1e-14) { return; }
+        var au = a.u - fromU, av = a.v - fromV;
+        var along = (au * ev - av * eu) / denominator;
+        var across = (au * dv - av * du) / denominator;
+        if (along > 1e-10 && along < 1 - 1e-10 && across >= -1e-10 && across <= 1 + 1e-10) { stops.push(along); }
+      });
       stops.sort(function alongPath(a, b) { return a - b; });
       var points = [], previous = -1;
       for (var index = 0; index < stops.length; index += 1) {
@@ -582,7 +944,26 @@
       }
       return points;
     }
-    return { point: point, path: path, columns: columns, rows: rows };
+    function refinePatches(patches) {
+      if (!fanEdges.length) { return patches; }
+      var refined = [];
+      patches.forEach(function refine(patch) {
+        var points = patch.points;
+        var row = Math.min(rows - 1, Math.floor(points[0].v * rows + 1e-8));
+        var column = Math.min(columns - 1, Math.floor(points[0].u * columns + 1e-8));
+        if (!fans[faceKey(row, column, 0)] && !fans[faceKey(row, column, 1)]) { refined.push(patch); return; }
+        var faces = points.length === 4 ? [[points[0], points[1], points[2]], [points[0], points[2], points[3]]] : [points];
+        faces.forEach(function refineFace(face) {
+          var half = face[1] === vertices[row + 1][column + 1] ? 1 : 0;
+          var fan = fans[faceKey(row, column, half)];
+          function add(triangle) { refined.push({ points: triangle, depth: (triangle[0].depth + triangle[1].depth + triangle[2].depth) / 3 }); }
+          if (!fan) { add(face); return; }
+          for (var index = 0; index < 3; index += 1) { add([face[index], face[(index + 1) % 3], fan.center]); }
+        });
+      });
+      return refined;
+    }
+    return { point: point, path: path, refinePatches: refinePatches, columns: columns, rows: rows };
   }
 
   // A DOM-free spatial index shared by H5 and Canvas hosts. Query the exact
@@ -881,20 +1262,28 @@
     return paths;
   }
 
-  function strokeIntersectionLight(ctx) {
-    // A narrow shadow separates the warm-white filament from pale paper.
-    // Paint both layers on one clipped path, without repeating depth queries.
-    ctx.shadowBlur = 0;
-    ctx.shadowColor = "transparent";
+  function strokeIntersectionLight(ctx, stoneContact) {
+    // A broad white glow and brighter core distinguish the cut from the grey
+    // grid. Canvas blurs in device pixels; preserve the visual radius.
     ctx.shadowOffsetX = 0; ctx.shadowOffsetY = 0;
-    ctx.strokeStyle = "rgba(75, 86, 77, 0.27)";
-    ctx.lineWidth = 2.3;
-    ctx.stroke();
-    ctx.strokeStyle = "rgba(255, 254, 247, 0.96)";
-    ctx.lineWidth = 1.1;
-    ctx.shadowColor = "rgba(255, 254, 241, 0.75)";
     var matrix = typeof ctx.getTransform === "function" ? ctx.getTransform() : null;
-    ctx.shadowBlur = 3 * (matrix ? Math.hypot(matrix.a, matrix.b) : 1);
+    var scale = matrix ? Math.hypot(matrix.a, matrix.b) : 1;
+    if (stoneContact) {
+      ctx.strokeStyle = "rgba(255, 255, 249, 0.82)";
+      ctx.lineWidth = 1.15;
+      ctx.shadowColor = "rgba(255, 255, 245, 0.65)";
+      ctx.shadowBlur = 5 * scale;
+      ctx.stroke();
+      return;
+    }
+    ctx.strokeStyle = "rgba(255, 255, 249, 0.22)";
+    ctx.lineWidth = 3.8;
+    ctx.shadowColor = "rgba(255, 255, 245, 0.95)";
+    ctx.shadowBlur = 14 * scale;
+    ctx.stroke();
+    ctx.strokeStyle = "rgba(255, 255, 249, 0.96)";
+    ctx.lineWidth = 1.7;
+    ctx.shadowBlur = 7 * scale;
     ctx.stroke();
   }
 
@@ -1223,7 +1612,7 @@
       for (var index = 1; index < points.length; index += 1) { ctx.lineTo(points[index].x, points[index].y); }
     });
     ctx.lineCap = "round"; ctx.lineJoin = "round";
-    strokeIntersectionLight(ctx);
+    strokeIntersectionLight(ctx, true);
     ctx.restore();
   }
 

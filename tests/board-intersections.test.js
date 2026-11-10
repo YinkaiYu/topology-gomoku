@@ -21,7 +21,7 @@ function mesh(type, rotation = {}, morph = 1) {
     for (let x = 0; x <= count; x++) {
       const u = x / count, v = y / count;
       const p = Morph.project(type, u, v, 500, 500, { perspective: morph, ...rotation });
-      row.push(Morph.morphPoint(type, { x: 60 + u * 380, y: 60 + v * 380 }, u, v, p, morph));
+      row.push(Morph.morphPoint(type, { x: 60 + u * 380, y: 60 + v * 380 }, u, v, p, morph, { width: 500, height: 500 }));
     }
     vertices.push(row);
   }
@@ -79,10 +79,13 @@ test("completed embedded boards have no cut lines and both immersed boards retai
   }
 });
 
-test("unfolding can create genuine intersections even for a completed embedded topology", () => {
-  for (const type of ["torus", "sphere"]) {
-    assert.ok([0.4, 0.6, 0.75, 0.9].some(amount => lineLength(mesh(type, {}, amount).surfaceIntersections()) > 5), type);
-    assert.deepEqual(mesh(type, {}, 0).surfaceIntersections(), []);
+test("intersection detection catches a transient fold even when both endpoint sheets are disjoint", () => {
+  for (const amount of [0, 0.5, 1]) {
+    const patches = [quad(20, 20, 180, 180, 0),
+      quad(50, 50, 150, 150, x => 2 * amount - 1 + Math.sin(Math.PI * amount) * (x - 100) / 50)];
+    const paths = Morph.createDepthBuffer(200, 200, patches).surfaceIntersections();
+    if (amount === 0.5) assert.ok(lineLength(paths) > 99);
+    else assert.deepEqual(paths, []);
   }
 });
 

@@ -1667,7 +1667,7 @@
     view.startProgress = view.progress;
     view.target = target;
     view.startedAt = performance.now();
-    view.duration = LiquidRange.duration(target - view.progress, touchInput);
+    view.duration = LiquidRange.surfaceDuration(target - view.progress, touchInput);
     view.transitioning = Math.abs(view.target - view.progress) > 0.001;
     view.dragging = false;
     if (!view.transitioning) {
@@ -3011,7 +3011,7 @@
 
   function completionMappedPoint(flatX, flatY, u, v, morph, spin) {
     var projected = Morph.project(game.level.topology, u, v, renderState.width, renderState.height, spin);
-    return Morph.morphPoint(game.level.topology, { x: flatX, y: flatY }, u, v, projected, morph);
+    return Morph.morphPoint(game.level.topology, { x: flatX, y: flatY }, u, v, projected, morph, renderState);
   }
 
   function completionPoint(u, v, morph, spin) {
@@ -3064,9 +3064,12 @@
         }
       }
     }
+    var mesh = Morph.createSurfaceMesh(points, { topology: game.level.topology,
+      pointAt: function sampleCorner(u, v) { return completionPoint(u, v, morph, spin); } });
+    patches = mesh.refinePatches(patches);
     patches.sort(function sortPatches(a, b) { return a.depth - b.depth; });
     renderState.depthBuffer = Morph.createDepthBuffer(renderState.width, renderState.height, patches);
-    renderState.depthBuffer.mesh = Morph.createSurfaceMesh(points);
+    renderState.depthBuffer.mesh = mesh;
     renderState.depthBuffer.translucency = 0.16 * morph;
     renderState.depthBuffer.topology = game.level.topology;
     renderState.depthBuffer.morph = morph;
@@ -3268,44 +3271,57 @@
 
   function drawCompletionBoundary(ctx, axis, morph, spin, color) {
     var samples = 72;
-    var fade = 1 - Morph.smooth((morph - 0.72) / 0.28);
     ctx.save();
-    ctx.globalAlpha = (0.36 + morph * 0.5) * fade;
+    ctx.globalAlpha = 0.36 + morph * 0.5;
     ctx.strokeStyle = color;
+    ctx.fillStyle = color;
     ctx.lineWidth = 2.4;
     ctx.lineCap = "round";
+    if (ctx.setLineDash) { ctx.setLineDash((axis === "x" ? game.level.xConnection : game.level.yConnection) === "twist" ? [5, 5] : []); }
     [0, 1].forEach(function drawSide(side) {
+      function pointAt(along) {
+        return axis === "x" ? completionPoint(side, along, morph, spin) : completionPoint(along, side, morph, spin);
+      }
       var points = [];
       for (var index = 0; index <= samples; index += 1) {
-        var along = index / samples;
-        var point = axis === "x"
-          ? completionPoint(side, along, morph, spin)
-          : completionPoint(along, side, morph, spin);
-        points.push(point);
+        points.push(pointAt(index / samples));
       }
+      var local = Morph.seamProgress(game.level.topology, axis === "x" ? side : 0.5, axis === "x" ? 0.5 : side, morph);
+      ctx.save();
+      ctx.globalAlpha *= 1 - Morph.smooth((local - 0.82) / 0.18);
       strokeSmoothCompletionPath(ctx, points);
+      ctx.restore();
+      BoardArt.drawSurfaceBoundaryArrows(ctx, game.level.topology, axis === "x" ? (side ? "right" : "left") : (side ? "bottom" : "top"),
+        game.rules, pointAt, morph, renderState.depthBuffer);
     });
     ctx.restore();
   }
 
   function drawCompletionSphereBoundary(ctx, pair, morph, spin, color) {
     var samples = 72;
-    var fade = 1 - Morph.smooth((morph - 0.72) / 0.28);
     var sides = pair === "a"
       ? [function top(along) { return completionPoint(along, 0, morph, spin); }, function left(along) { return completionPoint(0, along, morph, spin); }]
       : [function bottom(along) { return completionPoint(along, 1, morph, spin); }, function right(along) { return completionPoint(1, along, morph, spin); }];
     ctx.save();
-    ctx.globalAlpha = (0.36 + morph * 0.5) * fade;
+    ctx.globalAlpha = 0.36 + morph * 0.5;
     ctx.strokeStyle = color;
+    ctx.fillStyle = color;
     ctx.lineWidth = 2.4;
     ctx.lineCap = "round";
-    sides.forEach(function drawSphereSide(pointAt) {
+    if (ctx.setLineDash) { ctx.setLineDash([]); }
+    sides.forEach(function drawSphereSide(pointAt, sideIndex) {
       var points = [];
       for (var index = 0; index <= samples; index += 1) {
         var point = pointAt(index / samples);
         points.push(point);
       }
+      var middle = pointAt(0.5), local = Morph.seamProgress("sphere", middle.u, middle.v, morph);
+      ctx.save();
+      ctx.globalAlpha *= 1 - Morph.smooth((local - 0.82) / 0.18);
       strokeSmoothCompletionPath(ctx, points);
+      ctx.restore();
+      BoardArt.drawSurfaceBoundaryArrows(ctx, "sphere", (pair === "a" ? ["top", "left"] : ["bottom", "right"])[sideIndex],
+        game.rules, pointAt, morph, renderState.depthBuffer);
     });
     ctx.restore();
   }
@@ -3354,7 +3370,7 @@
         var uv = catmullRomPoint(uvAnchors, segment, amount);
         var surface = normalizeSurfacePoint(catmullRomPoint(sphereAnchors, segment, amount));
         var projected = Morph.projectPoint("sphere", surface, renderState.width, renderState.height, spin);
-        var mapped = Morph.morphPoint("sphere", { x: flat[0], y: flat[1] }, clamp01(uv[0]), clamp01(uv[1]), projected, morph);
+        var mapped = Morph.morphPoint("sphere", { x: flat[0], y: flat[1] }, clamp01(uv[0]), clamp01(uv[1]), projected, morph, renderState);
         curve.push({
           x: mapped.x, y: mapped.y, depth: mapped.depth
         });
