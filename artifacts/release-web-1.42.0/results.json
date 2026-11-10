@@ -1,0 +1,27 @@
+{
+  "subpath": "/show/topology-gomoku/",
+  "results": [
+    {
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "host": "web",
+      "settings": true,
+      "move": "white-to-play",
+      "preferencesPersisted": true,
+      "errors": []
+    },
+    {
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "host": "web",
+      "settings": true,
+      "move": "white-to-play",
+      "preferencesPersisted": true,
+      "errors": []
+    }
+  ]
+}

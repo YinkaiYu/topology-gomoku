@@ -5,7 +5,7 @@ const http = require('node:http');
 const assert = require('node:assert/strict');
 const { chromium } = require('playwright');
 const root = path.resolve(process.argv[2]);
-const evidence = path.resolve(__dirname, '../artifacts/release-web-1.41.2');
+const evidence = path.resolve(__dirname, `../artifacts/release-web-${require('../package.json').version}`);
 const mime = {'.html':'text/html', '.js':'text/javascript', '.css':'text/css', '.svg':'image/svg+xml', '.png':'image/png', '.woff2':'font/woff2'};
 const server = http.createServer((req,res) => {
   let file = path.resolve(root, '.' + new URL(req.url, 'http://localhost').pathname);

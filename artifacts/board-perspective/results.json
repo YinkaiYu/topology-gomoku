@@ -1,0 +1,3553 @@
+{
+  "baseline": "1d6a488",
+  "viewports": [
+    {
+      "width": 1280,
+      "height": 720
+    },
+    {
+      "width": 390,
+      "height": 844
+    }
+  ],
+  "actualGame": [
+    {
+      "revision": "before",
+      "type": "cylinder",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "progress": 0,
+      "moves": [
+        0,
+        8,
+        2,
+        10,
+        14,
+        23,
+        18,
+        31
+      ],
+      "canvasSha256": "558bf85bc2ba4432be5f14ed45ffc20870ba64276e2b7a25a1e7d10655134b92",
+      "file": "artifacts/board-perspective/before-game-cylinder-0-1280x720.png"
+    },
+    {
+      "revision": "before",
+      "type": "cylinder",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "progress": 0.5,
+      "moves": [
+        0,
+        8,
+        2,
+        10,
+        14,
+        23,
+        18,
+        31
+      ],
+      "canvasSha256": "83fd61e5e1b28fb8a1a27c40821d227ca5ef9aada9c53bd8481dac581007013d",
+      "file": "artifacts/board-perspective/before-game-cylinder-0.5-1280x720.png"
+    },
+    {
+      "revision": "before",
+      "type": "cylinder",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "progress": 1,
+      "moves": [
+        0,
+        8,
+        2,
+        10,
+        14,
+        23,
+        18,
+        31
+      ],
+      "canvasSha256": "bcee9107e5661de10b613d6374895764d339a29fb85b498b62a33b9ede2f9916",
+      "file": "artifacts/board-perspective/before-game-cylinder-1-1280x720.png"
+    },
+    {
+      "revision": "after",
+      "type": "cylinder",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "progress": 0,
+      "moves": [
+        0,
+        8,
+        2,
+        10,
+        14,
+        23,
+        18,
+        31
+      ],
+      "canvasSha256": "558bf85bc2ba4432be5f14ed45ffc20870ba64276e2b7a25a1e7d10655134b92",
+      "file": "artifacts/board-perspective/after-game-cylinder-0-1280x720.png"
+    },
+    {
+      "revision": "after",
+      "type": "cylinder",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "progress": 0.5,
+      "moves": [
+        0,
+        8,
+        2,
+        10,
+        14,
+        23,
+        18,
+        31
+      ],
+      "canvasSha256": "b2cd61c0a26355b415dc4a04f094e549cbd8f490ca2ab093d408b27db9f586ae",
+      "file": "artifacts/board-perspective/after-game-cylinder-0.5-1280x720.png"
+    },
+    {
+      "revision": "after",
+      "type": "cylinder",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "progress": 1,
+      "moves": [
+        0,
+        8,
+        2,
+        10,
+        14,
+        23,
+        18,
+        31
+      ],
+      "canvasSha256": "544b888ca76dea0973ccb30471fe62fd8f0c0482b4b37bfaa3ee925cfacedeab",
+      "file": "artifacts/board-perspective/after-game-cylinder-1-1280x720.png"
+    },
+    {
+      "revision": "before",
+      "type": "torus",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "progress": 0,
+      "moves": [
+        0,
+        8,
+        2,
+        10,
+        14,
+        23,
+        18,
+        31
+      ],
+      "canvasSha256": "52ed899ea7526380ce5bd69a54bf7eb34e46ac5ca9c9644e7579c415cbfed511",
+      "file": "artifacts/board-perspective/before-game-torus-0-1280x720.png"
+    },
+    {
+      "revision": "before",
+      "type": "torus",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "progress": 0.5,
+      "moves": [
+        0,
+        8,
+        2,
+        10,
+        14,
+        23,
+        18,
+        31
+      ],
+      "canvasSha256": "96018c611f73d4bdda062a0b051aafd661ac4c97d59cf72fe3e23ef5dcba4859",
+      "file": "artifacts/board-perspective/before-game-torus-0.5-1280x720.png"
+    },
+    {
+      "revision": "before",
+      "type": "torus",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "progress": 1,
+      "moves": [
+        0,
+        8,
+        2,
+        10,
+        14,
+        23,
+        18,
+        31
+      ],
+      "canvasSha256": "2aa04a9c77d6089c2e928639a50e56eda5cd8b230abc76b6fdfb2a901d2434a8",
+      "file": "artifacts/board-perspective/before-game-torus-1-1280x720.png"
+    },
+    {
+      "revision": "after",
+      "type": "torus",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "progress": 0,
+      "moves": [
+        0,
+        8,
+        2,
+        10,
+        14,
+        23,
+        18,
+        31
+      ],
+      "canvasSha256": "52ed899ea7526380ce5bd69a54bf7eb34e46ac5ca9c9644e7579c415cbfed511",
+      "file": "artifacts/board-perspective/after-game-torus-0-1280x720.png"
+    },
+    {
+      "revision": "after",
+      "type": "torus",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "progress": 0.5,
+      "moves": [
+        0,
+        8,
+        2,
+        10,
+        14,
+        23,
+        18,
+        31
+      ],
+      "canvasSha256": "0f6f0aed1d4de2575a08697692ea262952944dab12b646ff283ad3a6b4994ff6",
+      "file": "artifacts/board-perspective/after-game-torus-0.5-1280x720.png"
+    },
+    {
+      "revision": "after",
+      "type": "torus",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "progress": 1,
+      "moves": [
+        0,
+        8,
+        2,
+        10,
+        14,
+        23,
+        18,
+        31
+      ],
+      "canvasSha256": "78e6e6082151bc131b7caf83411eac7c4d7f02ff312ed033c995473a24d688d7",
+      "file": "artifacts/board-perspective/after-game-torus-1-1280x720.png"
+    },
+    {
+      "revision": "before",
+      "type": "mobius",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "progress": 0,
+      "moves": [
+        0,
+        9,
+        2,
+        11,
+        16,
+        26,
+        20,
+        35
+      ],
+      "canvasSha256": "9f1540e09d3c88b09108fa7a6176549817b4db1fc21fd1d89bcd2d2b9a46a16c",
+      "file": "artifacts/board-perspective/before-game-mobius-0-1280x720.png"
+    },
+    {
+      "revision": "before",
+      "type": "mobius",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "progress": 0.5,
+      "moves": [
+        0,
+        9,
+        2,
+        11,
+        16,
+        26,
+        20,
+        35
+      ],
+      "canvasSha256": "b142e86349343cdeec4deeddb57bae991918d902730d552cbadbe893ed468c7c",
+      "file": "artifacts/board-perspective/before-game-mobius-0.5-1280x720.png"
+    },
+    {
+      "revision": "before",
+      "type": "mobius",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "progress": 1,
+      "moves": [
+        0,
+        9,
+        2,
+        11,
+        16,
+        26,
+        20,
+        35
+      ],
+      "canvasSha256": "89bbe276244d5960a6172e12d0616abb9d18e66e5aff9f65d97a15492c3b2114",
+      "file": "artifacts/board-perspective/before-game-mobius-1-1280x720.png"
+    },
+    {
+      "revision": "after",
+      "type": "mobius",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "progress": 0,
+      "moves": [
+        0,
+        9,
+        2,
+        11,
+        16,
+        26,
+        20,
+        35
+      ],
+      "canvasSha256": "9f1540e09d3c88b09108fa7a6176549817b4db1fc21fd1d89bcd2d2b9a46a16c",
+      "file": "artifacts/board-perspective/after-game-mobius-0-1280x720.png"
+    },
+    {
+      "revision": "after",
+      "type": "mobius",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "progress": 0.5,
+      "moves": [
+        0,
+        9,
+        2,
+        11,
+        16,
+        26,
+        20,
+        35
+      ],
+      "canvasSha256": "b704d79fdcc3dce200e7bfa661b0a81f1237c0011894163ca90694de9ad0e705",
+      "file": "artifacts/board-perspective/after-game-mobius-0.5-1280x720.png"
+    },
+    {
+      "revision": "after",
+      "type": "mobius",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "progress": 1,
+      "moves": [
+        0,
+        9,
+        2,
+        11,
+        16,
+        26,
+        20,
+        35
+      ],
+      "canvasSha256": "18092aaf9b265acee15a3dd71a76e1a9c3a94c2961283c3e96b90770bd952b3a",
+      "file": "artifacts/board-perspective/after-game-mobius-1-1280x720.png"
+    },
+    {
+      "revision": "before",
+      "type": "klein",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "progress": 0,
+      "moves": [
+        0,
+        8,
+        2,
+        10,
+        14,
+        23,
+        18,
+        31
+      ],
+      "canvasSha256": "136345205eb67a75a44e5d7fa3ae0068dd35cb83bb751ed1d4ce9cfdeeea732e",
+      "file": "artifacts/board-perspective/before-game-klein-0-1280x720.png"
+    },
+    {
+      "revision": "before",
+      "type": "klein",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "progress": 0.5,
+      "moves": [
+        0,
+        8,
+        2,
+        10,
+        14,
+        23,
+        18,
+        31
+      ],
+      "canvasSha256": "583f76546830630b727c73647657b029c15abb8bb0ed299f46229e33c216572d",
+      "file": "artifacts/board-perspective/before-game-klein-0.5-1280x720.png"
+    },
+    {
+      "revision": "before",
+      "type": "klein",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "progress": 1,
+      "moves": [
+        0,
+        8,
+        2,
+        10,
+        14,
+        23,
+        18,
+        31
+      ],
+      "canvasSha256": "19651b7c52cd5367acbaefd5c78a3159f02933be4c3237632687494ac22a4063",
+      "file": "artifacts/board-perspective/before-game-klein-1-1280x720.png"
+    },
+    {
+      "revision": "after",
+      "type": "klein",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "progress": 0,
+      "moves": [
+        0,
+        8,
+        2,
+        10,
+        14,
+        23,
+        18,
+        31
+      ],
+      "canvasSha256": "136345205eb67a75a44e5d7fa3ae0068dd35cb83bb751ed1d4ce9cfdeeea732e",
+      "file": "artifacts/board-perspective/after-game-klein-0-1280x720.png"
+    },
+    {
+      "revision": "after",
+      "type": "klein",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "progress": 0.5,
+      "moves": [
+        0,
+        8,
+        2,
+        10,
+        14,
+        23,
+        18,
+        31
+      ],
+      "canvasSha256": "6b0255a6643b74bfd928aa07d934799c79ce6d31a939459d0ddcd33fb7910673",
+      "file": "artifacts/board-perspective/after-game-klein-0.5-1280x720.png"
+    },
+    {
+      "revision": "after",
+      "type": "klein",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "progress": 1,
+      "moves": [
+        0,
+        8,
+        2,
+        10,
+        14,
+        23,
+        18,
+        31
+      ],
+      "canvasSha256": "63ba2f3c7a59d7ed100e64205b253ab5c592f7e724c9b9e9ae0b22366f958256",
+      "file": "artifacts/board-perspective/after-game-klein-1-1280x720.png"
+    },
+    {
+      "revision": "before",
+      "type": "projective",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "progress": 0,
+      "moves": [
+        0,
+        9,
+        2,
+        11,
+        16,
+        26,
+        20,
+        35
+      ],
+      "canvasSha256": "18a9f631901d382b92199fb840b5d5205b733be84e1b1941dc8bf11346ae5c97",
+      "file": "artifacts/board-perspective/before-game-projective-0-1280x720.png"
+    },
+    {
+      "revision": "before",
+      "type": "projective",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "progress": 0.5,
+      "moves": [
+        0,
+        9,
+        2,
+        11,
+        16,
+        26,
+        20,
+        35
+      ],
+      "canvasSha256": "2974c5a98dd3993b80340e382fce73ed035c15d7c727d7ab1577dd32d7b0d270",
+      "file": "artifacts/board-perspective/before-game-projective-0.5-1280x720.png"
+    },
+    {
+      "revision": "before",
+      "type": "projective",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "progress": 1,
+      "moves": [
+        0,
+        9,
+        2,
+        11,
+        16,
+        26,
+        20,
+        35
+      ],
+      "canvasSha256": "75df1780a111ad45b61fd3103a068747304ddbddc299ad88afe9dbcaa0b16d41",
+      "file": "artifacts/board-perspective/before-game-projective-1-1280x720.png"
+    },
+    {
+      "revision": "after",
+      "type": "projective",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "progress": 0,
+      "moves": [
+        0,
+        9,
+        2,
+        11,
+        16,
+        26,
+        20,
+        35
+      ],
+      "canvasSha256": "18a9f631901d382b92199fb840b5d5205b733be84e1b1941dc8bf11346ae5c97",
+      "file": "artifacts/board-perspective/after-game-projective-0-1280x720.png"
+    },
+    {
+      "revision": "after",
+      "type": "projective",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "progress": 0.5,
+      "moves": [
+        0,
+        9,
+        2,
+        11,
+        16,
+        26,
+        20,
+        35
+      ],
+      "canvasSha256": "e44cee31d8b759cb62dab8257fe4c79bac39d64c936b03c423bb30683d200251",
+      "file": "artifacts/board-perspective/after-game-projective-0.5-1280x720.png"
+    },
+    {
+      "revision": "after",
+      "type": "projective",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "progress": 1,
+      "moves": [
+        0,
+        9,
+        2,
+        11,
+        16,
+        26,
+        20,
+        35
+      ],
+      "canvasSha256": "2cf1ae4c37258f84b0a6cb19e87fc579d5f5a4af327105b5bb848382617f285f",
+      "file": "artifacts/board-perspective/after-game-projective-1-1280x720.png"
+    },
+    {
+      "revision": "before",
+      "type": "sphere",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "progress": 0,
+      "moves": [
+        0,
+        8,
+        2,
+        10,
+        14,
+        23,
+        18,
+        31
+      ],
+      "canvasSha256": "e18e3c52779c13e48c5996b7ce3f44929299ffd515fa8baca3a7ff2599918928",
+      "file": "artifacts/board-perspective/before-game-sphere-0-1280x720.png"
+    },
+    {
+      "revision": "before",
+      "type": "sphere",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "progress": 0.5,
+      "moves": [
+        0,
+        8,
+        2,
+        10,
+        14,
+        23,
+        18,
+        31
+      ],
+      "canvasSha256": "30562972cc560ecfb55db9b61b0ea5b8cb9ae0c249715b4873f077dd1a60c452",
+      "file": "artifacts/board-perspective/before-game-sphere-0.5-1280x720.png"
+    },
+    {
+      "revision": "before",
+      "type": "sphere",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "progress": 1,
+      "moves": [
+        0,
+        8,
+        2,
+        10,
+        14,
+        23,
+        18,
+        31
+      ],
+      "canvasSha256": "7719c015b0eecda4c2d2136a22e7980227838652d4e2704d732641c1c069f3a0",
+      "file": "artifacts/board-perspective/before-game-sphere-1-1280x720.png"
+    },
+    {
+      "revision": "after",
+      "type": "sphere",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "progress": 0,
+      "moves": [
+        0,
+        8,
+        2,
+        10,
+        14,
+        23,
+        18,
+        31
+      ],
+      "canvasSha256": "e18e3c52779c13e48c5996b7ce3f44929299ffd515fa8baca3a7ff2599918928",
+      "file": "artifacts/board-perspective/after-game-sphere-0-1280x720.png"
+    },
+    {
+      "revision": "after",
+      "type": "sphere",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "progress": 0.5,
+      "moves": [
+        0,
+        8,
+        2,
+        10,
+        14,
+        23,
+        18,
+        31
+      ],
+      "canvasSha256": "2a52da2848299d361ef6fd4ec85b0b064d44918a793f48148b84834452a2676e",
+      "file": "artifacts/board-perspective/after-game-sphere-0.5-1280x720.png"
+    },
+    {
+      "revision": "after",
+      "type": "sphere",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "progress": 1,
+      "moves": [
+        0,
+        8,
+        2,
+        10,
+        14,
+        23,
+        18,
+        31
+      ],
+      "canvasSha256": "f26e21f61bc78209bf7cc439618498006a5fe1c3144f81b07d242ed8a3550af9",
+      "file": "artifacts/board-perspective/after-game-sphere-1-1280x720.png"
+    },
+    {
+      "revision": "before",
+      "type": "cylinder",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "progress": 0,
+      "moves": [
+        0,
+        8,
+        2,
+        10,
+        14,
+        23,
+        18,
+        31
+      ],
+      "canvasSha256": "c7c938468e835e5c404d50d8698da21edc005898ca5646b0df065fb654327697",
+      "file": null
+    },
+    {
+      "revision": "before",
+      "type": "cylinder",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "progress": 0.5,
+      "moves": [
+        0,
+        8,
+        2,
+        10,
+        14,
+        23,
+        18,
+        31
+      ],
+      "canvasSha256": "6a3ab32c735c794a87ea9be8b77981c7c9b6f66ea24c1f2204dfbbbdaff5a772",
+      "file": null
+    },
+    {
+      "revision": "before",
+      "type": "cylinder",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "progress": 1,
+      "moves": [
+        0,
+        8,
+        2,
+        10,
+        14,
+        23,
+        18,
+        31
+      ],
+      "canvasSha256": "18314117a6f2e5bfced7b3efc22ca0ea042481abd6242ebe680d214f2eb40f6d",
+      "file": null
+    },
+    {
+      "revision": "after",
+      "type": "cylinder",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "progress": 0,
+      "moves": [
+        0,
+        8,
+        2,
+        10,
+        14,
+        23,
+        18,
+        31
+      ],
+      "canvasSha256": "c7c938468e835e5c404d50d8698da21edc005898ca5646b0df065fb654327697",
+      "file": null
+    },
+    {
+      "revision": "after",
+      "type": "cylinder",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "progress": 0.5,
+      "moves": [
+        0,
+        8,
+        2,
+        10,
+        14,
+        23,
+        18,
+        31
+      ],
+      "canvasSha256": "0edd8cf5636f867f69096b42c40bd83e37e62d9a4bd99532a5d24cd58ea02748",
+      "file": null
+    },
+    {
+      "revision": "after",
+      "type": "cylinder",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "progress": 1,
+      "moves": [
+        0,
+        8,
+        2,
+        10,
+        14,
+        23,
+        18,
+        31
+      ],
+      "canvasSha256": "5045f4ab461fb7694ce4360c1a3e66cfc8e6d88e71a9a6c2b3cae5b73b0ecb01",
+      "file": null
+    },
+    {
+      "revision": "before",
+      "type": "torus",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "progress": 0,
+      "moves": [
+        0,
+        8,
+        2,
+        10,
+        14,
+        23,
+        18,
+        31
+      ],
+      "canvasSha256": "4763c06649b823693e1203ac7eeb67c28004be7e99be26425194b47154e23182",
+      "file": "artifacts/board-perspective/before-game-torus-0-390x844.png"
+    },
+    {
+      "revision": "before",
+      "type": "torus",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "progress": 0.5,
+      "moves": [
+        0,
+        8,
+        2,
+        10,
+        14,
+        23,
+        18,
+        31
+      ],
+      "canvasSha256": "2c5c72e9f1e25da6292535710d5d18c9ceaad2761189b68873b05c516ded1bc3",
+      "file": null
+    },
+    {
+      "revision": "before",
+      "type": "torus",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "progress": 1,
+      "moves": [
+        0,
+        8,
+        2,
+        10,
+        14,
+        23,
+        18,
+        31
+      ],
+      "canvasSha256": "75da9acb4a49767b41d385f5869ff753bb78e8001e1061e120a3a24d22f6598a",
+      "file": "artifacts/board-perspective/before-game-torus-1-390x844.png"
+    },
+    {
+      "revision": "after",
+      "type": "torus",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "progress": 0,
+      "moves": [
+        0,
+        8,
+        2,
+        10,
+        14,
+        23,
+        18,
+        31
+      ],
+      "canvasSha256": "4763c06649b823693e1203ac7eeb67c28004be7e99be26425194b47154e23182",
+      "file": "artifacts/board-perspective/after-game-torus-0-390x844.png"
+    },
+    {
+      "revision": "after",
+      "type": "torus",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "progress": 0.5,
+      "moves": [
+        0,
+        8,
+        2,
+        10,
+        14,
+        23,
+        18,
+        31
+      ],
+      "canvasSha256": "923c83d53ca6cf6f0f34adfeb20f0c42df56a8e7bd7c6cc42b1b9dcfbb5742bf",
+      "file": null
+    },
+    {
+      "revision": "after",
+      "type": "torus",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "progress": 1,
+      "moves": [
+        0,
+        8,
+        2,
+        10,
+        14,
+        23,
+        18,
+        31
+      ],
+      "canvasSha256": "b19c92327b1b745819d180ebf9f7b0aab0fa149d5c79908186f3df2fe2fc607e",
+      "file": "artifacts/board-perspective/after-game-torus-1-390x844.png"
+    },
+    {
+      "revision": "before",
+      "type": "mobius",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "progress": 0,
+      "moves": [
+        0,
+        9,
+        2,
+        11,
+        16,
+        26,
+        20,
+        35
+      ],
+      "canvasSha256": "12310b77671c3e16ecc0d70479ce11acfcad56b9b68f463e88e2e7faebd45f39",
+      "file": null
+    },
+    {
+      "revision": "before",
+      "type": "mobius",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "progress": 0.5,
+      "moves": [
+        0,
+        9,
+        2,
+        11,
+        16,
+        26,
+        20,
+        35
+      ],
+      "canvasSha256": "b6e36d08032eeadf071b4233b8c74cd56b6948de3a077e0fddcd81889798854f",
+      "file": null
+    },
+    {
+      "revision": "before",
+      "type": "mobius",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "progress": 1,
+      "moves": [
+        0,
+        9,
+        2,
+        11,
+        16,
+        26,
+        20,
+        35
+      ],
+      "canvasSha256": "f2b45343b983cf1d02399e16afaed5e329c50b73504a7c001a0fafeebf7119d8",
+      "file": null
+    },
+    {
+      "revision": "after",
+      "type": "mobius",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "progress": 0,
+      "moves": [
+        0,
+        9,
+        2,
+        11,
+        16,
+        26,
+        20,
+        35
+      ],
+      "canvasSha256": "12310b77671c3e16ecc0d70479ce11acfcad56b9b68f463e88e2e7faebd45f39",
+      "file": null
+    },
+    {
+      "revision": "after",
+      "type": "mobius",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "progress": 0.5,
+      "moves": [
+        0,
+        9,
+        2,
+        11,
+        16,
+        26,
+        20,
+        35
+      ],
+      "canvasSha256": "9d4d25bf45c0ba69187ff06b242f9a1c523fac4fe68ffbc57679c63faa957392",
+      "file": null
+    },
+    {
+      "revision": "after",
+      "type": "mobius",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "progress": 1,
+      "moves": [
+        0,
+        9,
+        2,
+        11,
+        16,
+        26,
+        20,
+        35
+      ],
+      "canvasSha256": "515cfdedf49f3f9f54a9f3591719a88e32ef76d039e3622522ec31653edc2707",
+      "file": null
+    },
+    {
+      "revision": "before",
+      "type": "klein",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "progress": 0,
+      "moves": [
+        0,
+        8,
+        2,
+        10,
+        14,
+        23,
+        18,
+        31
+      ],
+      "canvasSha256": "59f2c5582571154f9cf8fb781b444822b7cd55ccb0e5ae5246427209d1ee7e03",
+      "file": null
+    },
+    {
+      "revision": "before",
+      "type": "klein",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "progress": 0.5,
+      "moves": [
+        0,
+        8,
+        2,
+        10,
+        14,
+        23,
+        18,
+        31
+      ],
+      "canvasSha256": "4ee73b8c646486f3df9e825e08173a9d07a12eab706635217eaa264248d82c30",
+      "file": null
+    },
+    {
+      "revision": "before",
+      "type": "klein",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "progress": 1,
+      "moves": [
+        0,
+        8,
+        2,
+        10,
+        14,
+        23,
+        18,
+        31
+      ],
+      "canvasSha256": "52e16d85ec382342fe87eb66be01fa00c02e66dbb9365d293fbc231c72f4bab4",
+      "file": null
+    },
+    {
+      "revision": "after",
+      "type": "klein",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "progress": 0,
+      "moves": [
+        0,
+        8,
+        2,
+        10,
+        14,
+        23,
+        18,
+        31
+      ],
+      "canvasSha256": "59f2c5582571154f9cf8fb781b444822b7cd55ccb0e5ae5246427209d1ee7e03",
+      "file": null
+    },
+    {
+      "revision": "after",
+      "type": "klein",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "progress": 0.5,
+      "moves": [
+        0,
+        8,
+        2,
+        10,
+        14,
+        23,
+        18,
+        31
+      ],
+      "canvasSha256": "27f9ee61309d1a5313b57b0a6b75ddad9de5da5f5240c556ca3a72716cc09751",
+      "file": null
+    },
+    {
+      "revision": "after",
+      "type": "klein",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "progress": 1,
+      "moves": [
+        0,
+        8,
+        2,
+        10,
+        14,
+        23,
+        18,
+        31
+      ],
+      "canvasSha256": "100ced4754115bedfd179bccb955fd6ab3dfb64ca612cd8be98c96e3ef877eaa",
+      "file": null
+    },
+    {
+      "revision": "before",
+      "type": "projective",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "progress": 0,
+      "moves": [
+        0,
+        9,
+        2,
+        11,
+        16,
+        26,
+        20,
+        35
+      ],
+      "canvasSha256": "32ba980f9421c9c0be4e04d4b94adc85ef28bc17579b8fe77554bc59854d857b",
+      "file": "artifacts/board-perspective/before-game-projective-0-390x844.png"
+    },
+    {
+      "revision": "before",
+      "type": "projective",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "progress": 0.5,
+      "moves": [
+        0,
+        9,
+        2,
+        11,
+        16,
+        26,
+        20,
+        35
+      ],
+      "canvasSha256": "9ea94d232121cb54d6a4e8ea281943331a0e3d7ef121aa1cdccdcea7ea3d8de4",
+      "file": null
+    },
+    {
+      "revision": "before",
+      "type": "projective",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "progress": 1,
+      "moves": [
+        0,
+        9,
+        2,
+        11,
+        16,
+        26,
+        20,
+        35
+      ],
+      "canvasSha256": "41da071bab79c6096d7f6a1d0c2be929c3faad9e40a710832b635857c60e2e31",
+      "file": "artifacts/board-perspective/before-game-projective-1-390x844.png"
+    },
+    {
+      "revision": "after",
+      "type": "projective",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "progress": 0,
+      "moves": [
+        0,
+        9,
+        2,
+        11,
+        16,
+        26,
+        20,
+        35
+      ],
+      "canvasSha256": "32ba980f9421c9c0be4e04d4b94adc85ef28bc17579b8fe77554bc59854d857b",
+      "file": "artifacts/board-perspective/after-game-projective-0-390x844.png"
+    },
+    {
+      "revision": "after",
+      "type": "projective",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "progress": 0.5,
+      "moves": [
+        0,
+        9,
+        2,
+        11,
+        16,
+        26,
+        20,
+        35
+      ],
+      "canvasSha256": "e98e40aa2dd4b45f17a9e88bad1c303fd7a5c6cc2484c88a714032248e4e9e49",
+      "file": null
+    },
+    {
+      "revision": "after",
+      "type": "projective",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "progress": 1,
+      "moves": [
+        0,
+        9,
+        2,
+        11,
+        16,
+        26,
+        20,
+        35
+      ],
+      "canvasSha256": "4a386263afcaa66a9860bc9f79606ea1439e598fb38ff1eb29f36968122c744a",
+      "file": "artifacts/board-perspective/after-game-projective-1-390x844.png"
+    },
+    {
+      "revision": "before",
+      "type": "sphere",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "progress": 0,
+      "moves": [
+        0,
+        8,
+        2,
+        10,
+        14,
+        23,
+        18,
+        31
+      ],
+      "canvasSha256": "85ff6d0047ab2eebdf72c65d8d18d91ec54beffaa654f5e71f99dac2223c5dff",
+      "file": "artifacts/board-perspective/before-game-sphere-0-390x844.png"
+    },
+    {
+      "revision": "before",
+      "type": "sphere",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "progress": 0.5,
+      "moves": [
+        0,
+        8,
+        2,
+        10,
+        14,
+        23,
+        18,
+        31
+      ],
+      "canvasSha256": "3c629b8290dd38fc0d902b17ab3367388677d195521c5816fd897b794eeed5c7",
+      "file": null
+    },
+    {
+      "revision": "before",
+      "type": "sphere",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "progress": 1,
+      "moves": [
+        0,
+        8,
+        2,
+        10,
+        14,
+        23,
+        18,
+        31
+      ],
+      "canvasSha256": "04ae3dd0c964478bc4a31b6eefd2e436086920225a5f4c9c02a3aef2cf2999e9",
+      "file": "artifacts/board-perspective/before-game-sphere-1-390x844.png"
+    },
+    {
+      "revision": "after",
+      "type": "sphere",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "progress": 0,
+      "moves": [
+        0,
+        8,
+        2,
+        10,
+        14,
+        23,
+        18,
+        31
+      ],
+      "canvasSha256": "85ff6d0047ab2eebdf72c65d8d18d91ec54beffaa654f5e71f99dac2223c5dff",
+      "file": "artifacts/board-perspective/after-game-sphere-0-390x844.png"
+    },
+    {
+      "revision": "after",
+      "type": "sphere",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "progress": 0.5,
+      "moves": [
+        0,
+        8,
+        2,
+        10,
+        14,
+        23,
+        18,
+        31
+      ],
+      "canvasSha256": "169e5f49ae8ed8e78e9a566a086bac772911fadf0835d36daab2d732fdbaef12",
+      "file": null
+    },
+    {
+      "revision": "after",
+      "type": "sphere",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "progress": 1,
+      "moves": [
+        0,
+        8,
+        2,
+        10,
+        14,
+        23,
+        18,
+        31
+      ],
+      "canvasSha256": "512358a98a59d29f618634382531e148b2be6fa99abe96baf386640eeccf07cb",
+      "file": "artifacts/board-perspective/after-game-sphere-1-390x844.png"
+    }
+  ],
+  "flatUnchanged": [
+    {
+      "type": "cylinder",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "sha256": "558bf85bc2ba4432be5f14ed45ffc20870ba64276e2b7a25a1e7d10655134b92"
+    },
+    {
+      "type": "torus",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "sha256": "52ed899ea7526380ce5bd69a54bf7eb34e46ac5ca9c9644e7579c415cbfed511"
+    },
+    {
+      "type": "mobius",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "sha256": "9f1540e09d3c88b09108fa7a6176549817b4db1fc21fd1d89bcd2d2b9a46a16c"
+    },
+    {
+      "type": "klein",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "sha256": "136345205eb67a75a44e5d7fa3ae0068dd35cb83bb751ed1d4ce9cfdeeea732e"
+    },
+    {
+      "type": "projective",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "sha256": "18a9f631901d382b92199fb840b5d5205b733be84e1b1941dc8bf11346ae5c97"
+    },
+    {
+      "type": "sphere",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "sha256": "e18e3c52779c13e48c5996b7ce3f44929299ffd515fa8baca3a7ff2599918928"
+    },
+    {
+      "type": "cylinder",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "sha256": "c7c938468e835e5c404d50d8698da21edc005898ca5646b0df065fb654327697"
+    },
+    {
+      "type": "torus",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "sha256": "4763c06649b823693e1203ac7eeb67c28004be7e99be26425194b47154e23182"
+    },
+    {
+      "type": "mobius",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "sha256": "12310b77671c3e16ecc0d70479ce11acfcad56b9b68f463e88e2e7faebd45f39"
+    },
+    {
+      "type": "klein",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "sha256": "59f2c5582571154f9cf8fb781b444822b7cd55ccb0e5ae5246427209d1ee7e03"
+    },
+    {
+      "type": "projective",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "sha256": "32ba980f9421c9c0be4e04d4b94adc85ef28bc17579b8fe77554bc59854d857b"
+    },
+    {
+      "type": "sphere",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "sha256": "85ff6d0047ab2eebdf72c65d8d18d91ec54beffaa654f5e71f99dac2223c5dff"
+    }
+  ],
+  "spatialHits": [
+    {
+      "type": "cylinder",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "cell": 36,
+      "x": 589.6232162463903,
+      "y": 278.849954175656,
+      "visibleCells": 22,
+      "hiddenCells": 20
+    },
+    {
+      "type": "torus",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "cell": 1,
+      "x": 638.310588669326,
+      "y": 466.66324546276985,
+      "visibleCells": 20,
+      "hiddenCells": 22
+    },
+    {
+      "type": "mobius",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "cell": 41,
+      "x": 681.4122688521368,
+      "y": 479.85691791756886,
+      "visibleCells": 48,
+      "hiddenCells": 0
+    },
+    {
+      "type": "klein",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "cell": 3,
+      "x": 587.2319588806788,
+      "y": 382.1632301884961,
+      "visibleCells": 16,
+      "hiddenCells": 26
+    },
+    {
+      "type": "projective",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "cell": 63,
+      "x": 646.1359466938678,
+      "y": 364.627871271707,
+      "visibleCells": 33,
+      "hiddenCells": 31
+    },
+    {
+      "type": "sphere",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "cell": 11,
+      "x": 582.7132561340907,
+      "y": 337.6908722184662,
+      "visibleCells": 21,
+      "hiddenCells": 28
+    },
+    {
+      "type": "cylinder",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "cell": 36,
+      "x": 145.4581905627484,
+      "y": 297.2944300732971,
+      "visibleCells": 22,
+      "hiddenCells": 20
+    },
+    {
+      "type": "torus",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "cell": 1,
+      "x": 193.33858996209958,
+      "y": 481.994793880514,
+      "visibleCells": 20,
+      "hiddenCells": 22
+    },
+    {
+      "type": "mobius",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "cell": 41,
+      "x": 235.7258776556925,
+      "y": 494.9697866813661,
+      "visibleCells": 48,
+      "hiddenCells": 0
+    },
+    {
+      "type": "klein",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "cell": 3,
+      "x": 143.10656729702117,
+      "y": 398.8953313455928,
+      "visibleCells": 16,
+      "hiddenCells": 26
+    },
+    {
+      "type": "projective",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "cell": 63,
+      "x": 201.03424591993632,
+      "y": 381.6506137368169,
+      "visibleCells": 33,
+      "hiddenCells": 31
+    },
+    {
+      "type": "sphere",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "cell": 11,
+      "x": 138.66276017606702,
+      "y": 355.1600842811436,
+      "visibleCells": 21,
+      "hiddenCells": 28
+    }
+  ],
+  "sharedGallery": [
+    {
+      "revision": "before",
+      "progress": 0,
+      "rotated": false,
+      "types": [
+        "cylinder",
+        "torus",
+        "mobius",
+        "klein",
+        "projective",
+        "sphere"
+      ],
+      "sha256": [
+        "5c7b2e18e929816833682deb93f29fb142ae4be11b48616f2955784413fd04f7",
+        "ccf0c16da5898bcc5b9dd5470818ddb562aa9568ea089f6d305e46de81e76342",
+        "22792759a775659a56182788932b52b8d5eed2ae819491f5f326f1409b0027e2",
+        "938c8bb2455830d9f59e29c4dcbb2b9179ba95a73d76306ac620d5ae56aab400",
+        "3a054b8055aa436a8cc4a75d350cd6df6040ec77aef7d329959ace571c403b74",
+        "aa7f385b0ec4600b5ad21996c8ebbc60f7de928ec6759cd9367dba5d626803bb"
+      ],
+      "file": "artifacts/board-perspective/before-module-gallery-0.png"
+    },
+    {
+      "revision": "before",
+      "progress": 0.5,
+      "rotated": false,
+      "types": [
+        "cylinder",
+        "torus",
+        "mobius",
+        "klein",
+        "projective",
+        "sphere"
+      ],
+      "sha256": [
+        "caf47f80110deff925f6d1e18ec2079e77c02a0a888df6687d697ffa00cb16d3",
+        "86114462d40e430e79ca43dae1828d7bfa3095f2ea3da4584253ea323af04d59",
+        "4073ffad1b8d4639a8b337aa4c93faaa2137ee2fa7e70528d11f1b49937d7890",
+        "43cbdad9d35aa03f2e05d2f7c797b26dd242f7c1084f17685171d30c6a09255b",
+        "934dca3732a5dec7fcb63d512267ac20ef6752c66e13836c0ea387f0f8402a18",
+        "12b966e4793300508f863039c6206181be01ef84a63d8819709417c20ae616bb"
+      ],
+      "file": "artifacts/board-perspective/before-module-gallery-0.5.png"
+    },
+    {
+      "revision": "before",
+      "progress": 1,
+      "rotated": false,
+      "types": [
+        "cylinder",
+        "torus",
+        "mobius",
+        "klein",
+        "projective",
+        "sphere"
+      ],
+      "sha256": [
+        "b4e19a724f55a03159f2a52b8202c210d0e4a3043705322b71d495d14c589cfd",
+        "f01772327626efc55b76f23fabe4c4cdb7347685394d3bf54201d59a78b7a08d",
+        "c7f4be578f9ae11c986b447cc781f4aa9e3e05718ca1ae1475f912be30d68b62",
+        "3846a781b1bdefec7139f6391621ec7c619fe385e062013605649705f1e7b9f2",
+        "078a3b04bcb77e9d6724f416127d639293499181ed32e5256c16b9e1dc45de51",
+        "183f26af78c01c7caefa0c52976581c68b372f58e3727e2f2a14bf476d83f0ae"
+      ],
+      "file": "artifacts/board-perspective/before-module-gallery-1.png"
+    },
+    {
+      "revision": "before",
+      "progress": 1,
+      "rotated": true,
+      "types": [
+        "cylinder",
+        "torus",
+        "mobius",
+        "klein",
+        "projective",
+        "sphere"
+      ],
+      "sha256": [
+        "967509fb7f91c47c0a3212f50889ddfcdf60de2e4afa75a3d3fb6b48e4bd1a29",
+        "c86d03d6c15868417054546e07ec148c56378a79106544d725a3d8364f3a5e7e",
+        "a583de9db9d3747f8efe9d7a40f6b0ff6649291ea609c7c7da7d9be93cd04f41",
+        "7c363047854da9c018a693f7a79e1d0dd163ae17a534b90c7dd655e0bf8a5677",
+        "588228c8da9a98c2aaf79006be9f9c562d33436ddded2f2cf311a0c07391cf55",
+        "32bb0a07ae8d20ed7b49d64d9da81bcdd641658fa82441d9956f8f5f26b13b94"
+      ],
+      "file": "artifacts/board-perspective/before-module-gallery-1-rotated.png"
+    },
+    {
+      "revision": "after",
+      "progress": 0,
+      "rotated": false,
+      "types": [
+        "cylinder",
+        "torus",
+        "mobius",
+        "klein",
+        "projective",
+        "sphere"
+      ],
+      "sha256": [
+        "5c7b2e18e929816833682deb93f29fb142ae4be11b48616f2955784413fd04f7",
+        "ccf0c16da5898bcc5b9dd5470818ddb562aa9568ea089f6d305e46de81e76342",
+        "22792759a775659a56182788932b52b8d5eed2ae819491f5f326f1409b0027e2",
+        "938c8bb2455830d9f59e29c4dcbb2b9179ba95a73d76306ac620d5ae56aab400",
+        "3a054b8055aa436a8cc4a75d350cd6df6040ec77aef7d329959ace571c403b74",
+        "aa7f385b0ec4600b5ad21996c8ebbc60f7de928ec6759cd9367dba5d626803bb"
+      ],
+      "file": "artifacts/board-perspective/after-module-gallery-0.png"
+    },
+    {
+      "revision": "after",
+      "progress": 0.5,
+      "rotated": false,
+      "types": [
+        "cylinder",
+        "torus",
+        "mobius",
+        "klein",
+        "projective",
+        "sphere"
+      ],
+      "sha256": [
+        "b1077b30acbfec4807d13511b9a3997e0bbe14c5fb920671a95f9d974dfc073c",
+        "9f433cab5dd6476f741ed771195dcf6844aca3f00c6d8fd85a2da5cb4fa19ce6",
+        "65c01b4087fd0b62864ab581ce2cba1063f5b73ddebe05bc82749c66d9517a80",
+        "cff4c6fab9d41a5e82bebd3f6480104d392a94c1b207737272c3d6153c491ad2",
+        "be4c1408d4671c0acbdf9acb6f1aa73939c3262b75962e1f76390acc5046d447",
+        "cf7a9dcf93301539472424d5027894dfa1c0effbc2d321d057f822a1a169d3ce"
+      ],
+      "file": "artifacts/board-perspective/after-module-gallery-0.5.png"
+    },
+    {
+      "revision": "after",
+      "progress": 1,
+      "rotated": false,
+      "types": [
+        "cylinder",
+        "torus",
+        "mobius",
+        "klein",
+        "projective",
+        "sphere"
+      ],
+      "sha256": [
+        "db6abfe3cea256e117bf613f9e5f4ef21d33d2919a79e6a52ee65d4d00c5c285",
+        "e0f0df04b9a1e4c1444943aa7bf5786f23e98a5e6e684065df9f609e5a006478",
+        "fc131969af2e543c6b6980c92b49f7afab07ac56f6719fcc4969237e06a67e24",
+        "2a7b0df57b21f997a2925761a65342043fbbaa569c910001e451f9541419e33d",
+        "0814026a1f300593bd83927de238bb29caad9f9e46cb264cd22f14c9803a3350",
+        "44aff1b7fb6a8ff7c2dc4a4dccbaddc81ea0f3e3fc0ca23a2569d76def2a0a78"
+      ],
+      "file": "artifacts/board-perspective/after-module-gallery-1.png"
+    },
+    {
+      "revision": "after",
+      "progress": 1,
+      "rotated": true,
+      "types": [
+        "cylinder",
+        "torus",
+        "mobius",
+        "klein",
+        "projective",
+        "sphere"
+      ],
+      "sha256": [
+        "7370389611a1c7c1e8cda3d93c7ce1cc6576327644660308dcb937c7ea71257e",
+        "f3bb082686eef1a90ea6f7839498fe681ec6d034ea590a6a6f06c9d275acab91",
+        "f0c25520fb86aad2a5080d44582119c5e0e495a335dae1678dec5c7855803bf1",
+        "3736613cd2661b78b4d378e70bf3284cbb794c804080ec4d934784ef537325cf",
+        "9c184d8ab331233aab3613284265639da0e74eba25330f2993be90a58c1a7e2c",
+        "dabd292f89e3cd153dc39d76dd952ed62d983d2809340282d86deaa7e3568897"
+      ],
+      "file": "artifacts/board-perspective/after-module-gallery-1-rotated.png"
+    }
+  ],
+  "performance": [
+    {
+      "revision": "before",
+      "type": "cylinder",
+      "size": 7,
+      "samples": 20,
+      "medianMs": 0.8999999910593033,
+      "p95Ms": 1.2000000029802322,
+      "maxMs": 1.2000000029802322,
+      "drawAndReadbackMedianMs": 10.799999997019768,
+      "drawAndReadbackP95Ms": 11.099999994039536
+    },
+    {
+      "revision": "before",
+      "type": "cylinder",
+      "size": 19,
+      "samples": 20,
+      "medianMs": 1.9000000059604645,
+      "p95Ms": 4.299999997019768,
+      "maxMs": 4.299999997019768,
+      "drawAndReadbackMedianMs": 12.799999997019768,
+      "drawAndReadbackP95Ms": 15.600000008940697
+    },
+    {
+      "revision": "before",
+      "type": "torus",
+      "size": 7,
+      "samples": 20,
+      "medianMs": 0.9000000059604645,
+      "p95Ms": 3.7000000029802322,
+      "maxMs": 3.7000000029802322,
+      "drawAndReadbackMedianMs": 14.399999991059303,
+      "drawAndReadbackP95Ms": 17.099999994039536
+    },
+    {
+      "revision": "before",
+      "type": "torus",
+      "size": 19,
+      "samples": 20,
+      "medianMs": 1.7999999970197678,
+      "p95Ms": 2.7999999970197678,
+      "maxMs": 2.7999999970197678,
+      "drawAndReadbackMedianMs": 16.100000008940697,
+      "drawAndReadbackP95Ms": 17.100000008940697
+    },
+    {
+      "revision": "before",
+      "type": "mobius",
+      "size": 7,
+      "samples": 20,
+      "medianMs": 0.8999999910593033,
+      "p95Ms": 4,
+      "maxMs": 4,
+      "drawAndReadbackMedianMs": 11.300000011920929,
+      "drawAndReadbackP95Ms": 14.600000008940697
+    },
+    {
+      "revision": "before",
+      "type": "mobius",
+      "size": 19,
+      "samples": 20,
+      "medianMs": 1.6000000089406967,
+      "p95Ms": 4.9000000059604645,
+      "maxMs": 4.9000000059604645,
+      "drawAndReadbackMedianMs": 13.099999994039536,
+      "drawAndReadbackP95Ms": 16.700000002980232
+    },
+    {
+      "revision": "before",
+      "type": "klein",
+      "size": 7,
+      "samples": 20,
+      "medianMs": 0.9000000059604645,
+      "p95Ms": 1.5,
+      "maxMs": 1.5,
+      "drawAndReadbackMedianMs": 11.799999997019768,
+      "drawAndReadbackP95Ms": 12.400000005960464
+    },
+    {
+      "revision": "before",
+      "type": "klein",
+      "size": 19,
+      "samples": 20,
+      "medianMs": 1.7999999970197678,
+      "p95Ms": 4.799999997019768,
+      "maxMs": 4.799999997019768,
+      "drawAndReadbackMedianMs": 13.800000011920929,
+      "drawAndReadbackP95Ms": 17.200000002980232
+    },
+    {
+      "revision": "before",
+      "type": "projective",
+      "size": 7,
+      "samples": 20,
+      "medianMs": 0.7999999970197678,
+      "p95Ms": 4.700000002980232,
+      "maxMs": 4.700000002980232,
+      "drawAndReadbackMedianMs": 13.5,
+      "drawAndReadbackP95Ms": 17.900000005960464
+    },
+    {
+      "revision": "before",
+      "type": "projective",
+      "size": 19,
+      "samples": 20,
+      "medianMs": 1.7999999970197678,
+      "p95Ms": 2.5999999940395355,
+      "maxMs": 2.5999999940395355,
+      "drawAndReadbackMedianMs": 15.799999997019768,
+      "drawAndReadbackP95Ms": 19.600000008940697
+    },
+    {
+      "revision": "before",
+      "type": "sphere",
+      "size": 7,
+      "samples": 20,
+      "medianMs": 1.2000000029802322,
+      "p95Ms": 5,
+      "maxMs": 5,
+      "drawAndReadbackMedianMs": 16.599999994039536,
+      "drawAndReadbackP95Ms": 21.599999994039536
+    },
+    {
+      "revision": "before",
+      "type": "sphere",
+      "size": 19,
+      "samples": 20,
+      "medianMs": 2.2000000029802322,
+      "p95Ms": 3.9000000059604645,
+      "maxMs": 3.9000000059604645,
+      "drawAndReadbackMedianMs": 18.700000002980232,
+      "drawAndReadbackP95Ms": 23.099999994039536
+    },
+    {
+      "revision": "after",
+      "type": "cylinder",
+      "size": 7,
+      "samples": 20,
+      "medianMs": 18.099999994039536,
+      "p95Ms": 22.80000001192093,
+      "maxMs": 22.80000001192093,
+      "drawAndReadbackMedianMs": 26.5,
+      "drawAndReadbackP95Ms": 30.200000002980232
+    },
+    {
+      "revision": "after",
+      "type": "cylinder",
+      "size": 19,
+      "samples": 20,
+      "medianMs": 48.1000000089407,
+      "p95Ms": 76.70000000298023,
+      "maxMs": 76.70000000298023,
+      "drawAndReadbackMedianMs": 65,
+      "drawAndReadbackP95Ms": 92.80000001192093
+    },
+    {
+      "revision": "after",
+      "type": "torus",
+      "size": 7,
+      "samples": 20,
+      "medianMs": 17,
+      "p95Ms": 22.299999997019768,
+      "maxMs": 22.299999997019768,
+      "drawAndReadbackMedianMs": 25.200000002980232,
+      "drawAndReadbackP95Ms": 30.69999998807907
+    },
+    {
+      "revision": "after",
+      "type": "torus",
+      "size": 19,
+      "samples": 20,
+      "medianMs": 34.599999994039536,
+      "p95Ms": 53.5,
+      "maxMs": 53.5,
+      "drawAndReadbackMedianMs": 48.79999999701977,
+      "drawAndReadbackP95Ms": 66.90000000596046
+    },
+    {
+      "revision": "after",
+      "type": "mobius",
+      "size": 7,
+      "samples": 20,
+      "medianMs": 27.599999994039536,
+      "p95Ms": 50.5,
+      "maxMs": 50.5,
+      "drawAndReadbackMedianMs": 34.5,
+      "drawAndReadbackP95Ms": 58.80000001192093
+    },
+    {
+      "revision": "after",
+      "type": "mobius",
+      "size": 19,
+      "samples": 20,
+      "medianMs": 57.29999999701977,
+      "p95Ms": 93.19999998807907,
+      "maxMs": 93.19999998807907,
+      "drawAndReadbackMedianMs": 70.8999999910593,
+      "drawAndReadbackP95Ms": 110
+    },
+    {
+      "revision": "after",
+      "type": "klein",
+      "size": 7,
+      "samples": 20,
+      "medianMs": 23,
+      "p95Ms": 45.3999999910593,
+      "maxMs": 45.3999999910593,
+      "drawAndReadbackMedianMs": 31.5,
+      "drawAndReadbackP95Ms": 53.5
+    },
+    {
+      "revision": "after",
+      "type": "klein",
+      "size": 19,
+      "samples": 20,
+      "medianMs": 44.79999999701977,
+      "p95Ms": 66.29999999701977,
+      "maxMs": 66.29999999701977,
+      "drawAndReadbackMedianMs": 58.900000005960464,
+      "drawAndReadbackP95Ms": 83.79999999701977
+    },
+    {
+      "revision": "after",
+      "type": "projective",
+      "size": 7,
+      "samples": 20,
+      "medianMs": 24.200000002980232,
+      "p95Ms": 37.5,
+      "maxMs": 37.5,
+      "drawAndReadbackMedianMs": 33.400000005960464,
+      "drawAndReadbackP95Ms": 48.5
+    },
+    {
+      "revision": "after",
+      "type": "projective",
+      "size": 19,
+      "samples": 20,
+      "medianMs": 44.19999998807907,
+      "p95Ms": 72.8999999910593,
+      "maxMs": 72.8999999910593,
+      "drawAndReadbackMedianMs": 57.599999994039536,
+      "drawAndReadbackP95Ms": 86.5
+    },
+    {
+      "revision": "after",
+      "type": "sphere",
+      "size": 7,
+      "samples": 20,
+      "medianMs": 26.200000002980232,
+      "p95Ms": 41.3999999910593,
+      "maxMs": 41.3999999910593,
+      "drawAndReadbackMedianMs": 35.599999994039536,
+      "drawAndReadbackP95Ms": 51.8999999910593
+    },
+    {
+      "revision": "after",
+      "type": "sphere",
+      "size": 19,
+      "samples": 20,
+      "medianMs": 43.900000005960464,
+      "p95Ms": 55.79999999701977,
+      "maxMs": 55.79999999701977,
+      "drawAndReadbackMedianMs": 58.099999994039536,
+      "drawAndReadbackP95Ms": 71.3999999910593
+    }
+  ],
+  "animationFrames": [
+    {
+      "revision": "before",
+      "type": "torus",
+      "size": 7,
+      "stones": 8,
+      "samples": 40,
+      "medianMs": 16.699999999999818,
+      "p95Ms": 16.800000000000182
+    },
+    {
+      "revision": "before",
+      "type": "torus",
+      "size": 19,
+      "stones": 361,
+      "samples": 40,
+      "medianMs": 16.699999999999818,
+      "p95Ms": 33.30000000000018
+    },
+    {
+      "revision": "before",
+      "type": "sphere",
+      "size": 7,
+      "stones": 8,
+      "samples": 40,
+      "medianMs": 16.699999999999818,
+      "p95Ms": 16.800000000000182
+    },
+    {
+      "revision": "before",
+      "type": "sphere",
+      "size": 19,
+      "stones": 361,
+      "samples": 40,
+      "medianMs": 16.699999999999818,
+      "p95Ms": 33.30000000000018
+    },
+    {
+      "revision": "after",
+      "type": "torus",
+      "size": 7,
+      "stones": 8,
+      "samples": 40,
+      "medianMs": 16.69999999999709,
+      "p95Ms": 16.799999999999272
+    },
+    {
+      "revision": "after",
+      "type": "torus",
+      "size": 19,
+      "stones": 361,
+      "samples": 40,
+      "medianMs": 50,
+      "p95Ms": 66.70000000000073
+    },
+    {
+      "revision": "after",
+      "type": "sphere",
+      "size": 7,
+      "stones": 8,
+      "samples": 40,
+      "medianMs": 16.69999999999709,
+      "p95Ms": 16.799999999999272
+    },
+    {
+      "revision": "after",
+      "type": "sphere",
+      "size": 19,
+      "stones": 361,
+      "samples": 40,
+      "medianMs": 66.59999999999854,
+      "p95Ms": 66.70000000000073
+    }
+  ],
+  "surfaceCoverage": [
+    {
+      "triangles": 3312,
+      "missing": 0
+    },
+    {
+      "triangles": 3312,
+      "missing": 0
+    },
+    {
+      "triangles": 3312,
+      "missing": 0
+    },
+    {
+      "triangles": 3312,
+      "missing": 0
+    },
+    {
+      "triangles": 3312,
+      "missing": 0
+    },
+    {
+      "triangles": 4608,
+      "missing": 0
+    },
+    {
+      "triangles": 3312,
+      "missing": 0
+    },
+    {
+      "triangles": 3312,
+      "missing": 0
+    },
+    {
+      "triangles": 3312,
+      "missing": 0
+    },
+    {
+      "triangles": 3312,
+      "missing": 0
+    },
+    {
+      "triangles": 3310,
+      "missing": 0
+    },
+    {
+      "triangles": 4608,
+      "missing": 0
+    },
+    {
+      "triangles": 3312,
+      "missing": 0
+    },
+    {
+      "triangles": 3312,
+      "missing": 0
+    },
+    {
+      "triangles": 3312,
+      "missing": 0
+    },
+    {
+      "triangles": 3312,
+      "missing": 0
+    },
+    {
+      "triangles": 3310,
+      "missing": 0
+    },
+    {
+      "triangles": 4608,
+      "missing": 0
+    }
+  ],
+  "stoneBounds": [
+    {
+      "type": "cylinder",
+      "size": 5,
+      "dimensions": [
+        600,
+        600
+      ],
+      "rotated": false,
+      "stones": 76,
+      "minFaceMarginPx": 36.882181395769294
+    },
+    {
+      "type": "cylinder",
+      "size": 5,
+      "dimensions": [
+        600,
+        600
+      ],
+      "rotated": true,
+      "stones": 97,
+      "minFaceMarginPx": 31.87868746100399
+    },
+    {
+      "type": "cylinder",
+      "size": 5,
+      "dimensions": [
+        960,
+        540
+      ],
+      "rotated": false,
+      "stones": 76,
+      "minFaceMarginPx": 33.14396325619242
+    },
+    {
+      "type": "cylinder",
+      "size": 5,
+      "dimensions": [
+        960,
+        540
+      ],
+      "rotated": true,
+      "stones": 97,
+      "minFaceMarginPx": 28.64081751485854
+    },
+    {
+      "type": "cylinder",
+      "size": 5,
+      "dimensions": [
+        400,
+        300
+      ],
+      "rotated": false,
+      "stones": 76,
+      "minFaceMarginPx": 17.984843323043606
+    },
+    {
+      "type": "cylinder",
+      "size": 5,
+      "dimensions": [
+        400,
+        300
+      ],
+      "rotated": true,
+      "stones": 97,
+      "minFaceMarginPx": 15.488139578403466
+    },
+    {
+      "type": "cylinder",
+      "size": 7,
+      "dimensions": [
+        600,
+        600
+      ],
+      "rotated": false,
+      "stones": 157,
+      "minFaceMarginPx": 53.90125099798388
+    },
+    {
+      "type": "cylinder",
+      "size": 7,
+      "dimensions": [
+        600,
+        600
+      ],
+      "rotated": true,
+      "stones": 190,
+      "minFaceMarginPx": 53.56535309554852
+    },
+    {
+      "type": "cylinder",
+      "size": 7,
+      "dimensions": [
+        960,
+        540
+      ],
+      "rotated": false,
+      "stones": 157,
+      "minFaceMarginPx": 48.46112533743599
+    },
+    {
+      "type": "cylinder",
+      "size": 7,
+      "dimensions": [
+        960,
+        540
+      ],
+      "rotated": true,
+      "stones": 190,
+      "minFaceMarginPx": 48.158816260114754
+    },
+    {
+      "type": "cylinder",
+      "size": 7,
+      "dimensions": [
+        400,
+        300
+      ],
+      "rotated": false,
+      "stones": 157,
+      "minFaceMarginPx": 26.575751268635884
+    },
+    {
+      "type": "cylinder",
+      "size": 7,
+      "dimensions": [
+        400,
+        300
+      ],
+      "rotated": true,
+      "stones": 193,
+      "minFaceMarginPx": 26.400783987790074
+    },
+    {
+      "type": "cylinder",
+      "size": 19,
+      "dimensions": [
+        600,
+        600
+      ],
+      "rotated": false,
+      "stones": 862,
+      "minFaceMarginPx": 60.18733044596718
+    },
+    {
+      "type": "cylinder",
+      "size": 19,
+      "dimensions": [
+        600,
+        600
+      ],
+      "rotated": true,
+      "stones": 1396,
+      "minFaceMarginPx": 59.83616061566366
+    },
+    {
+      "type": "cylinder",
+      "size": 19,
+      "dimensions": [
+        960,
+        540
+      ],
+      "rotated": false,
+      "stones": 865,
+      "minFaceMarginPx": 54.11860242857006
+    },
+    {
+      "type": "cylinder",
+      "size": 19,
+      "dimensions": [
+        960,
+        540
+      ],
+      "rotated": true,
+      "stones": 1396,
+      "minFaceMarginPx": 53.802544554097295
+    },
+    {
+      "type": "cylinder",
+      "size": 19,
+      "dimensions": [
+        400,
+        300
+      ],
+      "rotated": false,
+      "stones": 901,
+      "minFaceMarginPx": 29.7986182361214
+    },
+    {
+      "type": "cylinder",
+      "size": 19,
+      "dimensions": [
+        400,
+        300
+      ],
+      "rotated": true,
+      "stones": 1402,
+      "minFaceMarginPx": 29.62316652849404
+    },
+    {
+      "type": "torus",
+      "size": 5,
+      "dimensions": [
+        600,
+        600
+      ],
+      "rotated": false,
+      "stones": 94,
+      "minFaceMarginPx": 47.32066743381574
+    },
+    {
+      "type": "torus",
+      "size": 5,
+      "dimensions": [
+        600,
+        600
+      ],
+      "rotated": true,
+      "stones": 91,
+      "minFaceMarginPx": 66.51648786966757
+    },
+    {
+      "type": "torus",
+      "size": 5,
+      "dimensions": [
+        960,
+        540
+      ],
+      "rotated": false,
+      "stones": 94,
+      "minFaceMarginPx": 55.403820836096145
+    },
+    {
+      "type": "torus",
+      "size": 5,
+      "dimensions": [
+        960,
+        540
+      ],
+      "rotated": true,
+      "stones": 91,
+      "minFaceMarginPx": 60.4185959976631
+    },
+    {
+      "type": "torus",
+      "size": 5,
+      "dimensions": [
+        400,
+        300
+      ],
+      "rotated": false,
+      "stones": 94,
+      "minFaceMarginPx": 30.60343189570966
+    },
+    {
+      "type": "torus",
+      "size": 5,
+      "dimensions": [
+        400,
+        300
+      ],
+      "rotated": true,
+      "stones": 91,
+      "minFaceMarginPx": 33.38905831438632
+    },
+    {
+      "type": "torus",
+      "size": 7,
+      "dimensions": [
+        600,
+        600
+      ],
+      "rotated": false,
+      "stones": 169,
+      "minFaceMarginPx": 49.796734859592334
+    },
+    {
+      "type": "torus",
+      "size": 7,
+      "dimensions": [
+        600,
+        600
+      ],
+      "rotated": true,
+      "stones": 157,
+      "minFaceMarginPx": 51.840700248505556
+    },
+    {
+      "type": "torus",
+      "size": 7,
+      "dimensions": [
+        960,
+        540
+      ],
+      "rotated": false,
+      "stones": 169,
+      "minFaceMarginPx": 54.33282969041045
+    },
+    {
+      "type": "torus",
+      "size": 7,
+      "dimensions": [
+        960,
+        540
+      ],
+      "rotated": true,
+      "stones": 157,
+      "minFaceMarginPx": 46.60663077063903
+    },
+    {
+      "type": "torus",
+      "size": 7,
+      "dimensions": [
+        400,
+        300
+      ],
+      "rotated": false,
+      "stones": 169,
+      "minFaceMarginPx": 29.837084959150502
+    },
+    {
+      "type": "torus",
+      "size": 7,
+      "dimensions": [
+        400,
+        300
+      ],
+      "rotated": true,
+      "stones": 160,
+      "minFaceMarginPx": 25.531537189405817
+    },
+    {
+      "type": "torus",
+      "size": 19,
+      "dimensions": [
+        600,
+        600
+      ],
+      "rotated": false,
+      "stones": 952,
+      "minFaceMarginPx": 62.179036360015175
+    },
+    {
+      "type": "torus",
+      "size": 19,
+      "dimensions": [
+        600,
+        600
+      ],
+      "rotated": true,
+      "stones": 1036,
+      "minFaceMarginPx": 64.1847917216686
+    },
+    {
+      "type": "torus",
+      "size": 19,
+      "dimensions": [
+        960,
+        540
+      ],
+      "rotated": false,
+      "stones": 961,
+      "minFaceMarginPx": 55.91113272401367
+    },
+    {
+      "type": "torus",
+      "size": 19,
+      "dimensions": [
+        960,
+        540
+      ],
+      "rotated": true,
+      "stones": 1036,
+      "minFaceMarginPx": 63.235694055206174
+    },
+    {
+      "type": "torus",
+      "size": 19,
+      "dimensions": [
+        400,
+        300
+      ],
+      "rotated": false,
+      "stones": 988,
+      "minFaceMarginPx": 30.798134218600865
+    },
+    {
+      "type": "torus",
+      "size": 19,
+      "dimensions": [
+        400,
+        300
+      ],
+      "rotated": true,
+      "stones": 1054,
+      "minFaceMarginPx": 34.86063686961419
+    },
+    {
+      "type": "mobius",
+      "size": 5,
+      "dimensions": [
+        600,
+        600
+      ],
+      "rotated": false,
+      "stones": 91,
+      "minFaceMarginPx": 61.30218761931337
+    },
+    {
+      "type": "mobius",
+      "size": 5,
+      "dimensions": [
+        600,
+        600
+      ],
+      "rotated": true,
+      "stones": 97,
+      "minFaceMarginPx": 71.03408860197783
+    },
+    {
+      "type": "mobius",
+      "size": 5,
+      "dimensions": [
+        960,
+        540
+      ],
+      "rotated": false,
+      "stones": 91,
+      "minFaceMarginPx": 71.93264839152596
+    },
+    {
+      "type": "mobius",
+      "size": 5,
+      "dimensions": [
+        960,
+        540
+      ],
+      "rotated": true,
+      "stones": 97,
+      "minFaceMarginPx": 83.5904085401015
+    },
+    {
+      "type": "mobius",
+      "size": 5,
+      "dimensions": [
+        400,
+        300
+      ],
+      "rotated": false,
+      "stones": 91,
+      "minFaceMarginPx": 39.591448657650275
+    },
+    {
+      "type": "mobius",
+      "size": 5,
+      "dimensions": [
+        400,
+        300
+      ],
+      "rotated": true,
+      "stones": 97,
+      "minFaceMarginPx": 46.02302775454258
+    },
+    {
+      "type": "mobius",
+      "size": 7,
+      "dimensions": [
+        600,
+        600
+      ],
+      "rotated": false,
+      "stones": 184,
+      "minFaceMarginPx": 57.29250000617674
+    },
+    {
+      "type": "mobius",
+      "size": 7,
+      "dimensions": [
+        600,
+        600
+      ],
+      "rotated": true,
+      "stones": 175,
+      "minFaceMarginPx": 89.81745473650517
+    },
+    {
+      "type": "mobius",
+      "size": 7,
+      "dimensions": [
+        960,
+        540
+      ],
+      "rotated": false,
+      "stones": 184,
+      "minFaceMarginPx": 76.83747170281401
+    },
+    {
+      "type": "mobius",
+      "size": 7,
+      "dimensions": [
+        960,
+        540
+      ],
+      "rotated": true,
+      "stones": 178,
+      "minFaceMarginPx": 85.94478017950888
+    },
+    {
+      "type": "mobius",
+      "size": 7,
+      "dimensions": [
+        400,
+        300
+      ],
+      "rotated": false,
+      "stones": 184,
+      "minFaceMarginPx": 42.36873139119291
+    },
+    {
+      "type": "mobius",
+      "size": 7,
+      "dimensions": [
+        400,
+        300
+      ],
+      "rotated": true,
+      "stones": 178,
+      "minFaceMarginPx": 47.396054101149545
+    },
+    {
+      "type": "mobius",
+      "size": 19,
+      "dimensions": [
+        600,
+        600
+      ],
+      "rotated": false,
+      "stones": 1216,
+      "minFaceMarginPx": 65.96639455671266
+    },
+    {
+      "type": "mobius",
+      "size": 19,
+      "dimensions": [
+        600,
+        600
+      ],
+      "rotated": true,
+      "stones": 1258,
+      "minFaceMarginPx": 81.73377319313465
+    },
+    {
+      "type": "mobius",
+      "size": 19,
+      "dimensions": [
+        960,
+        540
+      ],
+      "rotated": false,
+      "stones": 1222,
+      "minFaceMarginPx": 83.63667833360422
+    },
+    {
+      "type": "mobius",
+      "size": 19,
+      "dimensions": [
+        960,
+        540
+      ],
+      "rotated": true,
+      "stones": 1261,
+      "minFaceMarginPx": 99.38358006462323
+    },
+    {
+      "type": "mobius",
+      "size": 19,
+      "dimensions": [
+        400,
+        300
+      ],
+      "rotated": false,
+      "stones": 1255,
+      "minFaceMarginPx": 46.20779788292596
+    },
+    {
+      "type": "mobius",
+      "size": 19,
+      "dimensions": [
+        400,
+        300
+      ],
+      "rotated": true,
+      "stones": 1273,
+      "minFaceMarginPx": 54.947688449336624
+    },
+    {
+      "type": "klein",
+      "size": 5,
+      "dimensions": [
+        600,
+        600
+      ],
+      "rotated": false,
+      "stones": 91,
+      "minFaceMarginPx": 71.95404450313345
+    },
+    {
+      "type": "klein",
+      "size": 5,
+      "dimensions": [
+        600,
+        600
+      ],
+      "rotated": true,
+      "stones": 70,
+      "minFaceMarginPx": 59.630574859504264
+    },
+    {
+      "type": "klein",
+      "size": 5,
+      "dimensions": [
+        960,
+        540
+      ],
+      "rotated": false,
+      "stones": 91,
+      "minFaceMarginPx": 70.70907146924846
+    },
+    {
+      "type": "klein",
+      "size": 5,
+      "dimensions": [
+        960,
+        540
+      ],
+      "rotated": true,
+      "stones": 70,
+      "minFaceMarginPx": 53.617516952143305
+    },
+    {
+      "type": "klein",
+      "size": 5,
+      "dimensions": [
+        400,
+        300
+      ],
+      "rotated": false,
+      "stones": 91,
+      "minFaceMarginPx": 39.09988790401504
+    },
+    {
+      "type": "klein",
+      "size": 5,
+      "dimensions": [
+        400,
+        300
+      ],
+      "rotated": true,
+      "stones": 70,
+      "minFaceMarginPx": 29.607775162589014
+    },
+    {
+      "type": "klein",
+      "size": 7,
+      "dimensions": [
+        600,
+        600
+      ],
+      "rotated": false,
+      "stones": 154,
+      "minFaceMarginPx": 81.93909527593108
+    },
+    {
+      "type": "klein",
+      "size": 7,
+      "dimensions": [
+        600,
+        600
+      ],
+      "rotated": true,
+      "stones": 121,
+      "minFaceMarginPx": 59.19368301979701
+    },
+    {
+      "type": "klein",
+      "size": 7,
+      "dimensions": [
+        960,
+        540
+      ],
+      "rotated": false,
+      "stones": 154,
+      "minFaceMarginPx": 90.72705094872654
+    },
+    {
+      "type": "klein",
+      "size": 7,
+      "dimensions": [
+        960,
+        540
+      ],
+      "rotated": true,
+      "stones": 121,
+      "minFaceMarginPx": 53.224316378553794
+    },
+    {
+      "type": "klein",
+      "size": 7,
+      "dimensions": [
+        400,
+        300
+      ],
+      "rotated": false,
+      "stones": 157,
+      "minFaceMarginPx": 50.05071264534528
+    },
+    {
+      "type": "klein",
+      "size": 7,
+      "dimensions": [
+        400,
+        300
+      ],
+      "rotated": true,
+      "stones": 121,
+      "minFaceMarginPx": 29.226804789292416
+    },
+    {
+      "type": "klein",
+      "size": 19,
+      "dimensions": [
+        600,
+        600
+      ],
+      "rotated": false,
+      "stones": 916,
+      "minFaceMarginPx": 78.2073620840503
+    },
+    {
+      "type": "klein",
+      "size": 19,
+      "dimensions": [
+        600,
+        600
+      ],
+      "rotated": true,
+      "stones": 742,
+      "minFaceMarginPx": 65.16726014767642
+    },
+    {
+      "type": "klein",
+      "size": 19,
+      "dimensions": [
+        960,
+        540
+      ],
+      "rotated": false,
+      "stones": 922,
+      "minFaceMarginPx": 89.10146945708829
+    },
+    {
+      "type": "klein",
+      "size": 19,
+      "dimensions": [
+        960,
+        540
+      ],
+      "rotated": true,
+      "stones": 748,
+      "minFaceMarginPx": 58.60053413290877
+    },
+    {
+      "type": "klein",
+      "size": 19,
+      "dimensions": [
+        400,
+        300
+      ],
+      "rotated": false,
+      "stones": 940,
+      "minFaceMarginPx": 49.236609627278824
+    },
+    {
+      "type": "klein",
+      "size": 19,
+      "dimensions": [
+        400,
+        300
+      ],
+      "rotated": true,
+      "stones": 757,
+      "minFaceMarginPx": 32.29217920537858
+    },
+    {
+      "type": "projective",
+      "size": 5,
+      "dimensions": [
+        600,
+        600
+      ],
+      "rotated": false,
+      "stones": 82,
+      "minFaceMarginPx": 79.25548519817124
+    },
+    {
+      "type": "projective",
+      "size": 5,
+      "dimensions": [
+        600,
+        600
+      ],
+      "rotated": true,
+      "stones": 82,
+      "minFaceMarginPx": 48.20582727308028
+    },
+    {
+      "type": "projective",
+      "size": 5,
+      "dimensions": [
+        960,
+        540
+      ],
+      "rotated": false,
+      "stones": 82,
+      "minFaceMarginPx": 108.24764789289537
+    },
+    {
+      "type": "projective",
+      "size": 5,
+      "dimensions": [
+        960,
+        540
+      ],
+      "rotated": true,
+      "stones": 82,
+      "minFaceMarginPx": 73.40742949919303
+    },
+    {
+      "type": "projective",
+      "size": 5,
+      "dimensions": [
+        400,
+        300
+      ],
+      "rotated": false,
+      "stones": 82,
+      "minFaceMarginPx": 59.97117167127095
+    },
+    {
+      "type": "projective",
+      "size": 5,
+      "dimensions": [
+        400,
+        300
+      ],
+      "rotated": true,
+      "stones": 82,
+      "minFaceMarginPx": 40.61075402812594
+    },
+    {
+      "type": "projective",
+      "size": 7,
+      "dimensions": [
+        600,
+        600
+      ],
+      "rotated": false,
+      "stones": 151,
+      "minFaceMarginPx": 93.90026795998625
+    },
+    {
+      "type": "projective",
+      "size": 7,
+      "dimensions": [
+        600,
+        600
+      ],
+      "rotated": true,
+      "stones": 148,
+      "minFaceMarginPx": 69.47787946424002
+    },
+    {
+      "type": "projective",
+      "size": 7,
+      "dimensions": [
+        960,
+        540
+      ],
+      "rotated": false,
+      "stones": 151,
+      "minFaceMarginPx": 100.6785453449707
+    },
+    {
+      "type": "projective",
+      "size": 7,
+      "dimensions": [
+        960,
+        540
+      ],
+      "rotated": true,
+      "stones": 148,
+      "minFaceMarginPx": 72.23538624975305
+    },
+    {
+      "type": "projective",
+      "size": 7,
+      "dimensions": [
+        400,
+        300
+      ],
+      "rotated": false,
+      "stones": 151,
+      "minFaceMarginPx": 55.55241844499906
+    },
+    {
+      "type": "projective",
+      "size": 7,
+      "dimensions": [
+        400,
+        300
+      ],
+      "rotated": true,
+      "stones": 154,
+      "minFaceMarginPx": 39.767567649486466
+    },
+    {
+      "type": "projective",
+      "size": 19,
+      "dimensions": [
+        600,
+        600
+      ],
+      "rotated": false,
+      "stones": 973,
+      "minFaceMarginPx": 93.26291580304184
+    },
+    {
+      "type": "projective",
+      "size": 19,
+      "dimensions": [
+        600,
+        600
+      ],
+      "rotated": true,
+      "stones": 889,
+      "minFaceMarginPx": 71.30097150940148
+    },
+    {
+      "type": "projective",
+      "size": 19,
+      "dimensions": [
+        960,
+        540
+      ],
+      "rotated": false,
+      "stones": 973,
+      "minFaceMarginPx": 88.09405826147974
+    },
+    {
+      "type": "projective",
+      "size": 19,
+      "dimensions": [
+        960,
+        540
+      ],
+      "rotated": true,
+      "stones": 889,
+      "minFaceMarginPx": 82.97315343509594
+    },
+    {
+      "type": "projective",
+      "size": 19,
+      "dimensions": [
+        400,
+        300
+      ],
+      "rotated": false,
+      "stones": 982,
+      "minFaceMarginPx": 48.67027756818254
+    },
+    {
+      "type": "projective",
+      "size": 19,
+      "dimensions": [
+        400,
+        300
+      ],
+      "rotated": true,
+      "stones": 907,
+      "minFaceMarginPx": 45.83361225629159
+    },
+    {
+      "type": "sphere",
+      "size": 5,
+      "dimensions": [
+        600,
+        600
+      ],
+      "rotated": false,
+      "stones": 76,
+      "minFaceMarginPx": 80.7424677286064
+    },
+    {
+      "type": "sphere",
+      "size": 5,
+      "dimensions": [
+        600,
+        600
+      ],
+      "rotated": true,
+      "stones": 82,
+      "minFaceMarginPx": 72.3770876045748
+    },
+    {
+      "type": "sphere",
+      "size": 5,
+      "dimensions": [
+        960,
+        540
+      ],
+      "rotated": false,
+      "stones": 76,
+      "minFaceMarginPx": 72.61822155943875
+    },
+    {
+      "type": "sphere",
+      "size": 5,
+      "dimensions": [
+        960,
+        540
+      ],
+      "rotated": true,
+      "stones": 82,
+      "minFaceMarginPx": 65.36385601616621
+    },
+    {
+      "type": "sphere",
+      "size": 5,
+      "dimensions": [
+        400,
+        300
+      ],
+      "rotated": false,
+      "stones": 76,
+      "minFaceMarginPx": 40.1685506683704
+    },
+    {
+      "type": "sphere",
+      "size": 5,
+      "dimensions": [
+        400,
+        300
+      ],
+      "rotated": true,
+      "stones": 82,
+      "minFaceMarginPx": 36.137529732492396
+    },
+    {
+      "type": "sphere",
+      "size": 7,
+      "dimensions": [
+        600,
+        600
+      ],
+      "rotated": false,
+      "stones": 145,
+      "minFaceMarginPx": 83.08722991249692
+    },
+    {
+      "type": "sphere",
+      "size": 7,
+      "dimensions": [
+        600,
+        600
+      ],
+      "rotated": true,
+      "stones": 145,
+      "minFaceMarginPx": 85.63118646598264
+    },
+    {
+      "type": "sphere",
+      "size": 7,
+      "dimensions": [
+        960,
+        540
+      ],
+      "rotated": false,
+      "stones": 148,
+      "minFaceMarginPx": 75.28995994164865
+    },
+    {
+      "type": "sphere",
+      "size": 7,
+      "dimensions": [
+        960,
+        540
+      ],
+      "rotated": true,
+      "stones": 145,
+      "minFaceMarginPx": 77.50429821667296
+    },
+    {
+      "type": "sphere",
+      "size": 7,
+      "dimensions": [
+        400,
+        300
+      ],
+      "rotated": false,
+      "stones": 148,
+      "minFaceMarginPx": 41.472163556979126
+    },
+    {
+      "type": "sphere",
+      "size": 7,
+      "dimensions": [
+        400,
+        300
+      ],
+      "rotated": true,
+      "stones": 145,
+      "minFaceMarginPx": 42.69762057974637
+    },
+    {
+      "type": "sphere",
+      "size": 19,
+      "dimensions": [
+        600,
+        600
+      ],
+      "rotated": false,
+      "stones": 886,
+      "minFaceMarginPx": 98.20452229035664
+    },
+    {
+      "type": "sphere",
+      "size": 19,
+      "dimensions": [
+        600,
+        600
+      ],
+      "rotated": true,
+      "stones": 925,
+      "minFaceMarginPx": 98.27077320039062
+    },
+    {
+      "type": "sphere",
+      "size": 19,
+      "dimensions": [
+        960,
+        540
+      ],
+      "rotated": false,
+      "stones": 886,
+      "minFaceMarginPx": 88.48906072864288
+    },
+    {
+      "type": "sphere",
+      "size": 19,
+      "dimensions": [
+        960,
+        540
+      ],
+      "rotated": true,
+      "stones": 925,
+      "minFaceMarginPx": 88.51767291813894
+    },
+    {
+      "type": "sphere",
+      "size": 19,
+      "dimensions": [
+        400,
+        300
+      ],
+      "rotated": false,
+      "stones": 910,
+      "minFaceMarginPx": 48.8930074126348
+    },
+    {
+      "type": "sphere",
+      "size": 19,
+      "dimensions": [
+        400,
+        300
+      ],
+      "rotated": true,
+      "stones": 937,
+      "minFaceMarginPx": 48.90899302267587
+    }
+  ]
+}
