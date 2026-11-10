@@ -1,0 +1,4418 @@
+{
+  "baseline": "50fdb3bd6455e1cd76ee168d290462bc8fed0150",
+  "canvas": [
+    360,
+    360
+  ],
+  "viewport": [
+    1800,
+    720
+  ],
+  "dpr": 1,
+  "time": 20000,
+  "progress": [
+    0,
+    1e-8,
+    0.001,
+    0.01
+  ],
+  "dimensions": [
+    7,
+    7
+  ],
+  "rotation": {
+    "x": 0.3,
+    "y": -0.45,
+    "z": 0.1
+  },
+  "cases": [
+    {
+      "revision": "before",
+      "type": "cylinder",
+      "occupied": false,
+      "forward": [
+        {
+          "progress": 0,
+          "whole": {
+            "pixels": 129600,
+            "changedPixels": 92146,
+            "significantPixels": 54302,
+            "meanRgbError": 7.81483282,
+            "maxChannelError": 91
+          },
+          "dots": {
+            "pixels": 841,
+            "changedPixels": 822,
+            "significantPixels": 685,
+            "meanRgbError": 35.92548553,
+            "maxChannelError": 91
+          },
+          "material": {
+            "pixels": 576,
+            "changedPixels": 576,
+            "significantPixels": 357,
+            "meanRgbError": 10.5306713,
+            "maxChannelError": 26
+          },
+          "lastMove": {
+            "pixels": 0,
+            "changedPixels": 0,
+            "significantPixels": 0,
+            "meanRgbError": 0,
+            "maxChannelError": 0
+          }
+        },
+        {
+          "progress": 1e-8,
+          "whole": {
+            "pixels": 129600,
+            "changedPixels": 92146,
+            "significantPixels": 54302,
+            "meanRgbError": 7.81483282,
+            "maxChannelError": 91
+          },
+          "dots": {
+            "pixels": 841,
+            "changedPixels": 822,
+            "significantPixels": 685,
+            "meanRgbError": 35.92548553,
+            "maxChannelError": 91
+          },
+          "material": {
+            "pixels": 576,
+            "changedPixels": 576,
+            "significantPixels": 357,
+            "meanRgbError": 10.5306713,
+            "maxChannelError": 26
+          },
+          "lastMove": {
+            "pixels": 0,
+            "changedPixels": 0,
+            "significantPixels": 0,
+            "meanRgbError": 0,
+            "maxChannelError": 0
+          }
+        },
+        {
+          "progress": 0.001,
+          "whole": {
+            "pixels": 129600,
+            "changedPixels": 92145,
+            "significantPixels": 54000,
+            "meanRgbError": 7.81538066,
+            "maxChannelError": 89
+          },
+          "dots": {
+            "pixels": 841,
+            "changedPixels": 822,
+            "significantPixels": 679,
+            "meanRgbError": 35.85334919,
+            "maxChannelError": 89
+          },
+          "material": {
+            "pixels": 576,
+            "changedPixels": 576,
+            "significantPixels": 357,
+            "meanRgbError": 10.5306713,
+            "maxChannelError": 26
+          },
+          "lastMove": {
+            "pixels": 0,
+            "changedPixels": 0,
+            "significantPixels": 0,
+            "meanRgbError": 0,
+            "maxChannelError": 0
+          }
+        },
+        {
+          "progress": 0.01,
+          "whole": {
+            "pixels": 129600,
+            "changedPixels": 92170,
+            "significantPixels": 53576,
+            "meanRgbError": 7.85398405,
+            "maxChannelError": 92
+          },
+          "dots": {
+            "pixels": 841,
+            "changedPixels": 822,
+            "significantPixels": 670,
+            "meanRgbError": 36.3915973,
+            "maxChannelError": 92
+          },
+          "material": {
+            "pixels": 576,
+            "changedPixels": 576,
+            "significantPixels": 357,
+            "meanRgbError": 10.5306713,
+            "maxChannelError": 26
+          },
+          "lastMove": {
+            "pixels": 0,
+            "changedPixels": 0,
+            "significantPixels": 0,
+            "meanRgbError": 0,
+            "maxChannelError": 0
+          }
+        }
+      ],
+      "reverse": [
+        {
+          "progress": 0.01,
+          "versusForward": {
+            "pixels": 129600,
+            "changedPixels": 0,
+            "significantPixels": 0,
+            "meanRgbError": 0,
+            "maxChannelError": 0
+          }
+        },
+        {
+          "progress": 0.001,
+          "versusForward": {
+            "pixels": 129600,
+            "changedPixels": 0,
+            "significantPixels": 0,
+            "meanRgbError": 0,
+            "maxChannelError": 0
+          }
+        },
+        {
+          "progress": 1e-8,
+          "versusForward": {
+            "pixels": 129600,
+            "changedPixels": 0,
+            "significantPixels": 0,
+            "meanRgbError": 0,
+            "maxChannelError": 0
+          }
+        },
+        {
+          "progress": 0,
+          "versusForward": {
+            "pixels": 129600,
+            "changedPixels": 0,
+            "significantPixels": 0,
+            "meanRgbError": 0,
+            "maxChannelError": 0
+          }
+        }
+      ],
+      "final2d": {
+        "pixels": 129600,
+        "changedPixels": 0,
+        "significantPixels": 0,
+        "meanRgbError": 0,
+        "maxChannelError": 0
+      },
+      "referenceSha256": "52dd32c0efe55ae61a62d699202a9f7f3af35f9126cb8813d4530eb91fd39ed8"
+    },
+    {
+      "revision": "before",
+      "type": "cylinder",
+      "occupied": true,
+      "forward": [
+        {
+          "progress": 0,
+          "whole": {
+            "pixels": 129600,
+            "changedPixels": 90154,
+            "significantPixels": 50792,
+            "meanRgbError": 7.39639918,
+            "maxChannelError": 91
+          },
+          "dots": {
+            "pixels": 692,
+            "changedPixels": 679,
+            "significantPixels": 575,
+            "meanRgbError": 36.45520231,
+            "maxChannelError": 91
+          },
+          "material": {
+            "pixels": 576,
+            "changedPixels": 576,
+            "significantPixels": 357,
+            "meanRgbError": 10.5306713,
+            "maxChannelError": 26
+          },
+          "lastMove": {
+            "pixels": 1681,
+            "changedPixels": 1623,
+            "significantPixels": 683,
+            "meanRgbError": 6.26135237,
+            "maxChannelError": 45
+          }
+        },
+        {
+          "progress": 1e-8,
+          "whole": {
+            "pixels": 129600,
+            "changedPixels": 90154,
+            "significantPixels": 50792,
+            "meanRgbError": 7.39639918,
+            "maxChannelError": 91
+          },
+          "dots": {
+            "pixels": 692,
+            "changedPixels": 679,
+            "significantPixels": 575,
+            "meanRgbError": 36.45520231,
+            "maxChannelError": 91
+          },
+          "material": {
+            "pixels": 576,
+            "changedPixels": 576,
+            "significantPixels": 357,
+            "meanRgbError": 10.5306713,
+            "maxChannelError": 26
+          },
+          "lastMove": {
+            "pixels": 1681,
+            "changedPixels": 1623,
+            "significantPixels": 683,
+            "meanRgbError": 6.26135237,
+            "maxChannelError": 45
+          }
+        },
+        {
+          "progress": 0.001,
+          "whole": {
+            "pixels": 129600,
+            "changedPixels": 90264,
+            "significantPixels": 50561,
+            "meanRgbError": 7.4049177,
+            "maxChannelError": 89
+          },
+          "dots": {
+            "pixels": 692,
+            "changedPixels": 679,
+            "significantPixels": 571,
+            "meanRgbError": 36.53805395,
+            "maxChannelError": 89
+          },
+          "material": {
+            "pixels": 576,
+            "changedPixels": 576,
+            "significantPixels": 357,
+            "meanRgbError": 10.5306713,
+            "maxChannelError": 26
+          },
+          "lastMove": {
+            "pixels": 1681,
+            "changedPixels": 1623,
+            "significantPixels": 683,
+            "meanRgbError": 6.26531826,
+            "maxChannelError": 45
+          }
+        },
+        {
+          "progress": 0.01,
+          "whole": {
+            "pixels": 129600,
+            "changedPixels": 93522,
+            "significantPixels": 50484,
+            "meanRgbError": 7.49785237,
+            "maxChannelError": 92
+          },
+          "dots": {
+            "pixels": 692,
+            "changedPixels": 679,
+            "significantPixels": 563,
+            "meanRgbError": 37.03612717,
+            "maxChannelError": 92
+          },
+          "material": {
+            "pixels": 576,
+            "changedPixels": 576,
+            "significantPixels": 357,
+            "meanRgbError": 10.5306713,
+            "maxChannelError": 26
+          },
+          "lastMove": {
+            "pixels": 1681,
+            "changedPixels": 1619,
+            "significantPixels": 698,
+            "meanRgbError": 6.29149316,
+            "maxChannelError": 45
+          }
+        }
+      ],
+      "reverse": [
+        {
+          "progress": 0.01,
+          "versusForward": {
+            "pixels": 129600,
+            "changedPixels": 0,
+            "significantPixels": 0,
+            "meanRgbError": 0,
+            "maxChannelError": 0
+          }
+        },
+        {
+          "progress": 0.001,
+          "versusForward": {
+            "pixels": 129600,
+            "changedPixels": 0,
+            "significantPixels": 0,
+            "meanRgbError": 0,
+            "maxChannelError": 0
+          }
+        },
+        {
+          "progress": 1e-8,
+          "versusForward": {
+            "pixels": 129600,
+            "changedPixels": 0,
+            "significantPixels": 0,
+            "meanRgbError": 0,
+            "maxChannelError": 0
+          }
+        },
+        {
+          "progress": 0,
+          "versusForward": {
+            "pixels": 129600,
+            "changedPixels": 0,
+            "significantPixels": 0,
+            "meanRgbError": 0,
+            "maxChannelError": 0
+          }
+        }
+      ],
+      "final2d": {
+        "pixels": 129600,
+        "changedPixels": 0,
+        "significantPixels": 0,
+        "meanRgbError": 0,
+        "maxChannelError": 0
+      },
+      "referenceSha256": "2917f42e299099dab5fd925efc5152e3256e679f7c08b8a61eb44de9fa1d1623"
+    },
+    {
+      "revision": "before",
+      "type": "torus",
+      "occupied": false,
+      "forward": [
+        {
+          "progress": 0,
+          "whole": {
+            "pixels": 129600,
+            "changedPixels": 110762,
+            "significantPixels": 67875,
+            "meanRgbError": 9.80740998,
+            "maxChannelError": 91
+          },
+          "dots": {
+            "pixels": 841,
+            "changedPixels": 840,
+            "significantPixels": 704,
+            "meanRgbError": 36.09433214,
+            "maxChannelError": 91
+          },
+          "material": {
+            "pixels": 576,
+            "changedPixels": 576,
+            "significantPixels": 357,
+            "meanRgbError": 10.5306713,
+            "maxChannelError": 26
+          },
+          "lastMove": {
+            "pixels": 0,
+            "changedPixels": 0,
+            "significantPixels": 0,
+            "meanRgbError": 0,
+            "maxChannelError": 0
+          }
+        },
+        {
+          "progress": 1e-8,
+          "whole": {
+            "pixels": 129600,
+            "changedPixels": 110762,
+            "significantPixels": 67875,
+            "meanRgbError": 9.80740998,
+            "maxChannelError": 91
+          },
+          "dots": {
+            "pixels": 841,
+            "changedPixels": 840,
+            "significantPixels": 704,
+            "meanRgbError": 36.09433214,
+            "maxChannelError": 91
+          },
+          "material": {
+            "pixels": 576,
+            "changedPixels": 576,
+            "significantPixels": 357,
+            "meanRgbError": 10.5306713,
+            "maxChannelError": 26
+          },
+          "lastMove": {
+            "pixels": 0,
+            "changedPixels": 0,
+            "significantPixels": 0,
+            "meanRgbError": 0,
+            "maxChannelError": 0
+          }
+        },
+        {
+          "progress": 0.001,
+          "whole": {
+            "pixels": 129600,
+            "changedPixels": 110761,
+            "significantPixels": 67869,
+            "meanRgbError": 9.80695473,
+            "maxChannelError": 89
+          },
+          "dots": {
+            "pixels": 841,
+            "changedPixels": 840,
+            "significantPixels": 704,
+            "meanRgbError": 36.09829568,
+            "maxChannelError": 89
+          },
+          "material": {
+            "pixels": 576,
+            "changedPixels": 576,
+            "significantPixels": 357,
+            "meanRgbError": 10.5306713,
+            "maxChannelError": 26
+          },
+          "lastMove": {
+            "pixels": 0,
+            "changedPixels": 0,
+            "significantPixels": 0,
+            "meanRgbError": 0,
+            "maxChannelError": 0
+          }
+        },
+        {
+          "progress": 0.01,
+          "whole": {
+            "pixels": 129600,
+            "changedPixels": 110785,
+            "significantPixels": 67641,
+            "meanRgbError": 9.8534285,
+            "maxChannelError": 92
+          },
+          "dots": {
+            "pixels": 841,
+            "changedPixels": 840,
+            "significantPixels": 697,
+            "meanRgbError": 36.86405073,
+            "maxChannelError": 92
+          },
+          "material": {
+            "pixels": 576,
+            "changedPixels": 576,
+            "significantPixels": 357,
+            "meanRgbError": 10.5306713,
+            "maxChannelError": 26
+          },
+          "lastMove": {
+            "pixels": 0,
+            "changedPixels": 0,
+            "significantPixels": 0,
+            "meanRgbError": 0,
+            "maxChannelError": 0
+          }
+        }
+      ],
+      "reverse": [
+        {
+          "progress": 0.01,
+          "versusForward": {
+            "pixels": 129600,
+            "changedPixels": 0,
+            "significantPixels": 0,
+            "meanRgbError": 0,
+            "maxChannelError": 0
+          }
+        },
+        {
+          "progress": 0.001,
+          "versusForward": {
+            "pixels": 129600,
+            "changedPixels": 0,
+            "significantPixels": 0,
+            "meanRgbError": 0,
+            "maxChannelError": 0
+          }
+        },
+        {
+          "progress": 1e-8,
+          "versusForward": {
+            "pixels": 129600,
+            "changedPixels": 0,
+            "significantPixels": 0,
+            "meanRgbError": 0,
+            "maxChannelError": 0
+          }
+        },
+        {
+          "progress": 0,
+          "versusForward": {
+            "pixels": 129600,
+            "changedPixels": 0,
+            "significantPixels": 0,
+            "meanRgbError": 0,
+            "maxChannelError": 0
+          }
+        }
+      ],
+      "final2d": {
+        "pixels": 129600,
+        "changedPixels": 0,
+        "significantPixels": 0,
+        "meanRgbError": 0,
+        "maxChannelError": 0
+      },
+      "referenceSha256": "3117e4f6b1f4839b7b30a04d2f210eae038f26ad9c0db1536539353a214fd7fb"
+    },
+    {
+      "revision": "before",
+      "type": "torus",
+      "occupied": true,
+      "forward": [
+        {
+          "progress": 0,
+          "whole": {
+            "pixels": 129600,
+            "changedPixels": 104927,
+            "significantPixels": 62460,
+            "meanRgbError": 9.13592593,
+            "maxChannelError": 91
+          },
+          "dots": {
+            "pixels": 692,
+            "changedPixels": 691,
+            "significantPixels": 587,
+            "meanRgbError": 36.56984586,
+            "maxChannelError": 91
+          },
+          "material": {
+            "pixels": 576,
+            "changedPixels": 576,
+            "significantPixels": 357,
+            "meanRgbError": 10.5306713,
+            "maxChannelError": 26
+          },
+          "lastMove": {
+            "pixels": 1681,
+            "changedPixels": 1623,
+            "significantPixels": 683,
+            "meanRgbError": 6.26135237,
+            "maxChannelError": 45
+          }
+        },
+        {
+          "progress": 1e-8,
+          "whole": {
+            "pixels": 129600,
+            "changedPixels": 104927,
+            "significantPixels": 62460,
+            "meanRgbError": 9.13592593,
+            "maxChannelError": 91
+          },
+          "dots": {
+            "pixels": 692,
+            "changedPixels": 691,
+            "significantPixels": 587,
+            "meanRgbError": 36.56984586,
+            "maxChannelError": 91
+          },
+          "material": {
+            "pixels": 576,
+            "changedPixels": 576,
+            "significantPixels": 357,
+            "meanRgbError": 10.5306713,
+            "maxChannelError": 26
+          },
+          "lastMove": {
+            "pixels": 1681,
+            "changedPixels": 1623,
+            "significantPixels": 683,
+            "meanRgbError": 6.26135237,
+            "maxChannelError": 45
+          }
+        },
+        {
+          "progress": 0.001,
+          "whole": {
+            "pixels": 129600,
+            "changedPixels": 105038,
+            "significantPixels": 62455,
+            "meanRgbError": 9.14353395,
+            "maxChannelError": 89
+          },
+          "dots": {
+            "pixels": 692,
+            "changedPixels": 691,
+            "significantPixels": 587,
+            "meanRgbError": 36.71676301,
+            "maxChannelError": 89
+          },
+          "material": {
+            "pixels": 576,
+            "changedPixels": 576,
+            "significantPixels": 357,
+            "meanRgbError": 10.5306713,
+            "maxChannelError": 26
+          },
+          "lastMove": {
+            "pixels": 1681,
+            "changedPixels": 1623,
+            "significantPixels": 683,
+            "meanRgbError": 6.26531826,
+            "maxChannelError": 45
+          }
+        },
+        {
+          "progress": 0.01,
+          "whole": {
+            "pixels": 129600,
+            "changedPixels": 108252,
+            "significantPixels": 62505,
+            "meanRgbError": 9.23174897,
+            "maxChannelError": 92
+          },
+          "dots": {
+            "pixels": 692,
+            "changedPixels": 691,
+            "significantPixels": 580,
+            "meanRgbError": 37.38102119,
+            "maxChannelError": 92
+          },
+          "material": {
+            "pixels": 576,
+            "changedPixels": 576,
+            "significantPixels": 357,
+            "meanRgbError": 10.5306713,
+            "maxChannelError": 26
+          },
+          "lastMove": {
+            "pixels": 1681,
+            "changedPixels": 1619,
+            "significantPixels": 698,
+            "meanRgbError": 6.29169145,
+            "maxChannelError": 45
+          }
+        }
+      ],
+      "reverse": [
+        {
+          "progress": 0.01,
+          "versusForward": {
+            "pixels": 129600,
+            "changedPixels": 0,
+            "significantPixels": 0,
+            "meanRgbError": 0,
+            "maxChannelError": 0
+          }
+        },
+        {
+          "progress": 0.001,
+          "versusForward": {
+            "pixels": 129600,
+            "changedPixels": 0,
+            "significantPixels": 0,
+            "meanRgbError": 0,
+            "maxChannelError": 0
+          }
+        },
+        {
+          "progress": 1e-8,
+          "versusForward": {
+            "pixels": 129600,
+            "changedPixels": 0,
+            "significantPixels": 0,
+            "meanRgbError": 0,
+            "maxChannelError": 0
+          }
+        },
+        {
+          "progress": 0,
+          "versusForward": {
+            "pixels": 129600,
+            "changedPixels": 0,
+            "significantPixels": 0,
+            "meanRgbError": 0,
+            "maxChannelError": 0
+          }
+        }
+      ],
+      "final2d": {
+        "pixels": 129600,
+        "changedPixels": 0,
+        "significantPixels": 0,
+        "meanRgbError": 0,
+        "maxChannelError": 0
+      },
+      "referenceSha256": "15cbc079a0c229f6aef97772fbc21f438847f7b29c4dc90993f3cb8944803470"
+    },
+    {
+      "revision": "before",
+      "type": "mobius",
+      "occupied": false,
+      "forward": [
+        {
+          "progress": 0,
+          "whole": {
+            "pixels": 129600,
+            "changedPixels": 91874,
+            "significantPixels": 53413,
+            "meanRgbError": 7.73852366,
+            "maxChannelError": 91
+          },
+          "dots": {
+            "pixels": 841,
+            "changedPixels": 822,
+            "significantPixels": 685,
+            "meanRgbError": 35.92548553,
+            "maxChannelError": 91
+          },
+          "material": {
+            "pixels": 576,
+            "changedPixels": 576,
+            "significantPixels": 357,
+            "meanRgbError": 10.5306713,
+            "maxChannelError": 26
+          },
+          "lastMove": {
+            "pixels": 0,
+            "changedPixels": 0,
+            "significantPixels": 0,
+            "meanRgbError": 0,
+            "maxChannelError": 0
+          }
+        },
+        {
+          "progress": 1e-8,
+          "whole": {
+            "pixels": 129600,
+            "changedPixels": 91874,
+            "significantPixels": 53413,
+            "meanRgbError": 7.73852366,
+            "maxChannelError": 91
+          },
+          "dots": {
+            "pixels": 841,
+            "changedPixels": 822,
+            "significantPixels": 685,
+            "meanRgbError": 35.92548553,
+            "maxChannelError": 91
+          },
+          "material": {
+            "pixels": 576,
+            "changedPixels": 576,
+            "significantPixels": 357,
+            "meanRgbError": 10.5306713,
+            "maxChannelError": 26
+          },
+          "lastMove": {
+            "pixels": 0,
+            "changedPixels": 0,
+            "significantPixels": 0,
+            "meanRgbError": 0,
+            "maxChannelError": 0
+          }
+        },
+        {
+          "progress": 0.001,
+          "whole": {
+            "pixels": 129600,
+            "changedPixels": 91874,
+            "significantPixels": 53115,
+            "meanRgbError": 7.73879372,
+            "maxChannelError": 89
+          },
+          "dots": {
+            "pixels": 841,
+            "changedPixels": 822,
+            "significantPixels": 679,
+            "meanRgbError": 35.85334919,
+            "maxChannelError": 89
+          },
+          "material": {
+            "pixels": 576,
+            "changedPixels": 576,
+            "significantPixels": 357,
+            "meanRgbError": 10.5306713,
+            "maxChannelError": 26
+          },
+          "lastMove": {
+            "pixels": 0,
+            "changedPixels": 0,
+            "significantPixels": 0,
+            "meanRgbError": 0,
+            "maxChannelError": 0
+          }
+        },
+        {
+          "progress": 0.01,
+          "whole": {
+            "pixels": 129600,
+            "changedPixels": 92051,
+            "significantPixels": 52882,
+            "meanRgbError": 7.78930298,
+            "maxChannelError": 92
+          },
+          "dots": {
+            "pixels": 841,
+            "changedPixels": 822,
+            "significantPixels": 676,
+            "meanRgbError": 36.38406659,
+            "maxChannelError": 92
+          },
+          "material": {
+            "pixels": 576,
+            "changedPixels": 576,
+            "significantPixels": 357,
+            "meanRgbError": 10.5306713,
+            "maxChannelError": 26
+          },
+          "lastMove": {
+            "pixels": 0,
+            "changedPixels": 0,
+            "significantPixels": 0,
+            "meanRgbError": 0,
+            "maxChannelError": 0
+          }
+        }
+      ],
+      "reverse": [
+        {
+          "progress": 0.01,
+          "versusForward": {
+            "pixels": 129600,
+            "changedPixels": 0,
+            "significantPixels": 0,
+            "meanRgbError": 0,
+            "maxChannelError": 0
+          }
+        },
+        {
+          "progress": 0.001,
+          "versusForward": {
+            "pixels": 129600,
+            "changedPixels": 0,
+            "significantPixels": 0,
+            "meanRgbError": 0,
+            "maxChannelError": 0
+          }
+        },
+        {
+          "progress": 1e-8,
+          "versusForward": {
+            "pixels": 129600,
+            "changedPixels": 0,
+            "significantPixels": 0,
+            "meanRgbError": 0,
+            "maxChannelError": 0
+          }
+        },
+        {
+          "progress": 0,
+          "versusForward": {
+            "pixels": 129600,
+            "changedPixels": 0,
+            "significantPixels": 0,
+            "meanRgbError": 0,
+            "maxChannelError": 0
+          }
+        }
+      ],
+      "final2d": {
+        "pixels": 129600,
+        "changedPixels": 0,
+        "significantPixels": 0,
+        "meanRgbError": 0,
+        "maxChannelError": 0
+      },
+      "referenceSha256": "3fd064df841965836e6aa4623142141b3457e4d3665f88d085e379ac4255030e"
+    },
+    {
+      "revision": "before",
+      "type": "mobius",
+      "occupied": true,
+      "forward": [
+        {
+          "progress": 0,
+          "whole": {
+            "pixels": 129600,
+            "changedPixels": 89913,
+            "significantPixels": 49886,
+            "meanRgbError": 7.31947788,
+            "maxChannelError": 91
+          },
+          "dots": {
+            "pixels": 692,
+            "changedPixels": 679,
+            "significantPixels": 575,
+            "meanRgbError": 36.45520231,
+            "maxChannelError": 91
+          },
+          "material": {
+            "pixels": 576,
+            "changedPixels": 576,
+            "significantPixels": 357,
+            "meanRgbError": 10.5306713,
+            "maxChannelError": 26
+          },
+          "lastMove": {
+            "pixels": 1681,
+            "changedPixels": 1623,
+            "significantPixels": 683,
+            "meanRgbError": 6.26135237,
+            "maxChannelError": 45
+          }
+        },
+        {
+          "progress": 1e-8,
+          "whole": {
+            "pixels": 129600,
+            "changedPixels": 89913,
+            "significantPixels": 49887,
+            "meanRgbError": 7.31949331,
+            "maxChannelError": 91
+          },
+          "dots": {
+            "pixels": 692,
+            "changedPixels": 679,
+            "significantPixels": 575,
+            "meanRgbError": 36.45520231,
+            "maxChannelError": 91
+          },
+          "material": {
+            "pixels": 576,
+            "changedPixels": 576,
+            "significantPixels": 357,
+            "meanRgbError": 10.5306713,
+            "maxChannelError": 26
+          },
+          "lastMove": {
+            "pixels": 1681,
+            "changedPixels": 1623,
+            "significantPixels": 684,
+            "meanRgbError": 6.26214555,
+            "maxChannelError": 45
+          }
+        },
+        {
+          "progress": 0.001,
+          "whole": {
+            "pixels": 129600,
+            "changedPixels": 90021,
+            "significantPixels": 49658,
+            "meanRgbError": 7.32771091,
+            "maxChannelError": 89
+          },
+          "dots": {
+            "pixels": 692,
+            "changedPixels": 679,
+            "significantPixels": 571,
+            "meanRgbError": 36.53805395,
+            "maxChannelError": 89
+          },
+          "material": {
+            "pixels": 576,
+            "changedPixels": 576,
+            "significantPixels": 357,
+            "meanRgbError": 10.5306713,
+            "maxChannelError": 26
+          },
+          "lastMove": {
+            "pixels": 1681,
+            "changedPixels": 1623,
+            "significantPixels": 684,
+            "meanRgbError": 6.26611144,
+            "maxChannelError": 45
+          }
+        },
+        {
+          "progress": 0.01,
+          "whole": {
+            "pixels": 129600,
+            "changedPixels": 93112,
+            "significantPixels": 49696,
+            "meanRgbError": 7.42589763,
+            "maxChannelError": 92
+          },
+          "dots": {
+            "pixels": 692,
+            "changedPixels": 679,
+            "significantPixels": 567,
+            "meanRgbError": 37.022158,
+            "maxChannelError": 92
+          },
+          "material": {
+            "pixels": 576,
+            "changedPixels": 576,
+            "significantPixels": 357,
+            "meanRgbError": 10.5306713,
+            "maxChannelError": 26
+          },
+          "lastMove": {
+            "pixels": 1681,
+            "changedPixels": 1620,
+            "significantPixels": 695,
+            "meanRgbError": 6.2899068,
+            "maxChannelError": 45
+          }
+        }
+      ],
+      "reverse": [
+        {
+          "progress": 0.01,
+          "versusForward": {
+            "pixels": 129600,
+            "changedPixels": 0,
+            "significantPixels": 0,
+            "meanRgbError": 0,
+            "maxChannelError": 0
+          }
+        },
+        {
+          "progress": 0.001,
+          "versusForward": {
+            "pixels": 129600,
+            "changedPixels": 0,
+            "significantPixels": 0,
+            "meanRgbError": 0,
+            "maxChannelError": 0
+          }
+        },
+        {
+          "progress": 1e-8,
+          "versusForward": {
+            "pixels": 129600,
+            "changedPixels": 0,
+            "significantPixels": 0,
+            "meanRgbError": 0,
+            "maxChannelError": 0
+          }
+        },
+        {
+          "progress": 0,
+          "versusForward": {
+            "pixels": 129600,
+            "changedPixels": 0,
+            "significantPixels": 0,
+            "meanRgbError": 0,
+            "maxChannelError": 0
+          }
+        }
+      ],
+      "final2d": {
+        "pixels": 129600,
+        "changedPixels": 0,
+        "significantPixels": 0,
+        "meanRgbError": 0,
+        "maxChannelError": 0
+      },
+      "referenceSha256": "51d04fcdf6303fcc88b592b1cb03891a5291adb6cec9dc20368aa71b4c81a041"
+    },
+    {
+      "revision": "before",
+      "type": "klein",
+      "occupied": false,
+      "forward": [
+        {
+          "progress": 0,
+          "whole": {
+            "pixels": 129600,
+            "changedPixels": 110497,
+            "significantPixels": 66771,
+            "meanRgbError": 9.7126749,
+            "maxChannelError": 91
+          },
+          "dots": {
+            "pixels": 841,
+            "changedPixels": 840,
+            "significantPixels": 704,
+            "meanRgbError": 36.09433214,
+            "maxChannelError": 91
+          },
+          "material": {
+            "pixels": 576,
+            "changedPixels": 576,
+            "significantPixels": 357,
+            "meanRgbError": 10.5306713,
+            "maxChannelError": 26
+          },
+          "lastMove": {
+            "pixels": 0,
+            "changedPixels": 0,
+            "significantPixels": 0,
+            "meanRgbError": 0,
+            "maxChannelError": 0
+          }
+        },
+        {
+          "progress": 1e-8,
+          "whole": {
+            "pixels": 129600,
+            "changedPixels": 110497,
+            "significantPixels": 66771,
+            "meanRgbError": 9.7126749,
+            "maxChannelError": 91
+          },
+          "dots": {
+            "pixels": 841,
+            "changedPixels": 840,
+            "significantPixels": 704,
+            "meanRgbError": 36.09433214,
+            "maxChannelError": 91
+          },
+          "material": {
+            "pixels": 576,
+            "changedPixels": 576,
+            "significantPixels": 357,
+            "meanRgbError": 10.5306713,
+            "maxChannelError": 26
+          },
+          "lastMove": {
+            "pixels": 0,
+            "changedPixels": 0,
+            "significantPixels": 0,
+            "meanRgbError": 0,
+            "maxChannelError": 0
+          }
+        },
+        {
+          "progress": 0.001,
+          "whole": {
+            "pixels": 129600,
+            "changedPixels": 110496,
+            "significantPixels": 66775,
+            "meanRgbError": 9.71456533,
+            "maxChannelError": 90
+          },
+          "dots": {
+            "pixels": 841,
+            "changedPixels": 840,
+            "significantPixels": 706,
+            "meanRgbError": 36.14030916,
+            "maxChannelError": 90
+          },
+          "material": {
+            "pixels": 576,
+            "changedPixels": 576,
+            "significantPixels": 357,
+            "meanRgbError": 10.5306713,
+            "maxChannelError": 26
+          },
+          "lastMove": {
+            "pixels": 0,
+            "changedPixels": 0,
+            "significantPixels": 0,
+            "meanRgbError": 0,
+            "maxChannelError": 0
+          }
+        },
+        {
+          "progress": 0.01,
+          "whole": {
+            "pixels": 129600,
+            "changedPixels": 110790,
+            "significantPixels": 66193,
+            "meanRgbError": 9.92662551,
+            "maxChannelError": 104
+          },
+          "dots": {
+            "pixels": 841,
+            "changedPixels": 839,
+            "significantPixels": 689,
+            "meanRgbError": 36.81767737,
+            "maxChannelError": 104
+          },
+          "material": {
+            "pixels": 576,
+            "changedPixels": 576,
+            "significantPixels": 357,
+            "meanRgbError": 10.5306713,
+            "maxChannelError": 26
+          },
+          "lastMove": {
+            "pixels": 0,
+            "changedPixels": 0,
+            "significantPixels": 0,
+            "meanRgbError": 0,
+            "maxChannelError": 0
+          }
+        }
+      ],
+      "reverse": [
+        {
+          "progress": 0.01,
+          "versusForward": {
+            "pixels": 129600,
+            "changedPixels": 0,
+            "significantPixels": 0,
+            "meanRgbError": 0,
+            "maxChannelError": 0
+          }
+        },
+        {
+          "progress": 0.001,
+          "versusForward": {
+            "pixels": 129600,
+            "changedPixels": 0,
+            "significantPixels": 0,
+            "meanRgbError": 0,
+            "maxChannelError": 0
+          }
+        },
+        {
+          "progress": 1e-8,
+          "versusForward": {
+            "pixels": 129600,
+            "changedPixels": 0,
+            "significantPixels": 0,
+            "meanRgbError": 0,
+            "maxChannelError": 0
+          }
+        },
+        {
+          "progress": 0,
+          "versusForward": {
+            "pixels": 129600,
+            "changedPixels": 0,
+            "significantPixels": 0,
+            "meanRgbError": 0,
+            "maxChannelError": 0
+          }
+        }
+      ],
+      "final2d": {
+        "pixels": 129600,
+        "changedPixels": 0,
+        "significantPixels": 0,
+        "meanRgbError": 0,
+        "maxChannelError": 0
+      },
+      "referenceSha256": "92bd2f35919efca3571086fdec770dce75c7ad805c8d9b071ff2e044201448ae"
+    },
+    {
+      "revision": "before",
+      "type": "klein",
+      "occupied": true,
+      "forward": [
+        {
+          "progress": 0,
+          "whole": {
+            "pixels": 129600,
+            "changedPixels": 104662,
+            "significantPixels": 61335,
+            "meanRgbError": 9.0401929,
+            "maxChannelError": 91
+          },
+          "dots": {
+            "pixels": 692,
+            "changedPixels": 691,
+            "significantPixels": 587,
+            "meanRgbError": 36.56984586,
+            "maxChannelError": 91
+          },
+          "material": {
+            "pixels": 576,
+            "changedPixels": 576,
+            "significantPixels": 357,
+            "meanRgbError": 10.5306713,
+            "maxChannelError": 26
+          },
+          "lastMove": {
+            "pixels": 1681,
+            "changedPixels": 1623,
+            "significantPixels": 683,
+            "meanRgbError": 6.26135237,
+            "maxChannelError": 45
+          }
+        },
+        {
+          "progress": 1e-8,
+          "whole": {
+            "pixels": 129600,
+            "changedPixels": 104662,
+            "significantPixels": 61335,
+            "meanRgbError": 9.0401929,
+            "maxChannelError": 91
+          },
+          "dots": {
+            "pixels": 692,
+            "changedPixels": 691,
+            "significantPixels": 587,
+            "meanRgbError": 36.56984586,
+            "maxChannelError": 91
+          },
+          "material": {
+            "pixels": 576,
+            "changedPixels": 576,
+            "significantPixels": 357,
+            "meanRgbError": 10.5306713,
+            "maxChannelError": 26
+          },
+          "lastMove": {
+            "pixels": 1681,
+            "changedPixels": 1623,
+            "significantPixels": 683,
+            "meanRgbError": 6.26135237,
+            "maxChannelError": 45
+          }
+        },
+        {
+          "progress": 0.001,
+          "whole": {
+            "pixels": 129600,
+            "changedPixels": 104801,
+            "significantPixels": 61339,
+            "meanRgbError": 9.04976337,
+            "maxChannelError": 90
+          },
+          "dots": {
+            "pixels": 692,
+            "changedPixels": 691,
+            "significantPixels": 588,
+            "meanRgbError": 36.75626204,
+            "maxChannelError": 90
+          },
+          "material": {
+            "pixels": 576,
+            "changedPixels": 576,
+            "significantPixels": 357,
+            "meanRgbError": 10.5306713,
+            "maxChannelError": 26
+          },
+          "lastMove": {
+            "pixels": 1681,
+            "changedPixels": 1624,
+            "significantPixels": 683,
+            "meanRgbError": 6.26551656,
+            "maxChannelError": 45
+          }
+        },
+        {
+          "progress": 0.01,
+          "whole": {
+            "pixels": 129600,
+            "changedPixels": 108880,
+            "significantPixels": 61427,
+            "meanRgbError": 9.34194702,
+            "maxChannelError": 115
+          },
+          "dots": {
+            "pixels": 692,
+            "changedPixels": 690,
+            "significantPixels": 574,
+            "meanRgbError": 37.22254335,
+            "maxChannelError": 104
+          },
+          "material": {
+            "pixels": 576,
+            "changedPixels": 576,
+            "significantPixels": 357,
+            "meanRgbError": 10.5306713,
+            "maxChannelError": 26
+          },
+          "lastMove": {
+            "pixels": 1681,
+            "changedPixels": 1617,
+            "significantPixels": 701,
+            "meanRgbError": 6.28653579,
+            "maxChannelError": 45
+          }
+        }
+      ],
+      "reverse": [
+        {
+          "progress": 0.01,
+          "versusForward": {
+            "pixels": 129600,
+            "changedPixels": 0,
+            "significantPixels": 0,
+            "meanRgbError": 0,
+            "maxChannelError": 0
+          }
+        },
+        {
+          "progress": 0.001,
+          "versusForward": {
+            "pixels": 129600,
+            "changedPixels": 0,
+            "significantPixels": 0,
+            "meanRgbError": 0,
+            "maxChannelError": 0
+          }
+        },
+        {
+          "progress": 1e-8,
+          "versusForward": {
+            "pixels": 129600,
+            "changedPixels": 0,
+            "significantPixels": 0,
+            "meanRgbError": 0,
+            "maxChannelError": 0
+          }
+        },
+        {
+          "progress": 0,
+          "versusForward": {
+            "pixels": 129600,
+            "changedPixels": 0,
+            "significantPixels": 0,
+            "meanRgbError": 0,
+            "maxChannelError": 0
+          }
+        }
+      ],
+      "final2d": {
+        "pixels": 129600,
+        "changedPixels": 0,
+        "significantPixels": 0,
+        "meanRgbError": 0,
+        "maxChannelError": 0
+      },
+      "referenceSha256": "6a86e3e9030c64c5bd77108d72fb2230f8e0cccc9fbf27e63fde69b2b6735693"
+    },
+    {
+      "revision": "before",
+      "type": "projective",
+      "occupied": false,
+      "forward": [
+        {
+          "progress": 0,
+          "whole": {
+            "pixels": 129600,
+            "changedPixels": 110110,
+            "significantPixels": 66494,
+            "meanRgbError": 9.66668467,
+            "maxChannelError": 91
+          },
+          "dots": {
+            "pixels": 841,
+            "changedPixels": 840,
+            "significantPixels": 704,
+            "meanRgbError": 36.09433214,
+            "maxChannelError": 91
+          },
+          "material": {
+            "pixels": 576,
+            "changedPixels": 576,
+            "significantPixels": 357,
+            "meanRgbError": 10.5306713,
+            "maxChannelError": 26
+          },
+          "lastMove": {
+            "pixels": 0,
+            "changedPixels": 0,
+            "significantPixels": 0,
+            "meanRgbError": 0,
+            "maxChannelError": 0
+          }
+        },
+        {
+          "progress": 1e-8,
+          "whole": {
+            "pixels": 129600,
+            "changedPixels": 110110,
+            "significantPixels": 66494,
+            "meanRgbError": 9.66668467,
+            "maxChannelError": 91
+          },
+          "dots": {
+            "pixels": 841,
+            "changedPixels": 840,
+            "significantPixels": 704,
+            "meanRgbError": 36.09433214,
+            "maxChannelError": 91
+          },
+          "material": {
+            "pixels": 576,
+            "changedPixels": 576,
+            "significantPixels": 357,
+            "meanRgbError": 10.5306713,
+            "maxChannelError": 26
+          },
+          "lastMove": {
+            "pixels": 0,
+            "changedPixels": 0,
+            "significantPixels": 0,
+            "meanRgbError": 0,
+            "maxChannelError": 0
+          }
+        },
+        {
+          "progress": 0.001,
+          "whole": {
+            "pixels": 129600,
+            "changedPixels": 110109,
+            "significantPixels": 66497,
+            "meanRgbError": 9.66853138,
+            "maxChannelError": 90
+          },
+          "dots": {
+            "pixels": 841,
+            "changedPixels": 840,
+            "significantPixels": 706,
+            "meanRgbError": 36.14030916,
+            "maxChannelError": 90
+          },
+          "material": {
+            "pixels": 576,
+            "changedPixels": 576,
+            "significantPixels": 357,
+            "meanRgbError": 10.5306713,
+            "maxChannelError": 26
+          },
+          "lastMove": {
+            "pixels": 0,
+            "changedPixels": 0,
+            "significantPixels": 0,
+            "meanRgbError": 0,
+            "maxChannelError": 0
+          }
+        },
+        {
+          "progress": 0.01,
+          "whole": {
+            "pixels": 129600,
+            "changedPixels": 110790,
+            "significantPixels": 66102,
+            "meanRgbError": 9.89850309,
+            "maxChannelError": 104
+          },
+          "dots": {
+            "pixels": 841,
+            "changedPixels": 839,
+            "significantPixels": 689,
+            "meanRgbError": 36.81767737,
+            "maxChannelError": 104
+          },
+          "material": {
+            "pixels": 576,
+            "changedPixels": 576,
+            "significantPixels": 357,
+            "meanRgbError": 10.5306713,
+            "maxChannelError": 26
+          },
+          "lastMove": {
+            "pixels": 0,
+            "changedPixels": 0,
+            "significantPixels": 0,
+            "meanRgbError": 0,
+            "maxChannelError": 0
+          }
+        }
+      ],
+      "reverse": [
+        {
+          "progress": 0.01,
+          "versusForward": {
+            "pixels": 129600,
+            "changedPixels": 0,
+            "significantPixels": 0,
+            "meanRgbError": 0,
+            "maxChannelError": 0
+          }
+        },
+        {
+          "progress": 0.001,
+          "versusForward": {
+            "pixels": 129600,
+            "changedPixels": 0,
+            "significantPixels": 0,
+            "meanRgbError": 0,
+            "maxChannelError": 0
+          }
+        },
+        {
+          "progress": 1e-8,
+          "versusForward": {
+            "pixels": 129600,
+            "changedPixels": 0,
+            "significantPixels": 0,
+            "meanRgbError": 0,
+            "maxChannelError": 0
+          }
+        },
+        {
+          "progress": 0,
+          "versusForward": {
+            "pixels": 129600,
+            "changedPixels": 0,
+            "significantPixels": 0,
+            "meanRgbError": 0,
+            "maxChannelError": 0
+          }
+        }
+      ],
+      "final2d": {
+        "pixels": 129600,
+        "changedPixels": 0,
+        "significantPixels": 0,
+        "meanRgbError": 0,
+        "maxChannelError": 0
+      },
+      "referenceSha256": "ba4f7c87cc981299424ba4d057ca7e123e503027e753b531328795db983ced73"
+    },
+    {
+      "revision": "before",
+      "type": "projective",
+      "occupied": true,
+      "forward": [
+        {
+          "progress": 0,
+          "whole": {
+            "pixels": 129600,
+            "changedPixels": 104286,
+            "significantPixels": 61006,
+            "meanRgbError": 8.9945216,
+            "maxChannelError": 91
+          },
+          "dots": {
+            "pixels": 692,
+            "changedPixels": 691,
+            "significantPixels": 587,
+            "meanRgbError": 36.56984586,
+            "maxChannelError": 91
+          },
+          "material": {
+            "pixels": 576,
+            "changedPixels": 576,
+            "significantPixels": 357,
+            "meanRgbError": 10.5306713,
+            "maxChannelError": 26
+          },
+          "lastMove": {
+            "pixels": 1681,
+            "changedPixels": 1623,
+            "significantPixels": 683,
+            "meanRgbError": 6.26135237,
+            "maxChannelError": 45
+          }
+        },
+        {
+          "progress": 1e-8,
+          "whole": {
+            "pixels": 129600,
+            "changedPixels": 104286,
+            "significantPixels": 61006,
+            "meanRgbError": 8.9945216,
+            "maxChannelError": 91
+          },
+          "dots": {
+            "pixels": 692,
+            "changedPixels": 691,
+            "significantPixels": 587,
+            "meanRgbError": 36.56984586,
+            "maxChannelError": 91
+          },
+          "material": {
+            "pixels": 576,
+            "changedPixels": 576,
+            "significantPixels": 357,
+            "meanRgbError": 10.5306713,
+            "maxChannelError": 26
+          },
+          "lastMove": {
+            "pixels": 1681,
+            "changedPixels": 1623,
+            "significantPixels": 683,
+            "meanRgbError": 6.26135237,
+            "maxChannelError": 45
+          }
+        },
+        {
+          "progress": 0.001,
+          "whole": {
+            "pixels": 129600,
+            "changedPixels": 104425,
+            "significantPixels": 61009,
+            "meanRgbError": 9.00404064,
+            "maxChannelError": 90
+          },
+          "dots": {
+            "pixels": 692,
+            "changedPixels": 691,
+            "significantPixels": 588,
+            "meanRgbError": 36.75626204,
+            "maxChannelError": 90
+          },
+          "material": {
+            "pixels": 576,
+            "changedPixels": 576,
+            "significantPixels": 357,
+            "meanRgbError": 10.5306713,
+            "maxChannelError": 26
+          },
+          "lastMove": {
+            "pixels": 1681,
+            "changedPixels": 1624,
+            "significantPixels": 683,
+            "meanRgbError": 6.26551656,
+            "maxChannelError": 45
+          }
+        },
+        {
+          "progress": 0.01,
+          "whole": {
+            "pixels": 129600,
+            "changedPixels": 108880,
+            "significantPixels": 61265,
+            "meanRgbError": 9.31424897,
+            "maxChannelError": 115
+          },
+          "dots": {
+            "pixels": 692,
+            "changedPixels": 690,
+            "significantPixels": 574,
+            "meanRgbError": 37.22254335,
+            "maxChannelError": 104
+          },
+          "material": {
+            "pixels": 576,
+            "changedPixels": 576,
+            "significantPixels": 357,
+            "meanRgbError": 10.5306713,
+            "maxChannelError": 26
+          },
+          "lastMove": {
+            "pixels": 1681,
+            "changedPixels": 1617,
+            "significantPixels": 701,
+            "meanRgbError": 6.28653579,
+            "maxChannelError": 45
+          }
+        }
+      ],
+      "reverse": [
+        {
+          "progress": 0.01,
+          "versusForward": {
+            "pixels": 129600,
+            "changedPixels": 0,
+            "significantPixels": 0,
+            "meanRgbError": 0,
+            "maxChannelError": 0
+          }
+        },
+        {
+          "progress": 0.001,
+          "versusForward": {
+            "pixels": 129600,
+            "changedPixels": 0,
+            "significantPixels": 0,
+            "meanRgbError": 0,
+            "maxChannelError": 0
+          }
+        },
+        {
+          "progress": 1e-8,
+          "versusForward": {
+            "pixels": 129600,
+            "changedPixels": 0,
+            "significantPixels": 0,
+            "meanRgbError": 0,
+            "maxChannelError": 0
+          }
+        },
+        {
+          "progress": 0,
+          "versusForward": {
+            "pixels": 129600,
+            "changedPixels": 0,
+            "significantPixels": 0,
+            "meanRgbError": 0,
+            "maxChannelError": 0
+          }
+        }
+      ],
+      "final2d": {
+        "pixels": 129600,
+        "changedPixels": 0,
+        "significantPixels": 0,
+        "meanRgbError": 0,
+        "maxChannelError": 0
+      },
+      "referenceSha256": "b1ca67b6339d5f5894df2a97a0c0fa9ea978f066a3f00f88e39e2da66b5dee92"
+    },
+    {
+      "revision": "before",
+      "type": "sphere",
+      "occupied": false,
+      "forward": [
+        {
+          "progress": 0,
+          "whole": {
+            "pixels": 129600,
+            "changedPixels": 110787,
+            "significantPixels": 68513,
+            "meanRgbError": 10.35208076,
+            "maxChannelError": 143
+          },
+          "dots": {
+            "pixels": 841,
+            "changedPixels": 841,
+            "significantPixels": 702,
+            "meanRgbError": 39.66547761,
+            "maxChannelError": 143
+          },
+          "material": {
+            "pixels": 576,
+            "changedPixels": 576,
+            "significantPixels": 357,
+            "meanRgbError": 10.5306713,
+            "maxChannelError": 26
+          },
+          "lastMove": {
+            "pixels": 0,
+            "changedPixels": 0,
+            "significantPixels": 0,
+            "meanRgbError": 0,
+            "maxChannelError": 0
+          }
+        },
+        {
+          "progress": 1e-8,
+          "whole": {
+            "pixels": 129600,
+            "changedPixels": 110787,
+            "significantPixels": 68513,
+            "meanRgbError": 10.35208076,
+            "maxChannelError": 143
+          },
+          "dots": {
+            "pixels": 841,
+            "changedPixels": 841,
+            "significantPixels": 702,
+            "meanRgbError": 39.66547761,
+            "maxChannelError": 143
+          },
+          "material": {
+            "pixels": 576,
+            "changedPixels": 576,
+            "significantPixels": 357,
+            "meanRgbError": 10.5306713,
+            "maxChannelError": 26
+          },
+          "lastMove": {
+            "pixels": 0,
+            "changedPixels": 0,
+            "significantPixels": 0,
+            "meanRgbError": 0,
+            "maxChannelError": 0
+          }
+        },
+        {
+          "progress": 0.001,
+          "whole": {
+            "pixels": 129600,
+            "changedPixels": 110786,
+            "significantPixels": 68523,
+            "meanRgbError": 10.38607767,
+            "maxChannelError": 143
+          },
+          "dots": {
+            "pixels": 841,
+            "changedPixels": 841,
+            "significantPixels": 703,
+            "meanRgbError": 40.11256441,
+            "maxChannelError": 143
+          },
+          "material": {
+            "pixels": 576,
+            "changedPixels": 576,
+            "significantPixels": 357,
+            "meanRgbError": 10.5306713,
+            "maxChannelError": 26
+          },
+          "lastMove": {
+            "pixels": 0,
+            "changedPixels": 0,
+            "significantPixels": 0,
+            "meanRgbError": 0,
+            "maxChannelError": 0
+          }
+        },
+        {
+          "progress": 0.01,
+          "whole": {
+            "pixels": 129600,
+            "changedPixels": 110812,
+            "significantPixels": 67954,
+            "meanRgbError": 10.34300926,
+            "maxChannelError": 143
+          },
+          "dots": {
+            "pixels": 841,
+            "changedPixels": 840,
+            "significantPixels": 701,
+            "meanRgbError": 40.90289338,
+            "maxChannelError": 143
+          },
+          "material": {
+            "pixels": 576,
+            "changedPixels": 576,
+            "significantPixels": 357,
+            "meanRgbError": 10.5306713,
+            "maxChannelError": 26
+          },
+          "lastMove": {
+            "pixels": 0,
+            "changedPixels": 0,
+            "significantPixels": 0,
+            "meanRgbError": 0,
+            "maxChannelError": 0
+          }
+        }
+      ],
+      "reverse": [
+        {
+          "progress": 0.01,
+          "versusForward": {
+            "pixels": 129600,
+            "changedPixels": 0,
+            "significantPixels": 0,
+            "meanRgbError": 0,
+            "maxChannelError": 0
+          }
+        },
+        {
+          "progress": 0.001,
+          "versusForward": {
+            "pixels": 129600,
+            "changedPixels": 0,
+            "significantPixels": 0,
+            "meanRgbError": 0,
+            "maxChannelError": 0
+          }
+        },
+        {
+          "progress": 1e-8,
+          "versusForward": {
+            "pixels": 129600,
+            "changedPixels": 0,
+            "significantPixels": 0,
+            "meanRgbError": 0,
+            "maxChannelError": 0
+          }
+        },
+        {
+          "progress": 0,
+          "versusForward": {
+            "pixels": 129600,
+            "changedPixels": 0,
+            "significantPixels": 0,
+            "meanRgbError": 0,
+            "maxChannelError": 0
+          }
+        }
+      ],
+      "final2d": {
+        "pixels": 129600,
+        "changedPixels": 0,
+        "significantPixels": 0,
+        "meanRgbError": 0,
+        "maxChannelError": 0
+      },
+      "referenceSha256": "010d8010146900f6ab00882621fdbe6941d8fc21e40ada297920170a1d55845a"
+    },
+    {
+      "revision": "before",
+      "type": "sphere",
+      "occupied": true,
+      "forward": [
+        {
+          "progress": 0,
+          "whole": {
+            "pixels": 129600,
+            "changedPixels": 104952,
+            "significantPixels": 63186,
+            "meanRgbError": 9.57394033,
+            "maxChannelError": 125
+          },
+          "dots": {
+            "pixels": 692,
+            "changedPixels": 692,
+            "significantPixels": 590,
+            "meanRgbError": 39.78805395,
+            "maxChannelError": 125
+          },
+          "material": {
+            "pixels": 576,
+            "changedPixels": 576,
+            "significantPixels": 357,
+            "meanRgbError": 10.5306713,
+            "maxChannelError": 26
+          },
+          "lastMove": {
+            "pixels": 1681,
+            "changedPixels": 1623,
+            "significantPixels": 683,
+            "meanRgbError": 6.26135237,
+            "maxChannelError": 45
+          }
+        },
+        {
+          "progress": 1e-8,
+          "whole": {
+            "pixels": 129600,
+            "changedPixels": 104952,
+            "significantPixels": 63186,
+            "meanRgbError": 9.57395062,
+            "maxChannelError": 125
+          },
+          "dots": {
+            "pixels": 692,
+            "changedPixels": 692,
+            "significantPixels": 590,
+            "meanRgbError": 39.78805395,
+            "maxChannelError": 125
+          },
+          "material": {
+            "pixels": 576,
+            "changedPixels": 576,
+            "significantPixels": 357,
+            "meanRgbError": 10.5306713,
+            "maxChannelError": 26
+          },
+          "lastMove": {
+            "pixels": 1681,
+            "changedPixels": 1623,
+            "significantPixels": 683,
+            "meanRgbError": 6.26135237,
+            "maxChannelError": 45
+          }
+        },
+        {
+          "progress": 0.001,
+          "whole": {
+            "pixels": 129600,
+            "changedPixels": 105061,
+            "significantPixels": 63201,
+            "meanRgbError": 9.60887088,
+            "maxChannelError": 128
+          },
+          "dots": {
+            "pixels": 692,
+            "changedPixels": 692,
+            "significantPixels": 591,
+            "meanRgbError": 40.33236994,
+            "maxChannelError": 128
+          },
+          "material": {
+            "pixels": 576,
+            "changedPixels": 576,
+            "significantPixels": 357,
+            "meanRgbError": 10.5306713,
+            "maxChannelError": 26
+          },
+          "lastMove": {
+            "pixels": 1681,
+            "changedPixels": 1623,
+            "significantPixels": 683,
+            "meanRgbError": 6.26531826,
+            "maxChannelError": 45
+          }
+        },
+        {
+          "progress": 0.01,
+          "whole": {
+            "pixels": 129600,
+            "changedPixels": 108153,
+            "significantPixels": 62918,
+            "meanRgbError": 9.61969136,
+            "maxChannelError": 129
+          },
+          "dots": {
+            "pixels": 692,
+            "changedPixels": 691,
+            "significantPixels": 584,
+            "meanRgbError": 41.01734104,
+            "maxChannelError": 129
+          },
+          "material": {
+            "pixels": 576,
+            "changedPixels": 576,
+            "significantPixels": 357,
+            "meanRgbError": 10.5306713,
+            "maxChannelError": 26
+          },
+          "lastMove": {
+            "pixels": 1681,
+            "changedPixels": 1619,
+            "significantPixels": 700,
+            "meanRgbError": 6.29129486,
+            "maxChannelError": 45
+          }
+        }
+      ],
+      "reverse": [
+        {
+          "progress": 0.01,
+          "versusForward": {
+            "pixels": 129600,
+            "changedPixels": 0,
+            "significantPixels": 0,
+            "meanRgbError": 0,
+            "maxChannelError": 0
+          }
+        },
+        {
+          "progress": 0.001,
+          "versusForward": {
+            "pixels": 129600,
+            "changedPixels": 0,
+            "significantPixels": 0,
+            "meanRgbError": 0,
+            "maxChannelError": 0
+          }
+        },
+        {
+          "progress": 1e-8,
+          "versusForward": {
+            "pixels": 129600,
+            "changedPixels": 0,
+            "significantPixels": 0,
+            "meanRgbError": 0,
+            "maxChannelError": 0
+          }
+        },
+        {
+          "progress": 0,
+          "versusForward": {
+            "pixels": 129600,
+            "changedPixels": 0,
+            "significantPixels": 0,
+            "meanRgbError": 0,
+            "maxChannelError": 0
+          }
+        }
+      ],
+      "final2d": {
+        "pixels": 129600,
+        "changedPixels": 0,
+        "significantPixels": 0,
+        "meanRgbError": 0,
+        "maxChannelError": 0
+      },
+      "referenceSha256": "9872cc5fb38da99b68d72f355275a9cf447fcd49ab96332b82dbfa63db1a5fdb"
+    },
+    {
+      "revision": "after",
+      "type": "cylinder",
+      "occupied": false,
+      "forward": [
+        {
+          "progress": 0,
+          "whole": {
+            "pixels": 129600,
+            "changedPixels": 0,
+            "significantPixels": 0,
+            "meanRgbError": 0,
+            "maxChannelError": 0
+          },
+          "dots": {
+            "pixels": 841,
+            "changedPixels": 0,
+            "significantPixels": 0,
+            "meanRgbError": 0,
+            "maxChannelError": 0
+          },
+          "material": {
+            "pixels": 576,
+            "changedPixels": 0,
+            "significantPixels": 0,
+            "meanRgbError": 0,
+            "maxChannelError": 0
+          },
+          "lastMove": {
+            "pixels": 0,
+            "changedPixels": 0,
+            "significantPixels": 0,
+            "meanRgbError": 0,
+            "maxChannelError": 0
+          }
+        },
+        {
+          "progress": 1e-8,
+          "whole": {
+            "pixels": 129600,
+            "changedPixels": 0,
+            "significantPixels": 0,
+            "meanRgbError": 0,
+            "maxChannelError": 0
+          },
+          "dots": {
+            "pixels": 841,
+            "changedPixels": 0,
+            "significantPixels": 0,
+            "meanRgbError": 0,
+            "maxChannelError": 0
+          },
+          "material": {
+            "pixels": 576,
+            "changedPixels": 0,
+            "significantPixels": 0,
+            "meanRgbError": 0,
+            "maxChannelError": 0
+          },
+          "lastMove": {
+            "pixels": 0,
+            "changedPixels": 0,
+            "significantPixels": 0,
+            "meanRgbError": 0,
+            "maxChannelError": 0
+          }
+        },
+        {
+          "progress": 0.001,
+          "whole": {
+            "pixels": 129600,
+            "changedPixels": 7404,
+            "significantPixels": 0,
+            "meanRgbError": 0.03559928,
+            "maxChannelError": 3
+          },
+          "dots": {
+            "pixels": 841,
+            "changedPixels": 509,
+            "significantPixels": 0,
+            "meanRgbError": 0.35077289,
+            "maxChannelError": 3
+          },
+          "material": {
+            "pixels": 576,
+            "changedPixels": 0,
+            "significantPixels": 0,
+            "meanRgbError": 0,
+            "maxChannelError": 0
+          },
+          "lastMove": {
+            "pixels": 0,
+            "changedPixels": 0,
+            "significantPixels": 0,
+            "meanRgbError": 0,
+            "maxChannelError": 0
+          }
+        },
+        {
+          "progress": 0.01,
+          "whole": {
+            "pixels": 129600,
+            "changedPixels": 12777,
+            "significantPixels": 4210,
+            "meanRgbError": 0.61107767,
+            "maxChannelError": 42
+          },
+          "dots": {
+            "pixels": 841,
+            "changedPixels": 702,
+            "significantPixels": 276,
+            "meanRgbError": 6.74554102,
+            "maxChannelError": 41
+          },
+          "material": {
+            "pixels": 576,
+            "changedPixels": 12,
+            "significantPixels": 0,
+            "meanRgbError": 0.02083333,
+            "maxChannelError": 1
+          },
+          "lastMove": {
+            "pixels": 0,
+            "changedPixels": 0,
+            "significantPixels": 0,
+            "meanRgbError": 0,
+            "maxChannelError": 0
+          }
+        }
+      ],
+      "reverse": [
+        {
+          "progress": 0.01,
+          "versusForward": {
+            "pixels": 129600,
+            "changedPixels": 0,
+            "significantPixels": 0,
+            "meanRgbError": 0,
+            "maxChannelError": 0
+          }
+        },
+        {
+          "progress": 0.001,
+          "versusForward": {
+            "pixels": 129600,
+            "changedPixels": 0,
+            "significantPixels": 0,
+            "meanRgbError": 0,
+            "maxChannelError": 0
+          }
+        },
+        {
+          "progress": 1e-8,
+          "versusForward": {
+            "pixels": 129600,
+            "changedPixels": 0,
+            "significantPixels": 0,
+            "meanRgbError": 0,
+            "maxChannelError": 0
+          }
+        },
+        {
+          "progress": 0,
+          "versusForward": {
+            "pixels": 129600,
+            "changedPixels": 0,
+            "significantPixels": 0,
+            "meanRgbError": 0,
+            "maxChannelError": 0
+          }
+        }
+      ],
+      "final2d": {
+        "pixels": 129600,
+        "changedPixels": 0,
+        "significantPixels": 0,
+        "meanRgbError": 0,
+        "maxChannelError": 0
+      },
+      "referenceSha256": "52dd32c0efe55ae61a62d699202a9f7f3af35f9126cb8813d4530eb91fd39ed8"
+    },
+    {
+      "revision": "after",
+      "type": "cylinder",
+      "occupied": true,
+      "forward": [
+        {
+          "progress": 0,
+          "whole": {
+            "pixels": 129600,
+            "changedPixels": 0,
+            "significantPixels": 0,
+            "meanRgbError": 0,
+            "maxChannelError": 0
+          },
+          "dots": {
+            "pixels": 692,
+            "changedPixels": 0,
+            "significantPixels": 0,
+            "meanRgbError": 0,
+            "maxChannelError": 0
+          },
+          "material": {
+            "pixels": 576,
+            "changedPixels": 0,
+            "significantPixels": 0,
+            "meanRgbError": 0,
+            "maxChannelError": 0
+          },
+          "lastMove": {
+            "pixels": 1681,
+            "changedPixels": 0,
+            "significantPixels": 0,
+            "meanRgbError": 0,
+            "maxChannelError": 0
+          }
+        },
+        {
+          "progress": 1e-8,
+          "whole": {
+            "pixels": 129600,
+            "changedPixels": 0,
+            "significantPixels": 0,
+            "meanRgbError": 0,
+            "maxChannelError": 0
+          },
+          "dots": {
+            "pixels": 692,
+            "changedPixels": 0,
+            "significantPixels": 0,
+            "meanRgbError": 0,
+            "maxChannelError": 0
+          },
+          "material": {
+            "pixels": 576,
+            "changedPixels": 0,
+            "significantPixels": 0,
+            "meanRgbError": 0,
+            "maxChannelError": 0
+          },
+          "lastMove": {
+            "pixels": 1681,
+            "changedPixels": 0,
+            "significantPixels": 0,
+            "meanRgbError": 0,
+            "maxChannelError": 0
+          }
+        },
+        {
+          "progress": 0.001,
+          "whole": {
+            "pixels": 129600,
+            "changedPixels": 6834,
+            "significantPixels": 1,
+            "meanRgbError": 0.03318416,
+            "maxChannelError": 11
+          },
+          "dots": {
+            "pixels": 692,
+            "changedPixels": 410,
+            "significantPixels": 0,
+            "meanRgbError": 0.33959538,
+            "maxChannelError": 3
+          },
+          "material": {
+            "pixels": 576,
+            "changedPixels": 0,
+            "significantPixels": 0,
+            "meanRgbError": 0,
+            "maxChannelError": 0
+          },
+          "lastMove": {
+            "pixels": 1681,
+            "changedPixels": 54,
+            "significantPixels": 0,
+            "meanRgbError": 0.01388063,
+            "maxChannelError": 1
+          }
+        },
+        {
+          "progress": 0.01,
+          "whole": {
+            "pixels": 129600,
+            "changedPixels": 18221,
+            "significantPixels": 4122,
+            "meanRgbError": 0.65468364,
+            "maxChannelError": 88
+          },
+          "dots": {
+            "pixels": 692,
+            "changedPixels": 587,
+            "significantPixels": 238,
+            "meanRgbError": 7.06743738,
+            "maxChannelError": 41
+          },
+          "material": {
+            "pixels": 576,
+            "changedPixels": 12,
+            "significantPixels": 0,
+            "meanRgbError": 0.02083333,
+            "maxChannelError": 1
+          },
+          "lastMove": {
+            "pixels": 1681,
+            "changedPixels": 535,
+            "significantPixels": 6,
+            "meanRgbError": 0.23934166,
+            "maxChannelError": 17
+          }
+        }
+      ],
+      "reverse": [
+        {
+          "progress": 0.01,
+          "versusForward": {
+            "pixels": 129600,
+            "changedPixels": 0,
+            "significantPixels": 0,
+            "meanRgbError": 0,
+            "maxChannelError": 0
+          }
+        },
+        {
+          "progress": 0.001,
+          "versusForward": {
+            "pixels": 129600,
+            "changedPixels": 0,
+            "significantPixels": 0,
+            "meanRgbError": 0,
+            "maxChannelError": 0
+          }
+        },
+        {
+          "progress": 1e-8,
+          "versusForward": {
+            "pixels": 129600,
+            "changedPixels": 0,
+            "significantPixels": 0,
+            "meanRgbError": 0,
+            "maxChannelError": 0
+          }
+        },
+        {
+          "progress": 0,
+          "versusForward": {
+            "pixels": 129600,
+            "changedPixels": 0,
+            "significantPixels": 0,
+            "meanRgbError": 0,
+            "maxChannelError": 0
+          }
+        }
+      ],
+      "final2d": {
+        "pixels": 129600,
+        "changedPixels": 0,
+        "significantPixels": 0,
+        "meanRgbError": 0,
+        "maxChannelError": 0
+      },
+      "referenceSha256": "2917f42e299099dab5fd925efc5152e3256e679f7c08b8a61eb44de9fa1d1623"
+    },
+    {
+      "revision": "after",
+      "type": "torus",
+      "occupied": false,
+      "forward": [
+        {
+          "progress": 0,
+          "whole": {
+            "pixels": 129600,
+            "changedPixels": 0,
+            "significantPixels": 0,
+            "meanRgbError": 0,
+            "maxChannelError": 0
+          },
+          "dots": {
+            "pixels": 841,
+            "changedPixels": 0,
+            "significantPixels": 0,
+            "meanRgbError": 0,
+            "maxChannelError": 0
+          },
+          "material": {
+            "pixels": 576,
+            "changedPixels": 0,
+            "significantPixels": 0,
+            "meanRgbError": 0,
+            "maxChannelError": 0
+          },
+          "lastMove": {
+            "pixels": 0,
+            "changedPixels": 0,
+            "significantPixels": 0,
+            "meanRgbError": 0,
+            "maxChannelError": 0
+          }
+        },
+        {
+          "progress": 1e-8,
+          "whole": {
+            "pixels": 129600,
+            "changedPixels": 0,
+            "significantPixels": 0,
+            "meanRgbError": 0,
+            "maxChannelError": 0
+          },
+          "dots": {
+            "pixels": 841,
+            "changedPixels": 0,
+            "significantPixels": 0,
+            "meanRgbError": 0,
+            "maxChannelError": 0
+          },
+          "material": {
+            "pixels": 576,
+            "changedPixels": 0,
+            "significantPixels": 0,
+            "meanRgbError": 0,
+            "maxChannelError": 0
+          },
+          "lastMove": {
+            "pixels": 0,
+            "changedPixels": 0,
+            "significantPixels": 0,
+            "meanRgbError": 0,
+            "maxChannelError": 0
+          }
+        },
+        {
+          "progress": 0.001,
+          "whole": {
+            "pixels": 129600,
+            "changedPixels": 7881,
+            "significantPixels": 0,
+            "meanRgbError": 0.03874743,
+            "maxChannelError": 3
+          },
+          "dots": {
+            "pixels": 841,
+            "changedPixels": 513,
+            "significantPixels": 0,
+            "meanRgbError": 0.36662703,
+            "maxChannelError": 3
+          },
+          "material": {
+            "pixels": 576,
+            "changedPixels": 0,
+            "significantPixels": 0,
+            "meanRgbError": 0,
+            "maxChannelError": 0
+          },
+          "lastMove": {
+            "pixels": 0,
+            "changedPixels": 0,
+            "significantPixels": 0,
+            "meanRgbError": 0,
+            "maxChannelError": 0
+          }
+        },
+        {
+          "progress": 0.01,
+          "whole": {
+            "pixels": 129600,
+            "changedPixels": 15566,
+            "significantPixels": 6199,
+            "meanRgbError": 0.82654321,
+            "maxChannelError": 43
+          },
+          "dots": {
+            "pixels": 841,
+            "changedPixels": 708,
+            "significantPixels": 295,
+            "meanRgbError": 7.14268728,
+            "maxChannelError": 42
+          },
+          "material": {
+            "pixels": 576,
+            "changedPixels": 12,
+            "significantPixels": 0,
+            "meanRgbError": 0.02083333,
+            "maxChannelError": 1
+          },
+          "lastMove": {
+            "pixels": 0,
+            "changedPixels": 0,
+            "significantPixels": 0,
+            "meanRgbError": 0,
+            "maxChannelError": 0
+          }
+        }
+      ],
+      "reverse": [
+        {
+          "progress": 0.01,
+          "versusForward": {
+            "pixels": 129600,
+            "changedPixels": 0,
+            "significantPixels": 0,
+            "meanRgbError": 0,
+            "maxChannelError": 0
+          }
+        },
+        {
+          "progress": 0.001,
+          "versusForward": {
+            "pixels": 129600,
+            "changedPixels": 0,
+            "significantPixels": 0,
+            "meanRgbError": 0,
+            "maxChannelError": 0
+          }
+        },
+        {
+          "progress": 1e-8,
+          "versusForward": {
+            "pixels": 129600,
+            "changedPixels": 0,
+            "significantPixels": 0,
+            "meanRgbError": 0,
+            "maxChannelError": 0
+          }
+        },
+        {
+          "progress": 0,
+          "versusForward": {
+            "pixels": 129600,
+            "changedPixels": 0,
+            "significantPixels": 0,
+            "meanRgbError": 0,
+            "maxChannelError": 0
+          }
+        }
+      ],
+      "final2d": {
+        "pixels": 129600,
+        "changedPixels": 0,
+        "significantPixels": 0,
+        "meanRgbError": 0,
+        "maxChannelError": 0
+      },
+      "referenceSha256": "3117e4f6b1f4839b7b30a04d2f210eae038f26ad9c0db1536539353a214fd7fb"
+    },
+    {
+      "revision": "after",
+      "type": "torus",
+      "occupied": true,
+      "forward": [
+        {
+          "progress": 0,
+          "whole": {
+            "pixels": 129600,
+            "changedPixels": 0,
+            "significantPixels": 0,
+            "meanRgbError": 0,
+            "maxChannelError": 0
+          },
+          "dots": {
+            "pixels": 692,
+            "changedPixels": 0,
+            "significantPixels": 0,
+            "meanRgbError": 0,
+            "maxChannelError": 0
+          },
+          "material": {
+            "pixels": 576,
+            "changedPixels": 0,
+            "significantPixels": 0,
+            "meanRgbError": 0,
+            "maxChannelError": 0
+          },
+          "lastMove": {
+            "pixels": 1681,
+            "changedPixels": 0,
+            "significantPixels": 0,
+            "meanRgbError": 0,
+            "maxChannelError": 0
+          }
+        },
+        {
+          "progress": 1e-8,
+          "whole": {
+            "pixels": 129600,
+            "changedPixels": 0,
+            "significantPixels": 0,
+            "meanRgbError": 0,
+            "maxChannelError": 0
+          },
+          "dots": {
+            "pixels": 692,
+            "changedPixels": 0,
+            "significantPixels": 0,
+            "meanRgbError": 0,
+            "maxChannelError": 0
+          },
+          "material": {
+            "pixels": 576,
+            "changedPixels": 0,
+            "significantPixels": 0,
+            "meanRgbError": 0,
+            "maxChannelError": 0
+          },
+          "lastMove": {
+            "pixels": 1681,
+            "changedPixels": 0,
+            "significantPixels": 0,
+            "meanRgbError": 0,
+            "maxChannelError": 0
+          }
+        },
+        {
+          "progress": 0.001,
+          "whole": {
+            "pixels": 129600,
+            "changedPixels": 7220,
+            "significantPixels": 1,
+            "meanRgbError": 0.0355607,
+            "maxChannelError": 11
+          },
+          "dots": {
+            "pixels": 692,
+            "changedPixels": 414,
+            "significantPixels": 0,
+            "meanRgbError": 0.35211946,
+            "maxChannelError": 3
+          },
+          "material": {
+            "pixels": 576,
+            "changedPixels": 0,
+            "significantPixels": 0,
+            "meanRgbError": 0,
+            "maxChannelError": 0
+          },
+          "lastMove": {
+            "pixels": 1681,
+            "changedPixels": 54,
+            "significantPixels": 0,
+            "meanRgbError": 0.01388063,
+            "maxChannelError": 1
+          }
+        },
+        {
+          "progress": 0.01,
+          "whole": {
+            "pixels": 129600,
+            "changedPixels": 20755,
+            "significantPixels": 5991,
+            "meanRgbError": 0.8579964,
+            "maxChannelError": 88
+          },
+          "dots": {
+            "pixels": 692,
+            "changedPixels": 587,
+            "significantPixels": 253,
+            "meanRgbError": 7.40799615,
+            "maxChannelError": 42
+          },
+          "material": {
+            "pixels": 576,
+            "changedPixels": 12,
+            "significantPixels": 0,
+            "meanRgbError": 0.02083333,
+            "maxChannelError": 1
+          },
+          "lastMove": {
+            "pixels": 1681,
+            "changedPixels": 538,
+            "significantPixels": 6,
+            "meanRgbError": 0.24112631,
+            "maxChannelError": 17
+          }
+        }
+      ],
+      "reverse": [
+        {
+          "progress": 0.01,
+          "versusForward": {
+            "pixels": 129600,
+            "changedPixels": 0,
+            "significantPixels": 0,
+            "meanRgbError": 0,
+            "maxChannelError": 0
+          }
+        },
+        {
+          "progress": 0.001,
+          "versusForward": {
+            "pixels": 129600,
+            "changedPixels": 0,
+            "significantPixels": 0,
+            "meanRgbError": 0,
+            "maxChannelError": 0
+          }
+        },
+        {
+          "progress": 1e-8,
+          "versusForward": {
+            "pixels": 129600,
+            "changedPixels": 0,
+            "significantPixels": 0,
+            "meanRgbError": 0,
+            "maxChannelError": 0
+          }
+        },
+        {
+          "progress": 0,
+          "versusForward": {
+            "pixels": 129600,
+            "changedPixels": 0,
+            "significantPixels": 0,
+            "meanRgbError": 0,
+            "maxChannelError": 0
+          }
+        }
+      ],
+      "final2d": {
+        "pixels": 129600,
+        "changedPixels": 0,
+        "significantPixels": 0,
+        "meanRgbError": 0,
+        "maxChannelError": 0
+      },
+      "referenceSha256": "15cbc079a0c229f6aef97772fbc21f438847f7b29c4dc90993f3cb8944803470"
+    },
+    {
+      "revision": "after",
+      "type": "mobius",
+      "occupied": false,
+      "forward": [
+        {
+          "progress": 0,
+          "whole": {
+            "pixels": 129600,
+            "changedPixels": 0,
+            "significantPixels": 0,
+            "meanRgbError": 0,
+            "maxChannelError": 0
+          },
+          "dots": {
+            "pixels": 841,
+            "changedPixels": 0,
+            "significantPixels": 0,
+            "meanRgbError": 0,
+            "maxChannelError": 0
+          },
+          "material": {
+            "pixels": 576,
+            "changedPixels": 0,
+            "significantPixels": 0,
+            "meanRgbError": 0,
+            "maxChannelError": 0
+          },
+          "lastMove": {
+            "pixels": 0,
+            "changedPixels": 0,
+            "significantPixels": 0,
+            "meanRgbError": 0,
+            "maxChannelError": 0
+          }
+        },
+        {
+          "progress": 1e-8,
+          "whole": {
+            "pixels": 129600,
+            "changedPixels": 0,
+            "significantPixels": 0,
+            "meanRgbError": 0,
+            "maxChannelError": 0
+          },
+          "dots": {
+            "pixels": 841,
+            "changedPixels": 0,
+            "significantPixels": 0,
+            "meanRgbError": 0,
+            "maxChannelError": 0
+          },
+          "material": {
+            "pixels": 576,
+            "changedPixels": 0,
+            "significantPixels": 0,
+            "meanRgbError": 0,
+            "maxChannelError": 0
+          },
+          "lastMove": {
+            "pixels": 0,
+            "changedPixels": 0,
+            "significantPixels": 0,
+            "meanRgbError": 0,
+            "maxChannelError": 0
+          }
+        },
+        {
+          "progress": 0.001,
+          "whole": {
+            "pixels": 129600,
+            "changedPixels": 7402,
+            "significantPixels": 0,
+            "meanRgbError": 0.0355607,
+            "maxChannelError": 3
+          },
+          "dots": {
+            "pixels": 841,
+            "changedPixels": 507,
+            "significantPixels": 0,
+            "meanRgbError": 0.34839477,
+            "maxChannelError": 3
+          },
+          "material": {
+            "pixels": 576,
+            "changedPixels": 0,
+            "significantPixels": 0,
+            "meanRgbError": 0,
+            "maxChannelError": 0
+          },
+          "lastMove": {
+            "pixels": 0,
+            "changedPixels": 0,
+            "significantPixels": 0,
+            "meanRgbError": 0,
+            "maxChannelError": 0
+          }
+        },
+        {
+          "progress": 0.01,
+          "whole": {
+            "pixels": 129600,
+            "changedPixels": 12358,
+            "significantPixels": 3907,
+            "meanRgbError": 0.53930298,
+            "maxChannelError": 33
+          },
+          "dots": {
+            "pixels": 841,
+            "changedPixels": 691,
+            "significantPixels": 201,
+            "meanRgbError": 5.07689259,
+            "maxChannelError": 31
+          },
+          "material": {
+            "pixels": 576,
+            "changedPixels": 12,
+            "significantPixels": 0,
+            "meanRgbError": 0.02083333,
+            "maxChannelError": 1
+          },
+          "lastMove": {
+            "pixels": 0,
+            "changedPixels": 0,
+            "significantPixels": 0,
+            "meanRgbError": 0,
+            "maxChannelError": 0
+          }
+        }
+      ],
+      "reverse": [
+        {
+          "progress": 0.01,
+          "versusForward": {
+            "pixels": 129600,
+            "changedPixels": 0,
+            "significantPixels": 0,
+            "meanRgbError": 0,
+            "maxChannelError": 0
+          }
+        },
+        {
+          "progress": 0.001,
+          "versusForward": {
+            "pixels": 129600,
+            "changedPixels": 0,
+            "significantPixels": 0,
+            "meanRgbError": 0,
+            "maxChannelError": 0
+          }
+        },
+        {
+          "progress": 1e-8,
+          "versusForward": {
+            "pixels": 129600,
+            "changedPixels": 0,
+            "significantPixels": 0,
+            "meanRgbError": 0,
+            "maxChannelError": 0
+          }
+        },
+        {
+          "progress": 0,
+          "versusForward": {
+            "pixels": 129600,
+            "changedPixels": 0,
+            "significantPixels": 0,
+            "meanRgbError": 0,
+            "maxChannelError": 0
+          }
+        }
+      ],
+      "final2d": {
+        "pixels": 129600,
+        "changedPixels": 0,
+        "significantPixels": 0,
+        "meanRgbError": 0,
+        "maxChannelError": 0
+      },
+      "referenceSha256": "3fd064df841965836e6aa4623142141b3457e4d3665f88d085e379ac4255030e"
+    },
+    {
+      "revision": "after",
+      "type": "mobius",
+      "occupied": true,
+      "forward": [
+        {
+          "progress": 0,
+          "whole": {
+            "pixels": 129600,
+            "changedPixels": 0,
+            "significantPixels": 0,
+            "meanRgbError": 0,
+            "maxChannelError": 0
+          },
+          "dots": {
+            "pixels": 692,
+            "changedPixels": 0,
+            "significantPixels": 0,
+            "meanRgbError": 0,
+            "maxChannelError": 0
+          },
+          "material": {
+            "pixels": 576,
+            "changedPixels": 0,
+            "significantPixels": 0,
+            "meanRgbError": 0,
+            "maxChannelError": 0
+          },
+          "lastMove": {
+            "pixels": 1681,
+            "changedPixels": 0,
+            "significantPixels": 0,
+            "meanRgbError": 0,
+            "maxChannelError": 0
+          }
+        },
+        {
+          "progress": 1e-8,
+          "whole": {
+            "pixels": 129600,
+            "changedPixels": 12,
+            "significantPixels": 0,
+            "meanRgbError": 0.00004115,
+            "maxChannelError": 1
+          },
+          "dots": {
+            "pixels": 692,
+            "changedPixels": 0,
+            "significantPixels": 0,
+            "meanRgbError": 0,
+            "maxChannelError": 0
+          },
+          "material": {
+            "pixels": 576,
+            "changedPixels": 0,
+            "significantPixels": 0,
+            "meanRgbError": 0,
+            "maxChannelError": 0
+          },
+          "lastMove": {
+            "pixels": 1681,
+            "changedPixels": 0,
+            "significantPixels": 0,
+            "meanRgbError": 0,
+            "maxChannelError": 0
+          }
+        },
+        {
+          "progress": 0.001,
+          "whole": {
+            "pixels": 129600,
+            "changedPixels": 6838,
+            "significantPixels": 1,
+            "meanRgbError": 0.03315072,
+            "maxChannelError": 11
+          },
+          "dots": {
+            "pixels": 692,
+            "changedPixels": 409,
+            "significantPixels": 0,
+            "meanRgbError": 0.33766859,
+            "maxChannelError": 3
+          },
+          "material": {
+            "pixels": 576,
+            "changedPixels": 0,
+            "significantPixels": 0,
+            "meanRgbError": 0,
+            "maxChannelError": 0
+          },
+          "lastMove": {
+            "pixels": 1681,
+            "changedPixels": 54,
+            "significantPixels": 0,
+            "meanRgbError": 0.01388063,
+            "maxChannelError": 1
+          }
+        },
+        {
+          "progress": 0.01,
+          "whole": {
+            "pixels": 129600,
+            "changedPixels": 17296,
+            "significantPixels": 3807,
+            "meanRgbError": 0.5778215,
+            "maxChannelError": 81
+          },
+          "dots": {
+            "pixels": 692,
+            "changedPixels": 576,
+            "significantPixels": 169,
+            "meanRgbError": 5.24421965,
+            "maxChannelError": 31
+          },
+          "material": {
+            "pixels": 576,
+            "changedPixels": 12,
+            "significantPixels": 0,
+            "meanRgbError": 0.02083333,
+            "maxChannelError": 1
+          },
+          "lastMove": {
+            "pixels": 1681,
+            "changedPixels": 427,
+            "significantPixels": 6,
+            "meanRgbError": 0.20939917,
+            "maxChannelError": 17
+          }
+        }
+      ],
+      "reverse": [
+        {
+          "progress": 0.01,
+          "versusForward": {
+            "pixels": 129600,
+            "changedPixels": 0,
+            "significantPixels": 0,
+            "meanRgbError": 0,
+            "maxChannelError": 0
+          }
+        },
+        {
+          "progress": 0.001,
+          "versusForward": {
+            "pixels": 129600,
+            "changedPixels": 0,
+            "significantPixels": 0,
+            "meanRgbError": 0,
+            "maxChannelError": 0
+          }
+        },
+        {
+          "progress": 1e-8,
+          "versusForward": {
+            "pixels": 129600,
+            "changedPixels": 0,
+            "significantPixels": 0,
+            "meanRgbError": 0,
+            "maxChannelError": 0
+          }
+        },
+        {
+          "progress": 0,
+          "versusForward": {
+            "pixels": 129600,
+            "changedPixels": 0,
+            "significantPixels": 0,
+            "meanRgbError": 0,
+            "maxChannelError": 0
+          }
+        }
+      ],
+      "final2d": {
+        "pixels": 129600,
+        "changedPixels": 0,
+        "significantPixels": 0,
+        "meanRgbError": 0,
+        "maxChannelError": 0
+      },
+      "referenceSha256": "51d04fcdf6303fcc88b592b1cb03891a5291adb6cec9dc20368aa71b4c81a041"
+    },
+    {
+      "revision": "after",
+      "type": "klein",
+      "occupied": false,
+      "forward": [
+        {
+          "progress": 0,
+          "whole": {
+            "pixels": 129600,
+            "changedPixels": 0,
+            "significantPixels": 0,
+            "meanRgbError": 0,
+            "maxChannelError": 0
+          },
+          "dots": {
+            "pixels": 841,
+            "changedPixels": 0,
+            "significantPixels": 0,
+            "meanRgbError": 0,
+            "maxChannelError": 0
+          },
+          "material": {
+            "pixels": 576,
+            "changedPixels": 0,
+            "significantPixels": 0,
+            "meanRgbError": 0,
+            "maxChannelError": 0
+          },
+          "lastMove": {
+            "pixels": 0,
+            "changedPixels": 0,
+            "significantPixels": 0,
+            "meanRgbError": 0,
+            "maxChannelError": 0
+          }
+        },
+        {
+          "progress": 1e-8,
+          "whole": {
+            "pixels": 129600,
+            "changedPixels": 0,
+            "significantPixels": 0,
+            "meanRgbError": 0,
+            "maxChannelError": 0
+          },
+          "dots": {
+            "pixels": 841,
+            "changedPixels": 0,
+            "significantPixels": 0,
+            "meanRgbError": 0,
+            "maxChannelError": 0
+          },
+          "material": {
+            "pixels": 576,
+            "changedPixels": 0,
+            "significantPixels": 0,
+            "meanRgbError": 0,
+            "maxChannelError": 0
+          },
+          "lastMove": {
+            "pixels": 0,
+            "changedPixels": 0,
+            "significantPixels": 0,
+            "meanRgbError": 0,
+            "maxChannelError": 0
+          }
+        },
+        {
+          "progress": 0.001,
+          "whole": {
+            "pixels": 129600,
+            "changedPixels": 8915,
+            "significantPixels": 0,
+            "meanRgbError": 0.0431893,
+            "maxChannelError": 3
+          },
+          "dots": {
+            "pixels": 841,
+            "changedPixels": 535,
+            "significantPixels": 0,
+            "meanRgbError": 0.3737614,
+            "maxChannelError": 3
+          },
+          "material": {
+            "pixels": 576,
+            "changedPixels": 0,
+            "significantPixels": 0,
+            "meanRgbError": 0,
+            "maxChannelError": 0
+          },
+          "lastMove": {
+            "pixels": 0,
+            "changedPixels": 0,
+            "significantPixels": 0,
+            "meanRgbError": 0,
+            "maxChannelError": 0
+          }
+        },
+        {
+          "progress": 0.01,
+          "whole": {
+            "pixels": 129600,
+            "changedPixels": 16048,
+            "significantPixels": 8984,
+            "meanRgbError": 1.27411265,
+            "maxChannelError": 59
+          },
+          "dots": {
+            "pixels": 841,
+            "changedPixels": 722,
+            "significantPixels": 416,
+            "meanRgbError": 10.96591359,
+            "maxChannelError": 50
+          },
+          "material": {
+            "pixels": 576,
+            "changedPixels": 12,
+            "significantPixels": 0,
+            "meanRgbError": 0.02083333,
+            "maxChannelError": 1
+          },
+          "lastMove": {
+            "pixels": 0,
+            "changedPixels": 0,
+            "significantPixels": 0,
+            "meanRgbError": 0,
+            "maxChannelError": 0
+          }
+        }
+      ],
+      "reverse": [
+        {
+          "progress": 0.01,
+          "versusForward": {
+            "pixels": 129600,
+            "changedPixels": 0,
+            "significantPixels": 0,
+            "meanRgbError": 0,
+            "maxChannelError": 0
+          }
+        },
+        {
+          "progress": 0.001,
+          "versusForward": {
+            "pixels": 129600,
+            "changedPixels": 0,
+            "significantPixels": 0,
+            "meanRgbError": 0,
+            "maxChannelError": 0
+          }
+        },
+        {
+          "progress": 1e-8,
+          "versusForward": {
+            "pixels": 129600,
+            "changedPixels": 0,
+            "significantPixels": 0,
+            "meanRgbError": 0,
+            "maxChannelError": 0
+          }
+        },
+        {
+          "progress": 0,
+          "versusForward": {
+            "pixels": 129600,
+            "changedPixels": 0,
+            "significantPixels": 0,
+            "meanRgbError": 0,
+            "maxChannelError": 0
+          }
+        }
+      ],
+      "final2d": {
+        "pixels": 129600,
+        "changedPixels": 0,
+        "significantPixels": 0,
+        "meanRgbError": 0,
+        "maxChannelError": 0
+      },
+      "referenceSha256": "92bd2f35919efca3571086fdec770dce75c7ad805c8d9b071ff2e044201448ae"
+    },
+    {
+      "revision": "after",
+      "type": "klein",
+      "occupied": true,
+      "forward": [
+        {
+          "progress": 0,
+          "whole": {
+            "pixels": 129600,
+            "changedPixels": 0,
+            "significantPixels": 0,
+            "meanRgbError": 0,
+            "maxChannelError": 0
+          },
+          "dots": {
+            "pixels": 692,
+            "changedPixels": 0,
+            "significantPixels": 0,
+            "meanRgbError": 0,
+            "maxChannelError": 0
+          },
+          "material": {
+            "pixels": 576,
+            "changedPixels": 0,
+            "significantPixels": 0,
+            "meanRgbError": 0,
+            "maxChannelError": 0
+          },
+          "lastMove": {
+            "pixels": 1681,
+            "changedPixels": 0,
+            "significantPixels": 0,
+            "meanRgbError": 0,
+            "maxChannelError": 0
+          }
+        },
+        {
+          "progress": 1e-8,
+          "whole": {
+            "pixels": 129600,
+            "changedPixels": 0,
+            "significantPixels": 0,
+            "meanRgbError": 0,
+            "maxChannelError": 0
+          },
+          "dots": {
+            "pixels": 692,
+            "changedPixels": 0,
+            "significantPixels": 0,
+            "meanRgbError": 0,
+            "maxChannelError": 0
+          },
+          "material": {
+            "pixels": 576,
+            "changedPixels": 0,
+            "significantPixels": 0,
+            "meanRgbError": 0,
+            "maxChannelError": 0
+          },
+          "lastMove": {
+            "pixels": 1681,
+            "changedPixels": 0,
+            "significantPixels": 0,
+            "meanRgbError": 0,
+            "maxChannelError": 0
+          }
+        },
+        {
+          "progress": 0.001,
+          "whole": {
+            "pixels": 129600,
+            "changedPixels": 8329,
+            "significantPixels": 2,
+            "meanRgbError": 0.04101852,
+            "maxChannelError": 11
+          },
+          "dots": {
+            "pixels": 692,
+            "changedPixels": 436,
+            "significantPixels": 0,
+            "meanRgbError": 0.36512524,
+            "maxChannelError": 3
+          },
+          "material": {
+            "pixels": 576,
+            "changedPixels": 0,
+            "significantPixels": 0,
+            "meanRgbError": 0,
+            "maxChannelError": 0
+          },
+          "lastMove": {
+            "pixels": 1681,
+            "changedPixels": 55,
+            "significantPixels": 0,
+            "meanRgbError": 0.01427722,
+            "maxChannelError": 1
+          }
+        },
+        {
+          "progress": 0.01,
+          "whole": {
+            "pixels": 129600,
+            "changedPixels": 22971,
+            "significantPixels": 8612,
+            "meanRgbError": 1.32303498,
+            "maxChannelError": 134
+          },
+          "dots": {
+            "pixels": 692,
+            "changedPixels": 601,
+            "significantPixels": 361,
+            "meanRgbError": 11.34200385,
+            "maxChannelError": 50
+          },
+          "material": {
+            "pixels": 576,
+            "changedPixels": 12,
+            "significantPixels": 0,
+            "meanRgbError": 0.02083333,
+            "maxChannelError": 1
+          },
+          "lastMove": {
+            "pixels": 1681,
+            "changedPixels": 735,
+            "significantPixels": 11,
+            "meanRgbError": 0.36406901,
+            "maxChannelError": 17
+          }
+        }
+      ],
+      "reverse": [
+        {
+          "progress": 0.01,
+          "versusForward": {
+            "pixels": 129600,
+            "changedPixels": 0,
+            "significantPixels": 0,
+            "meanRgbError": 0,
+            "maxChannelError": 0
+          }
+        },
+        {
+          "progress": 0.001,
+          "versusForward": {
+            "pixels": 129600,
+            "changedPixels": 0,
+            "significantPixels": 0,
+            "meanRgbError": 0,
+            "maxChannelError": 0
+          }
+        },
+        {
+          "progress": 1e-8,
+          "versusForward": {
+            "pixels": 129600,
+            "changedPixels": 0,
+            "significantPixels": 0,
+            "meanRgbError": 0,
+            "maxChannelError": 0
+          }
+        },
+        {
+          "progress": 0,
+          "versusForward": {
+            "pixels": 129600,
+            "changedPixels": 0,
+            "significantPixels": 0,
+            "meanRgbError": 0,
+            "maxChannelError": 0
+          }
+        }
+      ],
+      "final2d": {
+        "pixels": 129600,
+        "changedPixels": 0,
+        "significantPixels": 0,
+        "meanRgbError": 0,
+        "maxChannelError": 0
+      },
+      "referenceSha256": "6a86e3e9030c64c5bd77108d72fb2230f8e0cccc9fbf27e63fde69b2b6735693"
+    },
+    {
+      "revision": "after",
+      "type": "projective",
+      "occupied": false,
+      "forward": [
+        {
+          "progress": 0,
+          "whole": {
+            "pixels": 129600,
+            "changedPixels": 0,
+            "significantPixels": 0,
+            "meanRgbError": 0,
+            "maxChannelError": 0
+          },
+          "dots": {
+            "pixels": 841,
+            "changedPixels": 0,
+            "significantPixels": 0,
+            "meanRgbError": 0,
+            "maxChannelError": 0
+          },
+          "material": {
+            "pixels": 576,
+            "changedPixels": 0,
+            "significantPixels": 0,
+            "meanRgbError": 0,
+            "maxChannelError": 0
+          },
+          "lastMove": {
+            "pixels": 0,
+            "changedPixels": 0,
+            "significantPixels": 0,
+            "meanRgbError": 0,
+            "maxChannelError": 0
+          }
+        },
+        {
+          "progress": 1e-8,
+          "whole": {
+            "pixels": 129600,
+            "changedPixels": 0,
+            "significantPixels": 0,
+            "meanRgbError": 0,
+            "maxChannelError": 0
+          },
+          "dots": {
+            "pixels": 841,
+            "changedPixels": 0,
+            "significantPixels": 0,
+            "meanRgbError": 0,
+            "maxChannelError": 0
+          },
+          "material": {
+            "pixels": 576,
+            "changedPixels": 0,
+            "significantPixels": 0,
+            "meanRgbError": 0,
+            "maxChannelError": 0
+          },
+          "lastMove": {
+            "pixels": 0,
+            "changedPixels": 0,
+            "significantPixels": 0,
+            "meanRgbError": 0,
+            "maxChannelError": 0
+          }
+        },
+        {
+          "progress": 0.001,
+          "whole": {
+            "pixels": 129600,
+            "changedPixels": 9039,
+            "significantPixels": 0,
+            "meanRgbError": 0.04383745,
+            "maxChannelError": 3
+          },
+          "dots": {
+            "pixels": 841,
+            "changedPixels": 535,
+            "significantPixels": 0,
+            "meanRgbError": 0.3737614,
+            "maxChannelError": 3
+          },
+          "material": {
+            "pixels": 576,
+            "changedPixels": 0,
+            "significantPixels": 0,
+            "meanRgbError": 0,
+            "maxChannelError": 0
+          },
+          "lastMove": {
+            "pixels": 0,
+            "changedPixels": 0,
+            "significantPixels": 0,
+            "meanRgbError": 0,
+            "maxChannelError": 0
+          }
+        },
+        {
+          "progress": 0.01,
+          "whole": {
+            "pixels": 129600,
+            "changedPixels": 15867,
+            "significantPixels": 8663,
+            "meanRgbError": 1.24664352,
+            "maxChannelError": 59
+          },
+          "dots": {
+            "pixels": 841,
+            "changedPixels": 722,
+            "significantPixels": 416,
+            "meanRgbError": 10.96591359,
+            "maxChannelError": 50
+          },
+          "material": {
+            "pixels": 576,
+            "changedPixels": 12,
+            "significantPixels": 0,
+            "meanRgbError": 0.02083333,
+            "maxChannelError": 1
+          },
+          "lastMove": {
+            "pixels": 0,
+            "changedPixels": 0,
+            "significantPixels": 0,
+            "meanRgbError": 0,
+            "maxChannelError": 0
+          }
+        }
+      ],
+      "reverse": [
+        {
+          "progress": 0.01,
+          "versusForward": {
+            "pixels": 129600,
+            "changedPixels": 0,
+            "significantPixels": 0,
+            "meanRgbError": 0,
+            "maxChannelError": 0
+          }
+        },
+        {
+          "progress": 0.001,
+          "versusForward": {
+            "pixels": 129600,
+            "changedPixels": 0,
+            "significantPixels": 0,
+            "meanRgbError": 0,
+            "maxChannelError": 0
+          }
+        },
+        {
+          "progress": 1e-8,
+          "versusForward": {
+            "pixels": 129600,
+            "changedPixels": 0,
+            "significantPixels": 0,
+            "meanRgbError": 0,
+            "maxChannelError": 0
+          }
+        },
+        {
+          "progress": 0,
+          "versusForward": {
+            "pixels": 129600,
+            "changedPixels": 0,
+            "significantPixels": 0,
+            "meanRgbError": 0,
+            "maxChannelError": 0
+          }
+        }
+      ],
+      "final2d": {
+        "pixels": 129600,
+        "changedPixels": 0,
+        "significantPixels": 0,
+        "meanRgbError": 0,
+        "maxChannelError": 0
+      },
+      "referenceSha256": "ba4f7c87cc981299424ba4d057ca7e123e503027e753b531328795db983ced73"
+    },
+    {
+      "revision": "after",
+      "type": "projective",
+      "occupied": true,
+      "forward": [
+        {
+          "progress": 0,
+          "whole": {
+            "pixels": 129600,
+            "changedPixels": 0,
+            "significantPixels": 0,
+            "meanRgbError": 0,
+            "maxChannelError": 0
+          },
+          "dots": {
+            "pixels": 692,
+            "changedPixels": 0,
+            "significantPixels": 0,
+            "meanRgbError": 0,
+            "maxChannelError": 0
+          },
+          "material": {
+            "pixels": 576,
+            "changedPixels": 0,
+            "significantPixels": 0,
+            "meanRgbError": 0,
+            "maxChannelError": 0
+          },
+          "lastMove": {
+            "pixels": 1681,
+            "changedPixels": 0,
+            "significantPixels": 0,
+            "meanRgbError": 0,
+            "maxChannelError": 0
+          }
+        },
+        {
+          "progress": 1e-8,
+          "whole": {
+            "pixels": 129600,
+            "changedPixels": 0,
+            "significantPixels": 0,
+            "meanRgbError": 0,
+            "maxChannelError": 0
+          },
+          "dots": {
+            "pixels": 692,
+            "changedPixels": 0,
+            "significantPixels": 0,
+            "meanRgbError": 0,
+            "maxChannelError": 0
+          },
+          "material": {
+            "pixels": 576,
+            "changedPixels": 0,
+            "significantPixels": 0,
+            "meanRgbError": 0,
+            "maxChannelError": 0
+          },
+          "lastMove": {
+            "pixels": 1681,
+            "changedPixels": 0,
+            "significantPixels": 0,
+            "meanRgbError": 0,
+            "maxChannelError": 0
+          }
+        },
+        {
+          "progress": 0.001,
+          "whole": {
+            "pixels": 129600,
+            "changedPixels": 8453,
+            "significantPixels": 2,
+            "meanRgbError": 0.04166667,
+            "maxChannelError": 11
+          },
+          "dots": {
+            "pixels": 692,
+            "changedPixels": 436,
+            "significantPixels": 0,
+            "meanRgbError": 0.36512524,
+            "maxChannelError": 3
+          },
+          "material": {
+            "pixels": 576,
+            "changedPixels": 0,
+            "significantPixels": 0,
+            "meanRgbError": 0,
+            "maxChannelError": 0
+          },
+          "lastMove": {
+            "pixels": 1681,
+            "changedPixels": 55,
+            "significantPixels": 0,
+            "meanRgbError": 0.01427722,
+            "maxChannelError": 1
+          }
+        },
+        {
+          "progress": 0.01,
+          "whole": {
+            "pixels": 129600,
+            "changedPixels": 22804,
+            "significantPixels": 8291,
+            "meanRgbError": 1.29595936,
+            "maxChannelError": 134
+          },
+          "dots": {
+            "pixels": 692,
+            "changedPixels": 601,
+            "significantPixels": 361,
+            "meanRgbError": 11.34200385,
+            "maxChannelError": 50
+          },
+          "material": {
+            "pixels": 576,
+            "changedPixels": 12,
+            "significantPixels": 0,
+            "meanRgbError": 0.02083333,
+            "maxChannelError": 1
+          },
+          "lastMove": {
+            "pixels": 1681,
+            "changedPixels": 735,
+            "significantPixels": 11,
+            "meanRgbError": 0.36406901,
+            "maxChannelError": 17
+          }
+        }
+      ],
+      "reverse": [
+        {
+          "progress": 0.01,
+          "versusForward": {
+            "pixels": 129600,
+            "changedPixels": 0,
+            "significantPixels": 0,
+            "meanRgbError": 0,
+            "maxChannelError": 0
+          }
+        },
+        {
+          "progress": 0.001,
+          "versusForward": {
+            "pixels": 129600,
+            "changedPixels": 0,
+            "significantPixels": 0,
+            "meanRgbError": 0,
+            "maxChannelError": 0
+          }
+        },
+        {
+          "progress": 1e-8,
+          "versusForward": {
+            "pixels": 129600,
+            "changedPixels": 0,
+            "significantPixels": 0,
+            "meanRgbError": 0,
+            "maxChannelError": 0
+          }
+        },
+        {
+          "progress": 0,
+          "versusForward": {
+            "pixels": 129600,
+            "changedPixels": 0,
+            "significantPixels": 0,
+            "meanRgbError": 0,
+            "maxChannelError": 0
+          }
+        }
+      ],
+      "final2d": {
+        "pixels": 129600,
+        "changedPixels": 0,
+        "significantPixels": 0,
+        "meanRgbError": 0,
+        "maxChannelError": 0
+      },
+      "referenceSha256": "b1ca67b6339d5f5894df2a97a0c0fa9ea978f066a3f00f88e39e2da66b5dee92"
+    },
+    {
+      "revision": "after",
+      "type": "sphere",
+      "occupied": false,
+      "forward": [
+        {
+          "progress": 0,
+          "whole": {
+            "pixels": 129600,
+            "changedPixels": 0,
+            "significantPixels": 0,
+            "meanRgbError": 0,
+            "maxChannelError": 0
+          },
+          "dots": {
+            "pixels": 841,
+            "changedPixels": 0,
+            "significantPixels": 0,
+            "meanRgbError": 0,
+            "maxChannelError": 0
+          },
+          "material": {
+            "pixels": 576,
+            "changedPixels": 0,
+            "significantPixels": 0,
+            "meanRgbError": 0,
+            "maxChannelError": 0
+          },
+          "lastMove": {
+            "pixels": 0,
+            "changedPixels": 0,
+            "significantPixels": 0,
+            "meanRgbError": 0,
+            "maxChannelError": 0
+          }
+        },
+        {
+          "progress": 1e-8,
+          "whole": {
+            "pixels": 129600,
+            "changedPixels": 0,
+            "significantPixels": 0,
+            "meanRgbError": 0,
+            "maxChannelError": 0
+          },
+          "dots": {
+            "pixels": 841,
+            "changedPixels": 0,
+            "significantPixels": 0,
+            "meanRgbError": 0,
+            "maxChannelError": 0
+          },
+          "material": {
+            "pixels": 576,
+            "changedPixels": 0,
+            "significantPixels": 0,
+            "meanRgbError": 0,
+            "maxChannelError": 0
+          },
+          "lastMove": {
+            "pixels": 0,
+            "changedPixels": 0,
+            "significantPixels": 0,
+            "meanRgbError": 0,
+            "maxChannelError": 0
+          }
+        },
+        {
+          "progress": 0.001,
+          "whole": {
+            "pixels": 129600,
+            "changedPixels": 8523,
+            "significantPixels": 0,
+            "meanRgbError": 0.04140175,
+            "maxChannelError": 7
+          },
+          "dots": {
+            "pixels": 841,
+            "changedPixels": 512,
+            "significantPixels": 0,
+            "meanRgbError": 0.36068173,
+            "maxChannelError": 3
+          },
+          "material": {
+            "pixels": 576,
+            "changedPixels": 0,
+            "significantPixels": 0,
+            "meanRgbError": 0,
+            "maxChannelError": 0
+          },
+          "lastMove": {
+            "pixels": 0,
+            "changedPixels": 0,
+            "significantPixels": 0,
+            "meanRgbError": 0,
+            "maxChannelError": 0
+          }
+        },
+        {
+          "progress": 0.01,
+          "whole": {
+            "pixels": 129600,
+            "changedPixels": 15541,
+            "significantPixels": 6050,
+            "meanRgbError": 0.81588735,
+            "maxChannelError": 49
+          },
+          "dots": {
+            "pixels": 841,
+            "changedPixels": 706,
+            "significantPixels": 288,
+            "meanRgbError": 6.82520809,
+            "maxChannelError": 41
+          },
+          "material": {
+            "pixels": 576,
+            "changedPixels": 12,
+            "significantPixels": 0,
+            "meanRgbError": 0.02083333,
+            "maxChannelError": 1
+          },
+          "lastMove": {
+            "pixels": 0,
+            "changedPixels": 0,
+            "significantPixels": 0,
+            "meanRgbError": 0,
+            "maxChannelError": 0
+          }
+        }
+      ],
+      "reverse": [
+        {
+          "progress": 0.01,
+          "versusForward": {
+            "pixels": 129600,
+            "changedPixels": 0,
+            "significantPixels": 0,
+            "meanRgbError": 0,
+            "maxChannelError": 0
+          }
+        },
+        {
+          "progress": 0.001,
+          "versusForward": {
+            "pixels": 129600,
+            "changedPixels": 0,
+            "significantPixels": 0,
+            "meanRgbError": 0,
+            "maxChannelError": 0
+          }
+        },
+        {
+          "progress": 1e-8,
+          "versusForward": {
+            "pixels": 129600,
+            "changedPixels": 0,
+            "significantPixels": 0,
+            "meanRgbError": 0,
+            "maxChannelError": 0
+          }
+        },
+        {
+          "progress": 0,
+          "versusForward": {
+            "pixels": 129600,
+            "changedPixels": 0,
+            "significantPixels": 0,
+            "meanRgbError": 0,
+            "maxChannelError": 0
+          }
+        }
+      ],
+      "final2d": {
+        "pixels": 129600,
+        "changedPixels": 0,
+        "significantPixels": 0,
+        "meanRgbError": 0,
+        "maxChannelError": 0
+      },
+      "referenceSha256": "010d8010146900f6ab00882621fdbe6941d8fc21e40ada297920170a1d55845a"
+    },
+    {
+      "revision": "after",
+      "type": "sphere",
+      "occupied": true,
+      "forward": [
+        {
+          "progress": 0,
+          "whole": {
+            "pixels": 129600,
+            "changedPixels": 0,
+            "significantPixels": 0,
+            "meanRgbError": 0,
+            "maxChannelError": 0
+          },
+          "dots": {
+            "pixels": 692,
+            "changedPixels": 0,
+            "significantPixels": 0,
+            "meanRgbError": 0,
+            "maxChannelError": 0
+          },
+          "material": {
+            "pixels": 576,
+            "changedPixels": 0,
+            "significantPixels": 0,
+            "meanRgbError": 0,
+            "maxChannelError": 0
+          },
+          "lastMove": {
+            "pixels": 1681,
+            "changedPixels": 0,
+            "significantPixels": 0,
+            "meanRgbError": 0,
+            "maxChannelError": 0
+          }
+        },
+        {
+          "progress": 1e-8,
+          "whole": {
+            "pixels": 129600,
+            "changedPixels": 2,
+            "significantPixels": 0,
+            "meanRgbError": 0.00000514,
+            "maxChannelError": 1
+          },
+          "dots": {
+            "pixels": 692,
+            "changedPixels": 0,
+            "significantPixels": 0,
+            "meanRgbError": 0,
+            "maxChannelError": 0
+          },
+          "material": {
+            "pixels": 576,
+            "changedPixels": 0,
+            "significantPixels": 0,
+            "meanRgbError": 0,
+            "maxChannelError": 0
+          },
+          "lastMove": {
+            "pixels": 1681,
+            "changedPixels": 0,
+            "significantPixels": 0,
+            "meanRgbError": 0,
+            "maxChannelError": 0
+          }
+        },
+        {
+          "progress": 0.001,
+          "whole": {
+            "pixels": 129600,
+            "changedPixels": 7856,
+            "significantPixels": 1,
+            "meanRgbError": 0.03889146,
+            "maxChannelError": 11
+          },
+          "dots": {
+            "pixels": 692,
+            "changedPixels": 413,
+            "significantPixels": 0,
+            "meanRgbError": 0.35067437,
+            "maxChannelError": 3
+          },
+          "material": {
+            "pixels": 576,
+            "changedPixels": 0,
+            "significantPixels": 0,
+            "meanRgbError": 0,
+            "maxChannelError": 0
+          },
+          "lastMove": {
+            "pixels": 1681,
+            "changedPixels": 53,
+            "significantPixels": 0,
+            "meanRgbError": 0.01209597,
+            "maxChannelError": 1
+          }
+        },
+        {
+          "progress": 0.01,
+          "whole": {
+            "pixels": 129600,
+            "changedPixels": 20501,
+            "significantPixels": 5839,
+            "meanRgbError": 0.84451389,
+            "maxChannelError": 81
+          },
+          "dots": {
+            "pixels": 692,
+            "changedPixels": 590,
+            "significantPixels": 248,
+            "meanRgbError": 7.10982659,
+            "maxChannelError": 41
+          },
+          "material": {
+            "pixels": 576,
+            "changedPixels": 12,
+            "significantPixels": 0,
+            "meanRgbError": 0.02083333,
+            "maxChannelError": 1
+          },
+          "lastMove": {
+            "pixels": 1681,
+            "changedPixels": 521,
+            "significantPixels": 6,
+            "meanRgbError": 0.23636724,
+            "maxChannelError": 17
+          }
+        }
+      ],
+      "reverse": [
+        {
+          "progress": 0.01,
+          "versusForward": {
+            "pixels": 129600,
+            "changedPixels": 0,
+            "significantPixels": 0,
+            "meanRgbError": 0,
+            "maxChannelError": 0
+          }
+        },
+        {
+          "progress": 0.001,
+          "versusForward": {
+            "pixels": 129600,
+            "changedPixels": 0,
+            "significantPixels": 0,
+            "meanRgbError": 0,
+            "maxChannelError": 0
+          }
+        },
+        {
+          "progress": 1e-8,
+          "versusForward": {
+            "pixels": 129600,
+            "changedPixels": 0,
+            "significantPixels": 0,
+            "meanRgbError": 0,
+            "maxChannelError": 0
+          }
+        },
+        {
+          "progress": 0,
+          "versusForward": {
+            "pixels": 129600,
+            "changedPixels": 0,
+            "significantPixels": 0,
+            "meanRgbError": 0,
+            "maxChannelError": 0
+          }
+        }
+      ],
+      "final2d": {
+        "pixels": 129600,
+        "changedPixels": 0,
+        "significantPixels": 0,
+        "meanRgbError": 0,
+        "maxChannelError": 0
+      },
+      "referenceSha256": "9872cc5fb38da99b68d72f355275a9cf447fcd49ab96332b82dbfa63db1a5fdb"
+    }
+  ],
+  "sources": {
+    "before": {
+      "app/assets/topology.js": "b41b99bef6f966d54f4abc47610fdcd242770d2da751a02aa06e0a8c3004e06b",
+      "app/assets/topology-morph.js": "e34138a8ac3973898771375fb606eee2be3bd3d943dec3339b8dbeb8af78dd12",
+      "app/assets/board-view-logic.js": "8d3d6f09f7c2037d8fc8ab56a19fa4389ec3cdc6559442c4e7a638ca801efb6c",
+      "app/assets/level-config.js": "25af6c24758b53ae24c5bfe29019f38357166293935bf660a2c0ba56c04f954c",
+      "app/assets/board-art.js": "32be13daca4a69f18e2859db12b2d2b44ab6f9d3124c27e3362d8976cabc25a4"
+    },
+    "after": {
+      "app/assets/topology.js": "b41b99bef6f966d54f4abc47610fdcd242770d2da751a02aa06e0a8c3004e06b",
+      "app/assets/topology-morph.js": "8f244e97c2164f1cc5603d038778db578afd052829ca88f71c17c950f02361a8",
+      "app/assets/board-view-logic.js": "8d3d6f09f7c2037d8fc8ab56a19fa4389ec3cdc6559442c4e7a638ca801efb6c",
+      "app/assets/level-config.js": "25af6c24758b53ae24c5bfe29019f38357166293935bf660a2c0ba56c04f954c",
+      "app/assets/board-art.js": "04b980c35ebc350100991b478d18836ea4e215e4fd301aceaebd14aeb2fc57c4"
+    }
+  },
+  "evidence": [
+    {
+      "revision": "before",
+      "type": "torus",
+      "file": "artifacts/board-first-frame/before-torus-first-frame.png"
+    },
+    {
+      "revision": "before",
+      "type": "sphere",
+      "file": "artifacts/board-first-frame/before-sphere-first-frame.png"
+    },
+    {
+      "revision": "after",
+      "type": "torus",
+      "file": "artifacts/board-first-frame/after-torus-first-frame.png"
+    },
+    {
+      "revision": "after",
+      "type": "sphere",
+      "file": "artifacts/board-first-frame/after-sphere-first-frame.png"
+    }
+  ],
+  "notes": [
+    "Completion is called directly even at morph=0, so a harness branch cannot hide the renderer handoff.",
+    "Each contact sheet: columns 2D, 0, 1e-8, 0.001, 0.01; rows empty board and eight stones with a recent last-move marker.",
+    "One reused context runs forward, visits morph=1, returns through each near-zero progress, then renders 2D; all reverse images must equal forward images.",
+    "Mean RGB error uses raw 0–255 channels. Regions separately sample unoccupied grid points, cell interiors and the last-move stone."
+  ]
+}

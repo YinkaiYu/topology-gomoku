@@ -165,6 +165,39 @@
   // exact while leaving enough resolution for a smooth low-bend solve.
   var SPHERE_LATTICE_SIZE = 42;
   var sphereLattice = null;
+  var sphereChartLattice = null;
+
+  function sphereChartPoint(point, upper) {
+    var sector = ((Math.atan2(point[1], point[0]) + TAU) % TAU) / (TAU / 3);
+    var a = sector < 1 ? 1 - sector : sector < 2 ? 0 : sector - 2;
+    var c = sector < 1 ? 0 : sector < 2 ? sector - 1 : 3 - sector;
+    var radius = Math.sqrt(Math.max(0, 1 - Math.abs(point[2])));
+    a = (1 - radius) / 3 + a * radius;
+    c = (1 - radius) / 3 + c * radius;
+    return upper ? [1 - a, c] : [c, 1 - a];
+  }
+
+  function preserveSphereDiagonal(points, size) {
+    var step = TAU / 3 / size * 0.2;
+    var limit = TAU / 3 - size * step;
+    var blocks = [];
+    for (var index = 0; index <= size; index += 1) {
+      var p = points[index][index];
+      var value = Math.max(0, Math.min(limit, -Math.atan2(p[1], p[0]) - index * step));
+      blocks.push({ start: index, end: index, sum: value, count: 1 });
+      while (blocks.length > 1) {
+        var a = blocks[blocks.length - 2], b = blocks[blocks.length - 1];
+        if (a.sum / a.count <= b.sum / b.count) { break; }
+        blocks.splice(blocks.length - 2, 2, { start: a.start, end: b.end, sum: a.sum + b.sum, count: a.count + b.count });
+      }
+    }
+    blocks.forEach(function monotoneArc(block) {
+      for (var index = block.start; index <= block.end; index += 1) {
+        var angle = -(block.sum / block.count + index * step);
+        points[index][index] = [Math.cos(angle), Math.sin(angle), 0];
+      }
+    });
+  }
 
   function buildSphereLattice() {
     var size = SPHERE_LATTICE_SIZE;
@@ -218,8 +251,17 @@
           ]);
         }
       }
+      // Preserve the optimized spacing while preventing the shared equator
+      // from doubling back near its ends. A small minimum interval keeps
+      // neighboring cells distinct instead of clamping them to one point.
+      preserveSphereDiagonal(next, size);
       points = next;
     }
+    sphereChartLattice = points.map(function chartRow(pointRow, row) {
+      return pointRow.map(function chartVertex(point, column) {
+        return sphereChartPoint(point, row <= column);
+      });
+    });
     return points;
   }
 
@@ -244,14 +286,31 @@
     var topRight = sphereLattice[top][left + 1];
     var bottomLeft = sphereLattice[top + 1][left];
     var bottomRight = sphereLattice[top + 1][left + 1];
-    return normalize3([
-      topLeft[0] * (1 - amountU) * (1 - amountV) + topRight[0] * amountU * (1 - amountV) +
-        bottomLeft[0] * (1 - amountU) * amountV + bottomRight[0] * amountU * amountV,
-      topLeft[1] * (1 - amountU) * (1 - amountV) + topRight[1] * amountU * (1 - amountV) +
-        bottomLeft[1] * (1 - amountU) * amountV + bottomRight[1] * amountU * amountV,
-      topLeft[2] * (1 - amountU) * (1 - amountV) + topRight[2] * amountU * (1 - amountV) +
-        bottomLeft[2] * (1 - amountU) * amountV + bottomRight[2] * amountU * amountV
-    ]);
+    // The two hemispheres meet on the square diagonal. Interpolate inside
+    // each triangular chart; a bilinear mix crosses that diagonal and can
+    // reverse its optimized equator near the two ends.
+    function interpolate(a, b, c, d, axis) {
+      return amountU >= amountV
+        ? a[axis] * (1 - amountU) + b[axis] * (amountU - amountV) + d[axis] * amountV
+        : a[axis] * (1 - amountV) + c[axis] * (amountV - amountU) + d[axis] * amountU;
+    }
+    var relaxed = normalize3([0, 1, 2].map(function interpolateSphere(axis) {
+      return interpolate(topLeft, topRight, bottomLeft, bottomRight, axis);
+    }));
+    var cornerDistance = Math.min(Math.hypot(u, v), Math.hypot(1 - u, v), Math.hypot(u, 1 - v), Math.hypot(1 - u, 1 - v));
+    var curvature = 0.2 * (1 - smooth((cornerDistance - 0.02) / 0.03));
+    if (!curvature) { return relaxed; }
+    var chartA = sphereChartLattice[top][left], chartB = sphereChartLattice[top][left + 1];
+    var chartC = sphereChartLattice[top + 1][left], chartD = sphereChartLattice[top + 1][left + 1];
+    var chartU = interpolate(chartA, chartB, chartC, chartD, 0);
+    var chartV = interpolate(chartA, chartB, chartC, chartD, 1);
+    var analytic = sphereBase(chartU, chartV);
+    // Corner triangles have three equator vertices. Recover a small amount
+    // of their chart's true curvature so the two opposite sheets do not
+    // collapse onto the same flat face; preserve the relaxed grid elsewhere.
+    return normalize3(relaxed.map(function restoreCurvature(value, axis) {
+      return value + (analytic[axis] - value) * curvature;
+    }));
   }
 
   function prepareSphere() {
@@ -443,6 +502,7 @@
   }
 
   function projectPoint(type, surface, width, height, orientation) {
+    var sourceSurface = surface;
     var camera = CAMERAS[type] || CAMERAS.cylinder;
     var offsetX = 0;
     var offsetY = 0;
@@ -489,22 +549,359 @@
     var extent = camera.radius / Math.sqrt(1 - Math.pow(camera.radius / 4.8, 2));
     var framing = 1 + (Math.min(1, 0.39 / (extent * camera.scale)) - 1) * perspective;
     magnification *= framing;
-    return {
+    var projected = {
       x: width * 0.5 + point[0] * scale * magnification,
       y: height * 0.5 - point[1] * scale * magnification,
       depth: point[2],
       scale: magnification,
       depthScale: scale * magnification
     };
+    if (type === "sphere" || type === "torus" || type === "cylinder" || type === "mobius") {
+      projected.sourceSurface = sourceSurface;
+      projected.orientation = orientation;
+      projected.width = width; projected.height = height;
+    }
+    return projected;
   }
 
-  function createSurfaceMesh(vertices) {
+  function seamProgress(type, u, v, progress) {
+    var t = clamp01(progress);
+    var weight = 0;
+    if (type === "sphere") {
+      // The top/left pair is green; bottom/right is gold. A symmetric
+      // weight gives both ends of each diagonal identification one clock.
+      weight = Math.sin(Math.PI * 0.5 * Math.max(-1, Math.min(1, (u + v - 1) * 2)));
+    } else if (type === "torus" || type === "klein" || type === "projective") {
+      // Opposite edges share a clock even when their pairing reverses.
+      // At corners the two clocks meet continuously at the base progress.
+      weight = Math.pow(2 * v - 1, 2) - Math.pow(2 * u - 1, 2);
+      weight = Math.sin(Math.PI * 0.5 * Math.max(-1, Math.min(1, weight * 1.5)));
+    } else {
+      return type === "cylinder" || type === "mobius" ? smooth((t - 0.04) / 0.96) : t;
+    }
+    var gold = smooth((t - 0.02) / 0.63);
+    var green = smooth((t - 0.34) / 0.66);
+    return green + (gold - green) * (weight + 1) * 0.5;
+  }
+
+  function quaternionFromMatrix(m) {
+    var trace = m[0] + m[4] + m[8], q, s;
+    if (trace > 0) {
+      s = Math.sqrt(trace + 1) * 2;
+      q = [(m[7] - m[5]) / s, (m[2] - m[6]) / s, (m[3] - m[1]) / s, s / 4];
+    } else if (m[0] > m[4] && m[0] > m[8]) {
+      s = Math.sqrt(1 + m[0] - m[4] - m[8]) * 2;
+      q = [s / 4, (m[1] + m[3]) / s, (m[2] + m[6]) / s, (m[7] - m[5]) / s];
+    } else if (m[4] > m[8]) {
+      s = Math.sqrt(1 + m[4] - m[0] - m[8]) * 2;
+      q = [(m[1] + m[3]) / s, s / 4, (m[5] + m[7]) / s, (m[2] - m[6]) / s];
+    } else {
+      s = Math.sqrt(1 + m[8] - m[0] - m[4]) * 2;
+      q = [(m[2] + m[6]) / s, (m[5] + m[7]) / s, s / 4, (m[3] - m[1]) / s];
+    }
+    return q;
+  }
+
+  function blendQuaternion(from, to, amount) {
+    var dot = from[0] * to[0] + from[1] * to[1] + from[2] * to[2] + from[3] * to[3];
+    if (dot < 0) { to = to.map(function negate(value) { return -value; }); dot = -dot; }
+    var a = 1 - amount, b = amount;
+    if (dot < 0.9995) {
+      var angle = Math.acos(Math.min(1, dot)), sine = Math.sin(angle);
+      a = Math.sin((1 - amount) * angle) / sine; b = Math.sin(amount * angle) / sine;
+    }
+    var q = from.map(function blend(value, index) { return value * a + to[index] * b; });
+    var length = Math.hypot(q[0], q[1], q[2], q[3]);
+    return q.map(function normalize(value) { return value / length; });
+  }
+
+  function rotateQuaternion(point, q) {
+    var x = point[0], y = point[1], z = point[2];
+    var tx = 2 * (q[1] * z - q[2] * y), ty = 2 * (q[2] * x - q[0] * z), tz = 2 * (q[0] * y - q[1] * x);
+    return [x + q[3] * tx + q[1] * tz - q[2] * ty,
+      y + q[3] * ty + q[2] * tx - q[0] * tz,
+      z + q[3] * tz + q[0] * ty - q[1] * tx];
+  }
+
+  // The ball Mobius map extends the spherical presentation to the surrounding
+  // volume. Unlike normalization, this is one-to-one for the opening charts.
+  function presentVolume(point, presentation, amount) {
+    if (!presentation || presentation.type !== "sphere-path") { return point; }
+    var boost = presentation.boost.map(function scaled(value) { return value * amount; });
+    var length2 = dot3(point, point), boost2 = dot3(boost, boost), product = dot3(point, boost);
+    var denominator = 1 + 2 * product + boost2 * length2;
+    return point.map(function transform(value, axis) {
+      return ((1 - boost2) * value + (1 + 2 * product + length2) * boost[axis]) / denominator;
+    });
+  }
+
+  var sphereMorphCamera = null;
+  function sphereMorphPoint(flat, u, v, projected, progress, frame) {
+    var t = clamp01(progress), amount = seamProgress("sphere", u, v, t);
+    var width = frame && frame.width || projected.width, height = frame && frame.height || projected.height;
+    if (!width || !height || !projected.sourceSurface) { return null; }
+    var orientation = projected.orientation || {}, b = smooth(t), shortSide = Math.min(width, height);
+    var source = projected.sourceSurface, c = Math.sqrt(3) / 2;
+    var sx = (flat.x - width / 2 + flat.y - height / 2) / shortSide;
+    var sy = (flat.x - width / 2 - flat.y + height / 2) / shortSide;
+    var stretch = 1 + 0.05 * smooth(t / 0.1) * (1 - b);
+    var canonical = [(1 - b) * sx * stretch + b * (-c * source[0] - 0.5 * source[1]),
+      (1 - amount) * sy * stretch + amount * source[2], b * (-0.5 * source[0] + c * source[1])];
+    // Each chart remains on its own side of canonical Y=0. Both chart
+    // interiors project injectively onto XZ; only the intended seams meet.
+    var surface = [-c * canonical[0] - 0.5 * canonical[2],
+      -0.5 * canonical[0] + c * canonical[2], canonical[1]];
+    surface = presentVolume(surface, orientation.presentation, b);
+    var shapeX = 1 + ((Number(orientation.shapeX) || 1) - 1) * b;
+    var shapeY = 1 + ((Number(orientation.shapeY) || 1) - 1) * b;
+    var shapeZ = 1 + ((Number(orientation.shapeZ) || 1) - 1) * b;
+    surface = [surface[0] * shapeX, surface[1] * shapeY, surface[2] * shapeZ];
+    var wobbleX = (Number(orientation.wobbleX) || 0) * b, wobbleY = (Number(orientation.wobbleY) || 0) * b;
+    var flex = Math.sin(surface[0] * 1.35 + surface[2] * 0.72);
+    var soft = [surface[0] * (1 + wobbleY * (0.82 + flex * 0.12)) + surface[1] * wobbleX * 0.38,
+      surface[1] * (1 - wobbleY * 0.31) + surface[2] * wobbleX * (0.25 + flex * 0.05),
+      surface[2] * (1 - wobbleY * (0.35 - flex * 0.08)) - surface[0] * wobbleX * 0.19];
+    canonical = [-c * soft[0] - 0.5 * soft[1], soft[2], -0.5 * soft[0] + c * soft[1]];
+    var rx = Number(orientation.x) || 0, ry = typeof orientation === "number" ? orientation : Number(orientation.y) || 0, rz = Number(orientation.z) || 0;
+    var cache = sphereMorphCamera;
+    var pose = smooth((t - 0.12) / 0.88);
+    if (!cache || cache.t !== t) {
+      var target = quaternionFromMatrix([-c, 0, -0.5, -0.5, 0, c, 0, 1, 0]);
+      cache = { t: t, q: blendQuaternion([0, 0, -Math.sin(Math.PI / 8), Math.cos(Math.PI / 8)], target, pose) };
+      sphereMorphCamera = cache;
+    }
+    // Blend only the fixed chart basis as a quaternion. User Euler angles
+    // keep their continuous branch while dragging a partly closed board.
+    var point = rotate(rotateQuaternion(canonical, cache.q), [
+      (CAMERAS.sphere.rotation[0] + rx) * pose,
+      (CAMERAS.sphere.rotation[1] + ry) * pose,
+      (CAMERAS.sphere.rotation[2] + rz) * pose]);
+    var scaleFactor = Number(orientation.scale) || 1;
+    var scale = shortSide * (Math.SQRT1_2 + (CAMERAS.sphere.scale * scaleFactor - Math.SQRT1_2) * smooth(t / 0.75));
+    var perspective = clamp01(Number(orientation.perspective) || 0) * b;
+    var magnification = 4.8 / Math.max(1.2, 4.8 - point[2] * perspective);
+    var extent = CAMERAS.sphere.radius / Math.sqrt(1 - Math.pow(CAMERAS.sphere.radius / 4.8, 2));
+    magnification *= 1 + (Math.min(1, 0.39 / (extent * CAMERAS.sphere.scale)) - 1) * perspective;
+    return { x: width / 2 + point[0] * scale * magnification, y: height / 2 - point[1] * scale * magnification,
+      depth: point[2], scale: 1 + (magnification - 1) * b, depthScale: scale * magnification, u: u, v: v };
+  }
+
+  function sinc(angle) {
+    return Math.abs(angle) < 1e-5 ? 1 - angle * angle / 6 : Math.sin(angle) / angle;
+  }
+
+  function cosc(angle) {
+    return Math.abs(angle) < 1e-5 ? angle / 2 - angle * angle * angle / 24 : 2 * Math.pow(Math.sin(angle / 2), 2) / angle;
+  }
+
+  var rolledMorphCameras = {};
+  var rolledMorphFits = {};
+  function rolledMorphPoint(type, flat, u, v, projected, progress, frame) {
+    var width = frame && frame.width || projected.width, height = frame && frame.height || projected.height;
+    if (!width || !height || !projected.sourceSurface) { return null; }
+    var t = clamp01(progress), b = smooth(t), shortSide = Math.min(width, height);
+    var orientation = projected.orientation || {}, camera = CAMERAS[type];
+    var initialScale = shortSide * 0.4;
+    var flatX = (flat.x - width / 2) / initialScale, flatY = (flat.y - height / 2) / initialScale;
+    var around = type === "torus" ? smooth((t - 0.34) / 0.66) : smooth((t - 0.04) / 0.96);
+    var angle = TAU * around * (u - 0.5), radius = type === "torus" ? 1.32 : type === "mobius" ? 1.28 : 1.05;
+    var along = (1 - around) * flatX + around * TAU * radius * (u - 0.5);
+    var across = 0, vertical = 0;
+    if (type === "torus") {
+      var tube = smooth((t - 0.02) / 0.63), tubeAngle = TAU * tube * (v - 0.5);
+      var tubeAlong = (1 - tube) * flatY + tube * TAU * 0.46 * (v - 0.5);
+      across = tubeAlong * cosc(tubeAngle) - 0.46 * tube;
+      vertical = -tubeAlong * sinc(tubeAngle);
+    } else if (type === "mobius") {
+      var ribbon = (1 - b) * flatY + b * 1.25 * (v - 0.5);
+      var twist = Math.PI * around * u;
+      across = ribbon * Math.cos(twist);
+      vertical = ribbon * Math.sin(twist);
+    } else {
+      vertical = (1 - b) * flatY + b * 2.15 * (v - 0.5);
+    }
+    // Bend an open arc rather than moving its vertices through the final
+    // surface. Its radial coordinate stays positive; each partial azimuth is
+    // unique. The torus closes its cross-section before bending the long axis.
+    var canonical = [along * sinc(angle) + across * Math.sin(angle), vertical,
+      along * cosc(angle) - across * Math.cos(angle) - radius * around];
+    var stretch = 1 + 0.06 * smooth(t / 0.1) * (1 - b);
+    canonical = canonical.map(function stretchOpening(value) { return value * stretch; });
+    // This fixed quarter-turn is precisely the existing endpoint chart.
+    var surface = [canonical[2], canonical[1], -canonical[0]];
+    var shapeX = 1 + ((Number(orientation.shapeX) || 1) - 1) * b;
+    var shapeY = 1 + ((Number(orientation.shapeY) || 1) - 1) * b;
+    var shapeZ = 1 + ((Number(orientation.shapeZ) || 1) - 1) * b;
+    surface = [surface[0] * shapeX, surface[1] * shapeY, surface[2] * shapeZ];
+    var wobbleX = (Number(orientation.wobbleX) || 0) * b, wobbleY = (Number(orientation.wobbleY) || 0) * b;
+    var flex = Math.sin(surface[0] * 1.35 + surface[2] * 0.72);
+    var soft = [surface[0] * (1 + wobbleY * (0.82 + flex * 0.12)) + surface[1] * wobbleX * 0.38,
+      surface[1] * (1 - wobbleY * 0.31) + surface[2] * wobbleX * (0.25 + flex * 0.05),
+      surface[2] * (1 - wobbleY * (0.35 - flex * 0.08)) - surface[0] * wobbleX * 0.19];
+    canonical = [-soft[2], soft[1], soft[0]];
+    var pose = smooth((t - 0.12) / 0.88), cache = rolledMorphCameras[type];
+    if (!cache || cache.t !== t) {
+      var start = type === "mobius" ? [-Math.SQRT1_2, 0, 0, Math.SQRT1_2] : type === "cylinder" ? [1, 0, 0, 0] : [0, 0, 0, 1];
+      cache = { t: t, q: blendQuaternion(start, [0, Math.SQRT1_2, 0, Math.SQRT1_2], pose) };
+      rolledMorphCameras[type] = cache;
+    }
+    var point = rotateQuaternion(canonical, cache.q);
+    var rx = Number(orientation.x) || 0, ry = typeof orientation === "number" ? orientation : Number(orientation.y) || 0, rz = Number(orientation.z) || 0;
+    point = rotate(point, [(camera.rotation[0] + rx) * pose, (camera.rotation[1] + ry) * pose, (camera.rotation[2] + rz) * pose]);
+    var scaleFactor = Number(orientation.scale) || 1;
+    var scale = initialScale + (shortSide * camera.scale * scaleFactor - initialScale) * smooth(t / 0.6);
+    // An open rolled arc reaches farther than its closed endpoint. Give that
+    // intermediate volume room as one object, without clipping its vertices.
+    var openingRoom = type === "mobius" ? 0.34 : type === "cylinder" ? 0.2 : 0.08;
+    scale *= 1 - openingRoom * Math.pow(Math.sin(Math.PI * t), 2);
+    var perspective = clamp01(Number(orientation.perspective) || 0) * b;
+    var magnification = 4.8 / Math.max(1.2, 4.8 - point[2] * perspective);
+    var extent = camera.radius / Math.sqrt(1 - Math.pow(camera.radius / 4.8, 2));
+    magnification *= 1 + (Math.min(1, 0.39 / (extent * camera.scale)) - 1) * perspective;
+    if (!(frame && frame.rolledFitSample)) {
+      var layout = frame && (frame.layout || frame), fit = rolledMorphFits[type];
+      var cell = Number(layout && layout.cell) || shortSide * 0.08;
+      var spanX = layout && Number.isFinite(layout.left) ? layout.right - layout.left + (isPeriodicX(type) ? Number(layout.cell) || 0 : 0) :
+        Math.abs(u - 0.5) > 1e-6 ? (flat.x - width / 2) / (u - 0.5) : fit && fit.width === width ? fit.spanX : shortSide * 0.9;
+      var spanY = layout && Number.isFinite(layout.top) ? layout.bottom - layout.top + (isPeriodicY(type) ? Number(layout.cell) || 0 : 0) :
+        Math.abs(v - 0.5) > 1e-6 ? (flat.y - height / 2) / (v - 0.5) : fit && fit.height === height ? fit.spanY : spanX;
+      var poseValues = [rx, ry, rz, orientation.shapeX, orientation.shapeY, orientation.shapeZ,
+        orientation.wobbleX, orientation.wobbleY, orientation.scale, orientation.perspective];
+      if (!fit || fit.t !== t || fit.width !== width || fit.height !== height || Math.abs(fit.spanX - spanX) > 1e-6 ||
+          Math.abs(fit.spanY - spanY) > 1e-6 || fit.cell !== cell || poseValues.some(function changed(value, index) { return value !== fit.pose[index]; })) {
+        var maxX = 0, maxY = 0, stoneX = 0, stoneY = 0, sampleFrame = { width: width, height: height, rolledFitSample: true };
+        var insetU = layout && Number.isFinite(layout.left) && isPeriodicX(type) ? cell / (2 * spanX) : 0;
+        var insetV = layout && Number.isFinite(layout.top) && isPeriodicY(type) ? cell / (2 * spanY) : 0;
+        for (var row = 0; row <= 10; row += 1) {
+          for (var column = 0; column <= 10; column += 1) {
+            var su = column / 10, sv = row / 10;
+            var sample = rolledMorphPoint(type, { x: width / 2 + (su - 0.5) * spanX, y: height / 2 + (sv - 0.5) * spanY },
+              su, sv, projected, t, sampleFrame);
+            maxX = Math.max(maxX, Math.abs(sample.x - width / 2)); maxY = Math.max(maxY, Math.abs(sample.y - height / 2));
+            su = insetU + su * (1 - 2 * insetU); sv = insetV + sv * (1 - 2 * insetV);
+            sample = rolledMorphPoint(type, { x: width / 2 + (su - 0.5) * spanX, y: height / 2 + (sv - 0.5) * spanY },
+              su, sv, projected, t, sampleFrame);
+            stoneX = Math.max(stoneX, Math.abs(sample.x - width / 2)); stoneY = Math.max(stoneY, Math.abs(sample.y - height / 2));
+          }
+        }
+        var margin = cell * 0.52 + 3;
+        fit = { t: t, width: width, height: height, spanX: spanX, spanY: spanY, cell: cell, pose: poseValues,
+          scale: Math.min(1, (width / 2 - 5) / Math.max(1, maxX), (height / 2 - 5) / Math.max(1, maxY),
+            (width / 2 - margin) / Math.max(1, stoneX), (height / 2 - margin) / Math.max(1, stoneY)) };
+        rolledMorphFits[type] = fit;
+      }
+      scale *= Math.max(0.1, fit.scale);
+    }
+    return { x: width / 2 + point[0] * scale * magnification, y: height / 2 - point[1] * scale * magnification,
+      depth: point[2], scale: 1 + (magnification - 1) * b, depthScale: scale * magnification, u: u, v: v };
+  }
+
+  function morphPoint(type, flat, u, v, projected, progress, frame) {
+    var amount = seamProgress(type, u, v, progress);
+    var mapped = {
+      x: flat.x + (projected.x - flat.x) * amount,
+      y: flat.y + (projected.y - flat.y) * amount,
+      depth: projected.depth * amount,
+      scale: 1 + ((projected.scale || 1) - 1) * amount,
+      depthScale: projected.depthScale,
+      u: u, v: v
+    };
+    if (progress <= 0 || progress >= 1 || type === "plane") { return mapped; }
+    if (type === "sphere") {
+      var sphereMapped = sphereMorphPoint(flat, u, v, projected, progress, frame);
+      if (sphereMapped) { return sphereMapped; }
+    }
+    if (type === "torus" || type === "cylinder" || type === "mobius") {
+      var rolled = rolledMorphPoint(type, flat, u, v, projected, progress, frame);
+      if (rolled) { return rolled; }
+    }
+    if (amount === 1) { return mapped; }
+    var width = frame && frame.width, height = frame && frame.height;
+    var span = width && height ? Math.min(width, height) : (projected.depthScale || 120) * 3.5;
+    var pull = smooth(clamp01(progress) / 0.1);
+    var outX = (u * 2 - 1) * span * 0.035;
+    var outY = (v * 2 - 1) * span * 0.035;
+    var dx = projected.x - flat.x, dy = projected.y - flat.y;
+    var length = Math.sqrt(dx * dx + dy * dy + span * span * 0.04);
+    var arcX = -dy / length * span * 0.11;
+    var arcY = dx / length * span * 0.11;
+    var startX = flat.x + outX * pull, startY = flat.y + outY * pull;
+    var control1X = startX + (projected.x - startX) / 3 + outX * 0.6 + arcX * 0.35;
+    var control1Y = startY + (projected.y - startY) / 3 + outY * 0.6 + arcY * 0.35;
+    var control2X = startX + (projected.x - startX) * 2 / 3 + arcX;
+    var control2Y = startY + (projected.y - startY) * 2 / 3 + arcY;
+    // Control points stay in the frame; their convex hull also contains the
+    // entire curved route. Keep a flat endpoint already near the edge intact.
+    if (width && height) {
+      var padding = span * 0.025;
+      var left = Math.min(padding, flat.x, projected.x), right = Math.max(width - padding, flat.x, projected.x);
+      var top = Math.min(padding, flat.y, projected.y), bottom = Math.max(height - padding, flat.y, projected.y);
+      startX = Math.max(left, Math.min(right, startX)); startY = Math.max(top, Math.min(bottom, startY));
+      control1X = Math.max(left, Math.min(right, control1X)); control1Y = Math.max(top, Math.min(bottom, control1Y));
+      control2X = Math.max(left, Math.min(right, control2X)); control2Y = Math.max(top, Math.min(bottom, control2Y));
+    }
+    var remain = 1 - amount, first = 3 * remain * remain * amount, second = 3 * remain * amount * amount;
+    mapped.x = remain * remain * remain * startX + first * control1X + second * control2X + amount * amount * amount * projected.x;
+    mapped.y = remain * remain * remain * startY + first * control1Y + second * control2Y + amount * amount * amount * projected.y;
+    mapped.depth += 3 * remain * amount * 0.28;
+    return mapped;
+  }
+
+  function surfaceGridCoordinate(rules, index, segments, axis, morph) {
+    var uniform = index / segments;
+    if ((rules.type || rules.topology) !== "sphere" || index <= 0 || index >= segments || segments < 3) { return uniform; }
+    var blend = 1 - smooth(clamp01(morph) / 0.3);
+    if (!blend) { return uniform; }
+    var first = stoneUV(rules, 0)[axis], last = stoneUV(rules, rules.width * rules.height - 1)[axis];
+    var firstIndex = Math.max(1, Math.min(segments - 2, Math.round(first * segments)));
+    var lastIndex = Math.max(firstIndex + 1, Math.min(segments - 1, Math.round(last * segments)));
+    // The flat sphere chart changes scale at its first/last stone rows.
+    // Place real mesh edges there, then return to the regular 3D sampling.
+    if (index === firstIndex) { return uniform + (first - uniform) * blend; }
+    if (index === lastIndex) { return uniform + (last - uniform) * blend; }
+    return uniform;
+  }
+
+  function createSurfaceMesh(vertices, options) {
     var rows = vertices.length - 1, columns = vertices[0].length - 1;
+    var uAxis = vertices[0].map(function coordinate(vertex, index) { return Number.isFinite(vertex.u) ? vertex.u : index / columns; });
+    var vAxis = vertices.map(function coordinate(row, index) { return Number.isFinite(row[0].v) ? row[0].v : index / rows; });
+    var uniform = uAxis.every(function regular(value, index) { return Math.abs(value - index / columns) < 1e-12; }) &&
+      vAxis.every(function regular(value, index) { return Math.abs(value - index / rows) < 1e-12; });
+    function cellAt(axis, value) {
+      var low = 0, high = axis.length - 1;
+      while (low + 1 < high) {
+        var middle = (low + high) >> 1;
+        if (axis[middle] <= value) { low = middle; } else { high = middle; }
+      }
+      return Math.min(axis.length - 2, low);
+    }
+    var fans = Object.create(null), fanEdges = [];
+    function faceKey(row, column, half) { return (row * columns + column) * 2 + half; }
+    // At six sphere-chart corner triangles every original vertex lies on
+    // the equator. Sample the interior too, so opposite hemispheres cannot
+    // collapse onto the same flat triangle when their boundary closes.
+    if (options && options.topology === "sphere" && typeof options.pointAt === "function") {
+      [[0, 0, 0], [0, 0, 1], [0, columns - 1, 0],
+        [rows - 1, 0, 1], [rows - 1, columns - 1, 0], [rows - 1, columns - 1, 1]].forEach(function addFan(cell) {
+        var row = cell[0], column = cell[1], half = cell[2], key = faceKey(row, column, half);
+        if (fans[key]) { return; }
+        var corners = half ? [vertices[row][column], vertices[row + 1][column + 1], vertices[row + 1][column]]
+          : [vertices[row][column], vertices[row][column + 1], vertices[row + 1][column + 1]];
+        var u = (uAxis[column] * (half ? 2 : 1) + uAxis[column + 1] * (half ? 1 : 2)) / 3;
+        var v = (vAxis[row] * (half ? 1 : 2) + vAxis[row + 1] * (half ? 2 : 1)) / 3;
+        var center = options.pointAt(u, v);
+        center.u = u; center.v = v;
+        fans[key] = { corners: corners, center: center };
+        corners.forEach(function edge(corner) { fanEdges.push([center, corner]); });
+      });
+    }
     function point(u, v) {
       u = clamp01(u); v = clamp01(v);
-      var column = Math.min(columns - 1, Math.floor(u * columns));
-      var row = Math.min(rows - 1, Math.floor(v * rows));
-      var x = u * columns - column, y = v * rows - row;
+      var column = uniform ? Math.min(columns - 1, Math.floor(u * columns)) : cellAt(uAxis, u);
+      var row = uniform ? Math.min(rows - 1, Math.floor(v * rows)) : cellAt(vAxis, v);
+      var x = uniform ? u * columns - column : (u - uAxis[column]) / (uAxis[column + 1] - uAxis[column]);
+      var y = uniform ? v * rows - row : (v - vAxis[row]) / (vAxis[row + 1] - vAxis[row]);
       var a = vertices[row][column], b, c, wa, wb, wc;
       // Every quad uses the same top-left to bottom-right diagonal as the
       // painted surface and its depth index.
@@ -524,6 +921,17 @@
       if (Number.isFinite(a.depthScale) && Number.isFinite(b.depthScale) && Number.isFinite(c.depthScale)) {
         mapped.depthScale = a.depthScale * wa + b.depthScale * wb + c.depthScale * wc;
       }
+      var fan = fans[faceKey(row, column, y <= x ? 0 : 1)];
+      if (fan) {
+        // The smallest original barycentric weight selects a fan sector.
+        // This correction is exactly its piecewise-linear interpolation.
+        var weight = Math.max(0, Math.min(wa, wb, wc));
+        ["x", "y", "depth", "scale", "depthScale"].forEach(function refine(key) {
+          if (Number.isFinite(mapped[key]) && Number.isFinite(fan.center[key])) {
+            mapped[key] += weight * (3 * fan.center[key] - a[key] - b[key] - c[key]);
+          }
+        });
+      }
       return mapped;
     }
     function path(from, to) {
@@ -539,12 +947,42 @@
           if (amount > 1e-10 && amount < 1 - 1e-10) { stops.push(amount); }
         }
       }
-      crossIntegers(fromU * columns, du * columns);
-      crossIntegers(fromV * rows, dv * rows);
-      // Within a cell its diagonal is localX=localY, equivalently
-      // columns*u-rows*v is an integer. These crossings matter even when
-      // both ends remain inside the same quad.
-      crossIntegers(fromU * columns - fromV * rows, du * columns - dv * rows);
+      if (uniform) {
+        crossIntegers(fromU * columns, du * columns);
+        crossIntegers(fromV * rows, dv * rows);
+        // In a regular cell its diagonal is columns*u-rows*v=integer.
+        crossIntegers(fromU * columns - fromV * rows, du * columns - dv * rows);
+      } else {
+        function crossAxis(axis, start, change) {
+          if (Math.abs(change) < 1e-12) { return; }
+          var low = Math.min(start, start + change), high = Math.max(start, start + change);
+          for (var index = cellAt(axis, low) + 1; index < axis.length && axis[index] < high; index += 1) {
+            var amount = (axis[index] - start) / change;
+            if (amount > 1e-10 && amount < 1 - 1e-10) { stops.push(amount); }
+          }
+        }
+        crossAxis(uAxis, fromU, du); crossAxis(vAxis, fromV, dv);
+        stops.sort(function alongPath(a, b) { return a - b; });
+        var cellStops = stops.slice();
+        for (var cell = 1; cell < cellStops.length; cell += 1) {
+          var begin = cellStops[cell - 1], end = cellStops[cell], middle = (begin + end) / 2;
+          var column = cellAt(uAxis, fromU + du * middle), row = cellAt(vAxis, fromV + dv * middle);
+          var cellWidth = uAxis[column + 1] - uAxis[column], cellHeight = vAxis[row + 1] - vAxis[row];
+          var slope = du / cellWidth - dv / cellHeight;
+          if (Math.abs(slope) < 1e-12) { continue; }
+          var amount = -((fromU - uAxis[column]) / cellWidth - (fromV - vAxis[row]) / cellHeight) / slope;
+          if (amount > begin + 1e-10 && amount < end - 1e-10) { stops.push(amount); }
+        }
+      }
+      fanEdges.forEach(function crossFan(edge) {
+        var a = edge[0], b = edge[1], eu = b.u - a.u, ev = b.v - a.v;
+        var denominator = du * ev - dv * eu;
+        if (Math.abs(denominator) < 1e-14) { return; }
+        var au = a.u - fromU, av = a.v - fromV;
+        var along = (au * ev - av * eu) / denominator;
+        var across = (au * dv - av * du) / denominator;
+        if (along > 1e-10 && along < 1 - 1e-10 && across >= -1e-10 && across <= 1 + 1e-10) { stops.push(along); }
+      });
       stops.sort(function alongPath(a, b) { return a - b; });
       var points = [], previous = -1;
       for (var index = 0; index < stops.length; index += 1) {
@@ -555,7 +993,25 @@
       }
       return points;
     }
-    return { point: point, path: path, columns: columns, rows: rows };
+    function refinePatches(patches) {
+      if (!fanEdges.length) { return patches; }
+      var refined = [];
+      patches.forEach(function refine(patch) {
+        var points = patch.points;
+        var row = cellAt(vAxis, points[0].v), column = cellAt(uAxis, points[0].u);
+        if (!fans[faceKey(row, column, 0)] && !fans[faceKey(row, column, 1)]) { refined.push(patch); return; }
+        var faces = points.length === 4 ? [[points[0], points[1], points[2]], [points[0], points[2], points[3]]] : [points];
+        faces.forEach(function refineFace(face) {
+          var half = face[1] === vertices[row + 1][column + 1] ? 1 : 0;
+          var fan = fans[faceKey(row, column, half)];
+          function add(triangle) { refined.push({ points: triangle, depth: (triangle[0].depth + triangle[1].depth + triangle[2].depth) / 3 }); }
+          if (!fan) { add(face); return; }
+          for (var index = 0; index < 3; index += 1) { add([face[index], face[(index + 1) % 3], fan.center]); }
+        });
+      });
+      return refined;
+    }
+    return { point: point, path: path, refinePatches: refinePatches, columns: columns, rows: rows };
   }
 
   // A DOM-free spatial index shared by H5 and Canvas hosts. Query the exact
@@ -576,8 +1032,10 @@
       var dzdy = ((b.x - a.x) * (c.depth - a.depth) - (c.x - a.x) * (b.depth - a.depth)) / area;
       var facet = { a: a, b: b, c: c, dzdx: dzdx, dzdy: dzdy,
         offset: a.depth - dzdx * a.x - dzdy * a.y,
+        minDepth: Math.min(a.depth, b.depth, c.depth), maxDepth: Math.max(a.depth, b.depth, c.depth),
         minX: Math.min(a.x, b.x, c.x), maxX: Math.max(a.x, b.x, c.x),
         minY: Math.min(a.y, b.y, c.y), maxY: Math.max(a.y, b.y, c.y), query: 0 };
+      facet.vertices = [a, b, c];
       var left = Math.max(0, Math.floor((facet.minX - edgeTolerance) / binSize));
       var right = Math.min(columns - 1, Math.floor((facet.maxX + edgeTolerance) / binSize));
       var top = Math.max(0, Math.floor((facet.minY - edgeTolerance) / binSize));
@@ -638,6 +1096,49 @@
     function visible(point, bias) {
       return point.depth + (bias === undefined ? 0.035 : bias) >= depthAt(point.x, point.y);
     }
+    function surfaceIntersections() {
+      if (buffer.intersections) { return buffer.intersections; }
+      // These completed embeddings have no self-crossings. Their polar chart
+      // singularities can produce subpixel tessellation overlaps, not cuts.
+      if (buffer.morph === 0 || (buffer.morph === 1 && buffer.topology !== "projective" && buffer.topology !== "klein" && buffer.topology)) {
+        buffer.intersections = []; return buffer.intersections;
+      }
+      var result = [], unique = new Set();
+      bins.forEach(function intersectBin(bin, binIndex) {
+        if (!bin) { return; }
+        var ordered = bin.slice().sort(function depthOrder(a, b) { return a.minDepth - b.minDepth; });
+        for (var firstIndex = 0; firstIndex < ordered.length; firstIndex += 1) {
+          var first = ordered[firstIndex];
+          for (var secondIndex = firstIndex + 1; secondIndex < ordered.length; secondIndex += 1) {
+            var second = ordered[secondIndex];
+            if (second.minDepth > first.maxDepth + 1e-8) { break; }
+            var ax = first.dzdx - second.dzdx, ay = first.dzdy - second.dzdy, az = first.offset - second.offset;
+            var left = Math.max(first.minX, second.minX), right = Math.min(first.maxX, second.maxX);
+            var top = Math.max(first.minY, second.minY), bottom = Math.min(first.maxY, second.maxY);
+            if (right < left - edgeTolerance || bottom < top - edgeTolerance) { continue; }
+            // An overlap belongs to its first screen bin. This makes the sweep
+            // independent of how many bins contain a large or grazing facet.
+            var owner = Math.max(0, Math.floor(top / binSize)) * columns + Math.max(0, Math.floor(left / binSize));
+            if (owner !== binIndex) { continue; }
+            var low = ax * (ax > 0 ? left : right) + ay * (ay > 0 ? top : bottom) + az;
+            var high = ax * (ax > 0 ? right : left) + ay * (ay > 0 ? bottom : top) + az;
+            if (low > 1e-8 || high < -1e-8 || Math.abs(ax) + Math.abs(ay) < 1e-10) { continue; }
+            var shared = 0, a = first.vertices, b = second.vertices;
+            for (var i = 0; i < 3 && shared < 2; i += 1) {
+              for (var j = 0; j < 3; j += 1) { if (chartNeighbors(a[i], b[j], buffer.topology)) { shared += 1; break; } }
+            }
+            if (shared >= 2) { continue; }
+            var segment = facetIntersection(first, second);
+            if (!segment) { continue; }
+            var keys = segment.map(function key(p) { return Math.round(p.x * 1e6) + ":" + Math.round(p.y * 1e6) + ":" + Math.round(p.depth * 1e7); }).sort();
+            var key = keys.join("/");
+            if (!unique.has(key)) { unique.add(key); result.push(segment); }
+          }
+        }
+      });
+      buffer.intersections = joinIntersectionSegments(result);
+      return buffer.intersections;
+    }
     function occludedInterval(from, to, facet, bias) {
       var start = 0, end = 1;
       function clip(value, change) {
@@ -659,7 +1160,7 @@
       if (!clip(gap, facet.dzdx * dx + facet.dzdy * dy - (to.depth - from.depth))) { return null; }
       return end > start ? [start, end] : null;
     }
-    function strokePath(ctx, points) {
+    function strokePath(ctx, points, paintStroke) {
       if (points.length < 2) { return; }
       if (buffer.mesh && points.every(function hasUV(p) { return Number.isFinite(p.u) && Number.isFinite(p.v); })) {
         var mapped = [buffer.mesh.point(points[0].u, points[0].v)];
@@ -675,13 +1176,33 @@
         }
         points = mapped;
       }
+      // Mesh splits on one straight 3D segment do not need separate Canvas
+      // joins. Keep real bends, depth changes and reversals intact; only the
+      // drawing path is reduced, never the mesh or its occlusion geometry.
+      if (points.length > 2) {
+        var reduced = [points[0]];
+        function liesBetween(a, b, c) {
+          var dx = c.x - a.x, dy = c.y - a.y, dz = c.depth - a.depth;
+          var squared = dx * dx + dy * dy;
+          var amount = squared > 1e-20 ? ((b.x - a.x) * dx + (b.y - a.y) * dy) / squared
+            : dz ? (b.depth - a.depth) / dz : 0;
+          return amount >= 0 && amount <= 1 &&
+            Math.hypot(b.x - a.x - dx * amount, b.y - a.y - dy * amount) <= 1e-8 &&
+            Math.abs(b.depth - a.depth - dz * amount) <= 1e-10;
+        }
+        for (var vertex = 1; vertex < points.length; vertex += 1) {
+          while (reduced.length > 1 && liesBetween(reduced[reduced.length - 2], reduced[reduced.length - 1], points[vertex])) { reduced.pop(); }
+          reduced.push(points[vertex]);
+        }
+        points = reduced;
+      }
       if (buffer.translucency) {
         ctx.save();
         ctx.globalAlpha *= buffer.translucency;
         ctx.beginPath();
         ctx.moveTo(points[0].x, points[0].y);
         for (var back = 1; back < points.length; back += 1) { ctx.lineTo(points[back].x, points[back].y); }
-        ctx.stroke();
+        if (paintStroke) { paintStroke(ctx); } else { ctx.stroke(); }
         ctx.restore();
       }
       ctx.beginPath();
@@ -710,11 +1231,162 @@
         }
         if (cursor < 1) { drawInterval(cursor, 1); }
       }
-      ctx.stroke();
+      if (paintStroke) { paintStroke(ctx); } else { ctx.stroke(); }
     }
-    var buffer = { visible: visible, depthAt: depthAt, trianglesInRect: trianglesInRect,
+    var buffer = { visible: visible, depthAt: depthAt, trianglesInRect: trianglesInRect, surfaceIntersections: surfaceIntersections,
       strokePath: strokePath, translucency: 0 };
     return buffer;
+  }
+
+  function chartNeighbors(a, b, type) {
+    if (a === b) { return true; }
+    if (!Number.isFinite(a.u) || !Number.isFinite(b.u)) { return false; }
+    var epsilon = 1e-8;
+    if (Math.abs(a.u - b.u) < epsilon && Math.abs(a.v - b.v) < epsilon) { return true; }
+    // A quotient edge is a neighbor only once those two displayed points
+    // coincide. During unfolding the separated sheets can genuinely cross.
+    if (Math.abs(a.x - b.x) + Math.abs(a.y - b.y) > 1e-5 || Math.abs(a.depth - b.depth) > epsilon) { return false; }
+    if (type === "sphere") {
+      return (a.u < epsilon && b.v < epsilon && Math.abs(a.v - b.u) < epsilon) ||
+        (b.u < epsilon && a.v < epsilon && Math.abs(b.v - a.u) < epsilon) ||
+        (a.u > 1 - epsilon && b.v > 1 - epsilon && Math.abs(a.v - b.u) < epsilon) ||
+        (b.u > 1 - epsilon && a.v > 1 - epsilon && Math.abs(b.v - a.u) < epsilon);
+    }
+    if (Math.abs(a.u - b.u) > 1 - epsilon && isPeriodicX(type)) {
+      if (Math.abs(a.v - (hasXTwist(type) ? 1 - b.v : b.v)) < epsilon) { return true; }
+    }
+    if (Math.abs(a.v - b.v) > 1 - epsilon && isPeriodicY(type)) {
+      if (Math.abs(a.u - (hasYTwist(type) ? 1 - b.u : b.u)) < epsilon) { return true; }
+    }
+    return false;
+  }
+
+  // Two rendered facets meet where their affine depths agree. Clipping that
+  // line to both triangles finds actual crossings, not projected overlaps.
+  function facetIntersection(first, second) {
+    var dx = first.dzdx - second.dzdx, dy = first.dzdy - second.dzdy, offset = first.offset - second.offset;
+    var norm = Math.hypot(dx, dy);
+    if (norm < 1e-10) { return null; }
+    dx /= norm; dy /= norm; offset /= norm;
+    var directionX = -dy, directionY = dx, originX = -offset * dx, originY = -offset * dy;
+    var low = -Infinity, high = Infinity;
+    var vertices = [[first.a, first.b, first.c], [second.a, second.b, second.c]];
+    for (var polygon = 0; polygon < 2; polygon += 1) {
+      for (var edge = 0; edge < 3; edge += 1) {
+        var a = vertices[polygon][edge], b = vertices[polygon][(edge + 1) % 3];
+        var ex = b.x - a.x, ey = b.y - a.y;
+        var value = ex * (originY - a.y) - ey * (originX - a.x);
+        var change = ex * directionY - ey * directionX;
+        if (Math.abs(change) < 1e-10) { if (value < -1e-7) { return null; } }
+        else if (change > 0) { low = Math.max(low, -value / change); }
+        else { high = Math.min(high, -value / change); }
+        if (high - low < 1e-5) { return null; }
+      }
+    }
+    return [low, high].map(function point(amount) {
+      var x = originX + directionX * amount, y = originY + directionY * amount;
+      return { x: x, y: y, depth: first.dzdx * x + first.dzdy * y + first.offset };
+    });
+  }
+
+  function joinIntersectionSegments(segments) {
+    var points = [], nodes = new Map(), edges = [];
+    function vertex(point) {
+      var x = Math.round(point.x * 1e4), y = Math.round(point.y * 1e4), key = x + ":" + y;
+      var index = nodes.get(key);
+      if (index !== undefined && Math.abs(points[index].point.depth - point.depth) < 1e-5) { return index; }
+      for (var dy = -1; dy <= 1; dy += 1) {
+        for (var dx = -1; dx <= 1; dx += 1) {
+          var nearby = nodes.get((x + dx) + ":" + (y + dy));
+          if (nearby === undefined) { continue; }
+          var p = points[nearby].point;
+          if (Math.abs(p.x - point.x) < 1e-4 && Math.abs(p.y - point.y) < 1e-4 && Math.abs(p.depth - point.depth) < 1e-5) { return nearby; }
+        }
+      }
+      index = points.length; nodes.set(key, index); points.push({ point: point, edges: [] });
+      return index;
+    }
+    segments.forEach(function append(segment) {
+      var a = vertex(segment[0]), b = vertex(segment[1]);
+      if (a === b) { return; }
+      var edge = { a: a, b: b, used: false };
+      edges.push(edge); points[a].edges.push(edge); points[b].edges.push(edge);
+    });
+    var paths = [];
+    function trace(first, edge) {
+      var path = [points[first].point], current = first;
+      while (edge && !edge.used) {
+        edge.used = true; current = edge.a === current ? edge.b : edge.a;
+        path.push(points[current].point);
+        if (points[current].edges.length !== 2) { break; }
+        edge = points[current].edges.find(function unused(candidate) { return !candidate.used; });
+      }
+      if (path.length > 1) { paths.push(path); }
+    }
+    points.forEach(function ends(node, index) {
+      if (node.edges.length !== 2) { node.edges.forEach(function edge(candidate) { if (!candidate.used) { trace(index, candidate); } }); }
+    });
+    edges.forEach(function loops(edge) { if (!edge.used) { trace(edge.a, edge); } });
+    return paths;
+  }
+
+  function strokeIntersectionLight(ctx, stoneContact) {
+    // A broad white glow and brighter core distinguish the cut from the grey
+    // grid. Canvas blurs in device pixels; preserve the visual radius.
+    ctx.shadowOffsetX = 0; ctx.shadowOffsetY = 0;
+    var matrix = typeof ctx.getTransform === "function" ? ctx.getTransform() : null;
+    var scale = matrix ? Math.hypot(matrix.a, matrix.b) : 1;
+    if (stoneContact) {
+      ctx.strokeStyle = "rgba(255, 255, 249, 0.82)";
+      ctx.lineWidth = 1.15;
+      ctx.shadowColor = "rgba(255, 255, 245, 0.65)";
+      ctx.shadowBlur = 5 * scale;
+      ctx.stroke();
+      return;
+    }
+    ctx.strokeStyle = "rgba(255, 255, 249, 0.22)";
+    ctx.lineWidth = 3.8;
+    ctx.shadowColor = "rgba(255, 255, 245, 0.95)";
+    ctx.shadowBlur = 14 * scale;
+    ctx.stroke();
+    ctx.strokeStyle = "rgba(255, 255, 249, 0.96)";
+    ctx.lineWidth = 1.7;
+    ctx.shadowBlur = 7 * scale;
+    ctx.stroke();
+  }
+
+  function drawSurfaceIntersections(ctx, depth) {
+    if (!depth || depth.morph === 0) { return; }
+    var paths = depth.surfaceIntersections();
+    if (!paths.length) { return; }
+    ctx.save();
+    ctx.lineCap = "round"; ctx.lineJoin = "round";
+    paths.forEach(function stroke(path) { depth.strokePath(ctx, softenIntersectionPath(path), strokeIntersectionLight); });
+    ctx.restore();
+  }
+
+  function softenIntersectionPath(points) {
+    if (points.length < 3) { return points; }
+    // Keep geometric queries exact. For the subpixel stroke only, soften the
+    // alternating diagonal facets without moving a cut more than half a pixel.
+    var current = points;
+    for (var pass = 0; pass < 2; pass += 1) {
+      current = current.map(function soften(point, index, path) {
+        if (!index || index === path.length - 1) { return point; }
+        var before = path[index - 1], after = path[index + 1];
+        var left = Math.hypot(point.x - before.x, point.y - before.y), right = Math.hypot(after.x - point.x, after.y - point.y);
+        if (left + right < 1e-7) { return point; }
+        var amount = left / (left + right);
+        var x = point.x * 0.5 + (before.x + (after.x - before.x) * amount) * 0.5;
+        var y = point.y * 0.5 + (before.y + (after.y - before.y) * amount) * 0.5;
+        var depth = point.depth * 0.5 + (before.depth + (after.depth - before.depth) * amount) * 0.5;
+        var original = points[index], drift = Math.hypot(x - original.x, y - original.y);
+        var weight = drift > 0.5 ? 0.5 / drift : 1;
+        return { x: original.x + (x - original.x) * weight, y: original.y + (y - original.y) * weight,
+          depth: original.depth + (depth - original.depth) * weight };
+      });
+    }
+    return current;
   }
 
   // Clip convex polygons in screen space. Keeping the edges as vectors lets
@@ -748,12 +1420,7 @@
     return result.length === points.length && result.every(function unchanged(p, i) { return p === points[i]; }) ? points : result;
   }
 
-  function stoneContours(depth, point, radius) {
-    var extent = radius + 1;
-    var left = point.x - extent, right = point.x + extent;
-    var top = point.y - extent, bottom = point.y + extent;
-    var whole = [{ x: left, y: top }, { x: right, y: top }, { x: right, y: bottom }, { x: left, y: bottom }];
-    var pieces = [whole], changed = false;
+  function stoneCapPlanes(point, radius) {
     // A shallow rounded cap has depth of its own. The tangent envelope avoids
     // treating the whole face as a single centre-depth switch or a flat decal.
     var relief = radius / Math.max(1, point.depthScale || 150);
@@ -767,6 +1434,16 @@
         planes.push({ x: dx, y: dy, z: point.depth + 0.025 + relief / height - dx * point.x - dy * point.y });
       }
     });
+    return planes;
+  }
+
+  function stoneContours(depth, point, radius) {
+    var extent = radius + 1;
+    var left = point.x - extent, right = point.x + extent;
+    var top = point.y - extent, bottom = point.y + extent;
+    var whole = [{ x: left, y: top }, { x: right, y: top }, { x: right, y: bottom }, { x: left, y: bottom }];
+    var pieces = [whole], changed = false;
+    var planes = stoneCapPlanes(point, radius);
     var candidates = depth.trianglesInRect(left, top, right, bottom);
     candidates.sort(function nearestFirst(a, b) { return b.offset + b.dzdx * point.x + b.dzdy * point.y - a.offset - a.dzdx * point.x - a.dzdy * point.y; });
     candidates.forEach(function cutSurface(triangle) {
@@ -927,6 +1604,86 @@
     return result;
   }
 
+  function stoneIntersectionContours(depth, point, radius, outline) {
+    if (!depth) { return []; }
+    if (outline === undefined) { outline = stoneOutline(stoneContours(depth, point, radius)); }
+    if (!outline || !outline.length) { return []; }
+    var planes = stoneCapPlanes(point, radius), segments = [], depths = new Map();
+    var candidates = depth.trianglesInRect(point.x - radius, point.y - radius, point.x + radius, point.y + radius);
+    function capDepth(p) {
+      var value = Infinity;
+      for (var index = 0; index < planes.length; index += 1) {
+        var plane = planes[index]; value = Math.min(value, plane.x * p.x + plane.y * p.y + plane.z);
+      }
+      return value;
+    }
+    function cachedCapDepth(p) {
+      var known = depths.get(p);
+      if (known !== undefined) { return known; }
+      known = capDepth(p);
+      depths.set(p, known); return known;
+    }
+    function surfaceContact(from, to, middle, fromDepth, toDepth) {
+      var middleDepth = capDepth(middle);
+      if (Math.abs(middleDepth - (fromDepth + toDepth) / 2) > 1e-5) { return false; }
+      // A visible-outline edge already survived every foreground occluder.
+      // Match its affine cut to one local facet, instead of querying the whole
+      // depth field three times for every small fragment of every stone.
+      for (var index = 0; index < candidates.length; index += 1) {
+        var facet = candidates[index];
+        if (middle.x < facet.minX - 1e-6 || middle.x > facet.maxX + 1e-6 || middle.y < facet.minY - 1e-6 || middle.y > facet.maxY + 1e-6) { continue; }
+        if (Math.abs(facet.dzdx * from.x + facet.dzdy * from.y + facet.offset - fromDepth) > 1e-5 ||
+            Math.abs(facet.dzdx * to.x + facet.dzdy * to.y + facet.offset - toDepth) > 1e-5) { continue; }
+        var vertices = facet.vertices, inside = true;
+        for (var edge = 0; edge < 3; edge += 1) {
+          var a = vertices[edge], b = vertices[(edge + 1) % 3];
+          if ((b.x - a.x) * (middle.y - a.y) - (b.y - a.y) * (middle.x - a.x) < -1e-6) { inside = false; break; }
+        }
+        if (inside) { return true; }
+      }
+      return false;
+    }
+    outline.forEach(function contour(polygon) {
+      for (var index = 0; index < polygon.length; index += 1) {
+        var a = polygon[index], b = polygon[(index + 1) % polygon.length];
+        var dx = b.x - a.x, dy = b.y - a.y, lengthSquared = dx * dx + dy * dy;
+        if (lengthSquared < 1e-10) { continue; }
+        var ox = a.x - point.x, oy = a.y - point.y;
+        var center = -(ox * dx + oy * dy) / lengthSquared;
+        var halfSquared = center * center - (ox * ox + oy * oy - radius * radius) / lengthSquared;
+        if (halfSquared <= 0) { continue; }
+        var half = Math.sqrt(halfSquared), low = Math.max(0, center - half), high = Math.min(1, center + half);
+        if (high - low < 1e-5) { continue; }
+        // Discard the clipping rectangle outside the circular face before
+        // querying any depth. Shared outline vertices reuse the same query.
+        var from = low === 0 ? a : { x: a.x + dx * low, y: a.y + dy * low };
+        var to = high === 1 ? b : { x: a.x + dx * high, y: a.y + dy * high };
+        // The visibility outline also contains unrelated foreground silhouettes.
+        // Retain only edges at which the rounded stone and surface meet in depth.
+        var middle = { x: (from.x + to.x) / 2, y: (from.y + to.y) / 2 };
+        var fromDepth = cachedCapDepth(from), toDepth = cachedCapDepth(to);
+        if (!surfaceContact(from, to, middle, fromDepth, toDepth)) { continue; }
+        segments.push([{ x: from.x, y: from.y, depth: fromDepth }, { x: to.x, y: to.y, depth: toDepth }]);
+      }
+    });
+    return joinIntersectionSegments(segments);
+  }
+
+  function drawStoneIntersections(ctx, depth, point, radius, outline) {
+    var paths = stoneIntersectionContours(depth, point, radius, outline);
+    if (!paths.length) { return; }
+    ctx.save();
+    ctx.beginPath();
+    paths.forEach(function path(raw) {
+      var points = softenIntersectionPath(raw);
+      ctx.moveTo(points[0].x, points[0].y);
+      for (var index = 1; index < points.length; index += 1) { ctx.lineTo(points[index].x, points[index].y); }
+    });
+    ctx.lineCap = "round"; ctx.lineJoin = "round";
+    strokeIntersectionLight(ctx, true);
+    ctx.restore();
+  }
+
   function paintStone(ctx, depth, point, radius, paint) {
     var contours = depth ? stoneContours(depth, point, radius) : null;
     if (!contours) { paint(); return; }
@@ -955,7 +1712,8 @@
     }
     ctx.save();
     ctx.beginPath();
-    stoneOutline(contours).forEach(function contour(points) {
+    var outline = stoneOutline(contours);
+    outline.forEach(function contour(points) {
       ctx.moveTo(points[0].x, points[0].y);
       for (var i = 1; i < points.length; i += 1) { ctx.lineTo(points[i].x, points[i].y); }
       ctx.closePath();
@@ -963,6 +1721,7 @@
     ctx.clip();
     paint(false);
     ctx.restore();
+    drawStoneIntersections(ctx, depth, point, radius, outline);
   }
 
   function fillSurface(ctx, patches) {
@@ -1163,10 +1922,15 @@
     surfacePoint: surfacePoint,
     project: project,
     projectPoint: projectPoint,
+    seamProgress: seamProgress,
+    morphPoint: morphPoint,
     createDepthBuffer: createDepthBuffer,
     createSurfaceMesh: createSurfaceMesh,
+    surfaceGridCoordinate: surfaceGridCoordinate,
+    drawSurfaceIntersections: drawSurfaceIntersections,
     stoneContours: stoneContours,
     stoneOutline: stoneOutline,
+    stoneIntersectionContours: stoneIntersectionContours,
     paintStone: paintStone,
     fillSurface: fillSurface,
     stoneUV: stoneUV,

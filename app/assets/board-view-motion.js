@@ -26,7 +26,7 @@
     view.startProgress = view.progress;
     view.target = target;
     view.startedAt = time;
-    view.duration = animate ? Liquid.duration(target - view.progress, touch) : 0;
+    view.duration = animate ? Liquid.surfaceDuration(target - view.progress, touch) : 0;
     view.transitioning = Boolean(animate && Math.abs(target - view.progress) > 0.001);
     if (!view.transitioning) { view.progress = target; }
   }

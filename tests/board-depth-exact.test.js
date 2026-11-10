@@ -104,12 +104,39 @@ test("coplanar grid paths stay connected while a separate foreground fold still 
   const buffer = Morph.createDepthBuffer(128, 128, [quad(10, 20, 110, 100, 1)]);
   const points = Array.from({ length: 101 }, (_, index) => ({ x: index + 10, y: 60, depth: 1 }));
   const segments = drawnSegments(buffer, points);
-  assert.equal(segments.length, 100);
-  for (let index = 1; index < segments.length; index++) {
-    assert.deepEqual(segments[index][0], segments[index - 1][1]);
-  }
+  assert.deepEqual(segments, [[{ x: 10, y: 60 }, { x: 110, y: 60 }]], "collinear samples paint one uninterrupted segment");
   const near = drawnSegments(buffer, [{ x: 10, y: 60, depth: 0.97 }, { x: 110, y: 60, depth: 0.97 }]);
   assert.equal(near.length, 1, "small mesh offsets favor the visible grid");
+});
+
+test("dense straight mesh paths paint one segment without changing the mesh or skipping thin occluders", () => {
+  const count = 20;
+  const vertices = Array.from({ length: count + 1 }, (_, row) => Array.from({ length: count + 1 }, (_, column) => ({
+    u: column / count, v: row / count, x: 10 + 100 * column / count, y: 10 + 100 * row / count, depth: column / count * 0.1
+  })));
+  const mesh = Morph.createSurfaceMesh(vertices), before = JSON.stringify(vertices);
+  const points = Array.from({ length: 97 }, (_, index) => ({ u: index / 96, v: .41 }));
+  const clear = Morph.createDepthBuffer(128, 128, []); clear.mesh = mesh;
+  assert.deepEqual(drawnSegments(clear, points), [[{ x: 10, y: 51 }, { x: 110, y: 51 }]]);
+  const blocker = Morph.createDepthBuffer(128, 128, [quad(50.123, 20, 50.323, 100, 1)]); blocker.mesh = mesh;
+  const segments = drawnSegments(blocker, points);
+  assert.equal(segments.length, 2, "a long simplified stroke still performs exact foreground clipping");
+  assert.ok(Math.abs(segments[0][1].x - 50.123) < 1e-6);
+  assert.ok(Math.abs(segments[1][0].x - 50.323) < 1e-6);
+  assert.equal(JSON.stringify(vertices), before, "rendering simplification never mutates geometry");
+});
+
+test("stroke simplification preserves true screen bends, depth bends and direction reversals", () => {
+  const clear = Morph.createDepthBuffer(128, 128, []);
+  const a = { x: 10, y: 60, depth: 0 }, b = { x: 60, y: 60, depth: 0 }, c = { x: 110, y: 60, depth: 0 };
+  assert.equal(drawnSegments(clear, [a, { ...b, y: 60 + 2e-8 }, c]).length, 2, "screen turns beyond 1e-8px remain");
+  assert.equal(drawnSegments(clear, [a, { ...b, depth: 2e-10 }, c]).length, 2, "depth turns beyond 1e-10 remain");
+  const reversal = [a, b, { ...b, x: 40 }, c];
+  assert.equal(drawnSegments(clear, reversal).length, 3, "a collinear reversal is not a straight monotone path");
+  const blocker = Morph.createDepthBuffer(128, 128, [quad(0, 0, 128, 128, .5)]);
+  const bentDepth = drawnSegments(blocker, [{ ...a, depth: .8 }, { ...b, depth: .1 }, { ...c, depth: .8 }]);
+  assert.equal(bentDepth.length, 2, "the hidden middle of a depth bend stays hidden");
+  assert.ok(bentDepth[0][1].x < 40 && bentDepth[1][0].x > 80);
 });
 
 test("all folded boards preserve visibility under subpixel screen translations", () => {
