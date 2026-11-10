@@ -1,0 +1,15 @@
+{
+  "repository": "YinkaiYu/YinkaiYu.GitHub.io",
+  "commit": "3a782bbe823bee86e4ea00190a5dc11062c54a16",
+  "subpath": "show/topology-gomoku/",
+  "runId": 42812605033,
+  "runUrl": "https://github.com/YinkaiYu/YinkaiYu.GitHub.io/actions/runs/42812605033",
+  "createdAt": "2026-11-10T12:04:07Z",
+  "completedAt": "2026-11-10T12:05:43Z",
+  "conclusion": "success",
+  "onlineUrl": "https://www.yykspace.com/show/topology-gomoku/",
+  "onlineSourceHashesMatch": true,
+  "onlineViewports": 2,
+  "onlineGames": 8,
+  "mobilePhysicalDeviceTested": false
+}

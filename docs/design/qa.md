@@ -382,3 +382,9 @@
 - 复现：提供 Playwright 到 NODE_PATH 后运行 `node scripts/qa-board-first-frame.cjs`；`--after-only` 保留既有基线、只复验当前代码。源码摘要、区域像素误差和正反向记录见[完整结果](../../artifacts/board-first-frame/results.json)。
 - 实际 H5 页面另覆盖六曲面、1280×720 / 390×844、空盘／静止棋子／正在落子／按压回弹，共 48 组。原二维与往返二维画面全部逐像素一致；进度 0.0000001 的 42 组无像素差，其余仅 1–8 个像素出现约一级色阶差，最大平均 RGB 差 0.000052/255。旧切换阈值附近的最大平均差从 8.07 降到 0.055 以下。网格路径只精简真正共线的绘制分段，保留深度转折、回折和真实遮挡。
 - H5 复现：`node scripts/qa-board-first-frame-h5.cjs`。保留[桌面首步画面](../../artifacts/board-first-frame-h5/after-sphere-first-step-1280x720.png)、[手机首步画面](../../artifacts/board-first-frame-h5/after-sphere-first-step-390x844.png)和[逐状态结果](../../artifacts/board-first-frame-h5/results.json)。此处手机检查针对共享游戏页面，对弈室仍按桌面横屏设计；尚未进行原生宿主真机检查。
+
+## 2026-11-10：Web 1.43.0 部署复验
+
+来自 `main@d99166a` 的已确认共享视觉，渠道 `app/` 与 main 完全一致。239 项测试、资源、文档及静态构建通过；网站固定子路径的 1440×900 / 390×844 首页、设置、落子和偏好持久化检查通过：[本地结果](../../artifacts/release-web-1.43.0/results.json)。
+
+网站提交 `3a782bb` 的 Pages 构建、部署成功，正式网址的四个关键脚本与构建产物哈希一致；双视口各验证环游、扭带、双生、归圆的双人落子、旋转与形变往返，无脚本异常。目视检查相交亮线、棋子局部遮挡和控件布局：[手机双生](../../artifacts/release-web-1.43.0/online-390-projective-3d.png)、[桌面归圆旋转](../../artifacts/release-web-1.43.0/online-1440-sphere-rotated.png)、[线上结果](../../artifacts/release-web-1.43.0/online-results.json)。手机视口不是手机真机验收。复现与发布状态见[网站发行记录](../development/web.md)。

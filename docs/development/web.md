@@ -47,6 +47,16 @@ web 整合前提交 / 整合提交：
 
 官方状态页当时显示 Pages `operational`、无事件，不能据此宣称全站故障。全站构建产物为 663,472,702 字节（约 633 MiB），这是测量事实，尚不能判定为超时原因；确切服务端原因未确认。
 
-**未确认 1.42.0 在线上生效。** 部署结束前曾取得旧的脚本内容，与本轮构建哈希不同；随后正式地址的浏览器访问多次超时，未完成本轮线上四脚本哈希与三维交互验收。源码同步和本地验证不等同于生产部署成功。
+**本轮收尾时未确认 1.42.0 在线上生效。** 部署结束前曾取得旧的脚本内容，与本轮构建哈希不同；随后正式地址的浏览器访问多次超时，未完成本轮线上四脚本哈希与三维交互验收。源码同步和本地验证不等同于生产部署成功。后续维护者在网站提交 `e89ba78` 恢复 Pages，[运行 42801378756](https://github.com/YinkaiYu/YinkaiYu.GitHub.io/actions/runs/42801378756)成功；1.43.0 发布开始时已确认该运行完成，未再修改全站发布配置。
 
-恢复部署后，提供 Playwright 到 `NODE_PATH`，执行 `node scripts/qa-web-online.cjs https://www.yykspace.com/show/topology-gomoku/ 1.42.0`，核对四份关键脚本哈希，验证桌面/手机的四种曲面、落子、拖动旋转与二维/三维往返。环境需要已有代理时，可仅为该进程设置 `QA_WEB_PROXY`；脚本不修改系统网络配置。本轮该线上脚本仅通过语法检查，实际生产运行受部署和网络阻塞。原本地验证入口 `scripts/qa-web-release.cjs` 保留。后续由维护者在服务恢复后重试同一提交；若持续失败，向 GitHub 提供运行与产物 ID 排查。
+线上复验使用 `scripts/qa-web-online.cjs <url> <version>`，核对四份关键脚本哈希，验证桌面/手机的四种曲面、落子、拖动旋转与二维/三维往返。环境需要已有代理时，可仅为该进程设置 `QA_WEB_PROXY`；脚本不修改系统网络配置。1.42.0 收尾时该脚本只通过语法检查，实际线上验证在下述 1.43.0 发布中完成。原本地验证入口 `scripts/qa-web-release.cjs` 保留。
+
+## 1.43.0 部署记录（2026-11-10）
+
+来源为统一稳定 `main@d99166a`，渠道整合 `1afaa3f`。共享 `app/` 与 main 一致，239 项测试、30 文件资源校验、文档检查及静态构建通过。独立网站部署分支从干净的 `main@e89ba78` 建立，只同步 `show/topology-gomoku/` 内五个变更脚本，提交 `3a782bbe823bee86e4ea00190a5dc11062c54a16`；按用户已确认预览与全平台发行授权快进并推送。
+
+- 网站根目录下的固定子路径在 1440×900 与 390×844 通过首页、设置、双人落子与偏好持久化检查：[本地结果](../../artifacts/release-web-1.43.0/results.json)。
+- [Pages 运行 42812605033](https://github.com/YinkaiYu/YinkaiYu.GitHub.io/actions/runs/42812605033)的构建和部署均成功，20:05:43（北京时间）完成；未更改其他网站内容或发布配置。
+- [正式页面](https://www.yykspace.com/show/topology-gomoku/)的四份关键脚本 SHA-256 与构建产物一致。桌面和手机视口各自通过环游、扭带、双生、归圆双人落子、旋转及二维/三维往返，共八场景，无脚本异常：[线上结果](../../artifacts/release-web-1.43.0/online-results.json)。本轮完整核实线上生效，手机视口模拟不作为手机真机验收。
+
+复现：提供 Playwright 到 `NODE_PATH` 后运行 `node scripts/qa-web-release.cjs <website-worktree-root>`；线上运行 `node scripts/qa-web-online.cjs https://www.yykspace.com/show/topology-gomoku/ 1.43.0`。
