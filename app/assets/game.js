@@ -3011,14 +3011,7 @@
 
   function completionMappedPoint(flatX, flatY, u, v, morph, spin) {
     var projected = Morph.project(game.level.topology, u, v, renderState.width, renderState.height, spin);
-    return {
-      x: flatX + (projected.x - flatX) * morph,
-      y: flatY + (projected.y - flatY) * morph,
-      depth: projected.depth * morph,
-      scale: 1 + (projected.scale - 1) * morph,
-      depthScale: projected.depthScale,
-      u: u, v: v
-    };
+    return Morph.morphPoint(game.level.topology, { x: flatX, y: flatY }, u, v, projected, morph);
   }
 
   function completionPoint(u, v, morph, spin) {
@@ -3075,6 +3068,8 @@
     renderState.depthBuffer = Morph.createDepthBuffer(renderState.width, renderState.height, patches);
     renderState.depthBuffer.mesh = Morph.createSurfaceMesh(points);
     renderState.depthBuffer.translucency = 0.16 * morph;
+    renderState.depthBuffer.topology = game.level.topology;
+    renderState.depthBuffer.morph = morph;
 
     var surfaceGradient = ctx.createLinearGradient(
       0,
@@ -3338,6 +3333,10 @@
   }
 
   function completionSphereWinningCurve(cells, morph, spin) {
+    var uvAnchors = cells.map(function winningUV(cell) {
+      var uv = Morph.stoneUV(game.rules, cell);
+      return [uv.u, uv.v];
+    });
     var flatAnchors = cells.map(function flatWinningAnchor(cell) {
       var point = cellCenter(cell);
       return [point.x, point.y];
@@ -3352,12 +3351,12 @@
       for (var sample = segment ? 1 : 0; sample <= samples; sample += 1) {
         var amount = sample / samples;
         var flat = catmullRomPoint(flatAnchors, segment, amount);
+        var uv = catmullRomPoint(uvAnchors, segment, amount);
         var surface = normalizeSurfacePoint(catmullRomPoint(sphereAnchors, segment, amount));
         var projected = Morph.projectPoint("sphere", surface, renderState.width, renderState.height, spin);
+        var mapped = Morph.morphPoint("sphere", { x: flat[0], y: flat[1] }, clamp01(uv[0]), clamp01(uv[1]), projected, morph);
         curve.push({
-          x: flat[0] + (projected.x - flat[0]) * morph,
-          y: flat[1] + (projected.y - flat[1]) * morph,
-          depth: projected.depth * morph
+          x: mapped.x, y: mapped.y, depth: mapped.depth
         });
       }
     }
@@ -3508,6 +3507,7 @@
 
     drawCompletionSurface(ctx, morph, orientation);
     drawCompletionGrid(ctx, morph, orientation);
+    Morph.drawSurfaceIntersections(ctx, renderState.depthBuffer);
     if (game.level.topology === "sphere") {
       drawCompletionSphereBoundary(ctx, "a", morph, orientation, "#3f8c87");
       drawCompletionSphereBoundary(ctx, "b", morph, orientation, "#c79244");
@@ -3534,6 +3534,7 @@
     var orientation = interactiveViewOrientation(time);
     drawCompletionSurface(ctx, morph, orientation);
     drawCompletionGrid(ctx, morph, orientation);
+    Morph.drawSurfaceIntersections(ctx, renderState.depthBuffer);
     if (game.level.topology === "sphere") {
       drawCompletionSphereBoundary(ctx, "a", morph, orientation, "#3f8c87");
       drawCompletionSphereBoundary(ctx, "b", morph, orientation, "#c79244");

@@ -569,3 +569,25 @@ Arena 发布状态：2026-11-04 用户已确认本轮预览并授权合并、推
 - 自动检查六种棋子的 126 帧微旋转：单颗棋子同时出现清晰与淡显像素；连续帧无整颗跳变，内部孤立白缝为零。小环游另检查 41 帧旋转，外圈最多两个可见区间、没有短于 5px 的碎岛。几何回归覆盖精确深度、重叠面片、孔洞、T 形接点、局部遮挡、三角面路径和拓扑接缝。
 - 性能记录包含真实动画帧与强制读回。八子场景约 16.7ms/帧；19 路满盘的精确局部遮挡仍有明显开销，约 50–83ms/帧，不能据八子结果声称所有盘面都流畅。未进行原生宿主或低性能设备验证。
 - 复现：提供 Playwright 到 NODE_PATH 后运行 node scripts/qa-board-occlusion.cjs；--after-only 仅更新修改后证据，--profile 分析满盘耗时。图片与源码摘要、连续性和性能数据见[完整结果](../../artifacts/board-occlusion/results.json)。
+
+## 2026-11-10：曲面相交线与两组边界错峰粘合（待确认）
+
+- 独立任务 `codex/board-intersections` 从 `dev@81b7b0b` 开始。维持 1.42.0，未提升版本或合入长期分支。
+- 相交线取自实际绘制的三角曲面，覆盖动画过程的穿插、双生与瓶界的自交，以及棋子圆润体积与曲面的交线。按用户补充意见采用暖白细线、轻微光晕与淡阴影，与普通网格区分。背后线条沿用低透明度遮挡；排除普通相邻面片、粘合接缝和无深度相交的投影重叠。绘制时仅允许最多 0.5px 的局部平滑，保留精确几何与分支端点。
+- 环游、瓶界、双生和归圆中，金黄色边界先收拢、青绿色边界后收拢；两端点与单组边界的动画保持原几何。每组接缝两端共用局部进度，角点连续，棋子和落子位置随同一曲面移动。
+- 对比条件：固定八子、600×600 Canvas、DPR 1、1200×1800 合图；序列从左到右为 25%、50%、75%、100%。H5 另覆盖 1280×720 与 390×844，同一内容与状态。
+
+| 场景 | 修改前 | 修改后 |
+| --- | --- | --- |
+| 六曲面默认姿态 | [基线](../../artifacts/board-intersections/before-six-surfaces.png) | [相交轮廓](../../artifacts/board-intersections/after-six-surfaces.png) |
+| 双生展开 | [基线](../../artifacts/board-intersections/before-projective-morph.png) | [两组边界与自交](../../artifacts/board-intersections/after-projective-morph.png) |
+| 瓶界展开 | [基线](../../artifacts/board-intersections/before-klein-morph.png) | [穿颈轮廓](../../artifacts/board-intersections/after-klein-morph.png) |
+| 环游展开 | [基线](../../artifacts/board-intersections/before-torus-morph.png) | [错峰粘合](../../artifacts/board-intersections/after-torus-morph.png) |
+| 归圆展开 | [基线](../../artifacts/board-intersections/before-sphere-morph.png) | [相邻边错峰粘合](../../artifacts/board-intersections/after-sphere-morph.png) |
+| 棋子穿过双生曲面 | [基线](../../artifacts/board-intersections/before-projective-stone-contact.png) | [接触轮廓](../../artifacts/board-intersections/after-projective-stone-contact.png) |
+| H5 双生三维对局 | [基线](../../artifacts/board-intersections-h5/before-game-projective-1-1280x720.png) | [结果](../../artifacts/board-intersections-h5/after-game-projective-1-1280x720.png) |
+
+- 共享 Canvas 覆盖 252 个连续旋转和中间状态；双生、瓶界持续保有相交线，环游和归圆终态无误画自交线。六种曲面的二维像素保持相同。详见[共享绘制结果](../../artifacts/board-intersections/results.json)。
+- H5 实际对局检查 120 个前后状态，12 组二维像素一致，12 次三维点击落子命中正确；详见[H5 结果](../../artifacts/board-intersections-h5/results.json)。
+- 同一轮前后性能对比中，四种双接缝棋盘的八子场景均约 16.7ms/帧。19×19 满盘的新绘制耗时约 39–58ms，较基线增加约 5–12ms；实际动画约 50–66.7ms/帧（15–20fps）。满盘旋转仍有明显开销，不能由八子结果推断全部场景达到 60fps。
+- 复现共享绘制：`node scripts/qa-board-intersections.cjs`。H5：`node scripts/qa-board-perspective.cjs --h5-only --baseline=81b7b0b --out=artifacts/board-intersections-h5`。环境需提供 Playwright。桌面 Chromium 检查不能替代原生宿主和真机验收。
