@@ -591,3 +591,17 @@ Arena 发布状态：2026-11-04 用户已确认本轮预览并授权合并、推
 - H5 实际对局检查 120 个前后状态，12 组二维像素一致，12 次三维点击落子命中正确；详见[H5 结果](../../artifacts/board-intersections-h5/results.json)。
 - 同一轮前后性能对比中，四种双接缝棋盘的八子场景均约 16.7ms/帧。19×19 满盘的新绘制耗时约 39–58ms，较基线增加约 5–12ms；实际动画约 50–66.7ms/帧（15–20fps）。满盘旋转仍有明显开销，不能由八子结果推断全部场景达到 60fps。
 - 复现共享绘制：`node scripts/qa-board-intersections.cjs`。H5：`node scripts/qa-board-perspective.cjs --h5-only --baseline=81b7b0b --out=artifacts/board-intersections-h5`。环境需提供 Playwright。桌面 Chromium 检查不能替代原生宿主和真机验收。
+
+### Arena 观战接入（待确认）
+
+- 独立 `codex/arena-intersections` 从 `arena@b308922` 建立，整合共享任务 `0d6a981`，未更新长期 Arena 分支或真实对局服务。观战直接复用共享绘制方法，CLI/MCP 与参赛规则不变。
+- 隔离八子暂停对局，1280×720、1024×768，六拓扑共 120 个前后状态；12 组二维像素相同，无页面错误。六拓扑的整圈旋转与中途反转通过，整圈后再展开的最大位置偏差低于 0.0002px。
+- 瓶界与双生终态分别保有一条与六条连续分支；其余四种曲面终态没有自交线。316 项测试、资源与文档校验通过。
+
+| 场景 | 修改前 | 修改后 |
+| --- | --- | --- |
+| 双生，1280×720 | [基线](../../artifacts/arena-intersections/before-projective-100-1280x720.png) | [暖白相交线](../../artifacts/arena-intersections/after-projective-100-1280x720.png) |
+| 瓶界，1024×768 | [基线](../../artifacts/arena-intersections/before-klein-100-1024x768.png) | [穿插轮廓](../../artifacts/arena-intersections/after-klein-100-1024x768.png) |
+| 环游半展开，1280×720 | [基线](../../artifacts/arena-intersections/before-torus-50-1280x720.png) | [错峰粘合](../../artifacts/arena-intersections/after-torus-50-1280x720.png) |
+
+- [完整结果](../../artifacts/arena-intersections/results.json)。复现：提供 Playwright 后运行 `node scripts/qa-arena-intersections.cjs`；追加 `--serve --port=4321` 启动仅含合成棋局的可操作预览，地址记录在忽略目录 `.arena/intersections-preview/preview-fixtures.json`。
