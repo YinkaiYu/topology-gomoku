@@ -20,7 +20,8 @@ function recordingContext() {
     beginPath() { path = []; }, moveTo(x, y) { path.push({ x, y }); }, lineTo(x, y) { path.push({ x, y }); }, closePath() {},
     fill() { fills.push({ points: path.slice(), color: this.fillStyle, alpha: this.globalAlpha }); },
     stroke() { strokes.push({ points: path.slice(), color: this.strokeStyle, alpha: this.globalAlpha, dash: this.dash.slice() }); },
-    createLinearGradient() { return { addColorStop() {} }; }, setLineDash(dash) { this.dash = dash.slice(); }, strokeRect() {}
+    createLinearGradient() { return { addColorStop() {} }; }, setLineDash(dash) { this.dash = dash.slice(); }, strokeRect() {},
+    fillRect() {}, arc() {}
   };
   return { ctx, fills, strokes };
 }
@@ -44,15 +45,15 @@ test("boundary arrows stay attached to their mapped seam and preserve every glui
   for (const type of ["cylinder", "torus", "mobius", "klein", "projective", "sphere"]) {
     const sides = ["left", "right"].concat(Morph.isPeriodicY(type) ? ["top", "bottom"] : []);
     const rules = Engine.createRules({ type, width: 7, height: type === "sphere" ? 7 : 6 });
-    for (const morph of [0.2, 0.4, 0.6]) {
+    for (const morph of [0, 0.00001, 0.2, 0.4, 0.6]) {
       for (const side of sides) {
         const { ctx, fills } = recordingContext(), pointAt = pointAtSide(type, side, morph);
         Art.drawSurfaceBoundaryArrows(ctx, type, side, rules, pointAt, morph, { visible: () => true, translucency: 0.16 });
-        const vertical = side === "left" || side === "right", count = vertical ? rules.height : rules.width;
-        const periodic = vertical ? Morph.isPeriodicY(type) : Morph.isPeriodicX(type);
+        const vertical = side === "left" || side === "right";
+        const first = Morph.stoneUV(rules, 0), last = Morph.stoneUV(rules, rules.cellCount - 1);
         const reverse = (side === "right" && ["mobius", "klein", "projective"].includes(type)) || (side === "bottom" && type === "projective");
         const amounts = [type === "sphere" ? 0.36 : 0.34, 0.7]
-          .map(fraction => periodic ? (0.5 + (count - 1) * fraction) / count : fraction)
+          .map(fraction => vertical ? first.v + (last.v - first.v) * fraction : first.u + (last.u - first.u) * fraction)
           .filter(amount => {
             const p = pointAt(amount);
             return Morph.smooth((Morph.seamProgress(type, p.u, p.v, morph) - 0.82) / 0.18) < 1;
@@ -87,7 +88,7 @@ test("arrow opacity follows the local seam closure and hidden arrows retain a fa
   const green = arrows("left", 0.8, true), yellow = arrows("top", 0.8, true);
   assert.ok(green.length > 0);
   assert.ok(yellow.length === 0 || yellow.every(fill => fill.alpha < green[0].alpha), "yellow finishes before green");
-  assert.equal(arrows("left", 0, true).length, 0, "flat rails retain their own original arrows");
+  assert.equal(arrows("left", 0, true).length, 2, "the moving rail begins with both flat arrows already visible");
   assert.equal(arrows("left", 1, true).length, 0, "closed seams leave the final surface clean");
 });
 
@@ -134,7 +135,7 @@ test("H5 boundary drawing shares the moving arrows and preserves dashed twists w
         ctx.beginPath(); ctx.moveTo(points[0].x, points[0].y);
         points.slice(1).forEach(p => ctx.lineTo(p.x, p.y)); ctx.stroke();
       } };
-    const context = vm.createContext({ Morph, BoardArt: Art, game: { level, rules },
+    const context = vm.createContext({ Morph, Engine, BoardArt: Art, game: { level, rules }, seamPulseFor: () => 0,
       renderState: { width: 600, height: 600, layout, depthBuffer: depth } });
     for (const name of ["completionMappedPoint", "completionPoint", "strokeSmoothCompletionPath", "drawCompletionBoundary", "drawCompletionSphereBoundary"]) {
       const start = source.indexOf("  function " + name + "("), end = source.indexOf("\n  function ", start + 1);

@@ -37,6 +37,8 @@ H5 的网格尺寸由共享 `board-art.js#computeLayout` 计算。默认边距�
 
 曲面边界保留二维配对方向和扭转虚线，H5 与共享 Canvas 调用 `board-art.js` 的同一箭头方法。箭头位置和朝向取自实际面片的边界切线，根据该位置的粘合进度淡出。`liquid-range.js` 的 `surfaceDuration` 为曲面动作增加与行程相关的观察时间，普通设置控件的时长不变。
 
+二维交接同时保持几何和材质连续。`surfaceMaterialBlend` 统一控制展开初段的曲面填色、网格点、边界与棋子样式；仅对材质插值抑制浮点噪声，避免 Canvas 的透明度量化提前跳过一个色阶。零进度复用二维绘制，近零进度仍走真实映射。归圆的 `surfaceGridCoordinate` 在展开初段把曲面采样边对齐二维映射的分段位置，随后恢复常规三维采样；`createSurfaceMesh` 的点插值、路径穿线和局部细分读取同一份参数轴，填充、网格和遮挡保持贴合。
+
 H5 当前已直接读取共享关卡内容；现有页面状态与成熟的 DOM 动效仍保留在 `app/assets/game.js`，作为分阶段迁移期间的稳定基线。新增平台必须使用共享 controller 与 board art，不得从这份 H5 外壳复制一套状态机。共享模块的关键行为由 `tests/shared-game-controller.test.js` 与既有拓扑、曲面、复盘测试共同约束。
 
 这些内容、controller 与 Canvas 美术模块由微信基线提交 `1a325fe` 回流至共享开发任务，再补齐连续视角能力。H5 已复用关卡定义、交互资格和姿态计算，但尚未整体改为共享 controller / board art；不能把此次回流表述为已经消除所有历史渲染重复。

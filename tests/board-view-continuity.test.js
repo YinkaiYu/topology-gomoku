@@ -39,6 +39,7 @@ function scene(type, progress) {
     canPresentCompletion: () => true,
     chooseCompletionView: () => ({ x: -0.2, y: 0.7, z: 0.1, shapeX: 0.9, shapeY: 1.1, shapeZ: 1.2 }),
     drawCompletionSurface: (ctx, morph, orientation) => { frame = { morph, orientation }; },
+    drawFlatBoard: () => { frame = { morph: 0, flat: true }; },
     drawCompletionGrid: noOp, drawCompletionSphereBoundary: noOp,
     drawCompletionBoundary: noOp, drawCompletionWinningLine: noOp, drawCompletionStones: noOp,
     syncGameTools: noOp, updateTurnUI: noOp
@@ -54,6 +55,7 @@ test("六种曲面在任意展开进度、旋转与弹性状态下，终局第�
       const current = scene(type, progress);
       const first = current.draw(4000);
       assert.equal(first.morph, progress);
+      if (progress === 0) { assert.equal(first.flat, true, "a flat victory starts with the unchanged 2D renderer"); continue; }
       for (let cell = 0; cell < 49; cell += 1) {
         const uv = Morph.stoneUV(current.game.rules, cell);
         const a = Morph.project(type, uv.u, uv.v, 480, 480, current.initial);

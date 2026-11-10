@@ -847,8 +847,35 @@
     return mapped;
   }
 
+  function surfaceGridCoordinate(rules, index, segments, axis, morph) {
+    var uniform = index / segments;
+    if ((rules.type || rules.topology) !== "sphere" || index <= 0 || index >= segments || segments < 3) { return uniform; }
+    var blend = 1 - smooth(clamp01(morph) / 0.3);
+    if (!blend) { return uniform; }
+    var first = stoneUV(rules, 0)[axis], last = stoneUV(rules, rules.width * rules.height - 1)[axis];
+    var firstIndex = Math.max(1, Math.min(segments - 2, Math.round(first * segments)));
+    var lastIndex = Math.max(firstIndex + 1, Math.min(segments - 1, Math.round(last * segments)));
+    // The flat sphere chart changes scale at its first/last stone rows.
+    // Place real mesh edges there, then return to the regular 3D sampling.
+    if (index === firstIndex) { return uniform + (first - uniform) * blend; }
+    if (index === lastIndex) { return uniform + (last - uniform) * blend; }
+    return uniform;
+  }
+
   function createSurfaceMesh(vertices, options) {
     var rows = vertices.length - 1, columns = vertices[0].length - 1;
+    var uAxis = vertices[0].map(function coordinate(vertex, index) { return Number.isFinite(vertex.u) ? vertex.u : index / columns; });
+    var vAxis = vertices.map(function coordinate(row, index) { return Number.isFinite(row[0].v) ? row[0].v : index / rows; });
+    var uniform = uAxis.every(function regular(value, index) { return Math.abs(value - index / columns) < 1e-12; }) &&
+      vAxis.every(function regular(value, index) { return Math.abs(value - index / rows) < 1e-12; });
+    function cellAt(axis, value) {
+      var low = 0, high = axis.length - 1;
+      while (low + 1 < high) {
+        var middle = (low + high) >> 1;
+        if (axis[middle] <= value) { low = middle; } else { high = middle; }
+      }
+      return Math.min(axis.length - 2, low);
+    }
     var fans = Object.create(null), fanEdges = [];
     function faceKey(row, column, half) { return (row * columns + column) * 2 + half; }
     // At six sphere-chart corner triangles every original vertex lies on
@@ -861,8 +888,8 @@
         if (fans[key]) { return; }
         var corners = half ? [vertices[row][column], vertices[row + 1][column + 1], vertices[row + 1][column]]
           : [vertices[row][column], vertices[row][column + 1], vertices[row + 1][column + 1]];
-        var u = (column + (half ? 1 : 2) / 3) / columns;
-        var v = (row + (half ? 2 : 1) / 3) / rows;
+        var u = (uAxis[column] * (half ? 2 : 1) + uAxis[column + 1] * (half ? 1 : 2)) / 3;
+        var v = (vAxis[row] * (half ? 1 : 2) + vAxis[row + 1] * (half ? 2 : 1)) / 3;
         var center = options.pointAt(u, v);
         center.u = u; center.v = v;
         fans[key] = { corners: corners, center: center };
@@ -871,9 +898,10 @@
     }
     function point(u, v) {
       u = clamp01(u); v = clamp01(v);
-      var column = Math.min(columns - 1, Math.floor(u * columns));
-      var row = Math.min(rows - 1, Math.floor(v * rows));
-      var x = u * columns - column, y = v * rows - row;
+      var column = uniform ? Math.min(columns - 1, Math.floor(u * columns)) : cellAt(uAxis, u);
+      var row = uniform ? Math.min(rows - 1, Math.floor(v * rows)) : cellAt(vAxis, v);
+      var x = uniform ? u * columns - column : (u - uAxis[column]) / (uAxis[column + 1] - uAxis[column]);
+      var y = uniform ? v * rows - row : (v - vAxis[row]) / (vAxis[row + 1] - vAxis[row]);
       var a = vertices[row][column], b, c, wa, wb, wc;
       // Every quad uses the same top-left to bottom-right diagonal as the
       // painted surface and its depth index.
@@ -919,12 +947,33 @@
           if (amount > 1e-10 && amount < 1 - 1e-10) { stops.push(amount); }
         }
       }
-      crossIntegers(fromU * columns, du * columns);
-      crossIntegers(fromV * rows, dv * rows);
-      // Within a cell its diagonal is localX=localY, equivalently
-      // columns*u-rows*v is an integer. These crossings matter even when
-      // both ends remain inside the same quad.
-      crossIntegers(fromU * columns - fromV * rows, du * columns - dv * rows);
+      if (uniform) {
+        crossIntegers(fromU * columns, du * columns);
+        crossIntegers(fromV * rows, dv * rows);
+        // In a regular cell its diagonal is columns*u-rows*v=integer.
+        crossIntegers(fromU * columns - fromV * rows, du * columns - dv * rows);
+      } else {
+        function crossAxis(axis, start, change) {
+          if (Math.abs(change) < 1e-12) { return; }
+          var low = Math.min(start, start + change), high = Math.max(start, start + change);
+          for (var index = cellAt(axis, low) + 1; index < axis.length && axis[index] < high; index += 1) {
+            var amount = (axis[index] - start) / change;
+            if (amount > 1e-10 && amount < 1 - 1e-10) { stops.push(amount); }
+          }
+        }
+        crossAxis(uAxis, fromU, du); crossAxis(vAxis, fromV, dv);
+        stops.sort(function alongPath(a, b) { return a - b; });
+        var cellStops = stops.slice();
+        for (var cell = 1; cell < cellStops.length; cell += 1) {
+          var begin = cellStops[cell - 1], end = cellStops[cell], middle = (begin + end) / 2;
+          var column = cellAt(uAxis, fromU + du * middle), row = cellAt(vAxis, fromV + dv * middle);
+          var cellWidth = uAxis[column + 1] - uAxis[column], cellHeight = vAxis[row + 1] - vAxis[row];
+          var slope = du / cellWidth - dv / cellHeight;
+          if (Math.abs(slope) < 1e-12) { continue; }
+          var amount = -((fromU - uAxis[column]) / cellWidth - (fromV - vAxis[row]) / cellHeight) / slope;
+          if (amount > begin + 1e-10 && amount < end - 1e-10) { stops.push(amount); }
+        }
+      }
       fanEdges.forEach(function crossFan(edge) {
         var a = edge[0], b = edge[1], eu = b.u - a.u, ev = b.v - a.v;
         var denominator = du * ev - dv * eu;
@@ -949,8 +998,7 @@
       var refined = [];
       patches.forEach(function refine(patch) {
         var points = patch.points;
-        var row = Math.min(rows - 1, Math.floor(points[0].v * rows + 1e-8));
-        var column = Math.min(columns - 1, Math.floor(points[0].u * columns + 1e-8));
+        var row = cellAt(vAxis, points[0].v), column = cellAt(uAxis, points[0].u);
         if (!fans[faceKey(row, column, 0)] && !fans[faceKey(row, column, 1)]) { refined.push(patch); return; }
         var faces = points.length === 4 ? [[points[0], points[1], points[2]], [points[0], points[2], points[3]]] : [points];
         faces.forEach(function refineFace(face) {
@@ -1127,6 +1175,26 @@
           }
         }
         points = mapped;
+      }
+      // Mesh splits on one straight 3D segment do not need separate Canvas
+      // joins. Keep real bends, depth changes and reversals intact; only the
+      // drawing path is reduced, never the mesh or its occlusion geometry.
+      if (points.length > 2) {
+        var reduced = [points[0]];
+        function liesBetween(a, b, c) {
+          var dx = c.x - a.x, dy = c.y - a.y, dz = c.depth - a.depth;
+          var squared = dx * dx + dy * dy;
+          var amount = squared > 1e-20 ? ((b.x - a.x) * dx + (b.y - a.y) * dy) / squared
+            : dz ? (b.depth - a.depth) / dz : 0;
+          return amount >= 0 && amount <= 1 &&
+            Math.hypot(b.x - a.x - dx * amount, b.y - a.y - dy * amount) <= 1e-8 &&
+            Math.abs(b.depth - a.depth - dz * amount) <= 1e-10;
+        }
+        for (var vertex = 1; vertex < points.length; vertex += 1) {
+          while (reduced.length > 1 && liesBetween(reduced[reduced.length - 2], reduced[reduced.length - 1], points[vertex])) { reduced.pop(); }
+          reduced.push(points[vertex]);
+        }
+        points = reduced;
       }
       if (buffer.translucency) {
         ctx.save();
@@ -1858,6 +1926,7 @@
     morphPoint: morphPoint,
     createDepthBuffer: createDepthBuffer,
     createSurfaceMesh: createSurfaceMesh,
+    surfaceGridCoordinate: surfaceGridCoordinate,
     drawSurfaceIntersections: drawSurfaceIntersections,
     stoneContours: stoneContours,
     stoneOutline: stoneOutline,

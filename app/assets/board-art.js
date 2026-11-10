@@ -405,7 +405,7 @@
     return set;
   }
 
-  function drawWinningConnections(ctx, game, layout, time) {
+  function drawWinningConnections(ctx, game, layout, time, pointAt) {
     var mask = game.winningMask;
     if (!mask || (game.review && game.review.step < game.review.total)) {
       return;
@@ -416,9 +416,11 @@
     ctx.lineWidth = Math.max(3, layout.cell * 0.11);
     ctx.lineCap = "round";
     for (var index = 0; index < mask.cells.length - 1; index += 1) {
-      var from = cellCenter(game.rules, layout, mask.cells[index]);
-      var to = cellCenter(game.rules, layout, mask.cells[index + 1]);
-      if (Math.hypot(to.x - from.x, to.y - from.y) <= layout.cell * 1.65) {
+      var flatFrom = cellCenter(game.rules, layout, mask.cells[index]);
+      var flatTo = cellCenter(game.rules, layout, mask.cells[index + 1]);
+      var from = pointAt ? pointAt(mask.cells[index]) : flatFrom;
+      var to = pointAt ? pointAt(mask.cells[index + 1]) : flatTo;
+      if (Math.hypot(flatTo.x - flatFrom.x, flatTo.y - flatFrom.y) <= layout.cell * 1.65) {
         ctx.beginPath();
         ctx.moveTo(from.x, from.y);
         ctx.lineTo(from.x + (to.x - from.x) * progress, from.y + (to.y - from.y) * progress);
@@ -807,6 +809,12 @@
     return mapped;
   }
 
+  function surfaceMaterialBlend(morph) {
+    // Canvas quantizes alpha: 1 - floating-point noise must not lose a full
+    // color level before any visible motion. Geometry retains full precision.
+    return Math.round(Morph.smooth(morph / 0.3) * 1000000) / 1000000;
+  }
+
   function drawSurface(ctx, game, layout, width, height, orientation) {
     var columns = game.level.topology === "sphere" ? 48 : 46;
     var rows = game.level.topology === "sphere" ? columns : 36;
@@ -814,8 +822,10 @@
     var patches = [];
     for (var gridY = 0; gridY <= rows; gridY += 1) {
       var vertexRow = [];
+      var v = Morph.surfaceGridCoordinate(game.rules, gridY, rows, "v", orientation.morph);
       for (var gridX = 0; gridX <= columns; gridX += 1) {
-        vertexRow.push(surfacePoint(game, layout, width, height, gridX / columns, gridY / rows, orientation));
+        var u = Morph.surfaceGridCoordinate(game.rules, gridX, columns, "u", orientation.morph);
+        vertexRow.push(surfacePoint(game, layout, width, height, u, v, orientation));
       }
       vertices.push(vertexRow);
     }
@@ -844,8 +854,8 @@
     ctx.strokeStyle = gradient;
     ctx.lineWidth = 0.82;
     ctx.lineJoin = "round";
-    ctx.globalAlpha *= 0.84;
-    Morph.fillSurface(ctx, patches);
+    ctx.globalAlpha *= 0.84 * surfaceMaterialBlend(orientation.morph);
+    if (ctx.globalAlpha > 0) { Morph.fillSurface(ctx, patches); }
     ctx.restore();
     var depth = Morph.createDepthBuffer(width, height, patches);
     depth.mesh = mesh;
@@ -856,10 +866,12 @@
 
   function drawSurfaceGrid(ctx, game, layout, width, height, orientation, depth) {
     var samples = 96;
+    var blend = surfaceMaterialBlend(orientation.morph);
     ctx.save();
-    ctx.strokeStyle = "rgba(92, 88, 80, 0.31)";
-    ctx.lineWidth = 1.05;
-    ctx.lineCap = "round";
+    ctx.strokeStyle = "rgba(" + (108 - 16 * blend) + ", " + (103 - 15 * blend) + ", " + (94 - 14 * blend) + ", " + (0.5 - 0.19 * blend) + ")";
+    var flatWidth = Math.max(0.7, layout.cell * 0.025);
+    ctx.lineWidth = flatWidth + (1.05 - flatWidth) * blend;
+    ctx.lineCap = "butt";
     for (var x = 0; x < game.rules.width; x += 1) {
       var u = Morph.stoneUV(game.rules, x).u;
       var vertical = [];
@@ -876,19 +888,39 @@
       }
       depth.strokePath(ctx, horizontal);
     }
+    if (blend < 1) {
+      ctx.fillStyle = "rgba(72, 71, 65, 0.48)";
+      ctx.globalAlpha *= 1 - blend;
+      for (var cell = 0; cell < game.rules.cellCount; cell += 1) {
+        var uv = Morph.stoneUV(game.rules, cell);
+        var point = depth.mesh.point(uv.u, uv.v);
+        ctx.save();
+        if (!depth.visible(point, 0.045)) { ctx.globalAlpha *= depth.translucency; }
+        ctx.beginPath();
+        ctx.arc(point.x, point.y, Math.max(0.9, layout.cell * 0.035) * point.scale, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.restore();
+      }
+    }
     ctx.restore();
   }
 
-  function drawSurfaceBoundary(ctx, game, layout, width, height, orientation, sides, color, depth) {
+  function drawSurfaceBoundary(ctx, game, layout, width, height, orientation, sides, color, depth, pulse) {
     var samples = 96;
     var morph = Number.isFinite(orientation.morph) ? orientation.morph : 1;
+    var blend = surfaceMaterialBlend(morph);
+    var green = color === "rgba(63,140,135,0.78)";
+    var flatAlpha = 0.58 + pulse * 0.4;
+    color = green ? "rgba(63,140,135," + (1 - 0.22 * blend) + ")" : "rgba(199,146,68," + (1 - 0.24 * blend) + ")";
     ctx.save();
     ctx.strokeStyle = color;
     ctx.fillStyle = color;
-    ctx.lineWidth = 1.8;
+    ctx.globalAlpha *= flatAlpha + (0.36 + morph * 0.5 - flatAlpha) * blend;
+    ctx.lineWidth = 2 + pulse * 2.2 + (1.8 - 2 - pulse * 2.2) * blend;
     ctx.lineCap = "round";
-    ctx.shadowColor = color;
-    ctx.shadowBlur = effectPixels(ctx, 5);
+    var glowAlpha = (pulse > 0 ? 1 : blend) * (green ? 1 - 0.22 * blend : 1 - 0.24 * blend);
+    ctx.shadowColor = green ? "rgba(63,140,135," + glowAlpha + ")" : "rgba(199,146,68," + glowAlpha + ")";
+    ctx.shadowBlur = effectPixels(ctx, pulse * 16 + (5 - pulse * 16) * blend);
     sides.forEach(function drawEdge(side) {
       var vertical = side === "left" || side === "right";
       var edge = side === "right" || side === "bottom" ? 1 : 0;
@@ -916,13 +948,13 @@
   }
 
   function drawSurfaceBoundaryArrows(ctx, topology, side, rules, pointAt, morph, depth) {
-    if (morph <= 0 || morph >= 1) { return; }
+    if (morph >= 1) { return; }
     var vertical = side === "left" || side === "right";
     var reversed = (side === "right" && (topology === "mobius" || topology === "klein" || topology === "projective")) ||
       (side === "bottom" && topology === "projective");
     var sign = reversed ? -1 : 1;
-    var count = vertical ? rules.height : rules.width;
-    var periodic = vertical ? Morph.isPeriodicY(topology) : Morph.isPeriodicX(topology);
+    var first = Morph.stoneUV(rules, 0);
+    var last = Morph.stoneUV(rules, rules.cellCount - 1);
     function mapped(amount) {
       var point = pointAt(amount);
       return depth && depth.mesh ? depth.mesh.point(point.u, point.v) : point;
@@ -930,13 +962,13 @@
     [topology === "sphere" ? 0.36 : 0.34, 0.7].forEach(function drawDirection(fraction) {
       // Keep the same chart locations as the flat rail arrows. The half-cell
       // topological margin belongs to the sheet, not to the labeled grid span.
-      var amount = periodic ? (0.5 + (count - 1) * fraction) / count : fraction;
+      var amount = vertical ? first.v + (last.v - first.v) * fraction : first.u + (last.u - first.u) * fraction;
       var anchor = mapped(amount), before = mapped(amount - 0.002), after = mapped(amount + 0.002);
       var dx = after.x - before.x, dy = after.y - before.y, length = Math.hypot(dx, dy);
       if (length < 1e-5) { return; }
       var tx = dx / length * sign, ty = dy / length * sign;
       var local = Morph.seamProgress(topology, anchor.u, anchor.v, morph);
-      var alpha = Morph.smooth(morph / 0.06) * (1 - Morph.smooth((local - 0.82) / 0.18));
+      var alpha = 1 - Morph.smooth((local - 0.82) / 0.18);
       if (alpha <= 0) { return; }
       if (depth && !depth.visible(anchor, 0.045)) { alpha *= depth.translucency; }
       if (alpha <= 0) { return; }
@@ -1083,6 +1115,8 @@
     var view = settings.view || base;
     var rotation = settings.rotation || { x: 0, y: 0, z: 0 };
     var morph = settings.morph === undefined ? 1 : clamp01(Number(settings.morph) || 0);
+    var time = Number(settings.time) || 0;
+    var material = surfaceMaterialBlend(morph);
     var viewBlend = Morph.smooth(morph);
     var orientation = settings.orientation || {
       x: ((Number(view.x) || 0) + (rotation.x || 0)) * viewBlend,
@@ -1101,25 +1135,35 @@
     };
     // Use the same camera and deformation for the sheet, lines and stones.
     orientation = Object.assign({}, orientation, { morph: morph, perspective: morph });
+    if (morph > 0) { drawPaperTexture(ctx, layout.width, layout.height); }
     var depth = drawSurface(ctx, game, layout, layout.width, layout.height, orientation);
     depth.translucency = 0.16 * morph;
-    drawSurfaceGrid(ctx, game, layout, layout.width, layout.height, orientation, depth);
-    Morph.drawSurfaceIntersections(ctx, depth);
-    ctx.save();
-    ctx.globalAlpha *= 0.36 + morph * 0.5;
+    if (morph === 0) {
+      drawBoard(ctx, settings);
+      return depth;
+    }
     if (game.level.xConnection || game.level.topology === "sphere") {
       var xSides = game.level.topology === "sphere" ? SPHERE_BOUNDARY_SIDES.x : ["left", "right"];
-      drawSurfaceBoundary(ctx, game, layout, layout.width, layout.height, orientation, xSides, "rgba(63,140,135,0.78)", depth);
+      drawSurfaceBoundary(ctx, game, layout, layout.width, layout.height, orientation, xSides, "rgba(63,140,135,0.78)", depth, seamPulse(game, Engine.SEAM_X, time));
     }
     if (game.level.yConnection || game.level.topology === "sphere") {
       var ySides = game.level.topology === "sphere" ? SPHERE_BOUNDARY_SIDES.y : ["top", "bottom"];
-      drawSurfaceBoundary(ctx, game, layout, layout.width, layout.height, orientation, ySides, "rgba(199,146,68,0.76)", depth);
+      drawSurfaceBoundary(ctx, game, layout, layout.width, layout.height, orientation, ySides, "rgba(199,146,68,0.76)", depth, seamPulse(game, Engine.SEAM_Y, time));
     }
-    ctx.restore();
-    if (morph < 0.06) {
+    drawSurfaceGrid(ctx, game, layout, layout.width, layout.height, orientation, depth);
+    Morph.drawSurfaceIntersections(ctx, depth);
+    if (material < 1) {
       ctx.save();
-      ctx.globalAlpha *= 1 - Morph.smooth(morph / 0.06);
-      drawTopologyRails(ctx, game, layout, Number(settings.time) || 0);
+      ctx.globalAlpha *= 1 - material;
+      drawLessonConnections(ctx, game, layout, time);
+      drawLessonGuide(ctx, game, layout, time, settings.fontFamily);
+      drawDemo(ctx, game, layout, time);
+      drawWinningConnections(ctx, game, layout, time, function pointAt(cell) {
+        var uv = Morph.stoneUV(game.rules, cell);
+        return mappedCompletionPoint(game, layout, cellCenter(game.rules, layout, cell), uv, orientation);
+      });
+      drawTacticalHints(ctx, game, layout, settings.preferences || {});
+      drawMovePreview(ctx, game, layout, time, settings.interaction);
       ctx.restore();
     }
     var winnerSet = winningCellSet(game);
@@ -1146,22 +1190,49 @@
     function drawSurfaceStone(item) {
       ctx.save();
       var stoneRadius = radius * item.point.scale;
-      ctx.globalAlpha *= game.winningMask && !winnerSet[item.cell] ? 0.5 : 1;
+      var scale = 1, compression = 0;
+      if (item.cell === game.lastMove && game.lastMoveAt) {
+        if (game.lastMoveFromPress) {
+          var release = clamp01((time - game.lastMoveAt) / 260);
+          scale += 0.16 * Math.exp(-5.2 * release) * Math.cos(release * Math.PI * 2.15);
+          compression = Math.exp(-5.4 * release);
+        } else { scale = easeOutBack(clamp01((time - game.lastMoveAt) / 190)); }
+      }
+      scale = 1 + (scale - 1) * (1 - material);
+      compression *= 1 - material;
+      ctx.globalAlpha *= game.winningMask && !winnerSet[item.cell] ? 0.4 + 0.1 * material : 1;
       Morph.paintStone(ctx, depth, item.point, stoneRadius, function paintFace(withShadow) {
         ctx.save();
         ctx.translate(item.point.x, item.point.y);
-      ctx.shadowColor = withShadow === false ? "transparent" : item.player === Engine.HUMAN ? "rgba(24, 31, 29, 0.3)" : "rgba(65, 58, 48, 0.2)";
-        ctx.shadowBlur = effectPixels(ctx, stoneRadius * 0.48);
-        ctx.shadowOffsetY = effectPixels(ctx, stoneRadius * 0.2);
-      drawStoneFace(ctx, item.player, stoneRadius, item.cell === game.lastMove && withShadow !== "shadow", 0, withShadow === "shadow");
+        ctx.scale(scale, scale);
+        ctx.shadowColor = withShadow === false ? "transparent" : item.player === Engine.HUMAN
+          ? "rgba(24, 31, 29, " + (0.28 + 0.02 * material) + ")" : "rgba(65, 58, 48, " + (0.18 + 0.02 * material) + ")";
+        ctx.shadowBlur = effectPixels(ctx, stoneRadius * (0.42 + 0.06 * material - compression * 0.16));
+        ctx.shadowOffsetY = effectPixels(ctx, stoneRadius * (0.2 - compression * 0.125));
+        drawStoneFace(ctx, item.player, stoneRadius, item.cell === game.lastMove && withShadow !== "shadow", compression, withShadow === "shadow");
         ctx.restore();
       });
       ctx.restore();
+      if (winnerSet[item.cell] && material < 1) {
+        var winningIndex = Array.prototype.indexOf.call(game.winningMask.cells, item.cell);
+        var ringProgress = clamp01((time - game.winAt - winningIndex * 70) / 330);
+        ctx.save();
+        ctx.globalAlpha *= ringProgress * 0.78 * (1 - material);
+        ctx.strokeStyle = TOKENS.gold;
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.arc(item.point.x, item.point.y, stoneRadius + 4 + ringProgress * 3, 0, Math.PI * 2);
+        ctx.stroke();
+        ctx.restore();
+      }
     }
     stones.forEach(function drawStoneLayers(item) {
       drawSurfaceStone(item);
     });
-    drawCompletionWinningLine(ctx, game, layout, orientation, Number(settings.time) || 0, depth);
+    ctx.save();
+    ctx.globalAlpha *= material;
+    drawCompletionWinningLine(ctx, game, layout, orientation, time, depth);
+    ctx.restore();
     return depth;
   }
 
@@ -1267,6 +1338,7 @@
     prepareMorphRotation: prepareMorphRotation,
     mappedCompletionPoint: mappedCompletionPoint,
     drawSurfaceBoundaryArrows: drawSurfaceBoundaryArrows,
+    surfaceMaterialBlend: surfaceMaterialBlend,
     drawTopologyGlyph: drawTopologyGlyph,
     drawTopologySilhouette: drawTopologySilhouette
   };
