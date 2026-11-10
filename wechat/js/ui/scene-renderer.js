@@ -380,7 +380,7 @@ export default class SceneRenderer {
     if (!state.game) {
       return -1;
     }
-    if (state.game.view.progress > 0.001) {
+    if (state.game.view.progress > 0) {
       const game = state.game;
       const art = GameGlobal.TopologyBoardArt;
       const pose = this.completionPose(game, Date.now());
@@ -812,7 +812,7 @@ export default class SceneRenderer {
     active.elastic.y = this.surfaceElastic.y;
     const automatic = Boolean(completion && !completion.settled);
     return {
-      draw: view.progress > 0.001 || automatic,
+      draw: view.progress > 0 || automatic,
       morph: view.progress,
       orientation: GameGlobal.TopologyBoardViewMotion.orientation(view, this.gameTime(time)),
       settled: !automatic,
@@ -825,7 +825,7 @@ export default class SceneRenderer {
   }
 
   canDragSurface(game) {
-    return Boolean(game && game.view.progress > 0.001 && this.canToggleDimension(game));
+    return Boolean(game && game.view.progress > 0 && this.canToggleDimension(game));
   }
 
   beginSurfaceDrag(time) {
@@ -1307,37 +1307,39 @@ export default class SceneRenderer {
         radius: 29,
       });
       ctx.translate(this.boardRect.x, this.boardRect.y);
+      const boardInteraction = interaction.board
+        ? {
+            pressedCell: interaction.board.cell,
+            pressedAt: interaction.board.startedAt,
+            position: interaction.board.position
+              ? {
+                  x: interaction.board.position.x - this.boardRect.x,
+                  y: interaction.board.position.y - this.boardRect.y,
+                }
+              : null,
+          }
+        : null;
+      const boardOptions = {
+        layout: this.boardLayout,
+        time: gameTime,
+        preferences: state.preferences,
+        interaction: boardInteraction,
+        fontFamily: this.host.fonts[700] ? `'${this.host.fonts[700]}'` : 'serif',
+      };
       const completionPose = this.completionPose(game, gameTime);
       if (completionPose && completionPose.draw) {
         game.view.displayedOrientation = completionPose.orientation;
         const completionGame = gameForReviewFrame(game);
         GameGlobal.TopologyBoardArt.drawCompletion(ctx, {
+          ...boardOptions,
           game: completionGame,
-          layout: this.boardLayout,
-          time: gameTime,
           morph: completionPose.morph,
           orientation: { ...completionPose.orientation, morph: completionPose.morph },
         });
       } else {
-        const boardInteraction = interaction.board
-          ? {
-              pressedCell: interaction.board.cell,
-              pressedAt: interaction.board.startedAt,
-              position: interaction.board.position
-                ? {
-                    x: interaction.board.position.x - this.boardRect.x,
-                    y: interaction.board.position.y - this.boardRect.y,
-                  }
-                : null,
-            }
-          : null;
         GameGlobal.TopologyBoardArt.drawBoard(ctx, {
+          ...boardOptions,
           game: gameForReviewFrame(game),
-          layout: this.boardLayout,
-          time: gameTime,
-          preferences: state.preferences,
-          interaction: boardInteraction,
-          fontFamily: this.host.fonts[700] ? `'${this.host.fonts[700]}'` : 'serif',
         });
       }
       ctx.restore();

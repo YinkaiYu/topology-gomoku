@@ -1,0 +1,412 @@
+{
+  "version": "1.43.0",
+  "runtime": "Chromium native Canvas calibration; not WeChat simulator",
+  "viewport": {
+    "width": 390,
+    "height": 844
+  },
+  "results": [
+    {
+      "revision": "before",
+      "level": 0,
+      "type": "plane",
+      "cornerMoves": [
+        {
+          "cell": 0,
+          "player": 1
+        },
+        {
+          "cell": 6,
+          "player": -1
+        },
+        {
+          "cell": 42,
+          "player": 1
+        },
+        {
+          "cell": 48,
+          "player": -1
+        }
+      ],
+      "projectedClick": false,
+      "screenshots": [
+        "artifacts/ui-parity/wechat-before-plane-0-390x844-v1.43.0.png"
+      ]
+    },
+    {
+      "revision": "before",
+      "level": 1,
+      "type": "cylinder",
+      "cornerMoves": [
+        {
+          "cell": 0,
+          "player": 1
+        },
+        {
+          "cell": 6,
+          "player": -1
+        },
+        {
+          "cell": 35,
+          "player": 1
+        },
+        {
+          "cell": 41,
+          "player": -1
+        }
+      ],
+      "projectedClick": true,
+      "screenshots": [
+        "artifacts/ui-parity/wechat-before-cylinder-0-390x844-v1.43.0.png",
+        "artifacts/ui-parity/wechat-before-cylinder-0.5-390x844-v1.43.0.png",
+        "artifacts/ui-parity/wechat-before-cylinder-1-390x844-v1.43.0.png"
+      ]
+    },
+    {
+      "revision": "before",
+      "level": 2,
+      "type": "torus",
+      "cornerMoves": [
+        {
+          "cell": 0,
+          "player": 1
+        },
+        {
+          "cell": 6,
+          "player": -1
+        },
+        {
+          "cell": 35,
+          "player": 1
+        },
+        {
+          "cell": 41,
+          "player": -1
+        }
+      ],
+      "projectedClick": true,
+      "screenshots": [
+        "artifacts/ui-parity/wechat-before-torus-0-390x844-v1.43.0.png",
+        "artifacts/ui-parity/wechat-before-torus-0.5-390x844-v1.43.0.png",
+        "artifacts/ui-parity/wechat-before-torus-1-390x844-v1.43.0.png"
+      ]
+    },
+    {
+      "revision": "before",
+      "level": 3,
+      "type": "mobius",
+      "cornerMoves": [
+        {
+          "cell": 0,
+          "player": 1
+        },
+        {
+          "cell": 7,
+          "player": -1
+        },
+        {
+          "cell": 40,
+          "player": 1
+        },
+        {
+          "cell": 47,
+          "player": -1
+        }
+      ],
+      "projectedClick": true,
+      "screenshots": [
+        "artifacts/ui-parity/wechat-before-mobius-0-390x844-v1.43.0.png",
+        "artifacts/ui-parity/wechat-before-mobius-0.5-390x844-v1.43.0.png",
+        "artifacts/ui-parity/wechat-before-mobius-1-390x844-v1.43.0.png"
+      ]
+    },
+    {
+      "revision": "before",
+      "level": 4,
+      "type": "klein",
+      "cornerMoves": [
+        {
+          "cell": 0,
+          "player": 1
+        },
+        {
+          "cell": 6,
+          "player": -1
+        },
+        {
+          "cell": 35,
+          "player": 1
+        },
+        {
+          "cell": 41,
+          "player": -1
+        }
+      ],
+      "projectedClick": true,
+      "screenshots": [
+        "artifacts/ui-parity/wechat-before-klein-0-390x844-v1.43.0.png",
+        "artifacts/ui-parity/wechat-before-klein-0.5-390x844-v1.43.0.png",
+        "artifacts/ui-parity/wechat-before-klein-1-390x844-v1.43.0.png"
+      ]
+    },
+    {
+      "revision": "before",
+      "level": 5,
+      "type": "projective",
+      "cornerMoves": [
+        {
+          "cell": 0,
+          "player": 1
+        },
+        {
+          "cell": 7,
+          "player": -1
+        },
+        {
+          "cell": 56,
+          "player": 1
+        },
+        {
+          "cell": 63,
+          "player": -1
+        }
+      ],
+      "projectedClick": true,
+      "screenshots": [
+        "artifacts/ui-parity/wechat-before-projective-0-390x844-v1.43.0.png",
+        "artifacts/ui-parity/wechat-before-projective-0.5-390x844-v1.43.0.png",
+        "artifacts/ui-parity/wechat-before-projective-1-390x844-v1.43.0.png"
+      ]
+    },
+    {
+      "revision": "before",
+      "level": 6,
+      "type": "sphere",
+      "cornerMoves": [
+        {
+          "cell": 0,
+          "player": 1
+        },
+        {
+          "cell": 6,
+          "player": -1
+        },
+        {
+          "cell": 42,
+          "player": 1
+        },
+        {
+          "cell": 48,
+          "player": -1
+        }
+      ],
+      "projectedClick": true,
+      "screenshots": [
+        "artifacts/ui-parity/wechat-before-sphere-0-390x844-v1.43.0.png",
+        "artifacts/ui-parity/wechat-before-sphere-0.5-390x844-v1.43.0.png",
+        "artifacts/ui-parity/wechat-before-sphere-1-390x844-v1.43.0.png"
+      ]
+    },
+    {
+      "revision": "after",
+      "level": 0,
+      "type": "plane",
+      "cornerMoves": [
+        {
+          "cell": 0,
+          "player": 1
+        },
+        {
+          "cell": 6,
+          "player": -1
+        },
+        {
+          "cell": 42,
+          "player": 1
+        },
+        {
+          "cell": 48,
+          "player": -1
+        }
+      ],
+      "projectedClick": false,
+      "screenshots": [
+        "artifacts/ui-parity/wechat-after-plane-0-390x844-v1.43.0.png"
+      ]
+    },
+    {
+      "revision": "after",
+      "level": 1,
+      "type": "cylinder",
+      "cornerMoves": [
+        {
+          "cell": 0,
+          "player": 1
+        },
+        {
+          "cell": 6,
+          "player": -1
+        },
+        {
+          "cell": 35,
+          "player": 1
+        },
+        {
+          "cell": 41,
+          "player": -1
+        }
+      ],
+      "projectedClick": true,
+      "screenshots": [
+        "artifacts/ui-parity/wechat-after-cylinder-0-390x844-v1.43.0.png",
+        "artifacts/ui-parity/wechat-after-cylinder-0.5-390x844-v1.43.0.png",
+        "artifacts/ui-parity/wechat-after-cylinder-1-390x844-v1.43.0.png"
+      ]
+    },
+    {
+      "revision": "after",
+      "level": 2,
+      "type": "torus",
+      "cornerMoves": [
+        {
+          "cell": 0,
+          "player": 1
+        },
+        {
+          "cell": 6,
+          "player": -1
+        },
+        {
+          "cell": 35,
+          "player": 1
+        },
+        {
+          "cell": 41,
+          "player": -1
+        }
+      ],
+      "projectedClick": true,
+      "screenshots": [
+        "artifacts/ui-parity/wechat-after-torus-0-390x844-v1.43.0.png",
+        "artifacts/ui-parity/wechat-after-torus-0.5-390x844-v1.43.0.png",
+        "artifacts/ui-parity/wechat-after-torus-1-390x844-v1.43.0.png"
+      ]
+    },
+    {
+      "revision": "after",
+      "level": 3,
+      "type": "mobius",
+      "cornerMoves": [
+        {
+          "cell": 0,
+          "player": 1
+        },
+        {
+          "cell": 7,
+          "player": -1
+        },
+        {
+          "cell": 40,
+          "player": 1
+        },
+        {
+          "cell": 47,
+          "player": -1
+        }
+      ],
+      "projectedClick": true,
+      "screenshots": [
+        "artifacts/ui-parity/wechat-after-mobius-0-390x844-v1.43.0.png",
+        "artifacts/ui-parity/wechat-after-mobius-0.5-390x844-v1.43.0.png",
+        "artifacts/ui-parity/wechat-after-mobius-1-390x844-v1.43.0.png"
+      ]
+    },
+    {
+      "revision": "after",
+      "level": 4,
+      "type": "klein",
+      "cornerMoves": [
+        {
+          "cell": 0,
+          "player": 1
+        },
+        {
+          "cell": 6,
+          "player": -1
+        },
+        {
+          "cell": 35,
+          "player": 1
+        },
+        {
+          "cell": 41,
+          "player": -1
+        }
+      ],
+      "projectedClick": true,
+      "screenshots": [
+        "artifacts/ui-parity/wechat-after-klein-0-390x844-v1.43.0.png",
+        "artifacts/ui-parity/wechat-after-klein-0.5-390x844-v1.43.0.png",
+        "artifacts/ui-parity/wechat-after-klein-1-390x844-v1.43.0.png"
+      ]
+    },
+    {
+      "revision": "after",
+      "level": 5,
+      "type": "projective",
+      "cornerMoves": [
+        {
+          "cell": 0,
+          "player": 1
+        },
+        {
+          "cell": 7,
+          "player": -1
+        },
+        {
+          "cell": 56,
+          "player": 1
+        },
+        {
+          "cell": 63,
+          "player": -1
+        }
+      ],
+      "projectedClick": true,
+      "screenshots": [
+        "artifacts/ui-parity/wechat-after-projective-0-390x844-v1.43.0.png",
+        "artifacts/ui-parity/wechat-after-projective-0.5-390x844-v1.43.0.png",
+        "artifacts/ui-parity/wechat-after-projective-1-390x844-v1.43.0.png"
+      ]
+    },
+    {
+      "revision": "after",
+      "level": 6,
+      "type": "sphere",
+      "cornerMoves": [
+        {
+          "cell": 0,
+          "player": 1
+        },
+        {
+          "cell": 6,
+          "player": -1
+        },
+        {
+          "cell": 42,
+          "player": 1
+        },
+        {
+          "cell": 48,
+          "player": -1
+        }
+      ],
+      "projectedClick": true,
+      "screenshots": [
+        "artifacts/ui-parity/wechat-after-sphere-0-390x844-v1.43.0.png",
+        "artifacts/ui-parity/wechat-after-sphere-0.5-390x844-v1.43.0.png",
+        "artifacts/ui-parity/wechat-after-sphere-1-390x844-v1.43.0.png"
+      ]
+    }
+  ]
+}

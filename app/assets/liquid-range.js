@@ -14,6 +14,12 @@
     return Math.round((touch ? 660 : 540) + clamp(Math.abs(distance)) * (touch ? 280 : 200));
   }
 
+  function surfaceDuration(distance, touch) {
+    // Give the opening stretch and the two seam closures time to be read.
+    // Small corrections retain the familiar slider timing.
+    return duration(distance, touch) + Math.round(400 * clamp(Math.abs(distance)));
+  }
+
   function glide(progress) {
     var x = clamp(progress);
     if (x === 0 || x === 1) { return x; }
@@ -166,5 +172,5 @@
     };
   }
 
-  return { bind: bind, duration: duration, glide: glide };
+  return { bind: bind, duration: duration, surfaceDuration: surfaceDuration, glide: glide };
 }));

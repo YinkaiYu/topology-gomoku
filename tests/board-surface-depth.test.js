@@ -19,8 +19,9 @@ function recordingContext() {
     rect(x, y, width, height) { rectangles.push({ x, y, width, height }); },
     clip(rule) { state.clip = rule === "evenodd" ? "shadow" : rectangles.slice(); },
     arc(x, y, radius) { circle = { x: state.x + x, y: state.y + y, radius }; },
-    fill() { if (circle && state.clip !== "shadow") stones.push({ ...circle, clip: state.clip, alpha: this.globalAlpha }); },
+    fill() { if (circle && state.clip !== "shadow" && typeof this.fillStyle === "object") stones.push({ ...circle, clip: state.clip, alpha: this.globalAlpha }); },
     moveTo() {}, lineTo() {}, closePath() {}, stroke() {}, strokeRect() {}, setLineDash() {},
+    fillRect() {}, scale() {},
     createLinearGradient() { return { addColorStop() {} }; },
     createRadialGradient() { return { addColorStop() {} }; }
   };

@@ -134,3 +134,41 @@ test("原生三维按下未获落子资格不能在 AI 解锁后松手落子，�
   s.main.onTouchEnd(event(p.x,p.y));
   assert.equal(s.controller.game.moves.length, 1);
 });
+
+test("原生展开首步保留二维提示与按压状态并采用实际投影命中", () => {
+  const s = setup();
+  s.main.interaction.board = {
+    cell: 3,
+    startedAt: time - 50,
+    position: { x: s.renderer.boardRect.x + 80, y: s.renderer.boardRect.y + 90 },
+  };
+  const draws = [];
+  globals.TopologyBoardArt = {
+    ...Art,
+    drawBoard: (_, options) => draws.push({ kind: "flat", options }),
+    drawCompletion: (_, options) => draws.push({ kind: "surface", options }),
+  };
+  try {
+    s.draw();
+    s.controller.setViewProgress(1e-8, false, time);
+    s.draw();
+    assert.deepEqual(draws.map(draw => draw.kind), ["flat", "surface"]);
+    for (const key of ["preferences", "interaction", "fontFamily", "time"]) {
+      assert.deepEqual(draws[0].options[key], draws[1].options[key]);
+    }
+    assert.equal(draws[1].options.interaction.pressedCell, 3);
+    assert.equal(draws[1].options.interaction.position.x, 80);
+    assert.equal(draws[1].options.interaction.position.y, 90);
+    const game = s.controller.game;
+    const pose = s.renderer.completionPose(game, time);
+    for (const cell of [0, 3, game.rules.cellCount - 1]) {
+      const point = Art.mappedCompletionPoint(game, s.renderer.boardLayout,
+        Art.cellCenter(game.rules, s.renderer.boardLayout, cell), Morph.stoneUV(game.rules, cell),
+        { ...pose.orientation, morph: pose.morph });
+      assert.equal(s.renderer.boardCellAt(point.x + s.renderer.boardRect.x,
+        point.y + s.renderer.boardRect.y), cell);
+    }
+  } finally {
+    globals.TopologyBoardArt = Art;
+  }
+});

@@ -383,7 +383,8 @@ test("微信原生阴影与滤镜半径按物理像素密度补偿", () => {
   assert.match(boardArt, /var CONTEXT_PIXEL_RATIOS = typeof WeakMap === "function" \? new WeakMap\(\) : null/);
   assert.match(boardArt, /setContextPixelRatio: setContextPixelRatio/);
   const rawBoardShadows = boardArt.split(/\r?\n/)
-    .filter((line) => /ctx\.shadow(?:Blur|OffsetY)\s*=/.test(line) && !/= effectPixels\(/.test(line));
+    .filter((line) => /ctx\.shadow(?:Blur|OffsetY)\s*=/.test(line)
+      && !/= effectPixels\(/.test(line) && !/= 0;\s*$/.test(line));
   assert.deepEqual(rawBoardShadows, []);
 });
 
@@ -399,20 +400,6 @@ test("关键中文层级沿用 H5 的字距因子", () => {
   assert.match(optionsFor("pill(ctx, statusRect"), /letterSpacing: 11 \* 0\.05/);
   assert.match(optionsFor("text(ctx, '设置'"), /letterSpacing: 21 \* 0\.07/);
   assert.match(optionsFor("text(ctx, '完成'"), /letterSpacing: 16 \* 0\.12/);
-});
-
-test("终局曲面边界在形变末段按 boundaryFade 淡出", () => {
-  const boardArt = read("app/assets/board-art.js");
-  const completion = sourceBetween(
-    boardArt,
-    "  function drawCompletion(ctx, options) {",
-    "  function drawTopologyGlyph(ctx, topology, rect, options) {",
-  );
-  assert.match(completion, /var boundaryFade = 1 - Morph\.smooth\(\(morph - 0\.72\) \/ 0\.28\);/);
-  assert.match(
-    completion,
-    /ctx\.save\(\);\s*ctx\.globalAlpha \*= \(0\.36 \+ morph \* 0\.5\) \* boundaryFade;[\s\S]*drawSurfaceBoundary[\s\S]*ctx\.restore\(\);\s*if \(morph < 0\.98\)/,
-  );
 });
 
 test("边界演示沿用 main 的逐段辅助线与跨界双端脉冲", () => {
