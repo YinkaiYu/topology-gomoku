@@ -570,9 +570,9 @@ Arena 发布状态：2026-11-04 用户已确认本轮预览并授权合并、推
 - 性能记录包含真实动画帧与强制读回。八子场景约 16.7ms/帧；19 路满盘的精确局部遮挡仍有明显开销，约 50–83ms/帧，不能据八子结果声称所有盘面都流畅。未进行原生宿主或低性能设备验证。
 - 复现：提供 Playwright 到 NODE_PATH 后运行 node scripts/qa-board-occlusion.cjs；--after-only 仅更新修改后证据，--profile 分析满盘耗时。图片与源码摘要、连续性和性能数据见[完整结果](../../artifacts/board-occlusion/results.json)。
 
-## 2026-11-10：曲面相交线与两组边界错峰粘合（待确认）
+## 2026-11-10：曲面相交线与两组边界错峰粘合（已确认）
 
-- 独立任务 `codex/board-intersections` 从 `dev@81b7b0b` 开始，当前对照为上轮预览 `0d6a981`。维持 1.42.0，等待用户确认，不合入长期分支。
+- 独立任务 `codex/board-intersections` 从 `dev@81b7b0b` 开始，动效对照为上轮预览 `0d6a981`。维持 1.42.0；用户于 2026-11-10 确认完整预览，授权合入 `dev` 并推送。最终渲染提交为 `d9f76ae`，共享 239 项测试、资源与文档校验通过。
 - 曲面自交处采用更清楚的暖白亮芯和宽光晕，棋子接触线则保留清晰亮度、适度收敛线宽与光晕，取消深色描边与阴影。轮廓仍来自真实三角面片与圆润棋子体积，遵循遮挡，不把普通接缝或投影重叠画成相交线。
 - 边界先向外舒展，再沿较长的弧线收拢。环游先把金黄边卷成筒，再弯曲长轴、粘合青绿边；圆筒沿单弧卷合，扭带逐步完成半扭转。归圆的两个图册分开弯曲闭合，避免中途穿插。瓶界与双生保留本身需要的自交结构。
 - 方向箭头跟随真实边界移动，扭转边保留原有虚线；已闭合的一组淡出时，另一组仍可追踪。自动切换为两段动作多留观察时间，手动滑动保持直接跟手，半展开拖动与中途反向连续。
@@ -615,7 +615,7 @@ Arena 发布状态：2026-11-04 用户已确认本轮预览并授权合并、推
 - 以上轮预览 `a2f05bd` 为基线。环游、瓶界、双生和归圆的二维辅助线延伸到共同角点，消除切换首帧才补齐半格缺口的跳变。箭头、网格、落点及规则保持原位，圆筒、扭带的开放边与平面不增加彩色外框。
 - 同内容、同时间、DPR 1，每块 Canvas 为 480×360；对照图从左到右为归圆、环游、瓶界、双生，上行为二维，下行为动画进度 0.00001：[修改前](../../artifacts/board-corner-rails/before-paired-first-frame.png)、[修改后](../../artifacts/board-corner-rails/after-paired-first-frame.png)。开放边对照：[修改前](../../artifacts/board-corner-rails/before-open-first-frame.png)、[修改后](../../artifacts/board-corner-rails/after-open-first-frame.png)。
 - 84 个前后状态覆盖七类拓扑及 5×5、7×6、19×19 棋盘（归圆中间尺寸为 7×7）。新辅助线与动画首帧角点误差小于 0.01px；圆筒、扭带、平面的九组二维画面像素不变，落子命中全部通过。H5 与共享 Canvas 的实际绘制入口均通过端点回归检查；共享 232 项测试、包规范和文档校验通过。
-- 对弈室任务预览已刷新，并目视核对归圆二维四角完整；等待用户确认。复现：提供 Playwright 到 NODE_PATH 后运行 `node scripts/qa-board-corner-rails.cjs`。源码摘要和逐状态数据见[完整结果](../../artifacts/board-corner-rails/results.json)。
+- 对弈室任务预览已刷新，归圆二维四角完整，用户已确认。复现：提供 Playwright 到 NODE_PATH 后运行 `node scripts/qa-board-corner-rails.cjs`。源码摘要和逐状态数据见[完整结果](../../artifacts/board-corner-rails/results.json)。
 
 ### 二维与展开首帧一致
 
