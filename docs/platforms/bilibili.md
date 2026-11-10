@@ -1,6 +1,17 @@
 # Bilibili Toy 原生适配与响应式审视
 
-全平台游戏版本：1.42.0
+全平台游戏版本：1.43.0
+
+## 2026-11-10：1.43.0 发行
+
+从统一稳定 `main@d99166a` 整合曲面相交光线、两组边界错峰粘合、二维四角补齐与展开首帧连续性。整合提交 `978b898`；保留现有 Toy SDK、沉浸模式、动态视口、安全区、字体和键盘输入。唯一冲突为视觉 QA 记录尾部，已逐段保留渠道历史与本轮共享证据。
+
+- `npm run check` 通过：247 项测试、32 个包文件和 31 份文档；Toy 与 Web 构建通过，官方 doctor 无错误、无警告。
+- WebKit 首页九种窗口、棋盘七种窗口及两次元素单独缩短后的底行落子通过。复现：`node scripts/qa-board-viewport.cjs --home --card-sizes --duel --label=bilibili-1.43.0 --webkit --offline-sdk`；棋盘场景去掉 `--home --card-sizes --duel`。
+- [官方预览](https://www.bilibili.com/toy/preview/author_ZsH8d9dh/index.html)的真实跨源 iframe 在 1280×900、390×844 中分别通过环游、扭带、双生、归圆双人键盘落子和二维/半程/三维往返。四份远端脚本 SHA-256 与上传源一致，未拦截官方 SDK，无脚本异常。[验证结果](../../artifacts/qa-toy-1.43.0-preview-results.json)。复现：提供 Playwright 到 `NODE_PATH` 后运行 `node scripts/qa-toy-release.cjs <preview-url> 1.43.0`。
+- ZIP `topology-gomoku-bilibili-v1.43.0.zip`，SHA-256 `FA2C0A7CDD8370CA7BE9EB90ADF845695CA45EC7268B571AE89FB8112D1594FB`。用户已确认共享预览并明确授权全平台发行，实际宿主预览复验后更新原作品 `26525273613312`，标题、地址、封面、图标、分类、主题与可见性保持。提交返回 `auditing`，[提交后预览](https://www.bilibili.com/toy/preview/author_XvV54bcB/index.html)。
+
+未执行 B站 App 真机、真机沉浸或低性能设备验收；模拟手机视口不作为真机验证，保留共享满盘三维性能限制。
 
 ## 2026-11-10：1.42.0 发行
 

@@ -389,3 +389,9 @@
 - 复现：提供 Playwright 到 NODE_PATH 后运行 `node scripts/qa-board-first-frame.cjs`；`--after-only` 保留既有基线、只复验当前代码。源码摘要、区域像素误差和正反向记录见[完整结果](../../artifacts/board-first-frame/results.json)。
 - 实际 H5 页面另覆盖六曲面、1280×720 / 390×844、空盘／静止棋子／正在落子／按压回弹，共 48 组。原二维与往返二维画面全部逐像素一致；进度 0.0000001 的 42 组无像素差，其余仅 1–8 个像素出现约一级色阶差，最大平均 RGB 差 0.000052/255。旧切换阈值附近的最大平均差从 8.07 降到 0.055 以下。网格路径只精简真正共线的绘制分段，保留深度转折、回折和真实遮挡。
 - H5 复现：`node scripts/qa-board-first-frame-h5.cjs`。保留[桌面首步画面](../../artifacts/board-first-frame-h5/after-sphere-first-step-1280x720.png)、[手机首步画面](../../artifacts/board-first-frame-h5/after-sphere-first-step-390x844.png)和[逐状态结果](../../artifacts/board-first-frame-h5/results.json)。此处手机检查针对共享游戏页面，对弈室仍按桌面横屏设计；尚未进行原生宿主真机检查。
+
+## 2026-11-10：Bilibili 1.43.0 渠道复验
+
+统一来源 `main@d99166a`，共享视觉基线已确认。本轮未新增平台视觉设计；247 项测试、资源、文档、Toy/Web 构建和官方 doctor 通过。WebKit 首页九窗口、棋盘七窗口与两次面板缩短后的底行落子通过，保留现有宿主与输入边界。
+
+真实官方跨域 iframe 在 1280×900 和 390×844 中检查四种拓扑、双人键盘落子及二维/半程/三维往返，四份上传脚本哈希一致，无脚本异常。目视确认双生相交亮线清晰、归圆半程边界方向可追踪、底部控件完整：[手机双生](../../artifacts/qa-toy-1.43.0-projective-1-390x844.png)、[桌面归圆半程](../../artifacts/qa-toy-1.43.0-sphere-0.5-1280x900.png)、[完整结果](../../artifacts/qa-toy-1.43.0-preview-results.json)。本轮不以手机视口模拟替代 App 真机验收，平台提交结果见[发行记录](../platforms/bilibili.md)。

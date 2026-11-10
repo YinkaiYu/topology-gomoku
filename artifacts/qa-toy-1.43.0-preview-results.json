@@ -1,0 +1,59 @@
+{
+  "url": "https://www.bilibili.com/toy/preview/author_ZsH8d9dh/index.html",
+  "results": [
+    {
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "frameUrl": "https://www.bilibilitoy.com/toy/preview/author_ZsH8d9dh/index.html",
+      "hashes": {
+        "board-art.js": "04b980c35ebc350100991b478d18836ea4e215e4fd301aceaebd14aeb2fc57c4",
+        "topology-morph.js": "8f244e97c2164f1cc5603d038778db578afd052829ca88f71c17c950f02361a8",
+        "game.js": "a368165d42bfb48bcf7af7e6ba7c054e9906c5e15b2ff007629c1edfaa632447",
+        "bilibili-adapter.js": "4f6a8e4f471c16f751b0c78c819e4a7aa1290fa6f75fb129e5c57a35552ac797"
+      },
+      "topologies": [
+        "torus",
+        "mobius",
+        "projective",
+        "sphere"
+      ],
+      "keyboardDuel": true,
+      "morph": [
+        0,
+        0.5,
+        1,
+        0
+      ],
+      "errors": []
+    },
+    {
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "frameUrl": "https://www.bilibilitoy.com/toy/preview/author_ZsH8d9dh/index.html",
+      "hashes": {
+        "board-art.js": "04b980c35ebc350100991b478d18836ea4e215e4fd301aceaebd14aeb2fc57c4",
+        "topology-morph.js": "8f244e97c2164f1cc5603d038778db578afd052829ca88f71c17c950f02361a8",
+        "game.js": "a368165d42bfb48bcf7af7e6ba7c054e9906c5e15b2ff007629c1edfaa632447",
+        "bilibili-adapter.js": "4f6a8e4f471c16f751b0c78c819e4a7aa1290fa6f75fb129e5c57a35552ac797"
+      },
+      "topologies": [
+        "torus",
+        "mobius",
+        "projective",
+        "sphere"
+      ],
+      "keyboardDuel": true,
+      "morph": [
+        0,
+        0.5,
+        1,
+        0
+      ],
+      "errors": []
+    }
+  ]
+}
