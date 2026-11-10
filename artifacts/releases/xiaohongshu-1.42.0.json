@@ -1,1 +1,49 @@
-{"version":"1.42.0","main":"f6c699eb58d8e77a40359165be38104d1fad2e7c","cli":{"name":"redapp","version":"1.0.5","tag":"latest","environment":"prod"},"appId":"6a8f70ebe29cdb0015d5b744","preview":{"confirmed":true,"date":"2026-11-10","evidence":"Maintainer explicitly confirmed preview passed and authorized submission","deviceOs":null},"submit":{"status":"submitted","version":"1.42.0","auditStatus":1,"auditStatusText":"审核中"},"history":{"gmtCreate":"2026-11-10 16:28:48","version":"1.42.0","auditStatus":1},"publicStatus":{"version":"1.41.2","status":2},"package":{"sha256":"a3b34ed198084fcdd46f7ca039661aede2bafac4609fafd8008b2505f1b1b881","bytes":1344990,"highConsumption":false},"verification":{"tests":203,"assetFiles":31,"officialArtifactAuditWarnings":0,"officialLocalSimulator":"started, remote iframe failed to load; not passed","chrome61":"not verified","nativeStorageMigration":"not included"}}
+{
+  "version": "1.42.0",
+  "main": "f6c699eb58d8e77a40359165be38104d1fad2e7c",
+  "cli": {
+    "name": "redapp",
+    "version": "1.0.5",
+    "tag": "latest",
+    "environment": "prod"
+  },
+  "appId": "6a8f70ebe29cdb0015d5b744",
+  "preview": {
+    "confirmed": true,
+    "date": "2026-11-10",
+    "evidence": "Maintainer explicitly confirmed preview passed and authorized submission",
+    "deviceOs": null
+  },
+  "submit": {
+    "status": "submitted",
+    "version": "1.42.0",
+    "auditStatus": 1,
+    "auditStatusText": "审核中"
+  },
+  "history": {
+    "gmtCreate": "2026-11-10 16:28:48",
+    "version": "1.42.0",
+    "auditStatus": 2,
+    "auditStatusText": "审核通过"
+  },
+  "publicStatus": {
+    "version": "1.42.0",
+    "statusText": "已发布",
+    "rejectReason": "",
+    "status": 2,
+    "verifiedAt": "2026-11-10T16:55:26+08:00"
+  },
+  "package": {
+    "sha256": "a3b34ed198084fcdd46f7ca039661aede2bafac4609fafd8008b2505f1b1b881",
+    "bytes": 1344990,
+    "highConsumption": false
+  },
+  "verification": {
+    "tests": 203,
+    "assetFiles": 31,
+    "officialArtifactAuditWarnings": 0,
+    "officialLocalSimulator": "started, remote iframe failed to load; not passed",
+    "chrome61": "not verified",
+    "nativeStorageMigration": "not included"
+  }
+}
