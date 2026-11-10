@@ -119,12 +119,12 @@ test("归圆二维辅助线与变形边界使用相同的邻边配色", () => {
   const offset = layout.cell * 0.5;
   const expected = new Map([
     [Art.TOKENS.teal, [
-      [{ x: layout.left, y: layout.top - offset }, { x: layout.right, y: layout.top - offset }],
-      [{ x: layout.left - offset, y: layout.top }, { x: layout.left - offset, y: layout.bottom }]
+      [{ x: layout.left - offset, y: layout.top - offset }, { x: layout.right + offset, y: layout.top - offset }],
+      [{ x: layout.left - offset, y: layout.top - offset }, { x: layout.left - offset, y: layout.bottom + offset }]
     ]],
     [Art.TOKENS.gold, [
-      [{ x: layout.left, y: layout.bottom + offset }, { x: layout.right, y: layout.bottom + offset }],
-      [{ x: layout.right + offset, y: layout.top }, { x: layout.right + offset, y: layout.bottom }]
+      [{ x: layout.left - offset, y: layout.bottom + offset }, { x: layout.right + offset, y: layout.bottom + offset }],
+      [{ x: layout.right + offset, y: layout.top - offset }, { x: layout.right + offset, y: layout.bottom + offset }]
     ]]
   ]);
   for (const [color, paths] of expected) {
