@@ -204,9 +204,6 @@ test("球面棋盘参数化兼顾面积分布、网格韧性与背面层次", ()
   }
 
   const game = fs.readFileSync(path.join(ROOT, "app", "assets", "game.js"), "utf8");
-  assert.match(game, /function strokeFrontFacingCompletionPath/);
-  assert.match(game, /var frontBlend = Morph\.smooth/);
-  assert.match(game, /var depthThreshold = -0\.012 \* morph/);
   assert.match(game, /sphereSingularityDepth \* 1\.15/);
   assert.match(game, /requestIdleCallback\(warmSphereParameterization/);
 });

@@ -1,0 +1,59 @@
+{
+  "url": "https://www.bilibili.com/toy/preview/author_NnP4A5U9/index.html",
+  "results": [
+    {
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "frameUrl": "https://www.bilibilitoy.com/toy/preview/author_NnP4A5U9/index.html",
+      "hashes": {
+        "board-art.js": "ec05c831d341e20a905c75161820cbcf1f26b637d0b5ba92f936f021d2a11853",
+        "topology-morph.js": "d52bfae6124a63e286308a7d8235e286a51acacc16dbb8a890a0a5683ef98a5b",
+        "game.js": "915fd634e7aa352180133da5258bda5042b3504b1ad086117af6bbbef5715fb0",
+        "bilibili-adapter.js": "4f6a8e4f471c16f751b0c78c819e4a7aa1290fa6f75fb129e5c57a35552ac797"
+      },
+      "topologies": [
+        "torus",
+        "mobius",
+        "projective",
+        "sphere"
+      ],
+      "keyboardDuel": true,
+      "morph": [
+        0,
+        0.5,
+        1,
+        0
+      ],
+      "errors": []
+    },
+    {
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "frameUrl": "https://www.bilibilitoy.com/toy/preview/author_NnP4A5U9/index.html",
+      "hashes": {
+        "board-art.js": "ec05c831d341e20a905c75161820cbcf1f26b637d0b5ba92f936f021d2a11853",
+        "topology-morph.js": "d52bfae6124a63e286308a7d8235e286a51acacc16dbb8a890a0a5683ef98a5b",
+        "game.js": "915fd634e7aa352180133da5258bda5042b3504b1ad086117af6bbbef5715fb0",
+        "bilibili-adapter.js": "4f6a8e4f471c16f751b0c78c819e4a7aa1290fa6f75fb129e5c57a35552ac797"
+      },
+      "topologies": [
+        "torus",
+        "mobius",
+        "projective",
+        "sphere"
+      ],
+      "keyboardDuel": true,
+      "morph": [
+        0,
+        0.5,
+        1,
+        0
+      ],
+      "errors": []
+    }
+  ]
+}
