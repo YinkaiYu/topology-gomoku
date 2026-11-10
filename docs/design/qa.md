@@ -609,3 +609,10 @@ Arena 发布状态：2026-11-04 用户已确认本轮预览并授权合并、推
 | 归圆半展开，1280×720 | [中途穿插](../../artifacts/arena-seam-motion/before-sphere-50-1280x720.png) | [分开闭合](../../artifacts/arena-seam-motion/after-sphere-50-1280x720.png) |
 
 - 36 张同状态截图与[完整结果](../../artifacts/arena-seam-motion/results.json)保存。复现：提供 Playwright 后运行 `node scripts/qa-arena-intersections.cjs --baseline=6937a37 --out=artifacts/arena-seam-motion`；追加 `--serve --port=4321` 启动仅含合成棋局的可操作预览，地址记录在忽略目录 `.arena/intersections-preview/preview-fixtures.json`，再次启动复用已有合成棋局。
+
+### 二维边界四角补齐
+
+- 以上轮预览 `a2f05bd` 为基线。环游、瓶界、双生和归圆的二维辅助线延伸到共同角点，消除切换首帧才补齐半格缺口的跳变。箭头、网格、落点及规则保持原位，圆筒、扭带的开放边与平面不增加彩色外框。
+- 同内容、同时间、DPR 1，每块 Canvas 为 480×360；对照图从左到右为归圆、环游、瓶界、双生，上行为二维，下行为动画进度 0.00001：[修改前](../../artifacts/board-corner-rails/before-paired-first-frame.png)、[修改后](../../artifacts/board-corner-rails/after-paired-first-frame.png)。开放边对照：[修改前](../../artifacts/board-corner-rails/before-open-first-frame.png)、[修改后](../../artifacts/board-corner-rails/after-open-first-frame.png)。
+- 84 个前后状态覆盖七类拓扑及 5×5、7×6、19×19 棋盘（归圆中间尺寸为 7×7）。新辅助线与动画首帧角点误差小于 0.01px；圆筒、扭带、平面的九组二维画面像素不变，落子命中全部通过。H5 与共享 Canvas 的实际绘制入口均通过端点回归检查；共享 232 项测试、包规范和文档校验通过。
+- 对弈室任务预览已刷新，并目视核对归圆二维四角完整；等待用户确认。复现：提供 Playwright 到 NODE_PATH 后运行 `node scripts/qa-board-corner-rails.cjs`。源码摘要和逐状态数据见[完整结果](../../artifacts/board-corner-rails/results.json)。
