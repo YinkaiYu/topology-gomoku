@@ -341,3 +341,10 @@
 - H5 实际页面覆盖 168 个前后状态，12 组二维棋盘像素一致，12 次三维点击落子命中正确；归圆另保存两个视口的全过程截图。共享代码通过 232 项自动测试、包规范校验和文档校验。
 - 完整绘制数据、源码摘要、二维一致性、画布边界与性能记录见[共享 Canvas 结果](../../artifacts/board-seam-motion/results.json)；实际页面与三维点击命中见[H5 结果](../../artifacts/board-seam-motion-h5/results.json)。本机普通复杂八子场景约 30–60fps；361 子双生约 83ms/帧（约 12fps），高密度满盘仍有明显开销，不能把八子结果推广到所有盘面。
 - 复现共享绘制：`node scripts/qa-board-intersections.cjs --baseline=0d6a981 --out=artifacts/board-seam-motion --seam-motion`。H5：`node scripts/qa-board-perspective.cjs --h5-only --seam-motion --baseline=0d6a981 --out=artifacts/board-seam-motion-h5`。环境需提供 Playwright；桌面浏览器检查不能替代原生宿主或真机验收。
+
+### 二维边界四角补齐
+
+- 以上轮预览 `a2f05bd` 为基线。环游、瓶界、双生和归圆的二维辅助线延伸到共同角点，消除切换首帧才补齐半格缺口的跳变。箭头、网格、落点及规则保持原位，圆筒、扭带的开放边与平面不增加彩色外框。
+- 同内容、同时间、DPR 1，每块 Canvas 为 480×360；对照图从左到右为归圆、环游、瓶界、双生，上行为二维，下行为动画进度 0.00001：[修改前](../../artifacts/board-corner-rails/before-paired-first-frame.png)、[修改后](../../artifacts/board-corner-rails/after-paired-first-frame.png)。开放边对照：[修改前](../../artifacts/board-corner-rails/before-open-first-frame.png)、[修改后](../../artifacts/board-corner-rails/after-open-first-frame.png)。
+- 84 个前后状态覆盖七类拓扑及 5×5、7×6、19×19 棋盘（归圆中间尺寸为 7×7）。新辅助线与动画首帧角点误差小于 0.01px；圆筒、扭带、平面的九组二维画面像素不变，落子命中全部通过。H5 与共享 Canvas 的实际绘制入口均通过端点回归检查；共享 232 项测试、包规范和文档校验通过。
+- 对弈室任务预览已刷新，并目视核对归圆二维四角完整；等待用户确认。复现：提供 Playwright 到 NODE_PATH 后运行 `node scripts/qa-board-corner-rails.cjs`。源码摘要和逐状态数据见[完整结果](../../artifacts/board-corner-rails/results.json)。
