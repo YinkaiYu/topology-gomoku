@@ -1670,7 +1670,7 @@
     view.startProgress = view.progress;
     view.target = target;
     view.startedAt = performance.now();
-    view.duration = LiquidRange.duration(target - view.progress, touchInput);
+    view.duration = LiquidRange.surfaceDuration(target - view.progress, touchInput);
     view.transitioning = Math.abs(view.target - view.progress) > 0.001;
     view.dragging = false;
     if (!view.transitioning) {
@@ -2877,10 +2877,15 @@
       drawCompletionMorph(ctx, time);
       return;
     }
-    if (game.view && game.view.progress > 0.001) {
+    if (game.view && game.view.progress > 0) {
       drawInteractiveMorph(ctx, time);
       return;
     }
+    drawFlatBoard(ctx, time);
+  }
+
+  function drawFlatBoard(ctx, time) {
+    var layout = renderState.layout;
     renderState.depthBuffer = null;
     drawTopologyRails(ctx, time);
     drawGrid(ctx, layout);
@@ -3039,14 +3044,7 @@
 
   function completionMappedPoint(flatX, flatY, u, v, morph, spin) {
     var projected = Morph.project(game.level.topology, u, v, renderState.width, renderState.height, spin);
-    return {
-      x: flatX + (projected.x - flatX) * morph,
-      y: flatY + (projected.y - flatY) * morph,
-      depth: projected.depth * morph,
-      scale: 1 + (projected.scale - 1) * morph,
-      depthScale: projected.depthScale,
-      u: u, v: v
-    };
+    return Morph.morphPoint(game.level.topology, { x: flatX, y: flatY }, u, v, projected, morph, renderState);
   }
 
   function completionPoint(u, v, morph, spin) {
@@ -3069,7 +3067,9 @@
     for (row = 0; row <= rows; row += 1) {
       var pointRow = [];
       for (column = 0; column <= columns; column += 1) {
-        pointRow.push(completionPoint(column / columns, row / rows, morph, spin));
+        pointRow.push(completionPoint(
+          Morph.surfaceGridCoordinate(game.rules, column, columns, "u", morph),
+          Morph.surfaceGridCoordinate(game.rules, row, rows, "v", morph), morph, spin));
       }
       points.push(pointRow);
     }
@@ -3099,10 +3099,15 @@
         }
       }
     }
+    var mesh = Morph.createSurfaceMesh(points, { topology: game.level.topology,
+      pointAt: function sampleCorner(u, v) { return completionPoint(u, v, morph, spin); } });
+    patches = mesh.refinePatches(patches);
     patches.sort(function sortPatches(a, b) { return a.depth - b.depth; });
     renderState.depthBuffer = Morph.createDepthBuffer(renderState.width, renderState.height, patches);
-    renderState.depthBuffer.mesh = Morph.createSurfaceMesh(points);
+    renderState.depthBuffer.mesh = mesh;
     renderState.depthBuffer.translucency = 0.16 * morph;
+    renderState.depthBuffer.topology = game.level.topology;
+    renderState.depthBuffer.morph = morph;
 
     var surfaceGradient = ctx.createLinearGradient(
       0,
@@ -3115,7 +3120,7 @@
     surfaceGradient.addColorStop(1, "#d5d2c9");
 
     ctx.save();
-    ctx.globalAlpha = 0.3 + morph * 0.54;
+    ctx.globalAlpha *= 0.84 * BoardArt.surfaceMaterialBlend(morph);
     ctx.fillStyle = surfaceGradient;
     ctx.strokeStyle = surfaceGradient;
     ctx.lineWidth = 0.82;
@@ -3261,84 +3266,137 @@
   }
 
   function drawCompletionGrid(ctx, morph, spin) {
+    var blend = BoardArt.surfaceMaterialBlend(morph);
+    var flatWidth = Math.max(0.7, renderState.layout.cell * 0.025);
+    var surfaceWidth = Math.max(1.05, renderState.layout.cell * 0.023);
     ctx.save();
-    ctx.strokeStyle = "rgba(92, 88, 80," + (0.48 - morph * 0.17) + ")";
-    ctx.lineWidth = Math.max(0.7 + morph * 0.35, renderState.layout.cell * (0.025 - morph * 0.002));
-    ctx.lineCap = "round";
-    ctx.lineJoin = "round";
+    ctx.strokeStyle = "rgba(" + (108 - 16 * blend) + "," + (103 - 15 * blend) + "," +
+      (94 - 14 * blend) + "," + (0.5 - blend * 0.19) + ")";
+    ctx.lineWidth = flatWidth + (surfaceWidth - flatWidth) * blend;
+    ctx.lineCap = "butt";
+    ctx.lineJoin = "miter";
     if (game.level.topology === "sphere") {
       drawCompletionSphereGrid(ctx, morph, spin);
       ctx.restore();
+      drawCompletionGridDots(ctx, morph, spin);
       return;
+    }
+    // Keep a complete rail in one stroke, as in the flat board. Splitting
+    // every cell into its own antialiased stroke changes the intersections
+    // even when the mapped coordinates have barely begun to move.
+    var samples = 96;
+    for (var x = 0; x < game.rules.width; x += 1) {
+      var u = Morph.stoneUV(game.rules, x).u, vertical = [];
+      for (var verticalSample = 0; verticalSample <= samples; verticalSample += 1) {
+        vertical.push(completionPoint(u, verticalSample / samples, morph, spin));
+      }
+      strokeSmoothCompletionPath(ctx, vertical);
+    }
+    for (var y = 0; y < game.rules.height; y += 1) {
+      var v = Morph.stoneUV(game.rules, y * game.rules.width).v, horizontal = [];
+      for (var horizontalSample = 0; horizontalSample <= samples; horizontalSample += 1) {
+        horizontal.push(completionPoint(horizontalSample / samples, v, morph, spin));
+      }
+      strokeSmoothCompletionPath(ctx, horizontal);
     }
     for (var cell = 0; cell < game.rules.cellCount; cell += 1) {
       var gridDirections = [0, 2];
       gridDirections.forEach(function drawDirection(direction) {
         var step = Engine.step(game.rules, cell, direction);
-        if (!step) {
+        if (!step || !step.seam) {
           return;
         }
         var points = completionGridEdgePoints(cell, step, direction, morph, spin);
-        if (step.seam && points.length > 1) {
-          // Each edge reaches its own half-cell boundary even in the flat view.
-          // Only the bridge between the two separate chart edges fades in.
+        if (points.length > 1) {
+          // The full rails already reach each half-cell boundary. Only the
+          // bridge between the two separate chart edges is a separate path.
           var split = (points.length - 2) / 2;
-          ctx.globalAlpha = 1;
-          strokeSmoothCompletionPath(ctx, points.slice(0, split + 1));
-          strokeSmoothCompletionPath(ctx, points.slice(split + 1));
           ctx.globalAlpha = Morph.smooth((morph - 0.16) / 0.66);
           strokeSmoothCompletionPath(ctx, [points[split], points[split + 1]]);
-          return;
-        }
-        ctx.globalAlpha = 1;
-        if (points.length > 1) {
-          strokeSmoothCompletionPath(ctx, points);
         }
       });
     }
     ctx.restore();
+    drawCompletionGridDots(ctx, morph, spin);
   }
 
-  function drawCompletionBoundary(ctx, axis, morph, spin, color) {
-    var samples = 72;
-    var fade = 1 - Morph.smooth((morph - 0.72) / 0.28);
+  function drawCompletionGridDots(ctx, morph, spin) {
+    var alpha = 1 - BoardArt.surfaceMaterialBlend(morph);
+    if (!alpha) { return; }
     ctx.save();
-    ctx.globalAlpha = (0.36 + morph * 0.5) * fade;
+    ctx.globalAlpha *= alpha;
+    ctx.fillStyle = "rgba(72, 71, 65, 0.48)";
+    var radius = Math.max(0.9, renderState.layout.cell * 0.035);
+    for (var cell = 0; cell < game.rules.cellCount; cell += 1) {
+      var point = completionCellPoint(cell, morph, spin);
+      ctx.beginPath();
+      ctx.arc(point.x, point.y, radius * point.scale, 0, Math.PI * 2);
+      ctx.fill();
+    }
+    ctx.restore();
+  }
+
+  function drawCompletionBoundary(ctx, axis, morph, spin, color, time) {
+    var samples = 72;
+    var blend = BoardArt.surfaceMaterialBlend(morph);
+    var pulse = seamPulseFor(axis === "x" ? Engine.SEAM_X : Engine.SEAM_Y, time) * (1 - blend);
+    ctx.save();
+    ctx.globalAlpha *= 0.58 + pulse * 0.4 + blend * 0.28;
     ctx.strokeStyle = color;
-    ctx.lineWidth = 2.4;
+    ctx.fillStyle = color;
+    ctx.lineWidth = 2 + pulse * 2.2 + blend * 0.4;
     ctx.lineCap = "round";
+    ctx.shadowColor = color;
+    ctx.shadowBlur = pulse * 16;
+    if (ctx.setLineDash) { ctx.setLineDash((axis === "x" ? game.level.xConnection : game.level.yConnection) === "twist" ? [5, 5] : []); }
     [0, 1].forEach(function drawSide(side) {
+      function pointAt(along) {
+        return axis === "x" ? completionPoint(side, along, morph, spin) : completionPoint(along, side, morph, spin);
+      }
       var points = [];
       for (var index = 0; index <= samples; index += 1) {
-        var along = index / samples;
-        var point = axis === "x"
-          ? completionPoint(side, along, morph, spin)
-          : completionPoint(along, side, morph, spin);
-        points.push(point);
+        points.push(pointAt(index / samples));
       }
+      var local = Morph.seamProgress(game.level.topology, axis === "x" ? side : 0.5, axis === "x" ? 0.5 : side, morph);
+      ctx.save();
+      ctx.globalAlpha *= 1 - Morph.smooth((local - 0.82) / 0.18);
       strokeSmoothCompletionPath(ctx, points);
+      ctx.restore();
+      BoardArt.drawSurfaceBoundaryArrows(ctx, game.level.topology, axis === "x" ? (side ? "right" : "left") : (side ? "bottom" : "top"),
+        game.rules, pointAt, morph, renderState.depthBuffer);
     });
     ctx.restore();
   }
 
-  function drawCompletionSphereBoundary(ctx, pair, morph, spin, color) {
+  function drawCompletionSphereBoundary(ctx, pair, morph, spin, color, time) {
     var samples = 72;
-    var fade = 1 - Morph.smooth((morph - 0.72) / 0.28);
     var sides = pair === "a"
       ? [function top(along) { return completionPoint(along, 0, morph, spin); }, function left(along) { return completionPoint(0, along, morph, spin); }]
       : [function bottom(along) { return completionPoint(along, 1, morph, spin); }, function right(along) { return completionPoint(1, along, morph, spin); }];
+    var blend = BoardArt.surfaceMaterialBlend(morph);
+    var pulse = seamPulseFor(pair === "a" ? Engine.SEAM_X : Engine.SEAM_Y, time) * (1 - blend);
     ctx.save();
-    ctx.globalAlpha = (0.36 + morph * 0.5) * fade;
+    ctx.globalAlpha *= 0.58 + pulse * 0.4 + blend * 0.28;
     ctx.strokeStyle = color;
-    ctx.lineWidth = 2.4;
+    ctx.fillStyle = color;
+    ctx.lineWidth = 2 + pulse * 2.2 + blend * 0.4;
     ctx.lineCap = "round";
-    sides.forEach(function drawSphereSide(pointAt) {
+    ctx.shadowColor = color;
+    ctx.shadowBlur = pulse * 16;
+    if (ctx.setLineDash) { ctx.setLineDash([]); }
+    sides.forEach(function drawSphereSide(pointAt, sideIndex) {
       var points = [];
       for (var index = 0; index <= samples; index += 1) {
         var point = pointAt(index / samples);
         points.push(point);
       }
+      var middle = pointAt(0.5), local = Morph.seamProgress("sphere", middle.u, middle.v, morph);
+      ctx.save();
+      ctx.globalAlpha *= 1 - Morph.smooth((local - 0.82) / 0.18);
       strokeSmoothCompletionPath(ctx, points);
+      ctx.restore();
+      BoardArt.drawSurfaceBoundaryArrows(ctx, "sphere", (pair === "a" ? ["top", "left"] : ["bottom", "right"])[sideIndex],
+        game.rules, pointAt, morph, renderState.depthBuffer);
     });
     ctx.restore();
   }
@@ -3366,6 +3424,10 @@
   }
 
   function completionSphereWinningCurve(cells, morph, spin) {
+    var uvAnchors = cells.map(function winningUV(cell) {
+      var uv = Morph.stoneUV(game.rules, cell);
+      return [uv.u, uv.v];
+    });
     var flatAnchors = cells.map(function flatWinningAnchor(cell) {
       var point = cellCenter(cell);
       return [point.x, point.y];
@@ -3380,12 +3442,12 @@
       for (var sample = segment ? 1 : 0; sample <= samples; sample += 1) {
         var amount = sample / samples;
         var flat = catmullRomPoint(flatAnchors, segment, amount);
+        var uv = catmullRomPoint(uvAnchors, segment, amount);
         var surface = normalizeSurfacePoint(catmullRomPoint(sphereAnchors, segment, amount));
         var projected = Morph.projectPoint("sphere", surface, renderState.width, renderState.height, spin);
+        var mapped = Morph.morphPoint("sphere", { x: flat[0], y: flat[1] }, clamp01(uv[0]), clamp01(uv[1]), projected, morph, renderState);
         curve.push({
-          x: flat[0] + (projected.x - flat[0]) * morph,
-          y: flat[1] + (projected.y - flat[1]) * morph,
-          depth: projected.depth * morph
+          x: mapped.x, y: mapped.y, depth: mapped.depth
         });
       }
     }
@@ -3410,9 +3472,31 @@
       return;
     }
     var cells = Array.prototype.slice.call(winningMask.cells);
+    var blend = BoardArt.surfaceMaterialBlend(morph);
+    if (blend < 1) {
+      var flatReveal = clamp01((time - renderState.winAt) / 620);
+      ctx.save();
+      ctx.globalAlpha *= 1 - blend;
+      ctx.strokeStyle = "rgba(199, 146, 68, " + (0.22 + flatReveal * 0.55) + ")";
+      ctx.lineWidth = Math.max(3, renderState.layout.cell * 0.11);
+      ctx.lineCap = "round";
+      for (var flatIndex = 0; flatIndex < cells.length - 1; flatIndex += 1) {
+        var flatFrom = cellCenter(cells[flatIndex]), flatTo = cellCenter(cells[flatIndex + 1]);
+        if (Math.hypot(flatTo.x - flatFrom.x, flatTo.y - flatFrom.y) <= renderState.layout.cell * 1.65) {
+          var from = completionCellPoint(cells[flatIndex], morph, spin);
+          var to = completionCellPoint(cells[flatIndex + 1], morph, spin);
+          ctx.beginPath();
+          ctx.moveTo(from.x, from.y);
+          ctx.lineTo(from.x + (to.x - from.x) * flatReveal, from.y + (to.y - from.y) * flatReveal);
+          ctx.stroke();
+        }
+      }
+      ctx.restore();
+    }
     var reveal = Morph.smooth((time - game.completion.lineStartedAt - 1080) / 820);
     var pulse = 0.78 + Math.sin(time * 0.009) * 0.16;
     ctx.save();
+    ctx.globalAlpha *= blend;
     ctx.lineCap = "round";
     ctx.lineJoin = "round";
     ctx.shadowColor = "rgba(199, 146, 68, 0.8)";
@@ -3452,42 +3536,38 @@
     ctx.restore();
   }
 
-  function drawCompletionStone(ctx, item, radius, dimmed) {
+  function drawCompletionStone(ctx, item, radius, dimmed, morph, time) {
+    var blend = BoardArt.surfaceMaterialBlend(morph);
+    var scale = 1, compression = 0;
+    if (item.cell === game.lastMove && renderState.lastMoveAt) {
+      if (renderState.lastMoveFromPress) {
+        var releaseProgress = clamp01((time - renderState.lastMoveAt) / 260);
+        scale = 1 + 0.16 * Math.exp(-5.2 * releaseProgress) * Math.cos(releaseProgress * Math.PI * 2.15);
+        compression = Math.exp(-5.4 * releaseProgress);
+      } else {
+        scale = easeOutBack(clamp01((time - renderState.lastMoveAt) / 190));
+      }
+    }
+    scale = 1 + (scale - 1) * (1 - blend);
+    compression *= 1 - blend;
     ctx.save();
     var depth = renderState.depthBuffer;
-    ctx.globalAlpha = dimmed ? 0.5 : 1;
+    ctx.globalAlpha *= dimmed ? 0.4 + blend * 0.1 : 1;
     Morph.paintStone(ctx, depth, item.point, radius, function paintFace(withShadow) {
       ctx.save();
       ctx.translate(item.point.x, item.point.y);
-      ctx.shadowColor = withShadow === false ? "transparent" : item.player === HUMAN ? "rgba(24, 31, 29, 0.3)" : "rgba(65, 58, 48, 0.2)";
-      ctx.shadowBlur = radius * 0.48;
-      ctx.shadowOffsetY = radius * 0.2;
-      var gradient = ctx.createRadialGradient(-radius * 0.3, -radius * 0.34, radius * 0.07, 0, 0, radius);
-      if (item.player === HUMAN) {
-        gradient.addColorStop(0, "#6d7b76");
-        gradient.addColorStop(0.38, "#2b3935");
-        gradient.addColorStop(1, "#14201d");
-      } else {
-        gradient.addColorStop(0, "#ffffff");
-        gradient.addColorStop(0.48, "#f8f4e9");
-        gradient.addColorStop(1, "#d5cec1");
-      }
-      ctx.fillStyle = gradient;
-      ctx.beginPath();
-      ctx.arc(0, 0, radius, 0, Math.PI * 2);
-      ctx.fill();
-      ctx.shadowColor = "transparent";
-      if (item.player === AI && withShadow !== "shadow") {
-        ctx.strokeStyle = "rgba(94, 88, 78, 0.36)";
-        ctx.lineWidth = 1;
-        ctx.stroke();
-      }
+      ctx.scale(scale, scale);
+      ctx.shadowColor = withShadow === false ? "transparent" : item.player === HUMAN
+        ? "rgba(24, 31, 29," + (0.28 + blend * 0.02) + ")" : "rgba(65, 58, 48," + (0.18 + blend * 0.02) + ")";
+      ctx.shadowBlur = radius * (0.42 + blend * 0.06 - compression * 0.16);
+      ctx.shadowOffsetY = radius * (0.2 - compression * 0.125);
+      drawStoneFace(ctx, item.player, radius, item.cell === game.lastMove && withShadow !== "shadow", compression, blend, withShadow === "shadow");
       ctx.restore();
     });
     ctx.restore();
   }
 
-  function drawCompletionStones(ctx, morph, spin) {
+  function drawCompletionStones(ctx, morph, spin, time) {
     var winningMask = activeWinningMask();
     var winnerSet = winningCellSet();
     var items = [];
@@ -3504,7 +3584,19 @@
     items.sort(function sortStones(a, b) { return a.point.depth - b.point.depth; });
     var radius = renderState.layout.cell * (0.37 - morph * 0.07);
     items.forEach(function drawItem(item) {
-      drawCompletionStone(ctx, item, radius * item.point.scale, Boolean(winningMask && !winnerSet[item.cell]));
+      drawCompletionStone(ctx, item, radius * item.point.scale, Boolean(winningMask && !winnerSet[item.cell]), morph, time);
+      if (winnerSet[item.cell] && morph < 0.3) {
+        var winningIndex = Array.prototype.indexOf.call(winningMask.cells, item.cell);
+        var ringProgress = clamp01((time - renderState.winAt - winningIndex * 70) / 330);
+        ctx.save();
+        ctx.globalAlpha *= ringProgress * 0.78 * (1 - BoardArt.surfaceMaterialBlend(morph));
+        ctx.strokeStyle = "#c79244";
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.arc(item.point.x, item.point.y, (radius + 4 + ringProgress * 3) * item.point.scale, 0, Math.PI * 2);
+        ctx.stroke();
+        ctx.restore();
+      }
     });
   }
 
@@ -3534,21 +3626,24 @@
     );
     orientation.perspective = morph;
 
+    if (morph <= 0) { drawFlatBoard(ctx, time); return; }
+
     drawCompletionSurface(ctx, morph, orientation);
-    drawCompletionGrid(ctx, morph, orientation);
     if (game.level.topology === "sphere") {
-      drawCompletionSphereBoundary(ctx, "a", morph, orientation, "#3f8c87");
-      drawCompletionSphereBoundary(ctx, "b", morph, orientation, "#c79244");
+      drawCompletionSphereBoundary(ctx, "a", morph, orientation, "#3f8c87", time);
+      drawCompletionSphereBoundary(ctx, "b", morph, orientation, "#c79244", time);
     } else {
       if (game.level.xConnection) {
-        drawCompletionBoundary(ctx, "x", morph, orientation, "#3f8c87");
+        drawCompletionBoundary(ctx, "x", morph, orientation, "#3f8c87", time);
       }
       if (game.level.yConnection) {
-        drawCompletionBoundary(ctx, "y", morph, orientation, "#c79244");
+        drawCompletionBoundary(ctx, "y", morph, orientation, "#c79244", time);
       }
     }
+    drawCompletionGrid(ctx, morph, orientation);
+    Morph.drawSurfaceIntersections(ctx, renderState.depthBuffer);
     drawCompletionWinningLine(ctx, time, morph, orientation);
-    drawCompletionStones(ctx, morph, orientation);
+    drawCompletionStones(ctx, morph, orientation, time);
   }
 
   function interactiveViewOrientation(time) {
@@ -3560,24 +3655,26 @@
   function drawInteractiveMorph(ctx, time) {
     var morph = clamp01(game.view.progress);
     var orientation = interactiveViewOrientation(time);
+    if (morph <= 0) { drawFlatBoard(ctx, time); return; }
     drawCompletionSurface(ctx, morph, orientation);
-    drawCompletionGrid(ctx, morph, orientation);
     if (game.level.topology === "sphere") {
-      drawCompletionSphereBoundary(ctx, "a", morph, orientation, "#3f8c87");
-      drawCompletionSphereBoundary(ctx, "b", morph, orientation, "#c79244");
+      drawCompletionSphereBoundary(ctx, "a", morph, orientation, "#3f8c87", time);
+      drawCompletionSphereBoundary(ctx, "b", morph, orientation, "#c79244", time);
     } else {
       if (game.level.xConnection) {
-        drawCompletionBoundary(ctx, "x", morph, orientation, "#3f8c87");
+        drawCompletionBoundary(ctx, "x", morph, orientation, "#3f8c87", time);
       }
       if (game.level.yConnection) {
-        drawCompletionBoundary(ctx, "y", morph, orientation, "#c79244");
+        drawCompletionBoundary(ctx, "y", morph, orientation, "#c79244", time);
       }
     }
+    drawCompletionGrid(ctx, morph, orientation);
+    Morph.drawSurfaceIntersections(ctx, renderState.depthBuffer);
     drawTacticalHints(ctx, function projectHintCell(cell) {
       return completionCellPoint(cell, morph, orientation);
     }, morph);
     drawInteractiveMovePreview(ctx, time, morph, orientation);
-    drawCompletionStones(ctx, morph, orientation);
+    drawCompletionStones(ctx, morph, orientation, time);
   }
 
   function drawPaperTexture(ctx) {
@@ -3763,6 +3860,7 @@
   function drawSphereRails(ctx, time) {
     var layout = renderState.layout;
     var offset = layout.cell * 0.5;
+    var bounds = BoardArt.boundaryGeometry(game.rules, layout);
     var pairs = [
       { color: "#3f8c87", pulse: seamPulseFor(Engine.SEAM_X, time), sides: ["top", "left"] },
       { color: "#c79244", pulse: seamPulseFor(Engine.SEAM_Y, time), sides: ["bottom", "right"] }
@@ -3779,12 +3877,12 @@
       pair.sides.forEach(function drawAdjacentSide(side) {
         if (side === "top" || side === "bottom") {
           var y = side === "top" ? layout.top - offset : layout.bottom + offset;
-          drawRailLine(ctx, layout.left, y, layout.right, y);
+          drawRailLine(ctx, bounds.left, y, bounds.right, y);
           drawArrow(ctx, layout.left + (layout.right - layout.left) * 0.36, y, "horizontal", 1);
           drawArrow(ctx, layout.left + (layout.right - layout.left) * 0.7, y, "horizontal", 1);
         } else {
           var x = side === "left" ? layout.left - offset : layout.right + offset;
-          drawRailLine(ctx, x, layout.top, x, layout.bottom);
+          drawRailLine(ctx, x, bounds.top, x, bounds.bottom);
           drawArrow(ctx, x, layout.top + (layout.bottom - layout.top) * 0.36, "vertical", 1);
           drawArrow(ctx, x, layout.top + (layout.bottom - layout.top) * 0.7, "vertical", 1);
         }
@@ -3796,6 +3894,7 @@
   function drawRailPair(ctx, orientation, color, twisted, pulse) {
     var layout = renderState.layout;
     var offset = layout.cell * 0.5;
+    var bounds = BoardArt.boundaryGeometry(game.rules, layout);
     var alpha = 0.58 + pulse * 0.4;
     ctx.save();
     ctx.strokeStyle = color;
@@ -3812,8 +3911,8 @@
     if (orientation === "vertical") {
       var leftX = layout.left - offset;
       var rightX = layout.right + offset;
-      drawRailLine(ctx, leftX, layout.top, leftX, layout.bottom);
-      drawRailLine(ctx, rightX, layout.top, rightX, layout.bottom);
+      drawRailLine(ctx, leftX, bounds.top, leftX, bounds.bottom);
+      drawRailLine(ctx, rightX, bounds.top, rightX, bounds.bottom);
       ctx.setLineDash([]);
       drawArrow(ctx, leftX, layout.top + (layout.bottom - layout.top) * 0.34, "vertical", 1);
       drawArrow(ctx, leftX, layout.top + (layout.bottom - layout.top) * 0.7, "vertical", 1);
@@ -3822,8 +3921,8 @@
     } else {
       var topY = layout.top - offset;
       var bottomY = layout.bottom + offset;
-      drawRailLine(ctx, layout.left, topY, layout.right, topY);
-      drawRailLine(ctx, layout.left, bottomY, layout.right, bottomY);
+      drawRailLine(ctx, bounds.left, topY, bounds.right, topY);
+      drawRailLine(ctx, bounds.left, bottomY, bounds.right, bottomY);
       ctx.setLineDash([]);
       drawArrow(ctx, layout.left + (layout.right - layout.left) * 0.34, topY, "horizontal", 1);
       drawArrow(ctx, layout.left + (layout.right - layout.left) * 0.7, topY, "horizontal", 1);
@@ -3893,27 +3992,30 @@
     });
   }
 
-  function drawStoneFace(ctx, player, radius, markLastMove, compression) {
+  function drawStoneFace(ctx, player, radius, markLastMove, compression, surfaceBlend, shadowOnly) {
     var pressedDepth = compression || 0;
-    var highlightX = -radius * (0.28 - pressedDepth * 0.055);
+    var blend = surfaceBlend || 0;
+    var highlightX = -radius * (0.28 + blend * 0.02 - pressedDepth * 0.055);
     var highlightY = -radius * (0.34 - pressedDepth * 0.12);
-    var gradient = ctx.createRadialGradient(highlightX, highlightY, radius * (0.08 + pressedDepth * 0.035), 0, 0, radius);
+    var gradient = ctx.createRadialGradient(highlightX, highlightY, radius * (0.08 - blend * 0.01 + pressedDepth * 0.035), 0, 0, radius);
     if (player === HUMAN) {
-      gradient.addColorStop(0, pressedDepth ? "#56635f" : "#66736f");
+      var highlight = pressedDepth ? [86, 99, 95] : [102, 115, 111];
+      gradient.addColorStop(0, "rgb(" + (highlight[0] + (109 - highlight[0]) * blend) + "," +
+        (highlight[1] + (123 - highlight[1]) * blend) + "," + (highlight[2] + (118 - highlight[2]) * blend) + ")");
       gradient.addColorStop(0.38, "#2b3935");
       gradient.addColorStop(1, "#14201d");
     } else {
-      gradient.addColorStop(0, pressedDepth ? "#fbfaf5" : "#ffffff");
+      gradient.addColorStop(0, pressedDepth ? "rgb(" + (251 + blend * 4) + "," + (250 + blend * 5) + "," + (245 + blend * 10) + ")" : "#ffffff");
       gradient.addColorStop(0.48, "#f8f4e9");
-      gradient.addColorStop(1, "#d9d2c6");
+      gradient.addColorStop(1, "rgb(" + (217 - blend * 4) + "," + (210 - blend * 4) + "," + (198 - blend * 5) + ")");
     }
     ctx.fillStyle = gradient;
     ctx.beginPath();
     ctx.arc(0, 0, radius, 0, Math.PI * 2);
     ctx.fill();
     ctx.shadowColor = "transparent";
-    if (player === AI) {
-      ctx.strokeStyle = "rgba(94, 88, 78, 0.28)";
+    if (player === AI && !shadowOnly) {
+      ctx.strokeStyle = "rgba(94, 88, 78," + (0.28 + blend * 0.08) + ")";
       ctx.lineWidth = 1;
       ctx.stroke();
     }
