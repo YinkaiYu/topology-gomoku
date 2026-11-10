@@ -377,3 +377,11 @@
 - 复现：提供 Playwright 到 NODE_PATH 后运行 `node scripts/qa-board-first-frame.cjs`；`--after-only` 保留既有基线、只复验当前代码。源码摘要、区域像素误差和正反向记录见[完整结果](../../artifacts/board-first-frame/results.json)。
 - 实际 H5 页面另覆盖六曲面、1280×720 / 390×844、空盘／静止棋子／正在落子／按压回弹，共 48 组。原二维与往返二维画面全部逐像素一致；进度 0.0000001 的 42 组无像素差，其余仅 1–8 个像素出现约一级色阶差，最大平均 RGB 差 0.000052/255。旧切换阈值附近的最大平均差从 8.07 降到 0.055 以下。网格路径只精简真正共线的绘制分段，保留深度转折、回折和真实遮挡。
 - H5 复现：`node scripts/qa-board-first-frame-h5.cjs`。保留[桌面首步画面](../../artifacts/board-first-frame-h5/after-sphere-first-step-1280x720.png)、[手机首步画面](../../artifacts/board-first-frame-h5/after-sphere-first-step-390x844.png)和[逐状态结果](../../artifacts/board-first-frame-h5/results.json)。此处手机检查针对共享游戏页面，对弈室仍按桌面横屏设计；尚未进行原生宿主真机检查。
+
+## 2026-11-10：知乎 1.43.0 交付复验
+
+- 从 `zhihu@5abe1bc` 独立整合稳定 `main@d99166a`，产品整合提交 `056ebf4`；共享 `app/` 与稳定基线完全一致，239 项测试、资源和文档校验通过。
+- 官方交付工具 1.2.0 更新检查为 `current`。仅在隔离交付副本添加知乎宿主标记并注入官方事件桥，静态计划、描述符、35 文件 ZIP 的 CRC 和排除项校验通过；未引入 Node 后端。
+- Chromium 151、DPR 1，1280×900 与 390×844，顶层与跨源 iframe 共四组：关卡首页、双人入口、设置、跨边界连五、刷新后的进度及设置均通过，无页面错误或整页溢出。未物化的本地埋点票据没有产生网络上报。
+- [桌面首页](../../artifacts/zhihu-1.43.0/iframe-1280x900-home.png)、[移动视口棋盘](../../artifacts/zhihu-1.43.0/iframe-390x844-boundary.png)与[完整结果](../../artifacts/zhihu-1.43.0/results.json)。复现：提供 Playwright 到 `NODE_PATH`，运行 `node scripts/qa-zhihu-release.cjs --app <本轮静态交付副本>`；模拟视口不替代手机真机验收。
+- 机构账号上传后，知乎平台自动部署成功；实际宿主预览的双人入口、双生三维棋盘与暖白自交线可用，见[宿主预览](../../artifacts/zhihu-1.43.0/host-preview-projective.jpg)。发布新版本后作品页显示 V 1.43.0、项目审核中，见[送审回执](../../artifacts/zhihu-1.43.0/submitted-review.jpg)。
