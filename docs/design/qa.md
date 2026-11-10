@@ -385,3 +385,4 @@
 - Chromium 151、DPR 1，1280×900 与 390×844，顶层与跨源 iframe 共四组：关卡首页、双人入口、设置、跨边界连五、刷新后的进度及设置均通过，无页面错误或整页溢出。未物化的本地埋点票据没有产生网络上报。
 - [桌面首页](../../artifacts/zhihu-1.43.0/iframe-1280x900-home.png)、[移动视口棋盘](../../artifacts/zhihu-1.43.0/iframe-390x844-boundary.png)与[完整结果](../../artifacts/zhihu-1.43.0/results.json)。复现：提供 Playwright 到 `NODE_PATH`，运行 `node scripts/qa-zhihu-release.cjs --app <本轮静态交付副本>`；模拟视口不替代手机真机验收。
 - 机构账号上传后，知乎平台自动部署成功；实际宿主预览的双人入口、双生三维棋盘与暖白自交线可用，见[宿主预览](../../artifacts/zhihu-1.43.0/host-preview-projective.jpg)。发布新版本后作品页显示 V 1.43.0、项目审核中，见[送审回执](../../artifacts/zhihu-1.43.0/submitted-review.jpg)。
+- 随后刷新公开作品页确认 V 1.43.0、审核提示消失，iframe 中的游戏正常加载，见[上线结果](../../artifacts/zhihu-1.43.0/published.jpg)。
