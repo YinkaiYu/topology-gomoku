@@ -498,6 +498,33 @@
     };
   }
 
+  function seamProgress(type, u, v, progress) {
+    var t = clamp01(progress);
+    var weight = 0;
+    if (type === "sphere") {
+      // The top/left pair is green; bottom/right is gold. A symmetric
+      // weight gives both ends of each diagonal identification one clock.
+      weight = u + v - 1;
+    } else if (type === "torus" || type === "klein" || type === "projective") {
+      // Opposite edges share a clock even when their pairing reverses.
+      // At corners the two clocks meet continuously at the base progress.
+      weight = Math.pow(2 * v - 1, 2) - Math.pow(2 * u - 1, 2);
+    }
+    return t + 0.9 * t * (1 - t) * weight;
+  }
+
+  function morphPoint(type, flat, u, v, projected, progress) {
+    var amount = seamProgress(type, u, v, progress);
+    return {
+      x: flat.x + (projected.x - flat.x) * amount,
+      y: flat.y + (projected.y - flat.y) * amount,
+      depth: projected.depth * amount,
+      scale: 1 + ((projected.scale || 1) - 1) * amount,
+      depthScale: projected.depthScale,
+      u: u, v: v
+    };
+  }
+
   function createSurfaceMesh(vertices) {
     var rows = vertices.length - 1, columns = vertices[0].length - 1;
     function point(u, v) {
@@ -576,8 +603,10 @@
       var dzdy = ((b.x - a.x) * (c.depth - a.depth) - (c.x - a.x) * (b.depth - a.depth)) / area;
       var facet = { a: a, b: b, c: c, dzdx: dzdx, dzdy: dzdy,
         offset: a.depth - dzdx * a.x - dzdy * a.y,
+        minDepth: Math.min(a.depth, b.depth, c.depth), maxDepth: Math.max(a.depth, b.depth, c.depth),
         minX: Math.min(a.x, b.x, c.x), maxX: Math.max(a.x, b.x, c.x),
         minY: Math.min(a.y, b.y, c.y), maxY: Math.max(a.y, b.y, c.y), query: 0 };
+      facet.vertices = [a, b, c];
       var left = Math.max(0, Math.floor((facet.minX - edgeTolerance) / binSize));
       var right = Math.min(columns - 1, Math.floor((facet.maxX + edgeTolerance) / binSize));
       var top = Math.max(0, Math.floor((facet.minY - edgeTolerance) / binSize));
@@ -638,6 +667,49 @@
     function visible(point, bias) {
       return point.depth + (bias === undefined ? 0.035 : bias) >= depthAt(point.x, point.y);
     }
+    function surfaceIntersections() {
+      if (buffer.intersections) { return buffer.intersections; }
+      // These completed embeddings have no self-crossings. Their polar chart
+      // singularities can produce subpixel tessellation overlaps, not cuts.
+      if (buffer.morph === 0 || (buffer.morph === 1 && buffer.topology !== "projective" && buffer.topology !== "klein" && buffer.topology)) {
+        buffer.intersections = []; return buffer.intersections;
+      }
+      var result = [], unique = new Set();
+      bins.forEach(function intersectBin(bin, binIndex) {
+        if (!bin) { return; }
+        var ordered = bin.slice().sort(function depthOrder(a, b) { return a.minDepth - b.minDepth; });
+        for (var firstIndex = 0; firstIndex < ordered.length; firstIndex += 1) {
+          var first = ordered[firstIndex];
+          for (var secondIndex = firstIndex + 1; secondIndex < ordered.length; secondIndex += 1) {
+            var second = ordered[secondIndex];
+            if (second.minDepth > first.maxDepth + 1e-8) { break; }
+            var ax = first.dzdx - second.dzdx, ay = first.dzdy - second.dzdy, az = first.offset - second.offset;
+            var left = Math.max(first.minX, second.minX), right = Math.min(first.maxX, second.maxX);
+            var top = Math.max(first.minY, second.minY), bottom = Math.min(first.maxY, second.maxY);
+            if (right < left - edgeTolerance || bottom < top - edgeTolerance) { continue; }
+            // An overlap belongs to its first screen bin. This makes the sweep
+            // independent of how many bins contain a large or grazing facet.
+            var owner = Math.max(0, Math.floor(top / binSize)) * columns + Math.max(0, Math.floor(left / binSize));
+            if (owner !== binIndex) { continue; }
+            var low = ax * (ax > 0 ? left : right) + ay * (ay > 0 ? top : bottom) + az;
+            var high = ax * (ax > 0 ? right : left) + ay * (ay > 0 ? bottom : top) + az;
+            if (low > 1e-8 || high < -1e-8 || Math.abs(ax) + Math.abs(ay) < 1e-10) { continue; }
+            var shared = 0, a = first.vertices, b = second.vertices;
+            for (var i = 0; i < 3 && shared < 2; i += 1) {
+              for (var j = 0; j < 3; j += 1) { if (chartNeighbors(a[i], b[j], buffer.topology)) { shared += 1; break; } }
+            }
+            if (shared >= 2) { continue; }
+            var segment = facetIntersection(first, second);
+            if (!segment) { continue; }
+            var keys = segment.map(function key(p) { return Math.round(p.x * 1e6) + ":" + Math.round(p.y * 1e6) + ":" + Math.round(p.depth * 1e7); }).sort();
+            var key = keys.join("/");
+            if (!unique.has(key)) { unique.add(key); result.push(segment); }
+          }
+        }
+      });
+      buffer.intersections = joinIntersectionSegments(result);
+      return buffer.intersections;
+    }
     function occludedInterval(from, to, facet, bias) {
       var start = 0, end = 1;
       function clip(value, change) {
@@ -659,7 +731,7 @@
       if (!clip(gap, facet.dzdx * dx + facet.dzdy * dy - (to.depth - from.depth))) { return null; }
       return end > start ? [start, end] : null;
     }
-    function strokePath(ctx, points) {
+    function strokePath(ctx, points, paintStroke) {
       if (points.length < 2) { return; }
       if (buffer.mesh && points.every(function hasUV(p) { return Number.isFinite(p.u) && Number.isFinite(p.v); })) {
         var mapped = [buffer.mesh.point(points[0].u, points[0].v)];
@@ -681,7 +753,7 @@
         ctx.beginPath();
         ctx.moveTo(points[0].x, points[0].y);
         for (var back = 1; back < points.length; back += 1) { ctx.lineTo(points[back].x, points[back].y); }
-        ctx.stroke();
+        if (paintStroke) { paintStroke(ctx); } else { ctx.stroke(); }
         ctx.restore();
       }
       ctx.beginPath();
@@ -710,11 +782,154 @@
         }
         if (cursor < 1) { drawInterval(cursor, 1); }
       }
-      ctx.stroke();
+      if (paintStroke) { paintStroke(ctx); } else { ctx.stroke(); }
     }
-    var buffer = { visible: visible, depthAt: depthAt, trianglesInRect: trianglesInRect,
+    var buffer = { visible: visible, depthAt: depthAt, trianglesInRect: trianglesInRect, surfaceIntersections: surfaceIntersections,
       strokePath: strokePath, translucency: 0 };
     return buffer;
+  }
+
+  function chartNeighbors(a, b, type) {
+    if (a === b) { return true; }
+    if (!Number.isFinite(a.u) || !Number.isFinite(b.u)) { return false; }
+    var epsilon = 1e-8;
+    if (Math.abs(a.u - b.u) < epsilon && Math.abs(a.v - b.v) < epsilon) { return true; }
+    // A quotient edge is a neighbor only once those two displayed points
+    // coincide. During unfolding the separated sheets can genuinely cross.
+    if (Math.abs(a.x - b.x) + Math.abs(a.y - b.y) > 1e-5 || Math.abs(a.depth - b.depth) > epsilon) { return false; }
+    if (type === "sphere") {
+      return (a.u < epsilon && b.v < epsilon && Math.abs(a.v - b.u) < epsilon) ||
+        (b.u < epsilon && a.v < epsilon && Math.abs(b.v - a.u) < epsilon) ||
+        (a.u > 1 - epsilon && b.v > 1 - epsilon && Math.abs(a.v - b.u) < epsilon) ||
+        (b.u > 1 - epsilon && a.v > 1 - epsilon && Math.abs(b.v - a.u) < epsilon);
+    }
+    if (Math.abs(a.u - b.u) > 1 - epsilon && isPeriodicX(type)) {
+      if (Math.abs(a.v - (hasXTwist(type) ? 1 - b.v : b.v)) < epsilon) { return true; }
+    }
+    if (Math.abs(a.v - b.v) > 1 - epsilon && isPeriodicY(type)) {
+      if (Math.abs(a.u - (hasYTwist(type) ? 1 - b.u : b.u)) < epsilon) { return true; }
+    }
+    return false;
+  }
+
+  // Two rendered facets meet where their affine depths agree. Clipping that
+  // line to both triangles finds actual crossings, not projected overlaps.
+  function facetIntersection(first, second) {
+    var dx = first.dzdx - second.dzdx, dy = first.dzdy - second.dzdy, offset = first.offset - second.offset;
+    var norm = Math.hypot(dx, dy);
+    if (norm < 1e-10) { return null; }
+    dx /= norm; dy /= norm; offset /= norm;
+    var directionX = -dy, directionY = dx, originX = -offset * dx, originY = -offset * dy;
+    var low = -Infinity, high = Infinity;
+    var vertices = [[first.a, first.b, first.c], [second.a, second.b, second.c]];
+    for (var polygon = 0; polygon < 2; polygon += 1) {
+      for (var edge = 0; edge < 3; edge += 1) {
+        var a = vertices[polygon][edge], b = vertices[polygon][(edge + 1) % 3];
+        var ex = b.x - a.x, ey = b.y - a.y;
+        var value = ex * (originY - a.y) - ey * (originX - a.x);
+        var change = ex * directionY - ey * directionX;
+        if (Math.abs(change) < 1e-10) { if (value < -1e-7) { return null; } }
+        else if (change > 0) { low = Math.max(low, -value / change); }
+        else { high = Math.min(high, -value / change); }
+        if (high - low < 1e-5) { return null; }
+      }
+    }
+    return [low, high].map(function point(amount) {
+      var x = originX + directionX * amount, y = originY + directionY * amount;
+      return { x: x, y: y, depth: first.dzdx * x + first.dzdy * y + first.offset };
+    });
+  }
+
+  function joinIntersectionSegments(segments) {
+    var points = [], nodes = new Map(), edges = [];
+    function vertex(point) {
+      var x = Math.round(point.x * 1e4), y = Math.round(point.y * 1e4), key = x + ":" + y;
+      var index = nodes.get(key);
+      if (index !== undefined && Math.abs(points[index].point.depth - point.depth) < 1e-5) { return index; }
+      for (var dy = -1; dy <= 1; dy += 1) {
+        for (var dx = -1; dx <= 1; dx += 1) {
+          var nearby = nodes.get((x + dx) + ":" + (y + dy));
+          if (nearby === undefined) { continue; }
+          var p = points[nearby].point;
+          if (Math.abs(p.x - point.x) < 1e-4 && Math.abs(p.y - point.y) < 1e-4 && Math.abs(p.depth - point.depth) < 1e-5) { return nearby; }
+        }
+      }
+      index = points.length; nodes.set(key, index); points.push({ point: point, edges: [] });
+      return index;
+    }
+    segments.forEach(function append(segment) {
+      var a = vertex(segment[0]), b = vertex(segment[1]);
+      if (a === b) { return; }
+      var edge = { a: a, b: b, used: false };
+      edges.push(edge); points[a].edges.push(edge); points[b].edges.push(edge);
+    });
+    var paths = [];
+    function trace(first, edge) {
+      var path = [points[first].point], current = first;
+      while (edge && !edge.used) {
+        edge.used = true; current = edge.a === current ? edge.b : edge.a;
+        path.push(points[current].point);
+        if (points[current].edges.length !== 2) { break; }
+        edge = points[current].edges.find(function unused(candidate) { return !candidate.used; });
+      }
+      if (path.length > 1) { paths.push(path); }
+    }
+    points.forEach(function ends(node, index) {
+      if (node.edges.length !== 2) { node.edges.forEach(function edge(candidate) { if (!candidate.used) { trace(index, candidate); } }); }
+    });
+    edges.forEach(function loops(edge) { if (!edge.used) { trace(edge.a, edge); } });
+    return paths;
+  }
+
+  function strokeIntersectionLight(ctx) {
+    // A narrow shadow separates the warm-white filament from pale paper.
+    // Paint both layers on one clipped path, without repeating depth queries.
+    ctx.shadowBlur = 0;
+    ctx.shadowColor = "transparent";
+    ctx.shadowOffsetX = 0; ctx.shadowOffsetY = 0;
+    ctx.strokeStyle = "rgba(75, 86, 77, 0.27)";
+    ctx.lineWidth = 2.3;
+    ctx.stroke();
+    ctx.strokeStyle = "rgba(255, 254, 247, 0.96)";
+    ctx.lineWidth = 1.1;
+    ctx.shadowColor = "rgba(255, 254, 241, 0.75)";
+    var matrix = typeof ctx.getTransform === "function" ? ctx.getTransform() : null;
+    ctx.shadowBlur = 3 * (matrix ? Math.hypot(matrix.a, matrix.b) : 1);
+    ctx.stroke();
+  }
+
+  function drawSurfaceIntersections(ctx, depth) {
+    if (!depth || depth.morph === 0) { return; }
+    var paths = depth.surfaceIntersections();
+    if (!paths.length) { return; }
+    ctx.save();
+    ctx.lineCap = "round"; ctx.lineJoin = "round";
+    paths.forEach(function stroke(path) { depth.strokePath(ctx, softenIntersectionPath(path), strokeIntersectionLight); });
+    ctx.restore();
+  }
+
+  function softenIntersectionPath(points) {
+    if (points.length < 3) { return points; }
+    // Keep geometric queries exact. For the subpixel stroke only, soften the
+    // alternating diagonal facets without moving a cut more than half a pixel.
+    var current = points;
+    for (var pass = 0; pass < 2; pass += 1) {
+      current = current.map(function soften(point, index, path) {
+        if (!index || index === path.length - 1) { return point; }
+        var before = path[index - 1], after = path[index + 1];
+        var left = Math.hypot(point.x - before.x, point.y - before.y), right = Math.hypot(after.x - point.x, after.y - point.y);
+        if (left + right < 1e-7) { return point; }
+        var amount = left / (left + right);
+        var x = point.x * 0.5 + (before.x + (after.x - before.x) * amount) * 0.5;
+        var y = point.y * 0.5 + (before.y + (after.y - before.y) * amount) * 0.5;
+        var depth = point.depth * 0.5 + (before.depth + (after.depth - before.depth) * amount) * 0.5;
+        var original = points[index], drift = Math.hypot(x - original.x, y - original.y);
+        var weight = drift > 0.5 ? 0.5 / drift : 1;
+        return { x: original.x + (x - original.x) * weight, y: original.y + (y - original.y) * weight,
+          depth: original.depth + (depth - original.depth) * weight };
+      });
+    }
+    return current;
   }
 
   // Clip convex polygons in screen space. Keeping the edges as vectors lets
@@ -748,12 +963,7 @@
     return result.length === points.length && result.every(function unchanged(p, i) { return p === points[i]; }) ? points : result;
   }
 
-  function stoneContours(depth, point, radius) {
-    var extent = radius + 1;
-    var left = point.x - extent, right = point.x + extent;
-    var top = point.y - extent, bottom = point.y + extent;
-    var whole = [{ x: left, y: top }, { x: right, y: top }, { x: right, y: bottom }, { x: left, y: bottom }];
-    var pieces = [whole], changed = false;
+  function stoneCapPlanes(point, radius) {
     // A shallow rounded cap has depth of its own. The tangent envelope avoids
     // treating the whole face as a single centre-depth switch or a flat decal.
     var relief = radius / Math.max(1, point.depthScale || 150);
@@ -767,6 +977,16 @@
         planes.push({ x: dx, y: dy, z: point.depth + 0.025 + relief / height - dx * point.x - dy * point.y });
       }
     });
+    return planes;
+  }
+
+  function stoneContours(depth, point, radius) {
+    var extent = radius + 1;
+    var left = point.x - extent, right = point.x + extent;
+    var top = point.y - extent, bottom = point.y + extent;
+    var whole = [{ x: left, y: top }, { x: right, y: top }, { x: right, y: bottom }, { x: left, y: bottom }];
+    var pieces = [whole], changed = false;
+    var planes = stoneCapPlanes(point, radius);
     var candidates = depth.trianglesInRect(left, top, right, bottom);
     candidates.sort(function nearestFirst(a, b) { return b.offset + b.dzdx * point.x + b.dzdy * point.y - a.offset - a.dzdx * point.x - a.dzdy * point.y; });
     candidates.forEach(function cutSurface(triangle) {
@@ -927,6 +1147,86 @@
     return result;
   }
 
+  function stoneIntersectionContours(depth, point, radius, outline) {
+    if (!depth) { return []; }
+    if (outline === undefined) { outline = stoneOutline(stoneContours(depth, point, radius)); }
+    if (!outline || !outline.length) { return []; }
+    var planes = stoneCapPlanes(point, radius), segments = [], depths = new Map();
+    var candidates = depth.trianglesInRect(point.x - radius, point.y - radius, point.x + radius, point.y + radius);
+    function capDepth(p) {
+      var value = Infinity;
+      for (var index = 0; index < planes.length; index += 1) {
+        var plane = planes[index]; value = Math.min(value, plane.x * p.x + plane.y * p.y + plane.z);
+      }
+      return value;
+    }
+    function cachedCapDepth(p) {
+      var known = depths.get(p);
+      if (known !== undefined) { return known; }
+      known = capDepth(p);
+      depths.set(p, known); return known;
+    }
+    function surfaceContact(from, to, middle, fromDepth, toDepth) {
+      var middleDepth = capDepth(middle);
+      if (Math.abs(middleDepth - (fromDepth + toDepth) / 2) > 1e-5) { return false; }
+      // A visible-outline edge already survived every foreground occluder.
+      // Match its affine cut to one local facet, instead of querying the whole
+      // depth field three times for every small fragment of every stone.
+      for (var index = 0; index < candidates.length; index += 1) {
+        var facet = candidates[index];
+        if (middle.x < facet.minX - 1e-6 || middle.x > facet.maxX + 1e-6 || middle.y < facet.minY - 1e-6 || middle.y > facet.maxY + 1e-6) { continue; }
+        if (Math.abs(facet.dzdx * from.x + facet.dzdy * from.y + facet.offset - fromDepth) > 1e-5 ||
+            Math.abs(facet.dzdx * to.x + facet.dzdy * to.y + facet.offset - toDepth) > 1e-5) { continue; }
+        var vertices = facet.vertices, inside = true;
+        for (var edge = 0; edge < 3; edge += 1) {
+          var a = vertices[edge], b = vertices[(edge + 1) % 3];
+          if ((b.x - a.x) * (middle.y - a.y) - (b.y - a.y) * (middle.x - a.x) < -1e-6) { inside = false; break; }
+        }
+        if (inside) { return true; }
+      }
+      return false;
+    }
+    outline.forEach(function contour(polygon) {
+      for (var index = 0; index < polygon.length; index += 1) {
+        var a = polygon[index], b = polygon[(index + 1) % polygon.length];
+        var dx = b.x - a.x, dy = b.y - a.y, lengthSquared = dx * dx + dy * dy;
+        if (lengthSquared < 1e-10) { continue; }
+        var ox = a.x - point.x, oy = a.y - point.y;
+        var center = -(ox * dx + oy * dy) / lengthSquared;
+        var halfSquared = center * center - (ox * ox + oy * oy - radius * radius) / lengthSquared;
+        if (halfSquared <= 0) { continue; }
+        var half = Math.sqrt(halfSquared), low = Math.max(0, center - half), high = Math.min(1, center + half);
+        if (high - low < 1e-5) { continue; }
+        // Discard the clipping rectangle outside the circular face before
+        // querying any depth. Shared outline vertices reuse the same query.
+        var from = low === 0 ? a : { x: a.x + dx * low, y: a.y + dy * low };
+        var to = high === 1 ? b : { x: a.x + dx * high, y: a.y + dy * high };
+        // The visibility outline also contains unrelated foreground silhouettes.
+        // Retain only edges at which the rounded stone and surface meet in depth.
+        var middle = { x: (from.x + to.x) / 2, y: (from.y + to.y) / 2 };
+        var fromDepth = cachedCapDepth(from), toDepth = cachedCapDepth(to);
+        if (!surfaceContact(from, to, middle, fromDepth, toDepth)) { continue; }
+        segments.push([{ x: from.x, y: from.y, depth: fromDepth }, { x: to.x, y: to.y, depth: toDepth }]);
+      }
+    });
+    return joinIntersectionSegments(segments);
+  }
+
+  function drawStoneIntersections(ctx, depth, point, radius, outline) {
+    var paths = stoneIntersectionContours(depth, point, radius, outline);
+    if (!paths.length) { return; }
+    ctx.save();
+    ctx.beginPath();
+    paths.forEach(function path(raw) {
+      var points = softenIntersectionPath(raw);
+      ctx.moveTo(points[0].x, points[0].y);
+      for (var index = 1; index < points.length; index += 1) { ctx.lineTo(points[index].x, points[index].y); }
+    });
+    ctx.lineCap = "round"; ctx.lineJoin = "round";
+    strokeIntersectionLight(ctx);
+    ctx.restore();
+  }
+
   function paintStone(ctx, depth, point, radius, paint) {
     var contours = depth ? stoneContours(depth, point, radius) : null;
     if (!contours) { paint(); return; }
@@ -955,7 +1255,8 @@
     }
     ctx.save();
     ctx.beginPath();
-    stoneOutline(contours).forEach(function contour(points) {
+    var outline = stoneOutline(contours);
+    outline.forEach(function contour(points) {
       ctx.moveTo(points[0].x, points[0].y);
       for (var i = 1; i < points.length; i += 1) { ctx.lineTo(points[i].x, points[i].y); }
       ctx.closePath();
@@ -963,6 +1264,7 @@
     ctx.clip();
     paint(false);
     ctx.restore();
+    drawStoneIntersections(ctx, depth, point, radius, outline);
   }
 
   function fillSurface(ctx, patches) {
@@ -1163,10 +1465,14 @@
     surfacePoint: surfacePoint,
     project: project,
     projectPoint: projectPoint,
+    seamProgress: seamProgress,
+    morphPoint: morphPoint,
     createDepthBuffer: createDepthBuffer,
     createSurfaceMesh: createSurfaceMesh,
+    drawSurfaceIntersections: drawSurfaceIntersections,
     stoneContours: stoneContours,
     stoneOutline: stoneOutline,
+    stoneIntersectionContours: stoneIntersectionContours,
     paintStone: paintStone,
     fillSurface: fillSurface,
     stoneUV: stoneUV,

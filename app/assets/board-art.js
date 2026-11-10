@@ -800,14 +800,9 @@
     var morph = orientation && Number.isFinite(orientation.morph)
       ? clamp01(orientation.morph)
       : 1;
-    return {
-      x: flat.x + (projected.x - flat.x) * morph,
-      y: flat.y + (projected.y - flat.y) * morph,
-      depth: projected.depth * morph,
-      scale: 1 + ((projected.scale || 1) - 1) * morph,
-      u: u, v: v,
-      flat: flat
-    };
+    var mapped = Morph.morphPoint(game.level.topology, flat, u, v, projected, morph);
+    mapped.flat = flat;
+    return mapped;
   }
 
   function drawSurface(ctx, game, layout, width, height, orientation) {
@@ -849,6 +844,8 @@
     ctx.restore();
     var depth = Morph.createDepthBuffer(width, height, patches);
     depth.mesh = Morph.createSurfaceMesh(vertices);
+    depth.topology = game.level.topology;
+    depth.morph = orientation.morph;
     return depth;
   }
 
@@ -917,14 +914,7 @@
     var morph = orientation && Number.isFinite(orientation.morph)
       ? clamp01(orientation.morph)
       : 1;
-    return {
-      x: flat.x + (projected.x - flat.x) * morph,
-      y: flat.y + (projected.y - flat.y) * morph,
-      depth: projected.depth * morph,
-      scale: 1 + ((projected.scale || 1) - 1) * morph,
-      depthScale: projected.depthScale,
-      u: uv.u, v: uv.v
-    };
+    return Morph.morphPoint(game.level.topology, flat, uv.u, uv.v, projected, morph);
   }
 
   function appendCompletionSegment(points, game, layout, from, to, samples, orientation) {
@@ -1058,6 +1048,7 @@
     var depth = drawSurface(ctx, game, layout, layout.width, layout.height, orientation);
     depth.translucency = 0.16 * morph;
     drawSurfaceGrid(ctx, game, layout, layout.width, layout.height, orientation, depth);
+    Morph.drawSurfaceIntersections(ctx, depth);
     var boundaryFade = 1 - Morph.smooth((morph - 0.72) / 0.28);
     ctx.save();
     ctx.globalAlpha *= (0.36 + morph * 0.5) * boundaryFade;
