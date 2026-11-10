@@ -1,0 +1,15 @@
+{
+  "version": "1.42.0",
+  "main": "f6c699eb58d8e77a40359165be38104d1fad2e7c",
+  "tool": "upload",
+  "verificationTool": "polling_task_result",
+  "taskId": "confirmation_upload_f6ff2178-8891-41af-b009-8b552a93533e",
+  "status": "success",
+  "detail": "execution_success",
+  "result": {
+    "success": true,
+    "info": { "size": { "total": 1019845, "packages": [{ "name": "TOTAL", "size": 1019845 }] } }
+  },
+  "manifestSha256": "112ee6b18eb9f862ea35e270783c5ca3003239dc470aff38219068a563dbc2b2",
+  "reviewStatus": "not-submitted-by-agent"
+}

@@ -1,5 +1,13 @@
 # 视觉 QA
 
+## 2026-11-10：微信 1.42.0 渠道整合
+
+- 原生 Canvas 直接接收 main `f6c699e` 的共享透视与局部遮挡，没有复制棋盘实现。261 项测试、H5/文档校验、64 文件原生构建和固定模板同步通过；微信复盘回归以普通对局的同局面明度为参照，区分真实深度遮挡与终局暗化。
+- Chromium、390×844、DPR 1，对照固定 1.41.2 共享资产与 1.42.0 资产，使用相同原生 Main、四角棋谱及姿态。七关 × 前后两版共 56 次四角落子，六曲面 × 前后两版共 12 次真实三维点击命中；38 张截图覆盖二维、半展开、三维，全部无浏览器异常。示例：[环游前](../../artifacts/ui-parity/wechat-before-torus-1-390x844-v1.42.0.png)、[环游后](../../artifacts/ui-parity/wechat-after-torus-1-390x844-v1.42.0.png)、[双生后](../../artifacts/ui-parity/wechat-after-projective-1-390x844-v1.42.0.png)，[完整结果](../../artifacts/ui-parity/wechat-browser-v1.42.0-results.json)。
+- 复现：用 `TOPOLOGY_PREVIEW_PORT` 启动 `tools/wechat-native-preview/server.cjs`；基线服务另设 `TOPOLOGY_SHARED_ASSETS` 为 1.41.2 的共享资产目录。将两个地址分别传给 `WECHAT_QA_URL`、`WECHAT_QA_BASELINE`，提供 Playwright 到 `NODE_PATH` 后运行 `node scripts/qa-wechat-release.cjs`。
+- 官方工具登录有效，刷新和[首页截图](../../artifacts/ui-parity/wechat-home-v1.42.0.jpg)成功。原生窗口处于最小化，坐标操作与截图有旧帧不一致，重新绑定、刷新一次仍存在；console 有宿主 `jsbridge not ready`。此证据只证明首页可绘制，不能把浏览器校准或工具 success 当作官方关键交互验收，未做手机真机检查。
+- 用户已确认共享棋盘预览并授权 1.42.0 全渠道发行；本轮微信上传在用户官方确认后成功，提审和上线状态见[发行记录](../releases/1.42.0.md)。
+
 ## 2026-10-20：1.41.1 发行复验
 
 - 以已确认的共享修改为基线，五渠道同版本整合，未产生样式冲突。Bilibili WebKit 双人九种视口检查通过（离线 SDK 桩）；[390×674 结果](../../artifacts/qa-release-1.41.1-bilibili-390x674.png)。真实 Toy 审核预览和状态见[发行记录](../releases/1.41.1.md)。
@@ -331,3 +339,38 @@
 - 独立原生 Canvas 校准采用 Chromium 390×844、像素比 1，通过首页真实触摸入口进入七关双人对弈，逐关在四角落子，共 28 次正确命中；六种曲面完成二维 → 三维 → 二维往返，浏览器无运行错误。[检查结果](../../artifacts/ui-parity/wechat-browser-v1.41.2-results.json)与 [方庭](../../artifacts/ui-parity/wechat-browser-plane-2d-390x844-v1.41.2.png)、[环游](../../artifacts/ui-parity/wechat-browser-torus-2d-390x844-v1.41.2.png)、[扭带](../../artifacts/ui-parity/wechat-browser-mobius-2d-390x844-v1.41.2.png)、[归圆二维](../../artifacts/ui-parity/wechat-browser-sphere-2d-390x844-v1.41.2.png)、[归圆三维](../../artifacts/ui-parity/wechat-browser-sphere-3d-390x844-v1.41.2.png)保留平台布局及边界证据。
 - 复验可运行 `node tools/wechat-native-preview/server.cjs`，打开终端打印的原生校准入口，以同一 390×844 视口进入离线双人七关，点击四角并切换二维 / 三维。共享同状态前后对照见上文 Issue #8 证据。浏览器校准不替代微信官方模拟器关键交互及手机真机验收。
 - 已按授权上传 1.41.2。首次服务连接超时，网络恢复后用相同版本和构建重试一次；用户确认后查询原任务，官方明确返回上传成功，包大小 1,008,800 字节。用户于 2026-11-06 确认已提审，等待审核结果；没有改 AppID、系统代理或安全设置，见[发行记录](../releases/1.41.2.md)。
+
+## 2026-11-10：三维透视、半透明层次与等价旋转（已确认）
+
+- 从 `dev@1d6a488` 建立独立任务；共享投影、H5 与 Canvas renderer 同步调整。棋盘和棋子一起表现近大远小，正面清晰、背面淡显；二维及目录图案保持原样。视角切换消去整圈，保留最终朝向与中途反向的连续性。
+- 曲面填充、深度判断和网格共用精细几何。填充前消去内部共享边，仅将轮廓和折叠边交给 Canvas，避免降低精度造成贴合偏差，也避免重复填充使透明度累加。棋子以圆润体积进行连续局部遮挡，清晰部分与淡显部分共存；裁切碎片合并成外轮廓后统一抗锯齿，避免内部细缝。透视取景按固定包围范围预留棋子空间，旋转时不自动缩放。
+- 同状态证据采用 Chromium、DPR 1、固定八手棋谱与帧时钟；桌面 1280×720、移动 H5 390×844。六种曲面覆盖二维、半展开及完整三维，共 72 个实际页面状态；12 组二维像素完全一致，12 次三维可见交点实际点击正确。
+
+| 同一内容 | 修改前 | 修改后 |
+| --- | --- | --- |
+| 环游，桌面三维 | [基线](../../artifacts/board-perspective/before-game-torus-1-1280x720.png) | [透视与局部遮挡](../../artifacts/board-perspective/after-game-torus-1-1280x720.png) |
+| 扭带，桌面三维 | [基线](../../artifacts/board-perspective/before-game-mobius-1-1280x720.png) | [曲面与网格贴合](../../artifacts/board-perspective/after-game-mobius-1-1280x720.png) |
+| 六曲面，同一朝向 | [基线](../../artifacts/board-perspective/before-module-gallery-1.png) | [正反面层次](../../artifacts/board-perspective/after-module-gallery-1.png) |
+| 六曲面，拖动后朝向 | [基线](../../artifacts/board-perspective/before-module-gallery-1-rotated.png) | [背面与自交结构](../../artifacts/board-perspective/after-module-gallery-1-rotated.png) |
+
+- 轮廓回归逐点比较原始密集三角形覆盖与合并轮廓，包含孔洞、自交、退化面及反向重叠。浏览器再以实际 Canvas 路径核对六曲面三组姿态，共 63,500 个非退化三角形中心，零缺失。单元测试还覆盖三轴整圈旋转、半展开跨越 ±π、命中排除背面以及棋子局部遮挡的连续变化。
+- 画布边界回归采用真实绘制圆弧及当前变换，覆盖六曲面 × 5 / 7 / 19 路 × 三种画布尺寸 × 两组朝向，共 108 组。15,660 颗棋子的完整圆面和描边均在画布内，最小留白 15.49px；特别复查了扭带近侧棋子和双生自交处。
+- 性能使用 600×600 画布，分别记录绘制调用、强制像素读回和实际动画帧间隔；典型 7 路八子与 19 路满盘分别测量，不以调用耗时代替帧率。[完整结果](../../artifacts/board-perspective/results.json)保存本机测量值；这不是所有设备的帧率保证。未做原生小游戏宿主或真机验收。
+- 复现：提供 Playwright 到 `NODE_PATH` 后运行 `node scripts/qa-board-perspective.cjs`；`--module-only` 只更新共享 renderer 图库和性能，`--serve --port=4330` 提供实际游戏，`/before/` 为只读基线。203 项测试、资源与文档校验通过。2026-11-10 用户确认预览并授权合并、推送；共享实现归入 dev，Arena 接收同一修复，游戏版本未变。
+
+## 2026-11-10：轮廓网格连续性与棋子部分遮挡（已确认）
+
+- 复现了拖动时的断续网格、边缘棋子跳变以及整颗棋子统一变淡。深度改为屏幕三角形精确查询；网格略加粗，相近深度优先保留线条。棋子按圆润体积与前方曲面相交，保留清晰区和淡影区，阴影单独处理。
+- 用户复测发现环游上沿仍有短虚线：根因是平滑网格路径与绘制曲面的三角面片不重合。网格、边界路径现沿实际面片插值，在所有面片交点分段，避免后方路径反复穿出轮廓。300px 七路环游原先最多出现 14 个小段，现在只有正常的两个前后可见区间。
+- 同视口、同内容证据：Chromium / DPR 1；六曲面使用 600×600 画布和固定八子，另外用 300×300 空环游复现用户指出的上沿。
+
+| 场景 | 修改前 | 修改后 |
+| --- | --- | --- |
+| 六曲面、相同朝向 | [基线](../../artifacts/board-occlusion/before-six-surfaces.png) | [轮廓与遮挡](../../artifacts/board-occlusion/after-six-surfaces.png) |
+| 小画布环游上沿，三组微旋转 | [断续网格](../../artifacts/board-occlusion/before-torus-300-silhouette.png) | [连续网格](../../artifacts/board-occlusion/after-torus-300-silhouette.png) |
+| 环游局部棋子 | [基线旋转](../../artifacts/board-occlusion/before-torus-drag-sequence.png) | [同颗棋子的部分遮挡](../../artifacts/board-occlusion/after-torus-partial-stone.png) |
+| 双生自交处 | [基线旋转](../../artifacts/board-occlusion/before-projective-drag-sequence.png) | [局部遮挡](../../artifacts/board-occlusion/after-projective-partial-stone.png) |
+
+- 自动检查六种棋子的 126 帧微旋转：单颗棋子同时出现清晰与淡显像素；连续帧无整颗跳变，内部孤立白缝为零。小环游另检查 41 帧旋转，外圈最多两个可见区间、没有短于 5px 的碎岛。几何回归覆盖精确深度、重叠面片、孔洞、T 形接点、局部遮挡、三角面路径和拓扑接缝。
+- 性能记录包含真实动画帧与强制读回。八子场景约 16.7ms/帧；19 路满盘的精确局部遮挡仍有明显开销，约 50–83ms/帧，不能据八子结果声称所有盘面都流畅。未进行原生宿主或低性能设备验证。
+- 复现：提供 Playwright 到 NODE_PATH 后运行 node scripts/qa-board-occlusion.cjs；--after-only 仅更新修改后证据，--profile 分析满盘耗时。图片与源码摘要、连续性和性能数据见[完整结果](../../artifacts/board-occlusion/results.json)。

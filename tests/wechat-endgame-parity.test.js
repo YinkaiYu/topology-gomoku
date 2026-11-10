@@ -320,10 +320,19 @@ test("复盘未到终局步时，三维曲面不画胜线且棋子保持正常�
     scale: 1,
     rotation: { x: 0, y: 0, z: 0 },
   });
-  assert.deepEqual(records, {
-    stoneAlphas: [1, 1, 1],
-    winningStrokes: 0,
+  const ordinary = recordingContext();
+  BoardArt.drawCompletion(ordinary.context, {
+    game: { ...game, review: null, winningMask: null, status: "playing", outcome: null },
+    layout,
+    time: 1200,
+    morph: 1,
+    scale: 1,
+    rotation: { x: 0, y: 0, z: 0 },
   });
+  // Depth may dim a rear fragment; replay must add no endgame dimming of its own.
+  assert.ok(ordinary.records.stoneAlphas.some(alpha => alpha === 1));
+  assert.deepEqual(records.stoneAlphas, ordinary.records.stoneAlphas);
+  assert.equal(records.winningStrokes, 0);
 });
 
 test("第一关非自动跳转的终局只保留旅程与下一关特殊动作", () => {
