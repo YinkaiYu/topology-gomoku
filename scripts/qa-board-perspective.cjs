@@ -6,9 +6,12 @@ const assert = require("node:assert/strict");
 const fs = require("node:fs"), path = require("node:path"), http = require("node:http");
 const crypto = require("node:crypto");
 const { execFileSync } = require("node:child_process");
-const ROOT = path.resolve(__dirname, ".."), BASE = "1d6a488";
-const OUT = path.join(ROOT, "artifacts/board-perspective");
 const args = process.argv.slice(2), cache = new Map();
+const ROOT = path.resolve(__dirname, "..");
+const BASE = args.find(value => value.startsWith("--baseline="))?.slice(11) || "1d6a488";
+const OUT = path.join(ROOT, args.find(value => value.startsWith("--out="))?.slice(6) || "artifacts/board-perspective");
+const PROGRESS = args.includes("--seam-motion") ? [0, .12, .3, .5, .72, .9, 1]
+  : args.includes("--h5-only") ? [0, .25, .5, .75, 1] : [0, .5, 1];
 const port = Number(args.find(value => value.startsWith("--port="))?.slice(7)) || 4330;
 const TYPES = ["cylinder", "torus", "mobius", "klein", "projective", "sphere"];
 const VIEWPORTS = [{ width: 1280, height: 720 }, { width: 390, height: 844 }];
@@ -98,9 +101,9 @@ async function setProgress(page, value) {
   await frame(page);
 }
 async function capture(page, name) {
-  const file = `artifacts/board-perspective/${name}.png`;
-  await page.screenshot({ path: path.join(ROOT, file), animations: "disabled" });
-  return file;
+  const file = path.join(OUT, `${name}.png`);
+  await page.screenshot({ path: file, animations: "disabled" });
+  return path.relative(ROOT, file).split(path.sep).join("/");
 }
 
 async function gameEvidence(browser, url, result) {
@@ -114,12 +117,17 @@ async function gameEvidence(browser, url, result) {
         for (const cell of moves) await tapCell(page, type, cell);
         await page.waitForTimeout(1100);
         await page.evaluate(() => { perspectiveQA.fixedTime = 20000; });
-        for (const progress of [0, .5, 1]) {
+        for (const progress of PROGRESS) {
           await setProgress(page, progress);
           const hash = digest(await page.evaluate(() => document.getElementById("boardCanvas").toDataURL()));
           if (!comparisons[progress]) comparisons[progress] = {};
           comparisons[progress][revision] = hash;
-          const keep = viewport.width === 1280 || ["torus", "sphere", "projective"].includes(type) && progress !== .5;
+          const keep = args.includes("--seam-motion")
+            ? type === "sphere" && [0, .3, .5, .72, .9, 1].includes(progress) ||
+              viewport.width === 1280 && ["klein", "projective"].includes(type) && [0.5, 1].includes(progress)
+            : args.includes("--h5-only")
+            ? viewport.width === 1280 && ["klein", "projective"].includes(type) && [0.5, 1].includes(progress)
+            : viewport.width === 1280 || ["torus", "sphere", "projective"].includes(type) && progress !== .5;
           const file = keep ? await capture(page, `${revision}-game-${type}-${progress}-${viewport.width}x${viewport.height}`) : null;
           result.actualGame.push({ revision, type, viewport, progress, moves, canvasSha256: hash, file });
         }
@@ -301,7 +309,7 @@ async function run(url) {
     result.sharedGallery = [];
     result.performance = [];
     result.animationFrames = [];
-    await moduleEvidence(browser, url, result);
+    if (!args.includes("--h5-only")) await moduleEvidence(browser, url, result);
     fs.writeFileSync(path.join(OUT, "results.json"), JSON.stringify(result, null, 2) + "\n");
     console.log(JSON.stringify({ actualGame: result.actualGame.length, flatUnchanged: result.flatUnchanged.length, spatialHits: result.spatialHits.length, galleries: result.sharedGallery.length, performanceCases: result.performance.length, animationFrames: result.animationFrames }));
     return result;

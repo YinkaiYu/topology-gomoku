@@ -1,0 +1,7056 @@
+{
+  "baseline": "a2f05bdfa5952ffa5ac259f84745717a1dcca6e9",
+  "canvas": [
+    480,
+    360
+  ],
+  "viewport": [
+    1920,
+    720
+  ],
+  "dpr": 1,
+  "cases": [
+    {
+      "revision": "before",
+      "type": "sphere",
+      "width": 7,
+      "height": 7,
+      "progress": 0,
+      "bounds": {
+        "left": 78.30000000000001,
+        "right": 401.70000000000005,
+        "top": 18.300000000000008,
+        "bottom": 341.70000000000005
+      },
+      "layout": {
+        "cell": 46.199999999999996,
+        "left": 101.4,
+        "top": 41.400000000000006,
+        "right": 378.6,
+        "bottom": 318.6,
+        "width": 480,
+        "height": 360
+      },
+      "rails": [
+        {
+          "color": "#3f8c87",
+          "pointCount": 2,
+          "firstPoint": [
+            101.4,
+            18.300000000000008
+          ],
+          "lastPoint": [
+            378.6,
+            18.300000000000008
+          ]
+        },
+        {
+          "color": "#3f8c87",
+          "pointCount": 2,
+          "firstPoint": [
+            78.30000000000001,
+            41.400000000000006
+          ],
+          "lastPoint": [
+            78.30000000000001,
+            318.6
+          ]
+        },
+        {
+          "color": "#c79244",
+          "pointCount": 2,
+          "firstPoint": [
+            101.4,
+            341.70000000000005
+          ],
+          "lastPoint": [
+            378.6,
+            341.70000000000005
+          ]
+        },
+        {
+          "color": "#c79244",
+          "pointCount": 2,
+          "firstPoint": [
+            401.70000000000005,
+            41.400000000000006
+          ],
+          "lastPoint": [
+            401.70000000000005,
+            318.6
+          ]
+        }
+      ],
+      "allCellsHit": true,
+      "imageSha256": "c3c8b90b75d27dc8c6a7d5d492ec1330a11feb671a615fde4ffb7bd32f8952d1",
+      "cornerDistancePx": {
+        "left": 23.100000000000023,
+        "right": 23.100000000000023,
+        "top": 23.100000000000023,
+        "bottom": 23.100000000000023
+      }
+    },
+    {
+      "revision": "before",
+      "type": "sphere",
+      "width": 7,
+      "height": 7,
+      "progress": 0.00001,
+      "bounds": {
+        "left": 78.30000000000001,
+        "right": 401.70000000000005,
+        "top": 18.300000000000008,
+        "bottom": 341.70000000000005
+      },
+      "layout": {
+        "cell": 46.199999999999996,
+        "left": 101.4,
+        "top": 41.400000000000006,
+        "right": 378.6,
+        "bottom": 318.6,
+        "width": 480,
+        "height": 360
+      },
+      "rails": [
+        {
+          "color": "rgba(63, 140, 135, 0.78)",
+          "pointCount": 97,
+          "firstPoint": [
+            78.29999980703244,
+            18.299999807032435
+          ],
+          "lastPoint": [
+            401.7000001947123,
+            18.29999980528777
+          ]
+        },
+        {
+          "color": "rgba(63, 140, 135, 0.78)",
+          "pointCount": 97,
+          "firstPoint": [
+            78.29999980703244,
+            18.299999807032435
+          ],
+          "lastPoint": [
+            78.29999980528777,
+            341.7000001947123
+          ]
+        },
+        {
+          "color": "rgba(199, 146, 68, 0.76)",
+          "pointCount": 97,
+          "firstPoint": [
+            78.29999980528777,
+            341.7000001947123
+          ],
+          "lastPoint": [
+            401.70000019296765,
+            341.70000019296765
+          ]
+        },
+        {
+          "color": "rgba(199, 146, 68, 0.76)",
+          "pointCount": 97,
+          "firstPoint": [
+            401.7000001947123,
+            18.29999980528777
+          ],
+          "lastPoint": [
+            401.70000019296765,
+            341.70000019296765
+          ]
+        },
+        {
+          "color": "#3f8c87",
+          "pointCount": 2,
+          "firstPoint": [
+            101.4,
+            18.300000000000008
+          ],
+          "lastPoint": [
+            378.6,
+            18.300000000000008
+          ]
+        },
+        {
+          "color": "#3f8c87",
+          "pointCount": 2,
+          "firstPoint": [
+            78.30000000000001,
+            41.400000000000006
+          ],
+          "lastPoint": [
+            78.30000000000001,
+            318.6
+          ]
+        },
+        {
+          "color": "#c79244",
+          "pointCount": 2,
+          "firstPoint": [
+            101.4,
+            341.70000000000005
+          ],
+          "lastPoint": [
+            378.6,
+            341.70000000000005
+          ]
+        },
+        {
+          "color": "#c79244",
+          "pointCount": 2,
+          "firstPoint": [
+            401.70000000000005,
+            41.400000000000006
+          ],
+          "lastPoint": [
+            401.70000000000005,
+            318.6
+          ]
+        }
+      ],
+      "allCellsHit": true,
+      "imageSha256": "bed1f16e765fe88d575d84fffd3bd7b70998b75d4f9d057f942abcbe6ea14482",
+      "cornerDistancePx": {
+        "left": 2.75364694490615e-7,
+        "right": 2.753646919784671e-7,
+        "top": 2.753646919784671e-7,
+        "bottom": 2.75364694490615e-7
+      }
+    },
+    {
+      "revision": "before",
+      "type": "torus",
+      "width": 7,
+      "height": 6,
+      "progress": 0,
+      "bounds": {
+        "left": 45.96000000000001,
+        "right": 434.03999999999996,
+        "top": 13.680000000000007,
+        "bottom": 346.32000000000005
+      },
+      "layout": {
+        "cell": 55.44,
+        "left": 73.68,
+        "top": 41.400000000000006,
+        "right": 406.32,
+        "bottom": 318.6,
+        "width": 480,
+        "height": 360
+      },
+      "rails": [
+        {
+          "color": "#3f8c87",
+          "pointCount": 2,
+          "firstPoint": [
+            45.96000000000001,
+            41.400000000000006
+          ],
+          "lastPoint": [
+            45.96000000000001,
+            318.6
+          ]
+        },
+        {
+          "color": "#3f8c87",
+          "pointCount": 2,
+          "firstPoint": [
+            434.03999999999996,
+            41.400000000000006
+          ],
+          "lastPoint": [
+            434.03999999999996,
+            318.6
+          ]
+        },
+        {
+          "color": "#c79244",
+          "pointCount": 2,
+          "firstPoint": [
+            73.68,
+            13.680000000000007
+          ],
+          "lastPoint": [
+            406.32,
+            13.680000000000007
+          ]
+        },
+        {
+          "color": "#c79244",
+          "pointCount": 2,
+          "firstPoint": [
+            73.68,
+            346.32000000000005
+          ],
+          "lastPoint": [
+            406.32,
+            346.32000000000005
+          ]
+        }
+      ],
+      "allCellsHit": true,
+      "imageSha256": "b8bc0e4449c5c113de34b3ccce65f88a904b652c84a71799a005dfb2f3988cdf",
+      "cornerDistancePx": {
+        "left": 27.720000000000027,
+        "right": 27.720000000000027,
+        "top": 27.72,
+        "bottom": 27.72
+      }
+    },
+    {
+      "revision": "before",
+      "type": "torus",
+      "width": 7,
+      "height": 6,
+      "progress": 0.00001,
+      "bounds": {
+        "left": 45.96000000000001,
+        "right": 434.03999999999996,
+        "top": 13.680000000000007,
+        "bottom": 346.32000000000005
+      },
+      "layout": {
+        "cell": 55.44,
+        "left": 73.68,
+        "top": 41.400000000000006,
+        "right": 406.32,
+        "bottom": 318.6,
+        "width": 480,
+        "height": 360
+      },
+      "rails": [
+        {
+          "color": "rgba(63, 140, 135, 0.78)",
+          "pointCount": 121,
+          "firstPoint": [
+            45.95999973277267,
+            13.679999770948001
+          ],
+          "lastPoint": [
+            45.95999973277267,
+            346.320000229052
+          ]
+        },
+        {
+          "color": "rgba(63, 140, 135, 0.78)",
+          "pointCount": 121,
+          "firstPoint": [
+            434.0400002672273,
+            13.679999770948001
+          ],
+          "lastPoint": [
+            434.0400002672273,
+            346.320000229052
+          ]
+        },
+        {
+          "color": "rgba(199, 146, 68, 0.76)",
+          "pointCount": 141,
+          "firstPoint": [
+            45.95999973277267,
+            13.679999770948001
+          ],
+          "lastPoint": [
+            434.0400002672273,
+            13.679999770948001
+          ]
+        },
+        {
+          "color": "rgba(199, 146, 68, 0.76)",
+          "pointCount": 141,
+          "firstPoint": [
+            45.95999973277267,
+            346.320000229052
+          ],
+          "lastPoint": [
+            434.0400002672273,
+            346.320000229052
+          ]
+        },
+        {
+          "color": "#3f8c87",
+          "pointCount": 2,
+          "firstPoint": [
+            45.96000000000001,
+            41.400000000000006
+          ],
+          "lastPoint": [
+            45.96000000000001,
+            318.6
+          ]
+        },
+        {
+          "color": "#3f8c87",
+          "pointCount": 2,
+          "firstPoint": [
+            434.03999999999996,
+            41.400000000000006
+          ],
+          "lastPoint": [
+            434.03999999999996,
+            318.6
+          ]
+        },
+        {
+          "color": "#c79244",
+          "pointCount": 2,
+          "firstPoint": [
+            73.68,
+            13.680000000000007
+          ],
+          "lastPoint": [
+            406.32,
+            13.680000000000007
+          ]
+        },
+        {
+          "color": "#c79244",
+          "pointCount": 2,
+          "firstPoint": [
+            73.68,
+            346.32000000000005
+          ],
+          "lastPoint": [
+            406.32,
+            346.32000000000005
+          ]
+        }
+      ],
+      "allCellsHit": true,
+      "imageSha256": "93b7e5f9d91a8c75e80d9892e867ee331447e269165afd2da66abc4c94bd73f4",
+      "cornerDistancePx": {
+        "left": 3.5195918816476565e-7,
+        "right": 3.5195918816476565e-7,
+        "top": 3.5195918816476565e-7,
+        "bottom": 3.519591696681628e-7
+      }
+    },
+    {
+      "revision": "before",
+      "type": "klein",
+      "width": 7,
+      "height": 6,
+      "progress": 0,
+      "bounds": {
+        "left": 45.96000000000001,
+        "right": 434.03999999999996,
+        "top": 13.680000000000007,
+        "bottom": 346.32000000000005
+      },
+      "layout": {
+        "cell": 55.44,
+        "left": 73.68,
+        "top": 41.400000000000006,
+        "right": 406.32,
+        "bottom": 318.6,
+        "width": 480,
+        "height": 360
+      },
+      "rails": [
+        {
+          "color": "#3f8c87",
+          "pointCount": 2,
+          "firstPoint": [
+            45.96000000000001,
+            41.400000000000006
+          ],
+          "lastPoint": [
+            45.96000000000001,
+            318.6
+          ]
+        },
+        {
+          "color": "#3f8c87",
+          "pointCount": 2,
+          "firstPoint": [
+            434.03999999999996,
+            41.400000000000006
+          ],
+          "lastPoint": [
+            434.03999999999996,
+            318.6
+          ]
+        },
+        {
+          "color": "#c79244",
+          "pointCount": 2,
+          "firstPoint": [
+            73.68,
+            13.680000000000007
+          ],
+          "lastPoint": [
+            406.32,
+            13.680000000000007
+          ]
+        },
+        {
+          "color": "#c79244",
+          "pointCount": 2,
+          "firstPoint": [
+            73.68,
+            346.32000000000005
+          ],
+          "lastPoint": [
+            406.32,
+            346.32000000000005
+          ]
+        }
+      ],
+      "allCellsHit": true,
+      "imageSha256": "bade0792a51702835ad1dae5d5b0975a4c44e5cb30f25228fe05cf1d3e6f25ca",
+      "cornerDistancePx": {
+        "left": 27.720000000000027,
+        "right": 27.720000000000027,
+        "top": 27.72,
+        "bottom": 27.72
+      }
+    },
+    {
+      "revision": "before",
+      "type": "klein",
+      "width": 7,
+      "height": 6,
+      "progress": 0.00001,
+      "bounds": {
+        "left": 45.96000000000001,
+        "right": 434.03999999999996,
+        "top": 13.680000000000007,
+        "bottom": 346.32000000000005
+      },
+      "layout": {
+        "cell": 55.44,
+        "left": 73.68,
+        "top": 41.400000000000006,
+        "right": 406.32,
+        "bottom": 318.6,
+        "width": 480,
+        "height": 360
+      },
+      "rails": [
+        {
+          "color": "rgba(63, 140, 135, 0.78)",
+          "pointCount": 121,
+          "firstPoint": [
+            45.95999962202521,
+            13.679999622025207
+          ],
+          "lastPoint": [
+            45.95999962202521,
+            346.32000037797485
+          ]
+        },
+        {
+          "color": "rgba(63, 140, 135, 0.78)",
+          "pointCount": 121,
+          "firstPoint": [
+            434.04000037797476,
+            13.679999622025207
+          ],
+          "lastPoint": [
+            434.04000037797476,
+            346.32000037797485
+          ]
+        },
+        {
+          "color": "rgba(199, 146, 68, 0.76)",
+          "pointCount": 141,
+          "firstPoint": [
+            45.95999962202521,
+            13.679999622025207
+          ],
+          "lastPoint": [
+            434.04000037797476,
+            13.679999622025207
+          ]
+        },
+        {
+          "color": "rgba(199, 146, 68, 0.76)",
+          "pointCount": 141,
+          "firstPoint": [
+            45.95999962202521,
+            346.32000037797485
+          ],
+          "lastPoint": [
+            434.04000037797476,
+            346.32000037797485
+          ]
+        },
+        {
+          "color": "#3f8c87",
+          "pointCount": 2,
+          "firstPoint": [
+            45.96000000000001,
+            41.400000000000006
+          ],
+          "lastPoint": [
+            45.96000000000001,
+            318.6
+          ]
+        },
+        {
+          "color": "#3f8c87",
+          "pointCount": 2,
+          "firstPoint": [
+            434.03999999999996,
+            41.400000000000006
+          ],
+          "lastPoint": [
+            434.03999999999996,
+            318.6
+          ]
+        },
+        {
+          "color": "#c79244",
+          "pointCount": 2,
+          "firstPoint": [
+            73.68,
+            13.680000000000007
+          ],
+          "lastPoint": [
+            406.32,
+            13.680000000000007
+          ]
+        },
+        {
+          "color": "#c79244",
+          "pointCount": 2,
+          "firstPoint": [
+            73.68,
+            346.32000000000005
+          ],
+          "lastPoint": [
+            406.32,
+            346.32000000000005
+          ]
+        }
+      ],
+      "allCellsHit": true,
+      "imageSha256": "ccfdb0fafbce0b2f2e131a9b5378da616d3a83fa31fdb7c7d45addda219178db",
+      "cornerDistancePx": {
+        "left": 5.345370882585227e-7,
+        "right": 5.345370882585227e-7,
+        "top": 5.345370882585227e-7,
+        "bottom": 5.345370882585227e-7
+      }
+    },
+    {
+      "revision": "before",
+      "type": "projective",
+      "width": 7,
+      "height": 6,
+      "progress": 0,
+      "bounds": {
+        "left": 45.96000000000001,
+        "right": 434.03999999999996,
+        "top": 13.680000000000007,
+        "bottom": 346.32000000000005
+      },
+      "layout": {
+        "cell": 55.44,
+        "left": 73.68,
+        "top": 41.400000000000006,
+        "right": 406.32,
+        "bottom": 318.6,
+        "width": 480,
+        "height": 360
+      },
+      "rails": [
+        {
+          "color": "#3f8c87",
+          "pointCount": 2,
+          "firstPoint": [
+            45.96000000000001,
+            41.400000000000006
+          ],
+          "lastPoint": [
+            45.96000000000001,
+            318.6
+          ]
+        },
+        {
+          "color": "#3f8c87",
+          "pointCount": 2,
+          "firstPoint": [
+            434.03999999999996,
+            41.400000000000006
+          ],
+          "lastPoint": [
+            434.03999999999996,
+            318.6
+          ]
+        },
+        {
+          "color": "#c79244",
+          "pointCount": 2,
+          "firstPoint": [
+            73.68,
+            13.680000000000007
+          ],
+          "lastPoint": [
+            406.32,
+            13.680000000000007
+          ]
+        },
+        {
+          "color": "#c79244",
+          "pointCount": 2,
+          "firstPoint": [
+            73.68,
+            346.32000000000005
+          ],
+          "lastPoint": [
+            406.32,
+            346.32000000000005
+          ]
+        }
+      ],
+      "allCellsHit": true,
+      "imageSha256": "8ace6e4fa50a536fe1583350a6760112ab8ad46a45c29a425e505efd2271e0e7",
+      "cornerDistancePx": {
+        "left": 27.720000000000027,
+        "right": 27.720000000000027,
+        "top": 27.72,
+        "bottom": 27.72
+      }
+    },
+    {
+      "revision": "before",
+      "type": "projective",
+      "width": 7,
+      "height": 6,
+      "progress": 0.00001,
+      "bounds": {
+        "left": 45.96000000000001,
+        "right": 434.03999999999996,
+        "top": 13.680000000000007,
+        "bottom": 346.32000000000005
+      },
+      "layout": {
+        "cell": 55.44,
+        "left": 73.68,
+        "top": 41.400000000000006,
+        "right": 406.32,
+        "bottom": 318.6,
+        "width": 480,
+        "height": 360
+      },
+      "rails": [
+        {
+          "color": "rgba(63, 140, 135, 0.78)",
+          "pointCount": 121,
+          "firstPoint": [
+            45.95999962202521,
+            13.679999622025207
+          ],
+          "lastPoint": [
+            45.95999962202521,
+            346.32000037797485
+          ]
+        },
+        {
+          "color": "rgba(63, 140, 135, 0.78)",
+          "pointCount": 121,
+          "firstPoint": [
+            434.04000037797476,
+            13.679999622025207
+          ],
+          "lastPoint": [
+            434.04000037797476,
+            346.32000037797485
+          ]
+        },
+        {
+          "color": "rgba(199, 146, 68, 0.76)",
+          "pointCount": 141,
+          "firstPoint": [
+            45.95999962202521,
+            13.679999622025207
+          ],
+          "lastPoint": [
+            434.04000037797476,
+            13.679999622025207
+          ]
+        },
+        {
+          "color": "rgba(199, 146, 68, 0.76)",
+          "pointCount": 141,
+          "firstPoint": [
+            45.95999962202521,
+            346.32000037797485
+          ],
+          "lastPoint": [
+            434.04000037797476,
+            346.32000037797485
+          ]
+        },
+        {
+          "color": "#3f8c87",
+          "pointCount": 2,
+          "firstPoint": [
+            45.96000000000001,
+            41.400000000000006
+          ],
+          "lastPoint": [
+            45.96000000000001,
+            318.6
+          ]
+        },
+        {
+          "color": "#3f8c87",
+          "pointCount": 2,
+          "firstPoint": [
+            434.03999999999996,
+            41.400000000000006
+          ],
+          "lastPoint": [
+            434.03999999999996,
+            318.6
+          ]
+        },
+        {
+          "color": "#c79244",
+          "pointCount": 2,
+          "firstPoint": [
+            73.68,
+            13.680000000000007
+          ],
+          "lastPoint": [
+            406.32,
+            13.680000000000007
+          ]
+        },
+        {
+          "color": "#c79244",
+          "pointCount": 2,
+          "firstPoint": [
+            73.68,
+            346.32000000000005
+          ],
+          "lastPoint": [
+            406.32,
+            346.32000000000005
+          ]
+        }
+      ],
+      "allCellsHit": true,
+      "imageSha256": "5eb8b8bb858bb7060c70064df12566662845cb857d141196e7437420cdc63139",
+      "cornerDistancePx": {
+        "left": 5.345370882585227e-7,
+        "right": 5.345370882585227e-7,
+        "top": 5.345370882585227e-7,
+        "bottom": 5.345370882585227e-7
+      }
+    },
+    {
+      "revision": "before",
+      "type": "cylinder",
+      "width": 7,
+      "height": 6,
+      "progress": 0,
+      "bounds": {
+        "left": 45.96000000000001,
+        "right": 434.03999999999996,
+        "top": 41.400000000000006,
+        "bottom": 318.6
+      },
+      "layout": {
+        "cell": 55.44,
+        "left": 73.68,
+        "top": 41.400000000000006,
+        "right": 406.32,
+        "bottom": 318.6,
+        "width": 480,
+        "height": 360
+      },
+      "rails": [
+        {
+          "color": "#3f8c87",
+          "pointCount": 2,
+          "firstPoint": [
+            45.96000000000001,
+            41.400000000000006
+          ],
+          "lastPoint": [
+            45.96000000000001,
+            318.6
+          ]
+        },
+        {
+          "color": "#3f8c87",
+          "pointCount": 2,
+          "firstPoint": [
+            434.03999999999996,
+            41.400000000000006
+          ],
+          "lastPoint": [
+            434.03999999999996,
+            318.6
+          ]
+        }
+      ],
+      "allCellsHit": true,
+      "imageSha256": "079d33aaf145367c0e92ffdc1568399fbbcf6dda1290ea44c49a0df75c05d0fe",
+      "cornerDistancePx": {
+        "left": 0,
+        "right": 0
+      }
+    },
+    {
+      "revision": "before",
+      "type": "cylinder",
+      "width": 7,
+      "height": 6,
+      "progress": 0.00001,
+      "bounds": {
+        "left": 45.96000000000001,
+        "right": 434.03999999999996,
+        "top": 41.400000000000006,
+        "bottom": 318.6
+      },
+      "layout": {
+        "cell": 55.44,
+        "left": 73.68,
+        "top": 41.400000000000006,
+        "right": 406.32,
+        "bottom": 318.6,
+        "width": 480,
+        "height": 360
+      },
+      "rails": [
+        {
+          "color": "rgba(63, 140, 135, 0.78)",
+          "pointCount": 121,
+          "firstPoint": [
+            45.95999974160523,
+            41.399999810572325
+          ],
+          "lastPoint": [
+            45.95999974160523,
+            318.6000001894277
+          ]
+        },
+        {
+          "color": "rgba(63, 140, 135, 0.78)",
+          "pointCount": 121,
+          "firstPoint": [
+            434.04000025839474,
+            41.399999810572325
+          ],
+          "lastPoint": [
+            434.04000025839474,
+            318.6000001894277
+          ]
+        },
+        {
+          "color": "#3f8c87",
+          "pointCount": 2,
+          "firstPoint": [
+            45.96000000000001,
+            41.400000000000006
+          ],
+          "lastPoint": [
+            45.96000000000001,
+            318.6
+          ]
+        },
+        {
+          "color": "#3f8c87",
+          "pointCount": 2,
+          "firstPoint": [
+            434.03999999999996,
+            41.400000000000006
+          ],
+          "lastPoint": [
+            434.03999999999996,
+            318.6
+          ]
+        }
+      ],
+      "allCellsHit": true,
+      "imageSha256": "6c773dfdb5cebf5abd8d2e1813f6c7ab28de6c764b2ed2c66e0a04bdd325cdd9",
+      "cornerDistancePx": {
+        "left": 0,
+        "right": 0
+      }
+    },
+    {
+      "revision": "before",
+      "type": "mobius",
+      "width": 7,
+      "height": 6,
+      "progress": 0,
+      "bounds": {
+        "left": 45.96000000000001,
+        "right": 434.03999999999996,
+        "top": 41.400000000000006,
+        "bottom": 318.6
+      },
+      "layout": {
+        "cell": 55.44,
+        "left": 73.68,
+        "top": 41.400000000000006,
+        "right": 406.32,
+        "bottom": 318.6,
+        "width": 480,
+        "height": 360
+      },
+      "rails": [
+        {
+          "color": "#3f8c87",
+          "pointCount": 2,
+          "firstPoint": [
+            45.96000000000001,
+            41.400000000000006
+          ],
+          "lastPoint": [
+            45.96000000000001,
+            318.6
+          ]
+        },
+        {
+          "color": "#3f8c87",
+          "pointCount": 2,
+          "firstPoint": [
+            434.03999999999996,
+            41.400000000000006
+          ],
+          "lastPoint": [
+            434.03999999999996,
+            318.6
+          ]
+        }
+      ],
+      "allCellsHit": true,
+      "imageSha256": "e7d7395625fc2cb051d0c0564dac7299f3c63e96cc332febc04cc6ba939526e8",
+      "cornerDistancePx": {
+        "left": 0,
+        "right": 0
+      }
+    },
+    {
+      "revision": "before",
+      "type": "mobius",
+      "width": 7,
+      "height": 6,
+      "progress": 0.00001,
+      "bounds": {
+        "left": 45.96000000000001,
+        "right": 434.03999999999996,
+        "top": 41.400000000000006,
+        "bottom": 318.6
+      },
+      "layout": {
+        "cell": 55.44,
+        "left": 73.68,
+        "top": 41.400000000000006,
+        "right": 406.32,
+        "bottom": 318.6,
+        "width": 480,
+        "height": 360
+      },
+      "rails": [
+        {
+          "color": "rgba(63, 140, 135, 0.78)",
+          "pointCount": 121,
+          "firstPoint": [
+            45.959999778522814,
+            41.399999856381925
+          ],
+          "lastPoint": [
+            45.959999778522814,
+            318.6000001436181
+          ]
+        },
+        {
+          "color": "rgba(63, 140, 135, 0.78)",
+          "pointCount": 121,
+          "firstPoint": [
+            434.04000022147716,
+            41.399999856381925
+          ],
+          "lastPoint": [
+            434.04000022147716,
+            318.6000001436181
+          ]
+        },
+        {
+          "color": "#3f8c87",
+          "pointCount": 2,
+          "firstPoint": [
+            45.96000000000001,
+            41.400000000000006
+          ],
+          "lastPoint": [
+            45.96000000000001,
+            318.6
+          ]
+        },
+        {
+          "color": "#3f8c87",
+          "pointCount": 2,
+          "firstPoint": [
+            434.03999999999996,
+            41.400000000000006
+          ],
+          "lastPoint": [
+            434.03999999999996,
+            318.6
+          ]
+        }
+      ],
+      "allCellsHit": true,
+      "imageSha256": "907b93f1af5173f77c188a6ff02b4bf36588720cb45a91fc5863549d10ebb7c1",
+      "cornerDistancePx": {
+        "left": 0,
+        "right": 0
+      }
+    },
+    {
+      "revision": "before",
+      "type": "plane",
+      "width": 7,
+      "height": 6,
+      "progress": 0,
+      "bounds": {
+        "left": 73.68,
+        "right": 406.32,
+        "top": 41.400000000000006,
+        "bottom": 318.6
+      },
+      "layout": {
+        "cell": 55.44,
+        "left": 73.68,
+        "top": 41.400000000000006,
+        "right": 406.32,
+        "bottom": 318.6,
+        "width": 480,
+        "height": 360
+      },
+      "rails": [],
+      "allCellsHit": true,
+      "imageSha256": "9b511ba71e050d3b81412f22056bce713d49272ffdc0252e2abe755c6708ca5d",
+      "cornerDistancePx": {}
+    },
+    {
+      "revision": "before",
+      "type": "plane",
+      "width": 7,
+      "height": 6,
+      "progress": 0.00001,
+      "bounds": {
+        "left": 73.68,
+        "right": 406.32,
+        "top": 41.400000000000006,
+        "bottom": 318.6
+      },
+      "layout": {
+        "cell": 55.44,
+        "left": 73.68,
+        "top": 41.400000000000006,
+        "right": 406.32,
+        "bottom": 318.6,
+        "width": 480,
+        "height": 360
+      },
+      "rails": [],
+      "allCellsHit": true,
+      "imageSha256": "9b511ba71e050d3b81412f22056bce713d49272ffdc0252e2abe755c6708ca5d",
+      "cornerDistancePx": {}
+    },
+    {
+      "revision": "before",
+      "type": "sphere",
+      "width": 5,
+      "height": 5,
+      "progress": 0,
+      "bounds": {
+        "left": 66.75,
+        "right": 413.25,
+        "top": 6.750000000000007,
+        "bottom": 353.25
+      },
+      "layout": {
+        "cell": 69.3,
+        "left": 101.4,
+        "top": 41.400000000000006,
+        "right": 378.6,
+        "bottom": 318.6,
+        "width": 480,
+        "height": 360
+      },
+      "rails": [
+        {
+          "color": "#3f8c87",
+          "pointCount": 2,
+          "firstPoint": [
+            101.4,
+            6.750000000000007
+          ],
+          "lastPoint": [
+            378.6,
+            6.750000000000007
+          ]
+        },
+        {
+          "color": "#3f8c87",
+          "pointCount": 2,
+          "firstPoint": [
+            66.75,
+            41.400000000000006
+          ],
+          "lastPoint": [
+            66.75,
+            318.6
+          ]
+        },
+        {
+          "color": "#c79244",
+          "pointCount": 2,
+          "firstPoint": [
+            101.4,
+            353.25
+          ],
+          "lastPoint": [
+            378.6,
+            353.25
+          ]
+        },
+        {
+          "color": "#c79244",
+          "pointCount": 2,
+          "firstPoint": [
+            413.25,
+            41.400000000000006
+          ],
+          "lastPoint": [
+            413.25,
+            318.6
+          ]
+        }
+      ],
+      "allCellsHit": true,
+      "imageSha256": "275f3cec31b49891efab00fbb4b673537479b4121cb484ae860e52343976ec1d",
+      "cornerDistancePx": {
+        "left": 34.65,
+        "right": 34.65,
+        "top": 34.650000000000006,
+        "bottom": 34.650000000000006
+      }
+    },
+    {
+      "revision": "before",
+      "type": "sphere",
+      "width": 5,
+      "height": 5,
+      "progress": 0.00001,
+      "bounds": {
+        "left": 66.75,
+        "right": 413.25,
+        "top": 6.750000000000007,
+        "bottom": 353.25
+      },
+      "layout": {
+        "cell": 69.3,
+        "left": 101.4,
+        "top": 41.400000000000006,
+        "right": 378.6,
+        "bottom": 318.6,
+        "width": 480,
+        "height": 360
+      },
+      "rails": [
+        {
+          "color": "rgba(63, 140, 135, 0.78)",
+          "pointCount": 97,
+          "firstPoint": [
+            66.74999979658938,
+            6.749999796589378
+          ],
+          "lastPoint": [
+            413.25000020862024,
+            6.749999791379736
+          ]
+        },
+        {
+          "color": "rgba(63, 140, 135, 0.78)",
+          "pointCount": 97,
+          "firstPoint": [
+            66.74999979658938,
+            6.749999796589378
+          ],
+          "lastPoint": [
+            66.74999979137976,
+            353.25000020862024
+          ]
+        },
+        {
+          "color": "rgba(199, 146, 68, 0.76)",
+          "pointCount": 97,
+          "firstPoint": [
+            66.74999979137976,
+            353.25000020862024
+          ],
+          "lastPoint": [
+            413.25000020341065,
+            353.25000020341065
+          ]
+        },
+        {
+          "color": "rgba(199, 146, 68, 0.76)",
+          "pointCount": 97,
+          "firstPoint": [
+            413.25000020862024,
+            6.749999791379736
+          ],
+          "lastPoint": [
+            413.25000020341065,
+            353.25000020341065
+          ]
+        },
+        {
+          "color": "#3f8c87",
+          "pointCount": 2,
+          "firstPoint": [
+            101.4,
+            6.750000000000007
+          ],
+          "lastPoint": [
+            378.6,
+            6.750000000000007
+          ]
+        },
+        {
+          "color": "#3f8c87",
+          "pointCount": 2,
+          "firstPoint": [
+            66.75,
+            41.400000000000006
+          ],
+          "lastPoint": [
+            66.75,
+            318.6
+          ]
+        },
+        {
+          "color": "#c79244",
+          "pointCount": 2,
+          "firstPoint": [
+            101.4,
+            353.25
+          ],
+          "lastPoint": [
+            378.6,
+            353.25
+          ]
+        },
+        {
+          "color": "#c79244",
+          "pointCount": 2,
+          "firstPoint": [
+            413.25,
+            41.400000000000006
+          ],
+          "lastPoint": [
+            413.25,
+            318.6
+          ]
+        }
+      ],
+      "allCellsHit": true,
+      "imageSha256": "8d41cb3f391ef68af6ab609aa63c1827f41c1420cd0dff5ee34b192a4c9e62bc",
+      "cornerDistancePx": {
+        "left": 2.950335667876302e-7,
+        "right": 2.950335919091106e-7,
+        "top": 2.950335919091106e-7,
+        "bottom": 2.950335667876302e-7
+      }
+    },
+    {
+      "revision": "before",
+      "type": "torus",
+      "width": 5,
+      "height": 5,
+      "progress": 0,
+      "bounds": {
+        "left": 66.75,
+        "right": 413.25,
+        "top": 6.750000000000007,
+        "bottom": 353.25
+      },
+      "layout": {
+        "cell": 69.3,
+        "left": 101.4,
+        "top": 41.400000000000006,
+        "right": 378.6,
+        "bottom": 318.6,
+        "width": 480,
+        "height": 360
+      },
+      "rails": [
+        {
+          "color": "#3f8c87",
+          "pointCount": 2,
+          "firstPoint": [
+            66.75,
+            41.400000000000006
+          ],
+          "lastPoint": [
+            66.75,
+            318.6
+          ]
+        },
+        {
+          "color": "#3f8c87",
+          "pointCount": 2,
+          "firstPoint": [
+            413.25,
+            41.400000000000006
+          ],
+          "lastPoint": [
+            413.25,
+            318.6
+          ]
+        },
+        {
+          "color": "#c79244",
+          "pointCount": 2,
+          "firstPoint": [
+            101.4,
+            6.750000000000007
+          ],
+          "lastPoint": [
+            378.6,
+            6.750000000000007
+          ]
+        },
+        {
+          "color": "#c79244",
+          "pointCount": 2,
+          "firstPoint": [
+            101.4,
+            353.25
+          ],
+          "lastPoint": [
+            378.6,
+            353.25
+          ]
+        }
+      ],
+      "allCellsHit": true,
+      "imageSha256": "bb65b4cdbef7ef916dd5b3ad15a984bc06d7164434746818a60b30c77dec0cb4",
+      "cornerDistancePx": {
+        "left": 34.65,
+        "right": 34.65,
+        "top": 34.650000000000006,
+        "bottom": 34.650000000000006
+      }
+    },
+    {
+      "revision": "before",
+      "type": "torus",
+      "width": 5,
+      "height": 5,
+      "progress": 0.00001,
+      "bounds": {
+        "left": 66.75,
+        "right": 413.25,
+        "top": 6.750000000000007,
+        "bottom": 353.25
+      },
+      "layout": {
+        "cell": 69.3,
+        "left": 101.4,
+        "top": 41.400000000000006,
+        "right": 378.6,
+        "bottom": 318.6,
+        "width": 480,
+        "height": 360
+      },
+      "rails": [
+        {
+          "color": "rgba(63, 140, 135, 0.78)",
+          "pointCount": 121,
+          "firstPoint": [
+            66.74999976140418,
+            6.749999761404183
+          ],
+          "lastPoint": [
+            66.74999976140418,
+            353.2500002385958
+          ]
+        },
+        {
+          "color": "rgba(63, 140, 135, 0.78)",
+          "pointCount": 121,
+          "firstPoint": [
+            413.2500002385958,
+            6.749999761404183
+          ],
+          "lastPoint": [
+            413.2500002385958,
+            353.2500002385958
+          ]
+        },
+        {
+          "color": "rgba(199, 146, 68, 0.76)",
+          "pointCount": 141,
+          "firstPoint": [
+            66.74999976140418,
+            6.749999761404183
+          ],
+          "lastPoint": [
+            413.2500002385958,
+            6.749999761404183
+          ]
+        },
+        {
+          "color": "rgba(199, 146, 68, 0.76)",
+          "pointCount": 141,
+          "firstPoint": [
+            66.74999976140418,
+            353.2500002385958
+          ],
+          "lastPoint": [
+            413.2500002385958,
+            353.2500002385958
+          ]
+        },
+        {
+          "color": "#3f8c87",
+          "pointCount": 2,
+          "firstPoint": [
+            66.75,
+            41.400000000000006
+          ],
+          "lastPoint": [
+            66.75,
+            318.6
+          ]
+        },
+        {
+          "color": "#3f8c87",
+          "pointCount": 2,
+          "firstPoint": [
+            413.25,
+            41.400000000000006
+          ],
+          "lastPoint": [
+            413.25,
+            318.6
+          ]
+        },
+        {
+          "color": "#c79244",
+          "pointCount": 2,
+          "firstPoint": [
+            101.4,
+            6.750000000000007
+          ],
+          "lastPoint": [
+            378.6,
+            6.750000000000007
+          ]
+        },
+        {
+          "color": "#c79244",
+          "pointCount": 2,
+          "firstPoint": [
+            101.4,
+            353.25
+          ],
+          "lastPoint": [
+            378.6,
+            353.25
+          ]
+        }
+      ],
+      "allCellsHit": true,
+      "imageSha256": "4bcca5b4dc5eba17b65dc3cf62eca6f17b7bc50575107741d45082930ad5fba0",
+      "cornerDistancePx": {
+        "left": 3.3742544518370034e-7,
+        "right": 3.3742544518370034e-7,
+        "top": 3.3742544518370034e-7,
+        "bottom": 3.374254401594045e-7
+      }
+    },
+    {
+      "revision": "before",
+      "type": "klein",
+      "width": 5,
+      "height": 5,
+      "progress": 0,
+      "bounds": {
+        "left": 66.75,
+        "right": 413.25,
+        "top": 6.750000000000007,
+        "bottom": 353.25
+      },
+      "layout": {
+        "cell": 69.3,
+        "left": 101.4,
+        "top": 41.400000000000006,
+        "right": 378.6,
+        "bottom": 318.6,
+        "width": 480,
+        "height": 360
+      },
+      "rails": [
+        {
+          "color": "#3f8c87",
+          "pointCount": 2,
+          "firstPoint": [
+            66.75,
+            41.400000000000006
+          ],
+          "lastPoint": [
+            66.75,
+            318.6
+          ]
+        },
+        {
+          "color": "#3f8c87",
+          "pointCount": 2,
+          "firstPoint": [
+            413.25,
+            41.400000000000006
+          ],
+          "lastPoint": [
+            413.25,
+            318.6
+          ]
+        },
+        {
+          "color": "#c79244",
+          "pointCount": 2,
+          "firstPoint": [
+            101.4,
+            6.750000000000007
+          ],
+          "lastPoint": [
+            378.6,
+            6.750000000000007
+          ]
+        },
+        {
+          "color": "#c79244",
+          "pointCount": 2,
+          "firstPoint": [
+            101.4,
+            353.25
+          ],
+          "lastPoint": [
+            378.6,
+            353.25
+          ]
+        }
+      ],
+      "allCellsHit": true,
+      "imageSha256": "cf3ed075b681a19fe712640f67cc9b0327d573bd823f42bf62f76f19f7b348f9",
+      "cornerDistancePx": {
+        "left": 34.65,
+        "right": 34.65,
+        "top": 34.650000000000006,
+        "bottom": 34.650000000000006
+      }
+    },
+    {
+      "revision": "before",
+      "type": "klein",
+      "width": 5,
+      "height": 5,
+      "progress": 0.00001,
+      "bounds": {
+        "left": 66.75,
+        "right": 413.25,
+        "top": 6.750000000000007,
+        "bottom": 353.25
+      },
+      "layout": {
+        "cell": 69.3,
+        "left": 101.4,
+        "top": 41.400000000000006,
+        "right": 378.6,
+        "bottom": 318.6,
+        "width": 480,
+        "height": 360
+      },
+      "rails": [
+        {
+          "color": "rgba(63, 140, 135, 0.78)",
+          "pointCount": 121,
+          "firstPoint": [
+            66.7499996220252,
+            6.750000000000007
+          ],
+          "lastPoint": [
+            66.7499996220252,
+            353.25
+          ]
+        },
+        {
+          "color": "rgba(63, 140, 135, 0.78)",
+          "pointCount": 121,
+          "firstPoint": [
+            413.2500003779748,
+            6.750000000000007
+          ],
+          "lastPoint": [
+            413.2500003779748,
+            353.25
+          ]
+        },
+        {
+          "color": "rgba(199, 146, 68, 0.76)",
+          "pointCount": 141,
+          "firstPoint": [
+            66.7499996220252,
+            6.750000000000007
+          ],
+          "lastPoint": [
+            413.2500003779748,
+            6.750000000000007
+          ]
+        },
+        {
+          "color": "rgba(199, 146, 68, 0.76)",
+          "pointCount": 141,
+          "firstPoint": [
+            66.7499996220252,
+            353.25
+          ],
+          "lastPoint": [
+            413.2500003779748,
+            353.25
+          ]
+        },
+        {
+          "color": "#3f8c87",
+          "pointCount": 2,
+          "firstPoint": [
+            66.75,
+            41.400000000000006
+          ],
+          "lastPoint": [
+            66.75,
+            318.6
+          ]
+        },
+        {
+          "color": "#3f8c87",
+          "pointCount": 2,
+          "firstPoint": [
+            413.25,
+            41.400000000000006
+          ],
+          "lastPoint": [
+            413.25,
+            318.6
+          ]
+        },
+        {
+          "color": "#c79244",
+          "pointCount": 2,
+          "firstPoint": [
+            101.4,
+            6.750000000000007
+          ],
+          "lastPoint": [
+            378.6,
+            6.750000000000007
+          ]
+        },
+        {
+          "color": "#c79244",
+          "pointCount": 2,
+          "firstPoint": [
+            101.4,
+            353.25
+          ],
+          "lastPoint": [
+            378.6,
+            353.25
+          ]
+        }
+      ],
+      "allCellsHit": true,
+      "imageSha256": "cbeb0193768bbd20b99adfbc01fd98db90918eb487821e6c72dd455e78a0e816",
+      "cornerDistancePx": {
+        "left": 3.779747999033134e-7,
+        "right": 3.779747999033134e-7,
+        "top": 3.779747999033134e-7,
+        "bottom": 3.779747999033134e-7
+      }
+    },
+    {
+      "revision": "before",
+      "type": "projective",
+      "width": 5,
+      "height": 5,
+      "progress": 0,
+      "bounds": {
+        "left": 66.75,
+        "right": 413.25,
+        "top": 6.750000000000007,
+        "bottom": 353.25
+      },
+      "layout": {
+        "cell": 69.3,
+        "left": 101.4,
+        "top": 41.400000000000006,
+        "right": 378.6,
+        "bottom": 318.6,
+        "width": 480,
+        "height": 360
+      },
+      "rails": [
+        {
+          "color": "#3f8c87",
+          "pointCount": 2,
+          "firstPoint": [
+            66.75,
+            41.400000000000006
+          ],
+          "lastPoint": [
+            66.75,
+            318.6
+          ]
+        },
+        {
+          "color": "#3f8c87",
+          "pointCount": 2,
+          "firstPoint": [
+            413.25,
+            41.400000000000006
+          ],
+          "lastPoint": [
+            413.25,
+            318.6
+          ]
+        },
+        {
+          "color": "#c79244",
+          "pointCount": 2,
+          "firstPoint": [
+            101.4,
+            6.750000000000007
+          ],
+          "lastPoint": [
+            378.6,
+            6.750000000000007
+          ]
+        },
+        {
+          "color": "#c79244",
+          "pointCount": 2,
+          "firstPoint": [
+            101.4,
+            353.25
+          ],
+          "lastPoint": [
+            378.6,
+            353.25
+          ]
+        }
+      ],
+      "allCellsHit": true,
+      "imageSha256": "a218d764b753612696ed18dac40c6acf9ceb20670ae62b60b4ea247231f73849",
+      "cornerDistancePx": {
+        "left": 34.65,
+        "right": 34.65,
+        "top": 34.650000000000006,
+        "bottom": 34.650000000000006
+      }
+    },
+    {
+      "revision": "before",
+      "type": "projective",
+      "width": 5,
+      "height": 5,
+      "progress": 0.00001,
+      "bounds": {
+        "left": 66.75,
+        "right": 413.25,
+        "top": 6.750000000000007,
+        "bottom": 353.25
+      },
+      "layout": {
+        "cell": 69.3,
+        "left": 101.4,
+        "top": 41.400000000000006,
+        "right": 378.6,
+        "bottom": 318.6,
+        "width": 480,
+        "height": 360
+      },
+      "rails": [
+        {
+          "color": "rgba(63, 140, 135, 0.78)",
+          "pointCount": 121,
+          "firstPoint": [
+            66.7499996220252,
+            6.750000000000007
+          ],
+          "lastPoint": [
+            66.7499996220252,
+            353.25
+          ]
+        },
+        {
+          "color": "rgba(63, 140, 135, 0.78)",
+          "pointCount": 121,
+          "firstPoint": [
+            413.2500003779748,
+            6.750000000000007
+          ],
+          "lastPoint": [
+            413.2500003779748,
+            353.25
+          ]
+        },
+        {
+          "color": "rgba(199, 146, 68, 0.76)",
+          "pointCount": 141,
+          "firstPoint": [
+            66.7499996220252,
+            6.750000000000007
+          ],
+          "lastPoint": [
+            413.2500003779748,
+            6.750000000000007
+          ]
+        },
+        {
+          "color": "rgba(199, 146, 68, 0.76)",
+          "pointCount": 141,
+          "firstPoint": [
+            66.7499996220252,
+            353.25
+          ],
+          "lastPoint": [
+            413.2500003779748,
+            353.25
+          ]
+        },
+        {
+          "color": "#3f8c87",
+          "pointCount": 2,
+          "firstPoint": [
+            66.75,
+            41.400000000000006
+          ],
+          "lastPoint": [
+            66.75,
+            318.6
+          ]
+        },
+        {
+          "color": "#3f8c87",
+          "pointCount": 2,
+          "firstPoint": [
+            413.25,
+            41.400000000000006
+          ],
+          "lastPoint": [
+            413.25,
+            318.6
+          ]
+        },
+        {
+          "color": "#c79244",
+          "pointCount": 2,
+          "firstPoint": [
+            101.4,
+            6.750000000000007
+          ],
+          "lastPoint": [
+            378.6,
+            6.750000000000007
+          ]
+        },
+        {
+          "color": "#c79244",
+          "pointCount": 2,
+          "firstPoint": [
+            101.4,
+            353.25
+          ],
+          "lastPoint": [
+            378.6,
+            353.25
+          ]
+        }
+      ],
+      "allCellsHit": true,
+      "imageSha256": "aabb9cb3104614d1a2e188f8b4c968d4768af884f492f1e74727f979aaad36f2",
+      "cornerDistancePx": {
+        "left": 3.779747999033134e-7,
+        "right": 3.779747999033134e-7,
+        "top": 3.779747999033134e-7,
+        "bottom": 3.779747999033134e-7
+      }
+    },
+    {
+      "revision": "before",
+      "type": "cylinder",
+      "width": 5,
+      "height": 5,
+      "progress": 0,
+      "bounds": {
+        "left": 66.75,
+        "right": 413.25,
+        "top": 41.400000000000006,
+        "bottom": 318.6
+      },
+      "layout": {
+        "cell": 69.3,
+        "left": 101.4,
+        "top": 41.400000000000006,
+        "right": 378.6,
+        "bottom": 318.6,
+        "width": 480,
+        "height": 360
+      },
+      "rails": [
+        {
+          "color": "#3f8c87",
+          "pointCount": 2,
+          "firstPoint": [
+            66.75,
+            41.400000000000006
+          ],
+          "lastPoint": [
+            66.75,
+            318.6
+          ]
+        },
+        {
+          "color": "#3f8c87",
+          "pointCount": 2,
+          "firstPoint": [
+            413.25,
+            41.400000000000006
+          ],
+          "lastPoint": [
+            413.25,
+            318.6
+          ]
+        }
+      ],
+      "allCellsHit": true,
+      "imageSha256": "48e749dd9a26450e9f06972afb42a8c370025d87adf07e6e014e1360641a40c5",
+      "cornerDistancePx": {
+        "left": 0,
+        "right": 0
+      }
+    },
+    {
+      "revision": "before",
+      "type": "cylinder",
+      "width": 5,
+      "height": 5,
+      "progress": 0.00001,
+      "bounds": {
+        "left": 66.75,
+        "right": 413.25,
+        "top": 41.400000000000006,
+        "bottom": 318.6
+      },
+      "layout": {
+        "cell": 69.3,
+        "left": 101.4,
+        "top": 41.400000000000006,
+        "right": 378.6,
+        "bottom": 318.6,
+        "width": 480,
+        "height": 360
+      },
+      "rails": [
+        {
+          "color": "rgba(63, 140, 135, 0.78)",
+          "pointCount": 121,
+          "firstPoint": [
+            66.74999976929035,
+            41.399999810572325
+          ],
+          "lastPoint": [
+            66.74999976929035,
+            318.6000001894277
+          ]
+        },
+        {
+          "color": "rgba(63, 140, 135, 0.78)",
+          "pointCount": 121,
+          "firstPoint": [
+            413.25000023070965,
+            41.399999810572325
+          ],
+          "lastPoint": [
+            413.25000023070965,
+            318.6000001894277
+          ]
+        },
+        {
+          "color": "#3f8c87",
+          "pointCount": 2,
+          "firstPoint": [
+            66.75,
+            41.400000000000006
+          ],
+          "lastPoint": [
+            66.75,
+            318.6
+          ]
+        },
+        {
+          "color": "#3f8c87",
+          "pointCount": 2,
+          "firstPoint": [
+            413.25,
+            41.400000000000006
+          ],
+          "lastPoint": [
+            413.25,
+            318.6
+          ]
+        }
+      ],
+      "allCellsHit": true,
+      "imageSha256": "ff88277e650da9da54373081415ae33d6ae5ad03d59549a032d7c022773fb024",
+      "cornerDistancePx": {
+        "left": 0,
+        "right": 0
+      }
+    },
+    {
+      "revision": "before",
+      "type": "mobius",
+      "width": 5,
+      "height": 5,
+      "progress": 0,
+      "bounds": {
+        "left": 66.75,
+        "right": 413.25,
+        "top": 41.400000000000006,
+        "bottom": 318.6
+      },
+      "layout": {
+        "cell": 69.3,
+        "left": 101.4,
+        "top": 41.400000000000006,
+        "right": 378.6,
+        "bottom": 318.6,
+        "width": 480,
+        "height": 360
+      },
+      "rails": [
+        {
+          "color": "#3f8c87",
+          "pointCount": 2,
+          "firstPoint": [
+            66.75,
+            41.400000000000006
+          ],
+          "lastPoint": [
+            66.75,
+            318.6
+          ]
+        },
+        {
+          "color": "#3f8c87",
+          "pointCount": 2,
+          "firstPoint": [
+            413.25,
+            41.400000000000006
+          ],
+          "lastPoint": [
+            413.25,
+            318.6
+          ]
+        }
+      ],
+      "allCellsHit": true,
+      "imageSha256": "5a1a02ac7dc818403b55c1d58dde9f4d640d95e7eda9a49f289c698d77c5e7d5",
+      "cornerDistancePx": {
+        "left": 0,
+        "right": 0
+      }
+    },
+    {
+      "revision": "before",
+      "type": "mobius",
+      "width": 5,
+      "height": 5,
+      "progress": 0.00001,
+      "bounds": {
+        "left": 66.75,
+        "right": 413.25,
+        "top": 41.400000000000006,
+        "bottom": 318.6
+      },
+      "layout": {
+        "cell": 69.3,
+        "left": 101.4,
+        "top": 41.400000000000006,
+        "right": 378.6,
+        "bottom": 318.6,
+        "width": 480,
+        "height": 360
+      },
+      "rails": [
+        {
+          "color": "rgba(63, 140, 135, 0.78)",
+          "pointCount": 121,
+          "firstPoint": [
+            66.74999980225249,
+            41.399999856381925
+          ],
+          "lastPoint": [
+            66.74999980225249,
+            318.6000001436181
+          ]
+        },
+        {
+          "color": "rgba(63, 140, 135, 0.78)",
+          "pointCount": 121,
+          "firstPoint": [
+            413.2500001977475,
+            41.399999856381925
+          ],
+          "lastPoint": [
+            413.2500001977475,
+            318.6000001436181
+          ]
+        },
+        {
+          "color": "#3f8c87",
+          "pointCount": 2,
+          "firstPoint": [
+            66.75,
+            41.400000000000006
+          ],
+          "lastPoint": [
+            66.75,
+            318.6
+          ]
+        },
+        {
+          "color": "#3f8c87",
+          "pointCount": 2,
+          "firstPoint": [
+            413.25,
+            41.400000000000006
+          ],
+          "lastPoint": [
+            413.25,
+            318.6
+          ]
+        }
+      ],
+      "allCellsHit": true,
+      "imageSha256": "7a99b30cf8b0aec81e3713877dde71cc61d28cef1f71c409a3a70cb8e9724c7e",
+      "cornerDistancePx": {
+        "left": 0,
+        "right": 0
+      }
+    },
+    {
+      "revision": "before",
+      "type": "plane",
+      "width": 5,
+      "height": 5,
+      "progress": 0,
+      "bounds": {
+        "left": 101.4,
+        "right": 378.6,
+        "top": 41.400000000000006,
+        "bottom": 318.6
+      },
+      "layout": {
+        "cell": 69.3,
+        "left": 101.4,
+        "top": 41.400000000000006,
+        "right": 378.6,
+        "bottom": 318.6,
+        "width": 480,
+        "height": 360
+      },
+      "rails": [],
+      "allCellsHit": true,
+      "imageSha256": "5e5366bd0a46fe568073553caf7be8ec9675c2661a8a2cdd70ac08f90d8ac095",
+      "cornerDistancePx": {}
+    },
+    {
+      "revision": "before",
+      "type": "plane",
+      "width": 5,
+      "height": 5,
+      "progress": 0.00001,
+      "bounds": {
+        "left": 101.4,
+        "right": 378.6,
+        "top": 41.400000000000006,
+        "bottom": 318.6
+      },
+      "layout": {
+        "cell": 69.3,
+        "left": 101.4,
+        "top": 41.400000000000006,
+        "right": 378.6,
+        "bottom": 318.6,
+        "width": 480,
+        "height": 360
+      },
+      "rails": [],
+      "allCellsHit": true,
+      "imageSha256": "5e5366bd0a46fe568073553caf7be8ec9675c2661a8a2cdd70ac08f90d8ac095",
+      "cornerDistancePx": {}
+    },
+    {
+      "revision": "before",
+      "type": "sphere",
+      "width": 19,
+      "height": 19,
+      "progress": 0,
+      "bounds": {
+        "left": 93.7,
+        "right": 386.3,
+        "top": 33.7,
+        "bottom": 326.3
+      },
+      "layout": {
+        "cell": 15.399999999999999,
+        "left": 101.4,
+        "top": 41.400000000000006,
+        "right": 378.6,
+        "bottom": 318.6,
+        "width": 480,
+        "height": 360
+      },
+      "rails": [
+        {
+          "color": "#3f8c87",
+          "pointCount": 2,
+          "firstPoint": [
+            101.4,
+            33.7
+          ],
+          "lastPoint": [
+            378.6,
+            33.7
+          ]
+        },
+        {
+          "color": "#3f8c87",
+          "pointCount": 2,
+          "firstPoint": [
+            93.7,
+            41.400000000000006
+          ],
+          "lastPoint": [
+            93.7,
+            318.6
+          ]
+        },
+        {
+          "color": "#c79244",
+          "pointCount": 2,
+          "firstPoint": [
+            101.4,
+            326.3
+          ],
+          "lastPoint": [
+            378.6,
+            326.3
+          ]
+        },
+        {
+          "color": "#c79244",
+          "pointCount": 2,
+          "firstPoint": [
+            386.3,
+            41.400000000000006
+          ],
+          "lastPoint": [
+            386.3,
+            318.6
+          ]
+        }
+      ],
+      "allCellsHit": true,
+      "imageSha256": "76bf8e2dc7e8cdf324ee5e27bf6adf2f7525092fa702f508ade397de8b1e0185",
+      "cornerDistancePx": {
+        "left": 7.700000000000003,
+        "right": 7.700000000000003,
+        "top": 7.700000000000003,
+        "bottom": 7.700000000000003
+      }
+    },
+    {
+      "revision": "before",
+      "type": "sphere",
+      "width": 19,
+      "height": 19,
+      "progress": 0.00001,
+      "bounds": {
+        "left": 93.7,
+        "right": 386.3,
+        "top": 33.7,
+        "bottom": 326.3
+      },
+      "layout": {
+        "cell": 15.399999999999999,
+        "left": 101.4,
+        "top": 41.400000000000006,
+        "right": 378.6,
+        "bottom": 318.6,
+        "width": 480,
+        "height": 360
+      },
+      "rails": [
+        {
+          "color": "rgba(63, 140, 135, 0.78)",
+          "pointCount": 97,
+          "firstPoint": [
+            93.69999982095646,
+            33.69999982095649
+          ],
+          "lastPoint": [
+            386.30000017616817,
+            33.6999998238318
+          ]
+        },
+        {
+          "color": "rgba(63, 140, 135, 0.78)",
+          "pointCount": 97,
+          "firstPoint": [
+            93.69999982095646,
+            33.69999982095649
+          ],
+          "lastPoint": [
+            93.6999998238318,
+            326.30000017616817
+          ]
+        },
+        {
+          "color": "rgba(199, 146, 68, 0.76)",
+          "pointCount": 97,
+          "firstPoint": [
+            93.6999998238318,
+            326.30000017616817
+          ],
+          "lastPoint": [
+            386.30000017904354,
+            326.30000017904354
+          ]
+        },
+        {
+          "color": "rgba(199, 146, 68, 0.76)",
+          "pointCount": 97,
+          "firstPoint": [
+            386.30000017616817,
+            33.6999998238318
+          ],
+          "lastPoint": [
+            386.30000017904354,
+            326.30000017904354
+          ]
+        },
+        {
+          "color": "#3f8c87",
+          "pointCount": 2,
+          "firstPoint": [
+            101.4,
+            33.7
+          ],
+          "lastPoint": [
+            378.6,
+            33.7
+          ]
+        },
+        {
+          "color": "#3f8c87",
+          "pointCount": 2,
+          "firstPoint": [
+            93.7,
+            41.400000000000006
+          ],
+          "lastPoint": [
+            93.7,
+            318.6
+          ]
+        },
+        {
+          "color": "#c79244",
+          "pointCount": 2,
+          "firstPoint": [
+            101.4,
+            326.3
+          ],
+          "lastPoint": [
+            378.6,
+            326.3
+          ]
+        },
+        {
+          "color": "#c79244",
+          "pointCount": 2,
+          "firstPoint": [
+            386.3,
+            41.400000000000006
+          ],
+          "lastPoint": [
+            386.3,
+            318.6
+          ]
+        }
+      ],
+      "allCellsHit": true,
+      "imageSha256": "b21aba9ea80a041d9086a16e0992e2ea595bfb0cad0c07f1a9c010b76e349088",
+      "cornerDistancePx": {
+        "left": 2.532057811615249e-7,
+        "right": 2.532057811615241e-7,
+        "top": 2.532057811615249e-7,
+        "bottom": 2.532057811615241e-7
+      }
+    },
+    {
+      "revision": "before",
+      "type": "torus",
+      "width": 19,
+      "height": 19,
+      "progress": 0,
+      "bounds": {
+        "left": 93.7,
+        "right": 386.3,
+        "top": 33.7,
+        "bottom": 326.3
+      },
+      "layout": {
+        "cell": 15.399999999999999,
+        "left": 101.4,
+        "top": 41.400000000000006,
+        "right": 378.6,
+        "bottom": 318.6,
+        "width": 480,
+        "height": 360
+      },
+      "rails": [
+        {
+          "color": "#3f8c87",
+          "pointCount": 2,
+          "firstPoint": [
+            93.7,
+            41.400000000000006
+          ],
+          "lastPoint": [
+            93.7,
+            318.6
+          ]
+        },
+        {
+          "color": "#3f8c87",
+          "pointCount": 2,
+          "firstPoint": [
+            386.3,
+            41.400000000000006
+          ],
+          "lastPoint": [
+            386.3,
+            318.6
+          ]
+        },
+        {
+          "color": "#c79244",
+          "pointCount": 2,
+          "firstPoint": [
+            101.4,
+            33.7
+          ],
+          "lastPoint": [
+            378.6,
+            33.7
+          ]
+        },
+        {
+          "color": "#c79244",
+          "pointCount": 2,
+          "firstPoint": [
+            101.4,
+            326.3
+          ],
+          "lastPoint": [
+            378.6,
+            326.3
+          ]
+        }
+      ],
+      "allCellsHit": true,
+      "imageSha256": "f72694bdc38b9001ae86b49c3129075520ad4c70197d47cb9aecbe93a66c44e4",
+      "cornerDistancePx": {
+        "left": 7.700000000000003,
+        "right": 7.700000000000003,
+        "top": 7.700000000000003,
+        "bottom": 7.700000000000003
+      }
+    },
+    {
+      "revision": "before",
+      "type": "torus",
+      "width": 19,
+      "height": 19,
+      "progress": 0.00001,
+      "bounds": {
+        "left": 93.7,
+        "right": 386.3,
+        "top": 33.7,
+        "bottom": 326.3
+      },
+      "layout": {
+        "cell": 15.399999999999999,
+        "left": 101.4,
+        "top": 41.400000000000006,
+        "right": 378.6,
+        "bottom": 318.6,
+        "width": 480,
+        "height": 360
+      },
+      "rails": [
+        {
+          "color": "rgba(63, 140, 135, 0.78)",
+          "pointCount": 121,
+          "firstPoint": [
+            93.69999979851906,
+            33.69999979851906
+          ],
+          "lastPoint": [
+            93.69999979851906,
+            326.30000020148094
+          ]
+        },
+        {
+          "color": "rgba(63, 140, 135, 0.78)",
+          "pointCount": 121,
+          "firstPoint": [
+            386.30000020148094,
+            33.69999979851906
+          ],
+          "lastPoint": [
+            386.30000020148094,
+            326.30000020148094
+          ]
+        },
+        {
+          "color": "rgba(199, 146, 68, 0.76)",
+          "pointCount": 141,
+          "firstPoint": [
+            93.69999979851906,
+            33.69999979851906
+          ],
+          "lastPoint": [
+            386.30000020148094,
+            33.69999979851906
+          ]
+        },
+        {
+          "color": "rgba(199, 146, 68, 0.76)",
+          "pointCount": 141,
+          "firstPoint": [
+            93.69999979851906,
+            326.30000020148094
+          ],
+          "lastPoint": [
+            386.30000020148094,
+            326.30000020148094
+          ]
+        },
+        {
+          "color": "#3f8c87",
+          "pointCount": 2,
+          "firstPoint": [
+            93.7,
+            41.400000000000006
+          ],
+          "lastPoint": [
+            93.7,
+            318.6
+          ]
+        },
+        {
+          "color": "#3f8c87",
+          "pointCount": 2,
+          "firstPoint": [
+            386.3,
+            41.400000000000006
+          ],
+          "lastPoint": [
+            386.3,
+            318.6
+          ]
+        },
+        {
+          "color": "#c79244",
+          "pointCount": 2,
+          "firstPoint": [
+            101.4,
+            33.7
+          ],
+          "lastPoint": [
+            378.6,
+            33.7
+          ]
+        },
+        {
+          "color": "#c79244",
+          "pointCount": 2,
+          "firstPoint": [
+            101.4,
+            326.3
+          ],
+          "lastPoint": [
+            378.6,
+            326.3
+          ]
+        }
+      ],
+      "allCellsHit": true,
+      "imageSha256": "fe7d724dc1c379348b49728df2756e9746e47b52d5a062ce51f20f4d9244cc86",
+      "cornerDistancePx": {
+        "left": 2.8493708346384225e-7,
+        "right": 2.849370734152507e-7,
+        "top": 2.8493708346384225e-7,
+        "bottom": 2.849370734152507e-7
+      }
+    },
+    {
+      "revision": "before",
+      "type": "klein",
+      "width": 19,
+      "height": 19,
+      "progress": 0,
+      "bounds": {
+        "left": 93.7,
+        "right": 386.3,
+        "top": 33.7,
+        "bottom": 326.3
+      },
+      "layout": {
+        "cell": 15.399999999999999,
+        "left": 101.4,
+        "top": 41.400000000000006,
+        "right": 378.6,
+        "bottom": 318.6,
+        "width": 480,
+        "height": 360
+      },
+      "rails": [
+        {
+          "color": "#3f8c87",
+          "pointCount": 2,
+          "firstPoint": [
+            93.7,
+            41.400000000000006
+          ],
+          "lastPoint": [
+            93.7,
+            318.6
+          ]
+        },
+        {
+          "color": "#3f8c87",
+          "pointCount": 2,
+          "firstPoint": [
+            386.3,
+            41.400000000000006
+          ],
+          "lastPoint": [
+            386.3,
+            318.6
+          ]
+        },
+        {
+          "color": "#c79244",
+          "pointCount": 2,
+          "firstPoint": [
+            101.4,
+            33.7
+          ],
+          "lastPoint": [
+            378.6,
+            33.7
+          ]
+        },
+        {
+          "color": "#c79244",
+          "pointCount": 2,
+          "firstPoint": [
+            101.4,
+            326.3
+          ],
+          "lastPoint": [
+            378.6,
+            326.3
+          ]
+        }
+      ],
+      "allCellsHit": true,
+      "imageSha256": "ad1abc1a410faacaf9f8ddf986c5f3bee4622eb760f4f0fa5662e19e6ef22d18",
+      "cornerDistancePx": {
+        "left": 7.700000000000003,
+        "right": 7.700000000000003,
+        "top": 7.700000000000003,
+        "bottom": 7.700000000000003
+      }
+    },
+    {
+      "revision": "before",
+      "type": "klein",
+      "width": 19,
+      "height": 19,
+      "progress": 0.00001,
+      "bounds": {
+        "left": 93.7,
+        "right": 386.3,
+        "top": 33.7,
+        "bottom": 326.3
+      },
+      "layout": {
+        "cell": 15.399999999999999,
+        "left": 101.4,
+        "top": 41.400000000000006,
+        "right": 378.6,
+        "bottom": 318.6,
+        "width": 480,
+        "height": 360
+      },
+      "rails": [
+        {
+          "color": "rgba(63, 140, 135, 0.78)",
+          "pointCount": 121,
+          "firstPoint": [
+            93.6999996220252,
+            33.6999996220252
+          ],
+          "lastPoint": [
+            93.6999996220252,
+            326.3000003779748
+          ]
+        },
+        {
+          "color": "rgba(63, 140, 135, 0.78)",
+          "pointCount": 121,
+          "firstPoint": [
+            386.3000003779748,
+            33.6999996220252
+          ],
+          "lastPoint": [
+            386.3000003779748,
+            326.3000003779748
+          ]
+        },
+        {
+          "color": "rgba(199, 146, 68, 0.76)",
+          "pointCount": 141,
+          "firstPoint": [
+            93.6999996220252,
+            33.6999996220252
+          ],
+          "lastPoint": [
+            386.3000003779748,
+            33.6999996220252
+          ]
+        },
+        {
+          "color": "rgba(199, 146, 68, 0.76)",
+          "pointCount": 141,
+          "firstPoint": [
+            93.6999996220252,
+            326.3000003779748
+          ],
+          "lastPoint": [
+            386.3000003779748,
+            326.3000003779748
+          ]
+        },
+        {
+          "color": "#3f8c87",
+          "pointCount": 2,
+          "firstPoint": [
+            93.7,
+            41.400000000000006
+          ],
+          "lastPoint": [
+            93.7,
+            318.6
+          ]
+        },
+        {
+          "color": "#3f8c87",
+          "pointCount": 2,
+          "firstPoint": [
+            386.3,
+            41.400000000000006
+          ],
+          "lastPoint": [
+            386.3,
+            318.6
+          ]
+        },
+        {
+          "color": "#c79244",
+          "pointCount": 2,
+          "firstPoint": [
+            101.4,
+            33.7
+          ],
+          "lastPoint": [
+            378.6,
+            33.7
+          ]
+        },
+        {
+          "color": "#c79244",
+          "pointCount": 2,
+          "firstPoint": [
+            101.4,
+            326.3
+          ],
+          "lastPoint": [
+            378.6,
+            326.3
+          ]
+        }
+      ],
+      "allCellsHit": true,
+      "imageSha256": "dcb287ce742e776cf0930abc21f407ef7d063a30c67c3c8b0f5bf408b5b231e6",
+      "cornerDistancePx": {
+        "left": 5.345370882585227e-7,
+        "right": 5.345370882585227e-7,
+        "top": 5.345370882585227e-7,
+        "bottom": 5.345370882585227e-7
+      }
+    },
+    {
+      "revision": "before",
+      "type": "projective",
+      "width": 19,
+      "height": 19,
+      "progress": 0,
+      "bounds": {
+        "left": 93.7,
+        "right": 386.3,
+        "top": 33.7,
+        "bottom": 326.3
+      },
+      "layout": {
+        "cell": 15.399999999999999,
+        "left": 101.4,
+        "top": 41.400000000000006,
+        "right": 378.6,
+        "bottom": 318.6,
+        "width": 480,
+        "height": 360
+      },
+      "rails": [
+        {
+          "color": "#3f8c87",
+          "pointCount": 2,
+          "firstPoint": [
+            93.7,
+            41.400000000000006
+          ],
+          "lastPoint": [
+            93.7,
+            318.6
+          ]
+        },
+        {
+          "color": "#3f8c87",
+          "pointCount": 2,
+          "firstPoint": [
+            386.3,
+            41.400000000000006
+          ],
+          "lastPoint": [
+            386.3,
+            318.6
+          ]
+        },
+        {
+          "color": "#c79244",
+          "pointCount": 2,
+          "firstPoint": [
+            101.4,
+            33.7
+          ],
+          "lastPoint": [
+            378.6,
+            33.7
+          ]
+        },
+        {
+          "color": "#c79244",
+          "pointCount": 2,
+          "firstPoint": [
+            101.4,
+            326.3
+          ],
+          "lastPoint": [
+            378.6,
+            326.3
+          ]
+        }
+      ],
+      "allCellsHit": true,
+      "imageSha256": "714f29d15680d1d27a9178defdf5f39a0673af1b7604ac65030edfaf5d583c45",
+      "cornerDistancePx": {
+        "left": 7.700000000000003,
+        "right": 7.700000000000003,
+        "top": 7.700000000000003,
+        "bottom": 7.700000000000003
+      }
+    },
+    {
+      "revision": "before",
+      "type": "projective",
+      "width": 19,
+      "height": 19,
+      "progress": 0.00001,
+      "bounds": {
+        "left": 93.7,
+        "right": 386.3,
+        "top": 33.7,
+        "bottom": 326.3
+      },
+      "layout": {
+        "cell": 15.399999999999999,
+        "left": 101.4,
+        "top": 41.400000000000006,
+        "right": 378.6,
+        "bottom": 318.6,
+        "width": 480,
+        "height": 360
+      },
+      "rails": [
+        {
+          "color": "rgba(63, 140, 135, 0.78)",
+          "pointCount": 121,
+          "firstPoint": [
+            93.6999996220252,
+            33.6999996220252
+          ],
+          "lastPoint": [
+            93.6999996220252,
+            326.3000003779748
+          ]
+        },
+        {
+          "color": "rgba(63, 140, 135, 0.78)",
+          "pointCount": 121,
+          "firstPoint": [
+            386.3000003779748,
+            33.6999996220252
+          ],
+          "lastPoint": [
+            386.3000003779748,
+            326.3000003779748
+          ]
+        },
+        {
+          "color": "rgba(199, 146, 68, 0.76)",
+          "pointCount": 141,
+          "firstPoint": [
+            93.6999996220252,
+            33.6999996220252
+          ],
+          "lastPoint": [
+            386.3000003779748,
+            33.6999996220252
+          ]
+        },
+        {
+          "color": "rgba(199, 146, 68, 0.76)",
+          "pointCount": 141,
+          "firstPoint": [
+            93.6999996220252,
+            326.3000003779748
+          ],
+          "lastPoint": [
+            386.3000003779748,
+            326.3000003779748
+          ]
+        },
+        {
+          "color": "#3f8c87",
+          "pointCount": 2,
+          "firstPoint": [
+            93.7,
+            41.400000000000006
+          ],
+          "lastPoint": [
+            93.7,
+            318.6
+          ]
+        },
+        {
+          "color": "#3f8c87",
+          "pointCount": 2,
+          "firstPoint": [
+            386.3,
+            41.400000000000006
+          ],
+          "lastPoint": [
+            386.3,
+            318.6
+          ]
+        },
+        {
+          "color": "#c79244",
+          "pointCount": 2,
+          "firstPoint": [
+            101.4,
+            33.7
+          ],
+          "lastPoint": [
+            378.6,
+            33.7
+          ]
+        },
+        {
+          "color": "#c79244",
+          "pointCount": 2,
+          "firstPoint": [
+            101.4,
+            326.3
+          ],
+          "lastPoint": [
+            378.6,
+            326.3
+          ]
+        }
+      ],
+      "allCellsHit": true,
+      "imageSha256": "4c58b57b56d4607b390ef3de5197b9e0d43c7bfd858ae454216b35dc6f689a8e",
+      "cornerDistancePx": {
+        "left": 5.345370882585227e-7,
+        "right": 5.345370882585227e-7,
+        "top": 5.345370882585227e-7,
+        "bottom": 5.345370882585227e-7
+      }
+    },
+    {
+      "revision": "before",
+      "type": "cylinder",
+      "width": 19,
+      "height": 19,
+      "progress": 0,
+      "bounds": {
+        "left": 93.7,
+        "right": 386.3,
+        "top": 41.400000000000006,
+        "bottom": 318.6
+      },
+      "layout": {
+        "cell": 15.399999999999999,
+        "left": 101.4,
+        "top": 41.400000000000006,
+        "right": 378.6,
+        "bottom": 318.6,
+        "width": 480,
+        "height": 360
+      },
+      "rails": [
+        {
+          "color": "#3f8c87",
+          "pointCount": 2,
+          "firstPoint": [
+            93.7,
+            41.400000000000006
+          ],
+          "lastPoint": [
+            93.7,
+            318.6
+          ]
+        },
+        {
+          "color": "#3f8c87",
+          "pointCount": 2,
+          "firstPoint": [
+            386.3,
+            41.400000000000006
+          ],
+          "lastPoint": [
+            386.3,
+            318.6
+          ]
+        }
+      ],
+      "allCellsHit": true,
+      "imageSha256": "c13094adf4a4375b6db2ec2da3fc7e9762f13fa40f8af103d7e7d87460cbe815",
+      "cornerDistancePx": {
+        "left": 0,
+        "right": 0
+      }
+    },
+    {
+      "revision": "before",
+      "type": "cylinder",
+      "width": 19,
+      "height": 19,
+      "progress": 0.00001,
+      "bounds": {
+        "left": 93.7,
+        "right": 386.3,
+        "top": 41.400000000000006,
+        "bottom": 318.6
+      },
+      "layout": {
+        "cell": 15.399999999999999,
+        "left": 101.4,
+        "top": 41.400000000000006,
+        "right": 378.6,
+        "bottom": 318.6,
+        "width": 480,
+        "height": 360
+      },
+      "rails": [
+        {
+          "color": "rgba(63, 140, 135, 0.78)",
+          "pointCount": 121,
+          "firstPoint": [
+            93.69999980517849,
+            41.399999810572325
+          ],
+          "lastPoint": [
+            93.69999980517849,
+            318.6000001894277
+          ]
+        },
+        {
+          "color": "rgba(63, 140, 135, 0.78)",
+          "pointCount": 121,
+          "firstPoint": [
+            386.3000001948215,
+            41.399999810572325
+          ],
+          "lastPoint": [
+            386.3000001948215,
+            318.6000001894277
+          ]
+        },
+        {
+          "color": "#3f8c87",
+          "pointCount": 2,
+          "firstPoint": [
+            93.7,
+            41.400000000000006
+          ],
+          "lastPoint": [
+            93.7,
+            318.6
+          ]
+        },
+        {
+          "color": "#3f8c87",
+          "pointCount": 2,
+          "firstPoint": [
+            386.3,
+            41.400000000000006
+          ],
+          "lastPoint": [
+            386.3,
+            318.6
+          ]
+        }
+      ],
+      "allCellsHit": true,
+      "imageSha256": "747c34df8c5df87f79de7ac7d6be5d2013d8a97d2264c25bc46befb4063fc609",
+      "cornerDistancePx": {
+        "left": 0,
+        "right": 0
+      }
+    },
+    {
+      "revision": "before",
+      "type": "mobius",
+      "width": 19,
+      "height": 19,
+      "progress": 0,
+      "bounds": {
+        "left": 93.7,
+        "right": 386.3,
+        "top": 41.400000000000006,
+        "bottom": 318.6
+      },
+      "layout": {
+        "cell": 15.399999999999999,
+        "left": 101.4,
+        "top": 41.400000000000006,
+        "right": 378.6,
+        "bottom": 318.6,
+        "width": 480,
+        "height": 360
+      },
+      "rails": [
+        {
+          "color": "#3f8c87",
+          "pointCount": 2,
+          "firstPoint": [
+            93.7,
+            41.400000000000006
+          ],
+          "lastPoint": [
+            93.7,
+            318.6
+          ]
+        },
+        {
+          "color": "#3f8c87",
+          "pointCount": 2,
+          "firstPoint": [
+            386.3,
+            41.400000000000006
+          ],
+          "lastPoint": [
+            386.3,
+            318.6
+          ]
+        }
+      ],
+      "allCellsHit": true,
+      "imageSha256": "c1fdd4b44b8480e5eb2998285c41a0799ef0799b6877fbbfb0cfeb8fe88994a4",
+      "cornerDistancePx": {
+        "left": 0,
+        "right": 0
+      }
+    },
+    {
+      "revision": "before",
+      "type": "mobius",
+      "width": 19,
+      "height": 19,
+      "progress": 0.00001,
+      "bounds": {
+        "left": 93.7,
+        "right": 386.3,
+        "top": 41.400000000000006,
+        "bottom": 318.6
+      },
+      "layout": {
+        "cell": 15.399999999999999,
+        "left": 101.4,
+        "top": 41.400000000000006,
+        "right": 378.6,
+        "bottom": 318.6,
+        "width": 480,
+        "height": 360
+      },
+      "rails": [
+        {
+          "color": "rgba(63, 140, 135, 0.78)",
+          "pointCount": 121,
+          "firstPoint": [
+            93.69999983301321,
+            41.399999856381925
+          ],
+          "lastPoint": [
+            93.69999983301321,
+            318.6000001436181
+          ]
+        },
+        {
+          "color": "rgba(63, 140, 135, 0.78)",
+          "pointCount": 121,
+          "firstPoint": [
+            386.3000001669868,
+            41.399999856381925
+          ],
+          "lastPoint": [
+            386.3000001669868,
+            318.6000001436181
+          ]
+        },
+        {
+          "color": "#3f8c87",
+          "pointCount": 2,
+          "firstPoint": [
+            93.7,
+            41.400000000000006
+          ],
+          "lastPoint": [
+            93.7,
+            318.6
+          ]
+        },
+        {
+          "color": "#3f8c87",
+          "pointCount": 2,
+          "firstPoint": [
+            386.3,
+            41.400000000000006
+          ],
+          "lastPoint": [
+            386.3,
+            318.6
+          ]
+        }
+      ],
+      "allCellsHit": true,
+      "imageSha256": "04ed0d3a3bb0ffdc807663d76dbc720cd3fbc38bd832ae88ca255a473fa8fa5e",
+      "cornerDistancePx": {
+        "left": 0,
+        "right": 0
+      }
+    },
+    {
+      "revision": "before",
+      "type": "plane",
+      "width": 19,
+      "height": 19,
+      "progress": 0,
+      "bounds": {
+        "left": 101.4,
+        "right": 378.6,
+        "top": 41.400000000000006,
+        "bottom": 318.6
+      },
+      "layout": {
+        "cell": 15.399999999999999,
+        "left": 101.4,
+        "top": 41.400000000000006,
+        "right": 378.6,
+        "bottom": 318.6,
+        "width": 480,
+        "height": 360
+      },
+      "rails": [],
+      "allCellsHit": true,
+      "imageSha256": "19b1b6aa56dbaba9b2f4baeb19ce540c17142ee02180331f1233148d5a8d1413",
+      "cornerDistancePx": {}
+    },
+    {
+      "revision": "before",
+      "type": "plane",
+      "width": 19,
+      "height": 19,
+      "progress": 0.00001,
+      "bounds": {
+        "left": 101.4,
+        "right": 378.6,
+        "top": 41.400000000000006,
+        "bottom": 318.6
+      },
+      "layout": {
+        "cell": 15.399999999999999,
+        "left": 101.4,
+        "top": 41.400000000000006,
+        "right": 378.6,
+        "bottom": 318.6,
+        "width": 480,
+        "height": 360
+      },
+      "rails": [],
+      "allCellsHit": true,
+      "imageSha256": "19b1b6aa56dbaba9b2f4baeb19ce540c17142ee02180331f1233148d5a8d1413",
+      "cornerDistancePx": {}
+    },
+    {
+      "revision": "after",
+      "type": "sphere",
+      "width": 7,
+      "height": 7,
+      "progress": 0,
+      "bounds": {
+        "left": 78.30000000000001,
+        "right": 401.70000000000005,
+        "top": 18.300000000000008,
+        "bottom": 341.70000000000005
+      },
+      "layout": {
+        "cell": 46.199999999999996,
+        "left": 101.4,
+        "top": 41.400000000000006,
+        "right": 378.6,
+        "bottom": 318.6,
+        "width": 480,
+        "height": 360
+      },
+      "rails": [
+        {
+          "color": "#3f8c87",
+          "pointCount": 2,
+          "firstPoint": [
+            78.30000000000001,
+            18.300000000000008
+          ],
+          "lastPoint": [
+            401.70000000000005,
+            18.300000000000008
+          ]
+        },
+        {
+          "color": "#3f8c87",
+          "pointCount": 2,
+          "firstPoint": [
+            78.30000000000001,
+            18.300000000000008
+          ],
+          "lastPoint": [
+            78.30000000000001,
+            341.70000000000005
+          ]
+        },
+        {
+          "color": "#c79244",
+          "pointCount": 2,
+          "firstPoint": [
+            78.30000000000001,
+            341.70000000000005
+          ],
+          "lastPoint": [
+            401.70000000000005,
+            341.70000000000005
+          ]
+        },
+        {
+          "color": "#c79244",
+          "pointCount": 2,
+          "firstPoint": [
+            401.70000000000005,
+            18.300000000000008
+          ],
+          "lastPoint": [
+            401.70000000000005,
+            341.70000000000005
+          ]
+        }
+      ],
+      "allCellsHit": true,
+      "imageSha256": "cc88bca246318785f11e859e4acc3179734f6615445543904f78a95f0058cb6f",
+      "cornerDistancePx": {
+        "left": 0,
+        "right": 0,
+        "top": 0,
+        "bottom": 0
+      }
+    },
+    {
+      "revision": "after",
+      "type": "sphere",
+      "width": 7,
+      "height": 7,
+      "progress": 0.00001,
+      "bounds": {
+        "left": 78.30000000000001,
+        "right": 401.70000000000005,
+        "top": 18.300000000000008,
+        "bottom": 341.70000000000005
+      },
+      "layout": {
+        "cell": 46.199999999999996,
+        "left": 101.4,
+        "top": 41.400000000000006,
+        "right": 378.6,
+        "bottom": 318.6,
+        "width": 480,
+        "height": 360
+      },
+      "rails": [
+        {
+          "color": "rgba(63, 140, 135, 0.78)",
+          "pointCount": 97,
+          "firstPoint": [
+            78.29999980703244,
+            18.299999807032435
+          ],
+          "lastPoint": [
+            401.7000001947123,
+            18.29999980528777
+          ]
+        },
+        {
+          "color": "rgba(63, 140, 135, 0.78)",
+          "pointCount": 97,
+          "firstPoint": [
+            78.29999980703244,
+            18.299999807032435
+          ],
+          "lastPoint": [
+            78.29999980528777,
+            341.7000001947123
+          ]
+        },
+        {
+          "color": "rgba(199, 146, 68, 0.76)",
+          "pointCount": 97,
+          "firstPoint": [
+            78.29999980528777,
+            341.7000001947123
+          ],
+          "lastPoint": [
+            401.70000019296765,
+            341.70000019296765
+          ]
+        },
+        {
+          "color": "rgba(199, 146, 68, 0.76)",
+          "pointCount": 97,
+          "firstPoint": [
+            401.7000001947123,
+            18.29999980528777
+          ],
+          "lastPoint": [
+            401.70000019296765,
+            341.70000019296765
+          ]
+        },
+        {
+          "color": "#3f8c87",
+          "pointCount": 2,
+          "firstPoint": [
+            78.30000000000001,
+            18.300000000000008
+          ],
+          "lastPoint": [
+            401.70000000000005,
+            18.300000000000008
+          ]
+        },
+        {
+          "color": "#3f8c87",
+          "pointCount": 2,
+          "firstPoint": [
+            78.30000000000001,
+            18.300000000000008
+          ],
+          "lastPoint": [
+            78.30000000000001,
+            341.70000000000005
+          ]
+        },
+        {
+          "color": "#c79244",
+          "pointCount": 2,
+          "firstPoint": [
+            78.30000000000001,
+            341.70000000000005
+          ],
+          "lastPoint": [
+            401.70000000000005,
+            341.70000000000005
+          ]
+        },
+        {
+          "color": "#c79244",
+          "pointCount": 2,
+          "firstPoint": [
+            401.70000000000005,
+            18.300000000000008
+          ],
+          "lastPoint": [
+            401.70000000000005,
+            341.70000000000005
+          ]
+        }
+      ],
+      "allCellsHit": true,
+      "imageSha256": "b0de187c952c57213e7fe96002d4d4b37f7e19e523c5159ee02f1a71a269ebeb",
+      "cornerDistancePx": {
+        "left": 0,
+        "right": 0,
+        "top": 0,
+        "bottom": 0
+      }
+    },
+    {
+      "revision": "after",
+      "type": "torus",
+      "width": 7,
+      "height": 6,
+      "progress": 0,
+      "bounds": {
+        "left": 45.96000000000001,
+        "right": 434.03999999999996,
+        "top": 13.680000000000007,
+        "bottom": 346.32000000000005
+      },
+      "layout": {
+        "cell": 55.44,
+        "left": 73.68,
+        "top": 41.400000000000006,
+        "right": 406.32,
+        "bottom": 318.6,
+        "width": 480,
+        "height": 360
+      },
+      "rails": [
+        {
+          "color": "#3f8c87",
+          "pointCount": 2,
+          "firstPoint": [
+            45.96000000000001,
+            13.680000000000007
+          ],
+          "lastPoint": [
+            45.96000000000001,
+            346.32000000000005
+          ]
+        },
+        {
+          "color": "#3f8c87",
+          "pointCount": 2,
+          "firstPoint": [
+            434.03999999999996,
+            13.680000000000007
+          ],
+          "lastPoint": [
+            434.03999999999996,
+            346.32000000000005
+          ]
+        },
+        {
+          "color": "#c79244",
+          "pointCount": 2,
+          "firstPoint": [
+            45.96000000000001,
+            13.680000000000007
+          ],
+          "lastPoint": [
+            434.03999999999996,
+            13.680000000000007
+          ]
+        },
+        {
+          "color": "#c79244",
+          "pointCount": 2,
+          "firstPoint": [
+            45.96000000000001,
+            346.32000000000005
+          ],
+          "lastPoint": [
+            434.03999999999996,
+            346.32000000000005
+          ]
+        }
+      ],
+      "allCellsHit": true,
+      "imageSha256": "af830bb036f8fad8133bde0db9716bc7b38509ca2fbeb127259806ebe7da31ca",
+      "cornerDistancePx": {
+        "left": 0,
+        "right": 0,
+        "top": 0,
+        "bottom": 0
+      }
+    },
+    {
+      "revision": "after",
+      "type": "torus",
+      "width": 7,
+      "height": 6,
+      "progress": 0.00001,
+      "bounds": {
+        "left": 45.96000000000001,
+        "right": 434.03999999999996,
+        "top": 13.680000000000007,
+        "bottom": 346.32000000000005
+      },
+      "layout": {
+        "cell": 55.44,
+        "left": 73.68,
+        "top": 41.400000000000006,
+        "right": 406.32,
+        "bottom": 318.6,
+        "width": 480,
+        "height": 360
+      },
+      "rails": [
+        {
+          "color": "rgba(63, 140, 135, 0.78)",
+          "pointCount": 121,
+          "firstPoint": [
+            45.95999973277267,
+            13.679999770948001
+          ],
+          "lastPoint": [
+            45.95999973277267,
+            346.320000229052
+          ]
+        },
+        {
+          "color": "rgba(63, 140, 135, 0.78)",
+          "pointCount": 121,
+          "firstPoint": [
+            434.0400002672273,
+            13.679999770948001
+          ],
+          "lastPoint": [
+            434.0400002672273,
+            346.320000229052
+          ]
+        },
+        {
+          "color": "rgba(199, 146, 68, 0.76)",
+          "pointCount": 141,
+          "firstPoint": [
+            45.95999973277267,
+            13.679999770948001
+          ],
+          "lastPoint": [
+            434.0400002672273,
+            13.679999770948001
+          ]
+        },
+        {
+          "color": "rgba(199, 146, 68, 0.76)",
+          "pointCount": 141,
+          "firstPoint": [
+            45.95999973277267,
+            346.320000229052
+          ],
+          "lastPoint": [
+            434.0400002672273,
+            346.320000229052
+          ]
+        },
+        {
+          "color": "#3f8c87",
+          "pointCount": 2,
+          "firstPoint": [
+            45.96000000000001,
+            13.680000000000007
+          ],
+          "lastPoint": [
+            45.96000000000001,
+            346.32000000000005
+          ]
+        },
+        {
+          "color": "#3f8c87",
+          "pointCount": 2,
+          "firstPoint": [
+            434.03999999999996,
+            13.680000000000007
+          ],
+          "lastPoint": [
+            434.03999999999996,
+            346.32000000000005
+          ]
+        },
+        {
+          "color": "#c79244",
+          "pointCount": 2,
+          "firstPoint": [
+            45.96000000000001,
+            13.680000000000007
+          ],
+          "lastPoint": [
+            434.03999999999996,
+            13.680000000000007
+          ]
+        },
+        {
+          "color": "#c79244",
+          "pointCount": 2,
+          "firstPoint": [
+            45.96000000000001,
+            346.32000000000005
+          ],
+          "lastPoint": [
+            434.03999999999996,
+            346.32000000000005
+          ]
+        }
+      ],
+      "allCellsHit": true,
+      "imageSha256": "942e6ba34781a8395e45d140c55f1baa4135ab33c29a8fa252911b62174a0b94",
+      "cornerDistancePx": {
+        "left": 0,
+        "right": 0,
+        "top": 0,
+        "bottom": 0
+      }
+    },
+    {
+      "revision": "after",
+      "type": "klein",
+      "width": 7,
+      "height": 6,
+      "progress": 0,
+      "bounds": {
+        "left": 45.96000000000001,
+        "right": 434.03999999999996,
+        "top": 13.680000000000007,
+        "bottom": 346.32000000000005
+      },
+      "layout": {
+        "cell": 55.44,
+        "left": 73.68,
+        "top": 41.400000000000006,
+        "right": 406.32,
+        "bottom": 318.6,
+        "width": 480,
+        "height": 360
+      },
+      "rails": [
+        {
+          "color": "#3f8c87",
+          "pointCount": 2,
+          "firstPoint": [
+            45.96000000000001,
+            13.680000000000007
+          ],
+          "lastPoint": [
+            45.96000000000001,
+            346.32000000000005
+          ]
+        },
+        {
+          "color": "#3f8c87",
+          "pointCount": 2,
+          "firstPoint": [
+            434.03999999999996,
+            13.680000000000007
+          ],
+          "lastPoint": [
+            434.03999999999996,
+            346.32000000000005
+          ]
+        },
+        {
+          "color": "#c79244",
+          "pointCount": 2,
+          "firstPoint": [
+            45.96000000000001,
+            13.680000000000007
+          ],
+          "lastPoint": [
+            434.03999999999996,
+            13.680000000000007
+          ]
+        },
+        {
+          "color": "#c79244",
+          "pointCount": 2,
+          "firstPoint": [
+            45.96000000000001,
+            346.32000000000005
+          ],
+          "lastPoint": [
+            434.03999999999996,
+            346.32000000000005
+          ]
+        }
+      ],
+      "allCellsHit": true,
+      "imageSha256": "4359f3b639b70903589ead5365b0232add2a208439edace80e3902e8d659be81",
+      "cornerDistancePx": {
+        "left": 0,
+        "right": 0,
+        "top": 0,
+        "bottom": 0
+      }
+    },
+    {
+      "revision": "after",
+      "type": "klein",
+      "width": 7,
+      "height": 6,
+      "progress": 0.00001,
+      "bounds": {
+        "left": 45.96000000000001,
+        "right": 434.03999999999996,
+        "top": 13.680000000000007,
+        "bottom": 346.32000000000005
+      },
+      "layout": {
+        "cell": 55.44,
+        "left": 73.68,
+        "top": 41.400000000000006,
+        "right": 406.32,
+        "bottom": 318.6,
+        "width": 480,
+        "height": 360
+      },
+      "rails": [
+        {
+          "color": "rgba(63, 140, 135, 0.78)",
+          "pointCount": 121,
+          "firstPoint": [
+            45.95999962202521,
+            13.679999622025207
+          ],
+          "lastPoint": [
+            45.95999962202521,
+            346.32000037797485
+          ]
+        },
+        {
+          "color": "rgba(63, 140, 135, 0.78)",
+          "pointCount": 121,
+          "firstPoint": [
+            434.04000037797476,
+            13.679999622025207
+          ],
+          "lastPoint": [
+            434.04000037797476,
+            346.32000037797485
+          ]
+        },
+        {
+          "color": "rgba(199, 146, 68, 0.76)",
+          "pointCount": 141,
+          "firstPoint": [
+            45.95999962202521,
+            13.679999622025207
+          ],
+          "lastPoint": [
+            434.04000037797476,
+            13.679999622025207
+          ]
+        },
+        {
+          "color": "rgba(199, 146, 68, 0.76)",
+          "pointCount": 141,
+          "firstPoint": [
+            45.95999962202521,
+            346.32000037797485
+          ],
+          "lastPoint": [
+            434.04000037797476,
+            346.32000037797485
+          ]
+        },
+        {
+          "color": "#3f8c87",
+          "pointCount": 2,
+          "firstPoint": [
+            45.96000000000001,
+            13.680000000000007
+          ],
+          "lastPoint": [
+            45.96000000000001,
+            346.32000000000005
+          ]
+        },
+        {
+          "color": "#3f8c87",
+          "pointCount": 2,
+          "firstPoint": [
+            434.03999999999996,
+            13.680000000000007
+          ],
+          "lastPoint": [
+            434.03999999999996,
+            346.32000000000005
+          ]
+        },
+        {
+          "color": "#c79244",
+          "pointCount": 2,
+          "firstPoint": [
+            45.96000000000001,
+            13.680000000000007
+          ],
+          "lastPoint": [
+            434.03999999999996,
+            13.680000000000007
+          ]
+        },
+        {
+          "color": "#c79244",
+          "pointCount": 2,
+          "firstPoint": [
+            45.96000000000001,
+            346.32000000000005
+          ],
+          "lastPoint": [
+            434.03999999999996,
+            346.32000000000005
+          ]
+        }
+      ],
+      "allCellsHit": true,
+      "imageSha256": "f88f5501289e98ddc232a039a88665f920e515a3bcce3e40c8561d9a685490a5",
+      "cornerDistancePx": {
+        "left": 0,
+        "right": 0,
+        "top": 0,
+        "bottom": 0
+      }
+    },
+    {
+      "revision": "after",
+      "type": "projective",
+      "width": 7,
+      "height": 6,
+      "progress": 0,
+      "bounds": {
+        "left": 45.96000000000001,
+        "right": 434.03999999999996,
+        "top": 13.680000000000007,
+        "bottom": 346.32000000000005
+      },
+      "layout": {
+        "cell": 55.44,
+        "left": 73.68,
+        "top": 41.400000000000006,
+        "right": 406.32,
+        "bottom": 318.6,
+        "width": 480,
+        "height": 360
+      },
+      "rails": [
+        {
+          "color": "#3f8c87",
+          "pointCount": 2,
+          "firstPoint": [
+            45.96000000000001,
+            13.680000000000007
+          ],
+          "lastPoint": [
+            45.96000000000001,
+            346.32000000000005
+          ]
+        },
+        {
+          "color": "#3f8c87",
+          "pointCount": 2,
+          "firstPoint": [
+            434.03999999999996,
+            13.680000000000007
+          ],
+          "lastPoint": [
+            434.03999999999996,
+            346.32000000000005
+          ]
+        },
+        {
+          "color": "#c79244",
+          "pointCount": 2,
+          "firstPoint": [
+            45.96000000000001,
+            13.680000000000007
+          ],
+          "lastPoint": [
+            434.03999999999996,
+            13.680000000000007
+          ]
+        },
+        {
+          "color": "#c79244",
+          "pointCount": 2,
+          "firstPoint": [
+            45.96000000000001,
+            346.32000000000005
+          ],
+          "lastPoint": [
+            434.03999999999996,
+            346.32000000000005
+          ]
+        }
+      ],
+      "allCellsHit": true,
+      "imageSha256": "ec3cd58c35075af91f93f99fddf6b7839047061ae1a1e277a61da3b538b11978",
+      "cornerDistancePx": {
+        "left": 0,
+        "right": 0,
+        "top": 0,
+        "bottom": 0
+      }
+    },
+    {
+      "revision": "after",
+      "type": "projective",
+      "width": 7,
+      "height": 6,
+      "progress": 0.00001,
+      "bounds": {
+        "left": 45.96000000000001,
+        "right": 434.03999999999996,
+        "top": 13.680000000000007,
+        "bottom": 346.32000000000005
+      },
+      "layout": {
+        "cell": 55.44,
+        "left": 73.68,
+        "top": 41.400000000000006,
+        "right": 406.32,
+        "bottom": 318.6,
+        "width": 480,
+        "height": 360
+      },
+      "rails": [
+        {
+          "color": "rgba(63, 140, 135, 0.78)",
+          "pointCount": 121,
+          "firstPoint": [
+            45.95999962202521,
+            13.679999622025207
+          ],
+          "lastPoint": [
+            45.95999962202521,
+            346.32000037797485
+          ]
+        },
+        {
+          "color": "rgba(63, 140, 135, 0.78)",
+          "pointCount": 121,
+          "firstPoint": [
+            434.04000037797476,
+            13.679999622025207
+          ],
+          "lastPoint": [
+            434.04000037797476,
+            346.32000037797485
+          ]
+        },
+        {
+          "color": "rgba(199, 146, 68, 0.76)",
+          "pointCount": 141,
+          "firstPoint": [
+            45.95999962202521,
+            13.679999622025207
+          ],
+          "lastPoint": [
+            434.04000037797476,
+            13.679999622025207
+          ]
+        },
+        {
+          "color": "rgba(199, 146, 68, 0.76)",
+          "pointCount": 141,
+          "firstPoint": [
+            45.95999962202521,
+            346.32000037797485
+          ],
+          "lastPoint": [
+            434.04000037797476,
+            346.32000037797485
+          ]
+        },
+        {
+          "color": "#3f8c87",
+          "pointCount": 2,
+          "firstPoint": [
+            45.96000000000001,
+            13.680000000000007
+          ],
+          "lastPoint": [
+            45.96000000000001,
+            346.32000000000005
+          ]
+        },
+        {
+          "color": "#3f8c87",
+          "pointCount": 2,
+          "firstPoint": [
+            434.03999999999996,
+            13.680000000000007
+          ],
+          "lastPoint": [
+            434.03999999999996,
+            346.32000000000005
+          ]
+        },
+        {
+          "color": "#c79244",
+          "pointCount": 2,
+          "firstPoint": [
+            45.96000000000001,
+            13.680000000000007
+          ],
+          "lastPoint": [
+            434.03999999999996,
+            13.680000000000007
+          ]
+        },
+        {
+          "color": "#c79244",
+          "pointCount": 2,
+          "firstPoint": [
+            45.96000000000001,
+            346.32000000000005
+          ],
+          "lastPoint": [
+            434.03999999999996,
+            346.32000000000005
+          ]
+        }
+      ],
+      "allCellsHit": true,
+      "imageSha256": "17c3fe0f74b6aed1fd94d75fd4eddaa256c781110c4e149bfccd85021987b697",
+      "cornerDistancePx": {
+        "left": 0,
+        "right": 0,
+        "top": 0,
+        "bottom": 0
+      }
+    },
+    {
+      "revision": "after",
+      "type": "cylinder",
+      "width": 7,
+      "height": 6,
+      "progress": 0,
+      "bounds": {
+        "left": 45.96000000000001,
+        "right": 434.03999999999996,
+        "top": 41.400000000000006,
+        "bottom": 318.6
+      },
+      "layout": {
+        "cell": 55.44,
+        "left": 73.68,
+        "top": 41.400000000000006,
+        "right": 406.32,
+        "bottom": 318.6,
+        "width": 480,
+        "height": 360
+      },
+      "rails": [
+        {
+          "color": "#3f8c87",
+          "pointCount": 2,
+          "firstPoint": [
+            45.96000000000001,
+            41.400000000000006
+          ],
+          "lastPoint": [
+            45.96000000000001,
+            318.6
+          ]
+        },
+        {
+          "color": "#3f8c87",
+          "pointCount": 2,
+          "firstPoint": [
+            434.03999999999996,
+            41.400000000000006
+          ],
+          "lastPoint": [
+            434.03999999999996,
+            318.6
+          ]
+        }
+      ],
+      "allCellsHit": true,
+      "imageSha256": "079d33aaf145367c0e92ffdc1568399fbbcf6dda1290ea44c49a0df75c05d0fe",
+      "cornerDistancePx": {
+        "left": 0,
+        "right": 0
+      }
+    },
+    {
+      "revision": "after",
+      "type": "cylinder",
+      "width": 7,
+      "height": 6,
+      "progress": 0.00001,
+      "bounds": {
+        "left": 45.96000000000001,
+        "right": 434.03999999999996,
+        "top": 41.400000000000006,
+        "bottom": 318.6
+      },
+      "layout": {
+        "cell": 55.44,
+        "left": 73.68,
+        "top": 41.400000000000006,
+        "right": 406.32,
+        "bottom": 318.6,
+        "width": 480,
+        "height": 360
+      },
+      "rails": [
+        {
+          "color": "rgba(63, 140, 135, 0.78)",
+          "pointCount": 121,
+          "firstPoint": [
+            45.95999974160523,
+            41.399999810572325
+          ],
+          "lastPoint": [
+            45.95999974160523,
+            318.6000001894277
+          ]
+        },
+        {
+          "color": "rgba(63, 140, 135, 0.78)",
+          "pointCount": 121,
+          "firstPoint": [
+            434.04000025839474,
+            41.399999810572325
+          ],
+          "lastPoint": [
+            434.04000025839474,
+            318.6000001894277
+          ]
+        },
+        {
+          "color": "#3f8c87",
+          "pointCount": 2,
+          "firstPoint": [
+            45.96000000000001,
+            41.400000000000006
+          ],
+          "lastPoint": [
+            45.96000000000001,
+            318.6
+          ]
+        },
+        {
+          "color": "#3f8c87",
+          "pointCount": 2,
+          "firstPoint": [
+            434.03999999999996,
+            41.400000000000006
+          ],
+          "lastPoint": [
+            434.03999999999996,
+            318.6
+          ]
+        }
+      ],
+      "allCellsHit": true,
+      "imageSha256": "6c773dfdb5cebf5abd8d2e1813f6c7ab28de6c764b2ed2c66e0a04bdd325cdd9",
+      "cornerDistancePx": {
+        "left": 0,
+        "right": 0
+      }
+    },
+    {
+      "revision": "after",
+      "type": "mobius",
+      "width": 7,
+      "height": 6,
+      "progress": 0,
+      "bounds": {
+        "left": 45.96000000000001,
+        "right": 434.03999999999996,
+        "top": 41.400000000000006,
+        "bottom": 318.6
+      },
+      "layout": {
+        "cell": 55.44,
+        "left": 73.68,
+        "top": 41.400000000000006,
+        "right": 406.32,
+        "bottom": 318.6,
+        "width": 480,
+        "height": 360
+      },
+      "rails": [
+        {
+          "color": "#3f8c87",
+          "pointCount": 2,
+          "firstPoint": [
+            45.96000000000001,
+            41.400000000000006
+          ],
+          "lastPoint": [
+            45.96000000000001,
+            318.6
+          ]
+        },
+        {
+          "color": "#3f8c87",
+          "pointCount": 2,
+          "firstPoint": [
+            434.03999999999996,
+            41.400000000000006
+          ],
+          "lastPoint": [
+            434.03999999999996,
+            318.6
+          ]
+        }
+      ],
+      "allCellsHit": true,
+      "imageSha256": "e7d7395625fc2cb051d0c0564dac7299f3c63e96cc332febc04cc6ba939526e8",
+      "cornerDistancePx": {
+        "left": 0,
+        "right": 0
+      }
+    },
+    {
+      "revision": "after",
+      "type": "mobius",
+      "width": 7,
+      "height": 6,
+      "progress": 0.00001,
+      "bounds": {
+        "left": 45.96000000000001,
+        "right": 434.03999999999996,
+        "top": 41.400000000000006,
+        "bottom": 318.6
+      },
+      "layout": {
+        "cell": 55.44,
+        "left": 73.68,
+        "top": 41.400000000000006,
+        "right": 406.32,
+        "bottom": 318.6,
+        "width": 480,
+        "height": 360
+      },
+      "rails": [
+        {
+          "color": "rgba(63, 140, 135, 0.78)",
+          "pointCount": 121,
+          "firstPoint": [
+            45.959999778522814,
+            41.399999856381925
+          ],
+          "lastPoint": [
+            45.959999778522814,
+            318.6000001436181
+          ]
+        },
+        {
+          "color": "rgba(63, 140, 135, 0.78)",
+          "pointCount": 121,
+          "firstPoint": [
+            434.04000022147716,
+            41.399999856381925
+          ],
+          "lastPoint": [
+            434.04000022147716,
+            318.6000001436181
+          ]
+        },
+        {
+          "color": "#3f8c87",
+          "pointCount": 2,
+          "firstPoint": [
+            45.96000000000001,
+            41.400000000000006
+          ],
+          "lastPoint": [
+            45.96000000000001,
+            318.6
+          ]
+        },
+        {
+          "color": "#3f8c87",
+          "pointCount": 2,
+          "firstPoint": [
+            434.03999999999996,
+            41.400000000000006
+          ],
+          "lastPoint": [
+            434.03999999999996,
+            318.6
+          ]
+        }
+      ],
+      "allCellsHit": true,
+      "imageSha256": "907b93f1af5173f77c188a6ff02b4bf36588720cb45a91fc5863549d10ebb7c1",
+      "cornerDistancePx": {
+        "left": 0,
+        "right": 0
+      }
+    },
+    {
+      "revision": "after",
+      "type": "plane",
+      "width": 7,
+      "height": 6,
+      "progress": 0,
+      "bounds": {
+        "left": 73.68,
+        "right": 406.32,
+        "top": 41.400000000000006,
+        "bottom": 318.6
+      },
+      "layout": {
+        "cell": 55.44,
+        "left": 73.68,
+        "top": 41.400000000000006,
+        "right": 406.32,
+        "bottom": 318.6,
+        "width": 480,
+        "height": 360
+      },
+      "rails": [],
+      "allCellsHit": true,
+      "imageSha256": "9b511ba71e050d3b81412f22056bce713d49272ffdc0252e2abe755c6708ca5d",
+      "cornerDistancePx": {}
+    },
+    {
+      "revision": "after",
+      "type": "plane",
+      "width": 7,
+      "height": 6,
+      "progress": 0.00001,
+      "bounds": {
+        "left": 73.68,
+        "right": 406.32,
+        "top": 41.400000000000006,
+        "bottom": 318.6
+      },
+      "layout": {
+        "cell": 55.44,
+        "left": 73.68,
+        "top": 41.400000000000006,
+        "right": 406.32,
+        "bottom": 318.6,
+        "width": 480,
+        "height": 360
+      },
+      "rails": [],
+      "allCellsHit": true,
+      "imageSha256": "9b511ba71e050d3b81412f22056bce713d49272ffdc0252e2abe755c6708ca5d",
+      "cornerDistancePx": {}
+    },
+    {
+      "revision": "after",
+      "type": "sphere",
+      "width": 5,
+      "height": 5,
+      "progress": 0,
+      "bounds": {
+        "left": 66.75,
+        "right": 413.25,
+        "top": 6.750000000000007,
+        "bottom": 353.25
+      },
+      "layout": {
+        "cell": 69.3,
+        "left": 101.4,
+        "top": 41.400000000000006,
+        "right": 378.6,
+        "bottom": 318.6,
+        "width": 480,
+        "height": 360
+      },
+      "rails": [
+        {
+          "color": "#3f8c87",
+          "pointCount": 2,
+          "firstPoint": [
+            66.75,
+            6.750000000000007
+          ],
+          "lastPoint": [
+            413.25,
+            6.750000000000007
+          ]
+        },
+        {
+          "color": "#3f8c87",
+          "pointCount": 2,
+          "firstPoint": [
+            66.75,
+            6.750000000000007
+          ],
+          "lastPoint": [
+            66.75,
+            353.25
+          ]
+        },
+        {
+          "color": "#c79244",
+          "pointCount": 2,
+          "firstPoint": [
+            66.75,
+            353.25
+          ],
+          "lastPoint": [
+            413.25,
+            353.25
+          ]
+        },
+        {
+          "color": "#c79244",
+          "pointCount": 2,
+          "firstPoint": [
+            413.25,
+            6.750000000000007
+          ],
+          "lastPoint": [
+            413.25,
+            353.25
+          ]
+        }
+      ],
+      "allCellsHit": true,
+      "imageSha256": "5dd65c581d569942264bab0be725935fa71e34fdf2d9a068e98e08b8b2ad5b06",
+      "cornerDistancePx": {
+        "left": 0,
+        "right": 0,
+        "top": 0,
+        "bottom": 0
+      }
+    },
+    {
+      "revision": "after",
+      "type": "sphere",
+      "width": 5,
+      "height": 5,
+      "progress": 0.00001,
+      "bounds": {
+        "left": 66.75,
+        "right": 413.25,
+        "top": 6.750000000000007,
+        "bottom": 353.25
+      },
+      "layout": {
+        "cell": 69.3,
+        "left": 101.4,
+        "top": 41.400000000000006,
+        "right": 378.6,
+        "bottom": 318.6,
+        "width": 480,
+        "height": 360
+      },
+      "rails": [
+        {
+          "color": "rgba(63, 140, 135, 0.78)",
+          "pointCount": 97,
+          "firstPoint": [
+            66.74999979658938,
+            6.749999796589378
+          ],
+          "lastPoint": [
+            413.25000020862024,
+            6.749999791379736
+          ]
+        },
+        {
+          "color": "rgba(63, 140, 135, 0.78)",
+          "pointCount": 97,
+          "firstPoint": [
+            66.74999979658938,
+            6.749999796589378
+          ],
+          "lastPoint": [
+            66.74999979137976,
+            353.25000020862024
+          ]
+        },
+        {
+          "color": "rgba(199, 146, 68, 0.76)",
+          "pointCount": 97,
+          "firstPoint": [
+            66.74999979137976,
+            353.25000020862024
+          ],
+          "lastPoint": [
+            413.25000020341065,
+            353.25000020341065
+          ]
+        },
+        {
+          "color": "rgba(199, 146, 68, 0.76)",
+          "pointCount": 97,
+          "firstPoint": [
+            413.25000020862024,
+            6.749999791379736
+          ],
+          "lastPoint": [
+            413.25000020341065,
+            353.25000020341065
+          ]
+        },
+        {
+          "color": "#3f8c87",
+          "pointCount": 2,
+          "firstPoint": [
+            66.75,
+            6.750000000000007
+          ],
+          "lastPoint": [
+            413.25,
+            6.750000000000007
+          ]
+        },
+        {
+          "color": "#3f8c87",
+          "pointCount": 2,
+          "firstPoint": [
+            66.75,
+            6.750000000000007
+          ],
+          "lastPoint": [
+            66.75,
+            353.25
+          ]
+        },
+        {
+          "color": "#c79244",
+          "pointCount": 2,
+          "firstPoint": [
+            66.75,
+            353.25
+          ],
+          "lastPoint": [
+            413.25,
+            353.25
+          ]
+        },
+        {
+          "color": "#c79244",
+          "pointCount": 2,
+          "firstPoint": [
+            413.25,
+            6.750000000000007
+          ],
+          "lastPoint": [
+            413.25,
+            353.25
+          ]
+        }
+      ],
+      "allCellsHit": true,
+      "imageSha256": "49af104c10554201ce8d4de9371a4f29a9d8ccba1bdffb7a36200df651bb28aa",
+      "cornerDistancePx": {
+        "left": 0,
+        "right": 0,
+        "top": 0,
+        "bottom": 0
+      }
+    },
+    {
+      "revision": "after",
+      "type": "torus",
+      "width": 5,
+      "height": 5,
+      "progress": 0,
+      "bounds": {
+        "left": 66.75,
+        "right": 413.25,
+        "top": 6.750000000000007,
+        "bottom": 353.25
+      },
+      "layout": {
+        "cell": 69.3,
+        "left": 101.4,
+        "top": 41.400000000000006,
+        "right": 378.6,
+        "bottom": 318.6,
+        "width": 480,
+        "height": 360
+      },
+      "rails": [
+        {
+          "color": "#3f8c87",
+          "pointCount": 2,
+          "firstPoint": [
+            66.75,
+            6.750000000000007
+          ],
+          "lastPoint": [
+            66.75,
+            353.25
+          ]
+        },
+        {
+          "color": "#3f8c87",
+          "pointCount": 2,
+          "firstPoint": [
+            413.25,
+            6.750000000000007
+          ],
+          "lastPoint": [
+            413.25,
+            353.25
+          ]
+        },
+        {
+          "color": "#c79244",
+          "pointCount": 2,
+          "firstPoint": [
+            66.75,
+            6.750000000000007
+          ],
+          "lastPoint": [
+            413.25,
+            6.750000000000007
+          ]
+        },
+        {
+          "color": "#c79244",
+          "pointCount": 2,
+          "firstPoint": [
+            66.75,
+            353.25
+          ],
+          "lastPoint": [
+            413.25,
+            353.25
+          ]
+        }
+      ],
+      "allCellsHit": true,
+      "imageSha256": "b2632d6cc768ef41c5ed16fbeacbc29b141c9a1036ef7159803a3c36292ec048",
+      "cornerDistancePx": {
+        "left": 0,
+        "right": 0,
+        "top": 0,
+        "bottom": 0
+      }
+    },
+    {
+      "revision": "after",
+      "type": "torus",
+      "width": 5,
+      "height": 5,
+      "progress": 0.00001,
+      "bounds": {
+        "left": 66.75,
+        "right": 413.25,
+        "top": 6.750000000000007,
+        "bottom": 353.25
+      },
+      "layout": {
+        "cell": 69.3,
+        "left": 101.4,
+        "top": 41.400000000000006,
+        "right": 378.6,
+        "bottom": 318.6,
+        "width": 480,
+        "height": 360
+      },
+      "rails": [
+        {
+          "color": "rgba(63, 140, 135, 0.78)",
+          "pointCount": 121,
+          "firstPoint": [
+            66.74999976140418,
+            6.749999761404183
+          ],
+          "lastPoint": [
+            66.74999976140418,
+            353.2500002385958
+          ]
+        },
+        {
+          "color": "rgba(63, 140, 135, 0.78)",
+          "pointCount": 121,
+          "firstPoint": [
+            413.2500002385958,
+            6.749999761404183
+          ],
+          "lastPoint": [
+            413.2500002385958,
+            353.2500002385958
+          ]
+        },
+        {
+          "color": "rgba(199, 146, 68, 0.76)",
+          "pointCount": 141,
+          "firstPoint": [
+            66.74999976140418,
+            6.749999761404183
+          ],
+          "lastPoint": [
+            413.2500002385958,
+            6.749999761404183
+          ]
+        },
+        {
+          "color": "rgba(199, 146, 68, 0.76)",
+          "pointCount": 141,
+          "firstPoint": [
+            66.74999976140418,
+            353.2500002385958
+          ],
+          "lastPoint": [
+            413.2500002385958,
+            353.2500002385958
+          ]
+        },
+        {
+          "color": "#3f8c87",
+          "pointCount": 2,
+          "firstPoint": [
+            66.75,
+            6.750000000000007
+          ],
+          "lastPoint": [
+            66.75,
+            353.25
+          ]
+        },
+        {
+          "color": "#3f8c87",
+          "pointCount": 2,
+          "firstPoint": [
+            413.25,
+            6.750000000000007
+          ],
+          "lastPoint": [
+            413.25,
+            353.25
+          ]
+        },
+        {
+          "color": "#c79244",
+          "pointCount": 2,
+          "firstPoint": [
+            66.75,
+            6.750000000000007
+          ],
+          "lastPoint": [
+            413.25,
+            6.750000000000007
+          ]
+        },
+        {
+          "color": "#c79244",
+          "pointCount": 2,
+          "firstPoint": [
+            66.75,
+            353.25
+          ],
+          "lastPoint": [
+            413.25,
+            353.25
+          ]
+        }
+      ],
+      "allCellsHit": true,
+      "imageSha256": "792e4f89815e07661263dedfa911cb3566bbc6a49517b889a75765b3eafe1796",
+      "cornerDistancePx": {
+        "left": 0,
+        "right": 0,
+        "top": 0,
+        "bottom": 0
+      }
+    },
+    {
+      "revision": "after",
+      "type": "klein",
+      "width": 5,
+      "height": 5,
+      "progress": 0,
+      "bounds": {
+        "left": 66.75,
+        "right": 413.25,
+        "top": 6.750000000000007,
+        "bottom": 353.25
+      },
+      "layout": {
+        "cell": 69.3,
+        "left": 101.4,
+        "top": 41.400000000000006,
+        "right": 378.6,
+        "bottom": 318.6,
+        "width": 480,
+        "height": 360
+      },
+      "rails": [
+        {
+          "color": "#3f8c87",
+          "pointCount": 2,
+          "firstPoint": [
+            66.75,
+            6.750000000000007
+          ],
+          "lastPoint": [
+            66.75,
+            353.25
+          ]
+        },
+        {
+          "color": "#3f8c87",
+          "pointCount": 2,
+          "firstPoint": [
+            413.25,
+            6.750000000000007
+          ],
+          "lastPoint": [
+            413.25,
+            353.25
+          ]
+        },
+        {
+          "color": "#c79244",
+          "pointCount": 2,
+          "firstPoint": [
+            66.75,
+            6.750000000000007
+          ],
+          "lastPoint": [
+            413.25,
+            6.750000000000007
+          ]
+        },
+        {
+          "color": "#c79244",
+          "pointCount": 2,
+          "firstPoint": [
+            66.75,
+            353.25
+          ],
+          "lastPoint": [
+            413.25,
+            353.25
+          ]
+        }
+      ],
+      "allCellsHit": true,
+      "imageSha256": "08dd747d2a6919aff6f495f7b0f351584f94fd52b46998a0b04ca74586cf2f04",
+      "cornerDistancePx": {
+        "left": 0,
+        "right": 0,
+        "top": 0,
+        "bottom": 0
+      }
+    },
+    {
+      "revision": "after",
+      "type": "klein",
+      "width": 5,
+      "height": 5,
+      "progress": 0.00001,
+      "bounds": {
+        "left": 66.75,
+        "right": 413.25,
+        "top": 6.750000000000007,
+        "bottom": 353.25
+      },
+      "layout": {
+        "cell": 69.3,
+        "left": 101.4,
+        "top": 41.400000000000006,
+        "right": 378.6,
+        "bottom": 318.6,
+        "width": 480,
+        "height": 360
+      },
+      "rails": [
+        {
+          "color": "rgba(63, 140, 135, 0.78)",
+          "pointCount": 121,
+          "firstPoint": [
+            66.7499996220252,
+            6.750000000000007
+          ],
+          "lastPoint": [
+            66.7499996220252,
+            353.25
+          ]
+        },
+        {
+          "color": "rgba(63, 140, 135, 0.78)",
+          "pointCount": 121,
+          "firstPoint": [
+            413.2500003779748,
+            6.750000000000007
+          ],
+          "lastPoint": [
+            413.2500003779748,
+            353.25
+          ]
+        },
+        {
+          "color": "rgba(199, 146, 68, 0.76)",
+          "pointCount": 141,
+          "firstPoint": [
+            66.7499996220252,
+            6.750000000000007
+          ],
+          "lastPoint": [
+            413.2500003779748,
+            6.750000000000007
+          ]
+        },
+        {
+          "color": "rgba(199, 146, 68, 0.76)",
+          "pointCount": 141,
+          "firstPoint": [
+            66.7499996220252,
+            353.25
+          ],
+          "lastPoint": [
+            413.2500003779748,
+            353.25
+          ]
+        },
+        {
+          "color": "#3f8c87",
+          "pointCount": 2,
+          "firstPoint": [
+            66.75,
+            6.750000000000007
+          ],
+          "lastPoint": [
+            66.75,
+            353.25
+          ]
+        },
+        {
+          "color": "#3f8c87",
+          "pointCount": 2,
+          "firstPoint": [
+            413.25,
+            6.750000000000007
+          ],
+          "lastPoint": [
+            413.25,
+            353.25
+          ]
+        },
+        {
+          "color": "#c79244",
+          "pointCount": 2,
+          "firstPoint": [
+            66.75,
+            6.750000000000007
+          ],
+          "lastPoint": [
+            413.25,
+            6.750000000000007
+          ]
+        },
+        {
+          "color": "#c79244",
+          "pointCount": 2,
+          "firstPoint": [
+            66.75,
+            353.25
+          ],
+          "lastPoint": [
+            413.25,
+            353.25
+          ]
+        }
+      ],
+      "allCellsHit": true,
+      "imageSha256": "0b231a0db58dd622cbe9be8d86993822d81b4a5d40db2e55b39522bf6acbfdf8",
+      "cornerDistancePx": {
+        "left": 0,
+        "right": 0,
+        "top": 0,
+        "bottom": 0
+      }
+    },
+    {
+      "revision": "after",
+      "type": "projective",
+      "width": 5,
+      "height": 5,
+      "progress": 0,
+      "bounds": {
+        "left": 66.75,
+        "right": 413.25,
+        "top": 6.750000000000007,
+        "bottom": 353.25
+      },
+      "layout": {
+        "cell": 69.3,
+        "left": 101.4,
+        "top": 41.400000000000006,
+        "right": 378.6,
+        "bottom": 318.6,
+        "width": 480,
+        "height": 360
+      },
+      "rails": [
+        {
+          "color": "#3f8c87",
+          "pointCount": 2,
+          "firstPoint": [
+            66.75,
+            6.750000000000007
+          ],
+          "lastPoint": [
+            66.75,
+            353.25
+          ]
+        },
+        {
+          "color": "#3f8c87",
+          "pointCount": 2,
+          "firstPoint": [
+            413.25,
+            6.750000000000007
+          ],
+          "lastPoint": [
+            413.25,
+            353.25
+          ]
+        },
+        {
+          "color": "#c79244",
+          "pointCount": 2,
+          "firstPoint": [
+            66.75,
+            6.750000000000007
+          ],
+          "lastPoint": [
+            413.25,
+            6.750000000000007
+          ]
+        },
+        {
+          "color": "#c79244",
+          "pointCount": 2,
+          "firstPoint": [
+            66.75,
+            353.25
+          ],
+          "lastPoint": [
+            413.25,
+            353.25
+          ]
+        }
+      ],
+      "allCellsHit": true,
+      "imageSha256": "cceaa29cb23e90c26c5a756d5ce9c0d6da8ee830f1d8f5ed583aff6cdb8d40fd",
+      "cornerDistancePx": {
+        "left": 0,
+        "right": 0,
+        "top": 0,
+        "bottom": 0
+      }
+    },
+    {
+      "revision": "after",
+      "type": "projective",
+      "width": 5,
+      "height": 5,
+      "progress": 0.00001,
+      "bounds": {
+        "left": 66.75,
+        "right": 413.25,
+        "top": 6.750000000000007,
+        "bottom": 353.25
+      },
+      "layout": {
+        "cell": 69.3,
+        "left": 101.4,
+        "top": 41.400000000000006,
+        "right": 378.6,
+        "bottom": 318.6,
+        "width": 480,
+        "height": 360
+      },
+      "rails": [
+        {
+          "color": "rgba(63, 140, 135, 0.78)",
+          "pointCount": 121,
+          "firstPoint": [
+            66.7499996220252,
+            6.750000000000007
+          ],
+          "lastPoint": [
+            66.7499996220252,
+            353.25
+          ]
+        },
+        {
+          "color": "rgba(63, 140, 135, 0.78)",
+          "pointCount": 121,
+          "firstPoint": [
+            413.2500003779748,
+            6.750000000000007
+          ],
+          "lastPoint": [
+            413.2500003779748,
+            353.25
+          ]
+        },
+        {
+          "color": "rgba(199, 146, 68, 0.76)",
+          "pointCount": 141,
+          "firstPoint": [
+            66.7499996220252,
+            6.750000000000007
+          ],
+          "lastPoint": [
+            413.2500003779748,
+            6.750000000000007
+          ]
+        },
+        {
+          "color": "rgba(199, 146, 68, 0.76)",
+          "pointCount": 141,
+          "firstPoint": [
+            66.7499996220252,
+            353.25
+          ],
+          "lastPoint": [
+            413.2500003779748,
+            353.25
+          ]
+        },
+        {
+          "color": "#3f8c87",
+          "pointCount": 2,
+          "firstPoint": [
+            66.75,
+            6.750000000000007
+          ],
+          "lastPoint": [
+            66.75,
+            353.25
+          ]
+        },
+        {
+          "color": "#3f8c87",
+          "pointCount": 2,
+          "firstPoint": [
+            413.25,
+            6.750000000000007
+          ],
+          "lastPoint": [
+            413.25,
+            353.25
+          ]
+        },
+        {
+          "color": "#c79244",
+          "pointCount": 2,
+          "firstPoint": [
+            66.75,
+            6.750000000000007
+          ],
+          "lastPoint": [
+            413.25,
+            6.750000000000007
+          ]
+        },
+        {
+          "color": "#c79244",
+          "pointCount": 2,
+          "firstPoint": [
+            66.75,
+            353.25
+          ],
+          "lastPoint": [
+            413.25,
+            353.25
+          ]
+        }
+      ],
+      "allCellsHit": true,
+      "imageSha256": "cf01a787ab2c2a745b8dfe8af702f2da964ea197101c4ae120f75246476e03e5",
+      "cornerDistancePx": {
+        "left": 0,
+        "right": 0,
+        "top": 0,
+        "bottom": 0
+      }
+    },
+    {
+      "revision": "after",
+      "type": "cylinder",
+      "width": 5,
+      "height": 5,
+      "progress": 0,
+      "bounds": {
+        "left": 66.75,
+        "right": 413.25,
+        "top": 41.400000000000006,
+        "bottom": 318.6
+      },
+      "layout": {
+        "cell": 69.3,
+        "left": 101.4,
+        "top": 41.400000000000006,
+        "right": 378.6,
+        "bottom": 318.6,
+        "width": 480,
+        "height": 360
+      },
+      "rails": [
+        {
+          "color": "#3f8c87",
+          "pointCount": 2,
+          "firstPoint": [
+            66.75,
+            41.400000000000006
+          ],
+          "lastPoint": [
+            66.75,
+            318.6
+          ]
+        },
+        {
+          "color": "#3f8c87",
+          "pointCount": 2,
+          "firstPoint": [
+            413.25,
+            41.400000000000006
+          ],
+          "lastPoint": [
+            413.25,
+            318.6
+          ]
+        }
+      ],
+      "allCellsHit": true,
+      "imageSha256": "48e749dd9a26450e9f06972afb42a8c370025d87adf07e6e014e1360641a40c5",
+      "cornerDistancePx": {
+        "left": 0,
+        "right": 0
+      }
+    },
+    {
+      "revision": "after",
+      "type": "cylinder",
+      "width": 5,
+      "height": 5,
+      "progress": 0.00001,
+      "bounds": {
+        "left": 66.75,
+        "right": 413.25,
+        "top": 41.400000000000006,
+        "bottom": 318.6
+      },
+      "layout": {
+        "cell": 69.3,
+        "left": 101.4,
+        "top": 41.400000000000006,
+        "right": 378.6,
+        "bottom": 318.6,
+        "width": 480,
+        "height": 360
+      },
+      "rails": [
+        {
+          "color": "rgba(63, 140, 135, 0.78)",
+          "pointCount": 121,
+          "firstPoint": [
+            66.74999976929035,
+            41.399999810572325
+          ],
+          "lastPoint": [
+            66.74999976929035,
+            318.6000001894277
+          ]
+        },
+        {
+          "color": "rgba(63, 140, 135, 0.78)",
+          "pointCount": 121,
+          "firstPoint": [
+            413.25000023070965,
+            41.399999810572325
+          ],
+          "lastPoint": [
+            413.25000023070965,
+            318.6000001894277
+          ]
+        },
+        {
+          "color": "#3f8c87",
+          "pointCount": 2,
+          "firstPoint": [
+            66.75,
+            41.400000000000006
+          ],
+          "lastPoint": [
+            66.75,
+            318.6
+          ]
+        },
+        {
+          "color": "#3f8c87",
+          "pointCount": 2,
+          "firstPoint": [
+            413.25,
+            41.400000000000006
+          ],
+          "lastPoint": [
+            413.25,
+            318.6
+          ]
+        }
+      ],
+      "allCellsHit": true,
+      "imageSha256": "ff88277e650da9da54373081415ae33d6ae5ad03d59549a032d7c022773fb024",
+      "cornerDistancePx": {
+        "left": 0,
+        "right": 0
+      }
+    },
+    {
+      "revision": "after",
+      "type": "mobius",
+      "width": 5,
+      "height": 5,
+      "progress": 0,
+      "bounds": {
+        "left": 66.75,
+        "right": 413.25,
+        "top": 41.400000000000006,
+        "bottom": 318.6
+      },
+      "layout": {
+        "cell": 69.3,
+        "left": 101.4,
+        "top": 41.400000000000006,
+        "right": 378.6,
+        "bottom": 318.6,
+        "width": 480,
+        "height": 360
+      },
+      "rails": [
+        {
+          "color": "#3f8c87",
+          "pointCount": 2,
+          "firstPoint": [
+            66.75,
+            41.400000000000006
+          ],
+          "lastPoint": [
+            66.75,
+            318.6
+          ]
+        },
+        {
+          "color": "#3f8c87",
+          "pointCount": 2,
+          "firstPoint": [
+            413.25,
+            41.400000000000006
+          ],
+          "lastPoint": [
+            413.25,
+            318.6
+          ]
+        }
+      ],
+      "allCellsHit": true,
+      "imageSha256": "5a1a02ac7dc818403b55c1d58dde9f4d640d95e7eda9a49f289c698d77c5e7d5",
+      "cornerDistancePx": {
+        "left": 0,
+        "right": 0
+      }
+    },
+    {
+      "revision": "after",
+      "type": "mobius",
+      "width": 5,
+      "height": 5,
+      "progress": 0.00001,
+      "bounds": {
+        "left": 66.75,
+        "right": 413.25,
+        "top": 41.400000000000006,
+        "bottom": 318.6
+      },
+      "layout": {
+        "cell": 69.3,
+        "left": 101.4,
+        "top": 41.400000000000006,
+        "right": 378.6,
+        "bottom": 318.6,
+        "width": 480,
+        "height": 360
+      },
+      "rails": [
+        {
+          "color": "rgba(63, 140, 135, 0.78)",
+          "pointCount": 121,
+          "firstPoint": [
+            66.74999980225249,
+            41.399999856381925
+          ],
+          "lastPoint": [
+            66.74999980225249,
+            318.6000001436181
+          ]
+        },
+        {
+          "color": "rgba(63, 140, 135, 0.78)",
+          "pointCount": 121,
+          "firstPoint": [
+            413.2500001977475,
+            41.399999856381925
+          ],
+          "lastPoint": [
+            413.2500001977475,
+            318.6000001436181
+          ]
+        },
+        {
+          "color": "#3f8c87",
+          "pointCount": 2,
+          "firstPoint": [
+            66.75,
+            41.400000000000006
+          ],
+          "lastPoint": [
+            66.75,
+            318.6
+          ]
+        },
+        {
+          "color": "#3f8c87",
+          "pointCount": 2,
+          "firstPoint": [
+            413.25,
+            41.400000000000006
+          ],
+          "lastPoint": [
+            413.25,
+            318.6
+          ]
+        }
+      ],
+      "allCellsHit": true,
+      "imageSha256": "7a99b30cf8b0aec81e3713877dde71cc61d28cef1f71c409a3a70cb8e9724c7e",
+      "cornerDistancePx": {
+        "left": 0,
+        "right": 0
+      }
+    },
+    {
+      "revision": "after",
+      "type": "plane",
+      "width": 5,
+      "height": 5,
+      "progress": 0,
+      "bounds": {
+        "left": 101.4,
+        "right": 378.6,
+        "top": 41.400000000000006,
+        "bottom": 318.6
+      },
+      "layout": {
+        "cell": 69.3,
+        "left": 101.4,
+        "top": 41.400000000000006,
+        "right": 378.6,
+        "bottom": 318.6,
+        "width": 480,
+        "height": 360
+      },
+      "rails": [],
+      "allCellsHit": true,
+      "imageSha256": "5e5366bd0a46fe568073553caf7be8ec9675c2661a8a2cdd70ac08f90d8ac095",
+      "cornerDistancePx": {}
+    },
+    {
+      "revision": "after",
+      "type": "plane",
+      "width": 5,
+      "height": 5,
+      "progress": 0.00001,
+      "bounds": {
+        "left": 101.4,
+        "right": 378.6,
+        "top": 41.400000000000006,
+        "bottom": 318.6
+      },
+      "layout": {
+        "cell": 69.3,
+        "left": 101.4,
+        "top": 41.400000000000006,
+        "right": 378.6,
+        "bottom": 318.6,
+        "width": 480,
+        "height": 360
+      },
+      "rails": [],
+      "allCellsHit": true,
+      "imageSha256": "5e5366bd0a46fe568073553caf7be8ec9675c2661a8a2cdd70ac08f90d8ac095",
+      "cornerDistancePx": {}
+    },
+    {
+      "revision": "after",
+      "type": "sphere",
+      "width": 19,
+      "height": 19,
+      "progress": 0,
+      "bounds": {
+        "left": 93.7,
+        "right": 386.3,
+        "top": 33.7,
+        "bottom": 326.3
+      },
+      "layout": {
+        "cell": 15.399999999999999,
+        "left": 101.4,
+        "top": 41.400000000000006,
+        "right": 378.6,
+        "bottom": 318.6,
+        "width": 480,
+        "height": 360
+      },
+      "rails": [
+        {
+          "color": "#3f8c87",
+          "pointCount": 2,
+          "firstPoint": [
+            93.7,
+            33.7
+          ],
+          "lastPoint": [
+            386.3,
+            33.7
+          ]
+        },
+        {
+          "color": "#3f8c87",
+          "pointCount": 2,
+          "firstPoint": [
+            93.7,
+            33.7
+          ],
+          "lastPoint": [
+            93.7,
+            326.3
+          ]
+        },
+        {
+          "color": "#c79244",
+          "pointCount": 2,
+          "firstPoint": [
+            93.7,
+            326.3
+          ],
+          "lastPoint": [
+            386.3,
+            326.3
+          ]
+        },
+        {
+          "color": "#c79244",
+          "pointCount": 2,
+          "firstPoint": [
+            386.3,
+            33.7
+          ],
+          "lastPoint": [
+            386.3,
+            326.3
+          ]
+        }
+      ],
+      "allCellsHit": true,
+      "imageSha256": "18a42a0025cf6b4a1be1cc2b2fcc28b85d3ef1ccc9e69c76643e1a9d01dde80b",
+      "cornerDistancePx": {
+        "left": 0,
+        "right": 0,
+        "top": 0,
+        "bottom": 0
+      }
+    },
+    {
+      "revision": "after",
+      "type": "sphere",
+      "width": 19,
+      "height": 19,
+      "progress": 0.00001,
+      "bounds": {
+        "left": 93.7,
+        "right": 386.3,
+        "top": 33.7,
+        "bottom": 326.3
+      },
+      "layout": {
+        "cell": 15.399999999999999,
+        "left": 101.4,
+        "top": 41.400000000000006,
+        "right": 378.6,
+        "bottom": 318.6,
+        "width": 480,
+        "height": 360
+      },
+      "rails": [
+        {
+          "color": "rgba(63, 140, 135, 0.78)",
+          "pointCount": 97,
+          "firstPoint": [
+            93.69999982095646,
+            33.69999982095649
+          ],
+          "lastPoint": [
+            386.30000017616817,
+            33.6999998238318
+          ]
+        },
+        {
+          "color": "rgba(63, 140, 135, 0.78)",
+          "pointCount": 97,
+          "firstPoint": [
+            93.69999982095646,
+            33.69999982095649
+          ],
+          "lastPoint": [
+            93.6999998238318,
+            326.30000017616817
+          ]
+        },
+        {
+          "color": "rgba(199, 146, 68, 0.76)",
+          "pointCount": 97,
+          "firstPoint": [
+            93.6999998238318,
+            326.30000017616817
+          ],
+          "lastPoint": [
+            386.30000017904354,
+            326.30000017904354
+          ]
+        },
+        {
+          "color": "rgba(199, 146, 68, 0.76)",
+          "pointCount": 97,
+          "firstPoint": [
+            386.30000017616817,
+            33.6999998238318
+          ],
+          "lastPoint": [
+            386.30000017904354,
+            326.30000017904354
+          ]
+        },
+        {
+          "color": "#3f8c87",
+          "pointCount": 2,
+          "firstPoint": [
+            93.7,
+            33.7
+          ],
+          "lastPoint": [
+            386.3,
+            33.7
+          ]
+        },
+        {
+          "color": "#3f8c87",
+          "pointCount": 2,
+          "firstPoint": [
+            93.7,
+            33.7
+          ],
+          "lastPoint": [
+            93.7,
+            326.3
+          ]
+        },
+        {
+          "color": "#c79244",
+          "pointCount": 2,
+          "firstPoint": [
+            93.7,
+            326.3
+          ],
+          "lastPoint": [
+            386.3,
+            326.3
+          ]
+        },
+        {
+          "color": "#c79244",
+          "pointCount": 2,
+          "firstPoint": [
+            386.3,
+            33.7
+          ],
+          "lastPoint": [
+            386.3,
+            326.3
+          ]
+        }
+      ],
+      "allCellsHit": true,
+      "imageSha256": "545f31e1f355f5a3d9e362e2b6c024423de10049532719fd50b707ca48176365",
+      "cornerDistancePx": {
+        "left": 0,
+        "right": 0,
+        "top": 0,
+        "bottom": 0
+      }
+    },
+    {
+      "revision": "after",
+      "type": "torus",
+      "width": 19,
+      "height": 19,
+      "progress": 0,
+      "bounds": {
+        "left": 93.7,
+        "right": 386.3,
+        "top": 33.7,
+        "bottom": 326.3
+      },
+      "layout": {
+        "cell": 15.399999999999999,
+        "left": 101.4,
+        "top": 41.400000000000006,
+        "right": 378.6,
+        "bottom": 318.6,
+        "width": 480,
+        "height": 360
+      },
+      "rails": [
+        {
+          "color": "#3f8c87",
+          "pointCount": 2,
+          "firstPoint": [
+            93.7,
+            33.7
+          ],
+          "lastPoint": [
+            93.7,
+            326.3
+          ]
+        },
+        {
+          "color": "#3f8c87",
+          "pointCount": 2,
+          "firstPoint": [
+            386.3,
+            33.7
+          ],
+          "lastPoint": [
+            386.3,
+            326.3
+          ]
+        },
+        {
+          "color": "#c79244",
+          "pointCount": 2,
+          "firstPoint": [
+            93.7,
+            33.7
+          ],
+          "lastPoint": [
+            386.3,
+            33.7
+          ]
+        },
+        {
+          "color": "#c79244",
+          "pointCount": 2,
+          "firstPoint": [
+            93.7,
+            326.3
+          ],
+          "lastPoint": [
+            386.3,
+            326.3
+          ]
+        }
+      ],
+      "allCellsHit": true,
+      "imageSha256": "fa5814dd29deea4781da6829a2b1cacec84ce8db155c27604eee02fa95f95583",
+      "cornerDistancePx": {
+        "left": 0,
+        "right": 0,
+        "top": 0,
+        "bottom": 0
+      }
+    },
+    {
+      "revision": "after",
+      "type": "torus",
+      "width": 19,
+      "height": 19,
+      "progress": 0.00001,
+      "bounds": {
+        "left": 93.7,
+        "right": 386.3,
+        "top": 33.7,
+        "bottom": 326.3
+      },
+      "layout": {
+        "cell": 15.399999999999999,
+        "left": 101.4,
+        "top": 41.400000000000006,
+        "right": 378.6,
+        "bottom": 318.6,
+        "width": 480,
+        "height": 360
+      },
+      "rails": [
+        {
+          "color": "rgba(63, 140, 135, 0.78)",
+          "pointCount": 121,
+          "firstPoint": [
+            93.69999979851906,
+            33.69999979851906
+          ],
+          "lastPoint": [
+            93.69999979851906,
+            326.30000020148094
+          ]
+        },
+        {
+          "color": "rgba(63, 140, 135, 0.78)",
+          "pointCount": 121,
+          "firstPoint": [
+            386.30000020148094,
+            33.69999979851906
+          ],
+          "lastPoint": [
+            386.30000020148094,
+            326.30000020148094
+          ]
+        },
+        {
+          "color": "rgba(199, 146, 68, 0.76)",
+          "pointCount": 141,
+          "firstPoint": [
+            93.69999979851906,
+            33.69999979851906
+          ],
+          "lastPoint": [
+            386.30000020148094,
+            33.69999979851906
+          ]
+        },
+        {
+          "color": "rgba(199, 146, 68, 0.76)",
+          "pointCount": 141,
+          "firstPoint": [
+            93.69999979851906,
+            326.30000020148094
+          ],
+          "lastPoint": [
+            386.30000020148094,
+            326.30000020148094
+          ]
+        },
+        {
+          "color": "#3f8c87",
+          "pointCount": 2,
+          "firstPoint": [
+            93.7,
+            33.7
+          ],
+          "lastPoint": [
+            93.7,
+            326.3
+          ]
+        },
+        {
+          "color": "#3f8c87",
+          "pointCount": 2,
+          "firstPoint": [
+            386.3,
+            33.7
+          ],
+          "lastPoint": [
+            386.3,
+            326.3
+          ]
+        },
+        {
+          "color": "#c79244",
+          "pointCount": 2,
+          "firstPoint": [
+            93.7,
+            33.7
+          ],
+          "lastPoint": [
+            386.3,
+            33.7
+          ]
+        },
+        {
+          "color": "#c79244",
+          "pointCount": 2,
+          "firstPoint": [
+            93.7,
+            326.3
+          ],
+          "lastPoint": [
+            386.3,
+            326.3
+          ]
+        }
+      ],
+      "allCellsHit": true,
+      "imageSha256": "c843a3d7b43ef04191410c5b28e592e157106f8f76347bc29e146cc946684f27",
+      "cornerDistancePx": {
+        "left": 0,
+        "right": 0,
+        "top": 0,
+        "bottom": 0
+      }
+    },
+    {
+      "revision": "after",
+      "type": "klein",
+      "width": 19,
+      "height": 19,
+      "progress": 0,
+      "bounds": {
+        "left": 93.7,
+        "right": 386.3,
+        "top": 33.7,
+        "bottom": 326.3
+      },
+      "layout": {
+        "cell": 15.399999999999999,
+        "left": 101.4,
+        "top": 41.400000000000006,
+        "right": 378.6,
+        "bottom": 318.6,
+        "width": 480,
+        "height": 360
+      },
+      "rails": [
+        {
+          "color": "#3f8c87",
+          "pointCount": 2,
+          "firstPoint": [
+            93.7,
+            33.7
+          ],
+          "lastPoint": [
+            93.7,
+            326.3
+          ]
+        },
+        {
+          "color": "#3f8c87",
+          "pointCount": 2,
+          "firstPoint": [
+            386.3,
+            33.7
+          ],
+          "lastPoint": [
+            386.3,
+            326.3
+          ]
+        },
+        {
+          "color": "#c79244",
+          "pointCount": 2,
+          "firstPoint": [
+            93.7,
+            33.7
+          ],
+          "lastPoint": [
+            386.3,
+            33.7
+          ]
+        },
+        {
+          "color": "#c79244",
+          "pointCount": 2,
+          "firstPoint": [
+            93.7,
+            326.3
+          ],
+          "lastPoint": [
+            386.3,
+            326.3
+          ]
+        }
+      ],
+      "allCellsHit": true,
+      "imageSha256": "821797b021dcedde5ca7f5d10a10900b41fec9532bb05e5bf3bf2a615127d4b4",
+      "cornerDistancePx": {
+        "left": 0,
+        "right": 0,
+        "top": 0,
+        "bottom": 0
+      }
+    },
+    {
+      "revision": "after",
+      "type": "klein",
+      "width": 19,
+      "height": 19,
+      "progress": 0.00001,
+      "bounds": {
+        "left": 93.7,
+        "right": 386.3,
+        "top": 33.7,
+        "bottom": 326.3
+      },
+      "layout": {
+        "cell": 15.399999999999999,
+        "left": 101.4,
+        "top": 41.400000000000006,
+        "right": 378.6,
+        "bottom": 318.6,
+        "width": 480,
+        "height": 360
+      },
+      "rails": [
+        {
+          "color": "rgba(63, 140, 135, 0.78)",
+          "pointCount": 121,
+          "firstPoint": [
+            93.6999996220252,
+            33.6999996220252
+          ],
+          "lastPoint": [
+            93.6999996220252,
+            326.3000003779748
+          ]
+        },
+        {
+          "color": "rgba(63, 140, 135, 0.78)",
+          "pointCount": 121,
+          "firstPoint": [
+            386.3000003779748,
+            33.6999996220252
+          ],
+          "lastPoint": [
+            386.3000003779748,
+            326.3000003779748
+          ]
+        },
+        {
+          "color": "rgba(199, 146, 68, 0.76)",
+          "pointCount": 141,
+          "firstPoint": [
+            93.6999996220252,
+            33.6999996220252
+          ],
+          "lastPoint": [
+            386.3000003779748,
+            33.6999996220252
+          ]
+        },
+        {
+          "color": "rgba(199, 146, 68, 0.76)",
+          "pointCount": 141,
+          "firstPoint": [
+            93.6999996220252,
+            326.3000003779748
+          ],
+          "lastPoint": [
+            386.3000003779748,
+            326.3000003779748
+          ]
+        },
+        {
+          "color": "#3f8c87",
+          "pointCount": 2,
+          "firstPoint": [
+            93.7,
+            33.7
+          ],
+          "lastPoint": [
+            93.7,
+            326.3
+          ]
+        },
+        {
+          "color": "#3f8c87",
+          "pointCount": 2,
+          "firstPoint": [
+            386.3,
+            33.7
+          ],
+          "lastPoint": [
+            386.3,
+            326.3
+          ]
+        },
+        {
+          "color": "#c79244",
+          "pointCount": 2,
+          "firstPoint": [
+            93.7,
+            33.7
+          ],
+          "lastPoint": [
+            386.3,
+            33.7
+          ]
+        },
+        {
+          "color": "#c79244",
+          "pointCount": 2,
+          "firstPoint": [
+            93.7,
+            326.3
+          ],
+          "lastPoint": [
+            386.3,
+            326.3
+          ]
+        }
+      ],
+      "allCellsHit": true,
+      "imageSha256": "2ffe8c50dfade35df3a954cb0e8f668eb5c4e025e08bb8be218291722ce88a43",
+      "cornerDistancePx": {
+        "left": 0,
+        "right": 0,
+        "top": 0,
+        "bottom": 0
+      }
+    },
+    {
+      "revision": "after",
+      "type": "projective",
+      "width": 19,
+      "height": 19,
+      "progress": 0,
+      "bounds": {
+        "left": 93.7,
+        "right": 386.3,
+        "top": 33.7,
+        "bottom": 326.3
+      },
+      "layout": {
+        "cell": 15.399999999999999,
+        "left": 101.4,
+        "top": 41.400000000000006,
+        "right": 378.6,
+        "bottom": 318.6,
+        "width": 480,
+        "height": 360
+      },
+      "rails": [
+        {
+          "color": "#3f8c87",
+          "pointCount": 2,
+          "firstPoint": [
+            93.7,
+            33.7
+          ],
+          "lastPoint": [
+            93.7,
+            326.3
+          ]
+        },
+        {
+          "color": "#3f8c87",
+          "pointCount": 2,
+          "firstPoint": [
+            386.3,
+            33.7
+          ],
+          "lastPoint": [
+            386.3,
+            326.3
+          ]
+        },
+        {
+          "color": "#c79244",
+          "pointCount": 2,
+          "firstPoint": [
+            93.7,
+            33.7
+          ],
+          "lastPoint": [
+            386.3,
+            33.7
+          ]
+        },
+        {
+          "color": "#c79244",
+          "pointCount": 2,
+          "firstPoint": [
+            93.7,
+            326.3
+          ],
+          "lastPoint": [
+            386.3,
+            326.3
+          ]
+        }
+      ],
+      "allCellsHit": true,
+      "imageSha256": "ae22e9477551c94286c59654781a8d24deb255fdc1631c8b6c1910b16168dab8",
+      "cornerDistancePx": {
+        "left": 0,
+        "right": 0,
+        "top": 0,
+        "bottom": 0
+      }
+    },
+    {
+      "revision": "after",
+      "type": "projective",
+      "width": 19,
+      "height": 19,
+      "progress": 0.00001,
+      "bounds": {
+        "left": 93.7,
+        "right": 386.3,
+        "top": 33.7,
+        "bottom": 326.3
+      },
+      "layout": {
+        "cell": 15.399999999999999,
+        "left": 101.4,
+        "top": 41.400000000000006,
+        "right": 378.6,
+        "bottom": 318.6,
+        "width": 480,
+        "height": 360
+      },
+      "rails": [
+        {
+          "color": "rgba(63, 140, 135, 0.78)",
+          "pointCount": 121,
+          "firstPoint": [
+            93.6999996220252,
+            33.6999996220252
+          ],
+          "lastPoint": [
+            93.6999996220252,
+            326.3000003779748
+          ]
+        },
+        {
+          "color": "rgba(63, 140, 135, 0.78)",
+          "pointCount": 121,
+          "firstPoint": [
+            386.3000003779748,
+            33.6999996220252
+          ],
+          "lastPoint": [
+            386.3000003779748,
+            326.3000003779748
+          ]
+        },
+        {
+          "color": "rgba(199, 146, 68, 0.76)",
+          "pointCount": 141,
+          "firstPoint": [
+            93.6999996220252,
+            33.6999996220252
+          ],
+          "lastPoint": [
+            386.3000003779748,
+            33.6999996220252
+          ]
+        },
+        {
+          "color": "rgba(199, 146, 68, 0.76)",
+          "pointCount": 141,
+          "firstPoint": [
+            93.6999996220252,
+            326.3000003779748
+          ],
+          "lastPoint": [
+            386.3000003779748,
+            326.3000003779748
+          ]
+        },
+        {
+          "color": "#3f8c87",
+          "pointCount": 2,
+          "firstPoint": [
+            93.7,
+            33.7
+          ],
+          "lastPoint": [
+            93.7,
+            326.3
+          ]
+        },
+        {
+          "color": "#3f8c87",
+          "pointCount": 2,
+          "firstPoint": [
+            386.3,
+            33.7
+          ],
+          "lastPoint": [
+            386.3,
+            326.3
+          ]
+        },
+        {
+          "color": "#c79244",
+          "pointCount": 2,
+          "firstPoint": [
+            93.7,
+            33.7
+          ],
+          "lastPoint": [
+            386.3,
+            33.7
+          ]
+        },
+        {
+          "color": "#c79244",
+          "pointCount": 2,
+          "firstPoint": [
+            93.7,
+            326.3
+          ],
+          "lastPoint": [
+            386.3,
+            326.3
+          ]
+        }
+      ],
+      "allCellsHit": true,
+      "imageSha256": "e32882c4b97f0ccf1342de69c2e58580ac480a401cea729d92b93c064a4266fd",
+      "cornerDistancePx": {
+        "left": 0,
+        "right": 0,
+        "top": 0,
+        "bottom": 0
+      }
+    },
+    {
+      "revision": "after",
+      "type": "cylinder",
+      "width": 19,
+      "height": 19,
+      "progress": 0,
+      "bounds": {
+        "left": 93.7,
+        "right": 386.3,
+        "top": 41.400000000000006,
+        "bottom": 318.6
+      },
+      "layout": {
+        "cell": 15.399999999999999,
+        "left": 101.4,
+        "top": 41.400000000000006,
+        "right": 378.6,
+        "bottom": 318.6,
+        "width": 480,
+        "height": 360
+      },
+      "rails": [
+        {
+          "color": "#3f8c87",
+          "pointCount": 2,
+          "firstPoint": [
+            93.7,
+            41.400000000000006
+          ],
+          "lastPoint": [
+            93.7,
+            318.6
+          ]
+        },
+        {
+          "color": "#3f8c87",
+          "pointCount": 2,
+          "firstPoint": [
+            386.3,
+            41.400000000000006
+          ],
+          "lastPoint": [
+            386.3,
+            318.6
+          ]
+        }
+      ],
+      "allCellsHit": true,
+      "imageSha256": "c13094adf4a4375b6db2ec2da3fc7e9762f13fa40f8af103d7e7d87460cbe815",
+      "cornerDistancePx": {
+        "left": 0,
+        "right": 0
+      }
+    },
+    {
+      "revision": "after",
+      "type": "cylinder",
+      "width": 19,
+      "height": 19,
+      "progress": 0.00001,
+      "bounds": {
+        "left": 93.7,
+        "right": 386.3,
+        "top": 41.400000000000006,
+        "bottom": 318.6
+      },
+      "layout": {
+        "cell": 15.399999999999999,
+        "left": 101.4,
+        "top": 41.400000000000006,
+        "right": 378.6,
+        "bottom": 318.6,
+        "width": 480,
+        "height": 360
+      },
+      "rails": [
+        {
+          "color": "rgba(63, 140, 135, 0.78)",
+          "pointCount": 121,
+          "firstPoint": [
+            93.69999980517849,
+            41.399999810572325
+          ],
+          "lastPoint": [
+            93.69999980517849,
+            318.6000001894277
+          ]
+        },
+        {
+          "color": "rgba(63, 140, 135, 0.78)",
+          "pointCount": 121,
+          "firstPoint": [
+            386.3000001948215,
+            41.399999810572325
+          ],
+          "lastPoint": [
+            386.3000001948215,
+            318.6000001894277
+          ]
+        },
+        {
+          "color": "#3f8c87",
+          "pointCount": 2,
+          "firstPoint": [
+            93.7,
+            41.400000000000006
+          ],
+          "lastPoint": [
+            93.7,
+            318.6
+          ]
+        },
+        {
+          "color": "#3f8c87",
+          "pointCount": 2,
+          "firstPoint": [
+            386.3,
+            41.400000000000006
+          ],
+          "lastPoint": [
+            386.3,
+            318.6
+          ]
+        }
+      ],
+      "allCellsHit": true,
+      "imageSha256": "747c34df8c5df87f79de7ac7d6be5d2013d8a97d2264c25bc46befb4063fc609",
+      "cornerDistancePx": {
+        "left": 0,
+        "right": 0
+      }
+    },
+    {
+      "revision": "after",
+      "type": "mobius",
+      "width": 19,
+      "height": 19,
+      "progress": 0,
+      "bounds": {
+        "left": 93.7,
+        "right": 386.3,
+        "top": 41.400000000000006,
+        "bottom": 318.6
+      },
+      "layout": {
+        "cell": 15.399999999999999,
+        "left": 101.4,
+        "top": 41.400000000000006,
+        "right": 378.6,
+        "bottom": 318.6,
+        "width": 480,
+        "height": 360
+      },
+      "rails": [
+        {
+          "color": "#3f8c87",
+          "pointCount": 2,
+          "firstPoint": [
+            93.7,
+            41.400000000000006
+          ],
+          "lastPoint": [
+            93.7,
+            318.6
+          ]
+        },
+        {
+          "color": "#3f8c87",
+          "pointCount": 2,
+          "firstPoint": [
+            386.3,
+            41.400000000000006
+          ],
+          "lastPoint": [
+            386.3,
+            318.6
+          ]
+        }
+      ],
+      "allCellsHit": true,
+      "imageSha256": "c1fdd4b44b8480e5eb2998285c41a0799ef0799b6877fbbfb0cfeb8fe88994a4",
+      "cornerDistancePx": {
+        "left": 0,
+        "right": 0
+      }
+    },
+    {
+      "revision": "after",
+      "type": "mobius",
+      "width": 19,
+      "height": 19,
+      "progress": 0.00001,
+      "bounds": {
+        "left": 93.7,
+        "right": 386.3,
+        "top": 41.400000000000006,
+        "bottom": 318.6
+      },
+      "layout": {
+        "cell": 15.399999999999999,
+        "left": 101.4,
+        "top": 41.400000000000006,
+        "right": 378.6,
+        "bottom": 318.6,
+        "width": 480,
+        "height": 360
+      },
+      "rails": [
+        {
+          "color": "rgba(63, 140, 135, 0.78)",
+          "pointCount": 121,
+          "firstPoint": [
+            93.69999983301321,
+            41.399999856381925
+          ],
+          "lastPoint": [
+            93.69999983301321,
+            318.6000001436181
+          ]
+        },
+        {
+          "color": "rgba(63, 140, 135, 0.78)",
+          "pointCount": 121,
+          "firstPoint": [
+            386.3000001669868,
+            41.399999856381925
+          ],
+          "lastPoint": [
+            386.3000001669868,
+            318.6000001436181
+          ]
+        },
+        {
+          "color": "#3f8c87",
+          "pointCount": 2,
+          "firstPoint": [
+            93.7,
+            41.400000000000006
+          ],
+          "lastPoint": [
+            93.7,
+            318.6
+          ]
+        },
+        {
+          "color": "#3f8c87",
+          "pointCount": 2,
+          "firstPoint": [
+            386.3,
+            41.400000000000006
+          ],
+          "lastPoint": [
+            386.3,
+            318.6
+          ]
+        }
+      ],
+      "allCellsHit": true,
+      "imageSha256": "04ed0d3a3bb0ffdc807663d76dbc720cd3fbc38bd832ae88ca255a473fa8fa5e",
+      "cornerDistancePx": {
+        "left": 0,
+        "right": 0
+      }
+    },
+    {
+      "revision": "after",
+      "type": "plane",
+      "width": 19,
+      "height": 19,
+      "progress": 0,
+      "bounds": {
+        "left": 101.4,
+        "right": 378.6,
+        "top": 41.400000000000006,
+        "bottom": 318.6
+      },
+      "layout": {
+        "cell": 15.399999999999999,
+        "left": 101.4,
+        "top": 41.400000000000006,
+        "right": 378.6,
+        "bottom": 318.6,
+        "width": 480,
+        "height": 360
+      },
+      "rails": [],
+      "allCellsHit": true,
+      "imageSha256": "19b1b6aa56dbaba9b2f4baeb19ce540c17142ee02180331f1233148d5a8d1413",
+      "cornerDistancePx": {}
+    },
+    {
+      "revision": "after",
+      "type": "plane",
+      "width": 19,
+      "height": 19,
+      "progress": 0.00001,
+      "bounds": {
+        "left": 101.4,
+        "right": 378.6,
+        "top": 41.400000000000006,
+        "bottom": 318.6
+      },
+      "layout": {
+        "cell": 15.399999999999999,
+        "left": 101.4,
+        "top": 41.400000000000006,
+        "right": 378.6,
+        "bottom": 318.6,
+        "width": 480,
+        "height": 360
+      },
+      "rails": [],
+      "allCellsHit": true,
+      "imageSha256": "19b1b6aa56dbaba9b2f4baeb19ce540c17142ee02180331f1233148d5a8d1413",
+      "cornerDistancePx": {}
+    }
+  ],
+  "evidence": [
+    {
+      "revision": "before",
+      "types": [
+        "sphere",
+        "torus",
+        "klein",
+        "projective"
+      ],
+      "dimensions": [
+        {
+          "type": "sphere",
+          "width": 7,
+          "height": 7
+        },
+        {
+          "type": "torus",
+          "width": 7,
+          "height": 6
+        },
+        {
+          "type": "klein",
+          "width": 7,
+          "height": 6
+        },
+        {
+          "type": "projective",
+          "width": 7,
+          "height": 6
+        }
+      ],
+      "progress": [
+        0,
+        0.00001
+      ],
+      "file": "artifacts/board-corner-rails/before-paired-first-frame.png"
+    },
+    {
+      "revision": "before",
+      "types": [
+        "cylinder",
+        "mobius",
+        "plane"
+      ],
+      "dimensions": [
+        {
+          "type": "cylinder",
+          "width": 7,
+          "height": 6
+        },
+        {
+          "type": "mobius",
+          "width": 7,
+          "height": 6
+        },
+        {
+          "type": "plane",
+          "width": 7,
+          "height": 6
+        }
+      ],
+      "progress": [
+        0,
+        0.00001
+      ],
+      "file": "artifacts/board-corner-rails/before-open-first-frame.png"
+    },
+    {
+      "revision": "after",
+      "types": [
+        "sphere",
+        "torus",
+        "klein",
+        "projective"
+      ],
+      "dimensions": [
+        {
+          "type": "sphere",
+          "width": 7,
+          "height": 7
+        },
+        {
+          "type": "torus",
+          "width": 7,
+          "height": 6
+        },
+        {
+          "type": "klein",
+          "width": 7,
+          "height": 6
+        },
+        {
+          "type": "projective",
+          "width": 7,
+          "height": 6
+        }
+      ],
+      "progress": [
+        0,
+        0.00001
+      ],
+      "file": "artifacts/board-corner-rails/after-paired-first-frame.png"
+    },
+    {
+      "revision": "after",
+      "types": [
+        "cylinder",
+        "mobius",
+        "plane"
+      ],
+      "dimensions": [
+        {
+          "type": "cylinder",
+          "width": 7,
+          "height": 6
+        },
+        {
+          "type": "mobius",
+          "width": 7,
+          "height": 6
+        },
+        {
+          "type": "plane",
+          "width": 7,
+          "height": 6
+        }
+      ],
+      "progress": [
+        0,
+        0.00001
+      ],
+      "file": "artifacts/board-corner-rails/after-open-first-frame.png"
+    }
+  ],
+  "sources": {
+    "before": {
+      "app/assets/topology.js": "b41b99bef6f966d54f4abc47610fdcd242770d2da751a02aa06e0a8c3004e06b",
+      "app/assets/topology-morph.js": "e34138a8ac3973898771375fb606eee2be3bd3d943dec3339b8dbeb8af78dd12",
+      "app/assets/board-view-logic.js": "8d3d6f09f7c2037d8fc8ab56a19fa4389ec3cdc6559442c4e7a638ca801efb6c",
+      "app/assets/level-config.js": "25af6c24758b53ae24c5bfe29019f38357166293935bf660a2c0ba56c04f954c",
+      "app/assets/board-art.js": "257871f2871d621e14fb30ff9550b814be4812ccb99883ed7bcd916cc085c2eb"
+    },
+    "after": {
+      "app/assets/topology.js": "b41b99bef6f966d54f4abc47610fdcd242770d2da751a02aa06e0a8c3004e06b",
+      "app/assets/topology-morph.js": "e34138a8ac3973898771375fb606eee2be3bd3d943dec3339b8dbeb8af78dd12",
+      "app/assets/board-view-logic.js": "8d3d6f09f7c2037d8fc8ab56a19fa4389ec3cdc6559442c4e7a638ca801efb6c",
+      "app/assets/level-config.js": "25af6c24758b53ae24c5bfe29019f38357166293935bf660a2c0ba56c04f954c",
+      "app/assets/board-art.js": "32be13daca4a69f18e2859db12b2d2b44ab6f9d3124c27e3362d8976cabc25a4"
+    }
+  },
+  "notes": [
+    "Shared production Canvas renderer; empty board and fixed time. Contact sheets put 2D on the first row and morph=0.00001 on the second.",
+    "Corner continuity checks rail endpoints, since the first morph frame also changes surface material and grid styling."
+  ]
+}

@@ -41,7 +41,7 @@ function mainRenderer(game, layout) {
   for (const name of ["drawGrid", "drawTopologyRails", "drawSphereRails", "drawRailPair", "drawRailLine", "drawArrow",
     "completionMappedPoint", "completionPoint", "completionFlatPointFromUV", "completionGridEdgePoints", "appendCompletionSegment",
     "strokeSmoothCompletionPath", "completionSphereRailPoint",
-    "drawCompletionSphereGrid", "drawCompletionGrid"]) {
+    "drawCompletionSphereGrid", "drawCompletionGrid", "completionCellPoint", "drawCompletionGridDots"]) {
     const start = source.indexOf("  function " + name + "(");
     const end = source.indexOf("\n  function ", start + 1);
     assert.ok(start >= 0 && end > start, name);
@@ -71,11 +71,20 @@ test("两个真实绘制入口默认将拓扑边延伸半格，开放边和落�
           close(grid[size + i].points[0], { x: layout.left - (joinedX ? layout.cell / 2 : 0), y: layout.top + i * layout.cell });
           close(grid[size + i].points[1], { x: layout.right + (joinedX ? layout.cell / 2 : 0), y: layout.top + i * layout.cell });
         }
-        for (const rail of strokes.filter(stroke => stroke.points.length === 2 && stroke.color !== GRID)) {
-          for (const point of rail.points) {
-            const onRail = [layout.left - layout.cell / 2, layout.right + layout.cell / 2].some(x => Math.abs(point.x - x) < 1e-7)
-              || [layout.top - layout.cell / 2, layout.bottom + layout.cell / 2].some(y => Math.abs(point.y - y) < 1e-7);
-            assert.equal(onRail, true, "colored guide meets half-cell extensions");
+        const rails = strokes.filter(stroke => stroke.points.length === 2 && stroke.color !== GRID);
+        assert.equal(rails.length, (joinedX ? 2 : 0) + (joinedY ? 2 : 0));
+        const bounds = { left: layout.left - (joinedX ? layout.cell / 2 : 0), right: layout.right + (joinedX ? layout.cell / 2 : 0),
+          top: layout.top - (joinedY ? layout.cell / 2 : 0), bottom: layout.bottom + (joinedY ? layout.cell / 2 : 0) };
+        for (const rail of rails) {
+          const [from, to] = rail.points, vertical = from.x === to.x;
+          if (vertical) {
+            assert.ok(from.x === bounds.left || from.x === bounds.right);
+            close(from, { x: from.x, y: bounds.top }, "rail begins at the actual corner");
+            close(to, { x: from.x, y: bounds.bottom }, "rail reaches the actual corner");
+          } else {
+            assert.ok(from.y === bounds.top || from.y === bounds.bottom);
+            close(from, { x: bounds.left, y: from.y }, "rail begins at the actual corner");
+            close(to, { x: bounds.right, y: from.y }, "rail reaches the actual corner");
           }
         }
       }
@@ -136,7 +145,8 @@ test("共享曲面网格从完整半格边界连续起步，透视终态强调�
       const { ctx, strokes } = recorder();
       const orientation = { x: 0.42, y: -0.58, z: -0.08, morph, perspective: morph };
       const depth = Art.drawCompletion(ctx, { game, layout, morph, orientation });
-      const grid = strokes.filter(stroke => stroke.color === "rgba(92, 88, 80, 0.31)" && stroke.alpha > 0.5);
+      const grid = strokes.filter(stroke => /^rgba\(/.test(stroke.color) && Number(stroke.color.match(/[\d.]+/)[0]) >= 92
+        && Number(stroke.color.match(/[\d.]+/)[0]) <= 108 && stroke.alpha > 0.5);
       assert.equal(grid.length, game.rules.width + game.rules.height);
       for (let i = 0; i < grid.length; i++) {
         const vertical = i < game.rules.width;
@@ -148,9 +158,17 @@ test("共享曲面网格从完整半格边界连续起步，透视终态强调�
           close(grid[i].points[0], fullPath[0]);
           close(grid[i].points.at(-1), fullPath.at(-1));
         }
-        if (morph === 0.00001) grid[i].points.forEach((point, sample) => {
-          assert.ok(Math.hypot(point.x - previous[i].points[sample].x, point.y - previous[i].points[sample].y) < 0.02);
-        });
+        if (morph === 0.00001) {
+          const a = previous[i].points[0], b = previous[i].points.at(-1);
+          for (const point of grid[i].points) {
+            const dx = b.x - a.x, dy = b.y - a.y;
+            const t = Math.max(0, Math.min(1, ((point.x - a.x) * dx + (point.y - a.y) * dy) / (dx * dx + dy * dy)));
+            assert.ok(Math.hypot(point.x - a.x - t * dx, point.y - a.y - t * dy) < 0.02,
+              "the first curved frame stays on the same full-length flat grid line");
+          }
+          assert.ok(Math.hypot(grid[i].points[0].x - a.x, grid[i].points[0].y - a.y) < 0.02);
+          assert.ok(Math.hypot(grid[i].points.at(-1).x - b.x, grid[i].points.at(-1).y - b.y) < 0.02);
+        }
         const probes = grid[i].points.map(point => ({ point, visible: false }));
         grid[i].points.forEach((point, index) => {
           if (index && !point.start) {
@@ -176,7 +194,7 @@ test("共享曲面网格从完整半格边界连续起步，透视终态强调�
   }
 });
 
-test("主游戏缝桥逐渐接合，两侧半段持续可见，终态沿用原曲面投影", () => {
+test("主游戏缝桥逐渐接合，完整网格持续可见，终态沿用原曲面投影", () => {
   for (const type of ["cylinder", "torus", "mobius", "klein", "projective", "sphere"]) {
     const { game, layout } = scene(type), renderer = mainRenderer(game, layout);
     const orientation = { x: 0.42, y: -0.58, z: -0.08, scale: 1 };
@@ -195,12 +213,9 @@ test("主游戏缝桥逐渐接合，两侧半段持续可见，终态沿用原�
       assert.ok(bridges.every(bridge => bridge.alpha >= previousAlpha));
       if (morph <= 0.16) assert.ok(bridges.every(bridge => bridge.alpha === 0));
       if (morph >= 0.82) assert.ok(bridges.every(bridge => Math.abs(bridge.alpha - 1) < 1e-7));
-      for (let index = 0; index < strokes.length; index++) {
-        if (strokes[index].points.length === 2) {
-          assert.equal(strokes[index - 1].alpha, 1);
-          assert.equal(strokes[index - 2].alpha, 1);
-        }
-      }
+      const fullRails = strokes.filter(stroke => stroke.points.length > 2);
+      assert.equal(fullRails.length, game.rules.width + game.rules.height, "each full grid line is drawn once before its seam bridge");
+      assert.ok(fullRails.every(rail => rail.alpha === 1), "bridges fade independently of the continuous grid");
       previousAlpha = bridges[0].alpha;
     }
   }
