@@ -10,7 +10,8 @@ const args = process.argv.slice(2), cache = new Map();
 const ROOT = path.resolve(__dirname, "..");
 const BASE = args.find(value => value.startsWith("--baseline="))?.slice(11) || "1d6a488";
 const OUT = path.join(ROOT, args.find(value => value.startsWith("--out="))?.slice(6) || "artifacts/board-perspective");
-const PROGRESS = args.includes("--h5-only") ? [0, .25, .5, .75, 1] : [0, .5, 1];
+const PROGRESS = args.includes("--seam-motion") ? [0, .12, .3, .5, .72, .9, 1]
+  : args.includes("--h5-only") ? [0, .25, .5, .75, 1] : [0, .5, 1];
 const port = Number(args.find(value => value.startsWith("--port="))?.slice(7)) || 4330;
 const TYPES = ["cylinder", "torus", "mobius", "klein", "projective", "sphere"];
 const VIEWPORTS = [{ width: 1280, height: 720 }, { width: 390, height: 844 }];
@@ -121,7 +122,10 @@ async function gameEvidence(browser, url, result) {
           const hash = digest(await page.evaluate(() => document.getElementById("boardCanvas").toDataURL()));
           if (!comparisons[progress]) comparisons[progress] = {};
           comparisons[progress][revision] = hash;
-          const keep = args.includes("--h5-only")
+          const keep = args.includes("--seam-motion")
+            ? type === "sphere" && [0, .3, .5, .72, .9, 1].includes(progress) ||
+              viewport.width === 1280 && ["klein", "projective"].includes(type) && [0.5, 1].includes(progress)
+            : args.includes("--h5-only")
             ? viewport.width === 1280 && ["klein", "projective"].includes(type) && [0.5, 1].includes(progress)
             : viewport.width === 1280 || ["torus", "sphere", "projective"].includes(type) && progress !== .5;
           const file = keep ? await capture(page, `${revision}-game-${type}-${progress}-${viewport.width}x${viewport.height}`) : null;

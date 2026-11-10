@@ -800,7 +800,7 @@
     var morph = orientation && Number.isFinite(orientation.morph)
       ? clamp01(orientation.morph)
       : 1;
-    var mapped = Morph.morphPoint(game.level.topology, flat, u, v, projected, morph);
+    var mapped = Morph.morphPoint(game.level.topology, flat, u, v, projected, morph, layout);
     mapped.flat = flat;
     return mapped;
   }
@@ -829,6 +829,9 @@
         });
       }
     }
+    var mesh = Morph.createSurfaceMesh(vertices, { topology: game.level.topology,
+      pointAt: function sampleCorner(u, v) { return surfacePoint(game, layout, width, height, u, v, orientation); } });
+    patches = mesh.refinePatches(patches);
     patches.sort(function sort(a, b) { return a.depth - b.depth; });
     var gradient = ctx.createLinearGradient(0, height * 0.2, 0, height * 0.82);
     gradient.addColorStop(0, "#fbf9f3");
@@ -843,7 +846,7 @@
     Morph.fillSurface(ctx, patches);
     ctx.restore();
     var depth = Morph.createDepthBuffer(width, height, patches);
-    depth.mesh = Morph.createSurfaceMesh(vertices);
+    depth.mesh = mesh;
     depth.topology = game.level.topology;
     depth.morph = orientation.morph;
     return depth;
@@ -876,8 +879,10 @@
 
   function drawSurfaceBoundary(ctx, game, layout, width, height, orientation, sides, color, depth) {
     var samples = 96;
+    var morph = Number.isFinite(orientation.morph) ? orientation.morph : 1;
     ctx.save();
     ctx.strokeStyle = color;
+    ctx.fillStyle = color;
     ctx.lineWidth = 1.8;
     ctx.lineCap = "round";
     ctx.shadowColor = color;
@@ -885,17 +890,66 @@
     sides.forEach(function drawEdge(side) {
       var vertical = side === "left" || side === "right";
       var edge = side === "right" || side === "bottom" ? 1 : 0;
-      var points = [];
-      for (var sample = 0; sample <= samples; sample += 1) {
-        var amount = sample / samples;
-        var point = vertical
+      function pointAt(amount) {
+        return vertical
           ? surfacePoint(game, layout, width, height, edge, amount, orientation)
           : surfacePoint(game, layout, width, height, amount, edge, orientation);
-        points.push(point);
       }
+      var points = [];
+      for (var sample = 0; sample <= samples; sample += 1) {
+        points.push(pointAt(sample / samples));
+      }
+      var local = Morph.seamProgress(game.level.topology, vertical ? edge : 0.5, vertical ? 0.5 : edge, morph);
+      ctx.save();
+      if (ctx.setLineDash) {
+        var twisted = game.level.topology !== "sphere" && (vertical ? game.level.xConnection : game.level.yConnection) === "twist";
+        ctx.setLineDash(twisted ? [5, 5] : []);
+      }
+      ctx.globalAlpha *= 1 - Morph.smooth((local - 0.82) / 0.18);
       depth.strokePath(ctx, points);
+      ctx.restore();
+      drawSurfaceBoundaryArrows(ctx, game.level.topology, side, game.rules, pointAt, morph, depth);
     });
     ctx.restore();
+  }
+
+  function drawSurfaceBoundaryArrows(ctx, topology, side, rules, pointAt, morph, depth) {
+    if (morph <= 0 || morph >= 1) { return; }
+    var vertical = side === "left" || side === "right";
+    var reversed = (side === "right" && (topology === "mobius" || topology === "klein" || topology === "projective")) ||
+      (side === "bottom" && topology === "projective");
+    var sign = reversed ? -1 : 1;
+    var count = vertical ? rules.height : rules.width;
+    var periodic = vertical ? Morph.isPeriodicY(topology) : Morph.isPeriodicX(topology);
+    function mapped(amount) {
+      var point = pointAt(amount);
+      return depth && depth.mesh ? depth.mesh.point(point.u, point.v) : point;
+    }
+    [topology === "sphere" ? 0.36 : 0.34, 0.7].forEach(function drawDirection(fraction) {
+      // Keep the same chart locations as the flat rail arrows. The half-cell
+      // topological margin belongs to the sheet, not to the labeled grid span.
+      var amount = periodic ? (0.5 + (count - 1) * fraction) / count : fraction;
+      var anchor = mapped(amount), before = mapped(amount - 0.002), after = mapped(amount + 0.002);
+      var dx = after.x - before.x, dy = after.y - before.y, length = Math.hypot(dx, dy);
+      if (length < 1e-5) { return; }
+      var tx = dx / length * sign, ty = dy / length * sign;
+      var local = Morph.seamProgress(topology, anchor.u, anchor.v, morph);
+      var alpha = Morph.smooth(morph / 0.06) * (1 - Morph.smooth((local - 0.82) / 0.18));
+      if (alpha <= 0) { return; }
+      if (depth && !depth.visible(anchor, 0.045)) { alpha *= depth.translucency; }
+      if (alpha <= 0) { return; }
+      var size = 4.5;
+      ctx.save();
+      ctx.globalAlpha *= alpha;
+      ctx.shadowBlur = 0;
+      ctx.beginPath();
+      ctx.moveTo(anchor.x + tx * size, anchor.y + ty * size);
+      ctx.lineTo(anchor.x - tx * size - ty * size, anchor.y - ty * size + tx * size);
+      ctx.lineTo(anchor.x - tx * size + ty * size, anchor.y - ty * size - tx * size);
+      ctx.closePath();
+      ctx.fill();
+      ctx.restore();
+    });
   }
 
   function completionFlatPointFromUV(game, layout, u, v) {
@@ -914,7 +968,7 @@
     var morph = orientation && Number.isFinite(orientation.morph)
       ? clamp01(orientation.morph)
       : 1;
-    return Morph.morphPoint(game.level.topology, flat, uv.u, uv.v, projected, morph);
+    return Morph.morphPoint(game.level.topology, flat, uv.u, uv.v, projected, morph, layout);
   }
 
   function appendCompletionSegment(points, game, layout, from, to, samples, orientation) {
@@ -1049,9 +1103,8 @@
     depth.translucency = 0.16 * morph;
     drawSurfaceGrid(ctx, game, layout, layout.width, layout.height, orientation, depth);
     Morph.drawSurfaceIntersections(ctx, depth);
-    var boundaryFade = 1 - Morph.smooth((morph - 0.72) / 0.28);
     ctx.save();
-    ctx.globalAlpha *= (0.36 + morph * 0.5) * boundaryFade;
+    ctx.globalAlpha *= 0.36 + morph * 0.5;
     if (game.level.xConnection || game.level.topology === "sphere") {
       var xSides = game.level.topology === "sphere" ? SPHERE_BOUNDARY_SIDES.x : ["left", "right"];
       drawSurfaceBoundary(ctx, game, layout, layout.width, layout.height, orientation, xSides, "rgba(63,140,135,0.78)", depth);
@@ -1061,9 +1114,9 @@
       drawSurfaceBoundary(ctx, game, layout, layout.width, layout.height, orientation, ySides, "rgba(199,146,68,0.76)", depth);
     }
     ctx.restore();
-    if (morph < 0.98) {
+    if (morph < 0.06) {
       ctx.save();
-      ctx.globalAlpha *= 1 - morph;
+      ctx.globalAlpha *= 1 - Morph.smooth(morph / 0.06);
       drawTopologyRails(ctx, game, layout, Number(settings.time) || 0);
       ctx.restore();
     }
@@ -1211,6 +1264,7 @@
     drawCompletion: drawCompletion,
     prepareMorphRotation: prepareMorphRotation,
     mappedCompletionPoint: mappedCompletionPoint,
+    drawSurfaceBoundaryArrows: drawSurfaceBoundaryArrows,
     drawTopologyGlyph: drawTopologyGlyph,
     drawTopologySilhouette: drawTopologySilhouette
   };
