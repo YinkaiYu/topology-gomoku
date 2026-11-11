@@ -1,0 +1,131 @@
+{
+  "url": "https://www.yykspace.com/show/topology-gomoku/",
+  "results": [
+    {
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "hashes": {
+        "board-art.js": "35ce8bb5b030a7c174dff543a0f9ed884dc40c9f4484e31f43307d1aecd0c8eb",
+        "topology-morph.js": "c887d9581d7c8119a45a92b1855e7303fc80f799665bc65d6a715805952f6e32",
+        "board-view-motion.js": "c74ab1f29c0f8b95d1f0fddbdfc3215cc381ad9465e80a5f4f7ed57774a916ac",
+        "game.js": "e88622a62d3a5eadb12c2eccdf598fe40cf706923f3caff90f0ee556c6ac48cc"
+      },
+      "games": [
+        {
+          "topology": "torus",
+          "moves": 2,
+          "rotation": true,
+          "morph": [
+            0.5,
+            1,
+            0,
+            1,
+            0
+          ]
+        },
+        {
+          "topology": "mobius",
+          "moves": 2,
+          "rotation": true,
+          "morph": [
+            0.5,
+            1,
+            0,
+            1,
+            0
+          ]
+        },
+        {
+          "topology": "projective",
+          "moves": 2,
+          "rotation": true,
+          "morph": [
+            0.5,
+            1,
+            0,
+            1,
+            0
+          ]
+        },
+        {
+          "topology": "sphere",
+          "moves": 2,
+          "rotation": true,
+          "morph": [
+            0.5,
+            1,
+            0,
+            1,
+            0
+          ]
+        }
+      ],
+      "errors": []
+    },
+    {
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "hashes": {
+        "board-art.js": "35ce8bb5b030a7c174dff543a0f9ed884dc40c9f4484e31f43307d1aecd0c8eb",
+        "topology-morph.js": "c887d9581d7c8119a45a92b1855e7303fc80f799665bc65d6a715805952f6e32",
+        "board-view-motion.js": "c74ab1f29c0f8b95d1f0fddbdfc3215cc381ad9465e80a5f4f7ed57774a916ac",
+        "game.js": "e88622a62d3a5eadb12c2eccdf598fe40cf706923f3caff90f0ee556c6ac48cc"
+      },
+      "games": [
+        {
+          "topology": "torus",
+          "moves": 2,
+          "rotation": true,
+          "morph": [
+            0.5,
+            1,
+            0,
+            1,
+            0
+          ]
+        },
+        {
+          "topology": "mobius",
+          "moves": 2,
+          "rotation": true,
+          "morph": [
+            0.5,
+            1,
+            0,
+            1,
+            0
+          ]
+        },
+        {
+          "topology": "projective",
+          "moves": 2,
+          "rotation": true,
+          "morph": [
+            0.5,
+            1,
+            0,
+            1,
+            0
+          ]
+        },
+        {
+          "topology": "sphere",
+          "moves": 2,
+          "rotation": true,
+          "morph": [
+            0.5,
+            1,
+            0,
+            1,
+            0
+          ]
+        }
+      ],
+      "errors": []
+    }
+  ]
+}

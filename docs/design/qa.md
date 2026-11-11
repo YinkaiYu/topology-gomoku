@@ -388,3 +388,19 @@
 来自 `main@d99166a` 的已确认共享视觉，渠道 `app/` 与 main 完全一致。239 项测试、资源、文档及静态构建通过；网站固定子路径的 1440×900 / 390×844 首页、设置、落子和偏好持久化检查通过：[本地结果](../../artifacts/release-web-1.43.0/results.json)。
 
 网站提交 `3a782bb` 的 Pages 构建、部署成功，正式网址的四个关键脚本与构建产物哈希一致；双视口各验证环游、扭带、双生、归圆的双人落子、旋转与形变往返，无脚本异常。目视检查相交亮线、棋子局部遮挡和控件布局：[手机双生](../../artifacts/release-web-1.43.0/online-390-projective-3d.png)、[桌面归圆旋转](../../artifacts/release-web-1.43.0/online-1440-sphere-rotated.png)、[线上结果](../../artifacts/release-web-1.43.0/online-results.json)。手机视口不是手机真机验收。复现与发布状态见[网站发行记录](../development/web.md)。
+
+### 瓶界、双生展开与跨缝连线
+
+- 瓶界先卷起黄边形成近圆筒，随后弯折长轴、转向接合绿边；双生先卷出半扭转带，再收拢另一组翻转边。两段错峰重叠，沿空间弧线舒展，瓶界截面进一步调圆；瓶界的绿边图册接缝移到瓶底内部，网格与棋子沿新图册分布，规则与棋谱坐标不变。边界箭头全程随曲面移动。
+- 手动拖动在所有非零展开进度使用相同角度增量；滑块改变形态时保留当前姿态，回到纯二维时平滑收回。覆盖 1% 等低进度及回看中的转动，纯二维仍不可旋转。
+- 基线 `f18967c`，400×370 单画布的八帧同状态对照：[瓶界之前](../../artifacts/klein-unfold/before.png)、[瓶界之后](../../artifacts/klein-unfold/after.png)、[双生之前](../../artifacts/klein-unfold/before-projective.png)、[双生之后](../../artifacts/klein-unfold/after-projective.png)。复现：提供 Playwright 到 NODE_PATH 后运行 `node scripts/qa-klein-unfold.cjs`。
+- 归圆 7×7、17 手复现棋谱仅保留落子数组，不含账户或凭证。60%、85%、100% 展开对照：[之前](../../artifacts/klein-unfold/before-sphere-win.png)、[之后](../../artifacts/klein-unfold/after-sphere-win.png)。跨图跳跃明确标记，不因两端 UV 距离小而重采样为棋盘内部路径；另修正斜向步跨左／右边时错误选择上／下边的情况。
+- 六种曲面、桌面与手机视口、空盘／静止棋子／正在落子／按压回弹共 48 组真实 H5 首帧检查通过，原二维画面与往返二维逐像素一致；近零帧最大平均色差约 0.000052/255。复现：`node scripts/qa-board-first-frame-h5.cjs --baseline=f18967c --out=artifacts/klein-unfold/first-frame`，[结果](../../artifacts/klein-unfold/first-frame/results.json)。未进行平台原生真机检查。
+
+- 瓶界改用均匀圆弧形成中段管身与回转瓶颈，瓶肚末段随收拢小幅舒展回落，横向加宽并收敛原先偏深的截面。60%–100% 的密集对照：[之前](../../artifacts/klein-unfold/before-klein-closing.png)、[之后](../../artifacts/klein-unfold/after-klein-closing.png)。双生绿边直接收拢，不先拉伸，从箭头到箭尾逐段接合：[之前](../../artifacts/klein-unfold/before-projective-closing.png)、[之后](../../artifacts/klein-unfold/after-projective-closing.png)。同一脚本可复现上述对照。
+- 独立三维面片相交检查覆盖两个视角：瓶界前 80%、双生前 70% 每 5% 一帧无额外自交；瓶界 85%、90%、95%、100% 的相交均来自瓶颈与瓶身之间，无局部翻折。另验证 48%–75% 的截面厚度、瓶底接缝位置、双生绿边的闭合顺序和黄边持续接合。这里只报告采样检查，不声称双生的全部中间形态无自交。
+- 最终共享回归通过 249 项自动测试、资源校验与文档校验；48 组 H5 首帧与二维往返检查通过。
+
+## 1.44.0 web 发行验证
+
+249 项测试通过。网站部署 225737a，Pages 成功。1440×900、390×844 本地与线上检查通过，线上覆盖 8 个棋局。证据：artifacts/release-web-1.44.0/results.json 和 online-results.json。

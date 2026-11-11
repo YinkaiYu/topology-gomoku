@@ -45,7 +45,7 @@ test("半展开时拖过半圈或中途反向切换，保持当前角度分支",
   const before = Motion.orientation(view, 100);
   Motion.setProgress(view, 0, 100, true, false);
   assert.deepEqual(Motion.orientation(view, 100), before);
-  view.rotation.y += 0.002;
+  Logic.dragRotation(view, 0.002, 0);
   const crossed = Motion.orientation(view, 100);
   assert.ok(Math.abs(crossed.y - before.y - 0.002) < 1e-12);
   Motion.setProgress(view, 1, 100, true, false);
@@ -62,6 +62,8 @@ test("整圈拖动后的终局转换逐帧等价于零整圈，且首帧保留�
     const wound = Motion.create();
     wound.progress = canonical.progress;
     wound.rotation = { x: canonical.rotation.x + turns * tau, y: canonical.rotation.y - turns * tau, z: canonical.rotation.z + turns * tau };
+    canonical.rotationAnchor = { progress: canonical.progress, ...canonical.rotation };
+    wound.rotationAnchor = { progress: wound.progress, ...wound.rotation };
     const target = { x: -0.4, y: 0.7, z: -0.2 };
     const displayed = Motion.orientation(wound, 4000);
     Motion.finish(wound, 4000, null, target);

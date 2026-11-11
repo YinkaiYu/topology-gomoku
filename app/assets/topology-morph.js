@@ -63,8 +63,25 @@
     return [radius * Math.cos(angle), across * Math.sin(angle / 2), radius * Math.sin(angle)];
   }
 
+  function kleinVolume(point, progress) {
+    // Deform space, not individual chart patches: coincident seams and the
+    // entering neck keep their shared intersection throughout the settling.
+    var formed = smooth((progress - 0.34) / 0.43);
+    var settle = Math.sin(Math.PI * smooth((progress - 0.48) / 0.52));
+    var belly = Math.exp(-Math.pow((point[1] + 0.3) / 0.9, 2)) *
+      (1 - smooth((point[0] - 0.1) / 0.8)) * formed;
+    return [
+      -0.3 + (point[0] + 0.3) * (1 + belly * (0.3 + 0.12 * settle)) + belly * settle * 0.045,
+      point[1],
+      point[2] * (1 + belly * (-0.12 + 0.06 * settle))
+    ];
+  }
+
   function klein(u, v) {
-    var theta = TAU * u;
+    // The chart joins inside the base; its narrow neck enters from above.
+    var theta = TAU * (0.8 - u);
+    v = 1 - v;
+    if (theta < 0) { theta += TAU; v = 1 - v; }
     var phi = TAU * v + Math.PI / 2;
     var radius = 4 * (1 - 0.5 * Math.cos(theta));
     var x;
@@ -76,7 +93,7 @@
       x = 6 * Math.cos(theta) * (1 + Math.sin(theta)) - radius * Math.cos(phi);
       y = 16 * Math.sin(theta);
     }
-    return [x / 11.5, y / 16.5, radius * Math.sin(phi) / 5.2];
+    return kleinVolume([x / 11.5, y / 16.5, radius * Math.sin(phi) / 5.2], 1);
   }
 
   function projective(u, v) {
@@ -556,7 +573,7 @@
       scale: magnification,
       depthScale: scale * magnification
     };
-    if (type === "sphere" || type === "torus" || type === "cylinder" || type === "mobius") {
+    if (type !== "plane") {
       projected.sourceSurface = sourceSurface;
       projected.orientation = orientation;
       projected.width = width; projected.height = height;
@@ -673,9 +690,9 @@
     // Blend only the fixed chart basis as a quaternion. User Euler angles
     // keep their continuous branch while dragging a partly closed board.
     var point = rotate(rotateQuaternion(canonical, cache.q), [
-      (CAMERAS.sphere.rotation[0] + rx) * pose,
-      (CAMERAS.sphere.rotation[1] + ry) * pose,
-      (CAMERAS.sphere.rotation[2] + rz) * pose]);
+      CAMERAS.sphere.rotation[0] * pose + rx * (orientation.rotationDirect ? 1 : pose),
+      CAMERAS.sphere.rotation[1] * pose + ry * (orientation.rotationDirect ? 1 : pose),
+      CAMERAS.sphere.rotation[2] * pose + rz * (orientation.rotationDirect ? 1 : pose)]);
     var scaleFactor = Number(orientation.scale) || 1;
     var scale = shortSide * (Math.SQRT1_2 + (CAMERAS.sphere.scale * scaleFactor - Math.SQRT1_2) * smooth(t / 0.75));
     var perspective = clamp01(Number(orientation.perspective) || 0) * b;
@@ -692,6 +709,54 @@
 
   function cosc(angle) {
     return Math.abs(angle) < 1e-5 ? angle / 2 - angle * angle * angle / 24 : 2 * Math.pow(Math.sin(angle / 2), 2) / angle;
+  }
+
+  function kleinOpeningCenter(u, bend, insertion, span) {
+    var theta = TAU * (0.8 - u);
+    var closed = [6 * Math.cos(theta) * (1 + Math.sin(theta)) / 11.5, 16 * Math.sin(theta) / 16.5];
+    var open = closed;
+    if (u > 0.4) {
+      var start = TAU * 0.4;
+      var x = 6 * Math.cos(start) * (1 + Math.sin(start)) / 11.5;
+      var y = 16 * Math.sin(start) / 16.5;
+      var dx = -TAU * 6 * (-Math.sin(start) + Math.cos(2 * start)) / 11.5;
+      var dy = -TAU * 16 * Math.cos(start) / 16.5;
+      var heading = Math.atan2(dy, dx), radius = 1.1, q = (u - 0.4) / 0.6;
+      var rate = Math.hypot(dx, dy) * 0.6 / radius;
+      var arc = rate * q + (3.6 - rate) * q * q;
+      open = [x + radius * (Math.sin(heading) - Math.sin(heading - arc)),
+        y + radius * (Math.cos(heading - arc) - Math.cos(heading))];
+    }
+    var length = span * (1 - bend) + 4.5 * bend;
+    var arc = 4.2 * bend * (u - 0.5), direction = 0.3 * bend - arc / 2;
+    var travel = length * (u - 0.5) * sinc(arc / 2);
+    var round = [travel * Math.cos(direction) + 0.4 * bend,
+      travel * Math.sin(direction) + 0.9 * bend];
+    var formation = smooth((bend - 0.25) / 0.75);
+    return round.map(function formBody(value, axis) {
+      var target = open[axis] * (1 - insertion) + closed[axis] * insertion;
+      return value * (1 - formation) + target * formation;
+    });
+  }
+
+  function kleinInsertion(progress) {
+    return 1 - Math.pow(1 - smooth((progress - 0.76) / 0.24), 3);
+  }
+
+  function projectiveClosure(progress, u, v) {
+    // The two reversed edges share this clock: arrow head first, tail last.
+    // The gold pairing (u,0) <-> (1-u,1) shares it too, so it stays joined.
+    var along = 1 - (u + v - 2 * u * v);
+    return smooth((progress - 0.60 - 0.09 * along) / (0.27 + 0.04 * along));
+  }
+
+  function boundaryProgress(type, side, amount, progress) {
+    var vertical = side === "left" || side === "right";
+    var edge = side === "right" || side === "bottom" ? 1 : 0;
+    var u = vertical ? edge : amount, v = vertical ? amount : edge;
+    if (type === "klein") { return vertical ? kleinInsertion(progress) : smooth((progress - 0.02) / 0.56); }
+    if (type === "projective") { return vertical ? projectiveClosure(progress, u, v) : smooth((progress - 0.02) / 0.56); }
+    return seamProgress(type, u, v, progress);
   }
 
   var rolledMorphCameras = {};
@@ -725,6 +790,50 @@
     // unique. The torus closes its cross-section before bending the long axis.
     var canonical = [along * sinc(angle) + across * Math.sin(angle), vertical,
       along * cosc(angle) - across * Math.cos(angle) - radius * around];
+    if (type === "klein") {
+      // Roll the gold pair first, distribute the long-axis bend over a circular
+      // arc, then let the belly settle as the neck enters the inner base.
+      var tubeProgress = smooth((t - 0.02) / 0.56);
+      var bend = smooth((t - 0.34) / 0.43), insertion = kleinInsertion(t);
+      var a = TAU * tubeProgress * (v - 0.5), r = 0.46;
+      var tubeLength = (1 - tubeProgress) * flatY + tubeProgress * TAU * r * (v - 0.5);
+      var radial = tubeLength * sinc(a), tubeZ = tubeLength * cosc(a) - r * tubeProgress;
+      var theta = TAU * (0.8 - u), bottleRadius = 4 * (1 - 0.5 * Math.cos(theta));
+      var span = Math.abs(u - 0.5) > 1e-6 ? flatX / (u - 0.5) : 2.2;
+      var center = kleinOpeningCenter(u, bend, insertion, span);
+      var before = kleinOpeningCenter(u - 0.0001, bend, insertion, span), after = kleinOpeningCenter(u + 0.0001, bend, insertion, span);
+      var baseBefore = kleinOpeningCenter(u - 0.0001, bend, 1, span), baseAfter = kleinOpeningCenter(u + 0.0001, bend, 1, span);
+      var bx = baseAfter[0] - baseBefore[0], by = baseAfter[1] - baseBefore[1];
+      var dx = after[0] - before[0], dy = after[1] - before[1];
+      var frameTurn = Math.atan2(bx * dy - by * dx, bx * dx + by * dy);
+      var formation = smooth((bend - 0.25) / 0.75);
+      var circleAngle = 0.3 * bend - 4.2 * bend * (u - 0.5) - Math.PI / 2;
+      var finalAngle = Math.max(0, Math.min(Math.PI, theta)) - Math.PI;
+      var sectionAngle = circleAngle * (1 - formation) + finalAngle * formation;
+      var turn = sectionAngle + frameTurn + Math.PI / 2;
+      var sx = center[0] + radial * Math.sin(turn) * (1 + (bottleRadius / (11.5 * r) - 1) * bend);
+      var sy = center[1] - radial * Math.cos(turn) * (1 + (bottleRadius / (16.5 * r) - 1) * bend);
+      var sz = tubeZ * (1 + (bottleRadius / (5.2 * r) - 1) * bend);
+      var volume = kleinVolume([sx, sy, sz], t);
+      canonical = [-volume[2], volume[1], volume[0]];
+    } else if (type === "projective") {
+      // The gold identification reverses u: first form a Mobius band in v.
+      // Then close its remaining boundary into the projective immersion.
+      var roll = smooth((t - 0.02) / 0.56);
+      var close = projectiveClosure(t, u, v);
+      var phi = TAU * roll * (v - 0.5), halfTwist = Math.PI * roll * (v - 0.5);
+      var ribbon = (1 - roll * roll) * flatX + roll * roll * 1.25 * (u - 0.5);
+      var length = (1 - roll) * flatY + roll * TAU * 0.85 * (v - 0.5);
+      var radial = ribbon * Math.sin(halfTwist), lateral = ribbon * Math.cos(halfTwist);
+      var band = [lateral, -length * sinc(phi) - radial * Math.sin(phi),
+        length * cosc(phi) - 0.85 * roll - radial * Math.cos(phi)];
+      var target = projective(u, v);
+      // Close the remaining boundary directly, without a preparatory stretch.
+      var sx = (band[0] * (1 - close) + target[0] * close);
+      var sy = (band[1] * (1 - close) + target[1] * close);
+      var sz = (band[2] * (1 - close) + target[2] * close);
+      canonical = [-sz, sy, sx];
+    }
     var stretch = 1 + 0.06 * smooth(t / 0.1) * (1 - b);
     canonical = canonical.map(function stretchOpening(value) { return value * stretch; });
     // This fixed quarter-turn is precisely the existing endpoint chart.
@@ -741,13 +850,13 @@
     canonical = [-soft[2], soft[1], soft[0]];
     var pose = smooth((t - 0.12) / 0.88), cache = rolledMorphCameras[type];
     if (!cache || cache.t !== t) {
-      var start = type === "mobius" ? [-Math.SQRT1_2, 0, 0, Math.SQRT1_2] : type === "cylinder" ? [1, 0, 0, 0] : [0, 0, 0, 1];
+      var start = type === "klein" || type === "projective" ? [0, Math.SQRT1_2, 0, Math.SQRT1_2] : type === "mobius" ? [-Math.SQRT1_2, 0, 0, Math.SQRT1_2] : type === "cylinder" ? [1, 0, 0, 0] : [0, 0, 0, 1];
       cache = { t: t, q: blendQuaternion(start, [0, Math.SQRT1_2, 0, Math.SQRT1_2], pose) };
       rolledMorphCameras[type] = cache;
     }
     var point = rotateQuaternion(canonical, cache.q);
     var rx = Number(orientation.x) || 0, ry = typeof orientation === "number" ? orientation : Number(orientation.y) || 0, rz = Number(orientation.z) || 0;
-    point = rotate(point, [(camera.rotation[0] + rx) * pose, (camera.rotation[1] + ry) * pose, (camera.rotation[2] + rz) * pose]);
+    point = rotate(point, [camera.rotation[0] * pose + rx * (orientation.rotationDirect ? 1 : pose), camera.rotation[1] * pose + ry * (orientation.rotationDirect ? 1 : pose), camera.rotation[2] * pose + rz * (orientation.rotationDirect ? 1 : pose)]);
     var scaleFactor = Number(orientation.scale) || 1;
     var scale = initialScale + (shortSide * camera.scale * scaleFactor - initialScale) * smooth(t / 0.6);
     // An open rolled arc reaches farther than its closed endpoint. Give that
@@ -811,7 +920,7 @@
       var sphereMapped = sphereMorphPoint(flat, u, v, projected, progress, frame);
       if (sphereMapped) { return sphereMapped; }
     }
-    if (type === "torus" || type === "cylinder" || type === "mobius") {
+    if (type === "torus" || type === "cylinder" || type === "mobius" || type === "klein" || type === "projective") {
       var rolled = rolledMorphPoint(type, flat, u, v, projected, progress, frame);
       if (rolled) { return rolled; }
     }
@@ -1168,7 +1277,7 @@
           var start = points[route - 1], finish = points[route];
           // A discontinuous chart jump is the explicit bridge between glued
           // edges. Preserve that bridge instead of tracing across the chart.
-          if (Math.abs(start.u - finish.u) > 0.25 || Math.abs(start.v - finish.v) > 0.25) {
+          if (finish.chartJump || Math.abs(start.u - finish.u) > 0.25 || Math.abs(start.v - finish.v) > 0.25) {
             mapped.push(buffer.mesh.point(finish.u, finish.v));
           } else {
             mapped.push.apply(mapped, buffer.mesh.path(start, finish).slice(1));
@@ -1802,7 +1911,7 @@
       var source;
       var target;
       var along;
-      if (crossesX && vector.dy < 0) {
+      if (crossesX && vector.dy < 0 && (vector.dx >= 0 || from.v < from.u)) {
         along = clamp01((from.u + to.v) * 0.5);
         source = { u: along, v: 0 };
         target = { u: 0, v: along };
@@ -1810,7 +1919,7 @@
         along = clamp01((from.v + to.u) * 0.5);
         source = { u: 0, v: along };
         target = { u: along, v: 0 };
-      } else if (crossesY && vector.dy > 0) {
+      } else if (crossesY && vector.dy > 0 && (vector.dx <= 0 || from.v > from.u)) {
         along = clamp01((from.u + to.v) * 0.5);
         source = { u: along, v: 1 };
         target = { u: 1, v: along };
@@ -1923,6 +2032,7 @@
     project: project,
     projectPoint: projectPoint,
     seamProgress: seamProgress,
+    boundaryProgress: boundaryProgress,
     morphPoint: morphPoint,
     createDepthBuffer: createDepthBuffer,
     createSurfaceMesh: createSurfaceMesh,
