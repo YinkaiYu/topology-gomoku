@@ -636,3 +636,24 @@ Arena 发布状态：2026-11-04 用户已确认本轮预览并授权合并、推
 
 - 继续调整瓶界瓶口路线、截面与瓶底接缝，采用均匀回转圆弧，圆润的瓶肚在末段随收拢轻微回落；双生绿边不先拉伸，从箭头向箭尾逐段闭合。共享 Canvas 的同状态对照：[瓶界之前](../../artifacts/klein-unfold/before-klein-closing.png)、[瓶界之后](../../artifacts/klein-unfold/after-klein-closing.png)、[双生之前](../../artifacts/klein-unfold/before-projective-closing.png)、[双生之后](../../artifacts/klein-unfold/after-projective-closing.png)。复现：`node scripts/qa-klein-unfold.cjs`，基线 `f18967c`。独立面片检查覆盖两个视角，瓶界前 80% 和双生前 70% 采样无额外相交；瓶界末段相交只发生在瓶颈与瓶身之间。
 - 最终对弈室回归通过 350 项自动测试、资源与文档校验；三类拓扑各六档展开进度的实际鼠标拖动验证通过。任务预览与正式对局数据隔离，用户已于 2026-11-12 确认预览并授权合并。
+
+
+### 瓶界、双生展开与跨缝连线
+
+- 瓶界先卷起黄边形成近圆筒，随后弯折长轴、转向接合绿边；双生先卷出半扭转带，再收拢另一组翻转边。两段错峰重叠，沿空间弧线舒展，瓶界截面进一步调圆；瓶界的绿边图册接缝移到瓶底内部，网格与棋子沿新图册分布，规则与棋谱坐标不变。边界箭头全程随曲面移动。
+- 手动拖动在所有非零展开进度使用相同角度增量；滑块改变形态时保留当前姿态，回到纯二维时平滑收回。覆盖 1% 等低进度及回看中的转动，纯二维仍不可旋转。
+- 基线 `f18967c`，400×370 单画布的八帧同状态对照：[瓶界之前](../../artifacts/klein-unfold/before.png)、[瓶界之后](../../artifacts/klein-unfold/after.png)、[双生之前](../../artifacts/klein-unfold/before-projective.png)、[双生之后](../../artifacts/klein-unfold/after-projective.png)。复现：提供 Playwright 到 NODE_PATH 后运行 `node scripts/qa-klein-unfold.cjs`。
+- 归圆 7×7、17 手复现棋谱仅保留落子数组，不含账户或凭证。60%、85%、100% 展开对照：[之前](../../artifacts/klein-unfold/before-sphere-win.png)、[之后](../../artifacts/klein-unfold/after-sphere-win.png)。跨图跳跃明确标记，不因两端 UV 距离小而重采样为棋盘内部路径；另修正斜向步跨左／右边时错误选择上／下边的情况。
+- 六种曲面、桌面与手机视口、空盘／静止棋子／正在落子／按压回弹共 48 组真实 H5 首帧检查通过，原二维画面与往返二维逐像素一致；近零帧最大平均色差约 0.000052/255。复现：`node scripts/qa-board-first-frame-h5.cjs --baseline=f18967c --out=artifacts/klein-unfold/first-frame`，[结果](../../artifacts/klein-unfold/first-frame/results.json)。未进行平台原生真机检查。
+
+- 瓶界改用均匀圆弧形成中段管身与回转瓶颈，瓶肚末段随收拢小幅舒展回落，横向加宽并收敛原先偏深的截面。60%–100% 的密集对照：[之前](../../artifacts/klein-unfold/before-klein-closing.png)、[之后](../../artifacts/klein-unfold/after-klein-closing.png)。双生绿边直接收拢，不先拉伸，从箭头到箭尾逐段接合：[之前](../../artifacts/klein-unfold/before-projective-closing.png)、[之后](../../artifacts/klein-unfold/after-projective-closing.png)。同一脚本可复现上述对照。
+- 独立三维面片相交检查覆盖两个视角：瓶界前 80%、双生前 70% 每 5% 一帧无额外自交；瓶界 85%、90%、95%、100% 的相交均来自瓶颈与瓶身之间，无局部翻折。另验证 48%–75% 的截面厚度、瓶底接缝位置、双生绿边的闭合顺序和黄边持续接合。这里只报告采样检查，不声称双生的全部中间形态无自交。
+- 最终共享回归通过 249 项自动测试、资源校验与文档校验；48 组 H5 首帧与二维往返检查通过。
+
+## 1.44.0 arena 发行验证
+
+350 项测试通过，接收统一版本 1.44.0 与已经确认的渲染改动；本轮没有合入另一个任务的豆包连接器改动。
+
+## 1.44.0 arena 发行验证
+
+350 项测试通过，接收统一版本 1.44.0 与已确认渲染改动；没有合入另一任务的豆包连接器改动。
