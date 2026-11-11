@@ -1,0 +1,1993 @@
+{
+  "baseline": "973a688",
+  "sources": {
+    "game": "e88622a62d3a5eadb12c2eccdf598fe40cf706923f3caff90f0ee556c6ac48cc",
+    "board-art": "35ce8bb5b030a7c174dff543a0f9ed884dc40c9f4484e31f43307d1aecd0c8eb",
+    "topology-morph": "9ebcad746d24a1dec3410155ff22a54a70189de04a62405e14bd02219e3933c3"
+  },
+  "viewport": {
+    "width": 390,
+    "height": 844,
+    "dpr": 3
+  },
+  "pose": {
+    "x": 0.3059888279294755,
+    "y": 1.441001176914942,
+    "z": 0.013434785524945675
+  },
+  "fixtures": {
+    "full": {
+      "black": [
+        5,
+        9,
+        15,
+        17,
+        22,
+        23,
+        25,
+        26,
+        39,
+        41
+      ],
+      "white": [
+        1,
+        7,
+        12,
+        16,
+        18,
+        19,
+        24,
+        29,
+        31,
+        36
+      ],
+      "last": 12
+    },
+    "two": {
+      "black": [
+        12
+      ],
+      "white": [
+        30
+      ],
+      "last": 30
+    },
+    "single": {
+      "black": [
+        17
+      ],
+      "white": [],
+      "last": 17
+    }
+  },
+  "results": [
+    {
+      "revision": "before",
+      "level": 1,
+      "probe": {
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/26.5 Safari/605.1.15",
+        "dpr": 3,
+        "rows": [
+          {
+            "cover": "front",
+            "player": 1,
+            "contours": null,
+            "left": [
+              64,
+              78,
+              74,
+              255
+            ],
+            "center": [
+              59,
+              73,
+              68,
+              255
+            ],
+            "right": [
+              37,
+              50,
+              47,
+              255
+            ]
+          },
+          {
+            "cover": "front",
+            "player": -1,
+            "contours": null,
+            "left": [
+              251,
+              249,
+              243,
+              255
+            ],
+            "center": [
+              251,
+              248,
+              242,
+              255
+            ],
+            "right": [
+              244,
+              239,
+              228,
+              255
+            ]
+          },
+          {
+            "cover": "one",
+            "player": 1,
+            "contours": 0,
+            "left": [
+              55,
+              65,
+              65,
+              51
+            ],
+            "center": [
+              50,
+              65,
+              60,
+              51
+            ],
+            "right": [
+              35,
+              45,
+              40,
+              51
+            ]
+          },
+          {
+            "cover": "one",
+            "player": -1,
+            "contours": 0,
+            "left": [
+              223,
+              223,
+              218,
+              48
+            ],
+            "center": [
+              223,
+              223,
+              218,
+              48
+            ],
+            "right": [
+              218,
+              212,
+              202,
+              48
+            ]
+          },
+          {
+            "cover": "two",
+            "player": 1,
+            "contours": 0,
+            "left": [
+              55,
+              65,
+              65,
+              51
+            ],
+            "center": [
+              50,
+              65,
+              60,
+              51
+            ],
+            "right": [
+              35,
+              45,
+              40,
+              51
+            ]
+          },
+          {
+            "cover": "two",
+            "player": -1,
+            "contours": 0,
+            "left": [
+              223,
+              223,
+              218,
+              48
+            ],
+            "center": [
+              223,
+              223,
+              218,
+              48
+            ],
+            "right": [
+              218,
+              212,
+              202,
+              48
+            ]
+          },
+          {
+            "cover": "two-reversed",
+            "player": 1,
+            "contours": 0,
+            "left": [
+              55,
+              65,
+              65,
+              51
+            ],
+            "center": [
+              50,
+              65,
+              60,
+              51
+            ],
+            "right": [
+              35,
+              45,
+              40,
+              51
+            ]
+          },
+          {
+            "cover": "two-reversed",
+            "player": -1,
+            "contours": 0,
+            "left": [
+              223,
+              223,
+              218,
+              48
+            ],
+            "center": [
+              223,
+              223,
+              218,
+              48
+            ],
+            "right": [
+              218,
+              212,
+              202,
+              48
+            ]
+          },
+          {
+            "cover": "partial",
+            "player": 1,
+            "contours": 1,
+            "left": [
+              64,
+              78,
+              74,
+              255
+            ],
+            "center": [
+              56,
+              75,
+              68,
+              41
+            ],
+            "right": [
+              37,
+              50,
+              50,
+              41
+            ]
+          },
+          {
+            "cover": "partial",
+            "player": -1,
+            "contours": 1,
+            "left": [
+              251,
+              249,
+              243,
+              255
+            ],
+            "center": [
+              249,
+              249,
+              243,
+              41
+            ],
+            "right": [
+              243,
+              236,
+              230,
+              41
+            ]
+          }
+        ]
+      },
+      "screenshot": "before-webkit-1.png"
+    },
+    {
+      "revision": "before",
+      "level": 2,
+      "probe": {
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/26.5 Safari/605.1.15",
+        "dpr": 3,
+        "rows": [
+          {
+            "cover": "front",
+            "player": 1,
+            "contours": null,
+            "left": [
+              64,
+              78,
+              74,
+              255
+            ],
+            "center": [
+              59,
+              73,
+              68,
+              255
+            ],
+            "right": [
+              37,
+              50,
+              47,
+              255
+            ]
+          },
+          {
+            "cover": "front",
+            "player": -1,
+            "contours": null,
+            "left": [
+              251,
+              249,
+              243,
+              255
+            ],
+            "center": [
+              251,
+              248,
+              242,
+              255
+            ],
+            "right": [
+              244,
+              239,
+              228,
+              255
+            ]
+          },
+          {
+            "cover": "one",
+            "player": 1,
+            "contours": 0,
+            "left": [
+              55,
+              65,
+              65,
+              51
+            ],
+            "center": [
+              50,
+              65,
+              60,
+              51
+            ],
+            "right": [
+              35,
+              45,
+              40,
+              51
+            ]
+          },
+          {
+            "cover": "one",
+            "player": -1,
+            "contours": 0,
+            "left": [
+              223,
+              223,
+              218,
+              48
+            ],
+            "center": [
+              223,
+              223,
+              218,
+              48
+            ],
+            "right": [
+              218,
+              212,
+              202,
+              48
+            ]
+          },
+          {
+            "cover": "two",
+            "player": 1,
+            "contours": 0,
+            "left": [
+              55,
+              65,
+              65,
+              51
+            ],
+            "center": [
+              50,
+              65,
+              60,
+              51
+            ],
+            "right": [
+              35,
+              45,
+              40,
+              51
+            ]
+          },
+          {
+            "cover": "two",
+            "player": -1,
+            "contours": 0,
+            "left": [
+              223,
+              223,
+              218,
+              48
+            ],
+            "center": [
+              223,
+              223,
+              218,
+              48
+            ],
+            "right": [
+              218,
+              212,
+              202,
+              48
+            ]
+          },
+          {
+            "cover": "two-reversed",
+            "player": 1,
+            "contours": 0,
+            "left": [
+              55,
+              65,
+              65,
+              51
+            ],
+            "center": [
+              50,
+              65,
+              60,
+              51
+            ],
+            "right": [
+              35,
+              45,
+              40,
+              51
+            ]
+          },
+          {
+            "cover": "two-reversed",
+            "player": -1,
+            "contours": 0,
+            "left": [
+              223,
+              223,
+              218,
+              48
+            ],
+            "center": [
+              223,
+              223,
+              218,
+              48
+            ],
+            "right": [
+              218,
+              212,
+              202,
+              48
+            ]
+          },
+          {
+            "cover": "partial",
+            "player": 1,
+            "contours": 1,
+            "left": [
+              64,
+              78,
+              74,
+              255
+            ],
+            "center": [
+              56,
+              75,
+              68,
+              41
+            ],
+            "right": [
+              37,
+              50,
+              50,
+              41
+            ]
+          },
+          {
+            "cover": "partial",
+            "player": -1,
+            "contours": 1,
+            "left": [
+              251,
+              249,
+              243,
+              255
+            ],
+            "center": [
+              249,
+              249,
+              243,
+              41
+            ],
+            "right": [
+              243,
+              236,
+              230,
+              41
+            ]
+          }
+        ]
+      },
+      "screenshot": "before-webkit-2.png"
+    },
+    {
+      "revision": "before",
+      "level": 4,
+      "probe": {
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/26.5 Safari/605.1.15",
+        "dpr": 3,
+        "rows": [
+          {
+            "cover": "front",
+            "player": 1,
+            "contours": null,
+            "left": [
+              64,
+              78,
+              74,
+              255
+            ],
+            "center": [
+              59,
+              73,
+              68,
+              255
+            ],
+            "right": [
+              37,
+              50,
+              47,
+              255
+            ]
+          },
+          {
+            "cover": "front",
+            "player": -1,
+            "contours": null,
+            "left": [
+              251,
+              249,
+              243,
+              255
+            ],
+            "center": [
+              251,
+              248,
+              242,
+              255
+            ],
+            "right": [
+              244,
+              239,
+              228,
+              255
+            ]
+          },
+          {
+            "cover": "one",
+            "player": 1,
+            "contours": 0,
+            "left": [
+              55,
+              65,
+              65,
+              51
+            ],
+            "center": [
+              50,
+              65,
+              60,
+              51
+            ],
+            "right": [
+              35,
+              45,
+              40,
+              51
+            ]
+          },
+          {
+            "cover": "one",
+            "player": -1,
+            "contours": 0,
+            "left": [
+              223,
+              223,
+              218,
+              48
+            ],
+            "center": [
+              223,
+              223,
+              218,
+              48
+            ],
+            "right": [
+              218,
+              212,
+              202,
+              48
+            ]
+          },
+          {
+            "cover": "two",
+            "player": 1,
+            "contours": 0,
+            "left": [
+              55,
+              65,
+              65,
+              51
+            ],
+            "center": [
+              50,
+              65,
+              60,
+              51
+            ],
+            "right": [
+              35,
+              45,
+              40,
+              51
+            ]
+          },
+          {
+            "cover": "two",
+            "player": -1,
+            "contours": 0,
+            "left": [
+              223,
+              223,
+              218,
+              48
+            ],
+            "center": [
+              223,
+              223,
+              218,
+              48
+            ],
+            "right": [
+              218,
+              212,
+              202,
+              48
+            ]
+          },
+          {
+            "cover": "two-reversed",
+            "player": 1,
+            "contours": 0,
+            "left": [
+              55,
+              65,
+              65,
+              51
+            ],
+            "center": [
+              50,
+              65,
+              60,
+              51
+            ],
+            "right": [
+              35,
+              45,
+              40,
+              51
+            ]
+          },
+          {
+            "cover": "two-reversed",
+            "player": -1,
+            "contours": 0,
+            "left": [
+              223,
+              223,
+              218,
+              48
+            ],
+            "center": [
+              223,
+              223,
+              218,
+              48
+            ],
+            "right": [
+              218,
+              212,
+              202,
+              48
+            ]
+          },
+          {
+            "cover": "partial",
+            "player": 1,
+            "contours": 1,
+            "left": [
+              64,
+              78,
+              74,
+              255
+            ],
+            "center": [
+              56,
+              75,
+              68,
+              41
+            ],
+            "right": [
+              37,
+              50,
+              50,
+              41
+            ]
+          },
+          {
+            "cover": "partial",
+            "player": -1,
+            "contours": 1,
+            "left": [
+              251,
+              249,
+              243,
+              255
+            ],
+            "center": [
+              249,
+              249,
+              243,
+              41
+            ],
+            "right": [
+              243,
+              236,
+              230,
+              41
+            ]
+          }
+        ]
+      },
+      "screenshot": "before-webkit-4.png"
+    },
+    {
+      "revision": "before",
+      "level": 5,
+      "probe": {
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/26.5 Safari/605.1.15",
+        "dpr": 3,
+        "rows": [
+          {
+            "cover": "front",
+            "player": 1,
+            "contours": null,
+            "left": [
+              64,
+              78,
+              74,
+              255
+            ],
+            "center": [
+              59,
+              73,
+              68,
+              255
+            ],
+            "right": [
+              37,
+              50,
+              47,
+              255
+            ]
+          },
+          {
+            "cover": "front",
+            "player": -1,
+            "contours": null,
+            "left": [
+              251,
+              249,
+              243,
+              255
+            ],
+            "center": [
+              251,
+              248,
+              242,
+              255
+            ],
+            "right": [
+              244,
+              239,
+              228,
+              255
+            ]
+          },
+          {
+            "cover": "one",
+            "player": 1,
+            "contours": 0,
+            "left": [
+              55,
+              65,
+              65,
+              51
+            ],
+            "center": [
+              50,
+              65,
+              60,
+              51
+            ],
+            "right": [
+              35,
+              45,
+              40,
+              51
+            ]
+          },
+          {
+            "cover": "one",
+            "player": -1,
+            "contours": 0,
+            "left": [
+              223,
+              223,
+              218,
+              48
+            ],
+            "center": [
+              223,
+              223,
+              218,
+              48
+            ],
+            "right": [
+              218,
+              212,
+              202,
+              48
+            ]
+          },
+          {
+            "cover": "two",
+            "player": 1,
+            "contours": 0,
+            "left": [
+              55,
+              65,
+              65,
+              51
+            ],
+            "center": [
+              50,
+              65,
+              60,
+              51
+            ],
+            "right": [
+              35,
+              45,
+              40,
+              51
+            ]
+          },
+          {
+            "cover": "two",
+            "player": -1,
+            "contours": 0,
+            "left": [
+              223,
+              223,
+              218,
+              48
+            ],
+            "center": [
+              223,
+              223,
+              218,
+              48
+            ],
+            "right": [
+              218,
+              212,
+              202,
+              48
+            ]
+          },
+          {
+            "cover": "two-reversed",
+            "player": 1,
+            "contours": 0,
+            "left": [
+              55,
+              65,
+              65,
+              51
+            ],
+            "center": [
+              50,
+              65,
+              60,
+              51
+            ],
+            "right": [
+              35,
+              45,
+              40,
+              51
+            ]
+          },
+          {
+            "cover": "two-reversed",
+            "player": -1,
+            "contours": 0,
+            "left": [
+              223,
+              223,
+              218,
+              48
+            ],
+            "center": [
+              223,
+              223,
+              218,
+              48
+            ],
+            "right": [
+              218,
+              212,
+              202,
+              48
+            ]
+          },
+          {
+            "cover": "partial",
+            "player": 1,
+            "contours": 1,
+            "left": [
+              64,
+              78,
+              74,
+              255
+            ],
+            "center": [
+              56,
+              75,
+              68,
+              41
+            ],
+            "right": [
+              37,
+              50,
+              50,
+              41
+            ]
+          },
+          {
+            "cover": "partial",
+            "player": -1,
+            "contours": 1,
+            "left": [
+              251,
+              249,
+              243,
+              255
+            ],
+            "center": [
+              249,
+              249,
+              243,
+              41
+            ],
+            "right": [
+              243,
+              236,
+              230,
+              41
+            ]
+          }
+        ]
+      },
+      "screenshot": "before-webkit-5.png"
+    },
+    {
+      "revision": "after",
+      "level": 1,
+      "probe": {
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/26.5 Safari/605.1.15",
+        "dpr": 3,
+        "rows": [
+          {
+            "cover": "front",
+            "player": 1,
+            "contours": null,
+            "left": [
+              64,
+              78,
+              74,
+              255
+            ],
+            "center": [
+              59,
+              73,
+              68,
+              255
+            ],
+            "right": [
+              37,
+              50,
+              47,
+              255
+            ]
+          },
+          {
+            "cover": "front",
+            "player": -1,
+            "contours": null,
+            "left": [
+              251,
+              249,
+              243,
+              255
+            ],
+            "center": [
+              251,
+              248,
+              242,
+              255
+            ],
+            "right": [
+              244,
+              239,
+              228,
+              255
+            ]
+          },
+          {
+            "cover": "one",
+            "player": 1,
+            "contours": 0,
+            "left": [
+              62,
+              81,
+              75,
+              41
+            ],
+            "center": [
+              56,
+              75,
+              68,
+              41
+            ],
+            "right": [
+              37,
+              50,
+              50,
+              41
+            ]
+          },
+          {
+            "cover": "one",
+            "player": -1,
+            "contours": 0,
+            "left": [
+              249,
+              249,
+              243,
+              41
+            ],
+            "center": [
+              249,
+              249,
+              243,
+              41
+            ],
+            "right": [
+              243,
+              236,
+              230,
+              41
+            ]
+          },
+          {
+            "cover": "two",
+            "player": 1,
+            "contours": 0,
+            "left": [
+              62,
+              81,
+              75,
+              41
+            ],
+            "center": [
+              56,
+              75,
+              68,
+              41
+            ],
+            "right": [
+              37,
+              50,
+              50,
+              41
+            ]
+          },
+          {
+            "cover": "two",
+            "player": -1,
+            "contours": 0,
+            "left": [
+              249,
+              249,
+              243,
+              41
+            ],
+            "center": [
+              249,
+              249,
+              243,
+              41
+            ],
+            "right": [
+              243,
+              236,
+              230,
+              41
+            ]
+          },
+          {
+            "cover": "two-reversed",
+            "player": 1,
+            "contours": 0,
+            "left": [
+              62,
+              81,
+              75,
+              41
+            ],
+            "center": [
+              56,
+              75,
+              68,
+              41
+            ],
+            "right": [
+              37,
+              50,
+              50,
+              41
+            ]
+          },
+          {
+            "cover": "two-reversed",
+            "player": -1,
+            "contours": 0,
+            "left": [
+              249,
+              249,
+              243,
+              41
+            ],
+            "center": [
+              249,
+              249,
+              243,
+              41
+            ],
+            "right": [
+              243,
+              236,
+              230,
+              41
+            ]
+          },
+          {
+            "cover": "partial",
+            "player": 1,
+            "contours": 1,
+            "left": [
+              64,
+              78,
+              74,
+              255
+            ],
+            "center": [
+              56,
+              75,
+              68,
+              41
+            ],
+            "right": [
+              37,
+              50,
+              50,
+              41
+            ]
+          },
+          {
+            "cover": "partial",
+            "player": -1,
+            "contours": 1,
+            "left": [
+              251,
+              249,
+              243,
+              255
+            ],
+            "center": [
+              249,
+              249,
+              243,
+              41
+            ],
+            "right": [
+              243,
+              236,
+              230,
+              41
+            ]
+          }
+        ]
+      },
+      "screenshot": "after-webkit-1.png"
+    },
+    {
+      "revision": "after",
+      "level": 2,
+      "probe": {
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/26.5 Safari/605.1.15",
+        "dpr": 3,
+        "rows": [
+          {
+            "cover": "front",
+            "player": 1,
+            "contours": null,
+            "left": [
+              64,
+              78,
+              74,
+              255
+            ],
+            "center": [
+              59,
+              73,
+              68,
+              255
+            ],
+            "right": [
+              37,
+              50,
+              47,
+              255
+            ]
+          },
+          {
+            "cover": "front",
+            "player": -1,
+            "contours": null,
+            "left": [
+              251,
+              249,
+              243,
+              255
+            ],
+            "center": [
+              251,
+              248,
+              242,
+              255
+            ],
+            "right": [
+              244,
+              239,
+              228,
+              255
+            ]
+          },
+          {
+            "cover": "one",
+            "player": 1,
+            "contours": 0,
+            "left": [
+              62,
+              81,
+              75,
+              41
+            ],
+            "center": [
+              56,
+              75,
+              68,
+              41
+            ],
+            "right": [
+              37,
+              50,
+              50,
+              41
+            ]
+          },
+          {
+            "cover": "one",
+            "player": -1,
+            "contours": 0,
+            "left": [
+              249,
+              249,
+              243,
+              41
+            ],
+            "center": [
+              249,
+              249,
+              243,
+              41
+            ],
+            "right": [
+              243,
+              236,
+              230,
+              41
+            ]
+          },
+          {
+            "cover": "two",
+            "player": 1,
+            "contours": 0,
+            "left": [
+              62,
+              81,
+              75,
+              41
+            ],
+            "center": [
+              56,
+              75,
+              68,
+              41
+            ],
+            "right": [
+              37,
+              50,
+              50,
+              41
+            ]
+          },
+          {
+            "cover": "two",
+            "player": -1,
+            "contours": 0,
+            "left": [
+              249,
+              249,
+              243,
+              41
+            ],
+            "center": [
+              249,
+              249,
+              243,
+              41
+            ],
+            "right": [
+              243,
+              236,
+              230,
+              41
+            ]
+          },
+          {
+            "cover": "two-reversed",
+            "player": 1,
+            "contours": 0,
+            "left": [
+              62,
+              81,
+              75,
+              41
+            ],
+            "center": [
+              56,
+              75,
+              68,
+              41
+            ],
+            "right": [
+              37,
+              50,
+              50,
+              41
+            ]
+          },
+          {
+            "cover": "two-reversed",
+            "player": -1,
+            "contours": 0,
+            "left": [
+              249,
+              249,
+              243,
+              41
+            ],
+            "center": [
+              249,
+              249,
+              243,
+              41
+            ],
+            "right": [
+              243,
+              236,
+              230,
+              41
+            ]
+          },
+          {
+            "cover": "partial",
+            "player": 1,
+            "contours": 1,
+            "left": [
+              64,
+              78,
+              74,
+              255
+            ],
+            "center": [
+              56,
+              75,
+              68,
+              41
+            ],
+            "right": [
+              37,
+              50,
+              50,
+              41
+            ]
+          },
+          {
+            "cover": "partial",
+            "player": -1,
+            "contours": 1,
+            "left": [
+              251,
+              249,
+              243,
+              255
+            ],
+            "center": [
+              249,
+              249,
+              243,
+              41
+            ],
+            "right": [
+              243,
+              236,
+              230,
+              41
+            ]
+          }
+        ]
+      },
+      "screenshot": "after-webkit-2.png"
+    },
+    {
+      "revision": "after",
+      "level": 4,
+      "probe": {
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/26.5 Safari/605.1.15",
+        "dpr": 3,
+        "rows": [
+          {
+            "cover": "front",
+            "player": 1,
+            "contours": null,
+            "left": [
+              64,
+              78,
+              74,
+              255
+            ],
+            "center": [
+              59,
+              73,
+              68,
+              255
+            ],
+            "right": [
+              37,
+              50,
+              47,
+              255
+            ]
+          },
+          {
+            "cover": "front",
+            "player": -1,
+            "contours": null,
+            "left": [
+              251,
+              249,
+              243,
+              255
+            ],
+            "center": [
+              251,
+              248,
+              242,
+              255
+            ],
+            "right": [
+              244,
+              239,
+              228,
+              255
+            ]
+          },
+          {
+            "cover": "one",
+            "player": 1,
+            "contours": 0,
+            "left": [
+              62,
+              81,
+              75,
+              41
+            ],
+            "center": [
+              56,
+              75,
+              68,
+              41
+            ],
+            "right": [
+              37,
+              50,
+              50,
+              41
+            ]
+          },
+          {
+            "cover": "one",
+            "player": -1,
+            "contours": 0,
+            "left": [
+              249,
+              249,
+              243,
+              41
+            ],
+            "center": [
+              249,
+              249,
+              243,
+              41
+            ],
+            "right": [
+              243,
+              236,
+              230,
+              41
+            ]
+          },
+          {
+            "cover": "two",
+            "player": 1,
+            "contours": 0,
+            "left": [
+              62,
+              81,
+              75,
+              41
+            ],
+            "center": [
+              56,
+              75,
+              68,
+              41
+            ],
+            "right": [
+              37,
+              50,
+              50,
+              41
+            ]
+          },
+          {
+            "cover": "two",
+            "player": -1,
+            "contours": 0,
+            "left": [
+              249,
+              249,
+              243,
+              41
+            ],
+            "center": [
+              249,
+              249,
+              243,
+              41
+            ],
+            "right": [
+              243,
+              236,
+              230,
+              41
+            ]
+          },
+          {
+            "cover": "two-reversed",
+            "player": 1,
+            "contours": 0,
+            "left": [
+              62,
+              81,
+              75,
+              41
+            ],
+            "center": [
+              56,
+              75,
+              68,
+              41
+            ],
+            "right": [
+              37,
+              50,
+              50,
+              41
+            ]
+          },
+          {
+            "cover": "two-reversed",
+            "player": -1,
+            "contours": 0,
+            "left": [
+              249,
+              249,
+              243,
+              41
+            ],
+            "center": [
+              249,
+              249,
+              243,
+              41
+            ],
+            "right": [
+              243,
+              236,
+              230,
+              41
+            ]
+          },
+          {
+            "cover": "partial",
+            "player": 1,
+            "contours": 1,
+            "left": [
+              64,
+              78,
+              74,
+              255
+            ],
+            "center": [
+              56,
+              75,
+              68,
+              41
+            ],
+            "right": [
+              37,
+              50,
+              50,
+              41
+            ]
+          },
+          {
+            "cover": "partial",
+            "player": -1,
+            "contours": 1,
+            "left": [
+              251,
+              249,
+              243,
+              255
+            ],
+            "center": [
+              249,
+              249,
+              243,
+              41
+            ],
+            "right": [
+              243,
+              236,
+              230,
+              41
+            ]
+          }
+        ]
+      },
+      "screenshot": "after-webkit-4.png"
+    },
+    {
+      "revision": "after",
+      "level": 5,
+      "probe": {
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/26.5 Safari/605.1.15",
+        "dpr": 3,
+        "rows": [
+          {
+            "cover": "front",
+            "player": 1,
+            "contours": null,
+            "left": [
+              64,
+              78,
+              74,
+              255
+            ],
+            "center": [
+              59,
+              73,
+              68,
+              255
+            ],
+            "right": [
+              37,
+              50,
+              47,
+              255
+            ]
+          },
+          {
+            "cover": "front",
+            "player": -1,
+            "contours": null,
+            "left": [
+              251,
+              249,
+              243,
+              255
+            ],
+            "center": [
+              251,
+              248,
+              242,
+              255
+            ],
+            "right": [
+              244,
+              239,
+              228,
+              255
+            ]
+          },
+          {
+            "cover": "one",
+            "player": 1,
+            "contours": 0,
+            "left": [
+              62,
+              81,
+              75,
+              41
+            ],
+            "center": [
+              56,
+              75,
+              68,
+              41
+            ],
+            "right": [
+              37,
+              50,
+              50,
+              41
+            ]
+          },
+          {
+            "cover": "one",
+            "player": -1,
+            "contours": 0,
+            "left": [
+              249,
+              249,
+              243,
+              41
+            ],
+            "center": [
+              249,
+              249,
+              243,
+              41
+            ],
+            "right": [
+              243,
+              236,
+              230,
+              41
+            ]
+          },
+          {
+            "cover": "two",
+            "player": 1,
+            "contours": 0,
+            "left": [
+              62,
+              81,
+              75,
+              41
+            ],
+            "center": [
+              56,
+              75,
+              68,
+              41
+            ],
+            "right": [
+              37,
+              50,
+              50,
+              41
+            ]
+          },
+          {
+            "cover": "two",
+            "player": -1,
+            "contours": 0,
+            "left": [
+              249,
+              249,
+              243,
+              41
+            ],
+            "center": [
+              249,
+              249,
+              243,
+              41
+            ],
+            "right": [
+              243,
+              236,
+              230,
+              41
+            ]
+          },
+          {
+            "cover": "two-reversed",
+            "player": 1,
+            "contours": 0,
+            "left": [
+              62,
+              81,
+              75,
+              41
+            ],
+            "center": [
+              56,
+              75,
+              68,
+              41
+            ],
+            "right": [
+              37,
+              50,
+              50,
+              41
+            ]
+          },
+          {
+            "cover": "two-reversed",
+            "player": -1,
+            "contours": 0,
+            "left": [
+              249,
+              249,
+              243,
+              41
+            ],
+            "center": [
+              249,
+              249,
+              243,
+              41
+            ],
+            "right": [
+              243,
+              236,
+              230,
+              41
+            ]
+          },
+          {
+            "cover": "partial",
+            "player": 1,
+            "contours": 1,
+            "left": [
+              64,
+              78,
+              74,
+              255
+            ],
+            "center": [
+              56,
+              75,
+              68,
+              41
+            ],
+            "right": [
+              37,
+              50,
+              50,
+              41
+            ]
+          },
+          {
+            "cover": "partial",
+            "player": -1,
+            "contours": 1,
+            "left": [
+              251,
+              249,
+              243,
+              255
+            ],
+            "center": [
+              249,
+              249,
+              243,
+              41
+            ],
+            "right": [
+              243,
+              236,
+              230,
+              41
+            ]
+          }
+        ]
+      },
+      "screenshot": "after-webkit-5.png"
+    }
+  ]
+}

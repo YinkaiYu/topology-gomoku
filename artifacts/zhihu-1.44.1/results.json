@@ -1,0 +1,285 @@
+{
+  "version": "1.44.1",
+  "sourceHead": "e7c2c1c73ec804e0cdab16a874487e0c200df4e8",
+  "browser": "151.0.7922.34",
+  "realDevice": false,
+  "timestamp": "2026-11-11T23:08:20.940Z",
+  "cases": [
+    {
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "embedded": false,
+      "crossOrigin": false,
+      "compactLayout": true,
+      "crossBoundaryWin": true,
+      "persistedProgress": true,
+      "persistedSettings": true,
+      "moves": [
+        {
+          "cell": 26,
+          "player": 1,
+          "won": false
+        },
+        {
+          "cell": 0,
+          "player": -1,
+          "won": false
+        },
+        {
+          "cell": 27,
+          "player": 1,
+          "won": false
+        },
+        {
+          "cell": 2,
+          "player": -1,
+          "won": false
+        },
+        {
+          "cell": 21,
+          "player": 1,
+          "won": false
+        },
+        {
+          "cell": 4,
+          "player": -1,
+          "won": false
+        },
+        {
+          "cell": 22,
+          "player": 1,
+          "won": false
+        },
+        {
+          "cell": 6,
+          "player": -1,
+          "won": false
+        },
+        {
+          "cell": 23,
+          "player": 1,
+          "won": true
+        }
+      ],
+      "trackingTicket": "unmaterialized",
+      "trackingIntercepted": [],
+      "errors": [],
+      "unexpectedExternal": [],
+      "failedRequests": [],
+      "screenshots": [
+        "artifacts/zhihu-1.44.1/top-1280x900-home.png",
+        "artifacts/zhihu-1.44.1/top-1280x900-settings.png",
+        "artifacts/zhihu-1.44.1/top-1280x900-boundary.png"
+      ]
+    },
+    {
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "embedded": true,
+      "crossOrigin": true,
+      "compactLayout": true,
+      "crossBoundaryWin": true,
+      "persistedProgress": true,
+      "persistedSettings": true,
+      "moves": [
+        {
+          "cell": 26,
+          "player": 1,
+          "won": false
+        },
+        {
+          "cell": 0,
+          "player": -1,
+          "won": false
+        },
+        {
+          "cell": 27,
+          "player": 1,
+          "won": false
+        },
+        {
+          "cell": 2,
+          "player": -1,
+          "won": false
+        },
+        {
+          "cell": 21,
+          "player": 1,
+          "won": false
+        },
+        {
+          "cell": 4,
+          "player": -1,
+          "won": false
+        },
+        {
+          "cell": 22,
+          "player": 1,
+          "won": false
+        },
+        {
+          "cell": 6,
+          "player": -1,
+          "won": false
+        },
+        {
+          "cell": 23,
+          "player": 1,
+          "won": true
+        }
+      ],
+      "trackingTicket": "unmaterialized",
+      "trackingIntercepted": [],
+      "errors": [],
+      "unexpectedExternal": [],
+      "failedRequests": [],
+      "screenshots": [
+        "artifacts/zhihu-1.44.1/iframe-1280x900-home.png",
+        "artifacts/zhihu-1.44.1/iframe-1280x900-settings.png",
+        "artifacts/zhihu-1.44.1/iframe-1280x900-boundary.png"
+      ]
+    },
+    {
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "embedded": false,
+      "crossOrigin": false,
+      "compactLayout": true,
+      "crossBoundaryWin": true,
+      "persistedProgress": true,
+      "persistedSettings": true,
+      "moves": [
+        {
+          "cell": 26,
+          "player": 1,
+          "won": false
+        },
+        {
+          "cell": 0,
+          "player": -1,
+          "won": false
+        },
+        {
+          "cell": 27,
+          "player": 1,
+          "won": false
+        },
+        {
+          "cell": 2,
+          "player": -1,
+          "won": false
+        },
+        {
+          "cell": 21,
+          "player": 1,
+          "won": false
+        },
+        {
+          "cell": 4,
+          "player": -1,
+          "won": false
+        },
+        {
+          "cell": 22,
+          "player": 1,
+          "won": false
+        },
+        {
+          "cell": 6,
+          "player": -1,
+          "won": false
+        },
+        {
+          "cell": 23,
+          "player": 1,
+          "won": true
+        }
+      ],
+      "trackingTicket": "unmaterialized",
+      "trackingIntercepted": [],
+      "errors": [],
+      "unexpectedExternal": [],
+      "failedRequests": [],
+      "screenshots": [
+        "artifacts/zhihu-1.44.1/top-390x844-home.png",
+        "artifacts/zhihu-1.44.1/top-390x844-settings.png",
+        "artifacts/zhihu-1.44.1/top-390x844-boundary.png"
+      ]
+    },
+    {
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "embedded": true,
+      "crossOrigin": true,
+      "compactLayout": true,
+      "crossBoundaryWin": true,
+      "persistedProgress": true,
+      "persistedSettings": true,
+      "moves": [
+        {
+          "cell": 26,
+          "player": 1,
+          "won": false
+        },
+        {
+          "cell": 0,
+          "player": -1,
+          "won": false
+        },
+        {
+          "cell": 27,
+          "player": 1,
+          "won": false
+        },
+        {
+          "cell": 2,
+          "player": -1,
+          "won": false
+        },
+        {
+          "cell": 21,
+          "player": 1,
+          "won": false
+        },
+        {
+          "cell": 4,
+          "player": -1,
+          "won": false
+        },
+        {
+          "cell": 22,
+          "player": 1,
+          "won": false
+        },
+        {
+          "cell": 6,
+          "player": -1,
+          "won": false
+        },
+        {
+          "cell": 23,
+          "player": 1,
+          "won": true
+        }
+      ],
+      "trackingTicket": "unmaterialized",
+      "trackingIntercepted": [],
+      "errors": [],
+      "unexpectedExternal": [],
+      "failedRequests": [],
+      "screenshots": [
+        "artifacts/zhihu-1.44.1/iframe-390x844-home.png",
+        "artifacts/zhihu-1.44.1/iframe-390x844-settings.png",
+        "artifacts/zhihu-1.44.1/iframe-390x844-boundary.png"
+      ]
+    }
+  ]
+}
