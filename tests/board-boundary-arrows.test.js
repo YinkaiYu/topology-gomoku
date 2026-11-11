@@ -56,7 +56,7 @@ test("boundary arrows stay attached to their mapped seam and preserve every glui
           .map(fraction => vertical ? first.v + (last.v - first.v) * fraction : first.u + (last.u - first.u) * fraction)
           .filter(amount => {
             const p = pointAt(amount);
-            return Morph.smooth((Morph.seamProgress(type, p.u, p.v, morph) - 0.82) / 0.18) < 1;
+            return Morph.smooth((Morph.boundaryProgress(type, side, amount, morph) - 0.82) / 0.18) < 1;
           });
         assert.equal(fills.length, amounts.length, `${type} ${side} keeps both arrows until their own seam closes at ${morph}`);
         amounts.forEach((amount, index) => {

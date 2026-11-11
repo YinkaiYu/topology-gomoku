@@ -370,3 +370,19 @@
 - 复现：提供 Playwright 到 NODE_PATH 后运行 `node scripts/qa-board-first-frame.cjs`；`--after-only` 保留既有基线、只复验当前代码。源码摘要、区域像素误差和正反向记录见[完整结果](../../artifacts/board-first-frame/results.json)。
 - 实际 H5 页面另覆盖六曲面、1280×720 / 390×844、空盘／静止棋子／正在落子／按压回弹，共 48 组。原二维与往返二维画面全部逐像素一致；进度 0.0000001 的 42 组无像素差，其余仅 1–8 个像素出现约一级色阶差，最大平均 RGB 差 0.000052/255。旧切换阈值附近的最大平均差从 8.07 降到 0.055 以下。网格路径只精简真正共线的绘制分段，保留深度转折、回折和真实遮挡。
 - H5 复现：`node scripts/qa-board-first-frame-h5.cjs`。保留[桌面首步画面](../../artifacts/board-first-frame-h5/after-sphere-first-step-1280x720.png)、[手机首步画面](../../artifacts/board-first-frame-h5/after-sphere-first-step-390x844.png)和[逐状态结果](../../artifacts/board-first-frame-h5/results.json)。此处手机检查针对共享游戏页面，对弈室仍按桌面横屏设计；尚未进行原生宿主真机检查。
+
+### 瓶界、双生展开与跨缝连线
+
+- 瓶界先卷起黄边形成近圆筒，随后弯折长轴、转向接合绿边；双生先卷出半扭转带，再收拢另一组翻转边。两段错峰重叠，沿空间弧线舒展，瓶界截面进一步调圆；瓶界的绿边图册接缝移到瓶底内部，网格与棋子沿新图册分布，规则与棋谱坐标不变。边界箭头全程随曲面移动。
+- 手动拖动在所有非零展开进度使用相同角度增量；滑块改变形态时保留当前姿态，回到纯二维时平滑收回。覆盖 1% 等低进度及回看中的转动，纯二维仍不可旋转。
+- 基线 `f18967c`，400×370 单画布的八帧同状态对照：[瓶界之前](../../artifacts/klein-unfold/before.png)、[瓶界之后](../../artifacts/klein-unfold/after.png)、[双生之前](../../artifacts/klein-unfold/before-projective.png)、[双生之后](../../artifacts/klein-unfold/after-projective.png)。复现：提供 Playwright 到 NODE_PATH 后运行 `node scripts/qa-klein-unfold.cjs`。
+- 归圆 7×7、17 手复现棋谱仅保留落子数组，不含账户或凭证。60%、85%、100% 展开对照：[之前](../../artifacts/klein-unfold/before-sphere-win.png)、[之后](../../artifacts/klein-unfold/after-sphere-win.png)。跨图跳跃明确标记，不因两端 UV 距离小而重采样为棋盘内部路径；另修正斜向步跨左／右边时错误选择上／下边的情况。
+- 六种曲面、桌面与手机视口、空盘／静止棋子／正在落子／按压回弹共 48 组真实 H5 首帧检查通过，原二维画面与往返二维逐像素一致；近零帧最大平均色差约 0.000052/255。复现：`node scripts/qa-board-first-frame-h5.cjs --baseline=f18967c --out=artifacts/klein-unfold/first-frame`，[结果](../../artifacts/klein-unfold/first-frame/results.json)。未进行平台原生真机检查。
+
+- 瓶界改用均匀圆弧形成中段管身与回转瓶颈，瓶肚末段随收拢小幅舒展回落，横向加宽并收敛原先偏深的截面。60%–100% 的密集对照：[之前](../../artifacts/klein-unfold/before-klein-closing.png)、[之后](../../artifacts/klein-unfold/after-klein-closing.png)。双生绿边直接收拢，不先拉伸，从箭头到箭尾逐段接合：[之前](../../artifacts/klein-unfold/before-projective-closing.png)、[之后](../../artifacts/klein-unfold/after-projective-closing.png)。同一脚本可复现上述对照。
+- 独立三维面片相交检查覆盖两个视角：瓶界前 80%、双生前 70% 每 5% 一帧无额外自交；瓶界 85%、90%、95%、100% 的相交均来自瓶颈与瓶身之间，无局部翻折。另验证 48%–75% 的截面厚度、瓶底接缝位置、双生绿边的闭合顺序和黄边持续接合。这里只报告采样检查，不声称双生的全部中间形态无自交。
+- 最终共享回归通过 249 项自动测试、资源校验与文档校验；48 组 H5 首帧与二维往返检查通过。
+
+## 1.44.0 xiaohongshu 发行验证
+
+249 项测试、资源校验、构建及官方目录和 ZIP 审计通过。用户确认本次上传包手机预览通过，1.44.0 已提交审核。既有 Chrome 61 与 Storage bridge 兼容限制未在本轮解决。
