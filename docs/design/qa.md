@@ -404,3 +404,25 @@
 ## 1.44.0 web 发行验证
 
 249 项测试通过。网站部署 225737a，Pages 成功。1440×900、390×844 本地与线上检查通过，线上覆盖 8 个棋局。证据：artifacts/release-web-1.44.0/results.json 和 online-results.json。
+
+## 2026-11-12：iPhone 背面棋子遮挡修复
+
+- 任务分支 `codex/stone-self-intersection`，基线 `973a688`。用户在同一台 iPhone 的小红书和 Safari 上观察到背面棋子仍然不透明；回廊的单层遮挡也能出现，范围不限于双生、瓶界或曲面自交。
+- 完全遮住的棋子与局部遮住的部分统一为无投影的淡色绘制。原完全遮住分支仍会画投影，部分遮挡分支则不会。同机 A/B 已验证去除完全遮住分支的投影后异常消失；具体浏览器底层的渐变、投影与透明度组合原因尚未独立定位。
+- 使用真实 H5 绘制入口，390×844、设备像素比 3、完整三维；固定重建用户的 7×6 二十子瓶界与单子回廊，另覆盖环游、双生。相同局面、视角和时间分别运行桌面 Chromium 与 Playwright WebKit，各 8 个前后状态、80 项像素探测。桌面基线未复现手机的不透明异常；iPhone 的有效性另由下述用户真机对照确认。
+
+| 相同状态 | 修改前 | 修改后 |
+| --- | --- | --- |
+| 回廊，WebKit | [单子](../../artifacts/stone-self-intersection/before-webkit-1.png) | [单子](../../artifacts/stone-self-intersection/after-webkit-1.png) |
+| 环游，WebKit | [二十子](../../artifacts/stone-self-intersection/before-webkit-2.png) | [二十子](../../artifacts/stone-self-intersection/after-webkit-2.png) |
+| 瓶界，WebKit | [用户局面](../../artifacts/stone-self-intersection/before-webkit-4.png) | [用户局面](../../artifacts/stone-self-intersection/after-webkit-4.png) |
+| 双生，Chromium | [二十子](../../artifacts/stone-self-intersection/before-chromium-5.png) | [二十子](../../artifacts/stone-self-intersection/after-chromium-5.png) |
+
+- 黑白棋分别探测无遮挡、单层、双层、倒序双层和局部遮挡。修改后，无遮部分 alpha 为 255，遮住部分约为 41/255；遮挡层数和提交顺序不使棋子重新变实。正式测试同时检查部分遮挡轮廓与恢复绘制状态。250 项自动测试、资源校验和小红书构建通过。
+- 复现：提供 Playwright 到 `NODE_PATH`，运行 `node scripts/qa-stone-self-intersection.cjs`，追加 `--webkit` 检查 WebKit。源码摘要、固定棋谱、姿态和逐像素读数见 [Chromium 结果](../../artifacts/stone-self-intersection/results-chromium.json)与 [WebKit 结果](../../artifacts/stone-self-intersection/results-webkit.json)。这些是桌面浏览器结果，不是 iPhone 验收。
+- 手机与电脑不在同一局域网，改用独立小红书预览包：`--package-preview` 在忽略目录生成实际游戏的 A/B 对照副本，A 仅替换回基线 `paintStone`，B 使用修正，底部提供四关切换及透明度读数。测试控件不进入正式 `app/`；包通过目录与 ZIP 校验。
+- 真机确认：2026-11-12，用户在原 iPhone 上对照后确认「B 正常，A 仍有异常」。预览包 SHA-256 为 `c2255a74623d3a1ef66db8381cfb6b089e5724a4c532315ba8d3631bf6760008`。用户未提供 A/B 像素读数，因此没有将桌面读数当作手机实测值；也未将这次小红书预览扩展为 Safari 修正版或其他设备的验收。此次只确认共享修复，正式渠道版本另行发布。
+
+## 1.44.1 web 发行验证
+
+250 项测试及构建通过。网站部署 21150e3，Pages 43117683312 成功；桌面和移动本地检查及线上八场景通过，见 [线上结果](../../artifacts/release-web-1.44.1/online-results.json)。

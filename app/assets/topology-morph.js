@@ -1797,7 +1797,9 @@
     var contours = depth ? stoneContours(depth, point, radius) : null;
     if (!contours) { paint(); return; }
     if (!contours.length) {
-      if (depth.translucency) { ctx.save(); ctx.globalAlpha *= depth.translucency; paint(); ctx.restore(); }
+      // Behind the sheet, retain only the faint face. Use the same no-shadow
+      // pass as partial coverage; a cast shadow must not sit on the front sheet.
+      if (depth.translucency) { ctx.save(); ctx.globalAlpha *= depth.translucency; paint(false); ctx.restore(); }
       return;
     }
     // The soft cast shadow does not need surface tessellation. Draw it once
