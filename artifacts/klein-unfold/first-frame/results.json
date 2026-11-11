@@ -1,0 +1,2866 @@
+{
+  "baseline": "f18967c",
+  "fixture": {
+    "moves": [
+      0,
+      8,
+      2,
+      10,
+      14,
+      23,
+      18,
+      31
+    ],
+    "time": 20000,
+    "modes": [
+      "empty",
+      "rest",
+      "drop",
+      "press"
+    ]
+  },
+  "comparison": "RGB composited over white; 0–255 channel scale",
+  "sources": {
+    "game": "e88622a62d3a5eadb12c2eccdf598fe40cf706923f3caff90f0ee556c6ac48cc",
+    "board-art": "35ce8bb5b030a7c174dff543a0f9ed884dc40c9f4484e31f43307d1aecd0c8eb",
+    "topology-morph": "b57a9956e16728564f293aa4a95b8f8b06129f28dd104b56d1d936bb56cd7157"
+  },
+  "cases": [
+    {
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "topology": "cylinder",
+      "mode": "empty",
+      "canvas": {
+        "width": 464,
+        "height": 362
+      },
+      "flatSha256": "51bf5a9e04b915f8a7c6694e560039051e7135f9b5f27b311fe3ad7df8c7a642",
+      "flatUnchanged": true,
+      "roundTripIdentical": true,
+      "beforeFirstStep": {
+        "morph": 0.0011,
+        "meanRgbDifference": 0.032610895695041844,
+        "maximumChannelDifference": 5.090196078431404,
+        "changedPixels": 8948
+      },
+      "after": [
+        {
+          "morph": 1e-7,
+          "meanRgbDifference": 0,
+          "maximumChannelDifference": 0,
+          "changedPixels": 0
+        },
+        {
+          "morph": 0.00001,
+          "meanRgbDifference": 0,
+          "maximumChannelDifference": 0,
+          "changedPixels": 0
+        },
+        {
+          "morph": 0.001,
+          "meanRgbDifference": 0.028312395638385644,
+          "maximumChannelDifference": 5.090196078431404,
+          "changedPixels": 7867
+        },
+        {
+          "morph": 0.0011,
+          "meanRgbDifference": 0.032610895695041844,
+          "maximumChannelDifference": 5.090196078431404,
+          "changedPixels": 8948
+        },
+        {
+          "morph": 0.005,
+          "meanRgbDifference": 0.12484823595405872,
+          "maximumChannelDifference": 26.968627450980364,
+          "changedPixels": 10355
+        },
+        {
+          "morph": 0.02,
+          "meanRgbDifference": 2.331333862846095,
+          "maximumChannelDifference": 135.96078431372547,
+          "changedPixels": 72117
+        }
+      ]
+    },
+    {
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "topology": "cylinder",
+      "mode": "rest",
+      "canvas": {
+        "width": 464,
+        "height": 362
+      },
+      "flatSha256": "6c3df59559eed277d452435064d27a8dd0184c7fea901f57e5799f0f96ac2195",
+      "flatUnchanged": true,
+      "roundTripIdentical": true,
+      "beforeFirstStep": {
+        "morph": 0.0011,
+        "meanRgbDifference": 0.03472333510148844,
+        "maximumChannelDifference": 11.152941176470563,
+        "changedPixels": 8848
+      },
+      "after": [
+        {
+          "morph": 1e-7,
+          "meanRgbDifference": 0,
+          "maximumChannelDifference": 0,
+          "changedPixels": 0
+        },
+        {
+          "morph": 0.00001,
+          "meanRgbDifference": 0.00002390744829080425,
+          "maximumChannelDifference": 2.1137254901960887,
+          "changedPixels": 4
+        },
+        {
+          "morph": 0.001,
+          "meanRgbDifference": 0.029332080993953465,
+          "maximumChannelDifference": 11.152941176470563,
+          "changedPixels": 7566
+        },
+        {
+          "morph": 0.0011,
+          "meanRgbDifference": 0.03472333510148844,
+          "maximumChannelDifference": 11.152941176470563,
+          "changedPixels": 8848
+        },
+        {
+          "morph": 0.005,
+          "meanRgbDifference": 0.15232964542263544,
+          "maximumChannelDifference": 49.76470588235293,
+          "changedPixels": 13557
+        },
+        {
+          "morph": 0.02,
+          "meanRgbDifference": 2.5017125811079257,
+          "maximumChannelDifference": 193.27058823529416,
+          "changedPixels": 80203
+        }
+      ]
+    },
+    {
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "topology": "cylinder",
+      "mode": "drop",
+      "canvas": {
+        "width": 464,
+        "height": 362
+      },
+      "flatSha256": "20611f1895afe3421fd66a5758ee6e1cd159f237707304b0baa3e5658ccad974",
+      "flatUnchanged": true,
+      "roundTripIdentical": true,
+      "beforeFirstStep": {
+        "morph": 0.0011,
+        "meanRgbDifference": 0.034567765475403474,
+        "maximumChannelDifference": 11.152941176470563,
+        "changedPixels": 8817
+      },
+      "after": [
+        {
+          "morph": 1e-7,
+          "meanRgbDifference": 0,
+          "maximumChannelDifference": 0,
+          "changedPixels": 0
+        },
+        {
+          "morph": 0.00001,
+          "meanRgbDifference": 0.000028242229768010734,
+          "maximumChannelDifference": 2.1137254901960887,
+          "changedPixels": 4
+        },
+        {
+          "morph": 0.001,
+          "meanRgbDifference": 0.029350159445248894,
+          "maximumChannelDifference": 11.152941176470563,
+          "changedPixels": 7568
+        },
+        {
+          "morph": 0.0011,
+          "meanRgbDifference": 0.034567765475403474,
+          "maximumChannelDifference": 11.152941176470563,
+          "changedPixels": 8817
+        },
+        {
+          "morph": 0.005,
+          "meanRgbDifference": 0.1532842312323192,
+          "maximumChannelDifference": 49.76470588235293,
+          "changedPixels": 13448
+        },
+        {
+          "morph": 0.02,
+          "meanRgbDifference": 2.5017394069459025,
+          "maximumChannelDifference": 193.27058823529416,
+          "changedPixels": 80237
+        }
+      ]
+    },
+    {
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "topology": "cylinder",
+      "mode": "press",
+      "canvas": {
+        "width": 464,
+        "height": 362
+      },
+      "flatSha256": "ed8befb9d09fdada2e456e3b0bea433095024b295c0890d8c4363962c260c078",
+      "flatUnchanged": true,
+      "roundTripIdentical": true,
+      "beforeFirstStep": {
+        "morph": 0.0011,
+        "meanRgbDifference": 0.03461337796057025,
+        "maximumChannelDifference": 11.152941176470563,
+        "changedPixels": 8827
+      },
+      "after": [
+        {
+          "morph": 1e-7,
+          "meanRgbDifference": 0,
+          "maximumChannelDifference": 0,
+          "changedPixels": 0
+        },
+        {
+          "morph": 0.00001,
+          "meanRgbDifference": 0.000019938438320651206,
+          "maximumChannelDifference": 2.1137254901960887,
+          "changedPixels": 2
+        },
+        {
+          "morph": 0.001,
+          "meanRgbDifference": 0.02939712606322901,
+          "maximumChannelDifference": 11.152941176470563,
+          "changedPixels": 7581
+        },
+        {
+          "morph": 0.0011,
+          "meanRgbDifference": 0.03461337796057025,
+          "maximumChannelDifference": 11.152941176470563,
+          "changedPixels": 8827
+        },
+        {
+          "morph": 0.005,
+          "meanRgbDifference": 0.15210494498171767,
+          "maximumChannelDifference": 49.76470588235293,
+          "changedPixels": 13524
+        },
+        {
+          "morph": 0.02,
+          "meanRgbDifference": 2.5014891180642365,
+          "maximumChannelDifference": 193.27058823529416,
+          "changedPixels": 80124
+        }
+      ]
+    },
+    {
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "topology": "torus",
+      "mode": "empty",
+      "canvas": {
+        "width": 464,
+        "height": 362
+      },
+      "flatSha256": "43ab86a894afda311b36b5a6a982bd60865dc256b589dd60b3b40ebcadae4ba1",
+      "flatUnchanged": true,
+      "roundTripIdentical": true,
+      "beforeFirstStep": {
+        "morph": 0.0011,
+        "meanRgbDifference": 0.036334994402918167,
+        "maximumChannelDifference": 5.090196078431404,
+        "changedPixels": 9821
+      },
+      "after": [
+        {
+          "morph": 1e-7,
+          "meanRgbDifference": 0,
+          "maximumChannelDifference": 0,
+          "changedPixels": 0
+        },
+        {
+          "morph": 0.00001,
+          "meanRgbDifference": 0,
+          "maximumChannelDifference": 0,
+          "changedPixels": 0
+        },
+        {
+          "morph": 0.001,
+          "meanRgbDifference": 0.031178277655129306,
+          "maximumChannelDifference": 5.090196078431404,
+          "changedPixels": 8521
+        },
+        {
+          "morph": 0.0011,
+          "meanRgbDifference": 0.036334994402918167,
+          "maximumChannelDifference": 5.090196078431404,
+          "changedPixels": 9821
+        },
+        {
+          "morph": 0.005,
+          "meanRgbDifference": 0.14541114740808248,
+          "maximumChannelDifference": 22.799999999999955,
+          "changedPixels": 11551
+        },
+        {
+          "morph": 0.02,
+          "meanRgbDifference": 3.1544975731449574,
+          "maximumChannelDifference": 137.11764705882354,
+          "changedPixels": 87861
+        }
+      ]
+    },
+    {
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "topology": "torus",
+      "mode": "rest",
+      "canvas": {
+        "width": 464,
+        "height": 362
+      },
+      "flatSha256": "1d2a790da5ff88b377be83b488da44c3cf8bf1be132736434f119660a512b639",
+      "flatUnchanged": true,
+      "roundTripIdentical": true,
+      "beforeFirstStep": {
+        "morph": 0.0011,
+        "meanRgbDifference": 0.03822544163407466,
+        "maximumChannelDifference": 11.152941176470563,
+        "changedPixels": 9664
+      },
+      "after": [
+        {
+          "morph": 1e-7,
+          "meanRgbDifference": 0,
+          "maximumChannelDifference": 0,
+          "changedPixels": 0
+        },
+        {
+          "morph": 0.00001,
+          "meanRgbDifference": 0.00002390744829080425,
+          "maximumChannelDifference": 2.1137254901960887,
+          "changedPixels": 4
+        },
+        {
+          "morph": 0.001,
+          "meanRgbDifference": 0.031979496250143284,
+          "maximumChannelDifference": 11.152941176470563,
+          "changedPixels": 8166
+        },
+        {
+          "morph": 0.0011,
+          "meanRgbDifference": 0.03822544163407466,
+          "maximumChannelDifference": 11.152941176470563,
+          "changedPixels": 9664
+        },
+        {
+          "morph": 0.005,
+          "meanRgbDifference": 0.17174849364394584,
+          "maximumChannelDifference": 49.76470588235293,
+          "changedPixels": 14731
+        },
+        {
+          "morph": 0.02,
+          "meanRgbDifference": 3.311253925428643,
+          "maximumChannelDifference": 198.19607843137254,
+          "changedPixels": 95286
+        }
+      ]
+    },
+    {
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "topology": "torus",
+      "mode": "drop",
+      "canvas": {
+        "width": 464,
+        "height": 362
+      },
+      "flatSha256": "8caeb96a5fd1c217616b5d321892b428f5455c28cad1232e4c0ed7095305ef1a",
+      "flatUnchanged": true,
+      "roundTripIdentical": true,
+      "beforeFirstStep": {
+        "morph": 0.0011,
+        "meanRgbDifference": 0.03806987200798965,
+        "maximumChannelDifference": 11.152941176470563,
+        "changedPixels": 9633
+      },
+      "after": [
+        {
+          "morph": 1e-7,
+          "meanRgbDifference": 0,
+          "maximumChannelDifference": 0,
+          "changedPixels": 0
+        },
+        {
+          "morph": 0.00001,
+          "meanRgbDifference": 0.000028242229768010734,
+          "maximumChannelDifference": 2.1137254901960887,
+          "changedPixels": 4
+        },
+        {
+          "morph": 0.001,
+          "meanRgbDifference": 0.031997574701438714,
+          "maximumChannelDifference": 11.152941176470563,
+          "changedPixels": 8168
+        },
+        {
+          "morph": 0.0011,
+          "meanRgbDifference": 0.03806987200798965,
+          "maximumChannelDifference": 11.152941176470563,
+          "changedPixels": 9633
+        },
+        {
+          "morph": 0.005,
+          "meanRgbDifference": 0.1726987602368979,
+          "maximumChannelDifference": 49.76470588235293,
+          "changedPixels": 14620
+        },
+        {
+          "morph": 0.02,
+          "meanRgbDifference": 3.3112853350840235,
+          "maximumChannelDifference": 198.19607843137254,
+          "changedPixels": 95322
+        }
+      ]
+    },
+    {
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "topology": "torus",
+      "mode": "press",
+      "canvas": {
+        "width": 464,
+        "height": 362
+      },
+      "flatSha256": "bfee5afb924b978b66b7b0014f076cd38e91267851a6a715a8ef6dfc1b8711c2",
+      "flatUnchanged": true,
+      "roundTripIdentical": true,
+      "beforeFirstStep": {
+        "morph": 0.0011,
+        "meanRgbDifference": 0.03811548449315643,
+        "maximumChannelDifference": 11.152941176470563,
+        "changedPixels": 9643
+      },
+      "after": [
+        {
+          "morph": 1e-7,
+          "meanRgbDifference": 0,
+          "maximumChannelDifference": 0,
+          "changedPixels": 0
+        },
+        {
+          "morph": 0.00001,
+          "meanRgbDifference": 0.000019938438320651206,
+          "maximumChannelDifference": 2.1137254901960887,
+          "changedPixels": 2
+        },
+        {
+          "morph": 0.001,
+          "meanRgbDifference": 0.032044541319418834,
+          "maximumChannelDifference": 11.152941176470563,
+          "changedPixels": 8181
+        },
+        {
+          "morph": 0.0011,
+          "meanRgbDifference": 0.03811548449315643,
+          "maximumChannelDifference": 11.152941176470563,
+          "changedPixels": 9643
+        },
+        {
+          "morph": 0.005,
+          "meanRgbDifference": 0.17151783968807274,
+          "maximumChannelDifference": 49.76470588235293,
+          "changedPixels": 14695
+        },
+        {
+          "morph": 0.02,
+          "meanRgbDifference": 3.311581594439988,
+          "maximumChannelDifference": 198.19607843137254,
+          "changedPixels": 95212
+        }
+      ]
+    },
+    {
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "topology": "mobius",
+      "mode": "empty",
+      "canvas": {
+        "width": 464,
+        "height": 362
+      },
+      "flatSha256": "f5c6eac10ba6caf217c33a1788a5c1721cfebc9d940da9c39260ec3123eb0331",
+      "flatUnchanged": true,
+      "roundTripIdentical": true,
+      "beforeFirstStep": {
+        "morph": 0.0011,
+        "meanRgbDifference": 0.03762309378568568,
+        "maximumChannelDifference": 3.8588235294117794,
+        "changedPixels": 10685
+      },
+      "after": [
+        {
+          "morph": 1e-7,
+          "meanRgbDifference": 0,
+          "maximumChannelDifference": 0,
+          "changedPixels": 0
+        },
+        {
+          "morph": 0.00001,
+          "meanRgbDifference": 0,
+          "maximumChannelDifference": 0,
+          "changedPixels": 0
+        },
+        {
+          "morph": 0.001,
+          "meanRgbDifference": 0.03766696301941559,
+          "maximumChannelDifference": 3.8588235294117794,
+          "changedPixels": 10682
+        },
+        {
+          "morph": 0.0011,
+          "meanRgbDifference": 0.03762309378568568,
+          "maximumChannelDifference": 3.8588235294117794,
+          "changedPixels": 10685
+        },
+        {
+          "morph": 0.005,
+          "meanRgbDifference": 0.10265906546780483,
+          "maximumChannelDifference": 11.043137254901978,
+          "changedPixels": 10970
+        },
+        {
+          "morph": 0.02,
+          "meanRgbDifference": 1.9406050265409989,
+          "maximumChannelDifference": 114.02352941176474,
+          "changedPixels": 78030
+        }
+      ]
+    },
+    {
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "topology": "mobius",
+      "mode": "rest",
+      "canvas": {
+        "width": 464,
+        "height": 362
+      },
+      "flatSha256": "1cc7aa1d920941e558711f33139c1e6d34a580510f46e2997b0759189e8f477b",
+      "flatUnchanged": true,
+      "roundTripIdentical": true,
+      "beforeFirstStep": {
+        "morph": 0.0011,
+        "meanRgbDifference": 0.03570620983517904,
+        "maximumChannelDifference": 12.956862745098022,
+        "changedPixels": 9774
+      },
+      "after": [
+        {
+          "morph": 1e-7,
+          "meanRgbDifference": 0.000005953514955229568,
+          "maximumChannelDifference": 1,
+          "changedPixels": 1
+        },
+        {
+          "morph": 0.00001,
+          "meanRgbDifference": 0.00003175207976122436,
+          "maximumChannelDifference": 1,
+          "changedPixels": 6
+        },
+        {
+          "morph": 0.001,
+          "meanRgbDifference": 0.03560543589380017,
+          "maximumChannelDifference": 12.956862745098022,
+          "changedPixels": 9736
+        },
+        {
+          "morph": 0.0011,
+          "meanRgbDifference": 0.03570620983517904,
+          "maximumChannelDifference": 12.956862745098022,
+          "changedPixels": 9774
+        },
+        {
+          "morph": 0.005,
+          "meanRgbDifference": 0.12733307744891045,
+          "maximumChannelDifference": 48.176470588235304,
+          "changedPixels": 14017
+        },
+        {
+          "morph": 0.02,
+          "meanRgbDifference": 2.0842260726287876,
+          "maximumChannelDifference": 181.79607843137256,
+          "changedPixels": 86803
+        }
+      ]
+    },
+    {
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "topology": "mobius",
+      "mode": "drop",
+      "canvas": {
+        "width": 464,
+        "height": 362
+      },
+      "flatSha256": "5e88c849cc7b14cc63dcff31111dfbff1554e7f66b495382114619e1a1c4a66f",
+      "flatUnchanged": true,
+      "roundTripIdentical": true,
+      "beforeFirstStep": {
+        "morph": 0.0011,
+        "meanRgbDifference": 0.03579437633312385,
+        "maximumChannelDifference": 12.956862745098022,
+        "changedPixels": 9783
+      },
+      "after": [
+        {
+          "morph": 1e-7,
+          "meanRgbDifference": 0.000005953514955229568,
+          "maximumChannelDifference": 1,
+          "changedPixels": 1
+        },
+        {
+          "morph": 0.00001,
+          "meanRgbDifference": 0.00003175207976122436,
+          "maximumChannelDifference": 1,
+          "changedPixels": 6
+        },
+        {
+          "morph": 0.001,
+          "meanRgbDifference": 0.03569751692510766,
+          "maximumChannelDifference": 12.956862745098022,
+          "changedPixels": 9741
+        },
+        {
+          "morph": 0.0011,
+          "meanRgbDifference": 0.03579437633312385,
+          "maximumChannelDifference": 12.956862745098022,
+          "changedPixels": 9783
+        },
+        {
+          "morph": 0.005,
+          "meanRgbDifference": 0.12685200231103763,
+          "maximumChannelDifference": 48.176470588235304,
+          "changedPixels": 13985
+        },
+        {
+          "morph": 0.02,
+          "meanRgbDifference": 2.0853838250547097,
+          "maximumChannelDifference": 181.79607843137256,
+          "changedPixels": 86720
+        }
+      ]
+    },
+    {
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "topology": "mobius",
+      "mode": "press",
+      "canvas": {
+        "width": 464,
+        "height": 362
+      },
+      "flatSha256": "0182972e75229ab477d1d5db47433ee62846c15f12bae75d3563fe088895fec3",
+      "flatUnchanged": true,
+      "roundTripIdentical": true,
+      "beforeFirstStep": {
+        "morph": 0.0011,
+        "meanRgbDifference": 0.035721120860870856,
+        "maximumChannelDifference": 12.956862745098022,
+        "changedPixels": 9777
+      },
+      "after": [
+        {
+          "morph": 1e-7,
+          "meanRgbDifference": 0.000005953514955229568,
+          "maximumChannelDifference": 1,
+          "changedPixels": 1
+        },
+        {
+          "morph": 0.00001,
+          "meanRgbDifference": 0.00003175207976122436,
+          "maximumChannelDifference": 1,
+          "changedPixels": 6
+        },
+        {
+          "morph": 0.001,
+          "meanRgbDifference": 0.035594602831293405,
+          "maximumChannelDifference": 12.956862745098022,
+          "changedPixels": 9730
+        },
+        {
+          "morph": 0.0011,
+          "meanRgbDifference": 0.035721120860870856,
+          "maximumChannelDifference": 12.956862745098022,
+          "changedPixels": 9777
+        },
+        {
+          "morph": 0.005,
+          "meanRgbDifference": 0.12678374312192356,
+          "maximumChannelDifference": 48.176470588235304,
+          "changedPixels": 14029
+        },
+        {
+          "morph": 0.02,
+          "meanRgbDifference": 2.0839901577891116,
+          "maximumChannelDifference": 181.79607843137256,
+          "changedPixels": 86680
+        }
+      ]
+    },
+    {
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "topology": "klein",
+      "mode": "empty",
+      "canvas": {
+        "width": 464,
+        "height": 362
+      },
+      "flatSha256": "7aa535eb05c215ec5d0b60cf54ee1b687c5f46b9e8831eb0bc30c5cc56f3c67f",
+      "flatUnchanged": true,
+      "roundTripIdentical": true,
+      "beforeFirstStep": {
+        "morph": 0.0011,
+        "meanRgbDifference": 0.035203818779052605,
+        "maximumChannelDifference": 5.090196078431404,
+        "changedPixels": 9454
+      },
+      "after": [
+        {
+          "morph": 1e-7,
+          "meanRgbDifference": 0,
+          "maximumChannelDifference": 0,
+          "changedPixels": 0
+        },
+        {
+          "morph": 0.00001,
+          "meanRgbDifference": 0,
+          "maximumChannelDifference": 0,
+          "changedPixels": 0
+        },
+        {
+          "morph": 0.001,
+          "meanRgbDifference": 0.03251140584512365,
+          "maximumChannelDifference": 5.090196078431404,
+          "changedPixels": 8842
+        },
+        {
+          "morph": 0.0011,
+          "meanRgbDifference": 0.0350865384256207,
+          "maximumChannelDifference": 5.090196078431404,
+          "changedPixels": 9446
+        },
+        {
+          "morph": 0.005,
+          "meanRgbDifference": 0.13777602518748527,
+          "maximumChannelDifference": 22.799999999999955,
+          "changedPixels": 11284
+        },
+        {
+          "morph": 0.02,
+          "meanRgbDifference": 3.1294872926310626,
+          "maximumChannelDifference": 148.156862745098,
+          "changedPixels": 87280
+        }
+      ]
+    },
+    {
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "topology": "klein",
+      "mode": "rest",
+      "canvas": {
+        "width": 464,
+        "height": 362
+      },
+      "flatSha256": "c3e86bbc799565c02a2cf93ddfdaa2ceb764e1ebf94a65e6fe46ce67c5398d2e",
+      "flatUnchanged": true,
+      "roundTripIdentical": true,
+      "beforeFirstStep": {
+        "morph": 0.0011,
+        "meanRgbDifference": 0.037318515073522386,
+        "maximumChannelDifference": 11.152941176470563,
+        "changedPixels": 9297
+      },
+      "after": [
+        {
+          "morph": 1e-7,
+          "meanRgbDifference": 0,
+          "maximumChannelDifference": 0,
+          "changedPixels": 0
+        },
+        {
+          "morph": 0.00001,
+          "meanRgbDifference": 0.00002390744829080425,
+          "maximumChannelDifference": 2.1137254901960887,
+          "changedPixels": 4
+        },
+        {
+          "morph": 0.001,
+          "meanRgbDifference": 0.0333119395913582,
+          "maximumChannelDifference": 11.152941176470563,
+          "changedPixels": 8484
+        },
+        {
+          "morph": 0.0011,
+          "meanRgbDifference": 0.03696516423296361,
+          "maximumChannelDifference": 11.152941176470563,
+          "changedPixels": 9293
+        },
+        {
+          "morph": 0.005,
+          "meanRgbDifference": 0.16522939476798235,
+          "maximumChannelDifference": 49.76470588235293,
+          "changedPixels": 14631
+        },
+        {
+          "morph": 0.02,
+          "meanRgbDifference": 3.3061508136627062,
+          "maximumChannelDifference": 202.16470588235296,
+          "changedPixels": 94886
+        }
+      ]
+    },
+    {
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "topology": "klein",
+      "mode": "drop",
+      "canvas": {
+        "width": 464,
+        "height": 362
+      },
+      "flatSha256": "15df1a77c808409e3c0947e90ae988f85df54f774e2e76abe9b75efcdd76b8ed",
+      "flatUnchanged": true,
+      "roundTripIdentical": true,
+      "beforeFirstStep": {
+        "morph": 0.0011,
+        "meanRgbDifference": 0.03716159131462406,
+        "maximumChannelDifference": 11.152941176470563,
+        "changedPixels": 9265
+      },
+      "after": [
+        {
+          "morph": 1e-7,
+          "meanRgbDifference": 0,
+          "maximumChannelDifference": 0,
+          "changedPixels": 0
+        },
+        {
+          "morph": 0.00001,
+          "meanRgbDifference": 0.000028242229768010734,
+          "maximumChannelDifference": 2.1137254901960887,
+          "changedPixels": 4
+        },
+        {
+          "morph": 0.001,
+          "meanRgbDifference": 0.03333001804265363,
+          "maximumChannelDifference": 11.152941176470563,
+          "changedPixels": 8486
+        },
+        {
+          "morph": 0.0011,
+          "meanRgbDifference": 0.03680761010189358,
+          "maximumChannelDifference": 11.152941176470563,
+          "changedPixels": 9261
+        },
+        {
+          "morph": 0.005,
+          "meanRgbDifference": 0.16620374780378885,
+          "maximumChannelDifference": 49.76470588235293,
+          "changedPixels": 14523
+        },
+        {
+          "morph": 0.02,
+          "meanRgbDifference": 3.307082558209137,
+          "maximumChannelDifference": 202.16470588235296,
+          "changedPixels": 94906
+        }
+      ]
+    },
+    {
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "topology": "klein",
+      "mode": "press",
+      "canvas": {
+        "width": 464,
+        "height": 362
+      },
+      "flatSha256": "e67039b44db2a0668249ef24a11cc829360683d07effd67df3dfe3b6e31be6e6",
+      "flatUnchanged": true,
+      "roundTripIdentical": true,
+      "beforeFirstStep": {
+        "morph": 0.0011,
+        "meanRgbDifference": 0.03719665090269372,
+        "maximumChannelDifference": 11.152941176470563,
+        "changedPixels": 9270
+      },
+      "after": [
+        {
+          "morph": 1e-7,
+          "meanRgbDifference": 0,
+          "maximumChannelDifference": 0,
+          "changedPixels": 0
+        },
+        {
+          "morph": 0.00001,
+          "meanRgbDifference": 0.000019938438320651206,
+          "maximumChannelDifference": 2.1137254901960887,
+          "changedPixels": 2
+        },
+        {
+          "morph": 0.001,
+          "meanRgbDifference": 0.03336654849912399,
+          "maximumChannelDifference": 11.152941176470563,
+          "changedPixels": 8497
+        },
+        {
+          "morph": 0.0011,
+          "meanRgbDifference": 0.03685322258706034,
+          "maximumChannelDifference": 11.152941176470563,
+          "changedPixels": 9271
+        },
+        {
+          "morph": 0.005,
+          "meanRgbDifference": 0.1649980326162126,
+          "maximumChannelDifference": 49.76470588235293,
+          "changedPixels": 14597
+        },
+        {
+          "morph": 0.02,
+          "meanRgbDifference": 3.3060039680761837,
+          "maximumChannelDifference": 202.16470588235296,
+          "changedPixels": 94806
+        }
+      ]
+    },
+    {
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "topology": "projective",
+      "mode": "empty",
+      "canvas": {
+        "width": 464,
+        "height": 362
+      },
+      "flatSha256": "6194ce50f3e4aa144741e4b937175ae0fdff3a6ff3bc5c7c3d8fbf49eac9c94d",
+      "flatUnchanged": true,
+      "roundTripIdentical": true,
+      "beforeFirstStep": {
+        "morph": 0.0011,
+        "meanRgbDifference": 0.027788968829422774,
+        "maximumChannelDifference": 15.427450980392166,
+        "changedPixels": 8332
+      },
+      "after": [
+        {
+          "morph": 1e-7,
+          "meanRgbDifference": 0,
+          "maximumChannelDifference": 0,
+          "changedPixels": 0
+        },
+        {
+          "morph": 0.00001,
+          "meanRgbDifference": 0,
+          "maximumChannelDifference": 0,
+          "changedPixels": 0
+        },
+        {
+          "morph": 0.001,
+          "meanRgbDifference": 0.02487170758949676,
+          "maximumChannelDifference": 7.066666666666663,
+          "changedPixels": 8317
+        },
+        {
+          "morph": 0.0011,
+          "meanRgbDifference": 0.02487170758949676,
+          "maximumChannelDifference": 7.066666666666663,
+          "changedPixels": 8317
+        },
+        {
+          "morph": 0.005,
+          "meanRgbDifference": 0.16691658977682577,
+          "maximumChannelDifference": 23.109803921568584,
+          "changedPixels": 10892
+        },
+        {
+          "morph": 0.02,
+          "meanRgbDifference": 2.63630164693684,
+          "maximumChannelDifference": 131.23921568627452,
+          "changedPixels": 68855
+        }
+      ]
+    },
+    {
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "topology": "projective",
+      "mode": "rest",
+      "canvas": {
+        "width": 464,
+        "height": 362
+      },
+      "flatSha256": "1ade3d36aedfad682e38aefce9e6acc348d2cd7b9d4822363a901cb12f778c93",
+      "flatUnchanged": true,
+      "roundTripIdentical": true,
+      "beforeFirstStep": {
+        "morph": 0.0011,
+        "meanRgbDifference": 0.027927977566848162,
+        "maximumChannelDifference": 14.360784313725446,
+        "changedPixels": 8014
+      },
+      "after": [
+        {
+          "morph": 1e-7,
+          "meanRgbDifference": 0,
+          "maximumChannelDifference": 0,
+          "changedPixels": 0
+        },
+        {
+          "morph": 0.00001,
+          "meanRgbDifference": 0,
+          "maximumChannelDifference": 0,
+          "changedPixels": 0
+        },
+        {
+          "morph": 0.001,
+          "meanRgbDifference": 0.024436509537455773,
+          "maximumChannelDifference": 12.082352941176453,
+          "changedPixels": 7811
+        },
+        {
+          "morph": 0.0011,
+          "meanRgbDifference": 0.024977026436410848,
+          "maximumChannelDifference": 12.082352941176453,
+          "changedPixels": 7921
+        },
+        {
+          "morph": 0.005,
+          "meanRgbDifference": 0.1885432659442116,
+          "maximumChannelDifference": 62.823529411764696,
+          "changedPixels": 13552
+        },
+        {
+          "morph": 0.02,
+          "meanRgbDifference": 2.7612100172831355,
+          "maximumChannelDifference": 200.1058823529412,
+          "changedPixels": 73840
+        }
+      ]
+    },
+    {
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "topology": "projective",
+      "mode": "drop",
+      "canvas": {
+        "width": 464,
+        "height": 362
+      },
+      "flatSha256": "334d0bdc085f131e476db0a6d272973c65b5945cdc9149f460e2efeb2e7bd79c",
+      "flatUnchanged": true,
+      "roundTripIdentical": true,
+      "beforeFirstStep": {
+        "morph": 0.0011,
+        "meanRgbDifference": 0.027912910893706545,
+        "maximumChannelDifference": 14.360784313725446,
+        "changedPixels": 8016
+      },
+      "after": [
+        {
+          "morph": 1e-7,
+          "meanRgbDifference": 0,
+          "maximumChannelDifference": 0,
+          "changedPixels": 0
+        },
+        {
+          "morph": 0.00001,
+          "meanRgbDifference": 0,
+          "maximumChannelDifference": 0,
+          "changedPixels": 0
+        },
+        {
+          "morph": 0.001,
+          "meanRgbDifference": 0.024466401630191762,
+          "maximumChannelDifference": 12.082352941176453,
+          "changedPixels": 7828
+        },
+        {
+          "morph": 0.0011,
+          "meanRgbDifference": 0.02500900420497431,
+          "maximumChannelDifference": 12.082352941176453,
+          "changedPixels": 7938
+        },
+        {
+          "morph": 0.005,
+          "meanRgbDifference": 0.1882687271898647,
+          "maximumChannelDifference": 62.823529411764696,
+          "changedPixels": 13481
+        },
+        {
+          "morph": 0.02,
+          "meanRgbDifference": 2.761199363215197,
+          "maximumChannelDifference": 200.1058823529412,
+          "changedPixels": 73803
+        }
+      ]
+    },
+    {
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "topology": "projective",
+      "mode": "press",
+      "canvas": {
+        "width": 464,
+        "height": 362
+      },
+      "flatSha256": "cdac88a049d1ea3e8670f99efbc8d6f4ea90957a334796f9234d6a326c7d63ee",
+      "flatUnchanged": true,
+      "roundTripIdentical": true,
+      "beforeFirstStep": {
+        "morph": 0.0011,
+        "meanRgbDifference": 0.02789486357190109,
+        "maximumChannelDifference": 14.360784313725446,
+        "changedPixels": 8016
+      },
+      "after": [
+        {
+          "morph": 1e-7,
+          "meanRgbDifference": 0,
+          "maximumChannelDifference": 0,
+          "changedPixels": 0
+        },
+        {
+          "morph": 0.00001,
+          "meanRgbDifference": 0.0000019845049850765226,
+          "maximumChannelDifference": 1,
+          "changedPixels": 1
+        },
+        {
+          "morph": 0.001,
+          "meanRgbDifference": 0.024440992184010288,
+          "maximumChannelDifference": 12.082352941176453,
+          "changedPixels": 7821
+        },
+        {
+          "morph": 0.0011,
+          "meanRgbDifference": 0.02501113657503671,
+          "maximumChannelDifference": 12.082352941176453,
+          "changedPixels": 7935
+        },
+        {
+          "morph": 0.005,
+          "meanRgbDifference": 0.18892531039214244,
+          "maximumChannelDifference": 62.823529411764696,
+          "changedPixels": 13519
+        },
+        {
+          "morph": 0.02,
+          "meanRgbDifference": 2.760961977507118,
+          "maximumChannelDifference": 200.1058823529412,
+          "changedPixels": 73764
+        }
+      ]
+    },
+    {
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "topology": "sphere",
+      "mode": "empty",
+      "canvas": {
+        "width": 464,
+        "height": 362
+      },
+      "flatSha256": "7cd55026f8b3e28a6af455fe9eda85c39968089bb68e53ee7d9b1369e03d0992",
+      "flatUnchanged": true,
+      "roundTripIdentical": true,
+      "beforeFirstStep": {
+        "morph": 0.0011,
+        "meanRgbDifference": 0.030584077950734784,
+        "maximumChannelDifference": 5.047058823529426,
+        "changedPixels": 8330
+      },
+      "after": [
+        {
+          "morph": 1e-7,
+          "meanRgbDifference": 0,
+          "maximumChannelDifference": 0,
+          "changedPixels": 0
+        },
+        {
+          "morph": 0.00001,
+          "meanRgbDifference": 0,
+          "maximumChannelDifference": 0,
+          "changedPixels": 0
+        },
+        {
+          "morph": 0.001,
+          "meanRgbDifference": 0.030561306728827536,
+          "maximumChannelDifference": 5.047058823529426,
+          "changedPixels": 8328
+        },
+        {
+          "morph": 0.0011,
+          "meanRgbDifference": 0.030584077950734784,
+          "maximumChannelDifference": 5.047058823529426,
+          "changedPixels": 8330
+        },
+        {
+          "morph": 0.005,
+          "meanRgbDifference": 0.2510659359952143,
+          "maximumChannelDifference": 47.960784313725526,
+          "changedPixels": 11556
+        },
+        {
+          "morph": 0.02,
+          "meanRgbDifference": 2.6418703702666195,
+          "maximumChannelDifference": 131.80392156862746,
+          "changedPixels": 72436
+        }
+      ]
+    },
+    {
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "topology": "sphere",
+      "mode": "rest",
+      "canvas": {
+        "width": 464,
+        "height": 362
+      },
+      "flatSha256": "ff927b917f01c65ef1ab85a69c5d5326590703ca7a4bb10137724463b71d8670",
+      "flatUnchanged": true,
+      "roundTripIdentical": true,
+      "beforeFirstStep": {
+        "morph": 0.0011,
+        "meanRgbDifference": 0.029713028127363317,
+        "maximumChannelDifference": 10.419607843137271,
+        "changedPixels": 7736
+      },
+      "after": [
+        {
+          "morph": 1e-7,
+          "meanRgbDifference": 0,
+          "maximumChannelDifference": 0,
+          "changedPixels": 0
+        },
+        {
+          "morph": 0.00001,
+          "meanRgbDifference": 0.0000019845049850765226,
+          "maximumChannelDifference": 1,
+          "changedPixels": 1
+        },
+        {
+          "morph": 0.001,
+          "meanRgbDifference": 0.029646698966626802,
+          "maximumChannelDifference": 10.419607843137271,
+          "changedPixels": 7728
+        },
+        {
+          "morph": 0.0011,
+          "meanRgbDifference": 0.029713028127363317,
+          "maximumChannelDifference": 10.419607843137271,
+          "changedPixels": 7736
+        },
+        {
+          "morph": 0.005,
+          "meanRgbDifference": 0.26627741574175523,
+          "maximumChannelDifference": 47.960784313725526,
+          "changedPixels": 13762
+        },
+        {
+          "morph": 0.02,
+          "meanRgbDifference": 2.757641620501581,
+          "maximumChannelDifference": 177.27843137254905,
+          "changedPixels": 77888
+        }
+      ]
+    },
+    {
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "topology": "sphere",
+      "mode": "drop",
+      "canvas": {
+        "width": 464,
+        "height": 362
+      },
+      "flatSha256": "14d16c532e423ff688ff879868a8a24ce0f3f8933e878be2322b5a5b83df5a46",
+      "flatUnchanged": true,
+      "roundTripIdentical": true,
+      "beforeFirstStep": {
+        "morph": 0.0011,
+        "meanRgbDifference": 0.02969263831143822,
+        "maximumChannelDifference": 10.419607843137271,
+        "changedPixels": 7740
+      },
+      "after": [
+        {
+          "morph": 1e-7,
+          "meanRgbDifference": 0,
+          "maximumChannelDifference": 0,
+          "changedPixels": 0
+        },
+        {
+          "morph": 0.00001,
+          "meanRgbDifference": 0.0000019845049850765226,
+          "maximumChannelDifference": 1,
+          "changedPixels": 1
+        },
+        {
+          "morph": 0.001,
+          "meanRgbDifference": 0.0296118105907519,
+          "maximumChannelDifference": 10.419607843137271,
+          "changedPixels": 7727
+        },
+        {
+          "morph": 0.0011,
+          "meanRgbDifference": 0.02969263831143822,
+          "maximumChannelDifference": 10.419607843137271,
+          "changedPixels": 7740
+        },
+        {
+          "morph": 0.005,
+          "meanRgbDifference": 0.2669021846052929,
+          "maximumChannelDifference": 47.960784313725526,
+          "changedPixels": 13874
+        },
+        {
+          "morph": 0.02,
+          "meanRgbDifference": 2.7572932815089093,
+          "maximumChannelDifference": 177.27843137254905,
+          "changedPixels": 77910
+        }
+      ]
+    },
+    {
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "topology": "sphere",
+      "mode": "press",
+      "canvas": {
+        "width": 464,
+        "height": 362
+      },
+      "flatSha256": "3b6e35081dc7332925d44500ff5bf043a4cd98c051bb946cfe8e80eab26aeda8",
+      "flatUnchanged": true,
+      "roundTripIdentical": true,
+      "beforeFirstStep": {
+        "morph": 0.0011,
+        "meanRgbDifference": 0.02992588379735088,
+        "maximumChannelDifference": 10.419607843137271,
+        "changedPixels": 7760
+      },
+      "after": [
+        {
+          "morph": 1e-7,
+          "meanRgbDifference": 0,
+          "maximumChannelDifference": 0,
+          "changedPixels": 0
+        },
+        {
+          "morph": 0.00001,
+          "meanRgbDifference": 0.000003969009970153045,
+          "maximumChannelDifference": 1,
+          "changedPixels": 2
+        },
+        {
+          "morph": 0.001,
+          "meanRgbDifference": 0.029819031823056345,
+          "maximumChannelDifference": 10.419607843137271,
+          "changedPixels": 7742
+        },
+        {
+          "morph": 0.0011,
+          "meanRgbDifference": 0.02992588379735088,
+          "maximumChannelDifference": 10.419607843137271,
+          "changedPixels": 7760
+        },
+        {
+          "morph": 0.005,
+          "meanRgbDifference": 0.26669879230025373,
+          "maximumChannelDifference": 47.960784313725526,
+          "changedPixels": 13825
+        },
+        {
+          "morph": 0.02,
+          "meanRgbDifference": 2.756514164851768,
+          "maximumChannelDifference": 177.27843137254905,
+          "changedPixels": 77817
+        }
+      ]
+    },
+    {
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "topology": "cylinder",
+      "mode": "empty",
+      "canvas": {
+        "width": 356,
+        "height": 356
+      },
+      "flatSha256": "3f24521664abf127cf273fd67ac3dfe5adcbf253002a1e51c55b31edc9bb52f2",
+      "flatUnchanged": true,
+      "roundTripIdentical": true,
+      "beforeFirstStep": {
+        "morph": 0.0011,
+        "meanRgbDifference": 0.02995292360095255,
+        "maximumChannelDifference": 2.4117647058823195,
+        "changedPixels": 5757
+      },
+      "after": [
+        {
+          "morph": 1e-7,
+          "meanRgbDifference": 0,
+          "maximumChannelDifference": 0,
+          "changedPixels": 0
+        },
+        {
+          "morph": 0.00001,
+          "meanRgbDifference": 0,
+          "maximumChannelDifference": 0,
+          "changedPixels": 0
+        },
+        {
+          "morph": 0.001,
+          "meanRgbDifference": 0.02995292360095255,
+          "maximumChannelDifference": 2.4117647058823195,
+          "changedPixels": 5757
+        },
+        {
+          "morph": 0.0011,
+          "meanRgbDifference": 0.02995292360095255,
+          "maximumChannelDifference": 2.4117647058823195,
+          "changedPixels": 5757
+        },
+        {
+          "morph": 0.005,
+          "meanRgbDifference": 0.102693221378106,
+          "maximumChannelDifference": 19.164705882352905,
+          "changedPixels": 7289
+        },
+        {
+          "morph": 0.02,
+          "meanRgbDifference": 1.907917111211899,
+          "maximumChannelDifference": 112.94117647058823,
+          "changedPixels": 49384
+        }
+      ]
+    },
+    {
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "topology": "cylinder",
+      "mode": "rest",
+      "canvas": {
+        "width": 356,
+        "height": 356
+      },
+      "flatSha256": "c0008a7b2c234292f0536b7b918dcd9ab16a1e5a654d44df47ae3b1730feb6ec",
+      "flatUnchanged": true,
+      "roundTripIdentical": true,
+      "beforeFirstStep": {
+        "morph": 0.0011,
+        "meanRgbDifference": 0.03506423315865159,
+        "maximumChannelDifference": 52.84705882352938,
+        "changedPixels": 5344
+      },
+      "after": [
+        {
+          "morph": 1e-7,
+          "meanRgbDifference": 0,
+          "maximumChannelDifference": 0,
+          "changedPixels": 0
+        },
+        {
+          "morph": 0.00001,
+          "meanRgbDifference": 0.000005260278584353827,
+          "maximumChannelDifference": 1,
+          "changedPixels": 2
+        },
+        {
+          "morph": 0.001,
+          "meanRgbDifference": 0.034877194155026756,
+          "maximumChannelDifference": 52.84705882352938,
+          "changedPixels": 5333
+        },
+        {
+          "morph": 0.0011,
+          "meanRgbDifference": 0.03506423315865159,
+          "maximumChannelDifference": 52.84705882352938,
+          "changedPixels": 5344
+        },
+        {
+          "morph": 0.005,
+          "meanRgbDifference": 0.1401333367164146,
+          "maximumChannelDifference": 57.811764705882354,
+          "changedPixels": 9179
+        },
+        {
+          "morph": 0.02,
+          "meanRgbDifference": 2.0812470449612004,
+          "maximumChannelDifference": 175.70196078431377,
+          "changedPixels": 54758
+        }
+      ]
+    },
+    {
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "topology": "cylinder",
+      "mode": "drop",
+      "canvas": {
+        "width": 356,
+        "height": 356
+      },
+      "flatSha256": "233e9fabbc47e5b17793c49579e3aa9774fa429f2e703a120528d23dfd839f78",
+      "flatUnchanged": true,
+      "roundTripIdentical": true,
+      "beforeFirstStep": {
+        "morph": 0.0011,
+        "meanRgbDifference": 0.0350446154138135,
+        "maximumChannelDifference": 52.84705882352938,
+        "changedPixels": 5341
+      },
+      "after": [
+        {
+          "morph": 1e-7,
+          "meanRgbDifference": 0,
+          "maximumChannelDifference": 0,
+          "changedPixels": 0
+        },
+        {
+          "morph": 0.00001,
+          "meanRgbDifference": 0.000005260278584353827,
+          "maximumChannelDifference": 1,
+          "changedPixels": 2
+        },
+        {
+          "morph": 0.001,
+          "meanRgbDifference": 0.034849685992312134,
+          "maximumChannelDifference": 52.84705882352938,
+          "changedPixels": 5327
+        },
+        {
+          "morph": 0.0011,
+          "meanRgbDifference": 0.0350446154138135,
+          "maximumChannelDifference": 52.84705882352938,
+          "changedPixels": 5341
+        },
+        {
+          "morph": 0.005,
+          "meanRgbDifference": 0.14085654250758936,
+          "maximumChannelDifference": 57.811764705882354,
+          "changedPixels": 9174
+        },
+        {
+          "morph": 0.02,
+          "meanRgbDifference": 2.0831383523405282,
+          "maximumChannelDifference": 175.70196078431377,
+          "changedPixels": 54762
+        }
+      ]
+    },
+    {
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "topology": "cylinder",
+      "mode": "press",
+      "canvas": {
+        "width": 356,
+        "height": 356
+      },
+      "flatSha256": "c0704ef41d8a51e93c862f84e8619d863532b4b78106d59423feb1f71562b8ce",
+      "flatUnchanged": true,
+      "roundTripIdentical": true,
+      "beforeFirstStep": {
+        "morph": 0.0011,
+        "meanRgbDifference": 0.035084531645424195,
+        "maximumChannelDifference": 52.84705882352938,
+        "changedPixels": 5356
+      },
+      "after": [
+        {
+          "morph": 1e-7,
+          "meanRgbDifference": 0,
+          "maximumChannelDifference": 0,
+          "changedPixels": 0
+        },
+        {
+          "morph": 0.00001,
+          "meanRgbDifference": 0.000017647718936919887,
+          "maximumChannelDifference": 1.047058823529369,
+          "changedPixels": 6
+        },
+        {
+          "morph": 0.001,
+          "meanRgbDifference": 0.03489696661394093,
+          "maximumChannelDifference": 52.84705882352938,
+          "changedPixels": 5343
+        },
+        {
+          "morph": 0.0011,
+          "meanRgbDifference": 0.035084531645424195,
+          "maximumChannelDifference": 52.84705882352938,
+          "changedPixels": 5356
+        },
+        {
+          "morph": 0.005,
+          "meanRgbDifference": 0.14102483016520168,
+          "maximumChannelDifference": 57.811764705882354,
+          "changedPixels": 9231
+        },
+        {
+          "morph": 0.02,
+          "meanRgbDifference": 2.0807142096834177,
+          "maximumChannelDifference": 175.70196078431377,
+          "changedPixels": 54731
+        }
+      ]
+    },
+    {
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "topology": "torus",
+      "mode": "empty",
+      "canvas": {
+        "width": 356,
+        "height": 356
+      },
+      "flatSha256": "e15e8c7d98dc38348834a275615d35944bf5f494770d16e86ee29f03ad04c541",
+      "flatUnchanged": true,
+      "roundTripIdentical": true,
+      "beforeFirstStep": {
+        "morph": 0.0011,
+        "meanRgbDifference": 0.03293135522104381,
+        "maximumChannelDifference": 2.4117647058823195,
+        "changedPixels": 6271
+      },
+      "after": [
+        {
+          "morph": 1e-7,
+          "meanRgbDifference": 0,
+          "maximumChannelDifference": 0,
+          "changedPixels": 0
+        },
+        {
+          "morph": 0.00001,
+          "meanRgbDifference": 0,
+          "maximumChannelDifference": 0,
+          "changedPixels": 0
+        },
+        {
+          "morph": 0.001,
+          "meanRgbDifference": 0.03293135522104381,
+          "maximumChannelDifference": 2.4117647058823195,
+          "changedPixels": 6271
+        },
+        {
+          "morph": 0.0011,
+          "meanRgbDifference": 0.03293135522104381,
+          "maximumChannelDifference": 2.4117647058823195,
+          "changedPixels": 6271
+        },
+        {
+          "morph": 0.005,
+          "meanRgbDifference": 0.12176019441990156,
+          "maximumChannelDifference": 19.164705882352905,
+          "changedPixels": 8065
+        },
+        {
+          "morph": 0.02,
+          "meanRgbDifference": 2.7168542935838373,
+          "maximumChannelDifference": 126.80000000000001,
+          "changedPixels": 59876
+        }
+      ]
+    },
+    {
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "topology": "torus",
+      "mode": "rest",
+      "canvas": {
+        "width": 356,
+        "height": 356
+      },
+      "flatSha256": "0afd8ddff72c1034fffbb201ce8c7612ae4381fb85bd22f89b7bb8cdb3630555",
+      "flatUnchanged": true,
+      "roundTripIdentical": true,
+      "beforeFirstStep": {
+        "morph": 0.0011,
+        "meanRgbDifference": 0.037743055813412855,
+        "maximumChannelDifference": 52.84705882352938,
+        "changedPixels": 5812
+      },
+      "after": [
+        {
+          "morph": 1e-7,
+          "meanRgbDifference": 0,
+          "maximumChannelDifference": 0,
+          "changedPixels": 0
+        },
+        {
+          "morph": 0.00001,
+          "meanRgbDifference": 0.000005260278584353827,
+          "maximumChannelDifference": 1,
+          "changedPixels": 2
+        },
+        {
+          "morph": 0.001,
+          "meanRgbDifference": 0.03756652705268502,
+          "maximumChannelDifference": 52.84705882352938,
+          "changedPixels": 5803
+        },
+        {
+          "morph": 0.0011,
+          "meanRgbDifference": 0.037743055813412855,
+          "maximumChannelDifference": 52.84705882352938,
+          "changedPixels": 5812
+        },
+        {
+          "morph": 0.005,
+          "meanRgbDifference": 0.15820846875971917,
+          "maximumChannelDifference": 57.811764705882354,
+          "changedPixels": 9897
+        },
+        {
+          "morph": 0.02,
+          "meanRgbDifference": 2.876057377881097,
+          "maximumChannelDifference": 179.35686274509806,
+          "changedPixels": 64759
+        }
+      ]
+    },
+    {
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "topology": "torus",
+      "mode": "drop",
+      "canvas": {
+        "width": 356,
+        "height": 356
+      },
+      "flatSha256": "e2d57d1772c340ac0f6a56b30c9550dceb31d43e8f5ed793768772fc1068ccba",
+      "flatUnchanged": true,
+      "roundTripIdentical": true,
+      "beforeFirstStep": {
+        "morph": 0.0011,
+        "meanRgbDifference": 0.037720807929282583,
+        "maximumChannelDifference": 52.84705882352938,
+        "changedPixels": 5808
+      },
+      "after": [
+        {
+          "morph": 1e-7,
+          "meanRgbDifference": 0,
+          "maximumChannelDifference": 0,
+          "changedPixels": 0
+        },
+        {
+          "morph": 0.00001,
+          "meanRgbDifference": 0.000005260278584353827,
+          "maximumChannelDifference": 1,
+          "changedPixels": 2
+        },
+        {
+          "morph": 0.001,
+          "meanRgbDifference": 0.03753901888997039,
+          "maximumChannelDifference": 52.84705882352938,
+          "changedPixels": 5797
+        },
+        {
+          "morph": 0.0011,
+          "meanRgbDifference": 0.037720807929282583,
+          "maximumChannelDifference": 52.84705882352938,
+          "changedPixels": 5808
+        },
+        {
+          "morph": 0.005,
+          "meanRgbDifference": 0.15851530802953476,
+          "maximumChannelDifference": 57.811764705882354,
+          "changedPixels": 9887
+        },
+        {
+          "morph": 0.02,
+          "meanRgbDifference": 2.877456333499201,
+          "maximumChannelDifference": 179.35686274509806,
+          "changedPixels": 64759
+        }
+      ]
+    },
+    {
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "topology": "torus",
+      "mode": "press",
+      "canvas": {
+        "width": 356,
+        "height": 356
+      },
+      "flatSha256": "fc95e514adfe07880a528f22a2a87a143a7bf708b56cc04c2cc2bc4f9e632b44",
+      "flatUnchanged": true,
+      "roundTripIdentical": true,
+      "beforeFirstStep": {
+        "morph": 0.0011,
+        "meanRgbDifference": 0.03776335430018546,
+        "maximumChannelDifference": 52.84705882352938,
+        "changedPixels": 5824
+      },
+      "after": [
+        {
+          "morph": 1e-7,
+          "meanRgbDifference": 0,
+          "maximumChannelDifference": 0,
+          "changedPixels": 0
+        },
+        {
+          "morph": 0.00001,
+          "meanRgbDifference": 0.000017647718936919887,
+          "maximumChannelDifference": 1.047058823529369,
+          "changedPixels": 6
+        },
+        {
+          "morph": 0.001,
+          "meanRgbDifference": 0.03758629951159918,
+          "maximumChannelDifference": 52.84705882352938,
+          "changedPixels": 5813
+        },
+        {
+          "morph": 0.0011,
+          "meanRgbDifference": 0.03776335430018546,
+          "maximumChannelDifference": 52.84705882352938,
+          "changedPixels": 5824
+        },
+        {
+          "morph": 0.005,
+          "meanRgbDifference": 0.15843612536543258,
+          "maximumChannelDifference": 57.811764705882354,
+          "changedPixels": 9905
+        },
+        {
+          "morph": 0.02,
+          "meanRgbDifference": 2.8760876502686337,
+          "maximumChannelDifference": 179.35686274509806,
+          "changedPixels": 64731
+        }
+      ]
+    },
+    {
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "topology": "mobius",
+      "mode": "empty",
+      "canvas": {
+        "width": 356,
+        "height": 356
+      },
+      "flatSha256": "0df91a3c29d795784d2d379a1699aecf999f29dfe67378833f70fe8a32ea7ab8",
+      "flatUnchanged": true,
+      "roundTripIdentical": true,
+      "beforeFirstStep": {
+        "morph": 0.0011,
+        "meanRgbDifference": 0.026916484516628172,
+        "maximumChannelDifference": 2.4705882352941444,
+        "changedPixels": 3595
+      },
+      "after": [
+        {
+          "morph": 1e-7,
+          "meanRgbDifference": 0,
+          "maximumChannelDifference": 0,
+          "changedPixels": 0
+        },
+        {
+          "morph": 0.00001,
+          "meanRgbDifference": 0,
+          "maximumChannelDifference": 0,
+          "changedPixels": 0
+        },
+        {
+          "morph": 0.001,
+          "meanRgbDifference": 0.026916484516628172,
+          "maximumChannelDifference": 2.4705882352941444,
+          "changedPixels": 3595
+        },
+        {
+          "morph": 0.0011,
+          "meanRgbDifference": 0.026916484516628172,
+          "maximumChannelDifference": 2.4705882352941444,
+          "changedPixels": 3595
+        },
+        {
+          "morph": 0.005,
+          "meanRgbDifference": 0.10817132706720888,
+          "maximumChannelDifference": 23.290196078431336,
+          "changedPixels": 6535
+        },
+        {
+          "morph": 0.02,
+          "meanRgbDifference": 1.3986929032858755,
+          "maximumChannelDifference": 74.22745098039212,
+          "changedPixels": 41004
+        }
+      ]
+    },
+    {
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "topology": "mobius",
+      "mode": "rest",
+      "canvas": {
+        "width": 356,
+        "height": 356
+      },
+      "flatSha256": "0b871d00ab16e8f11a70e455e4d922a0bfab9638cebf165df056bdb69ba7180e",
+      "flatUnchanged": true,
+      "roundTripIdentical": true,
+      "beforeFirstStep": {
+        "morph": 0.0011,
+        "meanRgbDifference": 0.026634337613343904,
+        "maximumChannelDifference": 13.043137254901978,
+        "changedPixels": 3459
+      },
+      "after": [
+        {
+          "morph": 1e-7,
+          "meanRgbDifference": 0.00005199424381123033,
+          "maximumChannelDifference": 1.0117647058823422,
+          "changedPixels": 8
+        },
+        {
+          "morph": 0.00001,
+          "meanRgbDifference": 0.00007791400867884021,
+          "maximumChannelDifference": 1.027450980392132,
+          "changedPixels": 12
+        },
+        {
+          "morph": 0.001,
+          "meanRgbDifference": 0.0266152665249077,
+          "maximumChannelDifference": 13.043137254901978,
+          "changedPixels": 3452
+        },
+        {
+          "morph": 0.0011,
+          "meanRgbDifference": 0.026634337613343904,
+          "maximumChannelDifference": 13.043137254901978,
+          "changedPixels": 3459
+        },
+        {
+          "morph": 0.005,
+          "meanRgbDifference": 0.11109844518542518,
+          "maximumChannelDifference": 23.290196078431336,
+          "changedPixels": 7836
+        },
+        {
+          "morph": 0.02,
+          "meanRgbDifference": 1.485206260680298,
+          "maximumChannelDifference": 149.93725490196078,
+          "changedPixels": 45436
+        }
+      ]
+    },
+    {
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "topology": "mobius",
+      "mode": "drop",
+      "canvas": {
+        "width": 356,
+        "height": 356
+      },
+      "flatSha256": "4f4d308cded0dc2c68227501f7bdb4afd1f80967322b8645eb1c70a0b5ab1242",
+      "flatUnchanged": true,
+      "roundTripIdentical": true,
+      "beforeFirstStep": {
+        "morph": 0.0011,
+        "meanRgbDifference": 0.02660209519990335,
+        "maximumChannelDifference": 13.043137254901978,
+        "changedPixels": 3446
+      },
+      "after": [
+        {
+          "morph": 1e-7,
+          "meanRgbDifference": 0.00005199424381123033,
+          "maximumChannelDifference": 1.0117647058823422,
+          "changedPixels": 8
+        },
+        {
+          "morph": 0.00001,
+          "meanRgbDifference": 0.00007791400867884021,
+          "maximumChannelDifference": 1.027450980392132,
+          "changedPixels": 12
+        },
+        {
+          "morph": 0.001,
+          "meanRgbDifference": 0.026580393972174956,
+          "maximumChannelDifference": 13.043137254901978,
+          "changedPixels": 3438
+        },
+        {
+          "morph": 0.0011,
+          "meanRgbDifference": 0.02660209519990335,
+          "maximumChannelDifference": 13.043137254901978,
+          "changedPixels": 3446
+        },
+        {
+          "morph": 0.005,
+          "meanRgbDifference": 0.11106220083455183,
+          "maximumChannelDifference": 23.290196078431336,
+          "changedPixels": 7796
+        },
+        {
+          "morph": 0.02,
+          "meanRgbDifference": 1.4854388990792617,
+          "maximumChannelDifference": 149.93725490196078,
+          "changedPixels": 45410
+        }
+      ]
+    },
+    {
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "topology": "mobius",
+      "mode": "press",
+      "canvas": {
+        "width": 356,
+        "height": 356
+      },
+      "flatSha256": "b677aba7441848483d82d15d799ffc8db13ac2f10859637b170c7c00eb0f20aa",
+      "flatUnchanged": true,
+      "roundTripIdentical": true,
+      "beforeFirstStep": {
+        "morph": 0.0011,
+        "meanRgbDifference": 0.026702195207082047,
+        "maximumChannelDifference": 13.043137254901978,
+        "changedPixels": 3471
+      },
+      "after": [
+        {
+          "morph": 1e-7,
+          "meanRgbDifference": 0.00005199424381123033,
+          "maximumChannelDifference": 1.0117647058823422,
+          "changedPixels": 8
+        },
+        {
+          "morph": 0.00001,
+          "meanRgbDifference": 0.00010154400522149591,
+          "maximumChannelDifference": 1.1607843137254577,
+          "changedPixels": 19
+        },
+        {
+          "morph": 0.001,
+          "meanRgbDifference": 0.026652098789269895,
+          "maximumChannelDifference": 13.043137254901978,
+          "changedPixels": 3459
+        },
+        {
+          "morph": 0.0011,
+          "meanRgbDifference": 0.026702195207082047,
+          "maximumChannelDifference": 13.043137254901978,
+          "changedPixels": 3471
+        },
+        {
+          "morph": 0.005,
+          "meanRgbDifference": 0.1111086356858984,
+          "maximumChannelDifference": 23.290196078431336,
+          "changedPixels": 7834
+        },
+        {
+          "morph": 0.02,
+          "meanRgbDifference": 1.4849654946352122,
+          "maximumChannelDifference": 149.93725490196078,
+          "changedPixels": 45363
+        }
+      ]
+    },
+    {
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "topology": "klein",
+      "mode": "empty",
+      "canvas": {
+        "width": 356,
+        "height": 356
+      },
+      "flatSha256": "100ded52efee38b5c355d525ca74f219613f74d7718ffc3f4015a3ff65edb65b",
+      "flatUnchanged": true,
+      "roundTripIdentical": true,
+      "beforeFirstStep": {
+        "morph": 0.0011,
+        "meanRgbDifference": 0.038991990349143905,
+        "maximumChannelDifference": 7.137254901960773,
+        "changedPixels": 7072
+      },
+      "after": [
+        {
+          "morph": 1e-7,
+          "meanRgbDifference": 0,
+          "maximumChannelDifference": 0,
+          "changedPixels": 0
+        },
+        {
+          "morph": 0.00001,
+          "meanRgbDifference": 0,
+          "maximumChannelDifference": 0,
+          "changedPixels": 0
+        },
+        {
+          "morph": 0.001,
+          "meanRgbDifference": 0.03294843565503538,
+          "maximumChannelDifference": 2.4117647058823195,
+          "changedPixels": 6271
+        },
+        {
+          "morph": 0.0011,
+          "meanRgbDifference": 0.03294843565503538,
+          "maximumChannelDifference": 2.4117647058823195,
+          "changedPixels": 6271
+        },
+        {
+          "morph": 0.005,
+          "meanRgbDifference": 0.21012647978855062,
+          "maximumChannelDifference": 23.12549019607843,
+          "changedPixels": 8357
+        },
+        {
+          "morph": 0.02,
+          "meanRgbDifference": 2.680698779532903,
+          "maximumChannelDifference": 129.70588235294116,
+          "changedPixels": 59515
+        }
+      ]
+    },
+    {
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "topology": "klein",
+      "mode": "rest",
+      "canvas": {
+        "width": 356,
+        "height": 356
+      },
+      "flatSha256": "70a8094f3804ea4ce18571dc8718db4b06270bab7e33a52e5c1efe5b990b89c7",
+      "flatUnchanged": true,
+      "roundTripIdentical": true,
+      "beforeFirstStep": {
+        "morph": 0.0011,
+        "meanRgbDifference": 0.04412254633789894,
+        "maximumChannelDifference": 52.84705882352938,
+        "changedPixels": 6650
+      },
+      "after": [
+        {
+          "morph": 1e-7,
+          "meanRgbDifference": 0,
+          "maximumChannelDifference": 0,
+          "changedPixels": 0
+        },
+        {
+          "morph": 0.00001,
+          "meanRgbDifference": 0.000005260278584353827,
+          "maximumChannelDifference": 1,
+          "changedPixels": 2
+        },
+        {
+          "morph": 0.001,
+          "meanRgbDifference": 0.037583607486676565,
+          "maximumChannelDifference": 52.84705882352938,
+          "changedPixels": 5802
+        },
+        {
+          "morph": 0.0011,
+          "meanRgbDifference": 0.03776802666528095,
+          "maximumChannelDifference": 52.84705882352938,
+          "changedPixels": 5814
+        },
+        {
+          "morph": 0.005,
+          "meanRgbDifference": 0.2329484975406438,
+          "maximumChannelDifference": 57.811764705882354,
+          "changedPixels": 10243
+        },
+        {
+          "morph": 0.02,
+          "meanRgbDifference": 2.872408931169161,
+          "maximumChannelDifference": 184.93725490196078,
+          "changedPixels": 64544
+        }
+      ]
+    },
+    {
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "topology": "klein",
+      "mode": "drop",
+      "canvas": {
+        "width": 356,
+        "height": 356
+      },
+      "flatSha256": "d2036b3c8844f8ae9386851ac7b0dd530210162e9a91dbb4192ab523d5a839b1",
+      "flatUnchanged": true,
+      "roundTripIdentical": true,
+      "beforeFirstStep": {
+        "morph": 0.0011,
+        "meanRgbDifference": 0.044110097011915934,
+        "maximumChannelDifference": 52.84705882352938,
+        "changedPixels": 6649
+      },
+      "after": [
+        {
+          "morph": 1e-7,
+          "meanRgbDifference": 0,
+          "maximumChannelDifference": 0,
+          "changedPixels": 0
+        },
+        {
+          "morph": 0.00001,
+          "meanRgbDifference": 0.000005260278584353827,
+          "maximumChannelDifference": 1,
+          "changedPixels": 2
+        },
+        {
+          "morph": 0.001,
+          "meanRgbDifference": 0.03755609932396194,
+          "maximumChannelDifference": 52.84705882352938,
+          "changedPixels": 5796
+        },
+        {
+          "morph": 0.0011,
+          "meanRgbDifference": 0.03774840892044285,
+          "maximumChannelDifference": 52.84705882352938,
+          "changedPixels": 5811
+        },
+        {
+          "morph": 0.005,
+          "meanRgbDifference": 0.23419189331245244,
+          "maximumChannelDifference": 57.811764705882354,
+          "changedPixels": 10232
+        },
+        {
+          "morph": 0.02,
+          "meanRgbDifference": 2.874655957152052,
+          "maximumChannelDifference": 184.93725490196078,
+          "changedPixels": 64542
+        }
+      ]
+    },
+    {
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "topology": "klein",
+      "mode": "press",
+      "canvas": {
+        "width": 356,
+        "height": 356
+      },
+      "flatSha256": "56f306e3693719596d55420af6f574b8bd8dca6926d1063d973ed45ffbc3c5e6",
+      "flatUnchanged": true,
+      "roundTripIdentical": true,
+      "beforeFirstStep": {
+        "morph": 0.0011,
+        "meanRgbDifference": 0.044142091882834925,
+        "maximumChannelDifference": 52.84705882352938,
+        "changedPixels": 6662
+      },
+      "after": [
+        {
+          "morph": 1e-7,
+          "meanRgbDifference": 0,
+          "maximumChannelDifference": 0,
+          "changedPixels": 0
+        },
+        {
+          "morph": 0.00001,
+          "meanRgbDifference": 0.000017647718936919887,
+          "maximumChannelDifference": 1.047058823529369,
+          "changedPixels": 6
+        },
+        {
+          "morph": 0.001,
+          "meanRgbDifference": 0.03758896059370656,
+          "maximumChannelDifference": 52.84705882352938,
+          "changedPixels": 5810
+        },
+        {
+          "morph": 0.0011,
+          "meanRgbDifference": 0.037785695012761376,
+          "maximumChannelDifference": 52.84705882352938,
+          "changedPixels": 5825
+        },
+        {
+          "morph": 0.005,
+          "meanRgbDifference": 0.23380336501050333,
+          "maximumChannelDifference": 57.811764705882354,
+          "changedPixels": 10290
+        },
+        {
+          "morph": 0.02,
+          "meanRgbDifference": 2.8719011183146046,
+          "maximumChannelDifference": 184.93725490196078,
+          "changedPixels": 64515
+        }
+      ]
+    },
+    {
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "topology": "projective",
+      "mode": "empty",
+      "canvas": {
+        "width": 356,
+        "height": 356
+      },
+      "flatSha256": "9601ed63654a8ca451b4765adf194b0ca98e3858e4a58e3ef4bacf3239cf05df",
+      "flatUnchanged": true,
+      "roundTripIdentical": true,
+      "beforeFirstStep": {
+        "morph": 0.0011,
+        "meanRgbDifference": 0.054127802490772016,
+        "maximumChannelDifference": 5.188235294117646,
+        "changedPixels": 6734
+      },
+      "after": [
+        {
+          "morph": 1e-7,
+          "meanRgbDifference": 0,
+          "maximumChannelDifference": 0,
+          "changedPixels": 0
+        },
+        {
+          "morph": 0.00001,
+          "meanRgbDifference": 0,
+          "maximumChannelDifference": 0,
+          "changedPixels": 0
+        },
+        {
+          "morph": 0.001,
+          "meanRgbDifference": 0.04024805204664189,
+          "maximumChannelDifference": 4.031372549019579,
+          "changedPixels": 5484
+        },
+        {
+          "morph": 0.0011,
+          "meanRgbDifference": 0.04024805204664189,
+          "maximumChannelDifference": 4.031372549019579,
+          "changedPixels": 5484
+        },
+        {
+          "morph": 0.005,
+          "meanRgbDifference": 0.19259677674884623,
+          "maximumChannelDifference": 23.290196078431336,
+          "changedPixels": 10151
+        },
+        {
+          "morph": 0.02,
+          "meanRgbDifference": 3.1878998946290804,
+          "maximumChannelDifference": 117.9058823529412,
+          "changedPixels": 67274
+        }
+      ]
+    },
+    {
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "topology": "projective",
+      "mode": "rest",
+      "canvas": {
+        "width": 356,
+        "height": 356
+      },
+      "flatSha256": "2e69f23d568e9a90bdaa4f3cbe4fe2e09490deb29900c21a67eb75175b658c2a",
+      "flatUnchanged": true,
+      "roundTripIdentical": true,
+      "beforeFirstStep": {
+        "morph": 0.0011,
+        "meanRgbDifference": 0.051298680268303316,
+        "maximumChannelDifference": 12.901960784313701,
+        "changedPixels": 6438
+      },
+      "after": [
+        {
+          "morph": 1e-7,
+          "meanRgbDifference": 0,
+          "maximumChannelDifference": 0,
+          "changedPixels": 0
+        },
+        {
+          "morph": 0.00001,
+          "meanRgbDifference": 0.000007189047398616938,
+          "maximumChannelDifference": 1.7333333333333485,
+          "changedPixels": 2
+        },
+        {
+          "morph": 0.001,
+          "meanRgbDifference": 0.038773750673522976,
+          "maximumChannelDifference": 12.901960784313701,
+          "changedPixels": 5221
+        },
+        {
+          "morph": 0.0011,
+          "meanRgbDifference": 0.03888260749740393,
+          "maximumChannelDifference": 12.901960784313701,
+          "changedPixels": 5244
+        },
+        {
+          "morph": 0.005,
+          "meanRgbDifference": 0.20289810407185324,
+          "maximumChannelDifference": 35.05490196078432,
+          "changedPixels": 12371
+        },
+        {
+          "morph": 0.02,
+          "meanRgbDifference": 3.3584318655708776,
+          "maximumChannelDifference": 203.60784313725492,
+          "changedPixels": 72126
+        }
+      ]
+    },
+    {
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "topology": "projective",
+      "mode": "drop",
+      "canvas": {
+        "width": 356,
+        "height": 356
+      },
+      "flatSha256": "deeac34721049cf40c2c8f022b47d2773cbfe94adaf6d4a650d72492ea700934",
+      "flatUnchanged": true,
+      "roundTripIdentical": true,
+      "beforeFirstStep": {
+        "morph": 0.0011,
+        "meanRgbDifference": 0.05138147292751235,
+        "maximumChannelDifference": 12.901960784313701,
+        "changedPixels": 6447
+      },
+      "after": [
+        {
+          "morph": 1e-7,
+          "meanRgbDifference": 0,
+          "maximumChannelDifference": 0,
+          "changedPixels": 0
+        },
+        {
+          "morph": 0.00001,
+          "meanRgbDifference": 0.000009819186690793852,
+          "maximumChannelDifference": 1.7333333333333485,
+          "changedPixels": 3
+        },
+        {
+          "morph": 0.001,
+          "meanRgbDifference": 0.03882597183131236,
+          "maximumChannelDifference": 12.901960784313701,
+          "changedPixels": 5225
+        },
+        {
+          "morph": 0.0011,
+          "meanRgbDifference": 0.03894544204080762,
+          "maximumChannelDifference": 12.901960784313701,
+          "changedPixels": 5252
+        },
+        {
+          "morph": 0.005,
+          "meanRgbDifference": 0.20278128463019382,
+          "maximumChannelDifference": 35.05490196078432,
+          "changedPixels": 12321
+        },
+        {
+          "morph": 0.02,
+          "meanRgbDifference": 3.3581987939724995,
+          "maximumChannelDifference": 203.60784313725492,
+          "changedPixels": 72085
+        }
+      ]
+    },
+    {
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "topology": "projective",
+      "mode": "press",
+      "canvas": {
+        "width": 356,
+        "height": 356
+      },
+      "flatSha256": "4802f0e1bbf56de91aeab58c18b41af774152b1824a2905b48f3de4d1e5e7824",
+      "flatUnchanged": true,
+      "roundTripIdentical": true,
+      "beforeFirstStep": {
+        "morph": 0.0011,
+        "meanRgbDifference": 0.05131291396329627,
+        "maximumChannelDifference": 12.901960784313701,
+        "changedPixels": 6443
+      },
+      "after": [
+        {
+          "morph": 1e-7,
+          "meanRgbDifference": 0,
+          "maximumChannelDifference": 0,
+          "changedPixels": 0
+        },
+        {
+          "morph": 0.00001,
+          "meanRgbDifference": 0.00003037553025670973,
+          "maximumChannelDifference": 1.7333333333333485,
+          "changedPixels": 9
+        },
+        {
+          "morph": 0.001,
+          "meanRgbDifference": 0.03883632736013333,
+          "maximumChannelDifference": 12.901960784313701,
+          "changedPixels": 5238
+        },
+        {
+          "morph": 0.0011,
+          "meanRgbDifference": 0.038945184184014284,
+          "maximumChannelDifference": 12.901960784313701,
+          "changedPixels": 5261
+        },
+        {
+          "morph": 0.005,
+          "meanRgbDifference": 0.20298392912695215,
+          "maximumChannelDifference": 35.05490196078432,
+          "changedPixels": 12376
+        },
+        {
+          "morph": 0.02,
+          "meanRgbDifference": 3.358063491355896,
+          "maximumChannelDifference": 203.60784313725492,
+          "changedPixels": 72081
+        }
+      ]
+    },
+    {
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "topology": "sphere",
+      "mode": "empty",
+      "canvas": {
+        "width": 356,
+        "height": 356
+      },
+      "flatSha256": "80476b5fad764d44895072ec430fe4c6b1b5ad5eaff503d04dcee40fcb174807",
+      "flatUnchanged": true,
+      "roundTripIdentical": true,
+      "beforeFirstStep": {
+        "morph": 0.0011,
+        "meanRgbDifference": 0.03678172443071438,
+        "maximumChannelDifference": 4.290196078431336,
+        "changedPixels": 8075
+      },
+      "after": [
+        {
+          "morph": 1e-7,
+          "meanRgbDifference": 0,
+          "maximumChannelDifference": 0,
+          "changedPixels": 0
+        },
+        {
+          "morph": 0.00001,
+          "meanRgbDifference": 0,
+          "maximumChannelDifference": 0,
+          "changedPixels": 0
+        },
+        {
+          "morph": 0.001,
+          "meanRgbDifference": 0.03702453270160502,
+          "maximumChannelDifference": 4.290196078431336,
+          "changedPixels": 8077
+        },
+        {
+          "morph": 0.0011,
+          "meanRgbDifference": 0.03678172443071438,
+          "maximumChannelDifference": 4.290196078431336,
+          "changedPixels": 8075
+        },
+        {
+          "morph": 0.005,
+          "meanRgbDifference": 0.20943859006377918,
+          "maximumChannelDifference": 24.258823529411757,
+          "changedPixels": 10148
+        },
+        {
+          "morph": 0.02,
+          "meanRgbDifference": 3.072188649267688,
+          "maximumChannelDifference": 129.70588235294116,
+          "changedPixels": 70168
+        }
+      ]
+    },
+    {
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "topology": "sphere",
+      "mode": "rest",
+      "canvas": {
+        "width": 356,
+        "height": 356
+      },
+      "flatSha256": "518f802dfb62bed4e4b84916deaf07b7c08b31312e1adf7ba5154fcb2038e00b",
+      "flatUnchanged": true,
+      "roundTripIdentical": true,
+      "beforeFirstStep": {
+        "morph": 0.0011,
+        "meanRgbDifference": 0.035482755362802626,
+        "maximumChannelDifference": 13.678431372549028,
+        "changedPixels": 7509
+      },
+      "after": [
+        {
+          "morph": 1e-7,
+          "meanRgbDifference": 0,
+          "maximumChannelDifference": 0,
+          "changedPixels": 0
+        },
+        {
+          "morph": 0.00001,
+          "meanRgbDifference": 0.000005177764410481536,
+          "maximumChannelDifference": 1,
+          "changedPixels": 2
+        },
+        {
+          "morph": 0.001,
+          "meanRgbDifference": 0.03530427720471678,
+          "maximumChannelDifference": 13.678431372549028,
+          "changedPixels": 7485
+        },
+        {
+          "morph": 0.0011,
+          "meanRgbDifference": 0.035482755362802626,
+          "maximumChannelDifference": 13.678431372549028,
+          "changedPixels": 7509
+        },
+        {
+          "morph": 0.005,
+          "meanRgbDifference": 0.22250925809027938,
+          "maximumChannelDifference": 59.64705882352939,
+          "changedPixels": 12193
+        },
+        {
+          "morph": 0.02,
+          "meanRgbDifference": 3.229925291666949,
+          "maximumChannelDifference": 177.95294117647057,
+          "changedPixels": 75453
+        }
+      ]
+    },
+    {
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "topology": "sphere",
+      "mode": "drop",
+      "canvas": {
+        "width": 356,
+        "height": 356
+      },
+      "flatSha256": "bf0ec61a7c76ccc22c32e2d58613539afddd3474f305208afe3652afcd3ae95f",
+      "flatUnchanged": true,
+      "roundTripIdentical": true,
+      "beforeFirstStep": {
+        "morph": 0.0011,
+        "meanRgbDifference": 0.03531874812795981,
+        "maximumChannelDifference": 13.678431372549028,
+        "changedPixels": 7487
+      },
+      "after": [
+        {
+          "morph": 1e-7,
+          "meanRgbDifference": 0,
+          "maximumChannelDifference": 0,
+          "changedPixels": 0
+        },
+        {
+          "morph": 0.00001,
+          "meanRgbDifference": 0.000007735703800520326,
+          "maximumChannelDifference": 1,
+          "changedPixels": 3
+        },
+        {
+          "morph": 0.001,
+          "meanRgbDifference": 0.03515986708616862,
+          "maximumChannelDifference": 13.678431372549028,
+          "changedPixels": 7467
+        },
+        {
+          "morph": 0.0011,
+          "meanRgbDifference": 0.03531874812795981,
+          "maximumChannelDifference": 13.678431372549028,
+          "changedPixels": 7487
+        },
+        {
+          "morph": 0.005,
+          "meanRgbDifference": 0.2229791556819378,
+          "maximumChannelDifference": 59.64705882352939,
+          "changedPixels": 12159
+        },
+        {
+          "morph": 0.02,
+          "meanRgbDifference": 3.2331714508384435,
+          "maximumChannelDifference": 177.95294117647057,
+          "changedPixels": 75473
+        }
+      ]
+    },
+    {
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "topology": "sphere",
+      "mode": "press",
+      "canvas": {
+        "width": 356,
+        "height": 356
+      },
+      "flatSha256": "6a07401ecc26028a2ba98d89009764663ff14302a7f839321cc172fcd35044ac",
+      "flatUnchanged": true,
+      "roundTripIdentical": true,
+      "beforeFirstStep": {
+        "morph": 0.0011,
+        "meanRgbDifference": 0.03530879485573646,
+        "maximumChannelDifference": 13.678431372549028,
+        "changedPixels": 7487
+      },
+      "after": [
+        {
+          "morph": 1e-7,
+          "meanRgbDifference": 0,
+          "maximumChannelDifference": 0,
+          "changedPixels": 0
+        },
+        {
+          "morph": 0.00001,
+          "meanRgbDifference": 0.00005211801507203899,
+          "maximumChannelDifference": 3.058823529411768,
+          "changedPixels": 9
+        },
+        {
+          "morph": 0.001,
+          "meanRgbDifference": 0.03513294683694279,
+          "maximumChannelDifference": 13.678431372549028,
+          "changedPixels": 7464
+        },
+        {
+          "morph": 0.0011,
+          "meanRgbDifference": 0.03530879485573646,
+          "maximumChannelDifference": 13.678431372549028,
+          "changedPixels": 7487
+        },
+        {
+          "morph": 0.005,
+          "meanRgbDifference": 0.22183077498134324,
+          "maximumChannelDifference": 59.64705882352939,
+          "changedPixels": 12146
+        },
+        {
+          "morph": 0.02,
+          "meanRgbDifference": 3.2297327345279476,
+          "maximumChannelDifference": 177.95294117647057,
+          "changedPixels": 75363
+        }
+      ]
+    }
+  ],
+  "screenshots": [
+    "after-sphere-first-step-1280x720.png",
+    "after-sphere-first-step-390x844.png"
+  ]
+}
