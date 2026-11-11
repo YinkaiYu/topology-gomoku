@@ -45,7 +45,7 @@ function scene(type, progress) {
     syncGameTools: noOp, updateTurnUI: noOp
   }, ["createCompletionState", "drawCompletionMorph", "interactiveViewOrientation", "updateCompletionMotion"]);
   const initial = context.interactiveViewOrientation(4000);
-  game.completion = context.createCompletionState({ progress, rotation: game.view.rotation, wobble: { x: initial.wobbleX, y: initial.wobbleY } });
+  game.completion = context.createCompletionState({ progress, rotation: initial, rotationDirect: true, wobble: { x: initial.wobbleX, y: initial.wobbleY } });
   return { game, initial, tick(time) { context.updateCompletionMotion(time, 16.67); }, draw(time) { context.drawCompletionMorph({}, time); return frame; } };
 }
 

@@ -172,3 +172,17 @@ test("原生展开首步保留二维提示与按压状态并采用实际投影�
     globals.TopologyBoardArt = Art;
   }
 });
+
+test("原生拖动在每个非零展开进度保持相同显示角度增量", () => {
+  for (const progress of [0.01, 0.1, 0.4, 0.7, 1]) {
+    const s = setup();
+    s.controller.game.demo = null;
+    s.controller.setViewProgress(progress, false, time);
+    const before = s.renderer.completionPose(s.controller.game, time).orientation;
+    s.renderer.beginSurfaceDrag(time);
+    s.renderer.dragSurface(20, 10, 16);
+    const after = s.renderer.completionPose(s.controller.game, time).orientation;
+    assert.ok(Math.abs(after.y - before.y - 0.18) < 1e-9);
+    assert.ok(Math.abs(after.x - before.x - 0.09) < 1e-9);
+  }
+});

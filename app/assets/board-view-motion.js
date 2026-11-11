@@ -23,6 +23,7 @@
   function setProgress(view, value, time, animate, touch) {
     var target = Morph.clamp01(Number(value) || 0);
     Logic.prepareMorphRotation(view.rotation, null, view.progress);
+    if (view.progress === 0 || view.progress === 1) { view.rotationAnchor = null; }
     view.startProgress = view.progress;
     view.target = target;
     view.startedAt = time;
@@ -34,6 +35,7 @@
   function finish(view, time, presentation, targetView) {
     var pose = view.displayedOrientation || Logic.interactiveOrientation(view, time);
     view.completion = {
+      rotationDirect: true,
       startedAt: time, startProgress: view.progress, settled: false,
       startRotation: { x: pose.x, y: pose.y, z: pose.z },
       startWobble: { x: pose.wobbleX, y: pose.wobbleY },

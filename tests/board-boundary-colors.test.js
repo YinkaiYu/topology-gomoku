@@ -148,7 +148,13 @@ test("其他拓扑保持左右绿色、上下金色，未接合的边不绘制�
         [TEAL, level.xConnection ? ["left", "right"] : []],
         [GOLD, level.yConnection ? ["top", "bottom"] : []]
       ]) {
-        const boundaries = frontBoundaries(drawing, color);
+        let boundaries = frontBoundaries(drawing, color);
+        if (level.topology === "projective" && color === TEAL && morph > 0.6 && morph < 1) {
+          assert.ok(boundaries.length > 2 && boundaries.length % 2 === 0, "green seams fade in sections from tail to head");
+          const half = boundaries.length / 2;
+          boundaries = [boundaries.slice(0, half), boundaries.slice(half)]
+            .map(parts => ({ points: parts.flatMap(part => part.points) }));
+        }
         assert.equal(boundaries.length, sides.length, `${level.topology} ${color}`);
         sides.forEach((side, index) => assertSide(boundaries[index], side, level.topology, drawing));
       }

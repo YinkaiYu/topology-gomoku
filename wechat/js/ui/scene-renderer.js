@@ -801,6 +801,7 @@ export default class SceneRenderer {
     }
     // Rotation and the exact displayed pose belong to the shared view state.
     const active = completion || view;
+    if (completion) { completion.progress = Number.isFinite(completion.manualProgress) ? completion.manualProgress : 1; }
     this.surfaceRotation = active.rotation;
     if (this.surfaceState !== active) {
       this.surfaceState = active;
@@ -838,8 +839,7 @@ export default class SceneRenderer {
     const yaw = deltaX * 0.009;
     const pitch = deltaY * 0.009;
     const elapsed = Math.max(8, Math.min(40, deltaTime || 16.67));
-    this.surfaceRotation.y += yaw;
-    this.surfaceRotation.x += pitch;
+    GameGlobal.TopologyBoardViewLogic.dragRotation(this.surfaceState, yaw, pitch);
     this.surfaceVelocity.y = yaw / elapsed;
     this.surfaceVelocity.x = pitch / elapsed;
     this.surfaceElastic.velocityY += yaw * 0.18;
@@ -864,12 +864,12 @@ export default class SceneRenderer {
     const frameScale = Math.max(0.25, Math.min(2, frameDelta / 16.67));
     const friction = Math.pow(0.925, frameScale);
     if (!dragging) {
-      this.surfaceRotation.x += this.surfaceVelocity.x * frameDelta;
-      this.surfaceRotation.y += this.surfaceVelocity.y * frameDelta;
+      GameGlobal.TopologyBoardViewLogic.dragRotation(this.surfaceState,
+        this.surfaceVelocity.y * frameDelta, this.surfaceVelocity.x * frameDelta);
       this.surfaceVelocity.x *= friction;
       this.surfaceVelocity.y *= friction;
       if (game.status === 'ended' && time >= this.surfaceAutoResumeAt) {
-        this.surfaceRotation.y += 0.00016 * frameDelta;
+        GameGlobal.TopologyBoardViewLogic.dragRotation(this.surfaceState, 0.00016 * frameDelta, 0);
       }
     }
     const targetX = Math.max(-0.14, Math.min(0.14, this.surfaceVelocity.x * 20));
