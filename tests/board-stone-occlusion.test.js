@@ -138,10 +138,33 @@ test("unobstructed paint avoids clipping and a covered stone retains only its tr
   const stack = [];
   const ctx = { globalAlpha: 1, save() { stack.push(this.globalAlpha); }, restore() { this.globalAlpha = stack.pop(); } };
   const calls = [];
-  Morph.paintStone(ctx, null, center, radius, () => calls.push(ctx.globalAlpha));
-  Morph.paintStone(ctx, depth, center, radius, () => calls.push(ctx.globalAlpha));
-  assert.deepEqual(calls, [1, 0.16]);
+  const paint = withShadow => calls.push({ alpha: ctx.globalAlpha, shadow: withShadow !== false });
+  Morph.paintStone(ctx, null, center, radius, paint);
+  Morph.paintStone(ctx, depth, center, radius, paint);
+  assert.deepEqual(calls, [{ alpha: 1, shadow: true }, { alpha: 0.16, shadow: false }],
+    "a fully covered face uses the same shadow-free translucent pass as a partially covered face");
   assert.equal(ctx.globalAlpha, 1);
+});
+
+test("one or several covering sheets cannot restore a covered face or its cast shadow", () => {
+  const front = quad(50, 50, 150, 150, 2);
+  const back = quad(50, 50, 150, 150, 0.5);
+  for (const patches of [[front], [front, back], [back, front], [front, front, back]]) {
+    const depth = Morph.createDepthBuffer(200, 200, patches);
+    const stack = [], passes = [];
+    const ctx = { globalAlpha: 0.6,
+      save() { stack.push(this.globalAlpha); },
+      restore() { this.globalAlpha = stack.pop(); }
+    };
+    depth.translucency = 0.16;
+    Morph.paintStone(ctx, depth, center, radius, withShadow => passes.push([ctx.globalAlpha, withShadow]));
+    assert.deepEqual(passes, [[0.6 * 0.16, false]]);
+    assert.equal(ctx.globalAlpha, 0.6);
+    passes.length = 0;
+    depth.translucency = 0;
+    Morph.paintStone(ctx, depth, center, radius, () => passes.push(true));
+    assert.deepEqual(passes, [], "opaque sheets completely hide the stone");
+  }
 });
 
 function rectangle(left, top, right, bottom) {
