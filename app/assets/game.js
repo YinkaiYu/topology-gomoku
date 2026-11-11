@@ -1153,7 +1153,7 @@
       dom.viewFlatButton.setAttribute("aria-pressed", String(viewProgress <= 0.001));
       dom.viewSpatialButton.setAttribute("aria-pressed", String(viewProgress >= 0.999));
       dom.boardStage.classList.toggle("is-view-transitioning", game.view.transitioning);
-      dom.boardStage.classList.toggle("is-view-spatial", game.view.progress > 0.001);
+      dom.boardStage.classList.toggle("is-view-spatial", game.view.progress > 0);
       dom.boardStage.classList.toggle("is-view-dragging", game.view.dragging);
     } else {
       dom.dimensionSlider.disabled = true;
@@ -1604,6 +1604,7 @@
       lineStartedAt: renderState.winAt || startedAt,
       duration: 3000,
       startProgress: clamp01(Number(snapshot.progress) || 0),
+      rotationDirect: true,
       startRotation: {
         x: Number(snapshot.rotation && snapshot.rotation.x) || 0,
         y: Number(snapshot.rotation && snapshot.rotation.y) || 0,
@@ -1635,6 +1636,10 @@
     var view = game.view;
     animate = Boolean(animate && !prefersReducedMotion());
     var target = clamp01(Number(progress) || 0);
+    if (view.progress === 0 || view.progress === 1) {
+      ViewLogic.prepareMorphRotation(view.rotation, null, view.progress);
+      view.rotationAnchor = null;
+    }
     if (isEndedView()) {
       if (game.completion && !game.completion.settled) {
         return;
@@ -1773,7 +1778,8 @@
     var viewSnapshot = game.view
       ? {
         progress: game.view.progress,
-        rotation: game.view.rotation,
+        rotation: currentOrientation,
+        rotationDirect: true,
         wobble: { x: currentOrientation.wobbleX, y: currentOrientation.wobbleY }
       }
       : { progress: 0, rotation: { x: 0, y: 0, z: 0 } };
@@ -2734,8 +2740,8 @@
     var frameScale = Math.max(0.25, Math.min(2, delta / 16.67));
     var friction = Math.pow(0.925, frameScale);
     if (!completion.dragging) {
-      completion.rotation.x += completion.velocity.x * delta;
-      completion.rotation.y += completion.velocity.y * delta;
+      completion.progress = Number.isFinite(completion.manualProgress) ? completion.manualProgress : 1;
+      ViewLogic.dragRotation(completion, completion.velocity.y * delta, completion.velocity.x * delta);
       completion.velocity.x *= friction;
       completion.velocity.y *= friction;
     } else if (time - completion.lastPointerAt > 72) {
@@ -2759,7 +2765,8 @@
     elastic.x += elastic.velocityX * frameScale;
     elastic.y += elastic.velocityY * frameScale;
     if (!completion.dragging && elapsed > completion.duration * 0.55 && time >= completion.autoResumeAt) {
-      completion.rotation.y += 0.00016 * delta;
+      completion.progress = Number.isFinite(completion.manualProgress) ? completion.manualProgress : 1;
+      ViewLogic.dragRotation(completion, 0.00016 * delta, 0);
     }
   }
 
@@ -2850,7 +2857,7 @@
   }
 
   function displayedCellCenter(cell) {
-    if (game && game.view && game.view.progress > 0.001 && Morph) {
+    if (game && game.view && game.view.progress > 0 && Morph) {
       return completionCellPoint(cell, game.view.progress, interactiveViewOrientation(performance.now()));
     }
     return cellCenter(cell);
@@ -3186,14 +3193,16 @@
     };
     var seamSamples = game.level.topology === "sphere" ? 12 : 8;
     appendCompletionSegment(points, from, sourceBoundary, seamSamples, morph, spin);
-    points.push(completionMappedPoint(
+    var crossing = completionMappedPoint(
       targetBoundary.flatX,
       targetBoundary.flatY,
       targetBoundary.u,
       targetBoundary.v,
       morph,
       spin
-    ));
+    );
+    crossing.chartJump = true;
+    points.push(crossing);
     appendCompletionSegment(points, targetBoundary, to, seamSamples, morph, spin);
     return points;
   }
@@ -3357,11 +3366,9 @@
       for (var index = 0; index <= samples; index += 1) {
         points.push(pointAt(index / samples));
       }
-      var local = Morph.seamProgress(game.level.topology, axis === "x" ? side : 0.5, axis === "x" ? 0.5 : side, morph);
-      ctx.save();
-      ctx.globalAlpha *= 1 - Morph.smooth((local - 0.82) / 0.18);
-      strokeSmoothCompletionPath(ctx, points);
-      ctx.restore();
+      BoardArt.strokeSurfaceBoundary(ctx, game.level.topology,
+        axis === "x" ? (side ? "right" : "left") : (side ? "bottom" : "top"), points, morph,
+        function stroke(part) { strokeSmoothCompletionPath(ctx, part); });
       BoardArt.drawSurfaceBoundaryArrows(ctx, game.level.topology, axis === "x" ? (side ? "right" : "left") : (side ? "bottom" : "top"),
         game.rules, pointAt, morph, renderState.depthBuffer);
     });
@@ -4323,7 +4330,7 @@
     var rect = dom.boardCanvas.getBoundingClientRect();
     var localX = event.clientX - rect.left;
     var localY = event.clientY - rect.top;
-    if (game.view && game.view.progress > 0.001 && Morph) {
+    if (game.view && game.view.progress > 0 && Morph) {
       var orientation = interactiveViewOrientation(performance.now());
       var bestCell = -1;
       var bestDistance = Infinity;
@@ -4401,7 +4408,7 @@
     return Boolean(
       canUseInteractiveView()
       && game.view
-      && (game.view.progress > 0.001 || game.view.target > 0.001 || game.view.transitioning)
+      && (game.view.progress > 0 || game.view.target > 0.001 || game.view.transitioning)
     );
   }
 
@@ -4455,8 +4462,7 @@
     }
     if (view.dragging) {
       event.preventDefault();
-      view.rotation.y += deltaX * 0.009;
-      view.rotation.x += deltaY * 0.009;
+      ViewLogic.dragRotation(view, deltaX * 0.009, deltaY * 0.009);
       view.elastic.y = Math.max(-0.15, Math.min(0.15, deltaX * 0.012));
       view.elastic.x = Math.max(-0.14, Math.min(0.14, deltaY * 0.012));
       view.lastX = event.clientX;
@@ -4546,8 +4552,8 @@
       var deltaY = event.clientY - completion.lastY;
       var yawDelta = deltaX * 0.009;
       var pitchDelta = deltaY * 0.009;
-      completion.rotation.y += yawDelta;
-      completion.rotation.x += pitchDelta;
+      completion.progress = Number.isFinite(completion.manualProgress) ? completion.manualProgress : 1;
+      ViewLogic.dragRotation(completion, yawDelta, pitchDelta);
       completion.velocity.y = yawDelta / deltaTime;
       completion.velocity.x = pitchDelta / deltaTime;
       completion.elastic.velocityY += yawDelta * 0.18;
