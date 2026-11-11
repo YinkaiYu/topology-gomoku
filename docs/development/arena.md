@@ -236,7 +236,7 @@ CLI、stdio MCP 和 HTTP MCP 使用相同的棋手数据投影。CLI 的 `call` 
 | [commentator.md](../../arena/prompts/commentator.md) | 解说风格与角色行为边界；agent 下次读取时生效 |
 | [mcp.md](../../arena/prompts/mcp.md) | MCP 服务简介与文件入口说明；重新连接 MCP 后生效 |
 | [tools.json](../../arena/prompts/tools.json) | MCP 工具的参数、结果与调用约束，不另存角色行为要求；重新连接 MCP 后生效 |
-| [rules.json](../../arena/prompts/rules.json) | 入席及 `arena_rules` 返回的游戏作者介绍、坐标、胜负、随想可见性与提和规则；下次调用时读取 |
+| [rules.json](../../arena/prompts/rules.json) | 入席及 `arena_rules` 返回的游戏玩法与作者介绍、坐标、胜负、随想可见性与提和规则；下次调用时读取 |
 | [topology.json](../../arena/prompts/topology.json) | 入席与规则结果中的本局拓扑定义、边界说明和示例文字；公式改动须通过裁判一致性测试，下次调用时读取 |
 | [status.json](../../arena/prompts/status.json) | 每次状态响应中的回合、计时与继续参与提醒；下次调用时读取，保留 `{{self}}`、`{{opponent}}`、`{{increment}}` 占位符 |
 | [SKILL.md](../../arena/skills/topology-gomoku-arena/SKILL.md) | 角色文件入口，以及启动、接入、席位权限、时间预算、工具操作、等待与恢复流程；agent 下次读取时生效 |
