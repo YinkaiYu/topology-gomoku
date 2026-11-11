@@ -32,7 +32,30 @@
     });
   }
 
+  function smooth(value) { var t = clamp01(value); return t * t * (3 - 2 * t); }
+
+  function displayedRotation(view) {
+    var t = clamp01(view.progress), anchor = view.rotationAnchor, result = {};
+    ["x", "y", "z"].forEach(function(axis) {
+      var end = Number(view.rotation[axis]) || 0;
+      if (t === 0) { result[axis] = 0; return; }
+      if (!anchor) { result[axis] = end * smooth(t); }
+      else if (t <= anchor.progress) { result[axis] = anchor[axis] * smooth(t / anchor.progress); }
+      else { result[axis] = anchor[axis] + (end - anchor[axis]) * smooth((t - anchor.progress) / (1 - anchor.progress)); }
+    });
+    return result;
+  }
+
+  function dragRotation(view, dx, dy) {
+    if (!(view.progress > 0)) { return; }
+    var current = displayedRotation(view);
+    view.rotation.x += dy; view.rotation.y += dx;
+    view.rotationAnchor = { progress: view.progress, x: current.x + dy, y: current.y + dx, z: current.z };
+  }
+
   return {
+    displayedRotation: displayedRotation,
+    dragRotation: dragRotation,
     shortestAngle: shortestAngle,
     prepareMorphRotation: prepareMorphRotation,
     hitProjectedCell: function hitProjectedCell(count, pointAt, x, y, radius) {
@@ -46,10 +69,13 @@
       return distance <= radius ? cell : -1;
     },
     completionOrientation: function completionOrientation(completion, viewBlend, jellyScale, restingBounce, sphereCompletion, Morph, time) {
+      var manual = completion.settled && Number.isFinite(completion.manualProgress);
+      var drag = manual ? displayedRotation({progress: completion.manualProgress, rotation: completion.rotation, rotationAnchor: completion.rotationAnchor}) : completion.rotation;
       return {
-      x: interpolateAngle(completion.startRotation.x, completion.view.x, viewBlend) + completion.rotation.x,
-      y: interpolateAngle(completion.startRotation.y, completion.view.y, viewBlend) + completion.rotation.y,
-      z: interpolateAngle(completion.startRotation.z, completion.view.z, viewBlend) + completion.rotation.z,
+      x: (manual ? completion.view.x * smooth(completion.manualProgress) : interpolateAngle(completion.startRotation.x, completion.view.x, viewBlend)) + drag.x,
+      y: (manual ? completion.view.y * smooth(completion.manualProgress) : interpolateAngle(completion.startRotation.y, completion.view.y, viewBlend)) + drag.y,
+      z: (manual ? completion.view.z * smooth(completion.manualProgress) : interpolateAngle(completion.startRotation.z, completion.view.z, viewBlend)) + drag.z,
+      rotationDirect: Boolean(completion.rotationDirect),
       scale: jellyScale,
       shapeX: sphereCompletion ? 1 : 1 + ((Number(completion.view.shapeX) || 1) - 1) * viewBlend,
       shapeY: sphereCompletion ? 1 : 1 + ((Number(completion.view.shapeY) || 1) - 1) * viewBlend,
@@ -60,8 +86,9 @@
     };
     },
     interactiveOrientation: function interactiveOrientation(view, time) {
+      var rotation = displayedRotation(view);
       return {
-        x: view.rotation.x, y: view.rotation.y, z: view.rotation.z,
+        x: rotation.x, y: rotation.y, z: rotation.z, rotationDirect: true,
         scale: 1, shapeX: 1, shapeY: 1, shapeZ: 1,
         wobbleX: view.elastic.x,
         wobbleY: view.elastic.y + Math.sin(time * 0.0019) * 0.006

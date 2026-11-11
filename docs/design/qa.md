@@ -386,3 +386,19 @@
 - [桌面首页](../../artifacts/zhihu-1.43.0/iframe-1280x900-home.png)、[移动视口棋盘](../../artifacts/zhihu-1.43.0/iframe-390x844-boundary.png)与[完整结果](../../artifacts/zhihu-1.43.0/results.json)。复现：提供 Playwright 到 `NODE_PATH`，运行 `node scripts/qa-zhihu-release.cjs --app <本轮静态交付副本>`；模拟视口不替代手机真机验收。
 - 机构账号上传后，知乎平台自动部署成功；实际宿主预览的双人入口、双生三维棋盘与暖白自交线可用，见[宿主预览](../../artifacts/zhihu-1.43.0/host-preview-projective.jpg)。发布新版本后作品页显示 V 1.43.0、项目审核中，见[送审回执](../../artifacts/zhihu-1.43.0/submitted-review.jpg)。
 - 随后刷新公开作品页确认 V 1.43.0、审核提示消失，iframe 中的游戏正常加载，见[上线结果](../../artifacts/zhihu-1.43.0/published.jpg)。
+
+### 瓶界、双生展开与跨缝连线
+
+- 瓶界先卷起黄边形成近圆筒，随后弯折长轴、转向接合绿边；双生先卷出半扭转带，再收拢另一组翻转边。两段错峰重叠，沿空间弧线舒展，瓶界截面进一步调圆；瓶界的绿边图册接缝移到瓶底内部，网格与棋子沿新图册分布，规则与棋谱坐标不变。边界箭头全程随曲面移动。
+- 手动拖动在所有非零展开进度使用相同角度增量；滑块改变形态时保留当前姿态，回到纯二维时平滑收回。覆盖 1% 等低进度及回看中的转动，纯二维仍不可旋转。
+- 基线 `f18967c`，400×370 单画布的八帧同状态对照：[瓶界之前](../../artifacts/klein-unfold/before.png)、[瓶界之后](../../artifacts/klein-unfold/after.png)、[双生之前](../../artifacts/klein-unfold/before-projective.png)、[双生之后](../../artifacts/klein-unfold/after-projective.png)。复现：提供 Playwright 到 NODE_PATH 后运行 `node scripts/qa-klein-unfold.cjs`。
+- 归圆 7×7、17 手复现棋谱仅保留落子数组，不含账户或凭证。60%、85%、100% 展开对照：[之前](../../artifacts/klein-unfold/before-sphere-win.png)、[之后](../../artifacts/klein-unfold/after-sphere-win.png)。跨图跳跃明确标记，不因两端 UV 距离小而重采样为棋盘内部路径；另修正斜向步跨左／右边时错误选择上／下边的情况。
+- 六种曲面、桌面与手机视口、空盘／静止棋子／正在落子／按压回弹共 48 组真实 H5 首帧检查通过，原二维画面与往返二维逐像素一致；近零帧最大平均色差约 0.000052/255。复现：`node scripts/qa-board-first-frame-h5.cjs --baseline=f18967c --out=artifacts/klein-unfold/first-frame`，[结果](../../artifacts/klein-unfold/first-frame/results.json)。未进行平台原生真机检查。
+
+- 瓶界改用均匀圆弧形成中段管身与回转瓶颈，瓶肚末段随收拢小幅舒展回落，横向加宽并收敛原先偏深的截面。60%–100% 的密集对照：[之前](../../artifacts/klein-unfold/before-klein-closing.png)、[之后](../../artifacts/klein-unfold/after-klein-closing.png)。双生绿边直接收拢，不先拉伸，从箭头到箭尾逐段接合：[之前](../../artifacts/klein-unfold/before-projective-closing.png)、[之后](../../artifacts/klein-unfold/after-projective-closing.png)。同一脚本可复现上述对照。
+- 独立三维面片相交检查覆盖两个视角：瓶界前 80%、双生前 70% 每 5% 一帧无额外自交；瓶界 85%、90%、95%、100% 的相交均来自瓶颈与瓶身之间，无局部翻折。另验证 48%–75% 的截面厚度、瓶底接缝位置、双生绿边的闭合顺序和黄边持续接合。这里只报告采样检查，不声称双生的全部中间形态无自交。
+- 最终共享回归通过 249 项自动测试、资源校验与文档校验；48 组 H5 首帧与二维往返检查通过。
+
+## 1.44.0 zhihu 发行验证
+
+249 项测试通过。静态交付重新探测、描述符校验、ZIP CRC 通过；顶层与跨源 iframe 的 1280×900、390×844 检查通过。证据：artifacts/zhihu-1.44.0/results.json。机构账号部署预览通过，1.44.0 已提交审核。
