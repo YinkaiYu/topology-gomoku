@@ -933,18 +933,37 @@
       for (var sample = 0; sample <= samples; sample += 1) {
         points.push(pointAt(sample / samples));
       }
-      var local = Morph.seamProgress(game.level.topology, vertical ? edge : 0.5, vertical ? 0.5 : edge, morph);
       ctx.save();
       if (ctx.setLineDash) {
         var twisted = game.level.topology !== "sphere" && (vertical ? game.level.xConnection : game.level.yConnection) === "twist";
         ctx.setLineDash(twisted ? [5, 5] : []);
       }
-      ctx.globalAlpha *= 1 - Morph.smooth((local - 0.82) / 0.18);
-      depth.strokePath(ctx, points);
+      strokeSurfaceBoundary(ctx, game.level.topology, side, points, morph, function stroke(part) {
+        depth.strokePath(ctx, part);
+      });
       ctx.restore();
       drawSurfaceBoundaryArrows(ctx, game.level.topology, side, game.rules, pointAt, morph, depth);
     });
     ctx.restore();
+  }
+
+  function strokeSurfaceBoundary(ctx, topology, side, points, morph, stroke) {
+    var progressive = topology === "projective" && (side === "left" || side === "right") && morph > 0.6 && morph < 1;
+    var stride = progressive ? 4 : points.length - 1;
+    var distance = 0;
+    for (var first = 0; first < points.length - 1; first += stride) {
+      var last = Math.min(points.length - 1, first + stride);
+      var amount = (first + last) / (2 * (points.length - 1));
+      var local = Morph.boundaryProgress(topology, side, amount, morph);
+      ctx.save();
+      ctx.globalAlpha *= 1 - Morph.smooth((local - 0.82) / 0.18);
+      ctx.lineDashOffset = -distance;
+      stroke(points.slice(first, last + 1));
+      ctx.restore();
+      for (var index = first; index < last; index += 1) {
+        distance += Math.hypot(points[index + 1].x - points[index].x, points[index + 1].y - points[index].y);
+      }
+    }
   }
 
   function drawSurfaceBoundaryArrows(ctx, topology, side, rules, pointAt, morph, depth) {
@@ -967,7 +986,7 @@
       var dx = after.x - before.x, dy = after.y - before.y, length = Math.hypot(dx, dy);
       if (length < 1e-5) { return; }
       var tx = dx / length * sign, ty = dy / length * sign;
-      var local = Morph.seamProgress(topology, anchor.u, anchor.v, morph);
+      var local = Morph.boundaryProgress(topology, side, amount, morph);
       var alpha = 1 - Morph.smooth((local - 0.82) / 0.18);
       if (alpha <= 0) { return; }
       if (depth && !depth.visible(anchor, 0.045)) { alpha *= depth.translucency; }
@@ -1048,7 +1067,9 @@
     };
     var seamSamples = game.level.topology === "sphere" ? 12 : 8;
     appendCompletionSegment(points, game, layout, from, source, seamSamples, orientation);
-    points.push(mappedCompletionPoint(game, layout, target.flat, target.uv, orientation));
+    var crossing = mappedCompletionPoint(game, layout, target.flat, target.uv, orientation);
+    crossing.chartJump = true;
+    points.push(crossing);
     appendCompletionSegment(points, game, layout, target, to, seamSamples, orientation);
     return points;
   }
@@ -1133,6 +1154,13 @@
         ? Morph.createPresentation(game.level.topology, game.rules, Array.prototype.slice.call(game.winningMask.cells))
         : null)
     };
+    if (!settings.orientation && settings.rotationState) {
+      var dragPose = ViewLogic.displayedRotation(settings.rotationState);
+      orientation.x = (Number(view.x) || 0) * viewBlend + dragPose.x;
+      orientation.y = (Number(view.y) || 0) * viewBlend + dragPose.y;
+      orientation.z = (Number(view.z) || 0) * viewBlend + dragPose.z;
+      orientation.rotationDirect = true;
+    }
     // Use the same camera and deformation for the sheet, lines and stones.
     orientation = Object.assign({}, orientation, { morph: morph, perspective: morph });
     if (morph > 0) { drawPaperTexture(ctx, layout.width, layout.height); }
@@ -1338,6 +1366,7 @@
     prepareMorphRotation: prepareMorphRotation,
     mappedCompletionPoint: mappedCompletionPoint,
     drawSurfaceBoundaryArrows: drawSurfaceBoundaryArrows,
+    strokeSurfaceBoundary: strokeSurfaceBoundary,
     surfaceMaterialBlend: surfaceMaterialBlend,
     drawTopologyGlyph: drawTopologyGlyph,
     drawTopologySilhouette: drawTopologySilhouette
