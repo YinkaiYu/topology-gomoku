@@ -627,3 +627,12 @@ Arena 发布状态：2026-11-04 用户已确认本轮预览并授权合并、推
 - 实际 H5 页面另覆盖六曲面、1280×720 / 390×844、空盘／静止棋子／正在落子／按压回弹，共 48 组。原二维与往返二维画面全部逐像素一致；进度 0.0000001 的 42 组无像素差，其余仅 1–8 个像素出现约一级色阶差，最大平均 RGB 差 0.000052/255。旧切换阈值附近的最大平均差从 8.07 降到 0.055 以下。网格路径只精简真正共线的绘制分段，保留深度转折、回折和真实遮挡。
 - H5 复现：`node scripts/qa-board-first-frame-h5.cjs`。保留[桌面首步画面](../../artifacts/board-first-frame-h5/after-sphere-first-step-1280x720.png)、[手机首步画面](../../artifacts/board-first-frame-h5/after-sphere-first-step-390x844.png)和[逐状态结果](../../artifacts/board-first-frame-h5/results.json)。此处手机检查针对共享游戏页面，对弈室仍按桌面横屏设计；尚未进行原生宿主真机检查。
 - Arena 预览接入同一修复，视图从任意正进度直接进入连续绘制，坐标标签随展开渐隐；不再等到固定阈值整批隐藏。实际浏览器在刷新后检查归圆 1% 进度，交点、棋子与末手标记保持，材质没有突然切换。整合通过 340 项测试、资源与文档校验，用户已确认合并。
+
+### 展开节奏、旋转与跨缝连线复验
+
+- 本次接入共享任务的瓶界近圆筒过渡、双生半扭转带过渡，两段错峰重叠；显式跨图标记修正归圆胜利线的内部绕路。
+- 对弈室去掉 20% 展开阈值，使用共享旋转状态与拖动逻辑。实际鼠标在瓶界、双生、归圆的 0%、1%、10%、40%、70%、100% 分别拖动 40×20 px：纯二维不旋转，其余横向均增加 0.36 rad，形态进度不变。
+- 1440×900 对弈室实际页面：[瓶界](../../artifacts/arena-unfold/klein.png)、[双生](../../artifacts/arena-unfold/projective.png)、[归圆复现](../../artifacts/arena-unfold/sphere.png)。复现：提供 Playwright 到 NODE_PATH，运行 `node scripts/qa-arena-unfold.cjs`；它创建隔离的临时数据，不操作已有棋局。加 `--serve` 可保留本地预览服务。
+
+- 继续调整瓶界瓶口路线、截面与瓶底接缝，采用均匀回转圆弧，圆润的瓶肚在末段随收拢轻微回落；双生绿边不先拉伸，从箭头向箭尾逐段闭合。共享 Canvas 的同状态对照：[瓶界之前](../../artifacts/klein-unfold/before-klein-closing.png)、[瓶界之后](../../artifacts/klein-unfold/after-klein-closing.png)、[双生之前](../../artifacts/klein-unfold/before-projective-closing.png)、[双生之后](../../artifacts/klein-unfold/after-projective-closing.png)。复现：`node scripts/qa-klein-unfold.cjs`，基线 `f18967c`。独立面片检查覆盖两个视角，瓶界前 80% 和双生前 70% 采样无额外相交；瓶界末段相交只发生在瓶颈与瓶身之间。
+- 最终对弈室回归通过 350 项自动测试、资源与文档校验；三类拓扑各六档展开进度的实际鼠标拖动验证通过。任务预览与正式对局数据隔离，用户已于 2026-11-12 确认预览并授权合并。

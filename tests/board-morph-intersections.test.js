@@ -183,3 +183,22 @@ test("rolled surfaces meet their remembered endpoint and pass continuous rotatio
     }
   }
 });
+
+test("Klein body and projective band form without early crossings before the final joining stage", () => {
+  for (const [type, last] of [["klein", 80], ["projective", 70]]) {
+    for (const pose of [{}, { rotation: { x: .6, y: -.75, z: .2 } }]) {
+      for (let percent = 5; percent <= last; percent += 5) {
+        assert.equal(meshIntersections(renderedFaces(type, percent / 100, pose)).length, 0,
+          `${type} ${percent}%: no folded-over patch or early transverse intersection`);
+      }
+    }
+  }
+  for (const t of [.85, .9, .95, 1]) {
+    const hits = meshIntersections(renderedFaces("klein", t));
+    assert.ok(hits.length > 0, 'the neck eventually enters the bottle');
+    for (const pair of hits) {
+      const u = pair.map(tri => tri.reduce((sum, p) => sum + p.uv[0], 0) / 3).sort((a, b) => a - b);
+      assert.ok(u[0] < .4 && u[1] > .75, `${t}: intersections belong to the neck entering the body, not a local kink`);
+    }
+  }
+});

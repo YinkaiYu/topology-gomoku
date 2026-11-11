@@ -347,7 +347,7 @@ test("复盘与二维三维切换相互独立，曲面可以持续柔性拖动",
   const style = fs.readFileSync(path.join(ROOT, "app", "assets", "style.css"), "utf8");
   assert.match(game, /if \(game\.completion\) \{\s*animate = true;/);
   assert.match(game, /function canExploreCompletion\(\)/);
-  assert.match(game, /completion\.rotation\.y \+= yawDelta;/);
+  assert.match(game, /ViewLogic\.dragRotation\(completion, yawDelta, pitchDelta\);/);
   assert.match(game, /settledReplayButton\.addEventListener\("click", handleSettledAction\)/);
   assert.match(game, /function beginReplayReview\(\)/);
   assert.match(game, /function stepReplay\(direction\)/);
@@ -400,14 +400,13 @@ test("对局中可用进度滑块切换二维与三维且切换时锁定落子",
   assert.match(game, /function drawInteractiveMorph\(ctx, time\)/);
   assert.match(game, /function isInteractiveViewPointerMode\(\)/);
   assert.match(game, /distance >= 7/);
-  assert.match(game, /view\.rotation\.y \+= deltaX \* 0\.009/);
-  assert.match(game, /view\.rotation\.x \+= deltaY \* 0\.009/);
+  assert.match(game, /ViewLogic\.dragRotation\(view, deltaX \* 0\.009, deltaY \* 0\.009\)/);
   assert.match(game, /game\.view\.pointerId === event\.pointerId/);
   assert.match(game, /view\.placeEligibleAtDown = ViewLogic\.placementEligibleAtDown\(canPlaceCell\(pressCell\)\)/);
   assert.match(game, /ViewLogic\.shouldPlaceOnRelease\(placeEligibleAtDown, wasDragging, canPlaceCell\(cell\)\)/);
   assert.match(game, /game\.view\.transitioning \|\| game\.view\.scrubbing/);
   assert.match(game, /var dueAt = performance\.now\(\) \+ wait/);
-  assert.match(game, /game\.view && game\.view\.progress > 0\.001/);
+  assert.match(game, /game\.view && game\.view\.progress > 0/);
   assert.match(game, /activeSheet \|\| \(game\.view && \(game\.view\.transitioning \|\| game\.view\.scrubbing\)\)/);
   assert.match(game, /var keepViewControl = Boolean\(viewSupported && ended && !autoAdvancing\)/);
   assert.match(game, /var introActive = game\.introMode === "lesson" \|\| game\.introMode === "demo"/);
@@ -464,7 +463,7 @@ test("三维观赏的上下拖动与左右同样跟手且不受隐藏俯仰硬�
   const game = fs.readFileSync(path.join(ROOT, "app", "assets", "game.js"), "utf8");
   assert.match(game, /var yawDelta = deltaX \* 0\.009;/);
   assert.match(game, /var pitchDelta = deltaY \* 0\.009;/);
-  assert.match(game, /completion\.rotation\.x \+= pitchDelta;/);
+  assert.match(game, /ViewLogic\.dragRotation\(completion, yawDelta, pitchDelta\);/);
   assert.doesNotMatch(game, /Math\.max\(-1\.12, Math\.min\(1\.12, totalPitch\)\)/);
 });
 

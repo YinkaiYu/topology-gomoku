@@ -40,6 +40,7 @@
   let morphTarget = 0;
   let morphFrame = 0;
   let rotation = { x: 0, y: 0, z: 0 };
+  let rotationAnchor = null;
   let drag = null;
   let toastTimer = null;
   let lastStateSequence = -1;
@@ -450,6 +451,7 @@
     lastStateSequence = -1;
     morph = morphTarget = 0;
     rotation = { x: 0, y: 0, z: 0 };
+    rotationAnchor = null;
     const next = await call("arena_state", { gameId });
     if (epoch !== gameEpoch) return;
     state = null;
@@ -537,7 +539,7 @@
     const cellSize = Math.min((rect.width - 56) / state.width, (rect.height - 56) / state.height);
     const layout = { cell: cellSize, left: (rect.width-cellSize*(state.width-1))/2, right: (rect.width+cellSize*(state.width-1))/2,
       top: (rect.height-cellSize*(state.height-1))/2, bottom: (rect.height+cellSize*(state.height-1))/2, width: rect.width, height: rect.height };
-    if (morph > 0 && state.topology !== "plane") Art.drawCompletion(ctx, { game, layout, time: 2000, morph, rotation });
+    if (morph > 0 && state.topology !== "plane") Art.drawCompletion(ctx, { game, layout, time: 2000, morph, rotation, rotationState: {progress: morph, rotation, rotationAnchor} });
     else Art.drawBoard(ctx, { game, layout, time: 2000, fontFamily: '"Topo Serif",serif' });
     if (morph < .1) {
       ctx.save(); ctx.globalAlpha *= 1 - window.TopologyMorph.smooth(morph / .1);
@@ -559,6 +561,7 @@
   }
   function setMorph(value, direct = false) {
     if (state) Art.prepareMorphRotation(state.topology, rotation, morph);
+    if (morph === 0 || morph === 1) rotationAnchor = null;
     morphTarget = Math.max(0, Math.min(1, value));
     cancelAnimationFrame(morphFrame);
     if (direct || matchMedia("(prefers-reduced-motion: reduce)").matches) { morph = morphTarget; drawBoard(); return; }
@@ -814,14 +817,15 @@
   $("clear-records").addEventListener("click",()=>confirmMutation("清空已结束棋局？","棋谱和发言将一并删除。",async()=>{const result=await call("arena_clear",{},true);if(result.deleted.includes(state?.gameId))showWelcome();await showRooms();}));
   $("confirm-action").addEventListener("click",()=>guarded(async()=>{const action=confirmAction;if(!action)return;confirmAction=null;await action();$("confirm-dialog").close();}));
   $("board").addEventListener("pointerdown", (event) => {
-    if (morph < .2 || !state || state.topology === "plane") return;
+    if (morph <= 0 || !state || state.topology === "plane") return;
     drag = { x: event.clientX, y: event.clientY, id: event.pointerId };
     $("board").setPointerCapture(event.pointerId);
   });
   $("board").addEventListener("pointermove", (event) => {
     if (!drag || drag.id !== event.pointerId) return;
-    rotation.y += (event.clientX - drag.x) * .009;
-    rotation.x += (event.clientY - drag.y) * .009;
+    const view = {progress: morph, rotation, rotationAnchor};
+    window.TopologyBoardViewLogic.dragRotation(view, (event.clientX - drag.x) * .009, (event.clientY - drag.y) * .009);
+    rotationAnchor = view.rotationAnchor;
     drag.x = event.clientX; drag.y = event.clientY;
     drawBoard();
   });
