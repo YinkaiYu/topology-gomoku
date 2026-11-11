@@ -232,7 +232,7 @@ CLI、stdio MCP 和 HTTP MCP 使用相同的棋手数据投影。CLI 的 `call` 
 | 文件 | 作用与生效时机 |
 | --- | --- |
 | [invitation.md](../../arena/prompts/invitation.md) | 本局信息、加入参数、文件路径和棋手提示占位符；下次打开邀请弹窗时读取 |
-| [player.md](../../arena/prompts/player.md) | 黑白棋手随想的受众、内容与表达方式；生成棋手邀请时附上，或让 agent 重新读取 |
+| [player.md](../../arena/prompts/player.md) | 游戏作者介绍，以及黑白棋手随想的受众、内容与表达方式；生成棋手邀请时附上，或让 agent 重新读取 |
 | [commentator.md](../../arena/prompts/commentator.md) | 解说风格与角色行为边界；agent 下次读取时生效 |
 | [mcp.md](../../arena/prompts/mcp.md) | MCP 服务简介与文件入口说明；重新连接 MCP 后生效 |
 | [tools.json](../../arena/prompts/tools.json) | MCP 工具的参数、结果与调用约束，不另存角色行为要求；重新连接 MCP 后生效 |
